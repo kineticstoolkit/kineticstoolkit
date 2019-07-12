@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 """
 Module that provides simple GUI functions.
 
@@ -13,6 +14,27 @@ except ModuleNotFoundError:
     import Tkinter as _tk  # Python 2
 
 from functools import partial as _partial
+import sys as _sys
+
+
+def _cleantk():
+    """Workaround a ipython bug on macOS: clean the dead tkinter window."""
+    root = _tk.Tk()
+    root.wm_attributes("-alpha", 0)
+    root.update()
+    root.withdraw()
+    root.destroy()
+    root.quit()
+
+
+def _set_window_position(root, x, y):
+    """Set the window position to given coordinates."""
+    root.wm_attributes("-alpha", 0)
+    root.update()
+    geometry = root.geometry()
+    geometry = geometry[0:geometry.find('+')]
+    root.geometry(geometry + '+' + str(x) + "+" + str(y))
+    root.wm_attributes("-alpha", 1)
 
 
 def buttondialog(title='', message='Please select an option.',
@@ -47,12 +69,12 @@ def buttondialog(title='', message='Please select an option.',
 
     def return_choice(ichoice):
         selected_choice[0] = ichoice
-        root.withdraw()
 
         # iconify works around a bug on macOS where iPython redraws the last
         # tk window even after it has been withdrew.
-        root.iconify()
-
+        # root.iconify()
+        root.wm_attributes("-topmost", 0)
+        root.withdraw()
         root.destroy()
         root.quit()
 
@@ -73,6 +95,24 @@ def buttondialog(title='', message='Please select an option.',
 
     root.resizable(width=False, height=False)
     root.wm_attributes("-topmost", 1)  # Force topmost window
+    _set_window_position(root, 100, 50)
     root.mainloop()
+    _cleantk()
 
     return(selected_choice[0])
+
+
+if __name__ == '__main__':
+    if len(_sys.argv) < 2:
+        raise ValueError('Not enough arguments.')
+
+    if _sys.argv[1] == 'buttondialog':
+        the_call = ('buttondialog("""' + _sys.argv[2]
+                    + '""","""' + _sys.argv[3] + '""",[')
+        for i in range(4, len(_sys.argv)):
+            the_call = the_call + '"""' + _sys.argv[i] + '"""'
+            if i == len(_sys.argv) - 1:
+                the_call += '])'
+            else:
+                the_call += ','
+    print(eval(the_call))
