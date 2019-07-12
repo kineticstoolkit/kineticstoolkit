@@ -13,7 +13,7 @@ Author: Félix Chénier
 Date: Started on July 2019
 """
 
-from ktk_timeseries import TimeSeries
-import ktk_gui as gui
-import ktk_pushrimkinetics as pushrimkinetics
-import ktk_dev as dev
+from timeseries.timeseries import TimeSeries
+import gui.gui as gui
+import pushrimkinetics.pushrimkinetics as pushrimkinetics
+import dev.dev as dev

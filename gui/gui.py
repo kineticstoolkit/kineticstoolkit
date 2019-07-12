@@ -17,8 +17,20 @@ from functools import partial as _partial
 import sys as _sys
 
 
+# ------------------------------------
+# HELPER FUNCTIONS
+# ------------------------------------
+
+
 def _cleantk():
-    """Workaround a ipython bug on macOS: clean the dead tkinter window."""
+    """
+    Clean the dead tkinter window.
+
+    This is a workaround for a broken IPython in Spyder 3 on macOS, where the
+    IPython tkinter update loop reveals the last closed tkinter window.
+    """
+    # Clean the tkinter window by creating an empty, transparent one and
+    # then destroying it.
     root = _tk.Tk()
     root.wm_attributes("-alpha", 0)
     root.update()
@@ -35,6 +47,11 @@ def _set_window_position(root, x, y):
     geometry = geometry[0:geometry.find('+')]
     root.geometry(geometry + '+' + str(x) + "+" + str(y))
     root.wm_attributes("-alpha", 1)
+
+
+# ------------------------------------
+# MODULE'S PUBLIC FUNCTIONS
+# ------------------------------------
 
 
 def buttondialog(title='', message='Please select an option.',
@@ -100,6 +117,11 @@ def buttondialog(title='', message='Please select an option.',
     _cleantk()
 
     return(selected_choice[0])
+
+
+# ------------------------------------
+# MAIN FUNCTION FOR EXTERNAL CALLS
+# ------------------------------------
 
 
 if __name__ == '__main__':

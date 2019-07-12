@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 from copy import deepcopy
 
-
 class TimeSeries():
     """
     A class that implements timeseries.
