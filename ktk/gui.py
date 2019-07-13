@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
 Module that provides simple GUI functions.
 
@@ -10,7 +11,7 @@ Started on June 2019
 # Imports
 try:
     import tkinter as _tk  # Python 3
-except ModuleNotFoundError:
+except ImportError:
     import Tkinter as _tk  # Python 2
 
 from functools import partial as _partial

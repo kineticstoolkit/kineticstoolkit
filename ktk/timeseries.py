@@ -14,7 +14,27 @@ Created on Thu Jun  6 11:07:32 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
-from copy import deepcopy
+
+from copy import deepcopy as _deepcopy
+import ktk.gui as _gui
+
+
+class TimeSeriesEvent():
+    """
+    Define an event in a timeseries.
+
+    Attributes
+    ----------
+    time : float
+        The time at which the event happened.
+    name : str
+        The name of the event.
+    """
+
+    def __init__(self, time=0., name='event'):
+        self.time = time
+        self.name = name
+
 
 class TimeSeries():
     """
@@ -33,13 +53,12 @@ class TimeSeries():
         The time unit. The default is 's'.
     data_unit : dict
         Dictionary of strings containing the data units.
-    events : list of ktk.Event
+    events : list of ktk.TimeSeriesEvent
         A list of events.
     """
 
-    def __init__(
-            self, time=np.array([]), data=dict(), time_unit='s',
-            data_unit=dict(), events=[]):
+    def __init__(self, time=np.array([]), data=dict(), time_unit='s',
+                 data_unit=dict(), events=[]):
         self.time = np.array(time)
         self.data = data
         self.time_unit = time_unit
@@ -68,7 +87,7 @@ class TimeSeries():
             str_out += ('\n    ' + str(key) + ": '"
                         + str(self.data_unit[key]) + "'")
 
-        str_out += '\n  events: ' + str(len(self.events))
+        str_out += '\n  events: list of length ' + str(len(self.events))
 
         return(str_out)
 
@@ -101,8 +120,50 @@ class TimeSeries():
         the original and returned timeseries.
         """
         # TODO Unit test
-        return deepcopy(self)
+        return _deepcopy(self)
 
+    def addevent(self, time=0.0, name='event'):
+        """
+        Add an event to the timeseries.
+
+        Parameters
+        ----------
+        time : float
+            The time at which the event happened.
+        name : str
+            The name of the event.
+
+        Returns
+        -------
+        self.
+
+        This is a convenience function, the same can be reached by simply
+        appending a TimeSeriesEvent to the TimeSeries' event list:
+
+        >>> the_time_series.events.append(TimeSeriesEvent(time, name))
+        """
+        self.events.append(TimeSeriesEvent(time, name))
+        return self
+
+    def uiaddevents(self, name='event'):
+        """
+        Add one or many events interactively to the timeseries.
+
+        Parameters
+        ----------
+        name : str
+            The name of the event.
+
+        Returns
+        -------
+        self.
+        """
+        self.plot()
+        _gui.buttondialog(title='uiaddevents',
+                          message=('Please zoom on the figure, then click '
+                                   + 'Continue, or End to terminate.'),
+                          choices=['Continue', 'End'])
+        # TODO Continue
 
     def save(self, file_name): #TODO, still not what I want.
         np.save(file_name, self, allow_pickle=True)
@@ -115,33 +176,28 @@ class TimeSeries():
     def plot(self):
 
         #How many plots
-        thekeys = self.keys()
-        nplots = 0
-        for thekey in thekeys:
-            if thekey != 'Info' and thekey != 'Time' and thekey[0] != '_':
-                nplots = nplots + 1
+        thekeys = self.data.keys()
+        nplots = len(thekeys)
 
         #Now plot
         iplot = 1
         for thekey in thekeys:
 
-            if thekey != 'Info' and thekey != 'Time' and thekey[0] != '_':
+            if iplot == 1:
+                ax = plt.subplot(nplots,1,iplot)
+            else:
+                plt.subplot(nplots,1,iplot, sharex=ax)
 
-                if iplot == 1:
-                    ax = plt.subplot(nplots,1,iplot)
-                else:
-                    plt.subplot(nplots,1,iplot, sharex=ax)
+            plt.plot(self.time, self.data[thekey])
 
-                plt.plot(self.Time, self[thekey], linewidth=1)
+            if thekey in self.data_unit:
+                plt.ylabel(thekey + ' (' + self.data_unit[thekey] + ')')
+            else:
+                plt.ylabel(thekey)
 
-                if (thekey + 'Unit') in self.Info:
-                    plt.ylabel(thekey + ' (' + self.Info[thekey + 'Unit'] + ')')
-                else:
-                    plt.ylabel(thekey)
+            iplot = iplot+1
 
-                iplot = iplot+1
-
-        plt.xlabel('Time (' + self.Info['TimeUnit'] + ')')
+        plt.xlabel('Time (' + self.time_unit + ')')
         plt.tight_layout()
         plt.show()
 
