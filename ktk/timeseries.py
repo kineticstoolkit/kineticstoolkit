@@ -35,6 +35,14 @@ class TimeSeriesEvent():
         self.time = time
         self.name = name
 
+    def __str__(self):
+        """Return the string representation of the TimeSeriesEvent."""
+        return 'time: ' + str(self.time) + ', name: ' + str(self.name)
+
+    def __repr__(self):
+        """Return the string representation of the TimeSeriesEvent."""
+        return self.__str__()
+
 
 class TimeSeries():
     """
@@ -67,11 +75,11 @@ class TimeSeries():
 
     def __str__(self):
         """
-        Return the string representation of the timeseries.
+        Return the string representation of the TimeSeries.
 
         Returns
         -------
-        str: The string representation of the timeseries.
+        str: The string representation of the TimeSeries.
 
         """
         str_out = 'TimeSeries'
@@ -93,20 +101,20 @@ class TimeSeries():
 
     def __repr__(self):
         """
-        Return the string representation of the timeseries.
+        Return the string representation of the TimeSeries.
 
         This method simply calls __str__(self).
 
         Returns
         -------
-        str: The string representation of the timeseries.
+        str: The string representation of the TimeSeries.
 
         """
         return(str(self))
 
     def copy(self):
         """
-        Return a deep copy of the timeseries.
+        Return a deep copy of the TimeSeries.
 
         Usage
         -----
@@ -124,7 +132,7 @@ class TimeSeries():
 
     def addevent(self, time=0.0, name='event'):
         """
-        Add an event to the timeseries.
+        Add an event to the TimeSeries.
 
         Parameters
         ----------
@@ -147,7 +155,7 @@ class TimeSeries():
 
     def uiaddevents(self, name='event'):
         """
-        Add one or many events interactively to the timeseries.
+        Add one or many events interactively to the TimeSeries.
 
         Parameters
         ----------
@@ -163,6 +171,14 @@ class TimeSeries():
                           message=('Please zoom on the figure, then click '
                                    + 'Continue, or End to terminate.'),
                           choices=['Continue', 'End'])
+        plt.suptitle(('Left-click to add events,\n'
+                      + 'Right-click to remove last added events,\n'
+                      + 'Enter to terminate.'))
+        points = plt.ginput(1000)
+
+        for the_point in points:
+            self.addevent(time=the_point[0], name=name)
+
         # TODO Continue
 
     def save(self, file_name): #TODO, still not what I want.
