@@ -9,18 +9,29 @@ Started on June 2019
 """
 
 # Imports
-try:
-    import tkinter as _tk  # Python 3
-except ImportError:
-    import Tkinter as _tk  # Python 2
-
+import tkinter as _tk
 from functools import partial as _partial
 import sys as _sys
 
+# Create the gui root on first import
+from ktk.guiroot import root as _root
+from ktk.guiroot import create_root as _create_root
 
-# ------------------------------------
-# HELPER FUNCTIONS
-# ------------------------------------
+
+def _on_closing():
+    print('This window cannot be closed.')
+
+
+def init():
+    """Initialize the root window's properties."""
+    _root.geometry('%dx%d+%d+%d' % (
+                   _root.winfo_screenwidth(),
+                   100, 0, _root.winfo_screenheight()-110))
+    _root.protocol("WM_DELETE_WINDOW", _on_closing)
+
+
+init()
+
 
 
 def _cleantk():
@@ -53,6 +64,41 @@ def _set_window_position(root, x, y):
 # ------------------------------------
 # MODULE'S PUBLIC FUNCTIONS
 # ------------------------------------
+
+def clear_root():
+    """Clear the root window."""
+    slaves = _root.slaves()
+    for the_slave in slaves:
+        the_slave.destroy()
+
+
+def focus():
+    """Give the focus to the root window."""
+    _root.attributes('-topmost', True)
+    _root.update()
+    _root.attributes('-topmost', False)
+
+
+def message(message=''):
+    """
+    Write a message in the bottom gui window.
+
+    Parameters
+    ----------
+    message : str
+        Message to write. Write '' to hide the gui window.
+
+    Returns
+    -------
+    None.
+    """
+    clear_root()
+
+    if message != '':
+        label = _tk.Label(_root, text=message)
+        label.pack()
+        _root.deiconify()
+        focus()
 
 
 def buttondialog(title='', message='Please select an option.',
