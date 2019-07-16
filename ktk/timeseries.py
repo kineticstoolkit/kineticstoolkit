@@ -83,11 +83,11 @@ class TimeSeries():
 
         """
         str_out = 'TimeSeries'
-        str_out += '\n  time: array of shape ' + str(np.shape(self.time))
+        str_out += '\n  time:  array of shape' + str(np.shape(self.time))
         str_out += "\n  time_unit: '" + str(self.time_unit) + "'"
-        str_out += '\n  data:'
+        str_out += '\n  data: (array of shape:)'
         for key in self.data.keys():
-            str_out += ('\n    ' + str(key) + ': array of shape '
+            str_out += ('\n    ' + str(key) + ': \t'
                         + str(np.shape(self.data[key])))
 
         str_out += '\n  data_unit: '
@@ -111,6 +111,12 @@ class TimeSeries():
 
         """
         return(str(self))
+        
+    def _repr_pprint(self, p, cycle):
+        if cycle:
+            p.pretty("...")
+        else:
+            p.text("TimeSeries with time=")
 
     def copy(self):
         """

@@ -13,7 +13,9 @@ Author: Félix Chénier
 Date: Started on July 2019
 """
 
-from ktk.timeseries import TimeSeries
+from ktk.timeseries import TimeSeries, TimeSeriesEvent
+import ktk.io as io
 import ktk.gui as gui
 import ktk.pushrimkinetics as pushrimkinetics
 import ktk.dev.dev as dev
+import ktk._ipython as _ipython

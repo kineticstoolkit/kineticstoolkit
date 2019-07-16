@@ -14,33 +14,44 @@ from functools import partial as _partial
 import sys as _sys
 
 # Create the gui root on first import
-from ktk.guiroot import root as _root
-from ktk.guiroot import create_root as _create_root
+#from ktk.guiroot import root as _root
 
 
-def _on_closing():
-    print('This window cannot be closed.')
+def _create_root():
+    root = _tk.Tk()
+    # Ensure the window is not created as a tab on macOS
+    root.resizable(width=False, height=False)
+
+    # Ensure the window is not closable by user
+    def _on_closing():
+        pass
+    root.protocol("WM_DELETE_WINDOW", _on_closing)
+
+    # Put the window in center of the screen
+    width = 800
+    height = 400
+    root.geometry('%dx%d+%d+%d' % (
+                  width, height,
+                  root.winfo_screenwidth()/2-width/2,
+                  root.winfo_screenheight()/2-height/2))
+
+    # Set focus
+    root.attributes('-topmost', True)
+    root.update()
+    root.attributes('-topmost', False)
+
+    return root
 
 
-def init():
-    """Initialize the root window's properties."""
-    _root.geometry('%dx%d+%d+%d' % (
-                   _root.winfo_screenwidth(),
-                   100, 0, _root.winfo_screenheight()-110))
-    _root.protocol("WM_DELETE_WINDOW", _on_closing)
-
-
-init()
-
-
-
-def _cleantk():
+def _destroy_root(root):
     """
     Clean the dead tkinter window.
 
-    This is a workaround for a broken IPython in Spyder 3 on macOS, where the
+    Contains a workaround for a broken IPython in Spyder 3 on macOS, where the
     IPython tkinter update loop reveals the last closed tkinter window.
     """
+    root.destroy()
+
     # Clean the tkinter window by creating an empty, transparent one and
     # then destroying it.
     root = _tk.Tk()
@@ -65,21 +76,8 @@ def _set_window_position(root, x, y):
 # MODULE'S PUBLIC FUNCTIONS
 # ------------------------------------
 
-def clear_root():
-    """Clear the root window."""
-    slaves = _root.slaves()
-    for the_slave in slaves:
-        the_slave.destroy()
 
-
-def focus():
-    """Give the focus to the root window."""
-    _root.attributes('-topmost', True)
-    _root.update()
-    _root.attributes('-topmost', False)
-
-
-def message(message=''):
+def show_message(message=''):
     """
     Write a message in the bottom gui window.
 
@@ -92,13 +90,7 @@ def message(message=''):
     -------
     None.
     """
-    clear_root()
-
-    if message != '':
-        label = _tk.Label(_root, text=message)
-        label.pack()
-        _root.deiconify()
-        focus()
+    pass
 
 
 def buttondialog(title='', message='Please select an option.',
@@ -126,62 +118,28 @@ def buttondialog(title='', message='Please select an option.',
     user closes the window instead of clicking a button, a value of -1 is
     returned.
     """
-    root = _tk.Tk()
-
     # We use a list of length 1 to pass selected_choice by reference.
     selected_choice = [-2]
 
+    root = _create_root()
+
     def return_choice(ichoice):
         selected_choice[0] = ichoice
-
-        # iconify works around a bug on macOS where iPython redraws the last
-        # tk window even after it has been withdrew.
-        # root.iconify()
-        root.wm_attributes("-topmost", 0)
-        root.withdraw()
-        root.destroy()
         root.quit()
 
-    # Close button returns -1
-    root.protocol("WM_DELETE_WINDOW", _partial(return_choice, -1))
-
-    root.title(title)
+#    root.title(title)
     lbl = _tk.Label(root, text=message)
-    lbl.grid(row=0, columnspan=len(choices))
+    lbl.pack()
 
     ichoice = 0
     for choice in choices:
         btn = _tk.Button(root,
                          text=choice,
                          command=_partial(return_choice, ichoice))
-        btn.grid(row=1, column=ichoice)
+        btn.pack()
         ichoice = ichoice + 1
 
-    root.resizable(width=False, height=False)
-    root.wm_attributes("-topmost", 1)  # Force topmost window
-    _set_window_position(root, 100, 50)
     root.mainloop()
-    _cleantk()
+    _destroy_root(root)
 
     return(selected_choice[0])
-
-
-# ------------------------------------
-# MAIN FUNCTION FOR EXTERNAL CALLS
-# ------------------------------------
-
-
-if __name__ == '__main__':
-    if len(_sys.argv) < 2:
-        raise ValueError('Not enough arguments.')
-
-    if _sys.argv[1] == 'buttondialog':
-        the_call = ('buttondialog("""' + _sys.argv[2]
-                    + '""","""' + _sys.argv[3] + '""",[')
-        for i in range(4, len(_sys.argv)):
-            the_call = the_call + '"""' + _sys.argv[i] + '"""'
-            if i == len(_sys.argv) - 1:
-                the_call += '])'
-            else:
-                the_call += ','
-    print(eval(the_call))
