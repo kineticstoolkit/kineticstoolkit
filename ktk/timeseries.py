@@ -14,12 +14,13 @@ Created on Thu Jun  6 11:07:32 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
+import collections
 
 from copy import deepcopy as _deepcopy
 import ktk.gui as _gui
 
 
-class TimeSeriesEvent():
+class TimeSeriesEvent(list):
     """
     Define an event in a timeseries.
 
@@ -32,111 +33,91 @@ class TimeSeriesEvent():
     """
 
     def __init__(self, time=0., name='event'):
-        self.time = time
-        self.name = name
+        list.__init__(self)
+        self.append(float(time))
+        self.append(str(name))
 
-    def __str__(self):
-        """Return the string representation of the TimeSeriesEvent."""
-        return 'time: ' + str(self.time) + ', name: ' + str(self.name)
-
-    def __repr__(self):
-        """Return the string representation of the TimeSeriesEvent."""
-        return self.__str__()
-
-
-class TimeSeries():
-    """
-    A class that implements timeseries.
-
-    This class implements a timeseries in a way that resembles the timeseries
-    and tscollection found in Matlab.
-
-    Attributes
-    ----------
-    time : 1d np.array
-        A time vector common to all data of the timeseries.
-    data : dict
-        Dictionary of np.arrays containing the timeseries data.
-    time_unit : str
-        The time unit. The default is 's'.
-    data_unit : dict
-        Dictionary of strings containing the data units.
-    events : list of ktk.TimeSeriesEvent
-        A list of events.
-    """
-
-    def __init__(self, time=np.array([]), data=dict(), time_unit='s',
-                 data_unit=dict(), events=[]):
-        self.time = np.array(time)
-        self.data = data
-        self.time_unit = time_unit
-        self.data_unit = data_unit
-        self.events = events
-
-    def __str__(self):
-        """
-        Return the string representation of the TimeSeries.
-
-        Returns
-        -------
-        str: The string representation of the TimeSeries.
-
-        """
-        str_out = 'TimeSeries'
-        str_out += '\n  time:  array of shape' + str(np.shape(self.time))
-        str_out += "\n  time_unit: '" + str(self.time_unit) + "'"
-        str_out += '\n  data: (array of shape:)'
-        for key in self.data.keys():
-            str_out += ('\n    ' + str(key) + ': \t'
-                        + str(np.shape(self.data[key])))
-
-        str_out += '\n  data_unit: '
-        for key in self.data_unit.keys():
-            str_out += ('\n    ' + str(key) + ": '"
-                        + str(self.data_unit[key]) + "'")
-
-        str_out += '\n  events: list of length ' + str(len(self.events))
-
-        return(str_out)
-
-    def __repr__(self):
-        """
-        Return the string representation of the TimeSeries.
-
-        This method simply calls __str__(self).
-
-        Returns
-        -------
-        str: The string representation of the TimeSeries.
-
-        """
-        return(str(self))
+    @property
+    def time(self):
+        return self[0]
+    
+    @time.setter
+    def time(self, time):
+        self[0] = float(time)
         
-    def _repr_pprint(self, p, cycle):
-        if cycle:
-            p.pretty("...")
-        else:
-            p.text("TimeSeries with time=")
+    @property
+    def name(self):
+        return self[1]
+    
+    @name.setter
+    def name(self, name):
+        self[0] = str(name)
+        
 
-    def copy(self):
+#    def __str__(self):
+#        """Return the string representation of the TimeSeriesEvent."""
+#        return 'time: ' + str(self.time) + ', name: ' + str(self.name)
+#
+#    def __repr__(self):
+#        """Return the string representation of the TimeSeriesEvent."""
+#        return '<' + str(self.time) + ' ' + str(self.name) + '>'
+
+
+class TimeSeries(dict):
+    """
+    A class that implements TimeSeries.
+
+    This class implements a Timeseries in a way that resembles the timeseries
+    and tscollection found in Matlab.
+    
+    The TimeSeries class is simply a dict with added methods and
+    specifications:
+        - It always has a 'time' key, which is a 1-dimension np.array
+          containing the time entries.
+        - It always has an 'info' key, which is a dict containing info on
+          'time' and any other data entry.
+          unit.
+        - It always has an 'events' key, which is a list of TimeSeriesEvent.
+          
+    Example of creation:
+    
+        >>> ts = TimeSeries({time: np.array(range(0,100))})
+    """
+
+    def __init__(self, dict_entry={}):
+        dict.__init__(self)
+        self['time'] = np.array([])
+        self['info'] = {'time': {'unit': 's'}}
+        self['events'] = []
+        for the_key in dict_entry.keys():
+            self[the_key] = _deepcopy(dict_entry[the_key])
+
+
+    def add_info(self, signal_name, info_name, value):
         """
-        Return a deep copy of the TimeSeries.
-
-        Usage
-        -----
-        >>> ts1 = ktk.TimeSeries(...)
-        >>> ts2 = ts1.copy()
-
-        Returns
-        -------
-        TimeSeries: An identical, deep copy of the timeseries where each
-        original element has been copied so that no reference exists between
-        the original and returned timeseries.
+        Add information on a signal of the TimeSeries.
+        
+        Examples of use:
+            >>> the_timeseries.add_info('time', 'unit', 's')
+            >>> the_timeseries.add_info('forces', 'unit', 'N')
+            >>> the_timeseries.add_info('marker1', 'color', [43, 2, 255])
+        
+        This creates a corresponding entry in the 'info' dict.
         """
-        # TODO Unit test
-        return _deepcopy(self)
+        try:
+            self['info'][signal_name]  # Test if it exists
+            self['info'][signal_name][info_name] = value  # Assign the value
+            
+        except:  # No info yet for this signal name
+            self['info'][signal_name] = {info_name: value}  # Assign the value
 
-    def addevent(self, time=0.0, name='event'):
+    
+    def remove_info(self, signal_name, info_name):
+        """TODO"""
+        raise NotImplementedError('This feature is not implemented yet')
+
+
+    def add_event(self, time, name='event'):
         """
         Add an event to the TimeSeries.
 
@@ -154,12 +135,13 @@ class TimeSeries():
         This is a convenience function, the same can be reached by simply
         appending a TimeSeriesEvent to the TimeSeries' event list:
 
-        >>> the_time_series.events.append(TimeSeriesEvent(time, name))
+        >>> the_time_series['events'].append(TimeSeriesEvent(time, name))
         """
-        self.events.append(TimeSeriesEvent(time, name))
+        self['events'].append(TimeSeriesEvent(time, name))
         return self
 
-    def uiaddevents(self, name='event'):
+
+    def ui_add_events(self, name='event'):
         """
         Add one or many events interactively to the TimeSeries.
 
@@ -187,16 +169,30 @@ class TimeSeries():
 
         # TODO Continue
 
+
     def save(self, file_name): #TODO, still not what I want.
         np.save(file_name, self, allow_pickle=True)
+
 
     def load(file_name): #TODO, still not what I want.
         temp = np.load(file_name, allow_pickle=True)
         temp = temp.tolist()
         return(temp)
 
-    def plot(self):
 
+    def plot(self):
+        """Plot the TimeSeries using matplotlib."""
+
+        plt.cla()
+        the_keys = self.keys()
+        for the_key in the_keys:
+            if the_key != 'time' and isinstance(self[the_key], np.ndarray):
+                plt.plot(self['time'], self[the_key])
+                
+        plt.xlabel('Time (' + self['time_unit'] + ')')
+        
+        return
+    
         #How many plots
         thekeys = self.data.keys()
         nplots = len(thekeys)
