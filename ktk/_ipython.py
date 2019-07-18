@@ -55,6 +55,7 @@ try:
                     
                     # Print the value
                     to_show = pretty.pretty(value[the_key])
+                    to_show = to_show.replace('\n', '').replace('\r', '')
                     if len(to_show) <= max_length_to_show:
                         p.text(to_show)
                     else:
