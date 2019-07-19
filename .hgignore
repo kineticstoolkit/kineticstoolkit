@@ -3,3 +3,4 @@ syntax: glob
 .spyproject
 ktk/__pycache__
 __pycache__
+tutorials/.ipynb_checkpoints
