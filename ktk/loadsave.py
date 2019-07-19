@@ -6,19 +6,44 @@ Created on Tue Jul 16 13:29:24 2019
 @author: felix
 """
 
-import scipy.io as spio
+import scipy.io as _spio
+import subprocess as _subprocess
+
+from ktk import _ROOT_FOLDER, _ISMAC
+
 from ktk.timeseries import TimeSeries
 
+
 def loadmat(filename):
-    '''
-    this function should be called instead of direct spio.loadmat
-    as it cures the problem of not properly recovering python dictionaries
-    from mat files. It calls the function check keys to cure all entries
-    which are still mat-objects
-    '''
-    data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)
+    """
+    Load a Matlab's MAT file.
+    """
+    # The MAT file should first be converted using Matlab's own runtime
+    # engine, so that Matlab's timeseries are converted to structures.
+    
+    print("Launching Matlab's compiled translator and runtime...")
+    
+    converted_filename = _ROOT_FOLDER + '/loadsave_converted.mat'
+    
+    if _ISMAC:
+        script_name = '/external/ktkMATtoPython/run_ktkMATtoPython.sh'
+        runtime_path = '/Applications/MATLAB/MATLAB_Runtime/v91/'
+    else:
+        raise(NotImplementedError('loadmat is only available on Mac for now.'))
+    
+    _subprocess.call([_ROOT_FOLDER + script_name, runtime_path,
+                      filename, converted_filename])
+    
+    # Now load it with scipy.io    
+    data = _spio.loadmat(converted_filename, struct_as_record=False, squeeze_me=True)
+    
+    # Correct the keys
     data = _check_keys(data)
-    return convert_to_timeseries(data)
+    
+    # Assign contents to data
+    data = data['contents']
+    
+    return data
 
 
 
@@ -82,7 +107,7 @@ def _check_keys(dict):
     todict is called to change them to nested dictionaries
     '''
     for key in dict:
-        if isinstance(dict[key], spio.matlab.mio5_params.mat_struct):
+        if isinstance(dict[key], _spio.matlab.mio5_params.mat_struct):
             dict[key] = _todict(dict[key])
     return dict        
 
@@ -93,7 +118,7 @@ def _todict(matobj):
     dict = {}
     for strg in matobj._fieldnames:
         elem = matobj.__dict__[strg]
-        if isinstance(elem, spio.matlab.mio5_params.mat_struct):
+        if isinstance(elem, _spio.matlab.mio5_params.mat_struct):
             dict[strg] = _todict(elem)
         else:
             dict[strg] = elem

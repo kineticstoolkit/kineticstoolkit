@@ -13,17 +13,6 @@ import ktk._repr as _repr
 
 import requests
 
-def _common_repr(obj):
-    # Return the type of class (header)
-    class_name = str(type(obj))
-    class_name = class_name[class_name.find('.')+1:]
-    class_name = class_name[:class_name.find("'")]
-    out = class_name + ' with attributes:\n'
-    
-    # Return the list of attributes
-    attribute_list = obj.__dict__.keys()
-    out += _repr._format_dict_entries(obj.__dict__, quotes=False)
-    return out
 
 @dataclass
 class File:
@@ -33,7 +22,7 @@ class File:
     description: str = ''
     file_name: str = ''
     def __repr__(self):
-        return _common_repr(self)
+        return _repr._format_class_attributes(self)
 
 @dataclass
 class Trial:
@@ -45,7 +34,7 @@ class Trial:
     description: str = ''
     notes: str= ''
     def __repr__(self):
-        return _common_repr(self)
+        return _repr._format_class_attributes(self)
 
 @dataclass
 class Session:
@@ -57,7 +46,7 @@ class Session:
     repetition: int = 0
     notes: str = ''
     def __repr__(self):
-        return _common_repr(self)
+        return _repr._format_class_attributes(self)
 
 @dataclass
 class Participant:
@@ -74,7 +63,7 @@ class Participant:
     ais: str = ''
     traumatic: str = ''
     def __repr__(self):
-        return _common_repr(self)
+        return _repr._format_class_attributes(self)
 
 @dataclass
 class Project():
@@ -83,7 +72,7 @@ class Project():
     dbid: int = 0
     label: str = ''
     def __repr__(self):
-        return _common_repr(self)
+        return _repr._format_class_attributes(self)
 
 
 def fetch_project(project_label, user='', password='', root_folder='',

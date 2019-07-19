@@ -17,6 +17,7 @@ Date: July 16th, 2019
 felixchenier.com
 """
 
+
 def _format_dict_entries(value, quotes=True):
     
     if quotes:
@@ -59,7 +60,20 @@ def _format_dict_entries(value, quotes=True):
 
     return out
     
+
+
+def _format_class_attributes(obj):
+    """Format a class that has attributes nicely on screen."""
+    # Return the type of class (header)
+    class_name = str(type(obj))
+    class_name = class_name[class_name.find("'")+1:]
+    class_name = class_name[:class_name.find("'")]
+    out = class_name + ' with attributes:\n'
     
+    # Return the list of attributes
+    out += _format_dict_entries(obj.__dict__, quotes=False)
+    return out
+
 
 def _ktk_format_dict(value, p, cycle):
     """Format a dict nicely on screen in ipython."""

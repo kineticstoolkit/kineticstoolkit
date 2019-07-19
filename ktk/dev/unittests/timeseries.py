@@ -12,7 +12,7 @@ import ktk
 import numpy as np
 
 
-class TimeSeriesTest(unittest.TestCase):
+class timeseriesTest(unittest.TestCase):
     """TimeSeries unit tests."""
 
     def test_empty_constructor(self):

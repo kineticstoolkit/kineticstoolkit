@@ -15,9 +15,11 @@ Created on Thu Jun  6 11:07:32 2019
 import matplotlib.pyplot as plt
 import numpy as np
 import collections
+import dataclasses
 
 from copy import deepcopy as _deepcopy
 import ktk.gui as _gui
+import ktk._repr as _repr
 
 
 class TimeSeriesEvent(list):
@@ -62,8 +64,7 @@ class TimeSeriesEvent(list):
 #        """Return the string representation of the TimeSeriesEvent."""
 #        return '<' + str(self.time) + ' ' + str(self.name) + '>'
 
-
-class TimeSeries(dict):
+class TimeSeries():
     """
     A class that implements TimeSeries.
 
@@ -83,38 +84,37 @@ class TimeSeries(dict):
     
         >>> ts = TimeSeries({time: np.array(range(0,100))})
     """
+    def __init__(self, time=np.array([]), time_info={'unit': 's'},
+                 data=dict(), data_info=dict(), events=[]):
+        self.time = time
+        self.time_info = time_info
+        self.data = data
+        self.data_info = data_info
+        self.events = events
+    
+    
+    def __repr__(self):
+        return _repr._format_class_attributes(self)
+    
 
-    def __init__(self, dict_entry={}):
-        dict.__init__(self)
-        self['time'] = np.array([])
-        self['info'] = {'time': {'unit': 's'}}
-        self['events'] = []
-        for the_key in dict_entry.keys():
-            self[the_key] = _deepcopy(dict_entry[the_key])
-
-
-    def add_info(self, signal_name, info_name, value):
+    def add_data_info(self, signal_name, info_name, value):
         """
         Add information on a signal of the TimeSeries.
         
         Examples of use:
-            >>> the_timeseries.add_info('time', 'unit', 's')
             >>> the_timeseries.add_info('forces', 'unit', 'N')
             >>> the_timeseries.add_info('marker1', 'color', [43, 2, 255])
         
-        This creates a corresponding entry in the 'info' dict.
+        This creates a corresponding entry in the 'data_info' dict.
         """
         try:
-            self['info'][signal_name]  # Test if it exists
-            self['info'][signal_name][info_name] = value  # Assign the value
+            self.data_info[signal_name]                     # Test if it exists
+            self.data_info[signal_name][info_name] = value  # Assign the value
             
         except:  # No info yet for this signal name
-            self['info'][signal_name] = {info_name: value}  # Assign the value
-
-    
-    def remove_info(self, signal_name, info_name):
-        """TODO"""
-        raise NotImplementedError('This feature is not implemented yet')
+            self.data_info[signal_name] = {info_name: value}  # Assign value
+            
+        return self
 
 
     def add_event(self, time, name='event'):
@@ -135,9 +135,9 @@ class TimeSeries(dict):
         This is a convenience function, the same can be reached by simply
         appending a TimeSeriesEvent to the TimeSeries' event list:
 
-        >>> the_time_series['events'].append(TimeSeriesEvent(time, name))
+        >>> the_time_series.events.append(TimeSeriesEvent(time, name))
         """
-        self['events'].append(TimeSeriesEvent(time, name))
+        self.events.append(TimeSeriesEvent(time, name))
         return self
 
 

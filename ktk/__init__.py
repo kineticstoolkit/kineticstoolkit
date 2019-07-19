@@ -16,10 +16,34 @@ Date: Started on July 2019
 name = 'ktk'
 
 import os as _os
+import platform as _platform
 
+# ---------------------------
 # Practical private constants
-_ROOT_FOLDER = _os.path.dirname(__file__)
+# ---------------------------
 
+# Root folder (KTK installation)
+_ROOT_FOLDER = _os.path.dirname(_os.path.dirname(__file__))
+
+# Operating system
+if _platform.system() == 'Windows':
+    _ISPC = True
+else:
+    _ISPC = False
+
+if _platform.system() == 'Darwin':
+    _ISMAC = True
+else:
+    _ISMAC = False
+    
+if _platform.system() == 'Linux':
+    _ISLINUX = True
+else:
+    _ISLINUX = False
+
+# ---------------------------
+# KTK Imports
+# ---------------------------
 
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
 import ktk.loadsave as loadsave
