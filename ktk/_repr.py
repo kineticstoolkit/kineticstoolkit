@@ -1,16 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Format the console output of few classes.
+Format the console output of dictionaries and classes with attributes.
 
-This module reformats the console output of dict in ipython, so that instead
-of just using __repr__, it displays a nicer list of keys with abbreviated
+This module formats the console output of dict in ipython, so that instead
+of just using repr(), it displays a nicer list of keys with abbreviated
 values if required, so that there is a maximum of one key per line. This is
-very useful for nested dicts, since their __repr__ representation is
-recursive and becomes unmanagable when the dict becomes larger.
+very useful for nested dicts, since their repr() representation is recursive
+and becomes unmanagable when the dict becomes larger.
 
-It also formats the output of some data classes such as the classes defined in
-dbinterface.
+It also provides helper functions to nicely formats the repr() of data classes.
 
 Author: Felix Chenier
 Date: July 16th, 2019
@@ -19,6 +18,28 @@ felixchenier.com
 
 
 def _format_dict_entries(value, quotes=True):
+    """
+    Format a dict nicely on screen.
+    
+    PARAMETERS:
+    -----------
+    value: dict
+        The dict that we want to show on screen.
+    quotes: bool (default is True)
+        Indicated if the keys must be surrounded by quotes.
+    
+    RETURNS:
+    --------
+    A string that should be shown by the __repr__ method.
+    
+    This function makes every element of a dict appear on a separate line,
+    with each keys right aligned:
+        {
+           'key1' : value1
+           'key2' : value2
+        'longkey' : value3
+        }
+    """
     
     if quotes:
         quote_text = "'"
@@ -63,7 +84,26 @@ def _format_dict_entries(value, quotes=True):
 
 
 def _format_class_attributes(obj):
-    """Format a class that has attributes nicely on screen."""
+    """
+    Format a class that has attributes nicely on screen.
+    
+    This class lists every attribute of a class on a separate line, using the
+    _format_dict_entries function:
+        
+        ClassName with attributes:
+           'attribute1' : value1
+           'attribute2' : value2
+        'longattribute' : value3
+        
+    PARAMETERS:
+    -----------
+    obj: Any
+        The class instance.
+    
+    RETURNS:
+    --------
+    A string that should be shown by the __repr__ method.        
+    """
     # Return the type of class (header)
     class_name = str(type(obj))
     class_name = class_name[class_name.find("'")+1:]
