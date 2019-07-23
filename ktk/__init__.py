@@ -1,6 +1,4 @@
 """
-Kinesiology Toolkit.
-
 KTK Kinesiology Toolkit
 =======================
 
@@ -8,13 +6,14 @@ This is a skeleton for an all new Kinesiology toolkit based on Python instead
 of Matlab, so that it's free of Matlab limitations and more distributable and
 usable on onboard instruments.
 
+Methods:
+
+    [ktk.TimeSeries][]
+
 Author: Félix Chénier
 
 Date: Started on July 2019
 """
-
-name = 'ktk'
-
 import os as _os
 import platform as _platform
 
@@ -35,7 +34,7 @@ if _platform.system() == 'Darwin':
     _ISMAC = True
 else:
     _ISMAC = False
-    
+
 if _platform.system() == 'Linux':
     _ISLINUX = True
 else:
@@ -45,10 +44,10 @@ else:
 # KTK Imports
 # ---------------------------
 
-from ktk.timeseries import TimeSeries, TimeSeriesEvent
-import ktk.loadsave as loadsave
-import ktk.gui as gui
-import ktk.pushrimkinetics as pushrimkinetics
-import ktk.dev.dev as dev
-import ktk._repr as _repr
-import ktk.dbinterface as dbinterface
+from .timeseries import TimeSeries, TimeSeriesEvent
+from . import loadsave
+from . import gui
+from . import pushrimkinetics
+from .dev import dev
+from . import dbinterface
+from . import _repr

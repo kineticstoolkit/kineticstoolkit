@@ -6,8 +6,8 @@ Created on Thu Jun  6 11:16:40 2019
 @author: felix
 """
 
-import ktk
 import numpy as np
+from .timeseries import TimeSeries
 
 def readfile(filename):
     filedata = np.genfromtxt(filename, delimiter = ',')
@@ -15,8 +15,8 @@ def readfile(filename):
     channels = filedata[:,1:7]
     time = filedata[:,0]
 
-    ts = ktk.TimeSeries(time=time, data={'channels': channels},
-                        time_unit='s', data_unit={'channels': 'raw'})
+    ts = TimeSeries(time=time, data={'channels': channels},
+                    time_unit='s', data_unit={'channels': 'raw'})
 
     return(ts)
 

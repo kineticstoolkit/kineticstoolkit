@@ -11,8 +11,8 @@ import subprocess
 from ktk import _ROOT_FOLDER
 
 import unittest
-from ktk.dev.unittests.timeseries import timeseriesTest
-from ktk.dev.unittests.loadsave import loadsaveTest
+from .unittests.timeseries import timeseriesTest
+from .unittests.loadsave import loadsaveTest
 
 
 def run_tests():
@@ -33,7 +33,7 @@ def release():
     print("RUNNING UNIT TESTS")
     print("------------------")
     run_tests()
-    
+
     print("==================")
     print("RUNNING TUTORIALS ")
     print("------------------")
@@ -42,4 +42,3 @@ def release():
     print("------------------")
     print("DONE.")
     print("==================")
-    

@@ -62,7 +62,7 @@ def _format_dict_entries(value, quotes=True):
 
             # Print the key
             to_show = quote_text + the_key + quote_text
-            out += (to_show.rjust(the_max_length+2) + ': ')  # +2 for quotes
+            out += (to_show.rjust(the_max_length+6) + ': ')  # +6 to tab
 
             # Print the value
             to_show = repr(value[the_key])
@@ -102,9 +102,7 @@ def _format_class_attributes(obj):
     A string that should be shown by the __repr__ method.
     """
     # Return the type of class (header)
-    class_name = str(type(obj))
-    class_name = class_name[class_name.find("'")+1:]
-    class_name = class_name[:class_name.find("'")]
+    class_name = type(obj).__name__
     out = class_name + ' with attributes:\n'
 
     # Return the list of attributes
@@ -114,7 +112,6 @@ def _format_class_attributes(obj):
 
 def _ktk_format_dict(value, p, cycle):
     """Format a dict nicely on screen in ipython."""
-
     if cycle:
         p.pretty("...")
     else:
@@ -122,9 +119,9 @@ def _ktk_format_dict(value, p, cycle):
         p.text(_format_dict_entries(value))
         p.text('}')
 
-
-try:
-    formatter = get_ipython().display_formatter.formatters['text/plain']
-    formatter.for_type(dict, lambda n, p, cycle: _ktk_format_dict(n, p, cycle))
-except:
-    pass
+# from IPython import get_ipython
+# try:
+#     formatter = get_ipython().display_formatter.formatters['text/plain']
+#     formatter.for_type(dict, lambda n, p, cycle: _ktk_format_dict(n, p, cycle))
+# except:
+#     pass
