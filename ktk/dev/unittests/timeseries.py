@@ -141,6 +141,20 @@ class timeseriesTest(unittest.TestCase):
         new_ts = ts.get_ts_after_time(13)
         self.assertListEqual(new_ts.time.tolist(), [])
 
+    def test_get_ts_between_times(self):
+        """Test the get_ts_between_times method."""
+        ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
+        new_ts = ts.get_ts_between_times(3, 6)
+        self.assertListEqual(new_ts.time.tolist(), [3., 4., 5., 6.])
+        new_ts = ts.get_ts_between_times(3.5, 5.5)
+        self.assertListEqual(new_ts.time.tolist(), [4., 5.])
+        new_ts = ts.get_ts_between_times(-2, 13)
+        self.assertListEqual(new_ts.time.tolist(),
+                             [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        new_ts = ts.get_ts_between_times(-2, -1)
+        self.assertListEqual(new_ts.time.tolist(), [])
+
+
 
 
 if __name__ == '__main__':

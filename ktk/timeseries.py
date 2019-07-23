@@ -119,11 +119,12 @@ class TimeSeries():
         """
         Add information on a signal of the TimeSeries.
 
-        Examples of use:
+        Examples of use
+        ---------------
             >>> the_timeseries.add_info('forces', 'unit', 'N')
             >>> the_timeseries.add_info('marker1', 'color', [43, 2, 255])
 
-        This creates a corresponding entry in the 'data_info' dict.
+        This creates a corresponding entries in the 'data_info' dict.
 
         """
         try:
@@ -151,13 +152,14 @@ class TimeSeries():
         -------
         self.
 
-        For example:
-            >>> ts = ktk.TimeSeries()
-            >>> ts.add_event(5.5, 'event1')
-            >>> ts.add_event(10.8, 'event2')
-            >>> ts.add_event(2.3, 'event2')
-            >>> print(ts.events)
-            [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
+        Example of use
+        --------------
+        >>> ts = ktk.TimeSeries()
+        >>> ts.add_event(5.5, 'event1')
+        >>> ts.add_event(10.8, 'event2')
+        >>> ts.add_event(2.3, 'event2')
+        >>> print(ts.events)
+        [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
 
         """
         self.events.append(TimeSeriesEvent(time, name))
@@ -286,8 +288,8 @@ class TimeSeries():
         -------
         The index in the time vector : int.
 
-        For example:
-
+        Examples of use
+        ---------------
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
         >>> ts.get_index_at_time(0.9)
         2
@@ -313,8 +315,8 @@ class TimeSeries():
         int : the index in the time vector. If no value is before the
         specified time, a value of np.nan is returned.
 
-        For example:
-
+        Examples of use
+        ---------------
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
         >>> ts.get_index_before_time(0.9)
         1
@@ -347,8 +349,8 @@ class TimeSeries():
         int : the index in the time vector. If no value is after the
         specified time, a value of np.nan is returned.
 
-        For example:
-
+        Examples of use
+        ---------------
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
         >>> ts.get_index_after_time(0.9)
         2
@@ -383,20 +385,21 @@ class TimeSeries():
         The time of the specified event, as a float. If no corresponding event
         is found, then np.nan is returned.
 
-        For example:
-            >>> # Instanciate a timeseries with some events
-            >>> ts = ktk.TimeSeries()
-            >>> ts.add_event(5.5, 'event1')
-            >>> ts.add_event(10.8, 'event2')
-            >>> ts.add_event(2.3, 'event2')
+        Examples of use
+        ---------------
+        >>> # Instanciate a timeseries with some events
+        >>> ts = ktk.TimeSeries()
+        >>> ts.add_event(5.5, 'event1')
+        >>> ts.add_event(10.8, 'event2')
+        >>> ts.add_event(2.3, 'event2')
 
-            >>> # Now let call ``get_event_time``
-            >>> ts.get_event_time('event1')
-            5.5
-            >>> ts.get_event_time('event2', 1)
-            2.3
-            >>> ts.get_event_time('event2', 2)
-            10.8
+        >>> # Now let call ``get_event_time``
+        >>> ts.get_event_time('event1')
+        5.5
+        >>> ts.get_event_time('event2', 1)
+        2.3
+        >>> ts.get_event_time('event2', 2)
+        10.8
 
         """
         if np.round(event_occurence) != event_occurence:
@@ -473,17 +476,20 @@ class TimeSeries():
         -------
         TimeSeries
 
-        For example:
-        >>> ts = ktk.TimeSeries(time=np.linspace(0,9,10))
+        Examples of use
+        ---------------
+        >>> ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
         >>> new_ts = ts.get_ts_before_time(3)
-        >>> new_ts.time
+        >>> print(new_ts.time)
         [0., 1., 2., 3.]
         >>> new_ts = ts.get_ts_before_time(3.5)
-        >>> new_ts.time
+        >>> print(new_ts.time)
         [0., 1., 2., 3.]
         >>> new_ts = ts.get_ts_before_time(-2)
+        >>> print(new_ts.time)
         []
         >>> new_ts = ts.get_ts_before_time(13)
+        >>> print(new_ts.time)
         [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
 
         """
@@ -531,19 +537,20 @@ class TimeSeries():
         -------
         TimeSeries
 
-        For example:
-        >>> ts = ktk.TimeSeries(time=np.linspace(0,9,10))
+        Examples of use
+        ---------------
+        >>> ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
         >>> new_ts = ts.get_ts_after_time(3)
-        >>> new_ts.time
+        >>> print(new_ts.time)
         [3., 4., 5., 6., 7., 8., 9.]
         >>> new_ts = ts.get_ts_after_time(3.5)
-        >>> new_ts.time
+        >>> print(new_ts.time)
         [4., 5., 6., 7., 8., 9.]
         >>> new_ts = ts.get_ts_after_time(-2)
-        >>> new_ts.time
+        >>> print(new_ts.time)
         [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
         >>> new_ts = ts.get_ts_after_time(13)
-        >>> new_ts.time
+        >>> print(new_ts.time)
         []
 
         """
@@ -578,4 +585,58 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurence)
         return self.get_ts_after_time(time)
 
+    def get_ts_between_times(self, time1, time2):
+        """
+        Get a subset of the TimeSeries between two specified times.
 
+        Parameters
+        ----------
+        time1, time2 : float
+            Times to look for in the TimeSeries' time vector.
+
+        Returns
+        -------
+        TimeSeries
+
+        Examples of use
+        ---------------
+        >>> ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
+        >>> new_ts = ts.get_ts_between_times(3, 6)
+        >>> print(new_ts.time)
+        [3., 4., 5., 6.]
+        >>> new_ts = ts.get_ts_between_time(3.5, 5.5)
+        >>> print(new_ts.time)
+        [4., 5.]
+        >>> new_ts = ts.get_ts_between_times(-2, 13)
+        >>> print(new_ts.time)
+        [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
+        >>> new_ts = ts.get_ts_between_times(-2, -1)
+        >>> print(new_ts.time)
+        []
+
+        """
+        sorted_times = np.sort([time1, time2])
+        new_ts = self.get_ts_after_time(sorted_times[0])
+        new_ts = new_ts.get_ts_before_time(sorted_times[1])
+        return new_ts
+
+    def get_ts_between_events(self, event_name1, event_name2,
+                              event_occurence1=1, event_occurence2=1):
+        """
+        Get a subset of the TimeSeries between two specified events.
+
+        Parameters
+        ----------
+        event_name1, event_name2 : str
+            Name of the events to look for in the events list.
+        event_occurence1, event_occurence2 : int, optional. Default is 1.
+            i_th occurence of the events to look for in the events list.
+
+        Returns
+        -------
+        TimeSeries
+
+        """
+        time1 = self.get_event_time(event_name1, event_occurence1)
+        time2 = self.get_event_time(event_name2, event_occurence2)
+        return self.get_ts_between_times(time1, time2)
