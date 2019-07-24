@@ -7,8 +7,7 @@ Date: July 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
-import collections
-import dataclasses
+import pandas as pd
 
 from copy import deepcopy as _deepcopy
 
@@ -152,8 +151,8 @@ class TimeSeries():
         -------
         self.
 
-        Example of use
-        --------------
+        Example
+        -------
         >>> ts = ktk.TimeSeries()
         >>> ts.add_event(5.5, 'event1')
         >>> ts.add_event(10.8, 'event2')
@@ -193,9 +192,102 @@ class TimeSeries():
 
     #     # TODO Continue
 
+    def to_dataframes(self):
+        """
+        Convert the TimeSeries to a dict of Pandas dataframe.
 
-    # def save(self, file_name): #TODO, still not what I want.
-    #     np.save(file_name, self, allow_pickle=True)
+        Parameters
+        ----------
+        No parameter.
+
+        Returns
+        -------
+        A dict with the following keys:
+            'data' : contains a pandas DataFrame with columns time and every
+                     data reshaped to 1-d or 2-d arrays.
+            'events' : contains a pandas DataFrame with columns time and name.
+            'info' : contains a pandas DataFrame with columns time and every
+                     data, and where each line is an information from
+                     TimeSeries.time_info or TimeSeries.data_info.
+
+        """
+        dict_out = dict()
+
+        # DATA
+        # ----
+
+        df_out = pd.DataFrame(self.time)
+        df_out.columns = ['time']
+
+        # Go through data
+        the_keys = self.data.keys()
+        for the_key in the_keys:
+
+            # Assign data
+            original_data = self.data[the_key]
+            original_data_shape = np.shape(original_data)
+
+            reshaped_data = np.reshape(original_data, (len(self.time), -1))
+            reshaped_data_shape = np.shape(reshaped_data)
+
+            df_data = pd.DataFrame(reshaped_data)
+
+            # Get the column names index from the shape of the original data
+            original_indices = np.indices(original_data_shape[1:])
+            reshaped_indices = np.reshape(original_indices,
+                                          (-1, reshaped_data_shape[1]))
+            # Hint: For a one-dimension series, reshaped_indices will be:
+            # [[0]].
+            # For a two-dimension series, reshaped_indices will be:
+            # [[0 1 2 ...]].
+            # For a three-dimension series, reshaped_indices will be:
+            # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
+            #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
+            # and so on.
+
+            # Assign column names
+            column_names = []
+            for i_column in range(0, len(df_data.columns)):
+                this_column_name = the_key + '['
+                n_indices = np.shape(reshaped_indices)[0]
+                for i_indice in range(0, n_indices):
+                    this_column_name += str(
+                            reshaped_indices[i_indice, i_column])
+                    if i_indice == n_indices-1:
+                        this_column_name += ']'
+                    else:
+                        this_column_name += ','
+
+                column_names.append(this_column_name)
+
+            df_data.columns = column_names
+
+            # Merge this data with the existing table
+            df_out = pd.concat([df_out, df_data], axis=1)
+
+        dict_out['data'] = df_out
+
+        # EVENTS
+        # ------
+        df_events = pd.DataFrame(self.events)
+        df_events.columns = ['time', 'name']
+        dict_out['events'] = df_events
+
+        # INFO
+        # ----
+        df_time_info = pd.DataFrame({'time': self.time_info})
+        df_data_info = pd.DataFrame(self.data_info)
+        dict_out['info'] = pd.concat([df_time_info, df_data_info],
+                                     axis=1, sort=False)
+
+        return dict_out
+
+
+    def save(self, file_name): #TODO, still not what I want.
+        """Save the timeseries in a CSV form."""
+        # Create one pandas DataFrame per data of the TimeSeries
+        dataframe_time = pd.DataFrame(self.time)
+
 
 
     # def load(file_name): #TODO, still not what I want.
