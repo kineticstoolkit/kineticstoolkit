@@ -8,6 +8,9 @@ Date: July 2019
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import csv
+import os
+import shutil
 
 from copy import deepcopy as _deepcopy
 
@@ -210,6 +213,49 @@ class TimeSeries():
                      data, and where each line is an information from
                      TimeSeries.time_info or TimeSeries.data_info.
 
+        Example
+        -------
+        >>> # Let create a sample TimeSeries
+        >>> ts = ktk.TimeSeries()
+        >>> ts.time = np.linspace(0, 9, 10)
+
+        >>> # where the first series is a scalar timeseries,
+        >>> ts.data['data1'] = np.random.rand(10)
+
+        >>> # and where the second series is a matrix timeseries.
+        >>> ts.data['data2'] = np.random.rand(10, 2, 2)
+
+        >>> # Let add some metadata and events:
+        >>> ts.add_data_info('data1', 'unit', 'm/s')
+        >>> ts.add_data_info('data2', 'unit', 'km/h')
+        >>> ts.add_event(1.53, 'test_event1')
+        >>> ts.add_event(7.2, 'test_event2')
+
+        >>> # Now let convert this TimeSeries to pandas dataframes
+        >>> dataframes = ts.to_dataframes()
+
+        >>> print(dataframes['data'])
+           time     data1  data2[0,0]  data2[0,1]  data2[1,0]  data2[1,1]
+        0   0.0  0.600247    0.736891    0.902195    0.905907    0.065458
+        1   1.0  0.860783    0.875474    0.414270    0.696410    0.872808
+        2   2.0  0.564258    0.697806    0.542093    0.093780    0.394655
+        3   3.0  0.345313    0.132531    0.073543    0.036600    0.697872
+        4   4.0  0.768984    0.713446    0.672632    0.599467    0.211884
+        5   5.0  0.394562    0.860927    0.769096    0.278852    0.317487
+        6   6.0  0.213062    0.998223    0.831627    0.024960    0.960739
+        7   7.0  0.327657    0.573798    0.191601    0.797447    0.728639
+        8   8.0  0.821492    0.774073    0.942711    0.868428    0.667369
+        9   9.0  0.614514    0.530900    0.737578    0.224186    0.895926
+
+        >>> print(dataframes['events'])
+           time         name
+        0  1.53  test_event1
+        1  7.20  test_event2
+
+        >>> print(dataframes['info'])
+             time data1 data2
+        unit    s   m/s  km/h
+
         """
         dict_out = dict()
 
@@ -233,10 +279,16 @@ class TimeSeries():
             df_data = pd.DataFrame(reshaped_data)
 
             # Get the column names index from the shape of the original data
+            # The strategy here is to build matrices of indices, that have
+            # the same shape as the original data, then reshape these matrices
+            # the same way we reshaped the original data. Then we know where
+            # the original indices are in the new reshaped data.
             original_indices = np.indices(original_data_shape[1:])
             reshaped_indices = np.reshape(original_indices,
                                           (-1, reshaped_data_shape[1]))
-            # Hint: For a one-dimension series, reshaped_indices will be:
+
+            # Hint for my future self:
+            # For a one-dimension series, reshaped_indices will be:
             # [[0]].
             # For a two-dimension series, reshaped_indices will be:
             # [[0 1 2 ...]].
@@ -248,15 +300,21 @@ class TimeSeries():
             # Assign column names
             column_names = []
             for i_column in range(0, len(df_data.columns)):
-                this_column_name = the_key + '['
+                this_column_name = the_key
                 n_indices = np.shape(reshaped_indices)[0]
-                for i_indice in range(0, n_indices):
-                    this_column_name += str(
-                            reshaped_indices[i_indice, i_column])
-                    if i_indice == n_indices-1:
-                        this_column_name += ']'
-                    else:
-                        this_column_name += ','
+                if n_indices > 0:
+                    # This data is expressed in more than one dimension.
+                    # We must add brackets to the column names to specify
+                    # the indices.
+                    this_column_name += '['
+
+                    for i_indice in range(0, n_indices):
+                        this_column_name += str(
+                                reshaped_indices[i_indice, i_column])
+                        if i_indice == n_indices-1:
+                            this_column_name += ']'
+                        else:
+                            this_column_name += ','
 
                 column_names.append(this_column_name)
 
@@ -283,11 +341,61 @@ class TimeSeries():
         return dict_out
 
 
-    def save(self, file_name): #TODO, still not what I want.
-        """Save the timeseries in a CSV form."""
-        # Create one pandas DataFrame per data of the TimeSeries
-        dataframe_time = pd.DataFrame(self.time)
+    def save(self, filename):
+        """
+        Save the TimeSeries as a zip archive of csv files.
 
+        Parameters
+        ----------
+        filename : str
+            Filename, including the path if desired.
+
+        Returns
+        -------
+        None.
+
+        This method saves all the TimeSeries information as a zip file that
+        contains three separate csv files:
+            - data.csv :   an ascii file that contains the TimeSeries' time and
+                           data in columns. TimeSeries of matrices are reshaped
+                           so that each matrix element are in a column.
+            - events.csv : an ascii file that contains the TimeSeries' events.
+                           The time is in a column, the event names are in
+                           another column.
+            - info.csv :   an ascii file that contains all the time and data
+                           info, where all data_info keys have their own
+                           column.
+
+        The values in the files at separated by tabs. The tables are generated
+        using the ``to_dataframes`` method and the corresponding pandas
+        DataFrames are saved to csv using the pandas' ``to_csv`` method.
+
+        """
+        # Create the pandas dataframes
+        dataframes = self.to_dataframes()
+
+        # Create a temporary folder
+        try:
+            shutil.rmtree(filename)  # TODO be a little nicer and ask before deleting.
+        except:
+            pass
+
+        os.mkdir(filename)
+
+        # Create the csv files
+        dataframes['data'].to_csv(filename + '/data.csv',
+                                  sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+        dataframes['events'].to_csv(filename + '/events.csv',
+                                    sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+        dataframes['info'].to_csv(filename + '/info.csv',
+                                  sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+
+        # Create the archive
+        shutil.make_archive(filename + '-temp', 'zip', filename)
+
+        # Move the archive to its final name
+        shutil.rmtree(filename)
+        os.rename(filename + '-temp.zip', filename)
 
 
     # def load(file_name): #TODO, still not what I want.

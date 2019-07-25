@@ -154,11 +154,11 @@ class timeseriesTest(unittest.TestCase):
         new_ts = ts.get_ts_between_times(-2, -1)
         self.assertListEqual(new_ts.time.tolist(), [])
 
-    def test_to_dataframe(self):
+    def test_to_dataframes(self):
         """Test the to_dataframe method."""
         ts = ktk.TimeSeries()
         ts.time = np.linspace(0, 9, 10)
-        ts.data['signal1'] = np.random.rand(10, 1)
+        ts.data['signal1'] = np.random.rand(10)
         ts.data['signal2'] = np.random.rand(10, 3)
         ts.data['signal3'] = np.random.rand(10, 3, 3)
         ts.add_data_info('signal1', 'unit', 'm/s')
@@ -168,6 +168,35 @@ class timeseriesTest(unittest.TestCase):
         ts.add_event(1.53, 'test_event1')
         ts.add_event(7.2, 'test_event2')
         ts.add_event(1, 'test_event3')
+        df = ts.to_dataframes()
+        self.assertListEqual(df['data'].time.tolist(), ts.time.tolist())
+        self.assertListEqual(df['data']['signal1'].tolist(),
+                             ts.data['signal1'].tolist())
+        self.assertListEqual(df['data']['signal2[0]'].tolist(),
+                             ts.data['signal2'][:, 0].tolist())
+        self.assertListEqual(df['data']['signal2[1]'].tolist(),
+                             ts.data['signal2'][:, 1].tolist())
+        self.assertListEqual(df['data']['signal2[2]'].tolist(),
+                             ts.data['signal2'][:, 2].tolist())
+        self.assertListEqual(df['data']['signal3[0,0]'].tolist(),
+                             ts.data['signal3'][:, 0, 0].tolist())
+        self.assertListEqual(df['data']['signal3[0,1]'].tolist(),
+                             ts.data['signal3'][:, 0, 1].tolist())
+        self.assertListEqual(df['data']['signal3[0,2]'].tolist(),
+                             ts.data['signal3'][:, 0, 2].tolist())
+        self.assertListEqual(df['data']['signal3[1,2]'].tolist(),
+                             ts.data['signal3'][:, 1, 2].tolist())
+        self.assertEqual(df['events']['time'][0], ts.events[0].time)
+        self.assertEqual(df['events']['name'][0], ts.events[0].name)
+        self.assertEqual(df['events'].time[1], ts.events[1][0])
+        self.assertEqual(df['events'].name[1], ts.events[1][1])
+        self.assertEqual(df['info']['time']['unit'], ts.time_info['unit'])
+        self.assertEqual(df['info']['signal1']['unit'],
+                         ts.data_info['signal1']['unit'])
+        self.assertEqual(df['info']['signal3']['signal_type'],
+                         ts.data_info['signal3']['signal_type'])
+
+
 
 
 
