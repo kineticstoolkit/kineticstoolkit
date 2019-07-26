@@ -128,23 +128,31 @@ class TimeSeries():
 
         """
         if not np.array_equal(self.time, ts.time):
+            print('Time is not equal')
             return False
 
         for one_data in self.data:
-            if not np.array_equal(self.data[one_data], ts.data[one_data]):
+            if not np.isclose(self.data[one_data], ts.data[one_data],
+                              rtol=1e-15).all():
+                print('%s is not equal' % one_data)
                 return False
 
         for one_data in ts.data:
-            if not np.array_equal(self.data[one_data], ts.data[one_data]):
+            if not np.isclose(self.data[one_data], ts.data[one_data],
+                              rtol=1e-15).all():
+                print('%s is not equal' % one_data)
                 return False
 
         if self.time_info != ts.time_info:
+            print('time_info is not equal')
             return False
 
         if self.data_info != ts.data_info:
+            print('data_info is not equal')
             return False
 
         if self.events != ts.events:
+            print('events is not equal')
             return False
 
         return True
@@ -423,7 +431,13 @@ class TimeSeries():
                 all_data_highest_indices.append(data_dimension)
 
         # Create the timeseries data
-        unique_data_names = list(set(all_data_names))
+
+        # Create a set of unique_data_names
+        unique_data_names = []
+        for data_name in all_data_names:
+            if data_name not in unique_data_names:
+                unique_data_names.append(data_name)
+
         for unique_data_name in unique_data_names:
 
             # Create a Pandas DataFrame with only the columns that match
@@ -516,13 +530,9 @@ class TimeSeries():
 
         # return out
 
-
-
-
-
     def save(self, filename):
         """
-        Save the TimeSeries as a zip archive of csv files.
+        Save the TimeSeries as a zip archive of tab-delimited text files.
 
         Parameters
         ----------
@@ -534,14 +544,14 @@ class TimeSeries():
         None.
 
         This method saves all the TimeSeries information as a zip file that
-        contains three separate csv files:
-            - data.csv :   an ascii file that contains the TimeSeries' time and
+        contains three separate tab-delimited text files:
+            - data.txt :   an ascii file that contains the TimeSeries' time and
                            data in columns. TimeSeries of matrices are reshaped
                            so that each matrix element are in a column.
-            - events.csv : an ascii file that contains the TimeSeries' events.
+            - events.txt : an ascii file that contains the TimeSeries' events.
                            The time is in a column, the event names are in
                            another column.
-            - info.csv :   an ascii file that contains all the time and data
+            - info.txt :   an ascii file that contains all the time and data
                            info, where all data_info keys have their own
                            column.
 
@@ -562,11 +572,13 @@ class TimeSeries():
         os.mkdir(filename)
 
         # Create the csv files
-        dataframes['data'].to_csv(filename + '/data.csv',
-                                  sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-        dataframes['events'].to_csv(filename + '/events.csv',
-                                    sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-        dataframes['info'].to_csv(filename + '/info.csv',
+        dataframes['data'].to_csv(filename + '/data.txt',
+                                  sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                                  index=False)
+        dataframes['events'].to_csv(filename + '/events.txt',
+                                    sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                                    index=False)
+        dataframes['info'].to_csv(filename + '/info.txt',
                                   sep='\t', quoting=csv.QUOTE_NONNUMERIC)
 
         # Create the archive
@@ -576,11 +588,43 @@ class TimeSeries():
         shutil.rmtree(filename)
         os.rename(filename + '-temp.zip', filename)
 
+        # Just to be sure, load back the file and compare its content, so
+        # we are sure everything has been saved correctly.
+        ts = TimeSeries.load(filename)
+        if ts != self:
+            raise AssertionError('The file was saved, but its ' +
+                                 'content may differ to the original data.')
 
-    # def load(file_name): #TODO, still not what I want.
-    #     temp = np.load(file_name, allow_pickle=True)
-    #     temp = temp.tolist()
-    #     return(temp)
+    def load(filename):
+        """
+        Load a TimeSeries from a zip archive of tab-delimited files.
+
+        Please see ``TimeSeries.save`` for information of the expected zip
+        archive structure.
+        """
+        # TODO Support individual txt files
+        # TODO Add a better help
+
+        temp_folder = filename + '_temp_folder'
+        try:
+            shutil.rmtree(temp_folder)
+        except:
+            pass
+
+        os.mkdir(temp_folder)
+        shutil.unpack_archive(filename, temp_folder, 'zip')
+
+        data = pd.read_csv(temp_folder + '/data.txt',
+                           sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+        events = pd.read_csv(temp_folder + '/events.txt',
+                             sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+        info = pd.read_csv(temp_folder + '/info.txt',
+                           sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                           index_col=0)
+
+        dataframes = TimeSeries.from_dataframes(data, events, info)
+        shutil.rmtree(temp_folder)
+        return dataframes
 
     def copy(self):
         """

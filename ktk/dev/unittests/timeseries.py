@@ -11,6 +11,7 @@ import unittest
 import ktk
 import numpy as np
 import matplotlib.pyplot as plt
+import os
 
 
 class timeseriesTest(unittest.TestCase):
@@ -203,11 +204,16 @@ class timeseriesTest(unittest.TestCase):
                                              df['info'])
         self.assertEqual(ts, ts2)
 
+        # Test load and save
+        try:
+            os.remove('test.zip')
+        except:
+            pass
 
-
-
-
-
+        ts.save('test.zip')
+        ts3 = ktk.TimeSeries.load('test.zip')
+        self.assertEqual(ts, ts3)
+        os.remove('test.zip')
 
 
 if __name__ == '__main__':
