@@ -156,6 +156,7 @@ class timeseriesTest(unittest.TestCase):
 
     def test_tofrom_dataframes_loadsave(self):
         """Test the to_dataframes, from_dataframes, load and save methods."""
+        # Test to_dataframes
         ts = ktk.TimeSeries()
         ts.time = np.linspace(0, 9, 10)
         ts.data['signal1'] = np.random.rand(10)
@@ -195,6 +196,13 @@ class timeseriesTest(unittest.TestCase):
                          ts.data_info['signal1']['unit'])
         self.assertEqual(df['info']['signal3']['signal_type'],
                          ts.data_info['signal3']['signal_type'])
+
+        # Form back the original timeseries to test from_dataframes
+        ts2 = ktk.TimeSeries.from_dataframes(df['data'],
+                                             df['events'],
+                                             df['info'])
+        self.assertEqual(ts, ts2)
+
 
 
 

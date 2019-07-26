@@ -118,6 +118,37 @@ class TimeSeries():
         """
         return _repr._format_class_attributes(self)
 
+    def __eq__(self, ts):
+        """
+        Compare two timeseries for equality.
+
+        Returns
+        -------
+        True if each attribute of ts is equal to the TimeSeries' attributes.
+
+        """
+        if not np.array_equal(self.time, ts.time):
+            return False
+
+        for one_data in self.data:
+            if not np.array_equal(self.data[one_data], ts.data[one_data]):
+                return False
+
+        for one_data in ts.data:
+            if not np.array_equal(self.data[one_data], ts.data[one_data]):
+                return False
+
+        if self.time_info != ts.time_info:
+            return False
+
+        if self.data_info != ts.data_info:
+            return False
+
+        if self.events != ts.events:
+            return False
+
+        return True
+
     def add_data_info(self, signal_name, info_name, value):
         """
         Add information on a signal of the TimeSeries.
