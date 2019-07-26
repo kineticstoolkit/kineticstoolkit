@@ -22,17 +22,12 @@ def _create_root(title='KTK', width=800, height=400):
     # Ensure the window is not created as a tab on macOS
     root.resizable(width=False, height=False)
     root.title(title)
-    
+
     # Ensure the window is not closable by user
     def _on_closing():
         pass
     root.protocol("WM_DELETE_WINDOW", _on_closing)
 
-    # Put the window in center of the screen
-    root.geometry('%dx%d+%d+%d' % (
-                  width, height,
-                  root.winfo_screenwidth()/2-width/2,
-                  root.winfo_screenheight()/2-height/2))
 
     # Set focus
     root.attributes('-topmost', True)
@@ -40,6 +35,32 @@ def _create_root(title='KTK', width=800, height=400):
     root.attributes('-topmost', False)
 
     return root
+
+
+def _get_root_geometry(root):
+    """Return the root geometry as the tuple (width, height, left, top)."""
+    root.update()
+    geometry = root.geometry()
+
+    size = geometry[:geometry.find('+')]
+    position = geometry[geometry.find('+')+1:]
+
+    width = int(size[:size.find('x')])
+    height = int(size[geometry.find('x')+1:])
+
+    left = int(position[:position.find('+')])
+    top = int(position[position.find('+')+1:])
+
+    return (width, height, left, top)
+
+
+def _center_root(root):
+    """Center the root window on screen."""
+    (width, height, left, top) = _get_root_geometry(root)
+    root.geometry('%dx%d+%d+%d' % (
+                  width, height,
+                  root.winfo_screenwidth()/2-width/2,
+                  root.winfo_screenheight()/2-height/2))
 
 
 def _destroy_root(root):
@@ -79,39 +100,39 @@ def _set_window_position(root, x, y):
 def get_credentials():
     """
     Get username and password using a password dialog.
-    
+
     Parameters
     ----------
     None.
-    
+
     Returns
     -------
     A tuple of strings: (username, password)
     """
-    
+
     def ok_pressed(*args):
         credentials[0] = username_box.get()
         credentials[1] = password_box.get()
         _destroy_root(root)
-    
+
     credentials = ['', '']
-    
+
     root = _create_root(title='Enter credentials',width=300, height=100)
     username_box = _tk.Entry(root)
     username_box.insert(0, 'username')
     username_box.pack()
-     
+
     # adds password entry widget and defines its properties
     password_box = _tk.Entry(root, show='*')
     password_box.insert(0, 'password')
     password_box.bind('<Return>', ok_pressed)
     password_box.pack()
-     
+
     # adds login button and defines its properties
     login_btn = _tk.Button(root, text='OK', command=ok_pressed)
     login_btn.bind('<Return>', ok_pressed)
     login_btn.pack()
-    
+
     root.mainloop()
     return tuple(credentials)
 
@@ -179,6 +200,7 @@ def buttondialog(title='', message='Please select an option.',
         btn.pack()
         ichoice = ichoice + 1
 
+    _center_root(root)
     root.mainloop()
     _destroy_root(root)
 
