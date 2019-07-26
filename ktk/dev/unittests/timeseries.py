@@ -154,8 +154,8 @@ class timeseriesTest(unittest.TestCase):
         new_ts = ts.get_ts_between_times(-2, -1)
         self.assertListEqual(new_ts.time.tolist(), [])
 
-    def test_to_dataframes(self):
-        """Test the to_dataframe method."""
+    def test_tofrom_dataframes_loadsave(self):
+        """Test the to_dataframes, from_dataframes, load and save methods."""
         ts = ktk.TimeSeries()
         ts.time = np.linspace(0, 9, 10)
         ts.data['signal1'] = np.random.rand(10)

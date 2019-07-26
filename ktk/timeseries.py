@@ -11,6 +11,7 @@ import pandas as pd
 import csv
 import os
 import shutil
+from ast import literal_eval
 
 from copy import deepcopy as _deepcopy
 
@@ -339,6 +340,153 @@ class TimeSeries():
                                      axis=1, sort=False)
 
         return dict_out
+
+    def from_dataframes(data, events=pd.DataFrame(), info=pd.DataFrame()):
+        """
+        Generate a TimeSeries based on pandas DataFrames.
+
+        Parameters
+        ----------
+        data : DataFrame
+            Generates the TimeSeries' time and data fields.
+        events : DataFrame, optional
+            Generates the TimeSeries' events field.
+        info : DataFrame, optional
+            Generate the TimeSeries' time_info and data_info fields.
+
+        Returns
+        -------
+        TimeSeries.
+
+        See the ``TimeSeries.to_dataframes`` method for more information on the
+        shapes of data, events and info DataFrames.
+
+        """
+        out = TimeSeries()
+
+        # DATA AND TIME
+        # -------------
+
+        # Determine the time length
+        time = data.time
+
+        # Determine the data fields
+        all_column_names = data.columns
+        all_data_names = []
+        all_data_highest_indices = []
+
+        for one_column_name in all_column_names:
+            opening_bracket_position = one_column_name.find('[')
+            if opening_bracket_position == -1:
+                # No dimension for this data
+                all_data_names.append(one_column_name)
+                all_data_highest_indices.append([len(time)-1])
+            else:
+                # Extract name and dimension
+                data_name = one_column_name[0:opening_bracket_position]
+                data_dimension = literal_eval(
+                        '[' + str(len(time)-1) + ',' +
+                        one_column_name[opening_bracket_position+1:])
+
+                all_data_names.append(data_name)
+                all_data_highest_indices.append(data_dimension)
+
+        # Create the timeseries data
+        unique_data_names = list(set(all_data_names))
+        for unique_data_name in unique_data_names:
+
+            # Create a Pandas DataFrame with only the columns that match
+            # this unique data name. In the same time, check the final
+            # dimension of the data to know to which dimension we will
+            # reshape the DataFrame's data.
+            sub_dataframe = pd.DataFrame()
+            unique_data_highest_index = []
+            for i in range(0, len(all_data_names)):
+                if all_data_names[i] == unique_data_name:
+                    sub_dataframe[all_column_names[i]] = (
+                            data[all_column_names[i]])
+                    unique_data_highest_index.append(
+                            all_data_highest_indices[i])
+
+            # Sort the sub-dataframe's columns
+            sub_dataframe.reindex(sorted(sub_dataframe.columns), axis=1)
+
+            # Calculate the data dimension we must reshape to
+            unique_data_dimension = np.max(
+                    np.array(unique_data_highest_index)+1, axis=0)
+
+            # Convert the dataframe to a np.array, then reshape.
+            new_data = sub_dataframe.to_numpy()
+            new_data = np.reshape(new_data, unique_data_dimension)
+
+            if unique_data_name == 'time':
+                out.time = new_data
+            else:
+                out.data[unique_data_name] = new_data
+
+        # EVENTS
+        # ------
+        for i_event in range(0, len(events)):
+            out.add_event(events.time[i_event], events.name[i_event])
+
+        # INFO
+        # ----
+        n_rows = len(info)
+        row_names = list(info.index)
+        for column_name in info.columns:
+            for i_row in range(0, n_rows):
+                one_info = info[column_name][i_row]
+                if str(one_info).lower() != 'nan':
+                    if column_name == 'time':
+                        out.time_info[row_names[i_row]] = one_info
+                    else:
+                        out.add_data_info(column_name, row_names[i_row],
+                                          one_info)
+
+        return out
+
+        # # Initialize the timeseries data
+        # unique_data_names = list(set(data_names))
+        # for unique_data_name in unique_data_names:
+
+        #     # Find the dimensions for this data
+        #     unique_data_dimension = []
+        #     for i in range(0, len(data_names)):
+        #         if data_names[i] == unique_data_name:
+        #             unique_data_dimension.append(data_dimensions[i])
+
+        #     unique_data_dimension = np.max(
+        #             np.array(unique_data_dimension), axis=0)
+
+        #     # Add the time dimension
+        #     temp = np.array(len(time))
+        #     unique_data_dimension = np.block([temp, unique_data_dimension])
+        #     unique_data_dimension = unique_data_dimension.astype(int)
+
+        #     if unique_data_name != 'time':
+        #         out.data[unique_data_name] = np.zeros(unique_data_dimension)
+
+        # # Fill the TimeSeries
+        # for i_data in range(0, len(data_names)):
+        #     column_name = column_names[i_data]
+        #     data_name = data_names[i_data]
+        #     data_dimension = data_dimensions[i_data]
+
+        #     if data_name != 'time':
+        #         print(data_dimension)
+        #         if len(data_dimension) == 0:
+        #             out.data[data_name] = data[column_name]
+        #         elif len(data_dimension) == 1:
+        #             out.data[data_name][:, data_dimension[0]] = data[column_name]
+        #         elif len(data_dimension) == 2:
+        #             out.data[data_name][:, data_dimension[0],
+        #                      data_dimension[1]] = data[column_name]
+
+
+        # return out
+
+
+
 
 
     def save(self, filename):
