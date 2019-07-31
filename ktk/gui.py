@@ -8,200 +8,91 @@ Author: Félix Chénier
 Started on June 2019
 """
 
-# Imports
-import tkinter as _tk
-from functools import partial as _partial
-import sys as _sys
-
-# Create the gui root on first import
-#from ktk.guiroot import root as _root
+from PyQt5.QtWidgets import QMessageBox, QWidget
+from PyQt5.QtCore import Qt
 
 
-def _create_root(title='KTK', width=800, height=400):
-    root = _tk.Tk()
-    # Ensure the window is not created as a tab on macOS
-    root.resizable(width=False, height=False)
-    root.title(title)
-
-    # Ensure the window is not closable by user
-    def _on_closing():
-        pass
-    root.protocol("WM_DELETE_WINDOW", _on_closing)
+def __dir__():
+    """Generate a dir for tab-completion in IPython."""
+    return ['button_dialog', 'message']
 
 
-    # Set focus
-    root.attributes('-topmost', True)
-    root.update()
-    root.attributes('-topmost', False)
-
-    return root
-
-
-def _get_root_geometry(root):
-    """Return the root geometry as the tuple (width, height, left, top)."""
-    root.update()
-    geometry = root.geometry()
-
-    size = geometry[:geometry.find('+')]
-    position = geometry[geometry.find('+')+1:]
-
-    width = int(size[:size.find('x')])
-    height = int(size[geometry.find('x')+1:])
-
-    left = int(position[:position.find('+')])
-    top = int(position[position.find('+')+1:])
-
-    return (width, height, left, top)
-
-
-def _center_root(root):
-    """Center the root window on screen."""
-    (width, height, left, top) = _get_root_geometry(root)
-    root.geometry('%dx%d+%d+%d' % (
-                  width, height,
-                  root.winfo_screenwidth()/2-width/2,
-                  root.winfo_screenheight()/2-height/2))
-
-
-def _destroy_root(root):
+def _get_main_dialog_window():
     """
-    Clean the dead tkinter window.
-
-    Contains a workaround for a broken IPython in Spyder 3 on macOS, where the
-    IPython tkinter update loop reveals the last closed tkinter window.
-    """
-    root.destroy()
-
-    # Clean the tkinter window by creating an empty, transparent one and
-    # then destroying it.
-    root = _tk.Tk()
-    root.wm_attributes("-alpha", 0)
-    root.update()
-    root.withdraw()
-    root.destroy()
-    root.quit()
-
-
-def _set_window_position(root, x, y):
-    """Set the window position to given coordinates."""
-    root.wm_attributes("-alpha", 0)
-    root.update()
-    geometry = root.geometry()
-    geometry = geometry[0:geometry.find('+')]
-    root.geometry(geometry + '+' + str(x) + "+" + str(y))
-    root.wm_attributes("-alpha", 1)
-
-
-# ------------------------------------
-# MODULE'S PUBLIC FUNCTIONS
-# ------------------------------------
-
-
-def get_credentials():
-    """
-    Get username and password using a password dialog.
-
-    Parameters
-    ----------
-    None.
+    Create a main dialog window that is always on top.
 
     Returns
     -------
-    A tuple of strings: (username, password)
+    widget : QWidget
+        A widget that can serve as a parent for dialogs, so that they are
+        always on top.
+
     """
-
-    def ok_pressed(*args):
-        credentials[0] = username_box.get()
-        credentials[1] = password_box.get()
-        _destroy_root(root)
-
-    credentials = ['', '']
-
-    root = _create_root(title='Enter credentials',width=300, height=100)
-    username_box = _tk.Entry(root)
-    username_box.insert(0, 'username')
-    username_box.pack()
-
-    # adds password entry widget and defines its properties
-    password_box = _tk.Entry(root, show='*')
-    password_box.insert(0, 'password')
-    password_box.bind('<Return>', ok_pressed)
-    password_box.pack()
-
-    # adds login button and defines its properties
-    login_btn = _tk.Button(root, text='OK', command=ok_pressed)
-    login_btn.bind('<Return>', ok_pressed)
-    login_btn.pack()
-
-    root.mainloop()
-    return tuple(credentials)
+    widget = QWidget(None, Qt.WindowStaysOnTopHint)
+    return widget
 
 
 
-def show_message(message=''):
+def message(the_message):
+    widget = _get_main_dialog_window()
+    message_box = QMessageBox(_get_main_dialog_window())
+    message_box.show()
+
+
+
+
+
+def button_dialog(message, buttons):
     """
-    Write a message in the bottom gui window.
+    Ask the user to choice among standard buttons.
 
     Parameters
     ----------
     message : str
-        Message to write. Write '' to hide the gui window.
+        Message to write in to dialog window.
+    buttons : list
+        List of strings. The strings may be either:
+            - 'cancel'
+            - 'ok'
+            - 'help'
+            - 'open'
+            - 'save'
+            - 'saveall'
+            - 'discard'
+            - 'close'
+            - 'apply'
+            - 'reset'
+            - 'yes'
+            - 'yestoall'
+            - 'no'
+            - 'notoall'
+            - 'restoredefault'
+            - 'abort'
+            - 'retry'
+            - 'ignore'
 
     Returns
     -------
-    None.
+    The string corresponding to the clicked button.
+
     """
-    pass
+    strings = ['cancel', 'ok', 'help', 'open', 'save', 'saveall',
+               'discard', 'close', 'apply', 'reset', 'yes', 'yestoall', 'no',
+               'notoall', 'restoredefault', 'abort', 'retry',
+               'ignore']
 
+    codes = [QMessageBox.Cancel, QMessageBox.Ok, QMessageBox.Help,
+             QMessageBox.Open, QMessageBox.Save, QMessageBox.SaveAll,
+             QMessageBox.Discard, QMessageBox.Close, QMessageBox.Apply,
+             QMessageBox.Reset, QMessageBox.Yes, QMessageBox.YesToAll,
+             QMessageBox.No, QMessageBox.NoToAll, QMessageBox.RestoreDefaults,
+             QMessageBox.Abort, QMessageBox.Retry, QMessageBox.Ignore]
 
-def buttondialog(title='', message='Please select an option.',
-                 choices=['Cancel', 'OK']):
-    """
-    Create a topmost dialog window with a selection of buttons.
+    button_codes_to_show = QMessageBox.NoButton
+    for one_button_string in buttons:
+        button_codes_to_show |= codes[strings.index(one_button_string)]
 
-    uibuttonsdialog(title, message, choices) is a blocking
-    function that asks the user to click on a button, using a topmost dialog
-    window.
+    result = QMessageBox.information(_get_main_dialog_window(), 'KTK',
+                                     message, button_codes_to_show)
 
-    Parameters
-    ----------
-    title : str
-        Title of the dialog window. Default is ''.
-    message : str
-        Message that is presented to the user.
-        Default is 'Please select an option'.
-    choices : list of str
-        List of button text. Default is ['Cancel', 'OK'].
-
-    Returns
-    -------
-    The button number (0 = First button, 1 = Second button, etc. If the
-    user closes the window instead of clicking a button, a value of -1 is
-    returned.
-    """
-    # We use a list of length 1 to pass selected_choice by reference.
-    selected_choice = [-2]
-
-    root = _create_root()
-
-    def return_choice(ichoice):
-        selected_choice[0] = ichoice
-        root.quit()
-
-#    root.title(title)
-    lbl = _tk.Label(root, text=message)
-    lbl.pack()
-
-    ichoice = 0
-    for choice in choices:
-        btn = _tk.Button(root,
-                         text=choice,
-                         command=_partial(return_choice, ichoice))
-        btn.pack()
-        ichoice = ichoice + 1
-
-    _center_root(root)
-    root.mainloop()
-    _destroy_root(root)
-
-    return(selected_choice[0])
+    return strings[codes.index(result)]
