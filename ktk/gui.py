@@ -8,91 +8,71 @@ Author: Félix Chénier
 Started on June 2019
 """
 
-from PyQt5.QtWidgets import QMessageBox, QWidget
-from PyQt5.QtCore import Qt
+import subprocess
+from ktk import _ROOT_FOLDER
 
+CMDGUI = _ROOT_FOLDER + "/ktk/cmdgui.py"
 
 def __dir__():
     """Generate a dir for tab-completion in IPython."""
-    return ['button_dialog', 'message']
+    return ['button_dialog', 'message', 'get_credentials', 'get_folder']
 
 
-def _get_main_dialog_window():
+def get_credentials():
     """
-    Create a main dialog window that is always on top.
+    Ask the user's username and password.
 
     Returns
     -------
-    widget : QWidget
-        A widget that can serve as a parent for dialogs, so that they are
-        always on top.
+    A tuple of two strings containing the username and password, respectively,
+    or an empty tuple if the user closed the window.
 
     """
-    widget = QWidget(None, Qt.WindowStaysOnTopHint)
-    return widget
+    str_call = ['get_credentials', 'KTK', 'Please enter your login information.']
+    result = subprocess.check_output([CMDGUI] + str_call,
+                                     stderr=subprocess.DEVNULL)
+
+    result = result.decode()
+    result = str.split(result)
+    return tuple(result)
 
 
-
-def message(the_message):
-    widget = _get_main_dialog_window()
-    message_box = QMessageBox(_get_main_dialog_window())
-    message_box.show()
-
-
-
+def get_folder(title='KTK', initial_folder='.'):
+    str_call = ['get_folder', title, initial_folder]
+    result = subprocess.check_output([CMDGUI] + str_call,
+                                     stderr=subprocess.DEVNULL)
+    result = str.split(result.decode())
+    return result[0]
 
 
-def button_dialog(message, buttons):
+def button_dialog(title='KTK', message='Please select an option.',
+                 choices=['Cancel', 'OK']):
     """
-    Ask the user to choice among standard buttons.
+    Ask the user to select among multiple buttons.
+
+    Create a topmost dialog window with a selection of buttons.
+    uibuttonsdialog(title, message, choices) is a blocking
+    function that asks the user to click on a button, using a topmost dialog
+    window.
 
     Parameters
     ----------
+    title : str
+        Title of the dialog window. Default is ''.
     message : str
-        Message to write in to dialog window.
-    buttons : list
-        List of strings. The strings may be either:
-            - 'cancel'
-            - 'ok'
-            - 'help'
-            - 'open'
-            - 'save'
-            - 'saveall'
-            - 'discard'
-            - 'close'
-            - 'apply'
-            - 'reset'
-            - 'yes'
-            - 'yestoall'
-            - 'no'
-            - 'notoall'
-            - 'restoredefault'
-            - 'abort'
-            - 'retry'
-            - 'ignore'
+        Message that is presented to the user.
+        Default is 'Please select an option'.
+    choices : list of str
+        List of button text. Default is ['Cancel', 'OK'].
 
     Returns
     -------
-    The string corresponding to the clicked button.
-
+    The button number (0 = First button, 1 = Second button, etc. If the
+    user closes the window instead of clicking a button, a value of -1 is
+    returned.
     """
-    strings = ['cancel', 'ok', 'help', 'open', 'save', 'saveall',
-               'discard', 'close', 'apply', 'reset', 'yes', 'yestoall', 'no',
-               'notoall', 'restoredefault', 'abort', 'retry',
-               'ignore']
+    str_call = ['button_dialog', title, message] + choices
+    result = subprocess.check_output([CMDGUI] + str_call,
+                                     stderr=subprocess.DEVNULL)
 
-    codes = [QMessageBox.Cancel, QMessageBox.Ok, QMessageBox.Help,
-             QMessageBox.Open, QMessageBox.Save, QMessageBox.SaveAll,
-             QMessageBox.Discard, QMessageBox.Close, QMessageBox.Apply,
-             QMessageBox.Reset, QMessageBox.Yes, QMessageBox.YesToAll,
-             QMessageBox.No, QMessageBox.NoToAll, QMessageBox.RestoreDefaults,
-             QMessageBox.Abort, QMessageBox.Retry, QMessageBox.Ignore]
-
-    button_codes_to_show = QMessageBox.NoButton
-    for one_button_string in buttons:
-        button_codes_to_show |= codes[strings.index(one_button_string)]
-
-    result = QMessageBox.information(_get_main_dialog_window(), 'KTK',
-                                     message, button_codes_to_show)
-
-    return strings[codes.index(result)]
+    return int(result)

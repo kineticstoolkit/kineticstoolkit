@@ -7,11 +7,12 @@ A tutorial is also available.
 """
 
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, List
 from . import gui as _gui
 from . import _repr
 
 import requests
+import os
 
 
 @dataclass
@@ -21,7 +22,7 @@ class File:
     dbid: int = 0
     dbfid: str = ''
     description: str = ''
-    file_name: str = ''
+    filename: str = ''
 
     def __repr__(self):
         """
@@ -32,7 +33,7 @@ class File:
         string
             The class' string representation.
         """
-        return '<File ' + self.dbfid + '>'
+        return '<File ' + self.dbfid + ', filename = ' + self.filename + '>'
 
     def __str__(self):
         return _repr._format_class_attributes(self)
@@ -130,6 +131,10 @@ class Project():
     participants: Dict[str, Participant]
     dbid: int = 0
     label: str = ''
+    root_folder: str = ''
+    files: str = ''
+    missing_files: str = ''
+    duplicate_files: str = ''
 
     def __repr__(self):
         """
@@ -190,5 +195,46 @@ def fetch_project(project_label, user='', password='', root_folder='',
     global project
     exec(content)
 
-    # TODO Select root folder and find the files.
+    # Add root folder
+    if root_folder == '':
+        project.root_folder = _gui.get_folder()
+    else:
+        project.root_folder = root_folder
+
+    #Scan all files in root folder
+    folder_list = []
+    file_list = []
+    for folder, _, files in os.walk(project.root_folder):
+        if len(files) > 0:
+            for file in files:
+                folder_list.append(folder)
+                file_list.append(file)
+
+    #Assign files to File instances
+    project.files = []
+    project.missing_files = []
+    project.duplicate_files = []
+
+    for participant_id in project.participants.keys():
+        participant = project.participants[participant_id]
+        for session_id in participant.sessions.keys():
+            session = participant.sessions[session_id]
+            for trial_id in session.trials.keys():
+                trial = session.trials[trial_id]
+                for file_id in trial.files.keys():
+                    file = trial.files[file_id]
+                    dbfid = file.dbfid
+
+                    # Now find this file
+                    file_found = False
+                    file_duplicate = False
+
+                    for i in range(0, len(file_list)):
+                        if dbfid in file_list[i]:
+
+                            if file_found == False:
+                                file_found = True
+                                file.filename = os.path.join(folder_l
+
+
     return project
