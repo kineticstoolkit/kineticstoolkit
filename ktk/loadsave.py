@@ -10,7 +10,7 @@ import scipy.io as _spio
 import subprocess as _subprocess
 
 from ktk import _ROOT_FOLDER, _ISMAC
-#from .timeseries import TimeSeries
+from ktk.timeseries import TimeSeries
 
 
 def loadmat(filename):
@@ -65,7 +65,7 @@ def convert_to_timeseries(the_input):
 #                    is_a_timeseries = False
 #            else:
 #                is_a_timeseries = False
-        #end for the_key
+        # end for the_key
 
 
         if is_a_timeseries == True:

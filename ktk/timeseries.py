@@ -118,6 +118,10 @@ class TimeSeries():
         """
         return _repr._format_class_attributes(self)
 
+    def __repr__(self):
+        return _repr._format_class_attributes(self)
+
+
     def __eq__(self, ts):
         """
         Compare two timeseries for equality.

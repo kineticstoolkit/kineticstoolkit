@@ -65,14 +65,22 @@ def _format_dict_entries(value, quotes=True):
             out += (to_show.rjust(the_max_length+6) + ': ')  # +6 to tab
 
             # Print the value
-            to_show = repr(value[the_key])
-
-            # Remove line breaks and multiple-spaces
-            to_show = ' '.join(to_show.split())
-            if len(to_show) <= max_length_to_show:
-                out += to_show
+            if isinstance(value[the_key], dict):
+                out += '<dict with ' + str(len(value[the_key])) + ' entries>'
+            elif isinstance(value[the_key], list):
+                out += '<list of ' + str(len(value[the_key])) + ' items>'
             else:
-                out += (to_show[0:max_length_to_show-3] + '...')
+                to_show = repr(value[the_key])
+
+                # Remove line breaks and multiple-spaces
+                to_show = ' '.join(to_show.split())
+                if len(to_show) <= max_length_to_show:
+                    out += to_show
+                else:
+                    out += (to_show[0:max_length_to_show-3] + '...')
+
+            if the_key != list(the_keys)[-1]:
+                out += ','
 
             # Print the ending } if needed
             out += '\n'
@@ -112,16 +120,20 @@ def _format_class_attributes(obj):
 
 def _ktk_format_dict(value, p, cycle):
     """Format a dict nicely on screen in ipython."""
-    if cycle:
-        p.pretty("...")
-    else:
-        p.text('{\n')
-        p.text(_format_dict_entries(value))
-        p.text('}')
+    try:
+        get_ipython()
+
+        if cycle:
+            p.pretty("...")
+        else:
+            p.text('{\n')
+            p.text(_format_dict_entries(value))
+            p.text('}')
+
+    except:
+        p.text(repr(value))
 
 # from IPython import get_ipython
 # try:
-#     formatter = get_ipython().display_formatter.formatters['text/plain']
-#     formatter.for_type(dict, lambda n, p, cycle: _ktk_format_dict(n, p, cycle))
 # except:
 #     pass

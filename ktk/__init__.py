@@ -51,3 +51,13 @@ from . import pushrimkinetics
 from .dev import dev
 from . import dbinterface
 from . import _repr
+
+
+try:
+    import IPython
+    ip = IPython.get_ipython()
+    formatter = ip.display_formatter.formatters['text/plain']
+    formatter.for_type(dict, lambda n, p, cycle: _repr._ktk_format_dict(n, p, cycle))
+except:
+    pass
+
