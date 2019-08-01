@@ -73,14 +73,15 @@ def convert_to_timeseries(the_input):
             the_output = TimeSeries()
             for the_key in the_input.keys():
                 try:
-                    the_output['time'] = the_input[the_key]['Time']
-                    the_output[the_key] = the_input[the_key]['Data']
-                    the_data = the_output[the_key]
+                    the_output.time = the_input[the_key]['Time']
+                    the_data = the_input[the_key]['Data']
                     the_shape = the_data.shape
                     if len(the_shape) == 2:
-                        the_output[the_key] = the_data.transpose((1,0))
+                        the_output.data[the_key] = the_data.transpose((1,0))
                     elif len(the_shape) == 3:
-                        the_output[the_key] = the_data.transpose((2,0,1))
+                        the_output.data[the_key] = the_data.transpose((2,0,1))
+                    else:
+                        the_output.data[the_key] = the_data
 
                 except:
                     pass

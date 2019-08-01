@@ -16,6 +16,8 @@ Date: July 16th, 2019
 felixchenier.com
 """
 
+import numpy as np
+
 
 def _format_dict_entries(value, quotes=True):
     """
@@ -69,6 +71,8 @@ def _format_dict_entries(value, quotes=True):
                 out += '<dict with ' + str(len(value[the_key])) + ' entries>'
             elif isinstance(value[the_key], list):
                 out += '<list of ' + str(len(value[the_key])) + ' items>'
+            elif isinstance(value[the_key], np.ndarray):
+                out += '<array of shape ' + str(np.shape(value[the_key])) + '>'
             else:
                 to_show = repr(value[the_key])
 

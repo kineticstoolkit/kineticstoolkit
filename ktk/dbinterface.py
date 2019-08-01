@@ -18,7 +18,7 @@ def __dir__():
 
 
 def fetch_project(project_label, user='', password='', root_folder='',
-                  url='https://biomec.uqam.ca'):
+                  url='https://felixchenier.uqam.ca/biomec'):
     """
     Fetch a project information from Felix Chenier's BIOMEC database.
 
@@ -35,7 +35,8 @@ def fetch_project(project_label, user='', password='', root_folder='',
         Location of the project's data files. The default is ''. If left this
         way, a dialog box will prompt the user to select the root folder.
     url : str, optional
-        URL for the BIOMEC database. The default is 'https://biomec.uqam.ca'.
+        URL for the BIOMEC database. The default is
+        'https://felixchenier.uqam.ca/biomec'.
 
     Returns
     -------
@@ -55,7 +56,8 @@ def fetch_project(project_label, user='', password='', root_folder='',
                                     'command': 'fetchall',
                                     'projectlabel': project_label,
                                     'username': user,
-                                    'password': password}, verify=False)
+                                    'password': password})
+    # TODO Remove verity=False when server will be migrated.
 
     content = result.content.decode("iso8859_15")
     global project

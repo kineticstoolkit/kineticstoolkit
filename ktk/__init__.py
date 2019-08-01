@@ -45,6 +45,7 @@ else:
 # ---------------------------
 
 from .timeseries import TimeSeries, TimeSeriesEvent
+from . import filters
 from . import loadsave
 from . import gui
 from . import pushrimkinetics
