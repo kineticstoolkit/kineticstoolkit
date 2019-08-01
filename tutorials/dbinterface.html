@@ -13166,7 +13166,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Navigating-in-the-project-structure">Navigating in the project structure<a class="anchor-link" href="#Navigating-in-the-project-structure">&#182;</a></h2><p>The result of ktk.dbinterface.fetch_project is a tree-like class with all the project information. Here are some examples to access all the different values contained in this tree.</p>
+<h2 id="Navigating-in-the-project-structure">Navigating in the project structure<a class="anchor-link" href="#Navigating-in-the-project-structure">&#182;</a></h2><p>The result of ktk.dbinterface.fetch_project is a nested dict with all the project information. Here are some examples to access all the different values contained in this tree.</p>
 
 </div>
 </div>
@@ -13176,7 +13176,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span>
 </pre></div>
 
     </div>
@@ -13189,17 +13189,23 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[2]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Project with attributes:
-      participants: {&#39;P1&#39;: &lt;Participant with 1 sessions&gt;}
-              dbid: 11
-             label: &#39;dummyProject&#39;
 
-</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+       &#39;participants&#39;: &lt;dict with 1 entries&gt;,
+         &#39;project_id&#39;: 11,
+      &#39;project_label&#39;: &#39;dummyProject&#39;,
+        &#39;root_folder&#39;: &#39;data/dbinterface/FC_XX18A&#39;,
+              &#39;files&#39;: &lt;list of 7 items&gt;,
+      &#39;missing_files&#39;: &lt;list of 0 items&gt;,
+    &#39;duplicate_files&#39;: &lt;list of 0 items&gt;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13211,7 +13217,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13224,13 +13230,17 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[3]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;P1&#39;: &lt;Participant with 1 sessions&gt;}
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+    &#39;P1&#39;: &lt;dict with 11 entries&gt;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13242,7 +13252,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13255,25 +13265,27 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[4]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Participant with attributes:
-            sessions: {&#39;GymnaseN1&#39;: &lt;Session with 3 trials&gt;}
-                dbid: 127
-                 uid: 1
-               label: &#39;P1&#39;
-                 sex: &#39;&#39;
-       date_of_birth: &#39;&#39;
-      date_of_injury: &#39;&#39;
-       dominant_side: &#39;&#39;
-           pathology: &#39;Pathologie inconnue&#39;
-                 ais: &#39;&#39;
-           traumatic: &#39;&#39;
 
-</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+          &#39;sessions&#39;: &lt;dict with 1 entries&gt;,
+              &#39;dbid&#39;: 127,
+             &#39;label&#39;: &#39;P1&#39;,
+               &#39;uid&#39;: 1,
+               &#39;sex&#39;: &#39;&#39;,
+     &#39;date_of_birth&#39;: &#39;&#39;,
+    &#39;date_of_injury&#39;: &#39;&#39;,
+     &#39;dominant_side&#39;: &#39;&#39;,
+         &#39;pathology&#39;: &#39;Pathologie inconnue&#39;,
+               &#39;ais&#39;: &#39;&#39;,
+         &#39;traumatic&#39;: &#39;&#39;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13285,7 +13297,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sessions</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13298,13 +13310,17 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[5]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;GymnaseN1&#39;: &lt;Session with 3 trials&gt;}
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+    &#39;GymnaseN1&#39;: &lt;dict with 6 entries&gt;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13316,7 +13332,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13329,20 +13345,22 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[6]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Session with attributes:
-          trials: {&#39;Run1&#39;: &lt;Trial with 2 files&gt;, &#39;Walk1&#39;: &lt;Trial with 3 files&gt;, &#39;W...
-            dbid: 127
-            date: &#39;2018-10-17&#39;
-           place: &#39;GymnaseN&#39;
-      repetition: [1]
-           notes: &#39;&#39;
 
-</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+        &#39;trials&#39;: &lt;dict with 3 entries&gt;,
+          &#39;dbid&#39;: 127,
+          &#39;date&#39;: &#39;2018-10-17&#39;,
+         &#39;place&#39;: &#39;GymnaseN&#39;,
+    &#39;repetition&#39;: &lt;list of 1 items&gt;,
+         &#39;notes&#39;: &#39;&#39;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13354,7 +13372,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">trials</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;trials&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13367,13 +13385,19 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[7]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;Run1&#39;: &lt;Trial with 2 files&gt;, &#39;Walk1&#39;: &lt;Trial with 3 files&gt;, &#39;Walk2&#39;: &lt;Trial with 2 files&gt;}
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+     &#39;Run1&#39;: &lt;dict with 6 entries&gt;,
+    &#39;Walk1&#39;: &lt;dict with 6 entries&gt;,
+    &#39;Walk2&#39;: &lt;dict with 6 entries&gt;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13385,7 +13409,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">trials</span><span class="p">[</span><span class="s1">&#39;Run1&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13398,20 +13422,22 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Trial with attributes:
-            files: {&#39;Kinematics&#39;: &lt;File dbfid6683n&gt;, &#39;Kinetics&#39;: &lt;File dbfid6684n&gt;}
-             dbid: 3152
-       trial_type: &#39;Run&#39;
-       repetition: [1]
-      description: &#39;&#39;
-            notes: &#39;&#39;
 
-</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+          &#39;files&#39;: &lt;dict with 2 entries&gt;,
+           &#39;dbid&#39;: 3152,
+     &#39;trial_type&#39;: &#39;Run&#39;,
+     &#39;repetition&#39;: &lt;list of 1 items&gt;,
+    &#39;description&#39;: &#39;&#39;,
+          &#39;notes&#39;: &#39;&#39;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13423,7 +13449,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">trials</span><span class="p">[</span><span class="s1">&#39;Run1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">][</span><span class="s1">&#39;files&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13436,13 +13462,18 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[9]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>{&#39;Kinematics&#39;: &lt;File dbfid6683n&gt;, &#39;Kinetics&#39;: &lt;File dbfid6684n&gt;}
-</pre>
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+    &#39;Kinematics&#39;: &lt;dict with 3 entries&gt;,
+      &#39;Kinetics&#39;: &lt;dict with 3 entries&gt;
+}</pre>
 </div>
+
 </div>
 
 </div>
@@ -13454,7 +13485,7 @@ div#notebook {
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">participants</span><span class="p">[</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">sessions</span><span class="p">[</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">trials</span><span class="p">[</span><span class="s1">&#39;Run1&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">files</span><span class="p">[</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">][</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13467,18 +13498,52 @@ div#notebook {
 
 <div class="output_area">
 
-    <div class="prompt"></div>
+    <div class="prompt output_prompt">Out[10]:</div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>File with attributes:
-             dbid: 6683
-            dbfid: &#39;dbfid6683n&#39;
-      description: &#39;Kinematics recorded using a Vicon system&#39;
-        file_name: &#39;&#39;
 
-</pre>
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+          &#39;dbfid&#39;: &#39;dbfid6683n&#39;,
+    &#39;description&#39;: &#39;Kinematics recorded using a Vicon system&#39;,
+       &#39;filename&#39;: &#39;data/dbinterface/FC_XX18A/kinetics_dbfid6683n.csv&#39;
+}</pre>
 </div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">][</span><span class="s1">&#39;files&#39;</span><span class="p">][</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">][</span><span class="s1">&#39;filename&#39;</span><span class="p">]</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[11]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&#39;data/dbinterface/FC_XX18A/kinetics_dbfid6683n.csv&#39;</pre>
+</div>
+
 </div>
 
 </div>
