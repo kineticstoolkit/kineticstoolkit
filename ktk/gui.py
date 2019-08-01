@@ -15,7 +15,7 @@ CMDGUI = _ROOT_FOLDER + "/ktk/cmdgui.py"
 
 def __dir__():
     """Generate a dir for tab-completion in IPython."""
-    return ['button_dialog', 'message', 'get_credentials', 'get_folder']
+    return ['button_dialog', 'get_credentials', 'get_folder']
 
 
 def get_credentials():

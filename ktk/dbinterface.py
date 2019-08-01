@@ -33,7 +33,7 @@ class File:
         string
             The class' string representation.
         """
-        return '<File ' + self.dbfid + ', filename = ' + self.filename + '>'
+        return _repr._format_class_attributes(self)
 
     def __str__(self):
         return _repr._format_class_attributes(self)
@@ -59,7 +59,7 @@ class Trial:
         string
             The class' string representation.
         """
-        return '<Trial with ' + str(len(self.files)) + ' files>'
+        return _repr._format_class_attributes(self)
 
     def __str__(self):
         return _repr._format_class_attributes(self)
@@ -86,7 +86,7 @@ class Session:
         string
             The class' string representation.
         """
-        return '<Session with ' + str(len(self.trials)) + ' trials>'
+        return _repr._format_class_attributes(self)
 
     def __str__(self):
         return _repr._format_class_attributes(self)
@@ -118,7 +118,7 @@ class Participant:
         string
             The class' string representation.
         """
-        return '<Participant with ' + str(len(self.sessions)) + ' sessions>'
+        return _repr._format_class_attributes(self)
 
     def __str__(self):
         return _repr._format_class_attributes(self)
@@ -145,7 +145,7 @@ class Project():
         string
             The class' string representation.
         """
-        return '<Project with ' + str(len(self.participants)) + ' participants>'
+        return _repr._format_class_attributes(self)
 
     def __str__(self):
         return _repr._format_class_attributes(self)
@@ -234,7 +234,20 @@ def fetch_project(project_label, user='', password='', root_folder='',
 
                             if file_found == False:
                                 file_found = True
-                                file.filename = os.path.join(folder_l
+                                file.filename = os.path.join(folder_list[i],
+                                                              file_list[i])
+                            else:
+                                file_duplicate = True
+
+                    file_tuple = (dbfid, participant_id, session_id,
+                                  trial_id, file_id)
+
+                    if file_duplicate:
+                        project.duplicate_files.append(file_tuple)
+                    elif file_found:
+                        project.files.append(file_tuple)
+                    else:
+                        project.missing_files.append(file_tuple)
 
 
     return project
