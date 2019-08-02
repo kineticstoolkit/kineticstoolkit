@@ -19,9 +19,6 @@ def loadmat(filename):
     """
     # The MAT file should first be converted using Matlab's own runtime
     # engine, so that Matlab's timeseries are converted to structures.
-
-    print("Launching Matlab's compiled translator and runtime...")
-
     converted_filename = _ROOT_FOLDER + '/loadsave_converted.mat'
 
     if _ISMAC:
@@ -30,8 +27,10 @@ def loadmat(filename):
     else:
         raise(NotImplementedError('loadmat is only available on Mac for now.'))
 
-    _subprocess.call([_ROOT_FOLDER + script_name, runtime_path,
-                      filename, converted_filename])
+    _subprocess.run([_ROOT_FOLDER + script_name, runtime_path,
+                      filename, converted_filename],
+                      stderr=_subprocess.DEVNULL,
+                      stdout=_subprocess.DEVNULL)
 
     # Now load it with scipy.io
     data = _spio.loadmat(converted_filename, struct_as_record=False, squeeze_me=True)

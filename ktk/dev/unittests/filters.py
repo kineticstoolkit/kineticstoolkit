@@ -12,7 +12,7 @@ import ktk
 import numpy as np
 
 
-class FiltersTest(unittest.TestCase):
+class filtersTest(unittest.TestCase):
     """TimeSeries unit tests."""
 
     def test_savgol(self):

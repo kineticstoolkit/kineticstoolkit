@@ -62,3 +62,8 @@ try:
 except:
     pass
 
+# Set alternative defaults to matplotlib
+import matplotlib as mpl
+mpl.rcParams['figure.figsize'] = [10, 5]
+mpl.rcParams['figure.dpi'] = 75
+mpl.rcParams['lines.linewidth'] = 1

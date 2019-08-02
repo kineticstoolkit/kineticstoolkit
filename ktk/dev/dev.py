@@ -13,13 +13,18 @@ from ktk import _ROOT_FOLDER
 import unittest
 from .unittests.timeseries import timeseriesTest
 from .unittests.loadsave import loadsaveTest
+from .unittests.pushrimkinetics import pushrimkineticsTest
+from .unittests.filters import filtersTest
+
 
 
 def run_tests():
     """Run all unit tests."""
     suite = unittest.TestSuite([
             unittest.TestLoader().loadTestsFromTestCase(timeseriesTest),
-            unittest.TestLoader().loadTestsFromTestCase(loadsaveTest)
+            unittest.TestLoader().loadTestsFromTestCase(loadsaveTest),
+            unittest.TestLoader().loadTestsFromTestCase(pushrimkineticsTest),
+            unittest.TestLoader().loadTestsFromTestCase(filtersTest)
             ])
     unittest.TextTestRunner(verbosity=2).run(suite)
 
