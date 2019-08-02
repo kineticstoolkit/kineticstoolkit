@@ -652,8 +652,12 @@ class TimeSeries():
         """
         the_keys = self.data.keys()
         n_plots = len(the_keys)
+
         n_events = len(self.events)
-        event_times = np.array(self.events)[:, 0]
+        if n_events > 0:
+            event_times = np.array(self.events)[:, 0]
+        else:
+            event_times = np.array([])
 
         # Now plot
         i_plot = 1
