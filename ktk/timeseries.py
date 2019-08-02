@@ -371,8 +371,12 @@ class TimeSeries():
 
         # EVENTS
         # ------
-        df_events = pd.DataFrame(self.events)
-        df_events.columns = ['time', 'name']
+        if len(self.events) > 0:
+            df_events = pd.DataFrame(self.events)
+            df_events.columns = ['time', 'name']
+        else:
+            df_events = pd.DataFrame(columns=['time', 'name'])
+
         dict_out['events'] = df_events
 
         # INFO
@@ -641,16 +645,32 @@ class TimeSeries():
         """
         return _deepcopy(self)
 
-    def plot(self):
+    def plot(self, data_keys=[]):
         """
         Plot the TimeSeries using matplotlib.
+
+        Parameters
+        ----------
+        data_keys : list (optional)
+            List of strings corresponding to the signals to plot. For example,
+            if a TimeSeries's data attribute as keys 'Forces', 'Moments'
+            and 'Angle', then:
+            >>> the_timeseries.plot(['Forces', 'Moments'])
+            plots only the forces and moments, without plotting the angle.
+            By default, all elements of the TimeSeries are plotted.
 
         Returns
         -------
         None.
 
         """
-        the_keys = self.data.keys()
+        if len(data_keys) == 0:
+            # Plot all
+            the_keys = self.data.keys()
+        else:
+            # Plot only what is asked for.
+            the_keys = data_keys
+
         n_plots = len(the_keys)
 
         n_events = len(self.events)
@@ -703,7 +723,7 @@ class TimeSeries():
 
         # Add labels and format
         plt.xlabel('Time (' + self.time_info['unit'] + ')')
-        plt.tight_layout()
+        plt.tight_layout(pad=0.05)
         plt.show()
 
     def get_index_at_time(self, time):

@@ -9,6 +9,7 @@ Date: July 2019
 
 import subprocess
 from ktk import _ROOT_FOLDER
+import webbrowser
 
 import unittest
 from .unittests.timeseries import timeseriesTest
@@ -32,18 +33,8 @@ def generate_tutorials():
     """Update the Jupyter tutorials into their final html form."""
     subprocess.call(['jupyter-nbconvert', '--to=html', '--execute',
                          _ROOT_FOLDER + '/tutorials/*.ipynb'])
+    webbrowser.open('file:///' + _ROOT_FOLDER + '/tutorials/index.html', new=2)
 
 def release():
-    print("==================")
-    print("RUNNING UNIT TESTS")
-    print("------------------")
     run_tests()
-
-    print("==================")
-    print("RUNNING TUTORIALS ")
-    print("------------------")
     generate_tutorials()
-
-    print("------------------")
-    print("DONE.")
-    print("==================")

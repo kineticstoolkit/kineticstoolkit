@@ -57,40 +57,44 @@ def fetch_project(project_label, user='', password='', root_folder='',
                                     'projectlabel': project_label,
                                     'username': user,
                                     'password': password})
-    # TODO Remove verity=False when server will be migrated.
 
     content = result.content.decode("iso8859_15")
-    global project
-    exec(content)
+
+    try:
+        global project
+        exec(content)
+        project
+    except:
+        raise(Exception(content))
 
     # Add root folder
     if root_folder == '':
-        project['root_folder'] = gui.get_folder()
+        project['RootFolder'] = gui.get_folder()
     else:
-        project['root_folder'] = root_folder
+        project['RootFolder'] = root_folder
 
     # Scan all files in root folder
     folder_list = []
     file_list = []
-    for folder, _, files in os.walk(project['root_folder']):
+    for folder, _, files in os.walk(project['RootFolder']):
         if len(files) > 0:
             for file in files:
                 folder_list.append(folder)
                 file_list.append(file)
 
     # Assign files to File instances
-    project['files'] = []
-    project['missing_files'] = []
-    project['duplicate_files'] = []
+    project['Files'] = []
+    project['MissingFiles'] = []
+    project['DuplicateFiles'] = []
 
-    for participant_id in project['participants'].keys():
-        participant = project['participants'][participant_id]
-        for session_id in participant['sessions'].keys():
-            session = participant['sessions'][session_id]
-            for trial_id in session['trials'].keys():
-                trial = session['trials'][trial_id]
-                for file_id in trial['files'].keys():
-                    file = trial['files'][file_id]
+    for participant_id in project['Participants'].keys():
+        participant = project['Participants'][participant_id]
+        for session_id in participant['Sessions'].keys():
+            session = participant['Sessions'][session_id]
+            for trial_id in session['Trials'].keys():
+                trial = session['Trials'][trial_id]
+                for file_id in trial['Files'].keys():
+                    file = trial['Files'][file_id]
                     dbfid = file['dbfid']
 
                     # Now find this file
@@ -102,7 +106,7 @@ def fetch_project(project_label, user='', password='', root_folder='',
 
                             if file_found is False:
                                 file_found = True
-                                file['filename'] = os.path.join(
+                                file['Filename'] = os.path.join(
                                             folder_list[i],
                                             file_list[i])
                             else:
@@ -112,10 +116,10 @@ def fetch_project(project_label, user='', password='', root_folder='',
                                   trial_id, file_id)
 
                     if file_duplicate:
-                        project['duplicate_files'].append(file_tuple)
+                        project['DuplicateFiles'].append(file_tuple)
                     elif file_found:
-                        project['files'].append(file_tuple)
+                        project['Files'].append(file_tuple)
                     else:
-                        project['missing_files'].append(file_tuple)
+                        project['MissingFiles'].append(file_tuple)
 
     return project
