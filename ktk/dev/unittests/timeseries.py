@@ -25,13 +25,13 @@ class timeseriesTest(unittest.TestCase):
         self.assertIsInstance(ts.time_info, dict)
         self.assertIsInstance(ts.data_info, dict)
         self.assertIsInstance(ts.events, list)
-        self.assertEqual(ts.time_info['unit'], 's')
+        self.assertEqual(ts.time_info['Unit'], 's')
 
     def test_add_data_info(self):
         """Test the add_data_info method."""
         ts = ktk.TimeSeries()
-        ts.add_data_info('Force', 'unit', 'N')
-        self.assertEqual(ts.data_info['Force']['unit'], 'N')
+        ts.add_data_info('Force', 'Unit', 'N')
+        self.assertEqual(ts.data_info['Force']['Unit'], 'N')
 
     def test_add_event(self):
         """Test the add_event method."""
@@ -53,9 +53,9 @@ class timeseriesTest(unittest.TestCase):
         ts.data['signal1'] = np.random.rand(100, 2)
         ts.data['signal2'] = np.random.rand(100, 2)
         ts.data['signal3'] = np.random.rand(100, 2)
-        ts.add_data_info('signal1', 'unit', 'Unit1')
-        ts.add_data_info('signal2', 'unit', 'Unit2')
-        ts.add_data_info('signal3', 'unit', 'Unit3')
+        ts.add_data_info('signal1', 'Unit', 'Unit1')
+        ts.add_data_info('signal2', 'Unit', 'Unit2')
+        ts.add_data_info('signal3', 'Unit', 'Unit3')
         ts.add_event(15.34, 'test_event1')
         ts.add_event(99.2, 'test_event2')
         ts.add_event(1, 'test_event3')
@@ -163,9 +163,9 @@ class timeseriesTest(unittest.TestCase):
         ts.data['signal1'] = np.random.rand(10)
         ts.data['signal2'] = np.random.rand(10, 3)
         ts.data['signal3'] = np.random.rand(10, 3, 3)
-        ts.add_data_info('signal1', 'unit', 'm/s')
-        ts.add_data_info('signal2', 'unit', 'km/h')
-        ts.add_data_info('signal3', 'unit', 'N')
+        ts.add_data_info('signal1', 'Unit', 'm/s')
+        ts.add_data_info('signal2', 'Unit', 'km/h')
+        ts.add_data_info('signal3', 'Unit', 'N')
         ts.add_data_info('signal3', 'signal_type', 'force')
         ts.add_event(1.53, 'test_event1')
         ts.add_event(7.2, 'test_event2')
@@ -192,9 +192,9 @@ class timeseriesTest(unittest.TestCase):
         self.assertEqual(df['events']['name'][0], ts.events[0].name)
         self.assertEqual(df['events'].time[1], ts.events[1][0])
         self.assertEqual(df['events'].name[1], ts.events[1][1])
-        self.assertEqual(df['info']['time']['unit'], ts.time_info['unit'])
-        self.assertEqual(df['info']['signal1']['unit'],
-                         ts.data_info['signal1']['unit'])
+        self.assertEqual(df['info']['time']['Unit'], ts.time_info['Unit'])
+        self.assertEqual(df['info']['signal1']['Unit'],
+                         ts.data_info['signal1']['Unit'])
         self.assertEqual(df['info']['signal3']['signal_type'],
                          ts.data_info['signal3']['signal_type'])
 

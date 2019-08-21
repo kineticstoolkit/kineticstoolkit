@@ -77,14 +77,14 @@ class TimeSeries():
             Contains the data, where each element contains a np.array which
             first dimension corresponds to time.
 
-        time_info : dict. Default value is {'unit': 's'}
+        time_info : dict. Default value is {'Unit': 's'}
             Contains metadata relative to time.
 
         data_info : dict. Default value is {}.
             Contains facultative metadata relative to data. For example, the
             data_info attribute could indicate the unit of data['Forces']:
 
-            >>> data['Forces'] = {'unit': 'N'}.
+            >>> data['Forces'] = {'Unit': 'N'}.
 
             To facilitate the management of data_info, please refer to the
             class method:
@@ -93,11 +93,11 @@ class TimeSeries():
 
     Example of creation
     -------------------
-        >>> ts = TimeSeries({time: np.array(range(0,100))})
+        >>> ts = ktk.TimeSeries(time=np.arange(0,100))
 
     """
 
-    def __init__(self, time=np.array([]), time_info={'unit': 's'},
+    def __init__(self, time=np.array([]), time_info={'Unit': 's'},
                  data=dict(), data_info=dict(), events=list()):
         self.time = time.copy()
         self.time_info = time_info.copy()
@@ -167,7 +167,7 @@ class TimeSeries():
 
         Examples of use
         ---------------
-            >>> the_timeseries.add_info('forces', 'unit', 'N')
+            >>> the_timeseries.add_info('forces', 'Unit', 'N')
             >>> the_timeseries.add_info('marker1', 'color', [43, 2, 255])
 
         This creates a corresponding entries in the 'data_info' dict.
@@ -189,7 +189,7 @@ class TimeSeries():
         Parameters
         ----------
         time : float
-            The time of the event, in the same unit as the time_info{'unit'}
+            The time of the event, in the same unit as the time_info{'Unit'}
             attribute of the TimeSeries (default: 's').
         name : str
             The name of the event.
@@ -270,8 +270,8 @@ class TimeSeries():
         >>> ts.data['data2'] = np.random.rand(10, 2, 2)
 
         >>> # Let add some metadata and events:
-        >>> ts.add_data_info('data1', 'unit', 'm/s')
-        >>> ts.add_data_info('data2', 'unit', 'km/h')
+        >>> ts.add_data_info('data1', 'Unit', 'm/s')
+        >>> ts.add_data_info('data2', 'Unit', 'km/h')
         >>> ts.add_event(1.53, 'test_event1')
         >>> ts.add_event(7.2, 'test_event2')
 
@@ -298,7 +298,7 @@ class TimeSeries():
 
         >>> print(dataframes['info'])
              time data1 data2
-        unit    s   m/s  km/h
+        Unit    s   m/s  km/h
 
         """
         dict_out = dict()
@@ -694,9 +694,9 @@ class TimeSeries():
             plt.plot(self.time, self.data[the_keys])
 
             if (the_keys in self.data_info and
-                    'unit' in self.data_info[the_keys]):
+                    'Unit' in self.data_info[the_keys]):
                 plt.ylabel(the_keys + ' (' +
-                           self.data_info[the_keys]['unit'] + ')')
+                           self.data_info[the_keys]['Unit'] + ')')
             else:
                 plt.ylabel(the_keys)
 
@@ -722,7 +722,7 @@ class TimeSeries():
             i_plot += 1
 
         # Add labels and format
-        plt.xlabel('Time (' + self.time_info['unit'] + ')')
+        plt.xlabel('Time (' + self.time_info['Unit'] + ')')
         plt.tight_layout(pad=0.05)
         plt.show()
 

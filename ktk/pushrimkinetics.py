@@ -36,10 +36,10 @@ def read_file(filename):
     ts.data['Moments'] = np.block([[moments, np.zeros((len(index), 1))]])
     ts.data['Angle'] = angle_rad
 
-    ts.add_data_info('Channels', 'unit', 'raw')
-    ts.add_data_info('Forces', 'unit', 'N')
-    ts.add_data_info('Moments', 'unit', 'Nm')
-    ts.add_data_info('Angle', 'unit', 'rad')
+    ts.add_data_info('Channels', 'Unit', 'raw')
+    ts.add_data_info('Forces', 'Unit', 'N')
+    ts.add_data_info('Moments', 'Unit', 'Nm')
+    ts.add_data_info('Angle', 'Unit', 'rad')
 
     return ts
 
@@ -178,9 +178,9 @@ def calculateforcesandmoments(kinetics):
     forces_moments = gains * kinetics.data['channels'] + offsets
 
     kinetics.data['Forces'] = forces_moments[:,0:3]
-    kinetics.data_unit['Forces'] = 'N'
+    kinetics.add_data_info('Forces', 'Unit', 'N')
     kinetics.data['Moments'] = forces_moments[:,3:6]
-    kinetics.data_unit['Moments'] = 'Nm'
+    kinetics.add_data_info('Moments', 'Unit', 'Nm')
 
     return(kinetics)
 
