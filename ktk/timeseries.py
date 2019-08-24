@@ -651,10 +651,10 @@ class TimeSeries():
 
         Parameters
         ----------
-        data_keys : list (optional)
-            List of strings corresponding to the signals to plot. For example,
-            if a TimeSeries's data attribute as keys 'Forces', 'Moments'
-            and 'Angle', then:
+        data_keys : string, list or tuple (optional)
+            String or list of strings corresponding to the signals to plot.
+            For example, if a TimeSeries's data attribute as keys 'Forces',
+            'Moments' and 'Angle', then:
             >>> the_timeseries.plot(['Forces', 'Moments'])
             plots only the forces and moments, without plotting the angle.
             By default, all elements of the TimeSeries are plotted.
@@ -669,7 +669,13 @@ class TimeSeries():
             the_keys = self.data.keys()
         else:
             # Plot only what is asked for.
-            the_keys = data_keys
+            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
+                the_keys = data_keys
+            elif isinstance(data_keys, str):
+                the_keys = [data_keys]
+            else:
+                raise(TypeError('data_keys must be a string or list of strings'))
+
 
         n_plots = len(the_keys)
 
