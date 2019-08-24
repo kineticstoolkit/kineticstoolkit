@@ -61,11 +61,12 @@ def savgol(tsin, window_length, poly_order, deriv=0):
         n_data = np.shape(input_signal)[0]
         nan_index = np.isnan(np.sum(input_signal, axis=each_data_shape))
 
-        if len(np.nonzero(nan_index)) > 0:
+        if not np.all(~nan_index):
             # There were NaNs, issue a warning.
-            warnings.warn('NaNs found in the signal. They have been ' +
-                          'interpolated before filtering, and then put back ' +
-                          'in the filtered data')
+            warning_message = ('NaNs found in the signal. They have been ' +
+                               'interpolated before filtering, and then put ' +
+                               'back in the filtered data.')
+            warnings.warn(warning_message)
 
         original_x = np.arange(n_data)[~nan_index]
         original_y = input_signal[~nan_index]
