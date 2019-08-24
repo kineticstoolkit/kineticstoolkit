@@ -67,3 +67,7 @@ import matplotlib as mpl
 mpl.rcParams['figure.figsize'] = [10, 5]
 mpl.rcParams['figure.dpi'] = 75
 mpl.rcParams['lines.linewidth'] = 1
+
+# Uncomment to have an old Matlab-like color order
+mpl.rcParams['axes.prop_cycle'] = mpl.cycler(
+      'color', ['b', 'g', 'r', 'c', 'm', 'y', 'k'])

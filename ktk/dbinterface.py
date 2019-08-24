@@ -48,10 +48,11 @@ def fetch_project(project_label, user='', password='', root_folder='',
     if user == '':
         user, password = gui.get_credentials()
 
+    # Do the request and executes it
+    print("Fetching project on %s" % url)
+
     # Append the relative url to the base url
     url += '/py/pywrapper.php'
-
-    # Do the request and executes it
     result = requests.post(url, data={
                                     'command': 'fetchall',
                                     'projectlabel': project_label,
@@ -67,6 +68,7 @@ def fetch_project(project_label, user='', password='', root_folder='',
     except:
         raise(Exception(content))
 
+    print("Assigning root folder")
     # Add root folder
     if root_folder == '':
         project['RootFolder'] = gui.get_folder()
@@ -74,6 +76,7 @@ def fetch_project(project_label, user='', password='', root_folder='',
         project['RootFolder'] = root_folder
 
     # Scan all files in root folder
+    print("Building file associations")
     folder_list = []
     file_list = []
     for folder, _, files in os.walk(project['RootFolder']):
@@ -121,5 +124,6 @@ def fetch_project(project_label, user='', password='', root_folder='',
                         project['Files'].append(file_tuple)
                     else:
                         project['MissingFiles'].append(file_tuple)
+    print("Done")
 
     return project
