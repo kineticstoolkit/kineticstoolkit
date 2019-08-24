@@ -37,8 +37,8 @@ def create_window(title='KTK', width=800, height=400):
     #     pass
     # root.protocol("WM_DELETE_WINDOW", _on_closing)
 
-    # # Set focus
-    # root.attributes('-topmost', True)
+    # Set topmost
+    root.attributes('-topmost', True)
     # root.update()
     # root.attributes('-topmost', False)
 
@@ -137,7 +137,7 @@ def get_credentials(title, message):
 
 
 def button_dialog(title='', message='Please select an option.',
-                 choices=['Cancel', 'OK']):
+                  choices=['Cancel', 'OK']):
     """
     Create a topmost dialog window with a selection of buttons.
 
@@ -177,8 +177,8 @@ def button_dialog(title='', message='Please select an option.',
     ichoice = 0
     for choice in choices:
         btn = tk.Button(root,
-                         text=choice,
-                         command=partial(return_choice, ichoice))
+                        text=choice,
+                        command=partial(return_choice, ichoice))
         btn.pack()
         ichoice = ichoice + 1
 
@@ -196,7 +196,8 @@ def get_folder(title, initial_folder):
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Run interactive gui dialogs.')
+    parser = argparse.ArgumentParser(
+            description='Run interactive gui dialogs.')
     parser.add_argument('dialog', help='buttondialog')
     parser.add_argument('title', help='Title of the dialog')
     parser.add_argument('args', help='Arguments', nargs="*")
