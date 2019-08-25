@@ -10,6 +10,10 @@ Started on June 2019
 
 import subprocess
 from ktk import _ROOT_FOLDER
+from threading import Thread
+import matplotlib.pyplot as plt
+import sys
+
 
 CMDGUI = _ROOT_FOLDER + "/ktk/cmdgui.py"
 
@@ -46,7 +50,7 @@ def get_folder(title='KTK', initial_folder='.'):
 
 
 def button_dialog(title='KTK', message='Please select an option.',
-                 choices=['Cancel', 'OK']):
+                  choices=['Cancel', 'OK']):
     """
     Ask the user to select among multiple buttons.
 
@@ -71,8 +75,20 @@ def button_dialog(title='KTK', message='Please select an option.',
     user closes the window instead of clicking a button, a value of -1 is
     returned.
     """
-    str_call = ['button_dialog', title, message] + choices
-    result = subprocess.check_output([CMDGUI] + str_call,
-                                     stderr=subprocess.DEVNULL)
 
-    return int(result)
+    # Run the button dialog in a separate thread to allow updating matplotlib
+    button = [None]
+    command_call = [sys.executable, CMDGUI, 'button_dialog', title,
+                    message] + choices
+
+    def threaded_function():
+        button[0] = int(subprocess.check_output(command_call,
+                        stderr=subprocess.DEVNULL))
+
+    thread = Thread(target=threaded_function)
+    thread.start()
+
+    while button[0] is None:
+        plt.pause(0.2)  # Update matplotlib so that is responds to user input
+
+    return button[0]
