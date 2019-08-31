@@ -13,10 +13,10 @@ import os
 import shutil
 from ast import literal_eval
 
-from copy import deepcopy as _deepcopy
+from copy import deepcopy
 
-from . import gui as _gui
-from . import _repr
+from ktk import gui
+from ktk import _repr
 
 
 class TimeSeriesEvent(list):
@@ -52,14 +52,6 @@ class TimeSeriesEvent(list):
     def name(self, name):
         self[0] = str(name)
 
-
-#    def __str__(self):
-#        """Return the string representation of the TimeSeriesEvent."""
-#        return 'time: ' + str(self.time) + ', name: ' + str(self.name)
-#
-#    def __repr__(self):
-#        """Return the string representation of the TimeSeriesEvent."""
-#        return '<' + str(self.time) + ' ' + str(self.name) + '>'
 
 class TimeSeries():
     """
@@ -121,7 +113,6 @@ class TimeSeries():
     def __repr__(self):
         return _repr._format_class_attributes(self)
 
-
     def __eq__(self, ts):
         """
         Compare two timeseries for equality.
@@ -165,10 +156,23 @@ class TimeSeries():
         """
         Add information on a signal of the TimeSeries.
 
-        Examples of use
-        ---------------
-            >>> the_timeseries.add_info('forces', 'Unit', 'N')
-            >>> the_timeseries.add_info('marker1', 'color', [43, 2, 255])
+        Parameters
+        ----------
+        signel_name : str
+            The data key the info corresponds to.
+        info_name : str
+            The name of the info.
+        value : any type
+            The info.
+
+        Returns
+        -------
+        self.
+
+        Examples
+        --------
+            >>> the_timeseries.add_info('Forces', 'Unit', 'N')
+            >>> the_timeseries.add_info('Marker1', 'Color', [43, 2, 255])
 
         This creates a corresponding entries in the 'data_info' dict.
 
@@ -191,7 +195,7 @@ class TimeSeries():
         time : float
             The time of the event, in the same unit as the time_info{'Unit'}
             attribute of the TimeSeries (default: 's').
-        name : str
+        name : str (optional)
             The name of the event.
 
         Returns
@@ -211,33 +215,59 @@ class TimeSeries():
         self.events.append(TimeSeriesEvent(time, name))
         return self
 
-    # def ui_add_events(self, name='event'):
-    #     """
-    #     Add one or many events interactively to the TimeSeries.
+    def ui_add_event(self, name='event', plot=[]):
+        """
+        Add an event interactively to the TimeSeries.
 
-    #     Parameters
-    #     ----------
-    #     name : str
-    #         The name of the event.
+        Parameters
+        ----------
+        name : str (optional)
+            The name of the event.
+        plot : str, list of str or tuple of str (optional)
+            A signal name of list of signal name to be plotted, similar to
+            the argument of ktk.TimeSeries.plot().
 
-    #     Returns
-    #     -------
-    #     self.
-    #     """
-    #     self.plot()
-    #     _gui.buttondialog(title='uiaddevents',
-    #                       message=('Please zoom on the figure, then click '
-    #                                + 'Continue, or End to terminate.'),
-    #                       choices=['Continue', 'End'])
-    #     plt.suptitle(('Left-click to add events,\n'
-    #                   + 'Right-click to remove last added events,\n'
-    #                   + 'Enter to terminate.'))
-    #     points = plt.ginput(1000)
+        Returns
+        -------
+        The same timeseries, with the event added.
 
-    #     for the_point in points:
-    #         self.addevent(time=the_point[0], name=name)
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts.ui_add_event('event1')
 
-    #     # TODO Continue
+        """
+        ts = self.copy()
+
+        fig = plt.figure()
+
+        while True:
+
+            plt.cla()
+            ts.plot(plot)
+            button = gui.button_dialog(
+                    'TimeSeries.ui_add_event',
+                    'Please zoom on the new event to add, then click Next.\n' +
+                    'Click Finished when there is no more event to add.',
+                    ['Cancel', 'Next', 'Finished'])
+
+            if button == 0:  # Cancel
+                plt.close(fig)
+                print('No event was added.')
+                return self.copy()
+            elif button == 2:  # Finish
+                plt.close(fig)
+                return ts
+            # Next
+
+            plt.title('Left-click to add events, right-click to delete, then ENTER.')
+            plt.pause(0.001)  # Update the plot
+            coordinates = plt.ginput(99999)
+
+            # Add these events
+            for i in range(len(coordinates)):
+                ts.add_event(coordinates[i][0], name)
+        # Continue until done.
 
     def to_dataframes(self):
         """
@@ -498,46 +528,6 @@ class TimeSeries():
 
         return out
 
-        # # Initialize the timeseries data
-        # unique_data_names = list(set(data_names))
-        # for unique_data_name in unique_data_names:
-
-        #     # Find the dimensions for this data
-        #     unique_data_dimension = []
-        #     for i in range(0, len(data_names)):
-        #         if data_names[i] == unique_data_name:
-        #             unique_data_dimension.append(data_dimensions[i])
-
-        #     unique_data_dimension = np.max(
-        #             np.array(unique_data_dimension), axis=0)
-
-        #     # Add the time dimension
-        #     temp = np.array(len(time))
-        #     unique_data_dimension = np.block([temp, unique_data_dimension])
-        #     unique_data_dimension = unique_data_dimension.astype(int)
-
-        #     if unique_data_name != 'time':
-        #         out.data[unique_data_name] = np.zeros(unique_data_dimension)
-
-        # # Fill the TimeSeries
-        # for i_data in range(0, len(data_names)):
-        #     column_name = column_names[i_data]
-        #     data_name = data_names[i_data]
-        #     data_dimension = data_dimensions[i_data]
-
-        #     if data_name != 'time':
-        #         print(data_dimension)
-        #         if len(data_dimension) == 0:
-        #             out.data[data_name] = data[column_name]
-        #         elif len(data_dimension) == 1:
-        #             out.data[data_name][:, data_dimension[0]] = data[column_name]
-        #         elif len(data_dimension) == 2:
-        #             out.data[data_name][:, data_dimension[0],
-        #                      data_dimension[1]] = data[column_name]
-
-
-        # return out
-
     def save(self, filename):
         """
         Save the TimeSeries as a zip archive of tab-delimited text files.
@@ -573,7 +563,8 @@ class TimeSeries():
 
         # Create a temporary folder
         try:
-            shutil.rmtree(filename)  # TODO be a little nicer and ask before deleting.
+            # TODO be a little nicer and ask before deleting.
+            shutil.rmtree(filename)
         except:
             pass
 
@@ -643,7 +634,7 @@ class TimeSeries():
         A deep copy of the original TimeSeries.
 
         """
-        return _deepcopy(self)
+        return deepcopy(self)
 
     def plot(self, data_keys=[]):
         """
@@ -674,8 +665,8 @@ class TimeSeries():
             elif isinstance(data_keys, str):
                 the_keys = [data_keys]
             else:
-                raise(TypeError('data_keys must be a string or list of strings'))
-
+                raise(TypeError(
+                        'data_keys must be a string or list of strings'))
 
         n_plots = len(the_keys)
 

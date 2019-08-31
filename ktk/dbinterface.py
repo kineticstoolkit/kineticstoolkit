@@ -103,20 +103,22 @@ def fetch_project(project_label, user='', password='', root_folder='',
                     # Now find this file
                     file_found = False
                     file_duplicate = False
+                    file_name = ''
 
                     for i in range(0, len(file_list)):
                         if dbfid in file_list[i]:
 
                             if file_found is False:
                                 file_found = True
-                                file['Filename'] = os.path.join(
+                                file_name = os.path.join(
                                             folder_list[i],
                                             file_list[i])
+                                file['Filename'] = file_name
                             else:
                                 file_duplicate = True
 
                     file_tuple = (dbfid, participant_id, session_id,
-                                  trial_id, file_id)
+                                  trial_id, file_id, file_name)
 
                     if file_duplicate:
                         project['DuplicateFiles'].append(file_tuple)
