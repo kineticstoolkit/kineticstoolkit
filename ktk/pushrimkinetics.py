@@ -17,7 +17,7 @@ from ktk import filters
 
 def read_file(filename):
 
-    dataframe = pd.read_csv(filename, header=None)
+    dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')
 
     data = dataframe.to_numpy()
 
@@ -292,7 +292,12 @@ def calculate_forces_and_moments(kinetics, calibration_id):
                 ch[:, 5] * cos(theta+4*pi/3)) + offsets[4]
 
         Mz = gains[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
-        forces_moments = np.block([Fx, Fy, Fz, Mx, My, Mz])
+        forces_moments = np.block([Fx[:, np.newaxis],
+                                   Fy[:, np.newaxis],
+                                   Fz[:, np.newaxis],
+                                   Mx[:, np.newaxis],
+                                   My[:, np.newaxis],
+                                   Mz[:, np.newaxis]])
 
     elif forcecell == 'forcecell':
 

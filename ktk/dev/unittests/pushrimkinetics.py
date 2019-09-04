@@ -34,6 +34,7 @@ class pushrimkineticsTest(unittest.TestCase):
         self.assertAlmostEqual(np.mean(kinetics.data['Index']),
                                3841.5000000000000000)
 
+
     def test_no_regressions(self):
         """Test the methods against Matlab/KTK for absence of regression."""
         # Read file
@@ -41,6 +42,18 @@ class pushrimkineticsTest(unittest.TestCase):
                 ktk._ROOT_FOLDER +
                 '/tutorials/data/pushrimkinetics/' +
                 'sample_swl_overground_propulsion_withrubber.csv')
+
+        # calculate_forces_and_moments
+        test = ktk.pushrimkinetics.calculate_forces_and_moments(
+                kinetics, 'LIO-123')  # Random calibration here.
+        forces = np.nanmean(test.data['Forces'], 0)
+        moments = np.nanmean(test.data['Moments'], 0)
+        self.assertAlmostEqual(forces[0], -8.849994801918)
+        self.assertAlmostEqual(forces[1], -11.672364564453)
+        self.assertAlmostEqual(forces[2], -2.646989586045)
+        self.assertAlmostEqual(moments[0], -0.039625979603)
+        self.assertAlmostEqual(moments[1], -0.088833025939)
+        self.assertAlmostEqual(moments[2], 2.297597031073)
 
         # Find recovery indices
         indices = np.nonzero(ktk.pushrimkinetics.find_recovery_indices(
