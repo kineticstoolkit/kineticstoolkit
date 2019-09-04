@@ -7,6 +7,7 @@ Created on Thu Jun  6 11:16:40 2019
 """
 
 import numpy as np
+from numpy import sin, cos, pi
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -168,18 +169,142 @@ def remove_sinusoids(kinetics, baseline_kinetics=None):
     return kinetics
 
 
-def calculateforcesandmoments(kinetics):
-    gains = np.array(
-            [[-0.0314, -0.0300, 0.0576, 0.0037, 0.0019, -0.0019]])
-    offsets = np.array(
-            [[-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]])
+def calculate_forces_and_moments(kinetics, calibration_id):
+    """
+    Calculate pushrim forces and moments based on raw channel values.
 
-#    # Calculate the forces and moments
-    forces_moments = gains * kinetics.data['channels'] + offsets
+    Parameters
+    ----------
+    kinetics : TimeSeries
+        Input TimeSeries that must contain a 'Channels' key in its data dict.
+    calibration_id : str
+        Calibration identifier, resulting from factory or custom calibration.
+        Available values are:
+            'PATHOKIN-93':  PATHOKIN 24" SmartWheel, Serial #93
+            'PATHOKIN-94':  PATHOKIN 24" SmartWheel, Serial #94
+            'LIO-123':      LIO 24" SmartWheel, Serial #123
+            'LIO-124':      LIO 24" SmartWheel, Serial #124
+            'LIO-125':      LIO 24" SmartWheel, Serial #125
+            'LIO-126':      LIO 26" SmartWheel, Serial #126
+            'S18-126':      PATHOKIN Summer 2018, Serial 126
+            'S18-179':      PATHOKIN Summer 2018, Serial 179
+            'S18-180':      PATHOKIN Summer 2018, Serial 180
+            'S18-181':      PATHOKIN Summer 2018, Serial 181
+            'S18-Racing':   Racing wheelchair prototype
 
-    kinetics.data['Forces'] = forces_moments[:,0:3]
+    Returns
+    -------
+    TimeSeries : a copy of the kinetics TimeSeries, with the added 'Forces'
+    and 'Moments' in the data dict. These timeseries are formatted with time
+    in first dimension and x, y, z components in second dimension.
+    """
+
+    # Get the gains and offsets based on calibration id
+    if calibration_id == 'PATHOKIN-93':
+        forcecell = 'smartwheel'
+        gains = [-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'PATHOKIN-94':
+        forcecell = 'smartwheel'
+        gains = [-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'LIO-123':
+        forcecell = 'smartwheel'
+        gains = [-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'LIO-124':
+        forcecell = 'smartwheel'
+        gains = [-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'LIO-125':
+        forcecell = 'smartwheel'
+        gains = [-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'LIO-126':
+        forcecell = 'smartwheel'
+        gains = [-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'S18-126':
+        forcecell = 'smartwheel'
+        gains = [-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'S18-179':
+        forcecell = 'smartwheel'
+        gains = [-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'S18-180':
+        forcecell = 'smartwheel'
+        gains = [-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'S18-181':
+        forcecell = 'smartwheel'
+        gains = [-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]
+        offsets = [0, 10, 0, 0, 0, 0]
+
+    elif calibration_id == 'S18-Racing-Prototype1':
+        forcecell = 'forcecell'
+        gains = [-0.0314, -0.0300, 0.0576, 0.0037, 0.0019, -0.0019]
+        offsets = [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]
+
+    else:
+        raise ValueError('This calibration ID is not available.')
+
+    gains = np.array(gains)
+    offsets = np.array(offsets)
+
+    # Calculate the forces and moments and add to the output
+    if forcecell == 'smartwheel':
+
+        # Extract channels and angle
+        ch = kinetics.data['Channels'] - 2048
+        theta = kinetics.data['Angle']
+
+        # Calculate the forces and moments
+        Fx = gains[0] * (
+                ch[:, 0] * sin(theta) +
+                ch[:, 2] * sin(theta+2*pi/3) +
+                ch[:, 4] * sin(theta+4*pi/3)) + offsets[0]
+
+        Fy = gains[1] * (
+                ch[:, 0] * cos(theta) +
+                ch[:, 2] * cos(theta+2*pi/3) +
+                ch[:, 4] * cos(theta+4*pi/3)) + offsets[1]
+
+        Fz = gains[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
+
+        Mx = gains[3] * (
+                ch[:, 1] * sin(theta) +
+                ch[:, 3] * sin(theta+2*pi/3) +
+                ch[:, 5] * sin(theta+4*pi/3)) + offsets[3]
+
+        My = gains[4] * (
+                ch[:, 1] * cos(theta) +
+                ch[:, 3] * cos(theta+2*pi/3) +
+                ch[:, 5] * cos(theta+4*pi/3)) + offsets[4]
+
+        Mz = gains[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
+        forces_moments = np.block([Fx, Fy, Fz, Mx, My, Mz])
+
+    elif forcecell == 'forcecell':
+
+        forces_moments = gains * kinetics.data['Channels'] + offsets
+
+    # Format these data in the output timeseries
+    kinetics = kinetics.copy()
+
+    kinetics.data['Forces'] = forces_moments[:, 0:3]
     kinetics.add_data_info('Forces', 'Unit', 'N')
-    kinetics.data['Moments'] = forces_moments[:,3:6]
+
+    kinetics.data['Moments'] = forces_moments[:, 3:6]
     kinetics.add_data_info('Moments', 'Unit', 'Nm')
 
     return(kinetics)
