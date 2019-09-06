@@ -34,7 +34,6 @@ class pushrimkineticsTest(unittest.TestCase):
         self.assertAlmostEqual(np.mean(kinetics.data['Index']),
                                3841.5000000000000000)
 
-
     def test_no_regressions(self):
         """Test the methods against Matlab/KTK for absence of regression."""
         # Read file

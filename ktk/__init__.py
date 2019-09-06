@@ -68,6 +68,8 @@ mpl.rcParams['figure.figsize'] = [10, 5]
 mpl.rcParams['figure.dpi'] = 75
 mpl.rcParams['lines.linewidth'] = 1
 
-# Uncomment to have an old Matlab-like color order
+# Set a custom color order that is compatible with 'char' colors, and that
+# begins with RGB so that it is compatible with most XYZ color orders in other
+# visualization softwares.
 mpl.rcParams['axes.prop_cycle'] = mpl.cycler(
-      'color', ['b', 'g', 'r', 'c', 'm', 'y', 'k'])
+      'color', ['r', 'g', 'b', 'c', 'm', 'y', 'k'])

@@ -10,6 +10,7 @@ from ktk import gui
 
 import requests
 import os
+from copy import deepcopy
 
 
 def __dir__():
@@ -113,19 +114,24 @@ def fetch_project(project_label, user='', password='', root_folder='',
                                 file_name = os.path.join(
                                             folder_list[i],
                                             file_list[i])
-                                file['Filename'] = file_name
+                                file['FileName'] = file_name
                             else:
                                 file_duplicate = True
 
-                    file_tuple = (dbfid, participant_id, session_id,
-                                  trial_id, file_id, file_name)
+                    # Add items to the file
+                    file['Participant'] = participant
+                    file['Session'] = session
+                    file['Trial'] = trial
+                    file['Summary'] = (
+                            participant_id + '.' + session_id + '.' +
+                            trial_id + '.' + file_id + '_' + dbfid)
 
                     if file_duplicate:
-                        project['DuplicateFiles'].append(file_tuple)
+                        project['DuplicateFiles'].append(file)
                     elif file_found:
-                        project['Files'].append(file_tuple)
+                        project['Files'].append(file)
                     else:
-                        project['MissingFiles'].append(file_tuple)
+                        project['MissingFiles'].append(file)
     print("Done")
 
     return project
