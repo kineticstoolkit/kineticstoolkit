@@ -15,6 +15,12 @@ from ktk import TimeSeries, TimeSeriesEvent
 from ktk import filters
 
 
+def __dir__():
+    """Generate a dir for tab-completion in IPython."""
+    return ['read_file', 'find_recovery_indices', 'remove_sinusoids',
+            'calculate_forces_and_moments', 'detect_pushes']
+
+
 def read_file(filename):
 
     dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')

@@ -42,6 +42,22 @@ def get_credentials():
 
 
 def get_folder(title='KTK', initial_folder='.'):
+    """
+    Get folder interactively using a file dialog window.
+
+    Parameters
+    ----------
+    title : str (optional)
+        The title of the file dialog. On many OSes, no title is shown so it is
+        a good idea to not rely on this title to give instructions to the user.
+        Default : 'KTK'
+    initial_folder : str (optional)
+        The initial folder of the file dialog. Default is the current folder.
+
+    Returns
+    -------
+    A string with the full path of the selected folder.
+    """
     str_call = ['get_folder', title, initial_folder]
     result = subprocess.check_output([CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)

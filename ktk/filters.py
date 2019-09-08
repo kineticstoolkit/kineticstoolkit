@@ -13,6 +13,10 @@ import scipy.signal as sgl
 import warnings
 
 
+def __dir__():
+    return ['savgol', 'smooth']
+
+
 def savgol(tsin, window_length, poly_order, deriv=0):
     """
     Apply a Savitzky-Golay filter on a TimeSeries.

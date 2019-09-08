@@ -260,7 +260,8 @@ class TimeSeries():
                 return ts
             # Next
 
-            plt.title('Left-click to add events, right-click to delete, then ENTER.')
+            plt.title(('Left-click to add events, right-click to delete, '
+                       'then ENTER.'))
             plt.pause(0.001)  # Update the plot
             coordinates = plt.ginput(99999)
 
