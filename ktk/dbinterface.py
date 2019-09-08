@@ -6,8 +6,7 @@ Functions that manage projects as hosted on Felix Chenier's BIOMEC database.
 A tutorial is also available.
 """
 
-from . import gui
-
+import ktk
 import requests
 import os
 
@@ -46,7 +45,7 @@ def fetch_project(project_label, user='', password='', root_folder='',
     """
     # Get username and password of not supplied
     if user == '':
-        user, password = gui.get_credentials()
+        user, password = ktk.gui.get_credentials()
 
     # Do the request and executes it
     print("Fetching project on %s" % url)
@@ -71,7 +70,7 @@ def fetch_project(project_label, user='', password='', root_folder='',
     print("Assigning root folder")
     # Add root folder
     if root_folder == '':
-        project['RootFolder'] = gui.get_folder()
+        project['RootFolder'] = ktk.gui.get_folder()
     else:
         project['RootFolder'] = root_folder
 

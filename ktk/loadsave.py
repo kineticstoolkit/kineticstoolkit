@@ -6,11 +6,9 @@ Created on Tue Jul 16 13:29:24 2019
 @author: felix
 """
 
+import ktk
 import scipy.io as _spio
 import subprocess as _subprocess
-
-from ktk import _ROOT_FOLDER, _ISMAC
-from ._timeseries import TimeSeries
 
 
 def loadmat(filename):
@@ -19,15 +17,15 @@ def loadmat(filename):
     """
     # The MAT file should first be converted using Matlab's own runtime
     # engine, so that Matlab's timeseries are converted to structures.
-    converted_filename = _ROOT_FOLDER + '/loadsave_converted.mat'
+    converted_filename = ktk._ROOT_FOLDER + '/loadsave_converted.mat'
 
-    if _ISMAC:
+    if ktk._ISMAC:
         script_name = '/external/ktkMATtoPython/run_ktkMATtoPython.sh'
         runtime_path = '/Applications/MATLAB/MATLAB_Runtime/v91/'
     else:
         raise(NotImplementedError('loadmat is only available on Mac for now.'))
 
-    _subprocess.run([_ROOT_FOLDER + script_name, runtime_path,
+    _subprocess.run([ktk._ROOT_FOLDER + script_name, runtime_path,
                       filename, converted_filename],
                       stderr=_subprocess.DEVNULL,
                       stdout=_subprocess.DEVNULL)
@@ -69,7 +67,7 @@ def convert_to_timeseries(the_input):
 
         if is_a_timeseries == True:
             #After checking if each key is a timeseries, and it is, we get here.
-            the_output = TimeSeries()
+            the_output = ktk.TimeSeries()
             for the_key in the_input.keys():
                 try:
                     the_output.time = the_input[the_key]['Time']

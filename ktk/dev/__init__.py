@@ -7,8 +7,8 @@ Author: Félix Chénier
 Date: July 2019
 """
 
+import ktk
 import subprocess as _subprocess
-from ktk import _ROOT_FOLDER
 import webbrowser as _webbrowser
 import inspect as _inspect
 
@@ -42,8 +42,8 @@ def run_tests(module=None):
 def generate_tutorials():
     """Update the Jupyter tutorials into their final html form."""
     _subprocess.call(['jupyter-nbconvert', '--to=html', '--execute',
-                      _ROOT_FOLDER + '/tutorials/*.ipynb'])
-    _webbrowser.open('file:///' + _ROOT_FOLDER + '/tutorials/index.html',
+                      ktk._ROOT_FOLDER + '/tutorials/*.ipynb'])
+    _webbrowser.open('file:///' + ktk._ROOT_FOLDER + '/tutorials/index.html',
                      new=2)
 
 

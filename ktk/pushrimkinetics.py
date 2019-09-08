@@ -6,13 +6,10 @@ Created on Thu Jun  6 11:16:40 2019
 @author: felix
 """
 
+import ktk
 import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
-import matplotlib.pyplot as plt
-
-from ._timeseries import TimeSeries, TimeSeriesEvent
-from . import filters
 
 
 def __dir__():
@@ -35,7 +32,7 @@ def read_file(filename):
     angle_deg = data[:, 3]
     angle_rad = np.unwrap(np.deg2rad(angle_deg))
 
-    ts = TimeSeries(time=time)
+    ts = ktk.TimeSeries(time=time)
 
     ts.data['Index'] = index
     ts.data['Channels'] = channels
@@ -357,10 +354,10 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
     """
     # Calculate the total force
     f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
-    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
+    ts_force = ktk.TimeSeries(time=tsin.time, data={'Ftot': f_tot})
 
     # Smooth the total force to avoid detecting pushes on glitches
-    ts_force = filters.smooth(ts_force, 11)
+    ts_force = ktk.filters.smooth(ts_force, 11)
 
     # Remove the median if it existed
     ts_force.data['Ftot'] = \
@@ -386,9 +383,9 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
 
             if is_first_push is False:
                 # It's not only the first push, it's also the end of a cycle.
-                events.append(TimeSeriesEvent(time[i]-1E-6, 'cycleend'))
+                events.append(ktk.TimeSeriesEvent(time[i]-1E-6, 'cycleend'))
 
-            events.append(TimeSeriesEvent(time[i], 'pushstart'))
+            events.append(ktk.TimeSeriesEvent(time[i], 'pushstart'))
 
             is_first_push = False
 
@@ -400,7 +397,7 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
             if (len(events) == 0 or  # Not grab yet
                     time[i] - events[-1].time >= minimum_push_time):
                 # Yes.
-                events.append(TimeSeriesEvent(time[i], 'pushend'))
+                events.append(ktk.TimeSeriesEvent(time[i], 'pushend'))
             else:
                 # No. Remove the last push start.
                 events = events[:-2]
