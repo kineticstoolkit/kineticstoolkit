@@ -10,7 +10,6 @@ from ktk import gui
 
 import requests
 import os
-from copy import deepcopy
 
 
 def __dir__():

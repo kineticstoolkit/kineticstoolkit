@@ -637,7 +637,7 @@ class TimeSeries():
         """
         return deepcopy(self)
 
-    def plot(self, data_keys=[]):
+    def plot(self, data_keys=None):
         """
         Plot the TimeSeries using matplotlib.
 
@@ -656,7 +656,7 @@ class TimeSeries():
         None.
 
         """
-        if len(data_keys) == 0:
+        if data_keys is None or len(data_keys) == 0:
             # Plot all
             the_keys = self.data.keys()
         else:
@@ -1089,3 +1089,28 @@ class TimeSeries():
         time1 = self.get_event_time(event_name1, event_occurence1)
         time2 = self.get_event_time(event_name2, event_occurence2)
         return self.get_ts_between_times(time1, time2)
+
+    def ui_get_ts_between_clicks(self, data_keys=None):
+        """
+        Get a subset of the TimeSeries between two mouse clicks.
+
+        Parameters
+        ----------
+        data_keys : string, list or tuple (optional)
+            String or list of strings corresponding to the signals to plot.
+            See TimeSeries.plot() for more information.
+
+        Returns
+        -------
+        TimeSeries
+
+        """
+        fig = plt.figure()
+        self.plot(data_keys)
+        plt.pause(0.001)  # Redraw
+        fig.canvas.set_window_title('Click on the left of the desired zone.')
+        left_point = plt.ginput(1)
+        fig.canvas.set_window_title('Click on the right of the desired zone.')
+        right_point = plt.ginput(1)
+        plt.close(fig)
+        return self.get_ts_between_times(left_point[0][0], right_point[0][0])

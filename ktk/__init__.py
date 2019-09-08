@@ -6,10 +6,6 @@ This is a skeleton for an all new Kinesiology toolkit based on Python instead
 of Matlab, so that it's free of Matlab limitations and more distributable and
 usable on onboard instruments.
 
-Methods:
-
-    [ktk.TimeSeries][]
-
 Author: Félix Chénier
 
 Date: Started on July 2019
@@ -18,18 +14,6 @@ import os as _os
 import platform as _platform
 import matplotlib as _mpl
 
-# ---------------------------
-# KTK Imports
-# ---------------------------
-
-from .timeseries import TimeSeries, TimeSeriesEvent
-from . import filters
-from . import loadsave
-from . import gui
-from . import pushrimkinetics
-from .dev import dev
-from . import dbinterface
-from . import _repr
 
 # ---------------------------
 # Practical private constants
@@ -53,6 +37,20 @@ if _platform.system() == 'Linux':
     _ISLINUX = True
 else:
     _ISLINUX = False
+
+
+# ---------------------------
+# KTK Imports
+# ---------------------------
+
+from .timeseries import TimeSeries, TimeSeriesEvent
+from . import filters
+from . import loadsave
+from . import gui
+from . import pushrimkinetics
+from . import dev
+from . import dbinterface
+from . import _repr
 
 
 # Modify the repr function for dicts in iPython
