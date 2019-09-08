@@ -8,6 +8,7 @@ Created on Tue Jul 16 13:29:24 2019
 
 import ktk
 import scipy.io as _spio
+import os as _os
 import subprocess as _subprocess
 
 
@@ -30,8 +31,11 @@ def loadmat(filename):
                       stderr=_subprocess.DEVNULL,
                       stdout=_subprocess.DEVNULL)
 
-    # Now load it with scipy.io
-    data = _spio.loadmat(converted_filename, struct_as_record=False, squeeze_me=True)
+    # Now load it with scipy.io then delete file
+    data = _spio.loadmat(converted_filename, struct_as_record=False,
+                         squeeze_me=True)
+    _os.remove(converted_filename)
+
 
     # Correct the keys
     data = _check_keys(data)
