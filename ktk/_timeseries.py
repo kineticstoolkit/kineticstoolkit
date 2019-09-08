@@ -15,8 +15,8 @@ from ast import literal_eval
 
 from copy import deepcopy
 
-from ktk import gui
-from ktk import _repr
+from . import gui
+from . import _repr
 
 
 class TimeSeriesEvent(list):

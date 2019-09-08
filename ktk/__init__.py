@@ -43,7 +43,7 @@ else:
 # KTK Imports
 # ---------------------------
 
-from .timeseries import TimeSeries, TimeSeriesEvent
+from ._timeseries import TimeSeries, TimeSeriesEvent
 from . import filters
 from . import loadsave
 from . import gui

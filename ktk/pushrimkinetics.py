@@ -11,8 +11,8 @@ from numpy import sin, cos, pi
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from ktk import TimeSeries, TimeSeriesEvent
-from ktk import filters
+from ._timeseries import TimeSeries, TimeSeriesEvent
+from . import filters
 
 
 def __dir__():

@@ -6,7 +6,7 @@ Functions that manage projects as hosted on Felix Chenier's BIOMEC database.
 A tutorial is also available.
 """
 
-from ktk import gui
+from . import gui
 
 import requests
 import os

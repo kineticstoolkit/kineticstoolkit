@@ -10,7 +10,7 @@ import scipy.io as _spio
 import subprocess as _subprocess
 
 from ktk import _ROOT_FOLDER, _ISMAC
-from ktk.timeseries import TimeSeries
+from ._timeseries import TimeSeries
 
 
 def loadmat(filename):

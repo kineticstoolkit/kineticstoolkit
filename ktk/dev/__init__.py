@@ -12,10 +12,10 @@ from ktk import _ROOT_FOLDER
 import webbrowser as _webbrowser
 import inspect as _inspect
 
-import ktk.dev.test_timeseries as test_timeseries
-import ktk.dev.test_loadsave as test_loadsave
-import ktk.dev.test_filters as test_filters
-import ktk.dev.test_pushrimkinetics as test_pushrimkinetics
+from . import test_timeseries
+from . import test_loadsave
+from . import test_filters
+from . import test_pushrimkinetics
 
 
 def run_tests(module=None):
