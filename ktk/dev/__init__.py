@@ -42,8 +42,8 @@ def run_tests(module=None):
 def generate_tutorials():
     """Update the Jupyter tutorials into their final html form."""
     _subprocess.call(['jupyter-nbconvert', '--to=html', '--execute',
-                      ktk._ROOT_FOLDER + '/tutorials/*.ipynb'])
-    _webbrowser.open('file:///' + ktk._ROOT_FOLDER + '/tutorials/index.html',
+                      ktk.config['RootFolder'] + '/tutorials/*.ipynb'])
+    _webbrowser.open('file:///' + ktk.config['RootFolder'] + '/tutorials/index.html',
                      new=2)
 
 

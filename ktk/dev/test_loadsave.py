@@ -8,10 +8,10 @@ Created on Fri Jul 19 14:57:41 2019
 import ktk
 
 def test_loadsave():
-    if ktk._ISMAC:
+    if ktk.config['IsMac']:
         """Test the empty constructor."""
         data = ktk.loadsave.loadmat(
-                ktk._ROOT_FOLDER +
+                ktk.config['RootFolder'] +
                 '/tutorials/data/sample_reconstructed_kinetics_racing_wheelchair.mat')
 
         assert isinstance(data['config'], dict)

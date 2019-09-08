@@ -9,17 +9,15 @@ Started on June 2019
 """
 
 import subprocess
-from ktk import _ROOT_FOLDER
 from threading import Thread
 import matplotlib.pyplot as plt
 import sys
+import ktk
 
-
-CMDGUI = _ROOT_FOLDER + "/ktk/cmdgui.py"
+CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
 
 def __dir__():
-    """Generate a dir for tab-completion in IPython."""
-    return ['button_dialog', 'get_credentials', 'get_folder']
+    return ('button_dialog', 'get_credentials', 'get_folder')
 
 
 def get_credentials():
@@ -30,7 +28,6 @@ def get_credentials():
     -------
     A tuple of two strings containing the username and password, respectively,
     or an empty tuple if the user closed the window.
-
     """
     str_call = ['get_credentials', 'KTK', 'Please enter your login information.']
     result = subprocess.check_output([CMDGUI] + str_call,

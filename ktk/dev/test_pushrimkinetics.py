@@ -19,7 +19,7 @@ def test_read_file():
     """Test the read_file function."""
     # This is a non-regression test based on the Matlab's KTK tutorial.
     kinetics = ktk.pushrimkinetics.read_file(
-            ktk._ROOT_FOLDER +
+            ktk.config['RootFolder'] +
             '/tutorials/data/pushrimkinetics/' +
             'sample_swl_overground_propulsion_withrubber.csv')
 
@@ -39,7 +39,7 @@ def test_no_regressions():
     """Test the methods against Matlab/KTK for absence of regression."""
     # Read file
     kinetics = ktk.pushrimkinetics.read_file(
-            ktk._ROOT_FOLDER +
+            ktk.config['RootFolder'] +
             '/tutorials/data/pushrimkinetics/' +
             'sample_swl_overground_propulsion_withrubber.csv')
 
@@ -70,7 +70,7 @@ def test_no_regressions():
 
     # Remove sinusoids using a baseline
     baseline = ktk.pushrimkinetics.read_file(
-            ktk._ROOT_FOLDER +
+            ktk.config['RootFolder'] +
             '/tutorials/data/pushrimkinetics/' +
             'sample_swl_overground_baseline_withrubber.csv')
     newnew_kinetics = ktk.pushrimkinetics.remove_sinusoids(kinetics,

@@ -17,15 +17,15 @@ def loadmat(filename):
     """
     # The MAT file should first be converted using Matlab's own runtime
     # engine, so that Matlab's timeseries are converted to structures.
-    converted_filename = ktk._ROOT_FOLDER + '/loadsave_converted.mat'
+    converted_filename = ktk.config['RootFolder'] + '/loadsave_converted.mat'
 
-    if ktk._ISMAC:
+    if ktk.config['IsMac']:
         script_name = '/external/ktkMATtoPython/run_ktkMATtoPython.sh'
         runtime_path = '/Applications/MATLAB/MATLAB_Runtime/v91/'
     else:
         raise(NotImplementedError('loadmat is only available on Mac for now.'))
 
-    _subprocess.run([ktk._ROOT_FOLDER + script_name, runtime_path,
+    _subprocess.run([ktk.config['RootFolder'] + script_name, runtime_path,
                       filename, converted_filename],
                       stderr=_subprocess.DEVNULL,
                       stdout=_subprocess.DEVNULL)

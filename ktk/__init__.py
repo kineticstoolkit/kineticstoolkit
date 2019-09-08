@@ -16,28 +16,16 @@ import matplotlib as _mpl
 
 
 # ---------------------------
-# Practical private constants
+# Set KTK configuration
 # ---------------------------
-
 # Root folder (KTK installation)
-_ROOT_FOLDER = _os.path.dirname(_os.path.dirname(__file__))
+config = dict()
+config['RootFolder'] = _os.path.dirname(_os.path.dirname(__file__))
 
 # Operating system
-if _platform.system() == 'Windows':
-    _ISPC = True
-else:
-    _ISPC = False
-
-if _platform.system() == 'Darwin':
-    _ISMAC = True
-else:
-    _ISMAC = False
-
-if _platform.system() == 'Linux':
-    _ISLINUX = True
-else:
-    _ISLINUX = False
-
+config['IsPC'] = True if _platform.system() == 'Windows' else False
+config['IsMac'] = True if _platform.system() == 'Darwin' else False
+config['IsLinux'] = True if _platform.system() == 'Linux' else False
 
 # ---------------------------
 # KTK Imports
@@ -56,8 +44,8 @@ from . import _repr
 # Modify the repr function for dicts in iPython
 try:
     import IPython as _IPython
-    ip = _IPython.get_ipython()
-    formatter = ip.display_formatter.formatters['text/plain']
+    _ip = _IPython.get_ipython()
+    formatter = _ip.display_formatter.formatters['text/plain']
     formatter.for_type(dict, lambda n, p, cycle:
                        _repr._ktk_format_dict(n, p, cycle))
 except Exception:
