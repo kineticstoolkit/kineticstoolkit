@@ -55,7 +55,7 @@ from . import _repr
 
 # Modify the repr function for dicts in iPython
 try:
-    import IPython as _Ipython
+    import IPython as _IPython
     ip = _IPython.get_ipython()
     formatter = ip.display_formatter.formatters['text/plain']
     formatter.for_type(dict, lambda n, p, cycle:
