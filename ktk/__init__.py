@@ -35,6 +35,7 @@ from ._timeseries import TimeSeries, TimeSeriesEvent
 from . import filters
 from . import loadsave
 from . import gui
+from ._tools import explore, terminal
 from . import pushrimkinetics
 from . import dev
 from . import dbinterface
