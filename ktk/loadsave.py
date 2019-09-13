@@ -13,6 +13,8 @@ import subprocess as _subprocess
 import numpy as np
 import pandas as pd
 from ast import literal_eval
+import csv
+import warnings
 
 def _save_to_current_folder(variable, variable_name):
     if isinstance(variable, dict):
@@ -23,15 +25,65 @@ def _save_to_current_folder(variable, variable_name):
 
         _os.chdir('..')
 
-    elif isinstance(variable, np.ndarray):
-        file = open(variable_name + '.ndarray.txt', 'w')
+    elif (isinstance(variable, str) or
+            isinstance(variable, list) or
+            isinstance(variable, tuple) or
+            isinstance(variable, float) or
+            isinstance(variable, int) or
+            isinstance(variable, complex) or
+            isinstance(variable, bool) or
+            isinstance(variable, range)):
+        file = open(variable_name + '.builtin.txt', 'w')
         file.write(str(variable))
         file.close()
 
+    elif isinstance(variable, np.ndarray):
+        # Convert the array to a dataframe
+        dataframe = dict_of_arrays_to_dataframe({'Data': variable})
+        dataframe.to_csv(variable_name + '.ndarray.txt',
+                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                         index=False)
+
+    elif isinstance(variable, pd.Series):
+        variable.to_csv(variable_name + '.Series.txt',
+                        sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                        index=False)
+
+    elif isinstance(variable, pd.DataFrame):
+        variable.to_csv(variable_name + '.DataFrame.txt',
+                        sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                        index=False)
+
+    elif isinstance(variable, ktk.TimeSeries):
+        _os.mkdir(variable_name + '.TimeSeries')
+        _os.chdir(variable_name + '.TimeSeries')
+
+        # data and time
+        np_data = variable.data
+        np_data['time'] = variable.time
+        dataframe = dict_of_arrays_to_dataframe(np_data)
+        _save_to_current_folder(dataframe, 'data')
+
+        # events
+        if len(variable.events) > 0:
+            df_events = pd.DataFrame(variable.events)
+            df_events.columns = ['time', 'name']
+        else:
+            df_events = pd.DataFrame(columns=['time', 'name'])
+        _save_to_current_folder(df_events, 'events')
+
+        # info
+        df_time_info = pd.DataFrame({'time': variable.time_info})
+        df_data_info = pd.DataFrame(variable.data_info)
+        df_info = pd.concat([df_time_info, df_data_info],
+                            axis=1, sort=False)
+        _save_to_current_folder(df_info, 'info')
+
+        _os.chdir('..')
+
     else:
-        file = open(variable_name + '.txt', 'w')
-        file.write(str(variable))
-        file.close()
+        warnings.warn(f'The variable {variable_name} could not be saved '
+                      'because its type is not supported.')
 
 
 def save(filename, variable):
@@ -39,7 +91,7 @@ def save(filename, variable):
     _save_to_current_folder(variable, filename)
 
 
-def dataframe_to_dict(dataframe):
+def dataframe_to_dict_of_arrays(dataframe):
     """
     Convert a pandas DataFrame to a dict of numpy ndarrays.
 
@@ -61,8 +113,9 @@ def dataframe_to_dict(dataframe):
     a dict of arrays is returned. In this case, this dict would have the keys
     'Forces' and 'Moments', which would each contain an array.
 
-    This function mirrors the array_to_dataframe function. Its use is mainly
-    to convert high-dimension (>2) dataframes to high-dimension (>2) arrays.
+    This function mirrors the dict_of_arrays_to_dataframe function. Its use is
+    mainly to convert high-dimension (>2) dataframes to high-dimension (>2)
+    arrays.
     """
     # Init output
     out = dict()
@@ -125,7 +178,7 @@ def dataframe_to_dict(dataframe):
     return out
 
 
-def dict_to_dataframe(dict_of_arrays):
+def dict_of_arrays_to_dataframe(dict_of_arrays):
     """
     Convert a numpy ndarray of any dimension to a pandas DataFrame.
 
@@ -149,7 +202,7 @@ def dict_to_dataframe(dict_of_arrays):
     Example
     -------
         >>> datadict = {'data': np.random.rand(10, 2, 2)}
-        >>> dataframe = ktk.loadsave.dict_to_dataframe(datadict)
+        >>> dataframe = ktk.loadsave.dict_of_arrays_to_dataframe(datadict)
 
         >>> print(dataframe)
             data[0,0]   data[0,1]   data[1,0]   data[1,1]

@@ -342,7 +342,7 @@ class TimeSeries():
         df_time = pd.DataFrame(self.time)
         df_time.columns = ['time']
 
-        df_data = ktk.loadsave.dict_to_dataframe(self.data)
+        df_data = ktk.loadsave.dict_of_arrays_to_dataframe(self.data)
 
         # Merge these dataframes
         df_out = pd.concat([df_time, df_data], axis=1)
@@ -368,13 +368,13 @@ class TimeSeries():
 
         return dict_out
 
-    def from_dataframes(data, events=pd.DataFrame(), info=pd.DataFrame()):
+    def from_dataframes(dataframe, events=pd.DataFrame(), info=pd.DataFrame()):
         """
         Generate a TimeSeries based on pandas DataFrames.
 
         Parameters
         ----------
-        data : DataFrame
+        dataframe : DataFrame
             Generates the TimeSeries' time and data fields.
         events : DataFrame, optional
             Generates the TimeSeries' events field.
@@ -386,76 +386,16 @@ class TimeSeries():
         TimeSeries.
 
         See the ``TimeSeries.to_dataframes`` method for more information on the
-        shapes of data, events and info DataFrames.
+        shapes of dataframe, events and info DataFrames.
 
         """
         out = TimeSeries()
 
         # DATA AND TIME
         # -------------
-
-        # Determine the time length
-        time = data.time
-
-        # Determine the data fields
-        all_column_names = data.columns
-        all_data_names = []
-        all_data_highest_indices = []
-
-        for one_column_name in all_column_names:
-            opening_bracket_position = one_column_name.find('[')
-            if opening_bracket_position == -1:
-                # No dimension for this data
-                all_data_names.append(one_column_name)
-                all_data_highest_indices.append([len(time)-1])
-            else:
-                # Extract name and dimension
-                data_name = one_column_name[0:opening_bracket_position]
-                data_dimension = literal_eval(
-                        '[' + str(len(time)-1) + ',' +
-                        one_column_name[opening_bracket_position+1:])
-
-                all_data_names.append(data_name)
-                all_data_highest_indices.append(data_dimension)
-
-        # Create the timeseries data
-
-        # Create a set of unique_data_names
-        unique_data_names = []
-        for data_name in all_data_names:
-            if data_name not in unique_data_names:
-                unique_data_names.append(data_name)
-
-        for unique_data_name in unique_data_names:
-
-            # Create a Pandas DataFrame with only the columns that match
-            # this unique data name. In the same time, check the final
-            # dimension of the data to know to which dimension we will
-            # reshape the DataFrame's data.
-            sub_dataframe = pd.DataFrame()
-            unique_data_highest_index = []
-            for i in range(0, len(all_data_names)):
-                if all_data_names[i] == unique_data_name:
-                    sub_dataframe[all_column_names[i]] = (
-                            data[all_column_names[i]])
-                    unique_data_highest_index.append(
-                            all_data_highest_indices[i])
-
-            # Sort the sub-dataframe's columns
-            sub_dataframe.reindex(sorted(sub_dataframe.columns), axis=1)
-
-            # Calculate the data dimension we must reshape to
-            unique_data_dimension = np.max(
-                    np.array(unique_data_highest_index)+1, axis=0)
-
-            # Convert the dataframe to a np.array, then reshape.
-            new_data = sub_dataframe.to_numpy()
-            new_data = np.reshape(new_data, unique_data_dimension)
-
-            if unique_data_name == 'time':
-                out.time = new_data
-            else:
-                out.data[unique_data_name] = new_data
+        out.data = ktk.loadsave.dataframe_to_dict_of_arrays(dataframe)
+        out.time = out.data['time']
+        out.data.pop('time', None)
 
         # EVENTS
         # ------
