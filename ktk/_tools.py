@@ -9,23 +9,54 @@ import os
 import subprocess
 import ktk
 
-def explore():
-    """Open a Windows Explorer or macOS Finder window in the current folder."""
-    folder_name = os.getcwd()
+def explore(folder_name=''):
+    """
+    Open an Explorer window (on Windows) or a Finder window (on macOS)
+    
+    Parameters
+    ----------
+    folder_name : str (optional)
+        The name of the folder to open the window in. Default is the current
+        folder.
+    
+    Returns
+    -------
+    None.
+    """
+    if not folder_name:
+        folder_name = os.getcwd()
+
     if ktk.config['IsPC'] is True:
-        subprocess.call(['explorer', folder_name])
+        os.system(f'start explorer {folder_name}')
+
     elif ktk.config['IsMac'] is True:
         subprocess.call(['open', folder_name])
+
     else:
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
 
 
-def terminal():
-    """Open a terminal in the current folder."""
-    folder_name = os.getcwd()
+def terminal(folder_name=''):
+    """
+    Open a terminal window.
+    
+    Parameters
+    ----------
+    folder_name : str (optional)
+        The name of the folder to open the terminal window in. Default is the
+        current folder.
+    
+    Returns
+    -------
+    None.
+    """
+    if not folder_name:
+        folder_name = os.getcwd()
+        
     if ktk.config['IsPC'] is True:
-        subprocess.call(['explorer', folder_name])
+        os.system(f'cmd /c start /D {folder_name} cmd')
+        
     elif ktk.config['IsMac'] is True:
         subprocess.call([
                 'osascript',
