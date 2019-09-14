@@ -15,50 +15,80 @@ import pandas as pd
 from ast import literal_eval
 import csv
 import warnings
+import shutil
+
 
 def _save_to_current_folder(variable, variable_name):
-    if isinstance(variable, dict):
+    if type(variable) == dict:
         _os.mkdir(variable_name + '.dict')
         _os.chdir(variable_name + '.dict')
-        for variable_name in variable.keys():
-            _save_to_current_folder(variable[variable_name], variable_name)
-
+        for dict_key, dict_variable in variable.items():
+            _save_to_current_folder(dict_variable, dict_key)
         _os.chdir('..')
 
-    elif (isinstance(variable, str) or
-            isinstance(variable, list) or
-            isinstance(variable, tuple) or
-            isinstance(variable, float) or
-            isinstance(variable, int) or
-            isinstance(variable, complex) or
-            isinstance(variable, bool) or
-            isinstance(variable, range)):
-        file = open(variable_name + '.builtin.txt', 'w')
+    elif type(variable) == list:
+        _os.mkdir(variable_name + '.list')
+        _os.chdir(variable_name + '.list')
+        length = len(variable)
+        for i in range(length):
+            _save_to_current_folder(variable[i], str(i))
+        _os.chdir('..')
+
+    elif type(variable) == tuple:
+        _os.mkdir(variable_name + '.tuple')
+        _os.chdir(variable_name + '.tuple')
+        length = len(variable)
+        for i in range(length):
+            _save_to_current_folder(variable[i], str(i))
+        _os.chdir('..')
+
+    elif (type(variable) == str):
+        file = open(variable_name + '.str.txt', 'w')
         file.write(str(variable))
         file.close()
 
-    elif isinstance(variable, np.ndarray):
-        # Convert the array to a dataframe
+    elif (type(variable) == float):
+        file = open(variable_name + '.float.txt', 'w')
+        file.write(str(variable))
+        file.close()
+
+    elif (type(variable) == int):
+        file = open(variable_name + '.int.txt', 'w')
+        file.write(str(variable))
+        file.close()
+
+    elif (type(variable) == complex):
+        file = open(variable_name + '.complex.txt', 'w')
+        file.write(str(variable))
+        file.close()
+
+    elif (type(variable) == bool):
+        file = open(variable_name + '.bool.txt', 'w')
+        file.write(str(variable))
+        file.close()
+
+    elif (type(variable) == np.ndarray):
         dataframe = dict_of_arrays_to_dataframe({'Data': variable})
         dataframe.to_csv(variable_name + '.ndarray.txt',
                          sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                         index=False)
+                         index=False, header=True)
 
-    elif isinstance(variable, pd.Series):
+    elif (type(variable) == pd.Series):
         variable.to_csv(variable_name + '.Series.txt',
                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                        index=False)
+                        index=False, header=True)
 
-    elif isinstance(variable, pd.DataFrame):
+    elif (type(variable) == pd.DataFrame):
         variable.to_csv(variable_name + '.DataFrame.txt',
                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                        index=False)
+                        index=False, header=True)
 
-    elif isinstance(variable, ktk.TimeSeries):
+    elif (type(variable) == ktk.TimeSeries):
         _os.mkdir(variable_name + '.TimeSeries')
         _os.chdir(variable_name + '.TimeSeries')
 
         # data and time
+        variable = variable.copy()
         np_data = variable.data
         np_data['time'] = variable.time
         dataframe = dict_of_arrays_to_dataframe(np_data)
@@ -88,7 +118,15 @@ def _save_to_current_folder(variable, variable_name):
 
 def save(filename, variable):
     """Save data in a KTK-supported way."""
+    try:
+        shutil.rmtree(filename)
+    except Exception:
+        pass
+    _os.mkdir(filename)
+    _os.chdir(filename)
     _save_to_current_folder(variable, filename)
+    _os.chdir('..')
+    shutil.make_archive(filename, 'zip', filename)
 
 
 def dataframe_to_dict_of_arrays(dataframe):
