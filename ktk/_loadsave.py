@@ -91,7 +91,51 @@ def _save_to_current_folder(variable, variable_name):
 
 
 def save(filename, variable):
-    """Save data in a KTK-supported way."""
+    """
+    Save a variable in a zip file.
+
+    The supported variable types are:
+
+        - Any basic builtin type that can be reconstructed using its string
+          representation. For example, if str(the_variable) evaluates to the
+          variable, then this variable can be saved.
+          This includes str, int, float, complex and bool.
+          This also includes lists and tuples if they contain such variables
+          (if they can also be reconstructed completely by evaluating their
+          string representation).
+        - Multidimensional NumPy Arrays. They are saved as txt files, where
+          each line correspond to the first dimension of the array, and where
+          all other dimensions are reshaped as columns. The column headers
+          include brackets so that it is clear what column corresponds to
+          what dimension of the original multidimensional array.
+        - ktkTimeSeries. They are saved as a folder that contains:
+            - data.txt : The time and data as a table. Multidimensional arrays
+              are reshaped as for the NumPy arrays.
+            - events.txt : A list of events as a table, with a column of time
+              and a column of event names.
+            - info.txt : A list of time and data info as a table.
+        - Dictionaries. They are saved as folders, where the content of the
+          folder corresponds to the keys of the dict. Thus, nested dicts
+          are saved as nested folders, and Dictionaries of NumPy arrays or
+          ktk.TimeSeries are saved as txt files inside a structure file
+          hierarchy.
+
+    The function generates a warning if a variable type is unsupported, and
+    the corresponding variable is not saved.
+
+    Parameters
+    ----------
+    filename : str
+        The name of the output file. The '.zip' extension is optional, it
+        is added automatically.
+    variable : <any supported type>
+        The variable to be saved. To save multiple variables at once, consider
+        saving a dict.
+
+    Returns
+    -------
+    None.
+    """
     # Remove .zip extension if present (to obtain only the base name)
     if filename.lower().endswith('.zip'):
         filename = filename[0:-len('.zip')]
@@ -185,7 +229,25 @@ def _load_current_folder():
 
 
 def load(filename):
-    """Load a KTK data file."""
+    """
+    Load a KTK zip data file.
+
+    Load a data file as saved using the ktk.save function.
+
+    Parameters
+    ----------
+    filename : str
+        The path of the zip file to load.
+
+    Returns
+    -------
+    The loaded variable.
+    """
+    try:
+        shutil.rmtree('KTK_LOAD_TEMPORARY_FOLDER')
+    except Exception:
+        pass
+
     _os.mkdir('KTK_LOAD_TEMPORARY_FOLDER')
     shutil.unpack_archive(filename, extract_dir='KTK_LOAD_TEMPORARY_FOLDER')
     _os.chdir('KTK_LOAD_TEMPORARY_FOLDER')

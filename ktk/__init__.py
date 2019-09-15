@@ -32,8 +32,8 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 # ---------------------------
 
 from ._timeseries import TimeSeries, TimeSeriesEvent
+from ._loadsave import load, loadmat, save
 from . import filters
-from . import loadsave
 from . import gui
 from ._tools import explore, terminal
 from . import pushrimkinetics

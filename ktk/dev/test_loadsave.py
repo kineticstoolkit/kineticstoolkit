@@ -13,7 +13,7 @@ import os
 def test_loadmat():
     if ktk.config['IsMac']:
         """Test the empty constructor."""
-        data = ktk.loadsave.loadmat(
+        data = ktk.loadmat(
                 ktk.config['RootFolder'] +
                 '/tutorials/data/sample_reconstructed_kinetics_racing_wheelchair.mat')
 
@@ -64,8 +64,8 @@ def test_save_load():
     a['TestTuple'] = (1, 'test2', False)
     a['TestBigList'] = list(np.arange(-1, 1, 1E-4))
 
-    ktk.loadsave.save('test.ktk.zip', a)
-    b = ktk.loadsave.load('test.ktk.zip')
+    ktk.save('test.ktk.zip', a)
+    b = ktk.load('test.ktk.zip')
     os.remove('test.ktk.zip')
 
     assert a['TestTimeSeries'] == b['TestTimeSeries']
