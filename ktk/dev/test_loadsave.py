@@ -8,6 +8,7 @@ Created on Fri Jul 19 14:57:41 2019
 import ktk
 import numpy as np
 import pandas as pd
+import os
 
 def test_loadmat():
     if ktk.config['IsMac']:
@@ -33,22 +34,47 @@ def test_loadmat():
         print("BECAUSE THIS FUNCTION IS NOT IMPLEMENTED YET ON WINDOWS.")
         print("======================================================")
 
-def test_save():
-    """Test the save function."""
+
+def test_save_load():
+    """Test the save and load functions."""
     # Create a test variable with all possible supported combinations
     random_variable = np.random.rand(30, 3, 3)
+    ts = ktk.TimeSeries()
+    ts.time = np.linspace(0, 9, 10)
+    ts.data['signal1'] = np.random.rand(10)
+    ts.data['signal2'] = np.random.rand(10, 3)
+    ts.data['signal3'] = np.random.rand(10, 3, 3)
+    ts.add_data_info('signal1', 'Unit', 'm/s')
+    ts.add_data_info('signal2', 'Unit', 'km/h')
+    ts.add_data_info('signal3', 'Unit', 'N')
+    ts.add_data_info('signal3', 'SignalType', 'force')
+    ts.add_event(1.53, 'TestEvent1')
+    ts.add_event(7.2, 'TestEvent2')
+    ts.add_event(1, 'TestEvent3')
+
     a = dict()
+    a['TestTimeSeries'] = ts
     a['TestInt'] = 10
-    a['TestFloat'] = 10.843
+    a['TestFloat'] = np.pi
     a['TestBool'] = True
     a['TestStr'] = """Test string with 'quotes' and "double quotes"."""
     a['TestComplex'] = (34.05+2j)
     a['TestArray'] = random_variable
-    a['TestDataFrame'] = pd.DataFrame(random_variable[:, :, 0])
-    a['TestSeries'] = pd.Series(random_variable[:, 0, 0])
-    a['TestTimeSeries'] = ktk.TimeSeries(time=np.arange(30))
-    a['TestTimeSeries'].data = {'data1': random_variable,
-                                'data2': random_variable[:, 0, 0]}
-    a['TestList'] = [0, 'test', a['TestTimeSeries']]
-    a['TestTuple'] = (1, 'test2', a['TestDataFrame'])
+    a['TestList'] = [0, 'test', True]
+    a['TestTuple'] = (1, 'test2', False)
+    a['TestBigList'] = list(np.arange(-1, 1, 1E-4))
 
+    ktk.loadsave.save('test.ktk.zip', a)
+    b = ktk.loadsave.load('test.ktk.zip')
+    os.remove('test.ktk.zip')
+
+    assert a['TestTimeSeries'] == b['TestTimeSeries']
+    assert a['TestInt'] == b['TestInt']
+    assert a['TestFloat'] == b['TestFloat']
+    assert a['TestBool'] == b['TestBool']
+    assert a['TestStr'] == b['TestStr']
+    assert a['TestComplex'] == b['TestComplex']
+    assert np.sum(np.abs(a['TestArray'] - b['TestArray'])) < 1E-10
+    assert a['TestList'] == b['TestList']
+    assert a['TestTuple'] == b['TestTuple']
+    assert a['TestBigList'] == b['TestBigList']

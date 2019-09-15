@@ -26,64 +26,18 @@ def _save_to_current_folder(variable, variable_name):
             _save_to_current_folder(dict_variable, dict_key)
         _os.chdir('..')
 
-    elif type(variable) == list:
-        _os.mkdir(variable_name + '.list')
-        _os.chdir(variable_name + '.list')
-        length = len(variable)
-        for i in range(length):
-            _save_to_current_folder(variable[i], str(i))
-        _os.chdir('..')
-
-    elif type(variable) == tuple:
-        _os.mkdir(variable_name + '.tuple')
-        _os.chdir(variable_name + '.tuple')
-        length = len(variable)
-        for i in range(length):
-            _save_to_current_folder(variable[i], str(i))
-        _os.chdir('..')
-
-    elif (type(variable) == str):
+    elif type(variable) == str:
         file = open(variable_name + '.str.txt', 'w')
         file.write(str(variable))
         file.close()
 
-    elif (type(variable) == float):
-        file = open(variable_name + '.float.txt', 'w')
-        file.write(str(variable))
-        file.close()
-
-    elif (type(variable) == int):
-        file = open(variable_name + '.int.txt', 'w')
-        file.write(str(variable))
-        file.close()
-
-    elif (type(variable) == complex):
-        file = open(variable_name + '.complex.txt', 'w')
-        file.write(str(variable))
-        file.close()
-
-    elif (type(variable) == bool):
-        file = open(variable_name + '.bool.txt', 'w')
-        file.write(str(variable))
-        file.close()
-
-    elif (type(variable) == np.ndarray):
+    elif type(variable) == np.ndarray:
         dataframe = dict_of_arrays_to_dataframe({'Data': variable})
         dataframe.to_csv(variable_name + '.ndarray.txt',
                          sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                         index=False, header=True)
+                         header=True)
 
-    elif (type(variable) == pd.Series):
-        variable.to_csv(variable_name + '.Series.txt',
-                        sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                        index=False, header=True)
-
-    elif (type(variable) == pd.DataFrame):
-        variable.to_csv(variable_name + '.DataFrame.txt',
-                        sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                        index=False, header=True)
-
-    elif (type(variable) == ktk.TimeSeries):
+    elif type(variable) == ktk.TimeSeries:
         _os.mkdir(variable_name + '.TimeSeries')
         _os.chdir(variable_name + '.TimeSeries')
 
@@ -92,7 +46,9 @@ def _save_to_current_folder(variable, variable_name):
         np_data = variable.data
         np_data['time'] = variable.time
         dataframe = dict_of_arrays_to_dataframe(np_data)
-        _save_to_current_folder(dataframe, 'data')
+        dataframe.to_csv('data.txt',
+                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                         index=False)
 
         # events
         if len(variable.events) > 0:
@@ -100,33 +56,146 @@ def _save_to_current_folder(variable, variable_name):
             df_events.columns = ['time', 'name']
         else:
             df_events = pd.DataFrame(columns=['time', 'name'])
-        _save_to_current_folder(df_events, 'events')
+
+        df_events.to_csv('events.txt',
+                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                         index=False)
 
         # info
         df_time_info = pd.DataFrame({'time': variable.time_info})
         df_data_info = pd.DataFrame(variable.data_info)
         df_info = pd.concat([df_time_info, df_data_info],
                             axis=1, sort=False)
-        _save_to_current_folder(df_info, 'info')
+
+        df_info.to_csv('info.txt',
+                       sep='\t', quoting=csv.QUOTE_NONNUMERIC)
 
         _os.chdir('..')
 
     else:
-        warnings.warn(f'The variable {variable_name} could not be saved '
-                      'because its type is not supported.')
+        # If the variable's string form is sufficient to load it back, then
+        # save it.
+        string = str(variable)
+        try:
+            test_variable = literal_eval(string)
+        except Exception:
+            test_variable = None
+
+        if test_variable == variable:
+            file = open(variable_name + '.eval.txt', 'w')
+            file.write(string)
+            file.close()
+        else:
+            warnings.warn(f'The variable {variable_name} could not be saved '
+                          'because its type or contents is not supported.')
 
 
 def save(filename, variable):
     """Save data in a KTK-supported way."""
+    # Remove .zip extension if present (to obtain only the base name)
+    if filename.lower().endswith('.zip'):
+        filename = filename[0:-len('.zip')]
+
     try:
-        shutil.rmtree(filename)
+        shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
     except Exception:
         pass
-    _os.mkdir(filename)
-    _os.chdir(filename)
+    _os.mkdir('KTK_SAVE_TEMPORARY_FOLDER')
+    _os.chdir('KTK_SAVE_TEMPORARY_FOLDER')
     _save_to_current_folder(variable, filename)
     _os.chdir('..')
-    shutil.make_archive(filename, 'zip', filename)
+    shutil.make_archive(filename, 'zip', 'KTK_SAVE_TEMPORARY_FOLDER')
+    shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
+
+
+def _load_current_folder():
+    variable = dict()
+    list_of_files = _os.listdir('.')
+    for file_name in list_of_files:
+
+        if file_name.endswith('.dict'):
+            key = file_name[0:-len('.dict')]
+            _os.chdir(file_name)
+            variable[key] = _load_current_folder()
+            _os.chdir('..')
+
+        elif file_name.endswith('.str.txt'):
+            key = file_name[0:-len('.str.txt')]
+            file = open(file_name, 'r')
+            variable[key] = file.read()
+            file.close()
+
+        elif file_name.endswith('.eval.txt'):
+            key = file_name[0:-len('.eval.txt')]
+            file = open(file_name, 'r')
+            variable[key] = literal_eval(file.read())
+            file.close()
+
+        elif file_name.endswith('.ndarray.txt'):
+            key = file_name[0:-len('.ndarray.txt')]
+            dataframe = pd.read_csv(file_name, sep='\t',
+                                    quoting=csv.QUOTE_NONNUMERIC)
+            dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
+            variable[key] = dict_of_arrays['Data']
+
+        elif file_name.endswith('.TimeSeries'):
+            key = file_name[0:-len('.TimeSeries')]
+
+            _os.chdir(file_name)
+
+            data = pd.read_csv('data.txt',
+                               sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+            events = pd.read_csv('events.txt',
+                                 sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+            info = pd.read_csv('info.txt',
+                               sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                               index_col=0)
+
+            out = ktk.TimeSeries()
+
+            # DATA AND TIME
+            # -------------
+            out.data = dataframe_to_dict_of_arrays(data)
+            out.time = out.data['time']
+            out.data.pop('time', None)
+
+            # EVENTS
+            # ------
+            for i_event in range(0, len(events)):
+                out.add_event(events.time[i_event], events.name[i_event])
+
+            # INFO
+            # ----
+            n_rows = len(info)
+            row_names = list(info.index)
+            for column_name in info.columns:
+                for i_row in range(0, n_rows):
+                    one_info = info[column_name][i_row]
+                    if str(one_info).lower() != 'nan':
+                        if column_name == 'time':
+                            out.time_info[row_names[i_row]] = one_info
+                        else:
+                            out.add_data_info(column_name, row_names[i_row],
+                                              one_info)
+
+            variable[key] = out
+            _os.chdir('..')
+
+    return variable
+
+
+def load(filename):
+    """Load a KTK data file."""
+    _os.mkdir('KTK_LOAD_TEMPORARY_FOLDER')
+    shutil.unpack_archive(filename, extract_dir='KTK_LOAD_TEMPORARY_FOLDER')
+    _os.chdir('KTK_LOAD_TEMPORARY_FOLDER')
+    variable = _load_current_folder()
+    _os.chdir('..')
+    shutil.rmtree('KTK_LOAD_TEMPORARY_FOLDER')
+    # Extract the first element (and only one) of this variable, to mirror
+    # save function.
+    for key, value in variable.items():
+        return value
 
 
 def dataframe_to_dict_of_arrays(dataframe):
