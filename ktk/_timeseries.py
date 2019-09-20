@@ -25,14 +25,19 @@ class TimeSeriesEvent(list):
     """
     Define an event in a timeseries.
 
-    Attributes
+    This class derives from the list class. A TimeSeriesEvent is always a
+    two-items list with the first item being the time and the second item
+    being the name of the event.
+
+    Dependent properties time and name are added for convenience.
+
+    Properties
     ----------
     time : float
         The time at which the event happened.
     name : str
         The name of the event.
     """
-
     def __init__(self, time=0., name='event'):
         list.__init__(self)
         self.append(float(time))

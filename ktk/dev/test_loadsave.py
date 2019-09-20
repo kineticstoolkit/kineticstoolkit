@@ -7,32 +7,11 @@ Created on Fri Jul 19 14:57:41 2019
 """
 import ktk
 import numpy as np
-import pandas as pd
 import os
 
-def test_loadmat():
-    if ktk.config['IsMac']:
-        """Test the empty constructor."""
-        data = ktk.loadmat(
-                ktk.config['RootFolder'] +
-                '/tutorials/data/sample_reconstructed_kinetics_racing_wheelchair.mat')
 
-        assert isinstance(data['config'], dict)
-        assert isinstance(data['kinematics'], dict)
-        assert isinstance(data['config']['MarkerLabels'], dict)
-        assert isinstance(data['config']['Segments'], dict)
-        assert isinstance(data['config']['RigidBodies'], dict)
-        assert isinstance(data['config']['VirtualMarkers'], dict)
-        assert isinstance(data['config']['VirtualRigidBodies'], dict)
-        assert isinstance(data['kinematics']['Markers'], dict)
-        assert isinstance(data['kinematics']['RigidBodies'], dict)
-        assert isinstance(data['kinematics']['VirtualRigidBodies'], dict)
-
-    else:
-        print("======================================================")
-        print("WARNING - NO UNITTEST FOR ktk.loadsave.loadmat WAS RUN")
-        print("BECAUSE THIS FUNCTION IS NOT IMPLEMENTED YET ON WINDOWS.")
-        print("======================================================")
+# test_loadmat():
+# This test is implicitly done with test_read_c3d_file in ktk.kinematics
 
 
 def test_save_load():

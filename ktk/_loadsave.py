@@ -7,24 +7,24 @@ Created on Tue Jul 16 13:29:24 2019
 """
 
 import ktk
-import scipy.io as _spio
-import os as _os
-import subprocess as _subprocess
+import scipy.io as spio
+import os
 import numpy as np
 import pandas as pd
 from ast import literal_eval
 import csv
 import warnings
 import shutil
+from copy import deepcopy
 
 
 def _save_to_current_folder(variable, variable_name):
     if type(variable) == dict:
-        _os.mkdir(variable_name + '.dict')
-        _os.chdir(variable_name + '.dict')
+        os.mkdir(variable_name + '.dict')
+        os.chdir(variable_name + '.dict')
         for dict_key, dict_variable in variable.items():
             _save_to_current_folder(dict_variable, dict_key)
-        _os.chdir('..')
+        os.chdir('..')
 
     elif type(variable) == str:
         file = open(variable_name + '.str.txt', 'w')
@@ -38,8 +38,8 @@ def _save_to_current_folder(variable, variable_name):
                          header=True)
 
     elif type(variable) == ktk.TimeSeries:
-        _os.mkdir(variable_name + '.TimeSeries')
-        _os.chdir(variable_name + '.TimeSeries')
+        os.mkdir(variable_name + '.TimeSeries')
+        os.chdir(variable_name + '.TimeSeries')
 
         # data and time
         variable = variable.copy()
@@ -70,7 +70,7 @@ def _save_to_current_folder(variable, variable_name):
         df_info.to_csv('info.txt',
                        sep='\t', quoting=csv.QUOTE_NONNUMERIC)
 
-        _os.chdir('..')
+        os.chdir('..')
 
     else:
         # If the variable's string form is sufficient to load it back, then
@@ -144,24 +144,24 @@ def save(filename, variable):
         shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
     except Exception:
         pass
-    _os.mkdir('KTK_SAVE_TEMPORARY_FOLDER')
-    _os.chdir('KTK_SAVE_TEMPORARY_FOLDER')
+    os.mkdir('KTK_SAVE_TEMPORARY_FOLDER')
+    os.chdir('KTK_SAVE_TEMPORARY_FOLDER')
     _save_to_current_folder(variable, filename)
-    _os.chdir('..')
+    os.chdir('..')
     shutil.make_archive(filename, 'zip', 'KTK_SAVE_TEMPORARY_FOLDER')
     shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
 
 
 def _load_current_folder():
     variable = dict()
-    list_of_files = _os.listdir('.')
+    list_of_files = os.listdir('.')
     for file_name in list_of_files:
 
         if file_name.endswith('.dict'):
             key = file_name[0:-len('.dict')]
-            _os.chdir(file_name)
+            os.chdir(file_name)
             variable[key] = _load_current_folder()
-            _os.chdir('..')
+            os.chdir('..')
 
         elif file_name.endswith('.str.txt'):
             key = file_name[0:-len('.str.txt')]
@@ -185,7 +185,7 @@ def _load_current_folder():
         elif file_name.endswith('.TimeSeries'):
             key = file_name[0:-len('.TimeSeries')]
 
-            _os.chdir(file_name)
+            os.chdir(file_name)
 
             data = pd.read_csv('data.txt',
                                sep='\t', quoting=csv.QUOTE_NONNUMERIC)
@@ -223,7 +223,7 @@ def _load_current_folder():
                                               one_info)
 
             variable[key] = out
-            _os.chdir('..')
+            os.chdir('..')
 
     return variable
 
@@ -248,11 +248,11 @@ def load(filename):
     except Exception:
         pass
 
-    _os.mkdir('KTK_LOAD_TEMPORARY_FOLDER')
+    os.mkdir('KTK_LOAD_TEMPORARY_FOLDER')
     shutil.unpack_archive(filename, extract_dir='KTK_LOAD_TEMPORARY_FOLDER')
-    _os.chdir('KTK_LOAD_TEMPORARY_FOLDER')
+    os.chdir('KTK_LOAD_TEMPORARY_FOLDER')
     variable = _load_current_folder()
-    _os.chdir('..')
+    os.chdir('..')
     shutil.rmtree('KTK_LOAD_TEMPORARY_FOLDER')
     # Extract the first element (and only one) of this variable, to mirror
     # save function.
@@ -454,112 +454,134 @@ def dict_of_arrays_to_dataframe(dict_of_arrays):
 def loadmat(filename):
     """
     Load a Matlab's MAT file.
+
+    Parameters
+    ----------
+    filename : str
+        Path of the MAT file to load.
+
+    Returns
+    -------
+    The saved variable.
     """
-    # The MAT file should first be converted using Matlab's own runtime
-    # engine, so that Matlab's timeseries are converted to structures.
-    converted_filename = ktk.config['RootFolder'] + '/loadsave_converted.mat'
-
-    if ktk.config['IsMac']:
-        script_name = '/external/ktkMATtoPython/run_ktkMATtoPython.sh'
-        runtime_path = '/Applications/MATLAB/MATLAB_Runtime/v91/'
-    else:
-        raise(NotImplementedError('loadmat is only available on Mac for now.'))
-
-    _subprocess.run([ktk.config['RootFolder'] + script_name, runtime_path,
-                      filename, converted_filename],
-                      stderr=_subprocess.DEVNULL,
-                      stdout=_subprocess.DEVNULL)
-
-    # Now load it with scipy.io then delete file
-    data = _spio.loadmat(converted_filename, struct_as_record=False,
-                         squeeze_me=True)
-    _os.remove(converted_filename)
-
+    # Load the Matlab file
+    data = spio.loadmat(filename, struct_as_record=False,
+                        squeeze_me=True)
 
     # Correct the keys
-    data = _check_keys(data)
+    data = _recursive_matstruct_to_dict(data)
 
-    # Assign contents to data
-    data = data['contents']
+    # Return contents and metadata if it exists, if not return data as is.
+    if ('contents' in data) and ('metadata' in data):
 
-    return data
-
+        # Since it was saved using ktksave, then also convert structures of
+        # timeseries to ktk.TimeSeries.
+        contents = data['contents']
+        # metadata = data['metadata']  # Not sure what to do with it yet.
+        contents = convert_to_timeseries(contents)
+        return contents
+    else:
+        return data
 
 
 def convert_to_timeseries(the_input):
+    """
+    Convert dicts of Matlab timeseries to KTK TimeSeries.
+
+    This function recursively goes into the_input and checks for dicts that
+    result from obvious Matlab's structures of timeseries. These structures are
+    converted to KTK Timeseries.
+
+    Parameters
+    ----------
+    the_input : any variable
+        The input to be checked, usually a dict.
+
+    Returns
+    -------
+    A copy of the input, with the converted timeseries.
+    """
+    the_input = deepcopy(the_input)
 
     if isinstance(the_input, dict):
-#c        print("This is a dict. Checking if it's a timeseries.")
 
-        is_a_timeseries = False
+        # Check if this dict should become a timeseries
+        is_a_timeseries = True
 
-        for the_key in the_input.keys():
+        for the_key in the_input:
+            if (isinstance(the_input[the_key], dict) and
+                    ('OriginalClass' in the_input[the_key]) and
+                    (the_input[the_key]['OriginalClass'] == 'timeseries')):
+                pass
+            else:
+                is_a_timeseries = False
 
-            if isinstance(the_input[the_key], dict):
-                if 'type' in the_input[the_key].keys():
-                    if the_input[the_key]['type'] == 'timeseries':
-                        is_a_timeseries = True
-#                    else:
-#                        is_a_timeseries = False
-#                else:
-#                    is_a_timeseries = False
-#            else:
-#                is_a_timeseries = False
-        # end for the_key
-
-
-        if is_a_timeseries == True:
-            #After checking if each key is a timeseries, and it is, we get here.
+        if is_a_timeseries is True:
+            # We checked if each key is a Matlab timeseries and it is.
+            # So we get here.
             the_output = ktk.TimeSeries()
-            for the_key in the_input.keys():
-                try:
-                    the_output.time = the_input[the_key]['Time']
-                    the_data = the_input[the_key]['Data']
-                    the_shape = the_data.shape
-                    if len(the_shape) == 2:
-                        the_output.data[the_key] = the_data.transpose((1,0))
-                    elif len(the_shape) == 3:
-                        the_output.data[the_key] = the_data.transpose((2,0,1))
-                    else:
-                        the_output.data[the_key] = the_data
+            for the_key in the_input:
 
-                except:
-                    pass
+                if (isinstance(the_input[the_key], dict) and
+                        ('OriginalClass' in the_input[the_key]) and
+                        (the_input[the_key]['OriginalClass'] == 'timeseries')):
+                    # This is a matlab timeseries.
+
+                    # Extract Time
+                    the_output.time = the_input[the_key]['Time']
+
+                    # Extract Data
+                    the_data = the_input[the_key]['Data']
+
+                    if the_input[the_key]['IsTimeFirst'] is True:
+                        the_output.data[the_key] = the_data
+                    else:  # We must reshape to ensure time is on first dim.
+                        the_shape = the_data.shape
+                        if len(the_shape) == 2:
+                            the_output.data[the_key] = \
+                                    the_data.transpose((1, 0))
+                        elif len(the_shape) == 3:
+                            the_output.data[the_key] = \
+                                    the_data.transpose((2, 0, 1))
+                        else:
+                            the_output.data[the_key] = the_data
+
+                    # Extract Events
+                    for event in the_input[the_key]['Events']:
+                        the_output.add_event(event['Time'], event['Name'])
 
             return the_output
-        else:
-            print('This was not a timeseries.')
 
-            for the_key in the_input.keys():
-                print('  Now processing key %s' % the_key)
+        else:
+
+            # It is only a dict, not a dict of matlab timeseries.
+
+            for the_key in the_input:
                 the_input[the_key] = convert_to_timeseries(the_input[the_key])
             return the_input
 
-    else:
+    else:  # It is not a dict, thus not a dict of matlab timeseries.
         return the_input
 
 
+def _recursive_matstruct_to_dict(variable):
+    """Recursively converts Mat-objects in dicts or arrays to nested dicts."""
+    if isinstance(variable, spio.matlab.mio5_params.mat_struct):
+        variable = _todict(variable)
+        variable = _recursive_matstruct_to_dict(variable)
+    elif isinstance(variable, dict):
+        for key in variable:
+            variable[key] = _recursive_matstruct_to_dict(variable[key])
+    elif isinstance(variable, np.ndarray):
+        for index in np.ndindex(np.shape(variable)):
+            variable[index] = _recursive_matstruct_to_dict(variable[index])
+    return variable
 
 
-def _check_keys(dict):
-    '''
-    checks if entries in dictionary are mat-objects. If yes
-    todict is called to change them to nested dictionaries
-    '''
-    for key in dict:
-        if isinstance(dict[key], _spio.matlab.mio5_params.mat_struct):
-            dict[key] = _todict(dict[key])
-    return dict
-
-def _todict(matobj):
-    '''
-    A recursive function which constructs from matobjects nested dictionaries
-    '''
+def _todict(variable):
+    """Construct dicts from Mat-objects."""
     dict = {}
-    for strg in matobj._fieldnames:
-        elem = matobj.__dict__[strg]
-        if isinstance(elem, _spio.matlab.mio5_params.mat_struct):
-            dict[strg] = _todict(elem)
-        else:
-            dict[strg] = elem
+    for strg in variable._fieldnames:
+        elem = variable.__dict__[strg]
+        dict[strg] = elem
     return dict

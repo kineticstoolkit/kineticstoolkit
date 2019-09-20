@@ -15,7 +15,7 @@ import pytest
 
 def run_tests(module=None):
     """Run all unit tests."""
-    pytest.main([ktk.config['RootFolder']])
+    pytest.main([ktk.config['RootFolder'] + '/ktk/dev'])
 
 
 def generate_tutorials():
