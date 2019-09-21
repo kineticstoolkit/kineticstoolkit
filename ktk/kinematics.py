@@ -9,6 +9,7 @@ import numpy as np
 import ktk
 import external.pyc3d.c3d as c3d
 import warnings
+import subprocess
 
 
 def read_c3d_file(filename):
@@ -73,6 +74,62 @@ def read_c3d_file(filename):
     # Close and return
     fid.close()
     return output
+
+
+def write_c3d_file(filename, ts):
+    """Write a C3D file based on a timeseries of markers."""
+    # Convert the timeseries data to a large 3d array:
+    # First dimension = marker
+    # Second dimension = time
+    # Third dimension = x y z -visible -visible
+    labels = list(ts.data.keys())
+    n_labels = len(labels)
+    n_frames = len(ts.time)
+    point_rate = 1 / (ts.time[1] - ts.time[0])
+
+    all_points = np.zeros([n_labels, n_frames, 5])
+
+    for i_label in range(len(labels)):
+        the_label = labels[i_label]
+
+        points = ts.data[the_label].copy()
+
+        # Multiply by -1000 to get mm with correct scaling.
+        points = np.block([-1000 * points, np.ones([n_frames, 1])])
+        # Set -1 to fourth and fifth dimensions on missing samples
+        nan_indices = ts.isnan(the_label)
+        points[nan_indices, 3:5] = -1
+        points[~nan_indices, 3:5] = 0
+        # Remove nans
+        points[nan_indices, 0:3] = 0
+
+        all_points[i_label, :, :] = points
+
+    # Create the c3d file
+    writer = c3d.Writer(point_rate=point_rate)
+    for i_frame in range(n_frames):
+        writer.add_frames([(all_points[:, i_frame, :], np.array([[]]))])
+
+    with warnings.catch_warnings():
+        warnings.simplefilter('ignore', UserWarning)
+        with open(filename, 'wb') as fid:
+            writer.write(fid, labels)
+
+
+def play_in_mokka(markers):
+    """Open a timeseries of markers for 3D visualization in Mokka."""
+    # Create the c3d file
+    c3d_filename = 'temp.ktk.kinematics.c3d'
+    write_c3d_file(c3d_filename, markers)
+
+    if ktk.config['IsMac'] is True:
+        subprocess.call(('bash -c '
+                         f'"{ktk.config["RootFolder"]}/external/mokka/'
+                         f'macos/Mokka.app/Contents/'
+                         f'MacOS/Mokka -p {c3d_filename} ; rm '
+                         f'{c3d_filename}" &'), shell=True)
+    else:
+        raise NotImplementedError('Only implemented on Mac for now.')
 
 
 # def read_xml_file(file_name):
