@@ -765,3 +765,24 @@ class TimeSeries():
         right_point = plt.ginput(1)
         plt.close(fig)
         return self.get_ts_between_times(left_point[0][0], right_point[0][0])
+
+    def isnan(self, data_key):
+        """
+        Return a boolean array of missing samples.
+
+        Parameters
+        ----------
+        data_key : str
+            Key value of the data signal to analyze.
+
+        Returns
+        -------
+        A boolean array of the same size as the time vector, where True values
+        represent missing samples (samples that contain at least one NaN
+        value).
+        """
+        values = self.data[data_key].copy()
+        # Reduce the dimension of values while keeping the time dimension.
+        while len(np.shape(values)) > 1:
+            values = np.sum(values, 1)
+        return np.isnan(values)
