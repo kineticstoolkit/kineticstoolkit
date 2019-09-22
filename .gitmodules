@@ -1,3 +1,0 @@
-[submodule "external/pyc3d"]
-	path = external/pyc3d
-	url = https://github.com/felixchenier/py-c3d.git
