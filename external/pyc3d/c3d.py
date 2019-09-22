@@ -1069,7 +1069,7 @@ class Writer(Manager):
         add_str('Y_SCREEN', 'Y_SCREEN parameter', '+Y', 2)
         add_str('UNITS', '3d data units', self._point_units, len(self._point_units))
         add_str('LABELS', 'labels', ''.join(labels[i].ljust(label_max_size)
-                for i in range(ppf)), abel_max_size, ppf)
+                for i in range(ppf)), label_max_size, ppf)
         add_str('DESCRIPTIONS', 'descriptions', ' ' * 16 * ppf, 16, ppf)
 
         # ANALOG group
