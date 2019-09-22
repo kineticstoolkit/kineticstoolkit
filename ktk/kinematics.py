@@ -116,7 +116,7 @@ def write_c3d_file(filename, ts):
             writer.write(fid, labels)
 
 
-def play_in_mokka(markers):
+def open_in_mokka(markers):
     """Open a timeseries of markers for 3D visualization in Mokka."""
     # Create the c3d file
     c3d_filename = 'temp.ktk.kinematics.c3d'
@@ -126,7 +126,7 @@ def play_in_mokka(markers):
         subprocess.call(('bash -c '
                          f'"{ktk.config["RootFolder"]}/external/mokka/'
                          f'macos/Mokka.app/Contents/'
-                         f'MacOS/Mokka -p {c3d_filename} ; rm '
+                         f'MacOS/Mokka {c3d_filename} ; rm '
                          f'{c3d_filename}" &'), shell=True)
     else:
         raise NotImplementedError('Only implemented on Mac for now.')

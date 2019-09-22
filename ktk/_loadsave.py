@@ -15,7 +15,6 @@ from ast import literal_eval
 import csv
 import warnings
 import shutil
-from copy import deepcopy
 
 
 def _save_to_current_folder(variable, variable_name):
@@ -479,9 +478,38 @@ def loadmat(filename):
         contents = data['contents']
         # metadata = data['metadata']  # Not sure what to do with it yet.
         contents = convert_to_timeseries(contents)
+        contents = convert_cell_arrays_to_lists(contents)
         return contents
     else:
         return data
+
+
+def convert_cell_arrays_to_lists(the_input):
+    """
+    Convert cell arrays to lists.
+
+    This function recursively goes into the_input and checks for dicts that
+    contains a 'OriginalClass' == 'cell' field. These dicts are then converted
+    to lists.
+    """
+    if isinstance(the_input, dict):
+        if (('OriginalClass' in the_input) and
+                the_input['OriginalClass'] == 'cell'):
+            # This should be converted to a list.
+            length = len(the_input.keys()) - 1
+            the_list = []
+            for i_cell in range(length):
+                the_list.append(convert_cell_arrays_to_lists(
+                        the_input[f'cell{i_cell+1}']))
+            the_input = the_list
+        else:
+            for key in the_input.keys():
+                the_input[key] = convert_cell_arrays_to_lists(the_input[key])
+    elif isinstance(the_input, list):
+        for i in range(len(the_input)):
+            the_input[key] = convert_cell_arrays_to_lists(the_input[key])
+
+    return the_input
 
 
 def convert_to_timeseries(the_input):
@@ -501,8 +529,6 @@ def convert_to_timeseries(the_input):
     -------
     A copy of the input, with the converted timeseries.
     """
-    the_input = deepcopy(the_input)
-
     if isinstance(the_input, dict):
 
         # Check if this dict should become a timeseries
@@ -553,14 +579,17 @@ def convert_to_timeseries(the_input):
             return the_output
 
         else:
-
             # It is only a dict, not a dict of matlab timeseries.
-
             for the_key in the_input:
                 the_input[the_key] = convert_to_timeseries(the_input[the_key])
             return the_input
 
-    else:  # It is not a dict, thus not a dict of matlab timeseries.
+    elif isinstance(the_input, list):
+        for i in range(len(the_input)):
+            the_input[i] = convert_to_timeseries(the_input[i])
+        return the_input
+
+    else:
         return the_input
 
 
