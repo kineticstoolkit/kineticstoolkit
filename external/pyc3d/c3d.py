@@ -1056,7 +1056,8 @@ class Writer(Manager):
 
         # Get longest label name
         label_max_size = 0
-        label_max_size = max(label_max_size, len(label) for label in labels)
+        for label in labels:
+            label_max_size = max(label_max_size, len(label))
 
         group = self.add_group(1, 'POINT', 'POINT group')
         add('USED', 'Number of 3d markers', 2, '<H', ppf)
