@@ -288,7 +288,7 @@ class TimeSeries():
         """
         return deepcopy(self)
 
-    def plot(self, data_keys=None):
+    def plot(self, data_keys=None, plot_event_names=False):
         """
         Plot the TimeSeries using matplotlib.
 
@@ -301,6 +301,10 @@ class TimeSeries():
             >>> the_timeseries.plot(['Forces', 'Moments'])
             plots only the forces and moments, without plotting the angle.
             By default, all elements of the TimeSeries are plotted.
+
+        plot_event_names : bool (optional)
+            True to plot the event names on top of the event lines.
+            Default = False.
 
         Returns
         -------
@@ -366,6 +370,11 @@ class TimeSeries():
                 event_line_y[3*i_event+2] = np.nan
 
             plt.plot(event_line_x, event_line_y, 'c')
+
+            if plot_event_names:
+                for event in self.events:
+                    plt.text(event.time, max_y, event.name, rotation='vertical',
+                             horizontalalignment='center')
 
             # Next plot
             i_plot += 1
