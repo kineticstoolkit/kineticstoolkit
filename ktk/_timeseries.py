@@ -7,15 +7,8 @@ Date: July 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-import csv
-import os
-import shutil
-from ast import literal_eval
 
 from copy import deepcopy
-
-import ktk
 
 from . import gui
 from . import _repr
@@ -373,7 +366,8 @@ class TimeSeries():
 
             if plot_event_names:
                 for event in self.events:
-                    plt.text(event.time, max_y, event.name, rotation='vertical',
+                    plt.text(event.time, max_y, event.name,
+                             rotation='vertical',
                              horizontalalignment='center')
 
             # Next plot
@@ -381,7 +375,7 @@ class TimeSeries():
 
         # Add labels and format
         plt.xlabel('Time (' + self.time_info['Unit'] + ')')
-        plt.tight_layout(pad=0.05)
+        # plt.tight_layout(pad=0.05)
         plt.show()
 
     def get_index_at_time(self, time):

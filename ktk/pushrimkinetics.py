@@ -14,8 +14,13 @@ import pandas as pd
 
 def __dir__():
     """Generate a dir for tab-completion in IPython."""
-    return ['read_file', 'find_recovery_indices', 'remove_sinusoids',
-            'calculate_forces_and_moments', 'detect_pushes']
+    return ('read_file',
+            'find_recovery_indices',
+            'remove_sinusoids',
+            'calculate_forces_and_moments',
+            'calculate_velocity',
+            'calculate_power',
+            'detect_pushes')
 
 
 def read_file(filename):
@@ -316,6 +321,52 @@ def calculate_forces_and_moments(kinetics, calibration_id):
     kinetics.add_data_info('Moments', 'Unit', 'Nm')
 
     return(kinetics)
+
+
+def calculate_velocity(tsin):
+    """
+    Calculate velocity based on wheel angle.
+
+    Parameters
+    ----------
+    tsin : TimeSeries
+        TimeSeries that contains at least the data key 'Angle'.
+
+    Returns
+    -------
+    A new TimeSeries with the added data key 'Velocity'.
+    """
+    tsangle = ktk.TimeSeries()
+    tsangle.time = tsin.time
+    tsangle.data['Angle'] = tsin.data['Angle']
+    tsvelocity = ktk.filters.savgol(tsangle, window_length=21,
+                                    poly_order=2, deriv=1)
+    tsout = tsin.copy()
+    tsout.data['Velocity'] = tsvelocity.data['Angle']
+    tsout = tsout.add_data_info('Velocity', 'Unit',
+                                tsout.data_info['Angle']['Unit'] + '/s')
+    return tsout
+
+
+def calculate_power(tsin):
+    """
+    Calculate power based on wheel velocity and moment.
+
+    Parameters
+    ----------
+    tsin : TimeSeries
+        TimeSeries that contains at least the data keys 'Velocity' and
+        'Moments'. The units must be consistent (e.g., rad/s and Nm)
+
+    Returns
+    -------
+    A new TimeSeries with the added data key 'Power'.
+    """
+    tsout = tsin.copy()
+    tsout.data['Power'] = (tsout.data['Velocity'] *
+              tsout.data['Moments'][:,2])
+    tsout.add_data_info('Power', 'Unit', 'W')
+    return tsout
 
 
 def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,

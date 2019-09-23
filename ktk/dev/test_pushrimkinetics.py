@@ -87,3 +87,8 @@ def test_no_regressions():
 
     assert len(pushes.events) == 77
     _assert_almost_equal(np.mean(float_event_times), 17.2115256494)
+
+    # Just test that calculate_velocity and calculate_power don't crash since
+    # their implementation is so simple.
+    test = ktk.pushrimkinetics.calculate_velocity(kinetics)
+    test = ktk.pushrimkinetics.calculate_power(test)
