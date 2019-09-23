@@ -10,6 +10,8 @@ import ktk
 import external.pyc3d.c3d as c3d
 import warnings
 import subprocess
+from time import sleep
+from datetime import datetime
 
 
 def read_c3d_file(filename):
@@ -119,7 +121,8 @@ def write_c3d_file(filename, ts):
 def open_in_mokka(markers):
     """Open a timeseries of markers for 3D visualization in Mokka."""
     # Create the c3d file
-    c3d_filename = 'temp.ktk.kinematics.c3d'
+    print('Opening Mokka...')
+    c3d_filename = str(datetime.now().strftime('%H:%M:%S')) + '.c3d'
     write_c3d_file(c3d_filename, markers)
 
     if ktk.config['IsMac'] is True:
@@ -128,6 +131,13 @@ def open_in_mokka(markers):
                          f'macos/Mokka.app/Contents/'
                          f'MacOS/Mokka {c3d_filename} ; rm '
                          f'{c3d_filename}" &'), shell=True)
+        # Try to activate it.
+        sleep(1)
+        while subprocess.call(['osascript', '-e',
+                               'tell application "Mokka" to activate'],
+                              stderr=subprocess.DEVNULL) == 1:
+            sleep(0.5)
+
     else:
         raise NotImplementedError('Only implemented on Mac for now.')
 

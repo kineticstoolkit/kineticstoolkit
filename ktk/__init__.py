@@ -62,5 +62,4 @@ _mpl.rcParams['lines.linewidth'] = 1
 # Set a custom color order that is compatible with 'char' colors, and that
 # begins with RGB so that it is compatible with most XYZ color orders in other
 # visualization softwares.
-_mpl.rcParams['axes.prop_cycle'] = _mpl.cycler(
-      'color', ['r', 'g', 'b', 'c', 'm', 'y', 'k'])
+gui.set_color_order('xyz')
