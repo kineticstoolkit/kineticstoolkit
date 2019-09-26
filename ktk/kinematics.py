@@ -239,8 +239,9 @@ def open_in_mokka(markers=None, rigid_bodies=None, segments=None,
         subprocess.call(('bash -c '
                          f'"{ktk.config["RootFolder"]}/external/mokka/'
                          f'macos/Mokka.app/Contents/'
-                         f'MacOS/Mokka {c3d_filename} ; rm '
-                         f'{c3d_filename}" &'), shell=True)
+                         f'MacOS/Mokka {c3d_filename} ; '
+                         f'rm {c3d_filename}; rm {mvc_filename}; " &'),
+                        shell=True)
         # Try to activate it.
         sleep(1)
         while subprocess.call(['osascript', '-e',
