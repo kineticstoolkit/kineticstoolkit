@@ -63,7 +63,7 @@ def savgol(tsin, window_length, poly_order, deriv=0):
         each_data_shape = signal_shape[1:]
 
         n_data = np.shape(input_signal)[0]
-        nan_index = np.isnan(np.sum(input_signal, axis=each_data_shape))
+        nan_index = np.isnan(np.sum(input_signal, axis=len(each_data_shape)))
 
         if not np.all(~nan_index):
             # There were NaNs, issue a warning.
@@ -77,12 +77,14 @@ def savgol(tsin, window_length, poly_order, deriv=0):
         new_x = np.arange(n_data)
 
         # Resample
-        input_signal = sp.interp(new_x, original_x, original_y)
+        f = sp.interpolate.interp1d(original_x, original_y, axis=0,
+                                    fill_value='extrapolate')
+        input_signal = f(new_x)
 
         # Filter
         filtered_data = sgl.savgol_filter(input_signal,
                                           window_length, poly_order, deriv,
-                                          delta=delta)
+                                          delta=delta, axis=0)
 
         # Put back NaNs
         filtered_data[nan_index] = np.nan
