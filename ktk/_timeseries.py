@@ -789,3 +789,41 @@ class TimeSeries():
         while len(np.shape(values)) > 1:
             values = np.sum(values, 1)
         return np.isnan(values)
+
+    def get_subset(self, data_keys):
+        """
+        Return a subset of the TimeSeries.
+
+        This method returns a TimeSeries that contains only specific data
+        keys. For example, if a TimeSeries ts has the fields Forces, Moments
+        and Angle, then:
+            >>> ts.get_subset(['Forces', 'Moments'])
+        returns an identical timeseries, but without the data key 'Angle'.
+
+        The corresponding data_info keys are copied in the new TimeSeries.
+        All events are also copied in the new TimeSeries.
+
+        Parameters
+        ----------
+        data_keys : str or list of str
+            The data keys to extract from the timeseries.
+
+        Returns
+        -------
+        A copy of the TimeSeries, minus the unspecified data keys.
+        """
+        if isinstance(data_keys, str):
+            data_keys = [data_keys]
+
+        ts = TimeSeries()
+        ts.time = self.time.copy()
+        ts.time_info = deepcopy(self.time_info)
+        ts.events = deepcopy(self.events)
+
+        for key in data_keys:
+            if key in self.data:
+                ts.data[key] = self.data[key].copy()
+            if key in self.data_info:
+                ts.data_info[key] = deepcopy(self.data_info[key])
+
+        return ts

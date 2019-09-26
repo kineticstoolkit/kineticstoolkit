@@ -68,15 +68,20 @@ def fetch_project(project_label, user='', password='', root_folder='',
     except:
         raise(Exception(content))
 
-    print("Assigning root folder")
+    print("Assigning root folder", flush=True)
     # Add root folder
     if root_folder == '':
+        print('--------------------------------------------------------')
+        print('Please select the folder that contains the project data.')
         project['RootFolder'] = ktk.gui.get_folder()
+        print(project['RootFolder'])
+        print('--------------------------------------------------------',
+              flush=True)
     else:
         project['RootFolder'] = root_folder
 
     # Scan all files in root folder
-    print("Building file associations")
+    print("Building file associations", flush=True)
     folder_list = []
     file_list = []
     for folder, _, files in os.walk(project['RootFolder']):

@@ -84,7 +84,7 @@ def write_c3d_file(filename, ts):
     # First dimension = marker
     # Second dimension = time
     # Third dimension = x y z -visible -visible
-    labels = list(ts.data.keys())
+    labels = sorted(list(ts.data.keys()))
     n_labels = len(labels)
     n_frames = len(ts.time)
     point_rate = 1 / (ts.time[1] - ts.time[0])
@@ -118,13 +118,123 @@ def write_c3d_file(filename, ts):
             writer.write(fid, labels)
 
 
-def open_in_mokka(markers):
+def open_in_mokka(markers=None, rigid_bodies=None, segments=None,
+                  marker_radius=0.008, rigid_body_size=0.1):
     """Open a timeseries of markers for 3D visualization in Mokka."""
+    if markers is None:
+        markers = ktk.TimeSeries(time=rigid_bodies.time)
+    else:
+        markers = markers.copy()  # Since we add stuff to it.
+
+    # Set the filenames
+    base_filename = str(datetime.now().strftime('%H:%M:%S'))
+    c3d_filename = base_filename + '.c3d'
+    mvc_filename = base_filename + '.mvc'
+
+    # Open the mvc filename
+    fid = open(mvc_filename, 'w')
+
+    # Add the markers information to the mcv file
+    print('<?xml version="1.0" encoding="UTF-8"?>', file=fid)
+    print('<MokkaModelVisualConfiguration name="KTK" '
+          'version="1.0">',
+          file=fid)
+
+    # Add the real markers list to the mvc file
+    print('<MarkersList>', file=fid)
+    for marker_name in markers.data.keys():
+        print(f'<Marker label="{marker_name}" radius="{marker_radius*1000}" '
+              f'colorR="1" colorG="1" colorB="1" visible="1" '
+              f'trajectory="0"/>', file=fid)
+
+    # Add the rigid bodies 'markers' to the markers TimeSeries and to the mvc
+    # file
+    if rigid_bodies is not None:
+        for rb_name in rigid_bodies.data.keys():
+            marker_name = '_' + rb_name + '_o'
+            markers.data[marker_name] = rigid_bodies.data[rb_name][:, :, 3]
+            print(f'<Marker label="{marker_name}" '
+                  f'radius="{marker_radius*1000}" '
+                  f'colorR="1" colorG="1" colorB="1" visible="1" '
+                  f'trajectory="0"/>', file=fid)
+
+            marker_name = '_' + rb_name + '_x'
+            markers.data[marker_name] = (
+                    rigid_bodies.data[rb_name] @
+                    np.array([rigid_body_size, 0, 0, 1]))
+            print(f'<Marker label="{marker_name}" '
+                  f'radius="{marker_radius*1000}" '
+                  f'colorR="1" colorG="0" colorB="0" visible="0" '
+                  f'trajectory="0"/>', file=fid)
+
+            marker_name = '_' + rb_name + '_y'
+            markers.data[marker_name] = (
+                    rigid_bodies.data[rb_name] @
+                    np.array([0, rigid_body_size, 0, 1]))
+            print(f'<Marker label="{marker_name}" '
+                  f'radius="{marker_radius*1000}" '
+                  f'colorR="0" colorG="1" colorB="0" visible="0" '
+                  f'trajectory="0"/>', file=fid)
+
+            marker_name = '_' + rb_name + '_z'
+            markers.data[marker_name] = (
+                    rigid_bodies.data[rb_name] @
+                    np.array([0, 0, rigid_body_size, 1]))
+            print(f'<Marker label="{marker_name}" '
+                  f'radius="{marker_radius*1000}" '
+                  f'colorR="0" colorG="0" colorB="1" visible="0" '
+                  f'trajectory="0"/>', file=fid)
+
+    print('</MarkersList>', file=fid)
+
+    # Add the rigid body 'segments' to the mvc file
+    print('<SegmentsList>', file=fid)
+    if rigid_bodies is not None:
+        for rb_name in rigid_bodies.data.keys():
+
+            # Segment x
+            print(f'<Segment label="{"_" + rb_name + "_x"}" '
+                  f'colorR="1" colorG="0" colorB="0" visible="1" surface="1" '
+                  f'description="">', file=fid)
+            print(f'<Point label="{"_" + rb_name + "_o"}"/>', file=fid)
+            print(f'<Point label="{"_" + rb_name + "_x"}"/>', file=fid)
+            print(f'<Link pt1="{"_" + rb_name + "_o"}" '
+                  f'pt2="{"_" + rb_name + "_x"}"/>', file=fid)
+            print(f'</Segment>', file=fid)
+
+            # Segment y
+            print(f'<Segment label="{"_" + rb_name + "_y"}" '
+                  f'colorR="0" colorG="1" colorB="0" visible="1" surface="1" '
+                  f'description="">', file=fid)
+            print(f'<Point label="{"_" + rb_name + "_o"}"/>', file=fid)
+            print(f'<Point label="{"_" + rb_name + "_y"}"/>', file=fid)
+            print(f'<Link pt1="{"_" + rb_name + "_o"}" '
+                  f'pt2="{"_" + rb_name + "_y"}"/>', file=fid)
+            print(f'</Segment>', file=fid)
+
+            # Segment z
+            print(f'<Segment label="{"_" + rb_name + "_z"}" '
+                  f'colorR="0" colorG="0" colorB="1" visible="1" surface="1" '
+                  f'description="">', file=fid)
+            print(f'<Point label="{"_" + rb_name + "_o"}"/>', file=fid)
+            print(f'<Point label="{"_" + rb_name + "_z"}"/>', file=fid)
+            print(f'<Link pt1="{"_" + rb_name + "_o"}" '
+                  f'pt2="{"_" + rb_name + "_z"}"/>', file=fid)
+            print(f'</Segment>', file=fid)
+
+
+
+    print('</SegmentsList>', file=fid)
+
+    # Close the mvc file
+    print('</MokkaModelVisualConfiguration>', file=fid)
+    fid.close()
+
     # Create the c3d file
-    print('Opening Mokka...')
     c3d_filename = str(datetime.now().strftime('%H:%M:%S')) + '.c3d'
     write_c3d_file(c3d_filename, markers)
 
+    print('Opening Mokka...')
     if ktk.config['IsMac'] is True:
         subprocess.call(('bash -c '
                          f'"{ktk.config["RootFolder"]}/external/mokka/'

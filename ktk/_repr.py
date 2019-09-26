@@ -50,17 +50,17 @@ def _format_dict_entries(value, quotes=True):
 
     out = ''
 
-    # Find the widest field name
     the_keys = value.keys()
     if len(the_keys) > 0:
 
+        # Find the widest field name
         the_max_length = 0
         for the_key in the_keys:
             the_max_length = max(the_max_length, len(the_key))
 
         max_length_to_show = 77 - the_max_length
 
-        for the_key in the_keys:
+        for the_key in sorted(the_keys):
 
             # Print the key
             to_show = quote_text + the_key + quote_text
