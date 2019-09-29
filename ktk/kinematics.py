@@ -222,8 +222,6 @@ def open_in_mokka(markers=None, rigid_bodies=None, segments=None,
                   f'pt2="{"_" + rb_name + "_z"}"/>', file=fid)
             print(f'</Segment>', file=fid)
 
-
-
     print('</SegmentsList>', file=fid)
 
     # Close the mvc file
@@ -234,13 +232,16 @@ def open_in_mokka(markers=None, rigid_bodies=None, segments=None,
     c3d_filename = str(datetime.now().strftime('%H:%M:%S')) + '.c3d'
     write_c3d_file(c3d_filename, markers)
 
+    # Open Mokka in background, then delete these temporary files when Mokka
+    # closes.
     print('Opening Mokka...')
     if ktk.config['IsMac'] is True:
         subprocess.call(('bash -c '
                          f'"{ktk.config["RootFolder"]}/external/mokka/'
                          f'macos/Mokka.app/Contents/'
-                         f'MacOS/Mokka {c3d_filename} ; rm '
-                         f'{c3d_filename}" &'), shell=True)
+                         f'MacOS/Mokka {c3d_filename} ; '
+                         f'rm {c3d_filename}; rm {mvc_filename}; " &'),
+                        shell=True)
         # Try to activate it.
         sleep(1)
         while subprocess.call(['osascript', '-e',
