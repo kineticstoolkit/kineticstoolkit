@@ -14,12 +14,37 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
 import ktk
+from time import sleep
 
 CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
 
 def __dir__():
-    return ('button_dialog', 'get_credentials', 'get_folder',
-            'set_color_order')
+    return ('button_dialog',
+            'get_credentials',
+            'get_folder',
+            'set_color_order',
+            'message')
+
+
+def message(message):
+    """
+    Print a message and two beeps to the user to request his/her action.
+
+    Parameters
+    ----------
+    message : str
+        The message to write in the console.
+
+    Returns
+    -------
+    None.
+    """
+    dash_length = 80
+    print('=' * dash_length)
+    print(message)
+    print('-' * dash_length + '\a', flush=True)  # Bell sound = \a
+    sleep(0.4)
+    print('\a', flush=True)  # Bell sound
 
 
 def set_color_order(setting):
