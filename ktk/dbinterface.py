@@ -74,6 +74,7 @@ def fetch_project(project_label, user='', password='', root_folder='',
         ktk.gui.message('Please select the folder that contains the '
                         'project data.')
         project['RootFolder'] = ktk.gui.get_folder()
+        ktk.gui.message('')
         print(project['RootFolder'], flush=True)
     else:
         project['RootFolder'] = root_folder

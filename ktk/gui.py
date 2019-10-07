@@ -13,10 +13,12 @@ from threading import Thread
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
+import os
 import ktk
 from time import sleep
 
 CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
+_message_window_int = [0]
 
 def __dir__():
     return ('button_dialog',
@@ -26,25 +28,48 @@ def __dir__():
             'message')
 
 
-def message(message):
+def message(message=None):
     """
-    Print a message and two beeps to the user to request his/her action.
+    Show a message window.
 
     Parameters
     ----------
     message : str
-        The message to write in the console.
+        The message to show. Use '' or None to close every message window.
 
     Returns
     -------
     None.
     """
-    dash_length = 80
-    print('=' * dash_length)
+    # If we want to close the window
+    if message is None or message == '':
+        print('-' * 36 + ' Done ' + '-' * 37)
+        for file in os.listdir(ktk.config['RootFolder'] + '/ktk/tmp'):
+            if 'gui_message_flag' in file:
+                os.remove(ktk.config['RootFolder'] + '/ktk/tmp/' + file)
+        return
+
+    # Else, we want to show the window
+    print('=' * 33 + ' KTK Message ' + '=' * 33)
     print(message)
-    print('-' * dash_length + '\a', flush=True)  # Bell sound = \a
-    sleep(0.4)
-    print('\a', flush=True)  # Bell sound
+
+    _message_window_int[0] += 1
+    flagfile = (ktk.config['RootFolder'] + '/ktk/tmp/gui_message_flag' +
+                str(_message_window_int))
+
+    fid = open(flagfile, 'w')
+    fid.write('DELETE THIS FILE TO CLOSE THE KTK GUI MESSAGE WINDOW.')
+    fid.close()
+
+    command_call = [sys.executable, CMDGUI, 'message', 'KTK Message',
+                    message, flagfile]
+
+    def threaded_function():
+        subprocess.call(command_call,
+                        stderr=subprocess.DEVNULL)
+
+    thread = Thread(target=threaded_function)
+    thread.start()
 
 
 def set_color_order(setting):
@@ -96,7 +121,8 @@ def get_credentials():
     A tuple of two strings containing the username and password, respectively,
     or an empty tuple if the user closed the window.
     """
-    str_call = ['get_credentials', 'KTK', 'Please enter your login information.']
+    str_call = ['get_credentials', 'KTK',
+                'Please enter your login information.']
     result = subprocess.check_output([CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
 
@@ -129,20 +155,13 @@ def get_folder(title='KTK', initial_folder='.'):
     return result[0]
 
 
-def button_dialog(title='KTK', message='Please select an option.',
+def button_dialog(message='Please select an option.',
                   choices=['Cancel', 'OK']):
     """
-    Ask the user to select among multiple buttons.
-
-    Create a topmost dialog window with a selection of buttons.
-    uibuttonsdialog(title, message, choices) is a blocking
-    function that asks the user to click on a button, using a topmost dialog
-    window.
+    Create a blocking dialog message window with a selection of buttons.
 
     Parameters
     ----------
-    title : str
-        Title of the dialog window. Default is ''.
     message : str
         Message that is presented to the user.
         Default is 'Please select an option'.
@@ -151,14 +170,14 @@ def button_dialog(title='KTK', message='Please select an option.',
 
     Returns
     -------
-    The button number (0 = First button, 1 = Second button, etc. If the
+    int : the button number (0 = First button, 1 = Second button, etc. If the
     user closes the window instead of clicking a button, a value of -1 is
     returned.
     """
 
     # Run the button dialog in a separate thread to allow updating matplotlib
     button = [None]
-    command_call = [sys.executable, CMDGUI, 'button_dialog', title,
+    command_call = [sys.executable, CMDGUI, 'button_dialog', 'KTK Dialog',
                     message] + choices
 
     def threaded_function():
