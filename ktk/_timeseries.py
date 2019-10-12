@@ -215,9 +215,9 @@ class TimeSeries():
         self.events.append(TimeSeriesEvent(time, name))
         return self
 
-    def ui_add_event(self, name='event', plot=[]):
+    def ui_add_event(self, name='event', plot=[], multiple_events=False):
         """
-        Add an event interactively to the TimeSeries.
+        Add one or many events interactively to the TimeSeries.
 
         Parameters
         ----------
@@ -226,49 +226,71 @@ class TimeSeries():
         plot : str, list of str or tuple of str (optional)
             A signal name of list of signal name to be plotted, similar to
             the argument of ktk.TimeSeries.plot().
+        multiple_events : bool (optional)
+            - True to add multiple events with the same name.
+            - False to add only one event (default).
 
         Returns
         -------
-        The same timeseries, with the event added.
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries()
-        >>> ts.ui_add_event('event1')
-
+        The timeseries, with the event(s) added.
         """
         ts = self.copy()
 
         fig = plt.figure()
+        plt.cla()
+        ts.plot(plot)
 
-        while True:
+        finished = False
 
-            plt.cla()
-            ts.plot(plot)
+        while finished is False:
+            finished = True  # Only one pass by default
+
             button = gui.button_dialog(
-                    'TimeSeries.ui_add_event',
-                    'Please zoom on the new event to add, then click Next.\n' +
-                    'Click Finished when there is no more event to add.',
-                    ['Cancel', 'Next', 'Finished'])
+                    f'Adding the event "{name}"\n'
+                    'Please zoom on the new event to add, then click Next.',
+                    ['Cancel', 'Next'])
 
-            if button == 0:  # Cancel
+            if button <= 0:  # Cancel
                 plt.close(fig)
                 print('No event was added.')
                 return self.copy()
-            elif button == 2:  # Finish
-                plt.close(fig)
-                return ts
-            # Next
 
-            plt.title(('Left-click to add events, right-click to delete, '
-                       'then ENTER.'))
-            plt.pause(0.001)  # Update the plot
-            coordinates = plt.ginput(99999)
+            if multiple_events:
+                gui.message('Please left-click to add events, '
+                            'right-click to delete, '
+                            'ENTER to finish.')
+                plt.pause(0.001)  # Update the plot
+                coordinates = plt.ginput(99999)
+                gui.message()
+
+            else:
+                gui.message('Please left-click on the event to add.')
+                coordinates = plt.ginput(1)
+                gui.message()
 
             # Add these events
             for i in range(len(coordinates)):
                 ts.add_event(coordinates[i][0], name)
-        # Continue until done.
+
+            if multiple_events:
+                plt.cla()
+                ts.plot(plot)
+                button = gui.button_dialog(
+                        f'Adding the event "{name}"\n'
+                        'Do you want to add more of these events?',
+                        ['Cancel', 'Add more', 'Finished'])
+                if button <= 0:  # Cancel
+                    plt.close(fig)
+                    print('No event was added.')
+                    return self.copy()
+                elif button == 1:
+                    finished = False
+                elif button == 2:
+                    finished = True
+
+        gui.message()
+        plt.close(fig)
+        self.events = ts.events  # Add the events to self.
 
     def copy(self):
         """
@@ -762,10 +784,12 @@ class TimeSeries():
         fig = plt.figure()
         self.plot(data_keys)
         plt.pause(0.001)  # Redraw
-        fig.canvas.set_window_title('Click on the left of the desired zone.')
+        gui.message('Click on the left of the desired zone.')
         left_point = plt.ginput(1)
-        fig.canvas.set_window_title('Click on the right of the desired zone.')
+        gui.message('')
+        gui.message('Click on the right of the desired zone.')
         right_point = plt.ginput(1)
+        gui.message('')
         plt.close(fig)
         return self.get_ts_between_times(left_point[0][0], right_point[0][0])
 

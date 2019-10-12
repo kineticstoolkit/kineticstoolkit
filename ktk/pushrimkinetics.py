@@ -41,11 +41,11 @@ def read_file(filename, format='smartwheel'):
     TimeSeries with the file contents.
     """
 
-    dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')
-    data = dataframe.to_numpy()
 
     if format == 'smartwheel':
 
+        dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')
+        data = dataframe.to_numpy()
         index = data[:, 1]
         time = np.arange(0, len(index)) / 240
         channels = data[:, 6:12]
@@ -69,6 +69,8 @@ def read_file(filename, format='smartwheel'):
 
     elif format == 'racingwheel':
 
+        dataframe = pd.read_csv(filename, delimiter=',')
+        data = dataframe.to_numpy()
         time = data[:, 0]
         channels = data[:, 1:7]
 
@@ -459,11 +461,11 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
 
             push_state = True
 
+            events.append(ktk.TimeSeriesEvent(time[i], 'pushstart'))
+
             if is_first_push is False:
                 # It's not only the first push, it's also the end of a cycle.
                 events.append(ktk.TimeSeriesEvent(time[i]-1E-6, 'cycleend'))
-
-            events.append(ktk.TimeSeriesEvent(time[i], 'pushstart'))
 
             is_first_push = False
 
@@ -477,8 +479,8 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
                 # Yes.
                 events.append(ktk.TimeSeriesEvent(time[i], 'pushend'))
             else:
-                # No. Remove the last push start.
-                events = events[:-2]
+                # No. Remove the last push start and cycle end.
+                events = events[0:-2]
 
     # The first event in list was only to initiate the list. We must remove it.
     # The second event in list is a release. We must remove it.
