@@ -71,12 +71,11 @@ def fetch_project(project_label, user='', password='', root_folder='',
     print("Assigning root folder", flush=True)
     # Add root folder
     if root_folder == '':
-        print('--------------------------------------------------------')
-        print('Please select the folder that contains the project data.')
+        ktk.gui.message('Please select the folder that contains the '
+                        'project data.')
         project['RootFolder'] = ktk.gui.get_folder()
-        print(project['RootFolder'])
-        print('--------------------------------------------------------',
-              flush=True)
+        ktk.gui.message('')
+        print(project['RootFolder'], flush=True)
     else:
         project['RootFolder'] = root_folder
 

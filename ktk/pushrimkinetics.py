@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Thu Jun  6 11:16:40 2019
+Module that processes pushrim kinetic data measured using instrumented
+wheelchair wheels.
 
-@author: felix
+To see the functions of this module:
+    dir(ktk.pushrimkinetics)
 """
 
 import ktk
@@ -23,32 +23,61 @@ def __dir__():
             'detect_pushes')
 
 
-def read_file(filename):
+def read_file(filename, format='smartwheel'):
+    """
+    Read a file containing pushrim kinetics data.
 
-    dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')
+    Parameters
+    ----------
+    filename : str
+        Name of the file to open
+    format : str (optional)
+        Format of the file. Can be either:
+            'smartwheel' (default)
+            'racingwheel'
 
-    data = dataframe.to_numpy()
+    Returns
+    -------
+    TimeSeries with the file contents.
+    """
 
-    index = data[:, 1]
-    time = np.arange(0, len(index)) / 240
-    channels = data[:, 6:12]
-    forces = data[:, 18:21]
-    moments = data[:, 21:24]
-    angle_deg = data[:, 3]
-    angle_rad = np.unwrap(np.deg2rad(angle_deg))
 
-    ts = ktk.TimeSeries(time=time)
+    if format == 'smartwheel':
 
-    ts.data['Index'] = index
-    ts.data['Channels'] = channels
-    ts.data['Forces'] = np.block([[forces, np.zeros((len(index), 1))]])
-    ts.data['Moments'] = np.block([[moments, np.zeros((len(index), 1))]])
-    ts.data['Angle'] = angle_rad
+        dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')
+        data = dataframe.to_numpy()
+        index = data[:, 1]
+        time = np.arange(0, len(index)) / 240
+        channels = data[:, 6:12]
+        forces = data[:, 18:21]
+        moments = data[:, 21:24]
+        angle_deg = data[:, 3]
+        angle_rad = np.unwrap(np.deg2rad(angle_deg))
 
-    ts.add_data_info('Channels', 'Unit', 'raw')
-    ts.add_data_info('Forces', 'Unit', 'N')
-    ts.add_data_info('Moments', 'Unit', 'Nm')
-    ts.add_data_info('Angle', 'Unit', 'rad')
+        ts = ktk.TimeSeries(time=time)
+
+        ts.data['Index'] = index
+        ts.data['Channels'] = channels
+        ts.data['Forces'] = np.block([[forces, np.zeros((len(index), 1))]])
+        ts.data['Moments'] = np.block([[moments, np.zeros((len(index), 1))]])
+        ts.data['Angle'] = angle_rad
+
+        ts.add_data_info('Channels', 'Unit', 'raw')
+        ts.add_data_info('Forces', 'Unit', 'N')
+        ts.add_data_info('Moments', 'Unit', 'Nm')
+        ts.add_data_info('Angle', 'Unit', 'rad')
+
+    elif format == 'racingwheel':
+
+        dataframe = pd.read_csv(filename, delimiter=',')
+        data = dataframe.to_numpy()
+        time = data[:, 0]
+        channels = data[:, 1:7]
+
+        ts = ktk.TimeSeries(time=time)
+
+        ts.data['Channels'] = channels
+        ts.add_data_info('Channels', 'Unit', 'raw')
 
     return ts
 
@@ -198,7 +227,7 @@ def calculate_forces_and_moments(kinetics, calibration_id):
             'S18-179':      PATHOKIN Summer 2018, Serial 179
             'S18-180':      PATHOKIN Summer 2018, Serial 180
             'S18-181':      PATHOKIN Summer 2018, Serial 181
-            'S18-Racing':   Racing wheelchair prototype
+            'S18-Racing-Prototype1':   Racing wheelchair prototype
 
     Returns
     -------
@@ -343,8 +372,8 @@ def calculate_velocity(tsin):
                                     poly_order=2, deriv=1)
     tsout = tsin.copy()
     tsout.data['Velocity'] = tsvelocity.data['Angle']
-    tsout = tsout.add_data_info('Velocity', 'Unit',
-                                tsout.data_info['Angle']['Unit'] + '/s')
+    tsout.add_data_info('Velocity', 'Unit',
+                        tsout.data_info['Angle']['Unit'] + '/s')
     return tsout
 
 
@@ -432,11 +461,11 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
 
             push_state = True
 
+            events.append(ktk.TimeSeriesEvent(time[i], 'pushstart'))
+
             if is_first_push is False:
                 # It's not only the first push, it's also the end of a cycle.
                 events.append(ktk.TimeSeriesEvent(time[i]-1E-6, 'cycleend'))
-
-            events.append(ktk.TimeSeriesEvent(time[i], 'pushstart'))
 
             is_first_push = False
 
@@ -450,8 +479,8 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
                 # Yes.
                 events.append(ktk.TimeSeriesEvent(time[i], 'pushend'))
             else:
-                # No. Remove the last push start.
-                events = events[:-2]
+                # No. Remove the last push start and cycle end.
+                events = events[0:-2]
 
     # The first event in list was only to initiate the list. We must remove it.
     # The second event in list is a release. We must remove it.

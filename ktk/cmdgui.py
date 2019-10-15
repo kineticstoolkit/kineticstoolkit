@@ -37,8 +37,6 @@ def create_window(title='KTK', width=800, height=400):
     #     pass
     # root.protocol("WM_DELETE_WINDOW", _on_closing)
 
-    # Set topmost
-    root.attributes('-topmost', True)
     # root.update()
     # root.attributes('-topmost', False)
 
@@ -69,6 +67,14 @@ def center_window(root):
                   width, height,
                   root.winfo_screenwidth()/2-width/2,
                   root.winfo_screenheight()/2-height/2))
+
+
+def top_window(root):
+    """Move the root window to the top of the screen."""
+    (width, height, left, top) = get_window_geometry(root)
+    root.geometry('%dx%d+%d+%d' % (
+                  root.winfo_screenwidth(), height,
+                  0, 0))
 
 
 def show_window(root):
@@ -136,6 +142,31 @@ def get_credentials(title, message):
     print(credentials[1])
 
 
+def message(title='Title', message='Message', flagfile='/dev/null'):
+    """
+    Shows a tkinter message window until a file doesn't exist anymore.
+    """
+    root = create_window()
+    root.title(title)
+    root.minsize(200, 0)
+    lbl = tk.Label(root, text=message, bg='blue', fg='white')
+    lbl.pack(fill=tk.X)
+    top_window(root)
+    show_window(root)
+
+    def check_if_file_exists(file):
+        try:
+            fid = open(file, 'r')
+        except FileNotFoundError:
+            return False
+        fid.close()
+        return True
+
+    while check_if_file_exists(flagfile):
+        root.update()
+        time.sleep(0.2)
+
+
 def button_dialog(title='', message='Please select an option.',
                   choices=['Cancel', 'OK']):
     """
@@ -165,24 +196,33 @@ def button_dialog(title='', message='Please select an option.',
     selected_choice = [-1]  # Default if we click close.
 
     root = create_window()
+    # Set topmost
+    # root.attributes('-topmost', True)
+
+    # Create two panes, one for the text, the other for the buttons.
+    tk.Grid.columnconfigure(root, 0, weight=1)
+    left_pane = tk.Frame(root, bg='blue')
+    right_pane = tk.Frame(root, bg='blue')
+    left_pane.grid(row=0, column=0, sticky='WE')
+    right_pane.grid(row=0, column=1)
 
     def return_choice(ichoice):
         selected_choice[0] = ichoice
         root.quit()
 
     root.title(title)
-    lbl = tk.Label(root, text=message)
-    lbl.pack()
+    lbl = tk.Label(left_pane, text=message, bg='blue', fg='white')
+    lbl.pack(fill=tk.X)
 
     ichoice = 0
     for choice in choices:
-        btn = tk.Button(root,
+        btn = tk.Button(right_pane,
                         text=choice,
                         command=partial(return_choice, ichoice))
-        btn.pack()
+        btn.grid(row=0, column=ichoice)
         ichoice = ichoice + 1
 
-    center_window(root)
+    top_window(root)
     show_window(root)
     root.mainloop()
 
@@ -209,3 +249,5 @@ if __name__ == "__main__":
         get_credentials(args.title, args.args[0])
     elif args.dialog == 'get_folder':
         get_folder(args.title, args.args[0])
+    elif args.dialog == 'message':
+        message(args.title, args.args[0], args.args[1])
