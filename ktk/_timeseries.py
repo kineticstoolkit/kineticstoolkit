@@ -167,7 +167,7 @@ class TimeSeries():
 
         Returns
         -------
-        self.
+        None
 
         Examples
         --------
@@ -177,14 +177,10 @@ class TimeSeries():
         This creates a corresponding entries in the 'data_info' dict.
 
         """
-        try:
-            self.data_info[signal_name]                     # Test if it exists
-            self.data_info[signal_name][info_name] = value  # Assign the value
-
-        except:  # No info yet for this signal name
-            self.data_info[signal_name] = {info_name: value}  # Assign value
-
-        return self
+        if signal_name in self.data_info:   # Assign the value
+            self.data_info[signal_name][info_name] = value
+        else: #  Create and assign value
+            self.data_info[signal_name] = {info_name: value}
 
     def add_event(self, time, name='event'):
         """
@@ -200,7 +196,7 @@ class TimeSeries():
 
         Returns
         -------
-        self.
+        None.
 
         Example
         -------
@@ -213,7 +209,6 @@ class TimeSeries():
 
         """
         self.events.append(TimeSeriesEvent(time, name))
-        return self
 
     def ui_add_event(self, name='event', plot=[], multiple_events=False):
         """
@@ -232,7 +227,7 @@ class TimeSeries():
 
         Returns
         -------
-        The timeseries, with the event(s) added.
+        None.
         """
         ts = self.copy()
 

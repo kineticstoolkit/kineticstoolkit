@@ -372,8 +372,8 @@ def calculate_velocity(tsin):
                                     poly_order=2, deriv=1)
     tsout = tsin.copy()
     tsout.data['Velocity'] = tsvelocity.data['Angle']
-    tsout = tsout.add_data_info('Velocity', 'Unit',
-                                tsout.data_info['Angle']['Unit'] + '/s')
+    tsout.add_data_info('Velocity', 'Unit',
+                        tsout.data_info['Angle']['Unit'] + '/s')
     return tsout
 
 
