@@ -810,6 +810,40 @@ class TimeSeries():
             values = np.sum(values, 1)
         return np.isnan(values)
 
+    def ui_sync(self, data_keys=None):
+        """
+        Synchronize a TimeSeries by setting its zero-time interactively.
+
+        Parameters
+        ----------
+        data_keys : str or list of str (optional)
+            The data keys to plot. Default is None, which means that all data
+            is plotted.
+
+        Returns
+        -------
+        None.
+        """
+        fig = plt.figure()
+        self.plot(data_keys)
+        choice = gui.button_dialog(
+                'Please zoom on the sync event and press Next.',
+                ['Cancel', 'Next'])
+        if choice != 1:
+            return
+
+        gui.message('Click on the sync event.')
+        click = plt.ginput(1)
+        gui.message(None)
+        plt.close(fig)
+
+        time = click[0][0]
+
+        for event in self.events:
+            event.time -= time
+
+        self.time -= time
+
     def get_subset(self, data_keys):
         """
         Return a subset of the TimeSeries.
@@ -924,19 +958,26 @@ class TimeSeries():
 
             # Resample if needed
             if must_resample:
-                f = sp.interpolate.interp1d(ts.time, ts.data[key],
+                index = ~ts.isnan(key)
+                index
+                if ~np.all(index):
+                    print('Warning: Some NaNs found and interpolated.')
+
+                f = sp.interpolate.interp1d(ts.time[index],
+                                            ts.data[key][index],
                                             axis=0, fill_value=fill_value,
                                             kind=interp_kind)
-                print("resampled.")
                 data = f(self.time)
             else:
                 data = ts.data[key]
 
             # Add this data
             self.data[key] = data
-            for info_name in ts.data_info[key].keys():
-                self.add_data_info(key, info_name,
-                                   ts.data_info[key][info_name])
+
+            if key in ts.data_info:
+                for info_name in ts.data_info[key].keys():
+                    self.add_data_info(key, info_name,
+                                       ts.data_info[key][info_name])
 
         # Merge events
         for event in ts.events:

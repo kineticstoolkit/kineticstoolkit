@@ -152,7 +152,12 @@ kinematics = ktk.loadmat(
 kinematics = kinematics['kinematics']
 
 markers = kinematics['Markers']
+markers.ui_sync('Sync_Sync')
+
 rigid_bodies = kinematics['VirtualRigidBodies']
+
+ts_all = markers.copy()
+ts_all.merge(kinetics, interp_kind='linear', fill_value='extrapolate')
 
 #%%
 
@@ -162,11 +167,11 @@ total_mass = 75
 
 
 segment_mass = 2
-ts.data['ProximalJointPosition'] = markers.data['ElbowR']
-ts.data['DistalJointPosition'] = markers.data['RadialStyloidR']
-ts.data['ForceApplicationPosition'] = markers.data['RearWheelCenterR']
-ts.data['DistalForces'] = kinetics.data['Forces']
-ts.data['DistalMoments'] = kinetics.data['Moments']
+ts.data['ProximalJointPosition'] = ts_all.data['ElbowR']
+ts.data['DistalJointPosition'] = ts_all.data['RadialStyloidR']
+ts.data['ForceApplicationPosition'] = ts_all.data['RearWheelCenterR']
+ts.data['DistalForces'] = ts_all.data['Forces']
+ts.data['DistalMoments'] = ts_all.data['Moments']
 
 new_ts = calculate_proximal_wrench(ts, segment_mass=segment_mass,
                                    com_ratio=0.682,
