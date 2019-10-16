@@ -145,3 +145,93 @@ def test_get_ts_between_times():
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_between_times(-2, -1)
     assert new_ts.time.tolist() == []
+
+
+def test_merge():
+    # Begin with two timeseries with identical times
+    ts1 = ktk.TimeSeries()
+    ts1.time = np.linspace(0, 99, 100)
+    ts1.data['signal1'] = np.random.rand(100, 2)
+    ts1.data['signal2'] = np.random.rand(100, 2)
+    ts1.data['signal3'] = np.random.rand(100, 2)
+    ts1.add_data_info('signal1', 'Unit', 'Unit1')
+    ts1.add_data_info('signal2', 'Unit', 'Unit2')
+    ts1.add_data_info('signal3', 'Unit', 'Unit3')
+    ts1.add_event(15.34, 'test_event1')
+    ts1.add_event(99.2, 'test_event2')
+    ts1.add_event(1, 'test_event3')
+
+    ts2 = ktk.TimeSeries()
+    ts2.time = np.linspace(0, 99, 100)
+    ts2.data['signal4'] = np.random.rand(100, 2)
+    ts2.data['signal5'] = np.random.rand(100, 2)
+    ts2.data['signal6'] = np.random.rand(100, 2)
+    ts2.add_data_info('signal4', 'Unit', 'Unit1')
+    ts2.add_data_info('signal5', 'Unit', 'Unit2')
+    ts2.add_data_info('signal6', 'Unit', 'Unit3')
+    ts2.add_event(15.34, 'test_event4')
+    ts2.add_event(99.2, 'test_event5')
+    ts2.add_event(1, 'test_event6')
+
+    ts1.merge(ts2)
+
+    assert np.all(ts1.data['signal4'] == ts2.data['signal4'])
+    assert np.all(ts1.data['signal5'] == ts2.data['signal5'])
+    assert np.all(ts1.data['signal6'] == ts2.data['signal6'])
+    assert np.all(ts1.data_info['signal4']['Unit'] ==
+                  ts2.data_info['signal4']['Unit'])
+    assert np.all(ts1.data_info['signal5']['Unit'] ==
+                  ts2.data_info['signal5']['Unit'])
+    assert np.all(ts1.data_info['signal6']['Unit'] ==
+                  ts2.data_info['signal6']['Unit'])
+    assert ts1.events[3] == ts2.events[0]
+    assert ts1.events[4] == ts2.events[1]
+    assert ts1.events[5] == ts2.events[2]
+
+    # Try with two timeseries that don't fit in time. It must generate an
+    # exception.
+    ts1 = ktk.TimeSeries()
+    ts1.time = np.linspace(0, 99, 100, endpoint=False)
+    ts1.data['signal1'] = np.random.rand(100, 2)
+    ts1.data['signal2'] = np.random.rand(100, 2)
+    ts1.data['signal3'] = np.random.rand(100, 2)
+    ts1.add_data_info('signal1', 'Unit', 'Unit1')
+    ts1.add_data_info('signal2', 'Unit', 'Unit2')
+    ts1.add_data_info('signal3', 'Unit', 'Unit3')
+    ts1.add_event(15.34, 'test_event1')
+    ts1.add_event(99.2, 'test_event2')
+    ts1.add_event(1, 'test_event3')
+
+    ts2 = ktk.TimeSeries()
+    ts2.time = np.linspace(0, 99, 300, endpoint=False)
+    ts2.data['signal4'] = ts2.time ** 2
+    ts2.data['signal5'] = np.random.rand(300, 2)
+    ts2.data['signal6'] = np.random.rand(300, 2)
+    ts2.add_data_info('signal4', 'Unit', 'Unit1')
+    ts2.add_data_info('signal5', 'Unit', 'Unit2')
+    ts2.add_data_info('signal6', 'Unit', 'Unit3')
+    ts2.add_event(15.34, 'test_event4')
+    ts2.add_event(99.2, 'test_event5')
+    ts2.add_event(1, 'test_event6')
+
+    try:
+        ts1.merge(ts2)
+        raise Exception('This command should have raised a ValueError.')
+    except ValueError:
+        pass
+
+    # Try the same thing but with linear resampling
+    ts1.merge(ts2, interp_kind='nearest')
+
+    assert np.all(ts1.data['signal4'] == ts2.data['signal4'][0::3])
+    assert np.all(ts1.data['signal5'] == ts2.data['signal5'][0::3])
+    assert np.all(ts1.data['signal6'] == ts2.data['signal6'][0::3])
+    assert np.all(ts1.data_info['signal4']['Unit'] ==
+                  ts2.data_info['signal4']['Unit'])
+    assert np.all(ts1.data_info['signal5']['Unit'] ==
+                  ts2.data_info['signal5']['Unit'])
+    assert np.all(ts1.data_info['signal6']['Unit'] ==
+                  ts2.data_info['signal6']['Unit'])
+    assert ts1.events[3] == ts2.events[0]
+    assert ts1.events[4] == ts2.events[1]
+    assert ts1.events[5] == ts2.events[2]

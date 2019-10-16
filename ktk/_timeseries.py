@@ -7,6 +7,7 @@ Date: July 2019
 
 import matplotlib.pyplot as plt
 import numpy as np
+import scipy as sp
 
 from copy import deepcopy
 
@@ -846,3 +847,97 @@ class TimeSeries():
                 ts.data_info[key] = deepcopy(self.data_info[key])
 
         return ts
+
+    def merge(self, ts, data_keys=None, interp_kind=None, fill_value=None,
+              overwrite=True):
+        """
+        Merge another TimeSeries into the current TimeSeries.
+
+        This method merges a TimeSeries into the current TimeSeries, copying
+        the data, data_info and events.
+
+        Parameters
+        ----------
+        ts : TimeSeries
+            The TimeSeries to merge into the current TimeSeries.
+        data_keys : str or list of str (optional)
+            The data keys to merge from ts. Default is None, which means that
+            all the data keys are merged.
+        interp_kind : str (optional)
+            The interpolation method, if necessary. Default is None.
+            If both TimeSeries' time vectors differ and interp_kind is None,
+            then an exception is raised.
+            If both TimeSeries' time vectors differ and interp_kind is
+            specified, then ts is resampled to the current TimeSeries' time
+            vector before merging.
+            interp_kind may take any value that is supported by
+            scipy.interpolate.interp1d:
+                - 'linear'
+                - 'nearest'
+                - 'zero'
+                - 'slinear'
+                - 'quadratic'
+                - 'cubic'
+                - 'previous'
+                - 'next'
+        fill_value : array-like or 'extrapolate' (optional)
+            The fill value to use if ts' time vector contains point outside
+            the current TimeSeries' time vector. Use 'extrapolate' to
+            extrapolate.
+        overwrite : bool (optional)
+            If duplicates are found and overwrite is True, then the source (ts)
+            overwrites the destination. Otherwise (overwrite is False), the
+            duplicated data is ignored. Default is True.
+
+        Returns
+        -------
+        None
+        """
+        if data_keys is None or len(data_keys) == 0:
+            data_keys = ts.data.keys()
+        else:
+            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
+                pass
+            elif isinstance(data_keys, str):
+                data_keys = [data_keys]
+            else:
+                raise(TypeError(
+                        'data_keys must be a string or list of strings'))
+
+        # Check if resampling is needed
+        if ((self.time.shape == ts.time.shape) and
+                np.all(self.time == ts.time)):
+            must_resample = False
+        else:
+            must_resample = True
+
+        if must_resample and interp_kind is None:
+            raise(ValueError(
+                    'Time vectors do not match, resampling is required.'))
+
+        for key in data_keys:
+
+            # Check if this key is a duplicate, then continue to next key if
+            # required.
+            if (key in self.data) and (key in ts.data) and overwrite is False:
+                continue
+
+            # Resample if needed
+            if must_resample:
+                f = sp.interpolate.interp1d(ts.time, ts.data[key],
+                                            axis=0, fill_value=fill_value,
+                                            kind=interp_kind)
+                print("resampled.")
+                data = f(self.time)
+            else:
+                data = ts.data[key]
+
+            # Add this data
+            self.data[key] = data
+            for info_name in ts.data_info[key].keys():
+                self.add_data_info(key, info_name,
+                                   ts.data_info[key][info_name])
+
+        # Merge events
+        for event in ts.events:
+            self.events.append(event)
