@@ -2,7 +2,82 @@ import ktk
 import numpy as np
 
 
-def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
+def get_anthropometrics(segment_name, total_mass):
+    """
+    Get anthropometric values for a given segment name.
+
+    For the moment, only this table is available:
+
+        - D. A. Winter, Biomechanics and Motor Control of Human Movement,
+          4th ed. University of Waterloo, Waterloo, Ontario, Canada,
+          John Wiley & Sons, 2009.
+
+    Other tables may become available in the future.
+
+    Parameters
+    ----------
+    segment_name : str
+        The name of the segment:
+            - 'Hand' (wrist axis to knuckle II of middle finger)
+            - 'Forearm' (elbow axis to ulnar styloid)
+            - 'UpperArm' (glenohumeral axis to elbow axis)
+            - 'ForearmHand' (elbow axis to ulnar styloid)
+            - 'TotalArm' (glenohumeral joint to ulnar styloid)
+            - 'Foot' (lateral malleolus to head metatarsal II)
+            - 'Leg' (femoral condyles to medial malleolus)
+            - 'Thigh' (greater trochanter to femoral condyles)
+            - 'FootLeg' (fomeral condyles to medial malleolus)
+            - 'TotalLeg' (greater trochanter to medial malleolus)
+            - 'TrunkHeadNeck' (greater trochanter to glenohumeral joint)
+            - 'HeadArmsTrunk' (greater trochanter to glenohumeral joint)
+    total_mass : float
+        The total mass of the person, in kg.
+
+    Returns
+    -------
+    A dict with the following keys:
+        - 'Mass' : Mass of the segment, in kg.
+        - 'COMProximalRatio' : Distance between the segment's center of mass
+                and the proximal joint, as a ratio of the distance between
+                both joints.
+        - 'COMDistalRatio' : Distance between the segment's center of mass
+                and the distal joint, as a ratio of the distance between
+                both joints.
+        - 'GyrationCOMRatio': Radius of gyration around the segment's center
+                of mass, as a ratio of the distance between both joints.
+        - 'GyrationProximalRatio': Radius of gyration around the segment's
+                proximal joint, as a ratio of the distance between both joints.
+        - 'GyrationDistalRatio': Radius of gyration around the segment's
+                distal joint, as a ratio of the distance between both joints.
+    """
+    table = dict()
+    table['Hand'] = [0.006, 0.506, 0.494, 0.297, 0.587, 0.577]
+    table['Forearm'] = [0.016, 0.430, 0.570, 0.303, 0.526, 0.647]
+    table['UpperArm'] = [0.028, 0.436, 0.564, 0.322, 0.542, 0.645]
+    table['ForearmHand'] = [0.022, 0.682, 0.318, 0.468, 0.827, 0.565]
+    table['TotalArm'] = [0.050, 0.530, 0.470, 0.368, 0.645, 0.596]
+    table['Foot'] = [0.0145, 0.50, 0.50, 0.475, 0.690, 0.690]
+    table['Leg'] = [0.0465, 0.433, 0.567, 0.302, 0.528, 0.643]
+    table['Thigh'] = [0.100, 0.433, 0.567, 0.323, 0.540, 0.653]
+    table['FootLeg'] = [0.061, 0.606, 0.394, 0.416, 0.735, 0.572]
+    table['TotalLeg'] = [0.161, 0.447, 0.553, 0.326, 0.560, 0.650]
+    table['TrunkHeadNeck'] = [0.578, 0.66, 0.34, 0.503, 0.830, 0.607]
+    table['HeadArmsTrunk'] = [0.678, 0.626, 0.374, 0.496, 0.798, 0.621]
+
+    out = dict()
+    try:
+        out['Mass'] = table[segment_name][0] * total_mass
+        out['COMProximalRatio'] = table[segment_name][1]
+        out['COMDistalRatio'] = table[segment_name][2]
+        out['GyrationCOMRatio'] = table[segment_name][3]
+        out['GyrationProximalRatio'] = table[segment_name][4]
+        out['GyrationDistalRatio'] = table[segment_name][5]
+        return out
+    except KeyError:
+        raise ValueError(f'The segment "{segment_name}" is not available.')
+
+
+def calculate_proximal_wrench(ts, inertial_constants):
     """
     Calculate the proximal wrench based on a TimeSeries.
 
@@ -19,14 +94,16 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
                 - ForceApplicationPosition (Nx4)
                 - DistalForces (Nx4)
                 - DistalMoments (Nx4)
-        segment_mass : float
-            The mass of the segment in kg.
-        com_ratio : float
-            The position of the segment's center of mass, as a proximal ratio
-            of the segment length.
-        gyration_ratio : float
-            The radius of gyration around the segment's center of mass, as a
-            ratio of the segment length.
+        inertial_constants : dict
+            A dict that contains the following keys:
+                - 'Mass' : Mass of the segment, in kg.
+                - 'COMProximalRatio' : Distance between the segment's center
+                        of mass and the proximal joint, as a ratio of the
+                        distance between both joints.
+                - 'GyrationCOMRatio': Radius of gyration around the segment's
+                        center of mass, as a ratio of the distance between
+                        both joints.
+            This dict may be generated using the get_anthropometrics function.
 
     Returns
     -------
@@ -34,7 +111,7 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
         - ProximalForces (Nx4)
         - ProximalMoments (Nx4)
     """
-#%%
+# %%
     ts = ts.copy()
 
     n_frames = len(ts.time)
@@ -44,11 +121,13 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
             ts.data['ProximalJointPosition'])
 
     ts.data['RadiusOfGyration'] = (
-            gyration_ratio * ts.data['ProximalToDistalJointDistance'])
+            inertial_constants['GyrationCOMRatio'] *
+            ts.data['ProximalToDistalJointDistance'])
 
     # Center of mass position and acceleration
     ts.data['CenterOfMassPosition'] = (
-            com_ratio * ts.data['ProximalToDistalJointDistance'] +
+            inertial_constants['COMProximalRatio'] *
+            ts.data['ProximalToDistalJointDistance'] +
             ts.data['ProximalJointPosition'])
 
     ts_com = ts.get_subset('CenterOfMassPosition')
@@ -79,12 +158,7 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
     ts.data['AngularVelocity'] = ts_angvel.data['Angle']
     ts.data['AngularAcceleration'] = ts_angacc.data['Angle']
 
-
-
-
-
     # Forces line of the wrench equation (16)
-    m_i__E_3x3 = segment_mass * np.eye(3)
     a_i = ts.data['CenterOfMassAcceleration'][:, 0:3]
     g = np.array([0, 9.81, 0])
     F_i_minus_1 = ts.data['DistalForces'][:, 0:3]
@@ -93,6 +167,7 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
     c_i = (ts.data['CenterOfMassPosition'][:, 0:3] -
            ts.data['ProximalJointPosition'][:, 0:3])
 
+    segment_mass = inertial_constants['Mass']
     I_i_temp = segment_mass * ts.data['RadiusOfGyration'][:, 0:3] ** 2
     # Diagonalize I_i:
     I_i = np.zeros((n_frames, 3, 3))
@@ -112,7 +187,7 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
     for i_frame in range(n_frames):
 
         matrix_1 = np.block(
-                [[segment_mass * np.eye(3), np.zeros((3,3))],
+                [[segment_mass * np.eye(3), np.zeros((3, 3))],
                  [segment_mass * np.diag(c_i[i_frame]), I_i[i_frame]]])
 
         matrix_2 = np.block([a_i[i_frame] - g, alpha_i[i_frame]])
@@ -124,7 +199,7 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
         matrix_3 = matrix_3[:, np.newaxis]  # Convert 1d to column vector
 
         matrix_4 = np.block([
-                [np.eye(3), np.zeros((3,3))],
+                [np.eye(3), np.zeros((3, 3))],
                 [np.diag(d_i[i_frame]), np.eye(3)]])
 
         matrix_5 = np.block([F_i_minus_1[i_frame], M_i_minus_1[i_frame]])
@@ -133,13 +208,17 @@ def calculate_proximal_wrench(ts, segment_mass, com_ratio, gyration_ratio):
         proximal_wrench[i_frame] = (
                 matrix_1 @ matrix_2 + matrix_3 + matrix_4 @ matrix_5)
 
-    ts.data['ProximalForces'] = proximal_wrench[:, 0:3, 0]
-    ts.data['ProximalMoments'] = proximal_wrench[:, 3:6, 0]
+    # Initialize to a series of vectors of length 4
+    ts.data['ProximalForces'] = np.zeros((n_frames, 4))
+    ts.data['ProximalMoments'] = np.zeros((n_frames, 4))
+    # Assign the 3 first components of the vectors
+    ts.data['ProximalForces'][:, 0:3] = proximal_wrench[:, 0:3, 0]
+    ts.data['ProximalMoments'][:, 0:3] = proximal_wrench[:, 3:6, 0]
 
     return ts
 
 
-#%%
+# %%
 
 kinetics = ktk.loadmat(
         ktk.config['RootFolder'] +
@@ -159,20 +238,20 @@ rigid_bodies = kinematics['VirtualRigidBodies']
 ts_all = markers.copy()
 ts_all.merge(kinetics, interp_kind='linear', fill_value='extrapolate')
 
-#%%
+# %%
 
 ts = ktk.TimeSeries(time = markers.time)
 
 total_mass = 75
 
-
-segment_mass = 2
 ts.data['ProximalJointPosition'] = ts_all.data['ElbowR']
 ts.data['DistalJointPosition'] = ts_all.data['RadialStyloidR']
 ts.data['ForceApplicationPosition'] = ts_all.data['RearWheelCenterR']
 ts.data['DistalForces'] = ts_all.data['Forces']
 ts.data['DistalMoments'] = ts_all.data['Moments']
 
-new_ts = calculate_proximal_wrench(ts, segment_mass=segment_mass,
-                                   com_ratio=0.682,
-                                   gyration_ratio=0.1)
+new_ts = calculate_proximal_wrench(ts, get_anthropometrics(
+        'ForearmHand', total_mass))
+
+new_ts = new_ts.get_ts_between_times(0, 15)
+new_ts.plot(['ProximalForces', 'DistalForces', 'ProximalMoments', 'DistalMoments'])
