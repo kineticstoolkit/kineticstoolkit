@@ -35,7 +35,7 @@ from ._timeseries import TimeSeries, TimeSeriesEvent
 from ._loadsave import load, loadmat, save
 from . import filters
 from . import gui
-from ._tools import explore, terminal
+from ._tools import explore, terminal, update
 from . import kinematics
 from . import pushrimkinetics
 from . import dev
