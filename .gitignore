@@ -3,3 +3,4 @@ ktk/dev/__pycache__
 ktk/dev/unittests/__pycache__
 __pycache__
 tutorials/.ipynb_checkpoints
+.DS_Store

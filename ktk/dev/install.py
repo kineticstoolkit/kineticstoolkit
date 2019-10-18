@@ -25,7 +25,7 @@ PYTHONPATH editor.
 Author: Felix Chenier <chenier.felix@uqam.ca>
 Date: October 2019
 """
-from os import system, chdir, getcwd
+from os import chdir, getcwd, system
 from time import sleep
 
 user = input('Please enter your Bitbucket user name: ')
@@ -36,12 +36,15 @@ system(f'git clone https://{user}:{password}@bitbucket.org/'
        'felixchenier/kineticstoolkit.git')
 print('Pulling origin/master...')
 chdir('kineticstoolkit')
-system('git pull origin master')
+system('git pull')
 sleep(1)
 print('====================================================')
 print('       DOWNLOAD AND INSTALLATION COMPLETE.')
 print('----------------------------------------------------')
 print(f'Now please add "{getcwd()}" to your PYTHONPATH.')
-print('Then, you can use KineticsToolkit with "import ktk".')
+print('On Spyder for Windows, look in the Tools menu.')
+print('On Spyder for macOS, look in the Python menu.')
+print('Then, restart Spyder. You can now use KineticsToolkit:')
+print('    import ktk')
 print('====================================================')
 chdir('..')
