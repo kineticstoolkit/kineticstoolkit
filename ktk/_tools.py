@@ -70,3 +70,26 @@ def terminal(folder_name=''):
     else:
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
+
+
+def update():
+    """
+    Update KTK to the last available version.
+    
+    KTK needs to be installed as a git repository. This is the case with the
+    default installation method using install.py.
+    
+    Parameters
+    ----------
+    None
+    
+    Returns
+    -------
+    None
+    """
+    current_dir = os.getcwd()
+    os.chdir(ktk.config['RootFolder'])
+    os.system('git pull origin master')
+    os.chdir(current_dir)
+    
+    
