@@ -60,10 +60,7 @@ def savgol(tsin, window_length, poly_order, deriv=0):
         signal_shape = np.shape(input_signal)
 
         n_data = signal_shape[0]
-        each_data_shape = signal_shape[1:]
-
-        n_data = np.shape(input_signal)[0]
-        nan_index = np.isnan(np.sum(input_signal, axis=len(each_data_shape)))
+        nan_index = tsout.isnan(key)
 
         if not np.all(~nan_index):
             # There were NaNs, issue a warning.
