@@ -73,11 +73,15 @@ def read_file(filename, format='smartwheel'):
         data = dataframe.to_numpy()
         time = data[:, 0]
         channels = data[:, 1:7]
+        battery = data[:, 8]
 
         ts = ktk.TimeSeries(time=time)
 
         ts.data['Channels'] = channels
         ts.add_data_info('Channels', 'Unit', 'raw')
+
+        ts.data['Battery'] = battery
+        ts.add_data_info('Battery', 'Unit', 'raw')
 
     return ts
 
