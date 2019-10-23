@@ -173,6 +173,15 @@ def get_filename(title='KTK', initial_folder='.'):
     -------
     A string with the full path of the selected file.
     """
+    if ktk.config['IsPC'] is True:
+        import tkinter as tk
+        import tkinter.filedialog as filedialog
+        root = tk.Tk()
+        root.withdraw()
+        return filedialog.askopenfilename(title=title,
+                                             initialdir=initial_folder)
+
+    # Else
     str_call = ['get_filename', title, initial_folder]
     result = subprocess.check_output([CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
