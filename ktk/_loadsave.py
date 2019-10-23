@@ -18,6 +18,7 @@ import shutil
 
 
 def _save_to_current_folder(variable, variable_name):
+
     if type(variable) == dict:
         os.mkdir(variable_name + '.dict')
         os.chdir(variable_name + '.dict')
@@ -135,6 +136,15 @@ def save(filename, variable):
     -------
     None.
     """
+    # Get current directory to come back here after saving.
+    original_folder = os.getcwd()
+
+    # Change to destination path if specified in filename
+    save_folder = os.path.dirname(filename)
+    filename = os.path.basename(filename)
+    if len(save_folder) > 0:
+        os.chdir(save_folder)
+
     # Remove .zip extension if present (to obtain only the base name)
     if filename.lower().endswith('.zip'):
         filename = filename[0:-len('.zip')]
@@ -144,9 +154,12 @@ def save(filename, variable):
     except Exception:
         pass
     os.mkdir('KTK_SAVE_TEMPORARY_FOLDER')
+
     os.chdir('KTK_SAVE_TEMPORARY_FOLDER')
+
     _save_to_current_folder(variable, filename)
-    os.chdir('..')
+
+    os.chdir(original_folder)
     shutil.make_archive(filename, 'zip', 'KTK_SAVE_TEMPORARY_FOLDER')
     shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
 
