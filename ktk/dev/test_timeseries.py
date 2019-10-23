@@ -88,8 +88,8 @@ def test_get_event_time():
     ts.add_event(10.8, 'event2')
     ts.add_event(2.3, 'event2')
     assert ts.get_event_time('event1') == 5.5
-    assert ts.get_event_time('event2', 1) == 2.3
-    assert ts.get_event_time('event2', 2) == 10.8
+    assert ts.get_event_time('event2', 0) == 2.3
+    assert ts.get_event_time('event2', 1) == 10.8
 
 
 def test_get_ts_at_event___get_ts_at_time():
@@ -107,7 +107,7 @@ def test_get_ts_at_event___get_ts_at_time():
     assert new_ts.time == 5
     new_ts = ts.get_ts_at_event('event2')
     assert new_ts.time == 2
-    new_ts = ts.get_ts_at_event('event2', 2)
+    new_ts = ts.get_ts_at_event('event2', 1)
     assert new_ts.time == 11
 
 

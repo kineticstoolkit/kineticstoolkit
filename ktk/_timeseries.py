@@ -51,7 +51,7 @@ class TimeSeriesEvent(list):
 
     @name.setter
     def name(self, name):
-        self[0] = str(name)
+        self[1] = str(name)
 
 
 class TimeSeries():
@@ -490,7 +490,7 @@ class TimeSeries():
         else:
             return np.nanargmin(diff)
 
-    def get_event_time(self, event_name, event_occurence=1):
+    def get_event_time(self, event_name, event_occurence=0):
         """
         Get the time of the specified event.
 
@@ -498,8 +498,9 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 1.
-            i_th occurence of the event to look for in the events list.
+        event_occurence : int, optional. Default is 0.
+            i_th occurence of the event to look for in the events list,
+            starting at 0.
 
         Returns
         -------
@@ -517,9 +518,9 @@ class TimeSeries():
         >>> # Now let call ``get_event_time``
         >>> ts.get_event_time('event1')
         5.5
-        >>> ts.get_event_time('event2', 1)
+        >>> ts.get_event_time('event2', 0)
         2.3
-        >>> ts.get_event_time('event2', 2)
+        >>> ts.get_event_time('event2', 1)
         10.8
 
         """
@@ -527,8 +528,8 @@ class TimeSeries():
             raise Warning('Rounding event-occurence to the nearest integer')
             event_occurence = np.round(event_occurence)
 
-        if event_occurence < 1:
-            raise ValueError('event_occurence must be stricly positive')
+        if event_occurence < 0:
+            raise ValueError('event_occurence must be positive')
 
         the_event_times = np.array([x.time for x in self.events])
         the_event_indices = [(x.name == event_name) for x in self.events]
@@ -537,11 +538,11 @@ class TimeSeries():
         the_event_times = np.array(the_event_times[the_event_indices])
 
         n_events = len(the_event_times)
-        if n_events == 0 or event_occurence > n_events:
+        if n_events == 0 or event_occurence >= n_events:
             return np.nan
         else:
             the_event_times = np.sort(the_event_times)
-            return the_event_times[event_occurence - 1]
+            return the_event_times[event_occurence]
 
     def get_ts_at_time(self, time):
         """
@@ -564,7 +565,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    def get_ts_at_event(self, event_name, event_occurence=1):
+    def get_ts_at_event(self, event_name, event_occurence=0):
         """
         Get a one-data subset of the TimeSeries at the event's nearest time.
 
@@ -572,8 +573,9 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 1.
-            i_th occurence of the event to look for in the events list.
+        event_occurence : int, optional. Default is 0.
+            i_th occurence of the event to look for in the events list,
+            starting at 0.
 
         Returns
         -------
@@ -626,7 +628,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_before_event(self, event_name, event_occurence=1):
+    def get_ts_before_event(self, event_name, event_occurence=0):
         """
         Get a subset of the TimeSeries before and at the specified event.
 
@@ -634,8 +636,9 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 1.
-            i_th occurence of the event to look for in the events list.
+        event_occurence : int, optional. Default is 0.
+            i_th occurence of the event to look for in the events list,
+            starting at 0.
 
         Returns
         -------
@@ -687,7 +690,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_after_event(self, event_name, event_occurence=1):
+    def get_ts_after_event(self, event_name, event_occurence=0):
         """
         Get a subset of the TimeSeries after and at the specified event.
 
@@ -695,8 +698,9 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 1.
-            i_th occurence of the event to look for in the events list.
+        event_occurence : int, optional. Default is 0.
+            i_th occurence of the event to look for in the events list,
+            starting at 0.
 
         Returns
         -------
@@ -742,7 +746,7 @@ class TimeSeries():
         return new_ts
 
     def get_ts_between_events(self, event_name1, event_name2,
-                              event_occurence1=1, event_occurence2=1):
+                              event_occurence1=0, event_occurence2=0):
         """
         Get a subset of the TimeSeries between two specified events.
 
@@ -750,8 +754,9 @@ class TimeSeries():
         ----------
         event_name1, event_name2 : str
             Name of the events to look for in the events list.
-        event_occurence1, event_occurence2 : int, optional. Default is 1.
-            i_th occurence of the events to look for in the events list.
+        event_occurence1, event_occurence2 : int, optional. Default is 0.
+            i_th occurence of the events to look for in the events list,
+            starting at 0.
 
         Returns
         -------
