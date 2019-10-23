@@ -235,19 +235,35 @@ def get_folder(title, initial_folder):
     print(filedialog.askdirectory(title=title, initialdir=initial_folder))
 
 
+def get_filename(title, initial_folder):
+    root = create_window()
+    root.withdraw()
+    time.sleep(0.1)
+    root.update()
+    print(filedialog.askopenfilename(title=title, initialdir=initial_folder))
+    time.sleep(0.1)
+    root.update()
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
             description='Run interactive gui dialogs.')
-    parser.add_argument('dialog', help='buttondialog')
+    parser.add_argument('command', help='one of: buttondialog, '
+                                        'get_credentials, '
+                                        'get_folder, '
+                                        'get_filename, '
+                                        'message')
     parser.add_argument('title', help='Title of the dialog')
     parser.add_argument('args', help='Arguments', nargs="*")
     args = parser.parse_args()
 
-    if args.dialog == 'button_dialog':
+    if args.command == 'button_dialog':
         button_dialog(args.title, args.args[0], args.args[1:])
-    elif args.dialog == 'get_credentials':
+    elif args.command == 'get_credentials':
         get_credentials(args.title, args.args[0])
-    elif args.dialog == 'get_folder':
+    elif args.command == 'get_folder':
         get_folder(args.title, args.args[0])
-    elif args.dialog == 'message':
+    elif args.command == 'get_filename':
+        get_filename(args.title, args.args[0])
+    elif args.command == 'message':
         message(args.title, args.args[0], args.args[1])

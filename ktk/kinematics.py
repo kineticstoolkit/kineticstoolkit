@@ -12,6 +12,7 @@ import warnings
 import subprocess
 from time import sleep
 from datetime import datetime
+from ezc3d import c3d as ezc3d
 
 
 def read_c3d_file(filename):
@@ -29,52 +30,52 @@ def read_c3d_file(filename):
     the timeseries.
     """
     # Create the reader
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', UserWarning)
-        fid = open(filename, 'rb')
-        reader = c3d.Reader(fid)
+    reader = ezc3d(filename)
 
     # Create the output timeseries
     output = ktk.TimeSeries()
 
     # Get the marker label names and create a timeseries data entry for each
-    labels = reader.point_labels.copy()
+    # Get the labels
+    labels = reader['parameters']['POINT']['LABELS']['value']
+    n_frames = reader['parameters']['POINT']['FRAMES']['value'][0]
+    point_rate = reader['parameters']['POINT']['RATE']['value'][0]
+    point_unit = reader['parameters']['POINT']['UNITS']['value'][0]
+
+    if point_unit == 'mm':
+        point_factor = 0.001
+    elif point_unit == 'm':
+        point_factor = 1
+    else:
+        raise(ValueError("Point unit must be 'm' or 'mm'."))
+
     n_labels = len(labels)
     for i in range(n_labels):
         labels[i] = labels[i].strip()  # Strip leading and ending spaces
         # Begin with an increasing list, then convert to an array at the end.
-        output.data[labels[i]] = []
+        output.data[labels[i]] = (point_factor *
+                                  reader['data']['points'][:, i, :].T)
         output.add_data_info(labels[i], 'Unit', 'm')
 
-    # Read each frame and append to the timeseries
-    n_frames = 0
-    for one_frame in reader.read_frames():
-        n_frames += 1
-        points = one_frame[1]
-        for i_label in range(n_labels):
-            output.data[labels[i_label]].append(points[i_label])
-
-    # Convert the timeseries data to 2-dimension arrays
-    # with nans as missing samples
-    for label in labels:
-        output.data[label] = np.array(output.data[label])
-
-        # Find missing samples
-        nan_index = np.nonzero(output.data[label][:, 3])
-        # Keep only x,y,z
-        output.data[label] = output.data[label][:, 0:3]
-        # Add ones to 4th element
-        output.data[label] = np.block([output.data[label],
-                                      np.ones([np.shape(
-                                              output.data[label])[0], 1])])
-        # Fill missing samples with nans
-        output.data[label][nan_index, :] = np.nan
+#    # Convert the timeseries data to 2-dimension arrays
+#    # with nans as missing samples
+#    for label in labels:
+#        output.data[label] = np.array(output.data[label])
+#
+#        # Find missing samples
+#        nan_index = np.nonzero(output.data[label][:, 3])
+#        # Keep only x,y,z
+#        output.data[label] = output.data[label][:, 0:3]
+#        # Add ones to 4th element
+#        output.data[label] = np.block([output.data[label],
+#                                      np.ones([np.shape(
+#                                              output.data[label])[0], 1])])
+#        # Fill missing samples with nans
+#        output.data[label][nan_index, :] = np.nan
 
     # Creating the timeseries time vector
-    output.time = np.arange(n_frames) / reader.point_rate
+    output.time = np.arange(n_frames) / point_rate
 
-    # Close and return
-    fid.close()
     return output
 
 

@@ -24,6 +24,7 @@ def __dir__():
     return ('button_dialog',
             'get_credentials',
             'get_folder',
+            'get_filename',
             'set_color_order',
             'message')
 
@@ -153,6 +154,31 @@ def get_folder(title='KTK', initial_folder='.'):
                                      stderr=subprocess.DEVNULL)
     result = str.split(result.decode())
     return result[0]
+
+
+def get_filename(title='KTK', initial_folder='.'):
+    """
+    Get file name interactively using a file dialog window.
+
+    Parameters
+    ----------
+    title : str (optional)
+        The title of the file dialog. On many OSes, no title is shown so it is
+        a good idea to not rely on this title to give instructions to the user.
+        Default : 'KTK'
+    initial_folder : str (optional)
+        The initial folder of the file dialog. Default is the current folder.
+
+    Returns
+    -------
+    A string with the full path of the selected file.
+    """
+    str_call = ['get_filename', title, initial_folder]
+    result = subprocess.check_output([CMDGUI] + str_call,
+                                     stderr=subprocess.DEVNULL)
+    result = result.decode('ascii')
+    result = result.replace('\n', '')
+    return result
 
 
 def button_dialog(message='Please select an option.',
