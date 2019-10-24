@@ -524,9 +524,7 @@ class TimeSeries():
         10.8
 
         """
-        if np.round(event_occurence) != event_occurence:
-            raise Warning('Rounding event-occurence to the nearest integer')
-            event_occurence = np.round(event_occurence)
+        event_occurence = int(event_occurence)
 
         if event_occurence < 0:
             raise ValueError('event_occurence must be positive')
@@ -920,13 +918,99 @@ class TimeSeries():
             if ~np.all(index):
                 print('Warning: Some NaNs found and interpolated.')
 
-            f = sp.interpolate.interp1d(self.time[index],
-                                        self.data[key][index],
-                                        axis=0, fill_value=fill_value,
-                                        kind=kind)
-            self.data[key] = f(new_time)
+            if sum(index) < 2:  # Only Nans, cannot interpolate.
+                print(f'Warning: Only NaNs found in signal {key}.')
+                # We generate an array of nans of the expected size.
+                new_shape = [len(new_time)]
+                for i in range(1, len(self.data[key].shape)):
+                    new_shape.append(self.data[key].shape[i])
+                self.data[key] = np.empty(new_shape)
+                self.data[key][:] = np.nan
+            else:  # Interpolate.
+                f = sp.interpolate.interp1d(self.time[index],
+                                            self.data[key][index],
+                                            axis=0, fill_value=fill_value,
+                                            kind=kind)
+                self.data[key] = f(new_time)
 
         self.time = new_time
+
+    def get_time_normalized_ts(self, event_name1, event_name2,
+                               n_points=100):
+        """
+        Get a time-normalized version of the TimeSeries
+
+        This method time-normalizes the TimeSeries at each cycle defined by
+        event_name1 and event_name2, then returns a new TimeSeries where
+        each cycle has been time-normalized and merged together.
+
+        Parameters
+        ----------
+        event_name1, event_name2 : str
+            The events that correspond to the begin and end of a cycle.
+        n_points : int (optional)
+            The number of points of the output TimeSeries (default is 100).
+
+        Returns
+        -------
+        A new TimeSeries where time is a vector of n_points, and each data,
+        whish had this shape:
+            [time_length, ...]
+        now has this shape:
+            [n_points, n_cycles, ...]
+        """
+        # Find the final number of cycles
+        n_cycles = np.sum(np.array(self.events)[:, 1] == event_name1)
+        if event_name1 == event_name1:
+            n_cycles -= 1
+            event_offset = 1
+        else:
+            event_offset = 0
+
+        # Initialize the output TimeSeries
+        dest_ts = TimeSeries()
+        dest_ts.time = np.arange(n_points)
+        dest_ts.time_info['Unit'] = '%'
+        for key in self.data.keys():
+            new_shape = [n_points]
+            new_shape.append(n_cycles)
+            for i in range(1, len(self.data[key].shape)):
+                new_shape.append(self.data[key].shape[i])
+            dest_ts.data[key] = np.empty(new_shape)
+
+        i_cycle = 0
+        quit_loop = False
+        while quit_loop is False:
+
+            # Get the TimeSeries for this cycle
+            subts = self.get_ts_between_events(event_name1, event_name2,
+                                               i_cycle, i_cycle + event_offset)
+            if subts.time.shape == (0,):
+                quit_loop = True
+            else:
+
+                original_start = subts.time[0]
+                original_stop = subts.time[-1]
+
+                # Resample this TimeSeries on n_points
+                subts.resample(np.linspace(subts.time[0], subts.time[-1],
+                                           n_points),
+                               fill_value='extrapolate')
+
+                # Resample the events and add the relevant ones to the
+                # destination TimeSeries
+                for i_event, event in enumerate(subts.events):
+                    event.time = ((event.time - original_start) /
+                                  (original_stop - original_start) *
+                                  (n_points-1))
+                    if event.time >= 0 and event.time <= n_points:
+                        dest_ts.events.append(event)
+
+                # Add this cycle to the destination TimeSeries
+                for key in subts.data.keys():
+                    dest_ts.data[key][:, i_cycle] = subts.data[key]
+
+                i_cycle += 1
 
     def merge(self, ts, data_keys=None, interp_kind=None, fill_value=None,
               overwrite=True):
