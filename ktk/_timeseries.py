@@ -887,6 +887,47 @@ class TimeSeries():
 
         return ts
 
+    def resample(self, new_time, kind='linear', fill_value=None):
+        """
+        Resample the TimeSeries.
+
+        Parameters
+        ----------
+        new_time : np.array
+            The new time vector to resample the TimeSeries to.
+        kind : str (optional)
+            The interpolation method. This input may take any value
+            supported by scipy.interpolate.interp1d, such as:
+                - 'linear'
+                - 'nearest'
+                - 'zero'
+                - 'slinear'
+                - 'quadratic'
+                - 'cubic'
+                - 'previous'
+                - 'next'
+        fill_value : array-like or 'extrapolate' (optional)
+            The fill value to use if new_time vector contains point outside
+            the current TimeSeries' time vector. Use 'extrapolate' to
+            extrapolate.
+
+        Returns
+        -------
+        None.
+        """
+        for key in self.data.keys():
+            index = ~self.isnan(key)
+            if ~np.all(index):
+                print('Warning: Some NaNs found and interpolated.')
+
+            f = sp.interpolate.interp1d(self.time[index],
+                                        self.data[key][index],
+                                        axis=0, fill_value=fill_value,
+                                        kind=kind)
+            self.data[key] = f(new_time)
+
+        self.time = new_time
+
     def merge(self, ts, data_keys=None, interp_kind=None, fill_value=None,
               overwrite=True):
         """
@@ -932,6 +973,7 @@ class TimeSeries():
         -------
         None
         """
+        ts = ts.copy()
         if data_keys is None or len(data_keys) == 0:
             data_keys = ts.data.keys()
         else:
@@ -950,9 +992,12 @@ class TimeSeries():
         else:
             must_resample = True
 
-        if must_resample and interp_kind is None:
+        if must_resample is True and interp_kind is None:
             raise(ValueError(
                     'Time vectors do not match, resampling is required.'))
+
+        if must_resample is True:
+            ts.resample(self.time, fill_value=fill_value, kind=interp_kind)
 
         for key in data_keys:
 
@@ -961,23 +1006,8 @@ class TimeSeries():
             if (key in self.data) and (key in ts.data) and overwrite is False:
                 continue
 
-            # Resample if needed
-            if must_resample:
-                index = ~ts.isnan(key)
-                index
-                if ~np.all(index):
-                    print('Warning: Some NaNs found and interpolated.')
-
-                f = sp.interpolate.interp1d(ts.time[index],
-                                            ts.data[key][index],
-                                            axis=0, fill_value=fill_value,
-                                            kind=interp_kind)
-                data = f(self.time)
-            else:
-                data = ts.data[key]
-
             # Add this data
-            self.data[key] = data
+            self.data[key] = ts.data[key]
 
             if key in ts.data_info:
                 for info_name in ts.data_info[key].keys():

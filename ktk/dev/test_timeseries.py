@@ -147,7 +147,7 @@ def test_get_ts_between_times():
     assert new_ts.time.tolist() == []
 
 
-def test_merge():
+def test_merge_and_resample():
     # Begin with two timeseries with identical times
     ts1 = ktk.TimeSeries()
     ts1.time = np.linspace(0, 99, 100)
