@@ -14,11 +14,8 @@ Started on June 2019
 # Imports
 import tkinter as tk
 import tkinter.filedialog as filedialog
-
 from functools import partial
-
 import argparse
-import subprocess
 import time
 
 
@@ -30,16 +27,6 @@ def create_window(title='KTK', width=800, height=400):
 
     # Make it transparent while we modify it.
     root.wm_attributes("-alpha", 0)
-    #root.update()
-
-    # # Ensure the window is not closable by user
-    # def _on_closing():
-    #     pass
-    # root.protocol("WM_DELETE_WINDOW", _on_closing)
-
-    # root.update()
-    # root.attributes('-topmost', False)
-
     return root
 
 
@@ -95,8 +82,6 @@ def _set_window_position(root, x, y):
 # ------------------------------------
 # MODULE'S PUBLIC FUNCTIONS
 # ------------------------------------
-
-
 def get_credentials(title, message):
     """
     Get username and password using a password dialog.

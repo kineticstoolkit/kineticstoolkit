@@ -15,10 +15,11 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import ktk
-from time import sleep
+
 
 CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
 _message_window_int = [0]
+
 
 def __dir__():
     return ('button_dialog',
@@ -179,7 +180,7 @@ def get_filename(title='KTK', initial_folder='.'):
         root = tk.Tk()
         root.withdraw()
         return filedialog.askopenfilename(title=title,
-                                             initialdir=initial_folder)
+                                          initialdir=initial_folder)
 
     # Else
     str_call = ['get_filename', title, initial_folder]
