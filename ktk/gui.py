@@ -125,7 +125,7 @@ def get_credentials():
     """
     str_call = ['get_credentials', 'KTK',
                 'Please enter your login information.']
-    result = subprocess.check_output([CMDGUI] + str_call,
+    result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
 
     result = result.decode()
@@ -153,7 +153,7 @@ def get_folder(title='KTK', initial_folder='.'):
     str_call = ['get_folder', title, initial_folder]
     result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
-    result = str.split(result.decode())
+    result = result.decode('ascii')
     result = result.replace('\n', '').replace('\r', '')    
     return result
 
