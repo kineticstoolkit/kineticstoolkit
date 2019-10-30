@@ -151,10 +151,11 @@ def get_folder(title='KTK', initial_folder='.'):
     A string with the full path of the selected folder.
     """
     str_call = ['get_folder', title, initial_folder]
-    result = subprocess.check_output([CMDGUI] + str_call,
+    result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
     result = str.split(result.decode())
-    return result[0]
+    result = result.replace('\n', '').replace('\r', '')    
+    return result
 
 
 def get_filename(title='KTK', initial_folder='.'):
@@ -174,20 +175,11 @@ def get_filename(title='KTK', initial_folder='.'):
     -------
     A string with the full path of the selected file.
     """
-    if ktk.config['IsPC'] is True:
-        import tkinter as tk
-        import tkinter.filedialog as filedialog
-        root = tk.Tk()
-        root.withdraw()
-        return filedialog.askopenfilename(title=title,
-                                          initialdir=initial_folder)
-
-    # Else
     str_call = ['get_filename', title, initial_folder]
-    result = subprocess.check_output([CMDGUI] + str_call,
+    result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
     result = result.decode('ascii')
-    result = result.replace('\n', '')
+    result = result.replace('\n', '').replace('\r', '')
     return result
 
 
