@@ -40,11 +40,9 @@ def read_file(filename, format='smartwheel'):
     -------
     TimeSeries with the file contents.
     """
-
-
     if format == 'smartwheel':
 
-        dataframe = pd.read_csv(filename, sep=None, header=None, engine='python')
+        dataframe = pd.read_csv(filename, delimiter=None, header=None)
         data = dataframe.to_numpy()
         index = data[:, 1]
         time = np.arange(0, len(index)) / 240
