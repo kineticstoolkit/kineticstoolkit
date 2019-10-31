@@ -40,6 +40,7 @@ from . import kinematics
 from . import pushrimkinetics
 from . import dev
 from . import dbinterface
+from . import cycles
 from . import _repr
 
 

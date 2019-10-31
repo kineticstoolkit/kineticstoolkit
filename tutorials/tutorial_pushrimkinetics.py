@@ -173,14 +173,14 @@ Time-normalizing data
 
 Now, we may be intested in time-normalizing our pushes. For example, if we are
 interested to find the average progression of the push force. Time-normalizing
-is not specific to the ktk.pushrimkinetics module but is a method of the
-ktk.TimeSeries class.
+is not specific to the ktk.pushrimkinetics module, it is in the ktk.cycles
+module.
 
 Let's say we want to time-normalize each push from the ``pushstart`` event to
 the ``pushend`` event.
 """
 # %%
-kinetics.time_normalize('pushstart', 'pushend')
+kinetics = ktk.cycles.time_normalize(kinetics, 'pushstart', 'pushend')
 kinetics.plot(['Forces', 'Moments'])
 
 # %% markdown
@@ -190,7 +190,7 @@ form, using the ``ktk.TimeSeries.get_reshaped_time_normalized_data`` method.
 """
 
 # %%
-data = kinetics.get_reshaped_time_normalized_data()
+data = ktk.cycles.get_reshaped_time_normalized_data(kinetics)
 
 data
 

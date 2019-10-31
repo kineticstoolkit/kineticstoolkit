@@ -13512,8 +13512,8 @@ automatically based on a double-threshold. Let's try it on our data.</p>
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Time-normalizing-data">Time-normalizing data<a class="anchor-link" href="#Time-normalizing-data">&#182;</a></h2><p>Now, we may be intested in time-normalizing our pushes. For example, if we are
 interested to find the average progression of the push force. Time-normalizing
-is not specific to the ktk.pushrimkinetics module but is a method of the
-ktk.TimeSeries class.</p>
+is not specific to the ktk.pushrimkinetics module, it is in the ktk.cycles
+module.</p>
 <p>Let's say we want to time-normalize each push from the <code>pushstart</code> event to
 the <code>pushend</code> event.</p>
 
@@ -13525,7 +13525,7 @@ the <code>pushend</code> event.</p>
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">kinetics</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="s1">&#39;pushstart&#39;</span><span class="p">,</span> <span class="s1">&#39;pushend&#39;</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">&#39;pushstart&#39;</span><span class="p">,</span> <span class="s1">&#39;pushend&#39;</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments&#39;</span><span class="p">])</span>
 </pre></div>
 
@@ -13570,7 +13570,7 @@ form, using the <code>ktk.TimeSeries.get_reshaped_time_normalized_data</code> me
 <div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">get_reshaped_time_normalized_data</span><span class="p">()</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">get_reshaped_time_normalized_data</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
 <span class="n">data</span>
 </pre></div>
