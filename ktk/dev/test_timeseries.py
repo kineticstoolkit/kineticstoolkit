@@ -221,17 +221,17 @@ def test_merge_and_resample():
         pass
 
     # Try the same thing but with linear resampling
-    ts1.merge(ts2, interp_kind='nearest')
+    ts1.merge(ts2, resample=True)
 
-    assert np.all(ts1.data['signal4'] == ts2.data['signal4'][0::3])
-    assert np.all(ts1.data['signal5'] == ts2.data['signal5'][0::3])
-    assert np.all(ts1.data['signal6'] == ts2.data['signal6'][0::3])
-    assert np.all(ts1.data_info['signal4']['Unit'] ==
-                  ts2.data_info['signal4']['Unit'])
-    assert np.all(ts1.data_info['signal5']['Unit'] ==
-                  ts2.data_info['signal5']['Unit'])
-    assert np.all(ts1.data_info['signal6']['Unit'] ==
-                  ts2.data_info['signal6']['Unit'])
+    def _assert_almost_equal(one, two):
+        assert np.max(np.abs(one - two)) < 1E-6
+
+    _assert_almost_equal(ts1.data['signal4'], ts2.data['signal4'][0::3])
+    _assert_almost_equal(ts1.data['signal5'], ts2.data['signal5'][0::3])
+    _assert_almost_equal(ts1.data['signal6'], ts2.data['signal6'][0::3])
+    assert ts1.data_info['signal4']['Unit'] == ts2.data_info['signal4']['Unit']
+    assert ts1.data_info['signal5']['Unit'] == ts2.data_info['signal5']['Unit']
+    assert ts1.data_info['signal6']['Unit'] == ts2.data_info['signal6']['Unit']
     assert ts1.events[3] == ts2.events[0]
     assert ts1.events[4] == ts2.events[1]
     assert ts1.events[5] == ts2.events[2]

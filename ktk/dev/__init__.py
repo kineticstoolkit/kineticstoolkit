@@ -11,10 +11,17 @@ import ktk
 import subprocess as _subprocess
 import webbrowser as _webbrowser
 import pytest
-
+import os
+import ktk.dev.tutorialcompiler as tutorialcompiler
 
 def run_tests(module=None):
     """Run all unit tests."""
+    cwd = os.getcwd()
+    os.chdir(ktk.config['RootFolder'] + '/tutorials')
+    tutorialcompiler.compile('tutorial_pushrimkinetics.py',
+                             'pushrimkinetics.html')
+    os.chdir(cwd)
+
     pytest.main([ktk.config['RootFolder'] + '/ktk/dev'])
 
 
