@@ -33,8 +33,13 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
     else:
         event_offset = 0
 
+    if n_cycles <= 0:
+        raise(ValueError('No cycle can be defined from these event names.'))
+
     # Initialize the destination TimeSeries
-    dest_ts = TimeSeries()
+    dest_ts = ts.copy()
+    dest_ts.events = []
+
     dest_ts.time = np.arange(n_points * n_cycles)
     dest_ts.time_info['Unit'] = '%'
     for key in ts.data.keys():
@@ -52,7 +57,7 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
 
         # Resample this TimeSeries on n_points
         subts.resample(np.linspace(subts.time[0], subts.time[-1],
-                                   n_points))
+                                   n_points), fill_value='extrapolate')
 
         # Resample the events and add the relevant ones to the
         # destination TimeSeries
@@ -70,10 +75,7 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
                     subts.data[key]
 
     # Assign the dest_ts data to ts and return.
-    ts.time = dest_ts.time
-    ts.data = dest_ts.data
-    ts.events = dest_ts.events
-    return ts
+    return dest_ts
 
 
 def get_reshaped_time_normalized_data(ts, n_points=100):

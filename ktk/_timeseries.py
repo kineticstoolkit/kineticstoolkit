@@ -987,7 +987,7 @@ class TimeSeries():
                     'Time vectors do not match, resampling is required.'))
 
         if must_resample is True:
-            ts.resample(self.time)
+            ts.resample(self.time, fill_value='extrapolate')
 
         for key in data_keys:
 
