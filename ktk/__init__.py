@@ -36,6 +36,7 @@ from ._loadsave import load, loadmat, save
 from . import filters
 from . import gui
 from ._tools import explore, terminal, update, tutorials
+from . import geometry
 from . import kinematics
 from . import pushrimkinetics
 from . import inversedynamics
