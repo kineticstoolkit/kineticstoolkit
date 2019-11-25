@@ -28,3 +28,8 @@ https://stackoverflow.com/questions/53381373/ipython-console-in-spyder-extremely
 
 In Spyder, there is a Python Path editor. Add the KTK base folder (the one that contains
 the ktk folder) to the python path, so that ''import ktk'' finds the KTK package.
+
+## Adding dependencies
+
+>> conda install -c conda-forge ezc3d
+>> conda install pytest

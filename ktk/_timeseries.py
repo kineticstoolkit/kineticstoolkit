@@ -915,8 +915,6 @@ class TimeSeries():
         """
         for key in self.data.keys():
             index = ~self.isnan(key)
-            if ~np.all(index):
-                print('Warning: Some NaNs found and interpolated.')
 
             if sum(index) < 2:  # Only Nans, cannot interpolate.
                 print(f'Warning: Only NaNs found in signal {key}.')
@@ -927,6 +925,9 @@ class TimeSeries():
                 self.data[key] = np.empty(new_shape)
                 self.data[key][:] = np.nan
             else:  # Interpolate.
+                if ~np.all(index):
+                    print('Warning: Some NaNs were found. They were interpolated.')
+
                 f = sp.interpolate.interp1d(self.time[index],
                                             self.data[key][index],
                                             axis=0, fill_value=fill_value,
