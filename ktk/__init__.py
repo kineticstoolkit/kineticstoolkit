@@ -35,9 +35,10 @@ from ._timeseries import TimeSeries, TimeSeriesEvent
 from ._loadsave import load, loadmat, save
 from . import filters
 from . import gui
-from ._tools import explore, terminal, update
+from ._tools import explore, terminal, update, tutorials
 from . import kinematics
 from . import pushrimkinetics
+from . import inversedynamics
 from . import dev
 from . import dbinterface
 from . import cycles

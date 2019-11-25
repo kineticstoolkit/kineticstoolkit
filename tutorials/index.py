@@ -33,6 +33,13 @@ Module that processes kinetics data from instrumented wheelchair wheels.
 
 [Go to the pushrimkinetics tutorial](pushrimkinetics.html)
 
+inversedynamics
+---------------
+Module that calculates the proximal forces and moments based on an inverse
+dynamics algorithm.
+
+[Go to the inversedynamics tutorial](inversedynamics.html)
+
 dbinterface
 -----------
 Module that communicates with Félix Chénier's biomechanics database to import

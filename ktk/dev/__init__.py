@@ -8,8 +8,6 @@ Date: July 2019
 """
 
 import ktk
-import subprocess as _subprocess
-import webbrowser as _webbrowser
 import pytest
 import os
 import ktk.dev.tutorialcompiler as tutorialcompiler
@@ -68,13 +66,7 @@ def generate_tutorials(name=None):
 
     os.chdir(cwd)
 
-
-#    _subprocess.call(['jupyter-nbconvert', '--to=html', '--execute',
-#                      ktk.config['RootFolder'] + '/tutorials/*.ipynb'])
-    _webbrowser.open('file:///' + ktk.config['RootFolder'] + '/tutorials/index.html',
-                     new=2)
-
-
+    ktk.tutorials()
 
 
 def release():

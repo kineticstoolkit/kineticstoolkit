@@ -1,3 +1,10 @@
+"""
+Inverse dynamics module for KTK.
+
+Author: Felix Chenier
+Date: September 2019
+"""
+
 import ktk
 import numpy as np
 
@@ -111,7 +118,6 @@ def calculate_proximal_wrench(ts, inertial_constants):
         - ProximalForces (Nx4)
         - ProximalMoments (Nx4)
     """
-# %%
     ts = ts.copy()
 
     n_frames = len(ts.time)
@@ -137,11 +143,11 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
     # Rotation angle, velocity and acceleration
     segment_angle_x = np.arctan2(
-            ts.data['ProximalToDistalJointDistance'][:, 1],
-            -ts.data['ProximalToDistalJointDistance'][:, 2])
+            ts.data['ProximalToDistalJointDistance'][:, 2],
+            ts.data['ProximalToDistalJointDistance'][:, 1])
     segment_angle_y = np.arctan2(
-            -ts.data['ProximalToDistalJointDistance'][:, 2],
-            ts.data['ProximalToDistalJointDistance'][:, 0])
+            ts.data['ProximalToDistalJointDistance'][:, 0],
+            ts.data['ProximalToDistalJointDistance'][:, 2])
     segment_angle_z = np.arctan2(
             ts.data['ProximalToDistalJointDistance'][:, 1],
             ts.data['ProximalToDistalJointDistance'][:, 0])
@@ -178,7 +184,8 @@ def calculate_proximal_wrench(ts, inertial_constants):
     alpha_i = ts.data['AngularAcceleration']
     omega_i = ts.data['AngularVelocity']
 
-    d_i = ts.data['ProximalToDistalJointDistance'][:, 0:3]
+    d_i = (ts.data['ForceApplicationPosition'] -
+           ts.data['ProximalJointPosition'])[:, 0:3]
 
     M_i_minus_1 = ts.data['DistalMoments'][:, 0:3]
 
@@ -186,9 +193,19 @@ def calculate_proximal_wrench(ts, inertial_constants):
     proximal_wrench = np.zeros((n_frames, 6, 1))
     for i_frame in range(n_frames):
 
+        skew_symmetric_c_i = np.array([
+                [0, -c_i[i_frame, 2], c_i[i_frame, 1]],
+                [c_i[i_frame, 2], 0, -c_i[i_frame, 0]],
+                [-c_i[i_frame, 1], c_i[i_frame, 0], 0]])
+
+        skew_symmetric_d_i = np.array([
+                [0, -d_i[i_frame, 2], d_i[i_frame, 1]],
+                [d_i[i_frame, 2], 0, -d_i[i_frame, 0]],
+                [-d_i[i_frame, 1], d_i[i_frame, 0], 0]])
+
         matrix_1 = np.block(
                 [[segment_mass * np.eye(3), np.zeros((3, 3))],
-                 [segment_mass * np.diag(c_i[i_frame]), I_i[i_frame]]])
+                 [segment_mass * skew_symmetric_c_i, I_i[i_frame]]])
 
         matrix_2 = np.block([a_i[i_frame] - g, alpha_i[i_frame]])
         matrix_2 = matrix_2[:, np.newaxis]  # Convert 1d to column vector
@@ -200,7 +217,7 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
         matrix_4 = np.block([
                 [np.eye(3), np.zeros((3, 3))],
-                [np.diag(d_i[i_frame]), np.eye(3)]])
+                [skew_symmetric_d_i, np.eye(3)]])
 
         matrix_5 = np.block([F_i_minus_1[i_frame], M_i_minus_1[i_frame]])
         matrix_5 = matrix_5[:, np.newaxis]  # Convert 1d to column vector
@@ -216,42 +233,3 @@ def calculate_proximal_wrench(ts, inertial_constants):
     ts.data['ProximalMoments'][:, 0:3] = proximal_wrench[:, 3:6, 0]
 
     return ts
-
-
-# %%
-
-kinetics = ktk.loadmat(
-        ktk.config['RootFolder'] +
-        '/tutorials/data/inversedynamics/basketball_kinetics.mat')
-kinetics = kinetics['kineticsSWR']
-
-kinematics = ktk.loadmat(
-        ktk.config['RootFolder'] +
-        '/tutorials/data/inversedynamics/basketball_kinematics.mat')
-kinematics = kinematics['kinematics']
-
-markers = kinematics['Markers']
-markers.ui_sync('Sync_Sync')
-
-rigid_bodies = kinematics['VirtualRigidBodies']
-
-ts_all = markers.copy()
-ts_all.merge(kinetics, interp_kind='linear', fill_value='extrapolate')
-
-# %%
-
-ts = ktk.TimeSeries(time = markers.time)
-
-total_mass = 75
-
-ts.data['ProximalJointPosition'] = ts_all.data['ElbowR']
-ts.data['DistalJointPosition'] = ts_all.data['RadialStyloidR']
-ts.data['ForceApplicationPosition'] = ts_all.data['RearWheelCenterR']
-ts.data['DistalForces'] = ts_all.data['Forces']
-ts.data['DistalMoments'] = ts_all.data['Moments']
-
-new_ts = calculate_proximal_wrench(ts, get_anthropometrics(
-        'ForearmHand', total_mass))
-
-new_ts = new_ts.get_ts_between_times(0, 15)
-new_ts.plot(['ProximalForces', 'DistalForces', 'ProximalMoments', 'DistalMoments'])
