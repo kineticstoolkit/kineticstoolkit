@@ -85,8 +85,9 @@ def create_reference_frame(global_points, method='ocx1'):
         global_points = global_points[np.newaxis, :, :]
 
     def normalize(v):
+
         norm = np.linalg.norm(v, axis=1)
-        return v / norm
+        return v / norm[..., np.newaxis]
 
     if method == 'ocx1':
 
@@ -254,11 +255,10 @@ def get_local_coordinates(global_coordinates, reference_frame):
     inv_ref_T[:, 0:3, 3] = inv_ref_t
     inv_ref_T[:, 3, 3] = np.ones(ref_t.shape[0])
 
-    local_coordinates = _global_coordinates.copy()  # init
+    local_coordinates = np.zeros(_global_coordinates.shape)  # init
     for i_sample in range(_global_coordinates.shape[0]):
-        # TODO THIS LINE IS PROBLEMATIC. THE ASSIGNMENT IS NOT DONE.
-        local_coordinates[i_sample] = (inv_ref_T[i_sample] @
-                                       _global_coordinates[i_sample])
+        local_coordinates[i_sample] = \
+                inv_ref_T[i_sample] @ _global_coordinates[i_sample]
 
     if len(global_coordinates.shape) == 2 and len(reference_frame.shape) == 2:
         local_coordinates = local_coordinates[0, :, :]

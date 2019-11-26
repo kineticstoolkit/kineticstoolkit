@@ -11,29 +11,28 @@ import ktk
 import numpy as np
 
 # Unit test for create_reference_frame
-global_marker1 = np.array([0, 0, 0, 1])
-global_marker2 = np.array([1, 0, 0, 1])
-global_marker3 = np.array([0, 1, 0, 1])
-global_markers = np.array([global_marker1, global_marker2, global_marker3]).T;
+global_marker1 = np.array([0.0, 0.0, 0.0, 1])
+global_marker2 = np.array([1.0, 0.0, 0.0, 1])
+global_marker3 = np.array([0.0, 1.0, 0.0, 1])
+global_markers = np.array([global_marker1, global_marker2, global_marker3]).T
 
-T = ktk.geometry.create_reference_frame(global_markers, 'ocx1');
-
+T = ktk.geometry.create_reference_frame(global_markers)
 local_markers = ktk.geometry.get_local_coordinates(global_markers, T)
 
 # Verify that the distances between markers are the same
 local_distance01 = np.sqrt(np.sum(
-        (local_markers[:,0] - local_markers[:,1]) ** 2));
+        (local_markers[:, 0] - local_markers[:, 1]) ** 2))
 local_distance12 = np.sqrt(np.sum(
-        (local_markers[:,1] - local_markers[:,2]) ** 2));
+        (local_markers[:, 1] - local_markers[:, 2]) ** 2))
 local_distance20 = np.sqrt(np.sum(
-        (local_markers[:,2] - local_markers[:,0]) ** 2));
+        (local_markers[:, 2] - local_markers[:, 0]) ** 2))
 
 global_distance01 = np.sqrt(np.sum(
-        (global_markers[:,0] - global_markers[:,1]) ** 2));
+        (global_markers[:, 0] - global_markers[:, 1]) ** 2))
 global_distance12 = np.sqrt(np.sum(
-        (global_markers[:,1] - global_markers[:,2]) ** 2));
+        (global_markers[:, 1] - global_markers[:, 2]) ** 2))
 global_distance20 = np.sqrt(np.sum(
-        (global_markers[:,2] - global_markers[:,0]) ** 2));
+        (global_markers[:, 2] - global_markers[:, 0]) ** 2))
 
 assert np.abs(local_distance01 - global_distance01) < 1E-10
 assert np.abs(local_distance12 - global_distance12) < 1E-10
@@ -48,29 +47,13 @@ test_global = T @ local_markers
 
 assert np.sum(np.abs(test_global[:, 0] - global_markers[:, 0])) < 1E-10
 
-#
-#% Vérifier que la transformation * les marqueurs locaux donne bien les
-#% marqueurs globaux
-#testGlobal = T * T2Markers;
-#assert(sum(sum(abs(testGlobal - T1Markers))) < 1E-7);
-#
-#% Vérifier que ça fonctionne aussi avec une matrice 4xMxN
-#T1Markers = repmat(T1Markers, [1 1 10]);
-#
-#[T3, T3Markers] = ktkGeometry.createreferenceframe(T1Markers);
-#
-#for i = 1:10
-#    assert(isequal(T2Markers, T3Markers(:,:,i)));
-#    assert(isequal(T, T3(:,:,i)));
-#end
-#
-#% Vérifier que ça fonctionne aussi avec une timeseries
-#time = linspace(2,45,10)';
-#[T3, T3Markers] = ktkGeometry.createreferenceframe(timeseries(T1Markers, time));
-#
-#for i = 1:10
-#    assert(isequal(T2Markers, T3Markers.Data(:,:,i)));
-#    assert(isequal(T, T3.Data(:,:,i)));
-#end
-#assert(isequal(T3Markers.Time, time));
-#
+# Verify that it works also with a Nx4xM matrix
+global_markers = np.repeat(global_markers[np.newaxis, ...], 10, axis=0)
+for i_sample in range(10):
+    global_markers[i_sample, 0, 0] = i_sample + 0.55  # Just so that every
+                                                      # sample is different.
+
+T = ktk.geometry.create_reference_frame(global_markers)
+local_markers = ktk.geometry.get_local_coordinates(global_markers, T)
+test_global = T @ local_markers
+assert np.sum(np.abs(test_global[:, 0] - global_markers[:, 0])) < 1E-10
