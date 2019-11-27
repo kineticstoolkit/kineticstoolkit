@@ -134,7 +134,7 @@ def message(title='Title', message='Message', flagfile='/dev/null'):
     root = create_window()
     root.title(title)
     root.minsize(200, 0)
-    lbl = tk.Label(root, text=message, bg='blue', fg='white')
+    lbl = tk.Label(root, text=message, bg='blue', fg='white', height=2)
     lbl.pack(fill=tk.X)
     top_window(root)
     show_window(root)
@@ -196,13 +196,15 @@ def button_dialog(title='', message='Please select an option.',
         root.quit()
 
     root.title(title)
-    lbl = tk.Label(left_pane, text=message, bg='blue', fg='white')
+    lbl = tk.Label(left_pane, text=message, bg='blue', fg='white', height=2)
     lbl.pack(fill=tk.X)
 
     ichoice = 0
     for choice in choices:
         btn = tk.Button(right_pane,
                         text=choice,
+                        height=2,
+                        width=max([10, int(1.5*len(choice)+3)]),
                         command=partial(return_choice, ichoice))
         btn.grid(row=0, column=ichoice)
         ichoice = ichoice + 1
