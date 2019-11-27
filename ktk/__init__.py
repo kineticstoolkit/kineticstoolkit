@@ -13,6 +13,7 @@ Date: Started on July 2019
 import os as _os
 import platform as _platform
 import matplotlib as _mpl
+import numpy as _np
 
 
 # ---------------------------
@@ -66,3 +67,6 @@ _mpl.rcParams['lines.linewidth'] = 1
 # begins with RGB so that it is compatible with most XYZ color orders in other
 # visualization softwares.
 gui.set_color_order('xyz')
+
+# Select default mode for numpy
+_np.set_printoptions(suppress=True)

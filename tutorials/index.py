@@ -33,6 +33,13 @@ Module that processes kinetics data from instrumented wheelchair wheels.
 
 [Go to the pushrimkinetics tutorial](pushrimkinetics.html)
 
+geometry
+--------
+Module that allows the creation of reference frames and simplifies passing
+coordinates from local to global reference frames and vice-versa.
+
+[Go to the geometry tutorial](geometry.html)
+
 inversedynamics
 ---------------
 Module that calculates the proximal forces and moments based on an inverse
