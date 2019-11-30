@@ -1,5 +1,5 @@
 """
-kinematics module for KTK
+kinematics module for KTK.
 
 Work in progress
 """
@@ -13,11 +13,13 @@ import subprocess
 from time import sleep
 from datetime import datetime
 from ezc3d import c3d as ezc3d
+import matplotlib.pyplot as plt
+import matplotlib.widgets as widgets
 
 
 def read_c3d_file(filename):
     """
-    Read a C3D file
+    Read a C3D file.
 
     Parameters
     ----------
@@ -117,6 +119,61 @@ def write_c3d_file(filename, ts):
         warnings.simplefilter('ignore', UserWarning)
         with open(filename, 'wb') as fid:
             writer.write(fid, labels)
+
+
+def plot3d(markers=None, rigid_bodies=None, segments=None,
+           sample=0, marker_radius=0.008, rigid_body_size=0.1):
+    """Plot a TimeSeries of markers and/or rigid bodies on a 3D MPL axis."""
+    markers = markers.copy()  # Since we add stuff to it.
+
+    # Plot every marker at a given index
+    x = []
+    y = []
+    z = []
+    min_coordinate = 99999999.
+    max_coordinate = -99999999.
+
+    for data in markers.data:
+        temp_data = markers.data[data]
+        x.append(temp_data[sample, 0])
+        y.append(temp_data[sample, 2])
+        z.append(temp_data[sample, 1])
+        min_coordinate = np.min([min_coordinate, np.nanmin(temp_data[:, 0])])
+        min_coordinate = np.min([min_coordinate, np.nanmin(temp_data[:, 1])])
+        min_coordinate = np.min([min_coordinate, np.nanmin(temp_data[:, 2])])
+        max_coordinate = np.max([max_coordinate, np.nanmax(temp_data[:, 0])])
+        max_coordinate = np.max([max_coordinate, np.nanmax(temp_data[:, 1])])
+        max_coordinate = np.max([max_coordinate, np.nanmax(temp_data[:, 2])])
+
+    # Create the 3d figure
+    fig = plt.figure()
+    ax = fig.add_subplot(111, projection='3d')
+
+    ax.scatter(x, y, z, s=marker_radius*1000, c='b')
+
+    xlim = ax.get_xlim()
+    ylim = ax.get_ylim()
+    zlim = ax.get_zlim()
+    lim = np.max([xlim[1] - xlim[0], ylim[1] - ylim[0], zlim[1] - zlim[0]])
+    xlim = [np.mean(xlim) - lim/2, np.mean(xlim) + lim/2]
+    ylim = [np.mean(ylim) - lim/2, np.mean(ylim) + lim/2]
+    zlim = [np.mean(zlim) - lim/2, np.mean(zlim) + lim/2]
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
+    ax.set_zlim(zlim)
+
+
+    # ax.scatter(
+    #     [min_coordinate, min_coordinate, min_coordinate, min_coordinate,
+    #       max_coordinate, max_coordinate, max_coordinate, max_coordinate],
+    #     [min_coordinate, min_coordinate, max_coordinate, max_coordinate,
+    #       min_coordinate, min_coordinate, max_coordinate, max_coordinate],
+    #     [min_coordinate, max_coordinate, min_coordinate, max_coordinate,
+    #       min_coordinate, max_coordinate, min_coordinate, max_coordinate],
+    #     s=1E-6)
+    ax.set_xlabel('x')
+    ax.set_ylabel('z')
+    ax.set_zlabel('y')
 
 
 def open_in_mokka(markers=None, rigid_bodies=None, segments=None,
