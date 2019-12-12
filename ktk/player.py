@@ -11,6 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 import numpy as np
 import numpy.ma as ma
+import time
 
 
 class Player:
@@ -26,6 +27,7 @@ class Player:
         self.rigid_body_size = rigid_body_size
         self.running = False
         self.scatter = None
+        self.last_update = time.time()
 
         self._create_figure()
 
@@ -54,7 +56,7 @@ class Player:
         ax = plt.gca()
 #        ax.cla()
         if self.scatter is None:
-            self.scatter = ax.plot(x, y, z, 'o', c='w', picker=5)[0]
+            self.scatter = ax.plot(x, y, z, '.', c='w', picker=5)[0]
 #            self.scatter = ax.scatter(x, y, z, s=self.marker_radius*1000, c='b', picker=5)
 
         self.scatter.set_data(x, y)
@@ -72,7 +74,12 @@ class Player:
 
     def _timer_event(self, frame=None):
         if self.running is True:
-            self._next_frame()
+            self._set_frame_to_time(time.time() - self.last_update)
+
+    def _set_frame_to_time(self, time):
+        index = np.argmin(np.abs(self.markers.time - time))
+        self.current_frame = index
+        self._update_scatter()
 
     def _next_frame(self, frame=None):
         self.current_frame += 1
@@ -109,7 +116,7 @@ class Player:
         # Start the animation timer
         self.anim = animation.FuncAnimation(self.figure,
                                        self._timer_event,
-                                       interval=5)
+                                       interval=33)  # 30 ips
 
 
         def on_pick(event):
@@ -149,6 +156,7 @@ class Player:
                 if self.running is True:
                     self.running = False
                 else:
+                    self.last_update = time.time()
                     self.running = True
                 plt.pause(1E-6)
 
