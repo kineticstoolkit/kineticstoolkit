@@ -77,7 +77,7 @@ class Player:
     def _create_figure(self):
         # Create the 3d figure
         self.objects['Figure'], self.objects['Axes'] = plt.subplots(num=None,
-                    figsize=(9, 9),
+                    figsize=(12, 9),
                     facecolor='k',
                     edgecolor='w')
 
@@ -97,7 +97,7 @@ class Player:
         # Draw the markers
         self._update_plots()
 
-        plt.axis([-1, 1, -1, 1])
+        plt.axis([-1.5, 1.5, -1, 1])
 
         # Start the animation timer
         self.anim = animation.FuncAnimation(self.objects['Figure'],
@@ -122,6 +122,17 @@ class Player:
 
     def _update_plots(self):
         """Update the plots, or draw it if not plot has been drawn before."""
+
+        def get_perspective(x, y, z):
+            """Return x and y to plot, considering perspective."""
+            # This uses ugly magical constants but it works fine for now.
+            denom = z/10+3
+            x = x / denom
+            y = y / denom
+            to_remove = (denom < 1E-10)
+            x[to_remove] = np.nan
+            y[to_remove] = np.nan
+            return x, y
 
         # Get a matrix of every marker at a given index
         markers = self.markers
@@ -150,14 +161,14 @@ class Player:
                        [0., 0., 0., 1.]]) @
              np.array([[1., 0., 0., -centroid[0]],
                        [0., 1., 0., -centroid[1]],
-                       [0., 0., 1., -centroid[2]],
+                       [0., 0., -1., -centroid[2]],
                        [0., 0., 0., 1.]]))
 
         markers_data = (R @ markers_data.T).T
 
 
         # Create or update the ground plane plot
-        gp_size = 25
+        gp_size = 15
         gp_x = np.block([
                 np.tile([-gp_size/2, gp_size/2, np.nan], gp_size),
                 np.repeat(np.linspace(-gp_size/2, gp_size/2, gp_size), 3)])
@@ -167,32 +178,25 @@ class Player:
                 np.tile([-gp_size/2, gp_size/2, np.nan], gp_size)])
         gp_1 = np.ones(6 * gp_size)
         gp = R @ np.block([[gp_x], [gp_y], [gp_z], [gp_1]])
+        x, y = get_perspective(gp[0, :], gp[1, :], gp[2, :])
 
         if self.objects['PlotGroundPlane'] is None:  # Create the plot
             self.objects['PlotGroundPlane'] = self.objects['Axes'].plot(
-                    gp[0, :], gp[1, :], c=[0.5, 0.5, 0.5],
+                    x, y, c=[0.3, 0.3, 0.3],
                     linewidth=1)[0]
         else:  # Update the plot
-            self.objects['PlotGroundPlane'].set_data(
-                    gp[0, :],
-                    gp[1, :])
-
+            self.objects['PlotGroundPlane'].set_data(x, y)
 
         # Create or update the markers plot
+        x, y = get_perspective(markers_data[:, 0],
+                               markers_data[:, 1],
+                               markers_data[:, 2])
         if self.objects['PlotMarkers'] is None:  # Create the plot
-            self.objects['PlotMarkers'] = self.objects['Axes'].plot(
-                    markers_data[:, 0],
-                    markers_data[:, 1],
-#                    markers_data[:, 2],
+            self.objects['PlotMarkers'] = self.objects['Axes'].plot(x, y,
                     '.', c='w', picker=5)[0]
-#            self.objects['PlotMarkers'] = ax.scatter(x, y, z, s=self.marker_radius*1000, c='b', picker=5)
 
         else:  # Update the plot with new values
-            self.objects['PlotMarkers'].set_data(
-                    markers_data[:, 0],
-                    markers_data[:, 1])
-#            self.objects['PlotMarkers'].set_3d_properties(
-#                    markers_data[:, 2])
+            self.objects['PlotMarkers'].set_data(x, y)
 
 
         # Get a matrix of every rigid body at a given index
@@ -229,26 +233,26 @@ class Player:
             rbz_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
 
         # Create or update the rigid bodies plot
+            xx, yx = get_perspective(rbx_data[:, 0],
+                                     rbx_data[:, 1],
+                                     rbx_data[:, 2])
+            xy, yy = get_perspective(rby_data[:, 0],
+                                     rby_data[:, 1],
+                                     rby_data[:, 2])
+            xz, yz = get_perspective(rbz_data[:, 0],
+                                     rbz_data[:, 1],
+                                     rbz_data[:, 2])
         if self.objects['PlotRigidBodiesX'] is None:  # Create the plot
             self.objects['PlotRigidBodiesX'] = self.objects['Axes'].plot(
-                    rbx_data[:, 0], rbx_data[:, 1], c='r',
-                    linewidth=2)[0]
+                    xx, yx, c='r', linewidth=2)[0]
             self.objects['PlotRigidBodiesY'] = self.objects['Axes'].plot(
-                    rby_data[:, 0], rby_data[:, 1], c='g',
-                    linewidth=2)[0]
+                    xy, yy, c='g', linewidth=2)[0]
             self.objects['PlotRigidBodiesZ'] = self.objects['Axes'].plot(
-                    rbz_data[:, 0], rbz_data[:, 1], c='b',
-                    linewidth=2)[0]
+                    xz, yz, c='b', linewidth=2)[0]
         else:  # Update the plot
-            self.objects['PlotRigidBodiesX'].set_data(
-                    rbx_data[:, 0],
-                    rbx_data[:, 1])
-            self.objects['PlotRigidBodiesY'].set_data(
-                    rby_data[:, 0],
-                    rby_data[:, 1])
-            self.objects['PlotRigidBodiesZ'].set_data(
-                    rbz_data[:, 0],
-                    rbz_data[:, 1])
+            self.objects['PlotRigidBodiesX'].set_data(xx, yx)
+            self.objects['PlotRigidBodiesY'].set_data(xy, yy)
+            self.objects['PlotRigidBodiesZ'].set_data(xz, yz)
 
 
         # Update the window title
@@ -364,10 +368,10 @@ class Player:
             self.target = (
                     self.state['TargetOnMousePress'][0] +
                     (event.x - self.state['MousePositionOnPress'][0]) /
-                    (300 * self.zoom),
+                    (100 * self.zoom),
                     self.state['TargetOnMousePress'][1] +
                     (event.y - self.state['MousePositionOnPress'][1]) /
-                    (300 * self.zoom),
+                    (100 * self.zoom),
                     0)
             self._update_plots()
 
