@@ -7,10 +7,8 @@ Created on Wed Dec 11 16:17:10 2019
 """
 
 import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import animation
 import numpy as np
-import numpy.ma as ma
 import time
 from ktk._timeseries import TimeSeries
 
@@ -18,7 +16,7 @@ from ktk._timeseries import TimeSeries
 class Player:
 
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
-                 sample=0, marker_radius=0.008, rigid_body_size=0.2):
+                 sample=0, marker_radius=0.008, rigid_body_size=0.1):
 
         # Set self.n_frames, and verify that we have at least markers or
         # rigid bodies.
@@ -56,6 +54,7 @@ class Player:
         self.objects['PlotRigidBodiesX'] = None
         self.objects['PlotRigidBodiesY'] = None
         self.objects['PlotRigidBodiesZ'] = None
+        self.objects['PlotGroundPlane'] = None
         self.objects['Figure'] = None
         self.objects['Axes'] = None
 
@@ -77,25 +76,15 @@ class Player:
 
     def _create_figure(self):
         # Create the 3d figure
-        self.objects['Figure'], ax = plt.subplots(num=None,
-                                               figsize=(9, 9),
-                                               facecolor='k',
-                                               edgecolor='w')
+        self.objects['Figure'], self.objects['Axes'] = plt.subplots(num=None,
+                    figsize=(9, 9),
+                    facecolor='k',
+                    edgecolor='w')
 
         # Remove the toolbar
         self.objects['Figure'].canvas.toolbar.setVisible(False)
 
-        # Create the 3d axis
-        self.objects['Axes'] = self.objects['Figure'].add_subplot(
-                111, facecolor='k', projection='3d')
-        self.objects['Axes'].elev = 0
-        self.objects['Axes'].azim = 0
-        self.objects['Axes'].disable_mouse_rotation()
-
         plt.tight_layout()
-
-        # Delete the first (non-3d) axis to speed up.
-        self.objects['Figure'].delaxes(ax)
 
         # Add the title
         title_obj = plt.title('Player')
@@ -108,14 +97,7 @@ class Player:
         # Draw the markers
         self._update_plots()
 
-        coordinate = (0, 0, 0)
-        lim = 4
-        xlim = [coordinate[0] - lim/2, coordinate[0] + lim/2]
-        ylim = [coordinate[1] - lim/2, coordinate[1] + lim/2]
-        zlim = [coordinate[2] - lim/2, coordinate[2] + lim/2]
-        self.objects['Axes'].set_xlim(xlim)
-        self.objects['Axes'].set_ylim(ylim)
-        self.objects['Axes'].set_zlim(zlim)
+        plt.axis([-1, 1, -1, 1])
 
         # Start the animation timer
         self.anim = animation.FuncAnimation(self.objects['Figure'],
@@ -141,41 +123,67 @@ class Player:
     def _update_plots(self):
         """Update the plots, or draw it if not plot has been drawn before."""
 
-        # Create the rotation matrix to convert the lab's coordinates
-        # (x anterior, y up, z right) to mplot3d coordinates (x anterior,
-        # y right, z up)
-        R = (self.zoom *
-             np.array([[0, 0, -1, 0],
-                       [1, 0, 0, 0],
-                       [0, 1, 0, 0],
-                       [0, 0, 0, 1]]) @
-             np.array([[1, 0, 0, self.target[0]],
-                       [0, 1, 0, self.target[1]],
-                       [0, 0, 1, self.target[2]],
-                       [0, 0, 0, 1]]) @
-             np.array([[1, 0, 0, 0],
-                       [0, -np.sin(self.elevation), np.cos(self.elevation), 0],
-                       [0, np.cos(self.elevation), np.sin(self.elevation), 0],
-                       [0, 0, 0, 1]]) @
-             np.array([[np.cos(self.azimuth), 0, np.sin(self.azimuth), 0],
-                       [0, 1, 0, 0],
-                       [-np.sin(self.azimuth), 0, np.cos(self.azimuth), 0],
-                       [0, 0, 0, 1]]))
-
         # Get a matrix of every marker at a given index
         markers = self.markers
         n_markers = len(markers.data)
-        markers_data = np.empty([n_markers, 3])
+        markers_data = np.empty([n_markers, 4])
 
         for i_marker, marker in enumerate(markers.data):
-            markers_data[i_marker] = (R @ markers.data[marker][self.current_frame])[0:3]
+            markers_data[i_marker] = (markers.data[marker][self.current_frame])
+
+        # Create the rotation matrix to convert the lab's coordinates
+        # (x anterior, y up, z right) to mplot3d coordinates (x anterior,
+        # y right, z up)
+        centroid = np.nanmean(markers_data, axis=0)
+        R = (self.zoom *
+             np.array([[1., 0., 0., self.target[0]],
+                       [0., 1., 0., self.target[1]],
+                       [0., 0., 1., 0],
+                       [0., 0., 0., 1.]]) @
+             np.array([[1., 0., 0., 0],
+                       [0., np.cos(self.elevation), -np.sin(self.elevation), 0],
+                       [0., np.sin(self.elevation), np.cos(self.elevation), 0],
+                       [0., 0., 0., 1.]]) @
+             np.array([[np.cos(self.azimuth), 0., -np.sin(self.azimuth), 0],
+                       [0., 1., 0., 0],
+                       [np.sin(self.azimuth), 0., np.cos(self.azimuth), 0],
+                       [0., 0., 0., 1.]]) @
+             np.array([[1., 0., 0., -centroid[0]],
+                       [0., 1., 0., -centroid[1]],
+                       [0., 0., 1., -centroid[2]],
+                       [0., 0., 0., 1.]]))
+
+        markers_data = (R @ markers_data.T).T
+
+
+        # Create or update the ground plane plot
+        gp_size = 25
+        gp_x = np.block([
+                np.tile([-gp_size/2, gp_size/2, np.nan], gp_size),
+                np.repeat(np.linspace(-gp_size/2, gp_size/2, gp_size), 3)])
+        gp_y = np.zeros(6 * gp_size)
+        gp_z = np.block([
+                np.repeat(np.linspace(-gp_size/2, gp_size/2, gp_size), 3),
+                np.tile([-gp_size/2, gp_size/2, np.nan], gp_size)])
+        gp_1 = np.ones(6 * gp_size)
+        gp = R @ np.block([[gp_x], [gp_y], [gp_z], [gp_1]])
+
+        if self.objects['PlotGroundPlane'] is None:  # Create the plot
+            self.objects['PlotGroundPlane'] = self.objects['Axes'].plot(
+                    gp[0, :], gp[1, :], c=[0.5, 0.5, 0.5],
+                    linewidth=1)[0]
+        else:  # Update the plot
+            self.objects['PlotGroundPlane'].set_data(
+                    gp[0, :],
+                    gp[1, :])
+
 
         # Create or update the markers plot
         if self.objects['PlotMarkers'] is None:  # Create the plot
             self.objects['PlotMarkers'] = self.objects['Axes'].plot(
                     markers_data[:, 0],
                     markers_data[:, 1],
-                    markers_data[:, 2],
+#                    markers_data[:, 2],
                     '.', c='w', picker=5)[0]
 #            self.objects['PlotMarkers'] = ax.scatter(x, y, z, s=self.marker_radius*1000, c='b', picker=5)
 
@@ -183,8 +191,8 @@ class Player:
             self.objects['PlotMarkers'].set_data(
                     markers_data[:, 0],
                     markers_data[:, 1])
-            self.objects['PlotMarkers'].set_3d_properties(
-                    markers_data[:, 2])
+#            self.objects['PlotMarkers'].set_3d_properties(
+#                    markers_data[:, 2])
 
 
         # Get a matrix of every rigid body at a given index
@@ -223,28 +231,24 @@ class Player:
         # Create or update the rigid bodies plot
         if self.objects['PlotRigidBodiesX'] is None:  # Create the plot
             self.objects['PlotRigidBodiesX'] = self.objects['Axes'].plot(
-                    rbx_data[:, 0], rbx_data[:, 1], rbx_data[:, 2], c='r')[0]
+                    rbx_data[:, 0], rbx_data[:, 1], c='r',
+                    linewidth=2)[0]
             self.objects['PlotRigidBodiesY'] = self.objects['Axes'].plot(
-                    rby_data[:, 0], rby_data[:, 1], rby_data[:, 2], c='g')[0]
+                    rby_data[:, 0], rby_data[:, 1], c='g',
+                    linewidth=2)[0]
             self.objects['PlotRigidBodiesZ'] = self.objects['Axes'].plot(
-                    rbz_data[:, 0], rbz_data[:, 1], rbz_data[:, 2], c='b')[0]
+                    rbz_data[:, 0], rbz_data[:, 1], c='b',
+                    linewidth=2)[0]
         else:  # Update the plot
             self.objects['PlotRigidBodiesX'].set_data(
                     rbx_data[:, 0],
                     rbx_data[:, 1])
-            self.objects['PlotRigidBodiesX'].set_3d_properties(
-                    rbx_data[:, 2])
             self.objects['PlotRigidBodiesY'].set_data(
                     rby_data[:, 0],
                     rby_data[:, 1])
-            self.objects['PlotRigidBodiesY'].set_3d_properties(
-                    rby_data[:, 2])
             self.objects['PlotRigidBodiesZ'].set_data(
                     rbz_data[:, 0],
                     rbz_data[:, 1])
-            self.objects['PlotRigidBodiesZ'].set_3d_properties(
-                    rbz_data[:, 2])
-
 
 
         # Update the window title
@@ -324,7 +328,6 @@ class Player:
         if event.key == 'shift':
             self.state['ShiftPressed'] = False
 
-
     def _on_scroll(self, event):
         if event.button == 'up':
             self.zoom *= 1.05
@@ -336,6 +339,7 @@ class Player:
         self.state['TargetOnMousePress'] = self.target
         self.state['AzimutOnMousePress'] = self.azimuth
         self.state['ElevationOnMousePress'] = self.elevation
+        self.state['ZoomOnMousePress'] = self.zoom
         self.state['MousePositionOnPress'] = (event.x, event.y)
         if event.button == 1:
             self.state['MouseLeftPressed'] = True
@@ -353,20 +357,30 @@ class Player:
             self.state['MouseRightPressed'] = False
 
     def _on_mouse_motion(self, event):
-        if self.state['MouseLeftPressed'] is True:
 
-            if self.state['ShiftPressed'] is True:  # Pan
-                self.target = (
-                        self.state['TargetOnMousePress'][0]
-                        + (event.x - self.state['MousePositionOnPress'][0]) / 100,
-                        self.state['TargetOnMousePress'][1]
-                        + (event.y - self.state['MousePositionOnPress'][1]) / 100,
-                        0)
-                self._update_plots()
+        # Pan:
+        if ((self.state['MouseLeftPressed'] and self.state['ShiftPressed']) or
+                self.state['MouseMiddlePressed']):
+            self.target = (
+                    self.state['TargetOnMousePress'][0] +
+                    (event.x - self.state['MousePositionOnPress'][0]) /
+                    (300 * self.zoom),
+                    self.state['TargetOnMousePress'][1] +
+                    (event.y - self.state['MousePositionOnPress'][1]) /
+                    (300 * self.zoom),
+                    0)
+            self._update_plots()
 
-        elif self.state['MouseRightPressed'] is True:
+        # Rotation:
+        elif self.state['MouseLeftPressed'] and not self.state['ShiftPressed']:
             self.azimuth = self.state['AzimutOnMousePress'] + \
-                (event.x - self.state['MousePositionOnPress'][0]) / 500
+                (event.x - self.state['MousePositionOnPress'][0]) / 250
             self.elevation = self.state['ElevationOnMousePress'] + \
-                (event.y - self.state['MousePositionOnPress'][1]) / 500
+                (event.y - self.state['MousePositionOnPress'][1]) / 250
+            self._update_plots()
+
+        # Zoom:
+        elif self.state['MouseRightPressed']:
+            self.zoom = self.state['ZoomOnMousePress'] + \
+                (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
