@@ -18,6 +18,7 @@ class Player:
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
                  sample=0, marker_radius=0.008, rigid_body_size=0.1):
 
+        # ---------------------------------------------------------------
         # Set self.n_frames, and verify that we have at least markers or
         # rigid bodies.
         if markers is not None:
@@ -27,8 +28,12 @@ class Player:
         else:
             raise(ValueError('Either markers or rigid_bodies must be set.'))
 
+        # ---------------------------------------------------------------
+        # Assign the markers
         self.markers = markers
 
+        # ---------------------------------------------------------------
+        # Assign the rigid bodies
         if rigid_bodies is not None:
             self.rigid_bodies = rigid_bodies.copy()
         else:
@@ -38,7 +43,12 @@ class Player:
         self.rigid_bodies.data['Global'] = np.repeat(
                 np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
 
+        # ---------------------------------------------------------------
+        # Assign the segments
         self.segments = segments
+
+        # ---------------------------------------------------------------
+        # Other initalizations
         self.current_frame = sample
         self.marker_radius = marker_radius
         self.rigid_body_size = rigid_body_size
@@ -70,12 +80,11 @@ class Player:
         self.state['AzimutOnMousePress'] = 0.0
         self.state['ElevationOnMousePress'] = 0.0
 
-
-
         self._create_figure()
 
     def _create_figure(self):
-        # Create the 3d figure
+        """Create the player's figure."""
+        # Create the figure and axes
         self.objects['Figure'], self.objects['Axes'] = plt.subplots(num=None,
                     figsize=(12, 9),
                     facecolor='k',
@@ -83,12 +92,10 @@ class Player:
 
         # Remove the toolbar
         self.objects['Figure'].canvas.toolbar.setVisible(False)
-
         plt.tight_layout()
 
         # Add the title
         title_obj = plt.title('Player')
-        plt.getp(title_obj)
         plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
 
         # Remove the background for faster plotting
@@ -104,6 +111,7 @@ class Player:
                                        self._timer_event,
                                        interval=33)  # 30 ips
 
+        # Connect the callback functions
         self.objects['Figure'].canvas.mpl_connect(
                 'pick_event', self._on_pick)
         self.objects['Figure'].canvas.mpl_connect(
@@ -119,14 +127,13 @@ class Player:
         self.objects['Figure'].canvas.mpl_connect(
                 'motion_notify_event', self._on_mouse_motion)
 
-
     def _update_plots(self):
         """Update the plots, or draw it if not plot has been drawn before."""
 
         def get_perspective(x, y, z):
             """Return x and y to plot, considering perspective."""
             # This uses ugly magical constants but it works fine for now.
-            denom = z/10+3
+            denom = z/10+2
             x = x / denom
             y = y / denom
             to_remove = (denom < 1E-10)
@@ -134,52 +141,96 @@ class Player:
             y[to_remove] = np.nan
             return x, y
 
-        # Get a matrix of every marker at a given index
+        # Get a Nx4 matrix of every marker at the current frame
         markers = self.markers
         n_markers = len(markers.data)
         markers_data = np.empty([n_markers, 4])
-
         for i_marker, marker in enumerate(markers.data):
             markers_data[i_marker] = (markers.data[marker][self.current_frame])
 
+        # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
+        # at the current frame
+        rigid_bodies = self.rigid_bodies
+        n_rigid_bodies = len(rigid_bodies.data)
+        rbx_data = np.empty([n_rigid_bodies * 3, 4])
+        rby_data = np.empty([n_rigid_bodies * 3, 4])
+        rbz_data = np.empty([n_rigid_bodies * 3, 4])
+
+        for i_rigid_body, rigid_body in enumerate(rigid_bodies.data):
+            # Origin
+            rbx_data[i_rigid_body * 3] = (
+                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+            rby_data[i_rigid_body * 3] = (
+                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+            rbz_data[i_rigid_body * 3] = (
+                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+            # Direction
+            rbx_data[i_rigid_body * 3 + 1] = (
+                    rigid_bodies.data[rigid_body][self.current_frame] @
+                    np.array([self.rigid_body_size, 0, 0, 1]))
+            rby_data[i_rigid_body * 3 + 1] = (
+                    rigid_bodies.data[rigid_body][self.current_frame] @
+                    np.array([0, self.rigid_body_size, 0, 1]))
+            rbz_data[i_rigid_body * 3 + 1] = (
+                    rigid_bodies.data[rigid_body][self.current_frame] @
+                    np.array([0, 0, self.rigid_body_size, 1]))
+            # NaN to cut the line between the different rigid bodies
+            rbx_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
+            rby_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
+            rbz_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
+
         # Create the rotation matrix to convert the lab's coordinates
-        # (x anterior, y up, z right) to mplot3d coordinates (x anterior,
-        # y right, z up)
+        # (x anterior, y up, z right) to the camera coordinates (x right,
+        # y up, z deep)
         centroid = np.nanmean(markers_data, axis=0)
+        if np.isnan(np.sum(centroid)):  # No markers, use the rigid bodies
+            centroid = np.nanmean(rbx_data, axis=0)
+
         R = (self.zoom *
-             np.array([[1., 0., 0., self.target[0]],
-                       [0., 1., 0., self.target[1]],
-                       [0., 0., 1., 0],
-                       [0., 0., 0., 1.]]) @
-             np.array([[1., 0., 0., 0],
-                       [0., np.cos(self.elevation), -np.sin(self.elevation), 0],
-                       [0., np.sin(self.elevation), np.cos(self.elevation), 0],
-                       [0., 0., 0., 1.]]) @
-             np.array([[np.cos(self.azimuth), 0., -np.sin(self.azimuth), 0],
-                       [0., 1., 0., 0],
-                       [np.sin(self.azimuth), 0., np.cos(self.azimuth), 0],
-                       [0., 0., 0., 1.]]) @
-             np.array([[1., 0., 0., -centroid[0]],
-                       [0., 1., 0., -centroid[1]],
-                       [0., 0., -1., -centroid[2]],
-                       [0., 0., 0., 1.]]))
+             np.array([[1, 0, 0, self.target[0]],  # Pan
+                       [0, 1, 0, self.target[1]],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]]) @
+             np.array([[1, 0, 0, 0],
+                       [0, np.cos(self.elevation), -np.sin(self.elevation), 0],
+                       [0, np.sin(self.elevation), np.cos(self.elevation), 0],
+                       [0, 0, 0, 1]]) @
+             np.array([[np.cos(self.azimuth), 0, -np.sin(self.azimuth), 0],
+                       [0, 1, 0, 0],
+                       [np.sin(self.azimuth), 0, np.cos(self.azimuth), 0],
+                       [0, 0, 0, 1]]) @
+             np.array([[1, 0, 0, -centroid[0]],  # Rotate around centroid
+                       [0, 1, 0, -centroid[1]],
+                       [0, 0, -1, -centroid[2]],
+                       [0, 0, 0, 1]]))
 
         markers_data = (R @ markers_data.T).T
+        rbx_data = (R @ rbx_data.T).T
+        rby_data = (R @ rby_data.T).T
+        rbz_data = (R @ rbz_data.T).T
 
-
-        # Create or update the ground plane plot
-        gp_size = 15
+        # Create the ground plane matrix
+        gp_size = 30  # blocks
+        gp_div = 4  # blocks per meter
         gp_x = np.block([
-                np.tile([-gp_size/2, gp_size/2, np.nan], gp_size),
-                np.repeat(np.linspace(-gp_size/2, gp_size/2, gp_size), 3)])
+                np.tile([-gp_size/gp_div, gp_size/gp_div, np.nan], gp_size),
+                np.repeat(
+                        np.linspace(-gp_size/gp_div, gp_size/gp_div, gp_size),
+                        3)])
         gp_y = np.zeros(6 * gp_size)
         gp_z = np.block([
-                np.repeat(np.linspace(-gp_size/2, gp_size/2, gp_size), 3),
-                np.tile([-gp_size/2, gp_size/2, np.nan], gp_size)])
+                np.repeat(
+                        np.linspace(-gp_size/gp_div, gp_size/gp_div, gp_size),
+                        3),
+                np.tile([-gp_size/gp_div, gp_size/gp_div, np.nan], gp_size)])
         gp_1 = np.ones(6 * gp_size)
         gp = R @ np.block([[gp_x], [gp_y], [gp_z], [gp_1]])
-        x, y = get_perspective(gp[0, :], gp[1, :], gp[2, :])
 
+        # Create or update the plots
+        # ----------------------------------------
+
+        # Create or update the ground plane plot
+        x, y = get_perspective(gp[0, :], gp[1, :], gp[2, :])
         if self.objects['PlotGroundPlane'] is None:  # Create the plot
             self.objects['PlotGroundPlane'] = self.objects['Axes'].plot(
                     x, y, c=[0.3, 0.3, 0.3],
@@ -192,56 +243,22 @@ class Player:
                                markers_data[:, 1],
                                markers_data[:, 2])
         if self.objects['PlotMarkers'] is None:  # Create the plot
-            self.objects['PlotMarkers'] = self.objects['Axes'].plot(x, y,
-                    '.', c='w', picker=5)[0]
+            self.objects['PlotMarkers'] = self.objects['Axes'].plot(
+                    x, y, '.', c='w', markersize=3, picker=5)[0]
 
         else:  # Update the plot with new values
             self.objects['PlotMarkers'].set_data(x, y)
 
-
-        # Get a matrix of every rigid body at a given index
-        rigid_bodies = self.rigid_bodies
-        n_rigid_bodies = len(rigid_bodies.data)
-        rbx_data = np.empty([n_rigid_bodies * 3, 4])
-        rby_data = np.empty([n_rigid_bodies * 3, 4])
-        rbz_data = np.empty([n_rigid_bodies * 3, 4])
-
-        for i_rigid_body, rigid_body in enumerate(rigid_bodies.data):
-
-            # Origin
-            rbx_data[i_rigid_body * 3] = R @ (
-                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
-            rby_data[i_rigid_body * 3] = R @ (
-                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
-            rbz_data[i_rigid_body * 3] = R @ (
-                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
-
-            # Direction
-            rbx_data[i_rigid_body * 3 + 1] = R @ (
-                    rigid_bodies.data[rigid_body][self.current_frame] @
-                    np.array([self.rigid_body_size, 0, 0, 1]))
-            rby_data[i_rigid_body * 3 + 1] = R @ (
-                    rigid_bodies.data[rigid_body][self.current_frame] @
-                    np.array([0, self.rigid_body_size, 0, 1]))
-            rbz_data[i_rigid_body * 3 + 1] = R @ (
-                    rigid_bodies.data[rigid_body][self.current_frame] @
-                    np.array([0, 0, self.rigid_body_size, 1]))
-
-            # NaN
-            rbx_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
-            rby_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
-            rbz_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
-
         # Create or update the rigid bodies plot
-            xx, yx = get_perspective(rbx_data[:, 0],
-                                     rbx_data[:, 1],
-                                     rbx_data[:, 2])
-            xy, yy = get_perspective(rby_data[:, 0],
-                                     rby_data[:, 1],
-                                     rby_data[:, 2])
-            xz, yz = get_perspective(rbz_data[:, 0],
-                                     rbz_data[:, 1],
-                                     rbz_data[:, 2])
+        xx, yx = get_perspective(rbx_data[:, 0],
+                                 rbx_data[:, 1],
+                                 rbx_data[:, 2])
+        xy, yy = get_perspective(rby_data[:, 0],
+                                 rby_data[:, 1],
+                                 rby_data[:, 2])
+        xz, yz = get_perspective(rbz_data[:, 0],
+                                 rbz_data[:, 1],
+                                 rbz_data[:, 2])
         if self.objects['PlotRigidBodiesX'] is None:  # Create the plot
             self.objects['PlotRigidBodiesX'] = self.objects['Axes'].plot(
                     xx, yx, c='r', linewidth=2)[0]
@@ -254,11 +271,12 @@ class Player:
             self.objects['PlotRigidBodiesY'].set_data(xy, yy)
             self.objects['PlotRigidBodiesZ'].set_data(xz, yz)
 
-
         # Update the window title
-        self.objects['Figure'].canvas.set_window_title(f'Frame {self.current_frame}, ' +
-                  '%2.2f s.' % self.markers.time[self.current_frame])
+        self.objects['Figure'].canvas.set_window_title(
+                f'Frame {self.current_frame}, ' +
+                '%2.2f s.' % self.markers.time[self.current_frame])
 
+        # Refresh Matplotlib
         plt.pause(1E-6)
 
     def _timer_event(self, frame=None):
@@ -279,38 +297,12 @@ class Player:
         self._update_plots()
 
     def _on_pick(self, event):
-        mouse_button= event.mouseevent.button.value
-#            line = event.artist
         index = event.ind
         selected_marker = list(self.markers.data.keys())[index[0]]
-
-        if mouse_button == 2:  # Center on selected marker
-
-            coordinate = self.markers.data[selected_marker][
-                    self.current_frame]
-
-            xlim = self.objects['Axes'].get_xlim()
-            ylim = self.objects['Axes'].get_ylim()
-            zlim = self.objects['Axes'].get_zlim()
-            lim = np.max([xlim[1] - xlim[0], ylim[1] - ylim[0], zlim[1] - zlim[0]])
-            lim = 4
-            xlim = [coordinate[0] - lim/2, coordinate[0] + lim/2]
-            ylim = [coordinate[1] - lim/2, coordinate[1] + lim/2]
-            zlim = [coordinate[2] - lim/2, coordinate[2] + lim/2]
-            self.objects['Axes'].set_xlim(xlim)
-            self.objects['Axes'].set_ylim(ylim)
-            self.objects['Axes'].set_zlim(zlim)
-
-        else:
-
-            plt.title(selected_marker)
-
+        plt.title(selected_marker)
         plt.pause(1E-6)
-#        print('on pick line:', np.array([xdata[ind], ydata[ind]]).T)
 
     def _on_key(self, event):
-        print('you pressed', event.key, event.xdata, event.ydata)
-
         if event.key == ' ':
             if self.running is True:
                 self.running = False
