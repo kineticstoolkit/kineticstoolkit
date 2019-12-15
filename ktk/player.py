@@ -19,11 +19,13 @@ class Player:
                  sample=0, marker_radius=0.008, rigid_body_size=0.1):
 
         # ---------------------------------------------------------------
-        # Set self.n_frames, and verify that we have at least markers or
-        # rigid bodies.
+        # Set self.n_frames and self.time, and verify that we have at least
+        # markers or rigid bodies.
         if markers is not None:
+            self.time = markers.time
             self.n_frames = len(markers.time)
         elif rigid_bodies is not None:
+            self.time = rigid_bodies.time
             self.n_frames = len(rigid_bodies.time)
         else:
             raise(ValueError('Either markers or rigid_bodies must be set.'))
@@ -53,11 +55,11 @@ class Player:
         self.marker_radius = marker_radius
         self.rigid_body_size = rigid_body_size
         self.running = False
-        self.last_update = time.time()
         self.zoom = 1.0
         self.azimuth = 0.0
         self.elevation = 0.0
         self.target = (0.0, 0.0, 0.0)
+        self.playback_speed = 1.0
 
         self.objects = dict()
         self.objects['PlotMarkers'] = None
@@ -67,6 +69,7 @@ class Player:
         self.objects['PlotGroundPlane'] = None
         self.objects['Figure'] = None
         self.objects['Axes'] = None
+        self.objects['Help'] = None
 
         self.state = dict()
         self.state['ShiftPressed'] = False
@@ -79,6 +82,8 @@ class Player:
         self.state['TargetOnMousePress'] = (0.0, 0.0, 0.0)
         self.state['AzimutOnMousePress'] = 0.0
         self.state['ElevationOnMousePress'] = 0.0
+        self.state['SelfTimeOnPlay'] = self.time[0]
+        self.state['SystemTimeOnLastUpdate'] = time.time()
 
         self._create_figure()
 
@@ -108,7 +113,7 @@ class Player:
 
         # Start the animation timer
         self.anim = animation.FuncAnimation(self.objects['Figure'],
-                                       self._timer_event,
+                                       self._on_timer,
                                        interval=33)  # 30 ips
 
         # Connect the callback functions
@@ -133,20 +138,26 @@ class Player:
         def get_perspective(x, y, z):
             """Return x and y to plot, considering perspective."""
             # This uses ugly magical constants but it works fine for now.
-            denom = z/10+2
+            denom = z/5+5
             x = x / denom
             y = y / denom
-            to_remove = (denom < 1E-10)
+            with np.errstate(invalid='ignore'):
+                to_remove = (denom < 1E-12)
             x[to_remove] = np.nan
             y[to_remove] = np.nan
             return x, y
 
         # Get a Nx4 matrix of every marker at the current frame
         markers = self.markers
-        n_markers = len(markers.data)
+        if markers is not None:
+            n_markers = len(markers.data)
+        else:
+            n_markers = 0
         markers_data = np.empty([n_markers, 4])
-        for i_marker, marker in enumerate(markers.data):
-            markers_data[i_marker] = (markers.data[marker][self.current_frame])
+        if n_markers > 0:
+            for i_marker, marker in enumerate(markers.data):
+                markers_data[i_marker] = \
+                        markers.data[marker][self.current_frame]
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
         # at the current frame
@@ -179,14 +190,20 @@ class Player:
             rby_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
             rbz_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
 
+        # ------------------------------------------------------------
         # Create the rotation matrix to convert the lab's coordinates
         # (x anterior, y up, z right) to the camera coordinates (x right,
         # y up, z deep)
-        centroid = np.nanmean(markers_data, axis=0)
-        if np.isnan(np.sum(centroid)):  # No markers, use the rigid bodies
+        if not np.all(np.isnan(markers_data)):
+            # If there are markers in this frame, use the markers centroid:
+            centroid = np.nanmean(markers_data, axis=0)
+        else:
             centroid = np.nanmean(rbx_data, axis=0)
 
-        R = (self.zoom *
+        R = (np.array([[self.zoom, 0, 0, 0],
+                       [0, self.zoom, 0, 0],
+                       [0, 0, 1, 0],
+                       [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, self.target[0]],  # Pan
                        [0, 1, 0, self.target[1]],
                        [0, 0, 1, 0],
@@ -209,6 +226,7 @@ class Player:
         rby_data = (R @ rby_data.T).T
         rbz_data = (R @ rbz_data.T).T
 
+        # ------------------------------------------------------------
         # Create the ground plane matrix
         gp_size = 30  # blocks
         gp_div = 4  # blocks per meter
@@ -226,8 +244,8 @@ class Player:
         gp_1 = np.ones(6 * gp_size)
         gp = R @ np.block([[gp_x], [gp_y], [gp_z], [gp_1]])
 
-        # Create or update the plots
         # ----------------------------------------
+        # Create or update the plots
 
         # Create or update the ground plane plot
         x, y = get_perspective(gp[0, :], gp[1, :], gp[2, :])
@@ -274,48 +292,106 @@ class Player:
         # Update the window title
         self.objects['Figure'].canvas.set_window_title(
                 f'Frame {self.current_frame}, ' +
-                '%2.2f s.' % self.markers.time[self.current_frame])
+                '%2.2f s.' % self.time[self.current_frame])
 
-        # Refresh Matplotlib
-        plt.pause(1E-6)
+    # ------------------------------------
+    # Helper functions
+    def _set_frame(self, frame):
+        """Set current frame to a given frame and update plots."""
+        if frame >= self.n_frames:
+            self.current_frame = self.n_frames - 1
+        elif frame < 0:
+            self.current_frame = 0
+        else:
+            self.current_frame = frame
+        self._update_plots()
 
-    def _timer_event(self, frame=None):
-        if self.running is True:
-            self._set_frame_to_time(time.time() - self.last_update)
-
-    def _set_frame_to_time(self, time):
+    def _set_time(self, time):
+        """Set current frame to a given time and update plots."""
         index = np.argmin(np.abs(self.markers.time - time))
-        self.current_frame = index
-        self._update_plots()
+        self._set_frame(index)
 
-    def _next_frame(self, frame=None):
-        self.current_frame += 1
-        self._update_plots()
-
-    def _previous_frame(self, frame=None):
-        self.current_frame -= 1
-        self._update_plots()
+    # ------------------------------------
+    # Callbacks
+    def _on_timer(self, _):
+        """Callback for the animation timer object."""
+        if self.running is True:
+            current_frame = self.current_frame
+            self._set_time(self.time[self.current_frame] +
+                           self.playback_speed * (
+                           time.time() -
+                           self.state['SystemTimeOnLastUpdate']))
+            if current_frame == self.current_frame:
+                # The time wasn't enough to advance a frame. Articifically
+                # advance a frame.
+                self._set_frame(self._current_frame + 1)
+            self.state['SystemTimeOnLastUpdate'] = time.time()
 
     def _on_pick(self, event):
-        index = event.ind
-        selected_marker = list(self.markers.data.keys())[index[0]]
-        plt.title(selected_marker)
-        plt.pause(1E-6)
+        """Callback for marker selection."""
+        if event.mouseevent.button == 1:
+            index = event.ind
+            selected_marker = list(self.markers.data.keys())[index[0]]
+            self.objects['Axes'].set_title(selected_marker)
 
     def _on_key(self, event):
+        """Callback for keyboard key pressed."""
         if event.key == ' ':
             if self.running is True:
                 self.running = False
             else:
-                self.last_update = time.time()
+                self.state['SystemTimeOnLastUpdate'] = time.time()
+                self.state['SelfTimeOnPlay'] = self.time[self.current_frame]
                 self.running = True
-            plt.pause(1E-6)
 
         elif event.key == 'left':
-            self._previous_frame()
+            self._set_frame(self.current_frame - 1)
+
+        elif event.key == 'shift+left':
+            self._set_time(self.time[self.current_frame] - 1)
 
         elif event.key == 'right':
-            self._next_frame()
+            self._set_frame(self.current_frame + 1)
+
+        elif event.key == 'shift+right':
+            self._set_time(self.time[self.current_frame] + 1)
+
+        elif event.key == '-':
+            self.playback_speed /= 2
+            self.objects['Axes'].set_title(
+                    f'Playback set to {self.playback_speed}x')
+
+        elif event.key == '+':
+            self.playback_speed *= 2
+            self.objects['Axes'].set_title(
+                    f'Playback set to {self.playback_speed}x')
+
+        elif event.key == 'h':
+            if self.objects['Help'] is None:
+                self.objects['Help'] = self.objects['Axes'].text(-1.5, -1, '''
+                                  ktk.Player help
+                ----------------------------------------------------
+                KEYBOARD COMMANDS
+                show/hide this help : h
+                previous frame      : left
+                next frame          : right
+                previous second     : shift+left
+                next second         : shift+right
+                play/pause          : space
+                2x playback speed   : +
+                0.5x playback speed : -
+                ----------------------------------------------------
+                MOUSE COMMANDS
+                select a marker     : left-click
+                3d rotate           : left-drag
+                pan                 : middle-drag or shift+left-drag
+                zoom                : right-drag or wheel
+                ''', color=[0,1,0], fontfamily='monospace')
+            else:
+                self.objects['Help'].remove()
+                self.objects['Help'] = None
+
+
 
         elif event.key == 'shift':
             self.state['ShiftPressed'] = True
