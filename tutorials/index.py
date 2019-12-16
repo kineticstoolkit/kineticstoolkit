@@ -47,6 +47,13 @@ dynamics algorithm.
 
 [Go to the inversedynamics tutorial](inversedynamics.html)
 
+Player
+------
+The Player is an object to see animated markers, rigid bodies and segments in
+3D using a simple user interface.
+
+[Go to the Player tutorial](player.html)
+
 dbinterface
 -----------
 Module that communicates with Félix Chénier's biomechanics database to import

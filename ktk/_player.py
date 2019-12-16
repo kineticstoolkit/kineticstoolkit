@@ -55,7 +55,7 @@ class Player:
         self.marker_radius = marker_radius
         self.rigid_body_size = rigid_body_size
         self.running = False
-        self.zoom = 1.0
+        self.zoom = 2.0
         self.azimuth = 0.0
         self.elevation = 0.0
         self.target = (0.0, 0.0, 0.0)
@@ -96,7 +96,11 @@ class Player:
                     edgecolor='w')
 
         # Remove the toolbar
-        self.objects['Figure'].canvas.toolbar.setVisible(False)
+        try:  # Try, setVisible method not always there
+            self.objects['Figure'].canvas.toolbar.setVisible(False)
+        except AttributeError:
+            pass
+
         plt.tight_layout()
 
         # Add the title
