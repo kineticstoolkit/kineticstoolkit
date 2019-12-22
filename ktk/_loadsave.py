@@ -509,12 +509,46 @@ def convert_cell_arrays_to_lists(the_input):
         if (('OriginalClass' in the_input) and
                 the_input['OriginalClass'] == 'cell'):
             # This should be converted to a list.
-            length = len(the_input.keys()) - 1
-            the_list = []
-            for i_cell in range(length):
-                the_list.append(convert_cell_arrays_to_lists(
-                        the_input[f'cell{i_cell+1}']))
-            the_input = the_list
+            # Let's try with a single dimension list. If it fails, try as a
+            # bidimensional list.
+            try:
+                length = len(the_input.keys()) - 1
+                the_list = []
+                for i_cell in range(length):
+                    the_list.append(convert_cell_arrays_to_lists(
+                            the_input[f'cell{i_cell+1}']))
+                the_input = the_list
+
+            except KeyError:
+                # Convert to a dict with addresses in keys
+
+                def extract_address(key):
+                    if key != 'OriginalClass':
+                        return key[4:].split('_')
+                    else:
+                        return None
+
+                # Get the number of rows and columns
+                n_rows = 0
+                n_cols = 0
+                for cell in the_input.keys():
+                    address = extract_address(cell)
+                    if address is not None:
+                        n_rows = max(n_rows, int(address[0]))
+                        n_cols = max(n_cols, int(address[1]))
+
+                # Create and populate the list
+                the_list = [
+                        [None for i_col in range(n_cols)]
+                        for i_row in range(n_rows)]
+                for cell in the_input.keys():
+                    address = extract_address(cell)
+                    if address is not None:
+                        the_list[int(address[0])-1][int(address[1])-1] = \
+                                convert_cell_arrays_to_lists(the_input[cell])
+
+                the_input = the_list
+
         else:
             for key in the_input.keys():
                 the_input[key] = convert_cell_arrays_to_lists(the_input[key])

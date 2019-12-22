@@ -8,6 +8,10 @@ a work completely in progress.
 
 To install KTK:
 
+## Download and install git
+
+On Windows, just check all default boxes.
+
 ## Installing Anaconda Python
 
 Download and install Anaconda Python 3.7.
@@ -23,6 +27,17 @@ This is a workaround and will change with time.
 
 See this post for information and follow-up:
 https://stackoverflow.com/questions/53381373/ipython-console-in-spyder-extremely-slow-in-anaconda/57618660#57618660
+
+## Installing KTK from bitbucket
+
+In Anaconda, run these lines from the base dir to install KTK (for example, F:\)
+
+import os
+print('Cloning repository...')
+os.system('git clone https://labofelixchenier@bitbucket.org/felixchenier/kineticstoolkit.git')
+print('Pulling origin/master...')
+os.system('cd kineticstoolkit')
+os.system('git pull origin master')
 
 ## Adding KTK folder to Python path
 
