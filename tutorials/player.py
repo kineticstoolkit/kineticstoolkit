@@ -30,6 +30,26 @@ pl = ktk.Player(markers=kinematics['Markers'])
 
 # %% markdown
 """
+It is possible to colorize markers, using one of these letters:
+    - (r)ed
+    - (g)reen
+    - (b)lue
+    - (y)ellow
+    - (m)agenta
+    - (c)yan
+    - (w)hite
+"""
+
+# %%
+kinematics['Markers'].add_data_info('Sync_Sync', 'Color', 'y')
+kinematics['Markers'].add_data_info('SWR_Marker1', 'Color', 'r')
+kinematics['Markers'].add_data_info('SWR_Marker2', 'Color', 'r')
+kinematics['Markers'].add_data_info('SWR_Marker3', 'Color', 'r')
+kinematics['Markers'].add_data_info('SWR_Marker4', 'Color', 'r')
+pl = ktk.Player(markers=kinematics['Markers'])
+
+# %% markdown
+"""
 The player can be instanciated to show rigid bodies:
 """
 

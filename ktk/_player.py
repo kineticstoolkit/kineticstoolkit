@@ -33,6 +33,7 @@ class Player:
         # ---------------------------------------------------------------
         # Assign the markers
         self.markers = markers
+        self._select_none()
 
         # ---------------------------------------------------------------
         # Assign the rigid bodies
@@ -44,6 +45,15 @@ class Player:
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(
                 np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
+
+        # Add the origin without translation to the rigid bodies (for the
+        # fixed rigid body in the screen bottom-left
+        self.rigid_bodies.data['GlobalBottomLeft'] = np.repeat(
+                np.array([[1, 0, 0, 0],
+                          [0, 1, 0, 0],
+                          [0, 0, 1, 0],
+                          [0, 0, 0, 0]])[np.newaxis, :, :],
+                self.n_frames, axis=0)
 
         # ---------------------------------------------------------------
         # Assign the segments
@@ -62,7 +72,12 @@ class Player:
         self.playback_speed = 1.0
 
         self.objects = dict()
-        self.objects['PlotMarkers'] = None
+        self._colors = ['r', 'g', 'b', 'y', 'c', 'm', 'w']
+        self.objects['PlotMarkers'] = dict()
+        for color in self._colors:
+            self.objects['PlotMarkers'][color] = None  # Not selected
+            self.objects['PlotMarkers'][color + 's'] = None  # Selected
+
         self.objects['PlotRigidBodiesX'] = None
         self.objects['PlotRigidBodiesY'] = None
         self.objects['PlotRigidBodiesZ'] = None
@@ -90,10 +105,11 @@ class Player:
     def _create_figure(self):
         """Create the player's figure."""
         # Create the figure and axes
-        self.objects['Figure'], self.objects['Axes'] = plt.subplots(num=None,
-                    figsize=(12, 9),
-                    facecolor='k',
-                    edgecolor='w')
+        self.objects['Figure'], self.objects['Axes'] = plt.subplots(
+                num=None,
+                figsize=(12, 9),
+                facecolor='k',
+                edgecolor='w')
 
         # Remove the toolbar
         try:  # Try, setVisible method not always there
@@ -110,6 +126,26 @@ class Player:
         # Remove the background for faster plotting
         self.objects['Axes'].set_axis_off()
 
+        # Init the markers plots
+        colors = {
+                'r': [1, 0, 0],
+                'g': [0, 1, 0],
+                'b': [0.3, 0.3, 1],
+                'y': [1, 1, 0],
+                'm': [1, 0, 1],
+                'c': [0, 1, 1],
+                'w': [0.8, 0.8, 0.8]}
+
+        for color in self._colors:
+            self.objects['PlotMarkers'][color] = self.objects['Axes'].plot(
+                    np.nan, np.nan, '.',
+                    c=colors[color], markersize=4, picker=5)[0]
+        for color in self._colors:
+            self.objects['PlotMarkers'][color + 's'] = \
+                    self.objects['Axes'].plot(
+                            np.nan, np.nan, '.',
+                            c=colors[color], markersize=12)[0]
+
         # Draw the markers
         self._update_plots()
 
@@ -117,8 +153,8 @@ class Player:
 
         # Start the animation timer
         self.anim = animation.FuncAnimation(self.objects['Figure'],
-                                       self._on_timer,
-                                       interval=33)  # 30 ips
+                                            self._on_timer,
+                                            interval=33)  # 30 ips
 
         # Connect the callback functions
         self.objects['Figure'].canvas.mpl_connect(
@@ -151,17 +187,34 @@ class Player:
             y[to_remove] = np.nan
             return x, y
 
-        # Get a Nx4 matrix of every marker at the current frame
+        # Get a Nx4 matrices of every marker at the current frame
         markers = self.markers
         if markers is not None:
             n_markers = len(markers.data)
         else:
             n_markers = 0
-        markers_data = np.empty([n_markers, 4])
+
+        markers_data = dict()
+        centroid = np.empty([n_markers, 4])
+        for color in self._colors:
+            markers_data[color] = np.empty([n_markers, 4])
+            markers_data[color][:] = np.nan
+
+            markers_data[color + 's'] = np.empty([n_markers, 4])
+            markers_data[color + 's'][:] = np.nan
+
         if n_markers > 0:
             for i_marker, marker in enumerate(markers.data):
-                markers_data[i_marker] = \
-                        markers.data[marker][self.current_frame]
+
+                # Get this marker's color
+                try:
+                    color = markers.data_info[marker]['Color']
+                except KeyError:
+                    color = 'w'
+
+                these_coordinates = markers.data[marker][self.current_frame]
+                markers_data[color][i_marker] = these_coordinates
+                centroid[i_marker] = these_coordinates
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
         # at the current frame
@@ -198,10 +251,8 @@ class Player:
         # Create the rotation matrix to convert the lab's coordinates
         # (x anterior, y up, z right) to the camera coordinates (x right,
         # y up, z deep)
-        if not np.all(np.isnan(markers_data)):
-            # If there are markers in this frame, use the markers centroid:
-            centroid = np.nanmean(markers_data, axis=0)
-        else:
+        centroid = np.nanmean(centroid, axis=0)
+        if np.all(np.isnan(centroid)):
             centroid = np.nanmean(rbx_data, axis=0)
 
         R = (np.array([[self.zoom, 0, 0, 0],
@@ -225,7 +276,9 @@ class Player:
                        [0, 0, -1, -centroid[2]],
                        [0, 0, 0, 1]]))
 
-        markers_data = (R @ markers_data.T).T
+        for color in self._colors:
+            markers_data[color] = (R @ markers_data[color].T).T
+            markers_data[color + 's'] = (R @ markers_data[color + 's'].T).T
         rbx_data = (R @ rbx_data.T).T
         rby_data = (R @ rby_data.T).T
         rbz_data = (R @ rbz_data.T).T
@@ -261,15 +314,17 @@ class Player:
             self.objects['PlotGroundPlane'].set_data(x, y)
 
         # Create or update the markers plot
-        x, y = get_perspective(markers_data[:, 0],
-                               markers_data[:, 1],
-                               markers_data[:, 2])
-        if self.objects['PlotMarkers'] is None:  # Create the plot
-            self.objects['PlotMarkers'] = self.objects['Axes'].plot(
-                    x, y, '.', c='w', markersize=3, picker=5)[0]
+        for color in self._colors:
+            x, y = get_perspective(markers_data[color][:, 0],
+                                   markers_data[color][:, 1],
+                                   markers_data[color][:, 2])
+            self.objects['PlotMarkers'][color].set_data(x, y)
 
-        else:  # Update the plot with new values
-            self.objects['PlotMarkers'].set_data(x, y)
+            x, y = get_perspective(markers_data[color + 's'][:, 0],
+                                   markers_data[color + 's'][:, 1],
+                                   markers_data[color + 's'][:, 2])
+            self.objects['PlotMarkers'][color + 's'].set_data(x, y)
+
 
         # Create or update the rigid bodies plot
         xx, yx = get_perspective(rbx_data[:, 0],
@@ -315,6 +370,16 @@ class Player:
         index = np.argmin(np.abs(self.markers.time - time))
         self._set_frame(index)
 
+    def _select_none(self):
+        """Deselect every markers."""
+        for marker in self.markers.data:
+            try:
+                # Keep 1st character, remove the possible 's'
+                self.markers.data_info[marker]['Color'] = \
+                        self.markers.data_info[marker]['Color'][0]
+            except KeyError:
+                self.markers.add_data_info(marker, 'Color', 'w')
+
     # ------------------------------------
     # Callbacks
     def _on_timer(self, _):
@@ -337,6 +402,12 @@ class Player:
             index = event.ind
             selected_marker = list(self.markers.data.keys())[index[0]]
             self.objects['Axes'].set_title(selected_marker)
+
+            # Mark selected
+            self._select_none()
+            self.markers.data_info[selected_marker]['Color'] = \
+                    self.markers.data_info[selected_marker]['Color'][0] + 's'
+            self._update_plots()
 
     def _on_key(self, event):
         """Callback for keyboard key pressed."""
@@ -394,8 +465,6 @@ class Player:
             else:
                 self.objects['Help'].remove()
                 self.objects['Help'] = None
-
-
 
         elif event.key == 'shift':
             self.state['ShiftPressed'] = True
