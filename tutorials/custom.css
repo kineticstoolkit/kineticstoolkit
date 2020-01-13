@@ -1,0 +1,33 @@
+p {
+	font-size: 10pt;
+}
+pre {
+	font-size: 9pt !important;
+}
+
+
+h1 {
+	font-size: 14pt !important;
+}
+h2 {
+	font-size: 12pt !important;
+}
+h3 {
+	font-size: 11pt !important;
+}
+
+div.prompt.input_prompt {
+	display: none;
+}
+
+div.prompt.output_prompt {
+	display: none;
+}
+
+div.container {
+	max-width: 800px;
+}
+
+a.anchor-link {
+	display: none;
+}

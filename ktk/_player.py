@@ -372,13 +372,14 @@ class Player:
 
     def _select_none(self):
         """Deselect every markers."""
-        for marker in self.markers.data:
-            try:
-                # Keep 1st character, remove the possible 's'
-                self.markers.data_info[marker]['Color'] = \
-                        self.markers.data_info[marker]['Color'][0]
-            except KeyError:
-                self.markers.add_data_info(marker, 'Color', 'w')
+        if self.markers is not None:
+            for marker in self.markers.data:
+                try:
+                    # Keep 1st character, remove the possible 's'
+                    self.markers.data_info[marker]['Color'] = \
+                            self.markers.data_info[marker]['Color'][0]
+                except KeyError:
+                    self.markers.add_data_info(marker, 'Color', 'w')
 
     # ------------------------------------
     # Callbacks

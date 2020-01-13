@@ -65,7 +65,7 @@ class CellReader():
         return self.temporary_cell
 
 
-def compile(input_filename, output_filename):
+def compile(input_filename, output_filename, header=''):
 
     temp_filename = output_filename + '.ipynb'
 
@@ -74,6 +74,13 @@ def compile(input_filename, output_filename):
 
     nb = nbformat.v4.new_notebook()
 
+    # Header
+    if header != '':
+        cell = nbformat.v4.new_markdown_cell()
+        cell.source = header
+        nb.cells.append(cell)
+
+    # Contents
     cell = cell_reader.read_cell()
     while cell is not None:
         nb.cells.append(cell)

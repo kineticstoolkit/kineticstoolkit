@@ -48,7 +48,25 @@ def generate_tutorials(name=None):
     Returns
     -------
     None.
+
+    Open the function to modify the common header that is generated for each
+    tutorial page, including the menu.
     """
+
+    header = '''
+Kinetics Toolkit (ktk)
+======================
+[Home](index.html) -
+[TimeSeries](timeseries.html) -
+[geometry](geometry.html) -
+[pushrimkinetics](pushrimkinetics.html) -
+[inversedynamics](inversedynamics.html) -
+[player](player.html) -
+[dbinterface](dbinterface.html)
+
+-----------------------
+'''
+
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tutorials')
 
@@ -62,7 +80,7 @@ def generate_tutorials(name=None):
             print('==========================================')
             print('Building ' + file[:-3] + ' tutorial...')
             print('------------------------------------------')
-            tutorialcompiler.compile(file, file[:-3] + '.html')
+            tutorialcompiler.compile(file, file[:-3] + '.html', header)
 
     os.chdir(cwd)
 
