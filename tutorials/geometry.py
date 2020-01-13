@@ -1,6 +1,6 @@
-# %% markdown
+# %%
 """
-ktk.geometry Tutorial
+geometry
 =====================
 This module allows the creation of reference frames, and simplifies passing
 coordinates from local to global reference frames and vice-versa.
@@ -47,12 +47,10 @@ Series of points, vectors, sets of points, sets of vectors and matrices are
 all expressed as 2-dimension arrays, with the first dimension corresponding
 to time.
 """
-
-# %%
 import ktk
 import numpy as np
 
-# %% markdown
+# %%
 """
 Create reference frames
 -----------------------
@@ -62,15 +60,13 @@ aims to do this.
 
 If the markers are at these positions (0, 0, 0), (1, 0, 0) and (0, 1, 0):
 """
-
-# %%
 global_markers = np.array(
         [[0., 1., 0.],
          [0., 0., 1.],
          [0., 0., 0.],
          [1., 1., 1.]])
 
-# %% markdown
+# %%
 """
 A reference frame can be made of these markers. By default,
 `ktk.geometry.create_reference_frame` creates the origin at the centroid,
@@ -82,12 +78,10 @@ function's help. For example, reference frames can be generated from anatomical
 marker locations using the recommandations from the International Society of
 Biomechanics.
 """
-
-# %%
 T = ktk.geometry.create_reference_frame(global_markers)
 T
 
-# %% markdown
+# %%
 """
 Get local coordinates
 ---------------------
@@ -95,12 +89,10 @@ We now have a reference frame defined from these markers. If we are
 interested to know the local position of these markers in this new reference
 frame, we can use the function `ktk.geometry.get_local_coordinates`.
 """
-
-# %%
 local_markers = ktk.geometry.get_local_coordinates(global_markers, T)
 local_markers
 
-# %% markdown
+# %%
 """
 Get global coordinates
 ----------------------
@@ -108,8 +100,6 @@ In the case we have the markers' local coordinates and we would like to express
 these markers in the global reference frame, we would use the alternate
 function `ktk.geometry.get_global_coordinates`.
 """
-
-# %%
 ktk.geometry.get_global_coordinates(local_markers, T)
 
 # %% exclude

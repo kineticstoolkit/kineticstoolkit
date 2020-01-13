@@ -1,4 +1,4 @@
-# %% markdown
+# %%
 """
 KTK Tutorials (Python experimental version)
 ===========================================
@@ -19,45 +19,4 @@ discuss about such collaborations:
     Email: chenier.felix@uqam.ca
     Phone: 514-987-3000 ext. 5553
     Website: felixchenier.com
-
-TimeSeries
-----------
-The TimeSeries is an object provided by KTK to represent data that varies in
-time.
-
-[Go to the TimeSeries tutorial](timeseries.html)
-
-pushrimkinetics
----------------
-Module that processes kinetics data from instrumented wheelchair wheels.
-
-[Go to the pushrimkinetics tutorial](pushrimkinetics.html)
-
-geometry
---------
-Module that allows the creation of reference frames and simplifies passing
-coordinates from local to global reference frames and vice-versa.
-
-[Go to the geometry tutorial](geometry.html)
-
-inversedynamics
----------------
-Module that calculates the proximal forces and moments based on an inverse
-dynamics algorithm.
-
-[Go to the inversedynamics tutorial](inversedynamics.html)
-
-Player
-------
-The Player is an object to see animated markers, rigid bodies and segments in
-3D using a simple user interface.
-
-[Go to the Player tutorial](player.html)
-
-dbinterface
------------
-Module that communicates with Félix Chénier's biomechanics database to import
-all non-personal information from a given project.
-
-[Go to the dbinterface tutorial](dbinterface.html)
 """

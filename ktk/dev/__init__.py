@@ -12,6 +12,9 @@ import pytest
 import os
 import ktk.dev.tutorialcompiler as tutorialcompiler
 import matplotlib.pyplot as plt
+from functools import partial
+from threading import Thread
+from time import sleep
 
 def run_tests(module=None):
     """Run all unit tests."""
@@ -59,9 +62,10 @@ Kinetics Toolkit (ktk)
 [Home](index.html) -
 [TimeSeries](timeseries.html) -
 [geometry](geometry.html) -
+[kinematics](kinematics.html) -
 [pushrimkinetics](pushrimkinetics.html) -
 [inversedynamics](inversedynamics.html) -
-[player](player.html) -
+[Player](player.html) -
 [dbinterface](dbinterface.html)
 
 -----------------------
@@ -75,14 +79,23 @@ Kinetics Toolkit (ktk)
     else:
         files = [name + '.py']
 
+    print('==========================================')
+    threads_running = [0]  # List of len 1 with the number of running threads
     for file in files:
         if file[-3:].lower() == '.py':
-            print('==========================================')
-            print('Building ' + file[:-3] + ' tutorial...')
-            print('------------------------------------------')
-            tutorialcompiler.compile(file, file[:-3] + '.html', header)
+            print('Starting compiling ' + file[:-3] + ' tutorial...')
+            threaded_function = partial(tutorialcompiler.compile,
+                                        file, file[:-3] + '.html', header,
+                                        threads_running)
+            thread = Thread(target=threaded_function)
+            thread.start()
+            threads_running[0] += 1
+#            tutorialcompiler.compile(file, file[:-3] + '.html', header)
 
     os.chdir(cwd)
+
+    while threads_running[0] > 0:
+        sleep(0.5)
 
     ktk.tutorials()
 

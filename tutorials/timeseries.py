@@ -1,22 +1,19 @@
 # %% markdown
 """
-ktk.TimeSeries Tutorial
-=======================
-KTK provides a standard class for expressing timeseries: ktk.TimeSeries. This
+TimeSeries
+==========
+KTK provides a standard class for expressing timeseries. This
 data format is very largely inspired by the Matlab's timeseries object. It
 provides a way to express several multidimensional data that varies in time,
 along with a time vector and a list of events. It also allows subsetting and
 merging with other TimeSeries, and extracting sub-TimeSeries based on events.
 """
-
-# %%
-
 import ktk
 import numpy as np
 import matplotlib.pyplot as plt
 import os
 
-# %% markdown
+# %%
 """
 Let's start by looking at the attributes of the TimeSeries class.
 
@@ -46,7 +43,6 @@ Attributes
 
 To create a new, empty TimeSeries:
 """
-# %%
 ts = ktk.TimeSeries()
 
 ts
@@ -59,13 +55,11 @@ assert isinstance(ts.data_info, dict)
 assert isinstance(ts.events, list)
 assert ts.time_info['Unit'] == 's'
 
-# %% markdown
+# %%
 """
 This TimeSeries is empty, and is therefore pretty much useless. Let's put some
 data in there. We will allocate the time vector and add some random data.
 """
-
-# %%
 ts.time = np.arange(100)
 ts.data['signal1'] = np.random.rand(100, 2)
 ts.data['signal2'] = np.random.rand(100, 2)
@@ -73,7 +67,7 @@ ts.data['signal3'] = np.random.rand(100, 2)
 
 ts
 
-# %% markdown
+# %%
 """
 Plotting a TimeSeries
 ---------------------
@@ -83,8 +77,6 @@ function.
 
 Using standard matplotlib.pyplot functions:
 """
-
-# %%
 plt.figure()
 plt.subplot(3, 1, 1)
 plt.plot(ts.time, ts.data['signal1'])
@@ -93,24 +85,22 @@ plt.plot(ts.time, ts.data['signal2'])
 plt.subplot(3, 1, 3)
 plt.plot(ts.time, ts.data['signal3'])
 
-# %% markdown
+# %%
 """
 Using the TimeSeries' plot function (note that the axes are automatically
 labelled):
 """
-# %%
 plt.figure()
 ts.plot()
 
-# %% markdown
+# %%
 """
 We can also select what signals to plot:
 """
-# %%
 plt.figure()
 ts.plot(['signal1', 'signal2'])
 
-# %% markdown
+# %%
 """
 Adding time and data information to a TimeSeries
 ------------------------------------------------
@@ -119,18 +109,14 @@ name of the data key. We also see that the time unit is in seconds. Unit
 information is specified in the dictionaries time_info and data_info. For
 example, if we look at the contents of ``ts.time_info``:
 """
-
-# %%
 ts.time_info
 
-# %% markdown
+# %%
 """
 There is a dict entry named 'Unit' with a value of 's'. We can also add units
 to the TimeSeries' data. For example, if ``signal1`` is in newtons,
 ``signal2`` is in volts and ``signal3`` is in m/s:
 """
-
-# %%
 ts.add_data_info('signal1', 'Unit', 'N')
 ts.add_data_info('signal2', 'Unit', 'V')
 ts.add_data_info('signal3', 'Unit', 'm/s')
@@ -141,7 +127,7 @@ assert ts.data_info['signal1']['Unit'] == 'N'
 assert ts.data_info['signal2']['Unit'] == 'V'
 assert ts.data_info['signal3']['Unit'] == 'm/s'
 
-# %% markdown
+# %%
 """
 The time_info and data_info fields are not constrained to time/data units. We
 can add anything that can be helpful to describe the data.
@@ -153,8 +139,6 @@ a TimeSeries. Events are a very helpful concept that help a lot in
 synchronizing different TimeSeries, or extracting smaller TimeSeries by slicing
 TimeSeries between two events.
 """
-
-# %%
 ts.add_event(15.34, 'some_event_1')
 ts.add_event(99.2, 'some_event_2')
 ts.add_event(1, 'some_event_3')
@@ -168,15 +152,13 @@ assert ts.events[0].time == 15.34
 assert ts.events[1].time == 99.2
 assert ts.events[2].time == 1
 
-# %% markdown
+# %%
 """
 As we can see, the ``events`` attribute of the TimeSeries is a list of lists,
 where the inner list contains the time at which the event happened followed
 by the name of the event. In addition, an event can be accessed using its
 properties ``time`` and ``name``.
 """
-
-# %%
 ts.events[0]
 
 # %%
@@ -188,14 +170,12 @@ ts.events[0].time
 # %%
 ts.events[0].name
 
-# %% markdown
+# %%
 """
 When we plot a TimeSeries that contains events using the TimeSeries' ``plot``
 function, the events are also drawn. It is also possible to print out the
 events' names on the plot:
 """
-
-# %%
 plt.figure()
 ts.plot('signal1')
 
@@ -204,6 +184,9 @@ ts.plot('signal1', plot_event_names=True)
 plt.tight_layout()  # To resize the figure so we see the text completely.
 
 # %%
+"""
+TODO: Hide these tests.
+"""
 
 def test_get_index_before_time():
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))

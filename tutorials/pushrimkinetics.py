@@ -1,35 +1,32 @@
-# %% markdown
+# %%
 """
-ktk.pushrimkinetics Tutorial
-============================
+pushrimkinetics
+===============
 The pushrimkinetics module allows processing kinetics data from instrumented
 wheelchair wheels such as the SmartWheel.
 """
-# %%
 import ktk
 import matplotlib.pyplot as plt
 
 # %% exclude
-"""Additionnal imports and functions for unit tests"""
+# Additionnal imports and functions for unit tests
 import numpy as np
-
 
 def _assert_almost_equal(float1, float2):
     assert abs(float1 - float2) < 1E-6
 
-# %% markdown
+# %%
 """
 Read data from file
 -------------------
 The first step is to load data from a file. This is done using ``read_file``:
 """
-# %%
 filename = ('data/pushrimkinetics/'
             'sample_swl_overground_propulsion_withrubber.csv')
 kinetics = ktk.pushrimkinetics.read_file(filename)
 
 # %% exclude
-"""Non-regression test based on the Matlab's KTK tutorial."""
+# Non-regression test based on the Matlab's KTK tutorial.
 _assert_almost_equal(np.mean(kinetics.data['Forces']),
                      -0.0044330903410570)
 _assert_almost_equal(np.mean(kinetics.data['Moments']),
@@ -41,19 +38,20 @@ _assert_almost_equal(np.mean(kinetics.data['Channels']),
 _assert_almost_equal(np.mean(kinetics.data['Index']),
                      3841.5000000000000000)
 
-# %% markdown
+# %%
 """
 Now see what we just loaded.
 """
-# %%
 kinetics
+
 # %%
 kinetics.data
+
 # %%
 plt.figure()
 kinetics.plot(['Forces', 'Moments'])
 
-# %% markdown
+# %%
 """
 Calculate forces and moments
 ----------------------------
@@ -64,7 +62,6 @@ moments based on a calibration matrix. The function
 ``calculate_forces_and_moments`` does this calculation and already includes
 calibration matrices based on SmartWheels' serial numbers. For example:
 """
-# %%
 new_kinetics = ktk.pushrimkinetics.calculate_forces_and_moments(
             kinetics, 'LIO-123')
 
@@ -78,7 +75,7 @@ _assert_almost_equal(moments[0], -0.039625979603)
 _assert_almost_equal(moments[1], -0.088833025939)
 _assert_almost_equal(moments[2], 2.297597031073)
 
-# %% markdown
+# %%
 """
 Removing sinusoids in forces and moments
 ----------------------------------------
@@ -88,7 +85,6 @@ the forces but also in the moments. We can auto-remove these offsets using
 
 Let's apply this function on the data we just loaded.
 """
-# %%
 kinetics = ktk.pushrimkinetics.remove_sinusoids(kinetics)
 
 plt.figure()
@@ -102,7 +98,7 @@ _assert_almost_equal(np.mean(kinetics.data['Forces']),
 _assert_almost_equal(np.mean(kinetics.data['Moments']),
                      0.4972708141781993)
 
-# %% markdown
+# %%
 """
 This automatic method has only be validated for straight-line, level-ground
 propulsion. For any other condition, a baseline trial is required. A baseline
@@ -110,7 +106,6 @@ trial is a trial where an operator pushes the wheelchair but no external
 force appart from gravity is applied on the instrumented wheel. Let's see an
 example.
 """
-# %%
 kinetics = ktk.pushrimkinetics.read_file(
         'data/pushrimkinetics/sample_swl_overground_propulsion_withrubber.csv')
 baseline = ktk.pushrimkinetics.read_file(
@@ -124,7 +119,7 @@ kinetics.plot(['Forces', 'Moments'])
 _assert_almost_equal(np.mean(kinetics.data['Forces']),
                      1.4048102831351081)
 
-# %% markdown
+# %%
 """
 Calculate velocity and power
 ----------------------------
@@ -134,15 +129,13 @@ velocity has been calculated, the output power can also be calculated by
 multiplying the velocity by the propulsion moment, using the
 ``calculate_power`` function.
 """
-
-# %%
 kinetics = ktk.pushrimkinetics.calculate_velocity(kinetics)
 kinetics = ktk.pushrimkinetics.calculate_power(kinetics)
 
 plt.figure()
 kinetics.plot(['Velocity', 'Power'])
 
-# %% markdown
+# %%
 """
 Detecting pushes
 ----------------
@@ -150,8 +143,6 @@ Detecting pushes
 The function ``detect_pushes`` allows detecting pushes and recoveries
 automatically based on a double-threshold. Let's try it on our data.
 """
-
-# %%
 kinetics = ktk.pushrimkinetics.detect_pushes(kinetics)
 
 kinetics
@@ -165,16 +156,14 @@ for i in range(0, len(event_times)):
 assert len(kinetics.events) == 77
 _assert_almost_equal(np.mean(float_event_times), 17.212175000000002)
 
-# %% markdown
+# %%
 """
 We see that the TimeSeries now has 77 items. Let's see these events on a plot.
 """
-
-# %%
 plt.figure()
 kinetics.plot(['Forces', 'Moments'])
 
-# %% markdown
+# %%
 """
 Time-normalizing data
 ---------------------
@@ -187,19 +176,16 @@ module.
 Let's say we want to time-normalize each push from the ``pushstart`` event to
 the ``pushend`` event.
 """
-# %%
 kinetics = ktk.cycles.time_normalize(kinetics, 'pushstart', 'pushend')
 
 plt.figure()
 kinetics.plot(['Forces', 'Moments'])
 
-# %% markdown
+# %%
 """
 It is now possible to extract each push in a i_cycle x i_percent x i_component
 form, using the ``ktk.TimeSeries.get_reshaped_time_normalized_data`` method.
 """
-
-# %%
 data = ktk.cycles.get_reshaped_time_normalized_data(kinetics)
 
 data

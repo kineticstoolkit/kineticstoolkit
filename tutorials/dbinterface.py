@@ -1,6 +1,6 @@
-# %% markdown
+# %%
 """
-ktk.dbinterface Tutorial
+dbinterface
 ========================
 ktk.dbinterface connects to the BIOMEC database
 (https://felixchenier.uqam.ca/biomec) to fetch all non-personal information
@@ -9,11 +9,8 @@ about a specified project.
 Please note that the user/password combination used in this tutorial is not
 valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.
 """
-
-# %%
 import ktk
 
-# %% markdown
 """
 Fetching a complete project from BIOMEC
 ---------------------------------------
@@ -27,8 +24,6 @@ which is an interactive function. For example:
 
 The fetchproject function can also be run non-interactively:
 """
-
-# %%
 project_label = 'dummyProject'
 username = 'dummyUser'
 password = 'dummyPassword'
@@ -39,7 +34,7 @@ url = 'http://localhost/biomec.uqam.ca'  # This line is only for this tutorial, 
 project = ktk.dbinterface.fetch_project(project_label, user=username, password=password, root_folder=root_folder,
                                        url=url)
 
-# %% markdown
+# %%
 """
 Navigating in the project structure
 -----------------------------------

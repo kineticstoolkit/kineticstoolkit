@@ -3,70 +3,87 @@ import subprocess
 import os
 
 
-
 class CellReader():
 
     def __init__(self, fid):
         self.fid = fid
-        self.next_cell = 'markdown'
-        self.line = ' '
+        self.next_cell = ''
+        self.line = ''
+        self.exclude = False
         # Read up to next cell separator
         self.read_cell()
 
     def read_cell(self):
+        """
+        Read text up to triple-" or '# %%' and returns content as nb cell.
+        """
+
+        def end_formatting_temporary_cell():
+            if self.next_cell == 'code':
+                self.temporary_cell.source = cell_text
+                self.temporary_cell.outputs = []
+                self.temporary_cell.execution_count = None
+            elif self.next_cell == 'markdown':
+                self.temporary_cell.source = cell_text
+
+        # Create the temporary cell
         self.temporary_cell = nbformat.v4.new_markdown_cell()
         self.temporary_cell.cell_type = self.next_cell
 
-        if len(self.line) == 0:
-            return None
-
-        self.line = self.fid.readline()
+        end_reached = False
         cell_text = ''
-        while '# %%' not in self.line and len(self.line) > 0:
 
-            # Add this line to the cell
-            if self.temporary_cell.cell_type == 'code':
-                if ('# %%' not in self.line):
-                    cell_text += self.line
-
-            elif self.temporary_cell.cell_type == 'markdown':
-                if (('# %%' not in self.line) and
-                         ('"""' not in self.line) and
-                         ("'''" not in self.line)):
-                    cell_text += self.line
-
+        while end_reached is False:
             self.line = self.fid.readline()
 
-        if len(self.line) == 0:
-            self.next_cell = None
-        elif 'markdown' in self.line:
-            self.next_cell = 'markdown'
-        elif 'code' in self.line:
-            self.next_cell = 'code'
-        elif 'exclude' in self.line:
-            self.next_cell = 'exclude'
-        else:
-            self.next_cell = 'code'
+            if len(self.line) == 0:
+                if cell_text == '':
+                    return None
+                else:
+                    end_formatting_temporary_cell()
+                    return self.temporary_cell
 
-        # Remove leading and trailing new lines
-        if len(cell_text) > 0:
-            while cell_text[0] == '\n':
-                cell_text = cell_text[1:]
-            while cell_text[-1] == '\n':
-                cell_text = cell_text[:-1]
-            self.temporary_cell.source = cell_text
+            elif self.next_cell == '':
+                # Not in any cell yet
+                if '# %%' in self.line:
+                    self.next_cell = 'code'
+                    if 'exclude' in self.line:
+                        self.exclude = True
+                    else:
+                        self.exclude = False
+                    return self.read_cell()
+                elif '"""' in self.line:
+                    self.next_cell = 'markdown'
+                    return self.read_cell()
 
-        if self.temporary_cell.cell_type == 'code':
-            self.temporary_cell.outputs = []
-            self.temporary_cell.execution_count = None
-        elif self.temporary_cell.cell_type == 'exclude':
-            self.temporary_cell = self.read_cell()
+            elif self.next_cell == 'code':
+                if '# %%' in self.line:
+                    end_formatting_temporary_cell()
+                    self.next_cell = 'code'
+                    if 'exclude' in self.line:
+                        self.exclude = True
+                    else:
+                        self.exclude = False
+                    return self.temporary_cell
+                elif '"""' in self.line:
+                    end_formatting_temporary_cell()
+                    self.next_cell = 'markdown'
+                    return self.temporary_cell
+                else:
+                    if self.exclude is False:
+                        cell_text += self.line
 
-        return self.temporary_cell
+            elif self.next_cell == 'markdown':
+                if '"""' in self.line:
+                    end_formatting_temporary_cell()
+                    self.next_cell = 'code'
+                    self.exclude = False
+                    return self.temporary_cell
+                else:
+                    cell_text += self.line
 
 
-def compile(input_filename, output_filename, header=''):
-
+def compile(input_filename, output_filename, header='', threads_running=[0]):
     temp_filename = output_filename + '.ipynb'
 
     fid = open(input_filename)
@@ -83,7 +100,8 @@ def compile(input_filename, output_filename, header=''):
     # Contents
     cell = cell_reader.read_cell()
     while cell is not None:
-        nb.cells.append(cell)
+        if len(cell.source) > 0 and cell.source != '\n':
+            nb.cells.append(cell)
         cell = cell_reader.read_cell()
 
     fid.close()
@@ -96,3 +114,6 @@ def compile(input_filename, output_filename, header=''):
                      '--output', output_filename])
 
     os.remove(temp_filename)
+
+    # Tell the caller that there's a thread less running.
+    threads_running[0] -= 1

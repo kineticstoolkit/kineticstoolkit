@@ -1,7 +1,7 @@
-# %% markdown
+# %%
 """
-ktk.inversedynamics Tutorial
-============================
+inversedynamics
+===============
 The Inverse Dynamics module computes the proximal forces and moments based
 on the segment's kinematics and distal forces and moments, based on the
 generic method published in:
@@ -23,6 +23,11 @@ tests were made and were successful:
        the implemented matrices are exempt of sign errors.
     2. Real wheelchair propulsion data was inspected and seems plausible.
 
+"""
+import ktk
+
+# %%
+"""
 Loading sample data
 -------------------
 In this tutorial, we will load propulsion data from a sprint in Wheelchair
@@ -30,10 +35,6 @@ Basketball. Kinetics were recorded using an instrumented wheel (SmartWheel)
 and kinematics were recorded using an optoelectronic system (Optitrack).
 Data were preprocessed in Matlab.
 """
-
-# %%
-import ktk
-
 # Total mass of the participant
 total_mass = 75
 
@@ -60,7 +61,7 @@ ts_all.merge(kinetics, resample=True)
 # Keep only the sprint data
 ts_all = ts_all.get_ts_between_times(0, 15)
 
-# %% markdown
+# %%
 """
 Calculate the force and moments at the hand
 -------------------------------------------
@@ -71,8 +72,6 @@ application.
 
 We will ignore the inertial parameters of the pushrim.
 """
-
-# %%
 pushrim_inertial_parameters = {'Mass' : 0,
                                'COMProximalRatio' : 0,
                                'GyrationCOMRatio': 0}
@@ -92,13 +91,11 @@ new_ts = ktk.inversedynamics.calculate_proximal_wrench(
 new_ts.plot(['DistalForces', 'DistalMoments'])
 new_ts.plot(['ProximalForces', 'ProximalMoments'])
 
-# %% markdown
+# %%
 """
 Calculate the force and moments at the elbow
 -------------------------------------------
 """
-
-# %%
 ts = ktk.TimeSeries(time=ts_all.time)
 
 ts.data['ProximalJointPosition'] = ts_all.data['ElbowR']
@@ -114,14 +111,11 @@ new_ts = ktk.inversedynamics.calculate_proximal_wrench(
 new_ts.plot(['DistalForces', 'DistalMoments'])
 new_ts.plot(['ProximalForces', 'ProximalMoments'])
 
-
-# %% markdown
+# %%
 """
 Calculate the force and moments at the shoulder
 --------------------------------------------
 """
-
-# %%
 ts = ktk.TimeSeries(time=ts_all.time)
 
 ts.data['ProximalJointPosition'] = ts_all.data['BodyR_AcromionR']
