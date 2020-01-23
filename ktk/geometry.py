@@ -11,6 +11,71 @@ Date : December 2019
 import numpy as np
 
 
+def create_rotation_matrix(axis, angle):
+    """
+    Create a 4x4 or Nx4x4 rotation matrix around a given axis.
+
+    Parameters
+    ----------
+    axis : str
+        Can be either 'x', 'y' or 'z'.
+
+    angle : float or array.
+        Angle in radians.
+
+    Returns
+    -------
+    A 4x4 rotation matrix if angle is a float, or a Nx4x4 series of
+    rotation matrices if angle is an array of size N.
+    """
+    angle = np.array(angle)
+
+    # Temporarily add a first dimension to angle, if required
+    if angle.shape == ():
+        original_shape = ()
+        angle = angle[np.newaxis]
+    else:
+        original_shape = angle.shape
+
+    T = np.zeros((angle.shape[0], 4, 4))
+
+    if axis == 'x':
+        for i in range(angle.size):
+            T[i, 1, 1] = np.cos(angle[i])
+            T[i, 1, 2] = np.sin(-angle[i])
+            T[i, 2, 1] = np.sin(angle[i])
+            T[i, 2, 2] = np.cos(angle[i])
+            T[i, 0, 0] = 1.0
+            T[i, 3, 3] = 1.0
+
+    elif axis == 'y':
+        for i in range(angle.size):
+            T[i, 0, 0] = np.cos(angle[i])
+            T[i, 2, 0] = np.sin(-angle[i])
+            T[i, 0, 2] = np.sin(angle[i])
+            T[i, 2, 2] = np.cos(angle[i])
+            T[i, 1, 1] = 1.0
+            T[i, 3, 3] = 1.0
+
+    elif axis == 'z':
+        for i in range(angle.size):
+            T[i, 0, 0] = np.cos(angle[i])
+            T[i, 0, 1] = np.sin(-angle[i])
+            T[i, 1, 0] = np.sin(angle[i])
+            T[i, 1, 1] = np.cos(angle[i])
+            T[i, 2, 2] = 1.0
+            T[i, 3, 3] = 1.0
+
+    else:
+        raise ValueError("axis must be either 'x', 'y' or 'z'")
+
+    # Remove the first dimension if we added it to angle previously
+    if original_shape == ():
+        T = T[0, :, :]
+
+    return T
+
+
 def create_reference_frame(global_points, method='ocx1'):
     """
     Create a reference frame based on a point cloud.

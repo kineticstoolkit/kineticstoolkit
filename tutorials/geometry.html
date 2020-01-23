@@ -13096,7 +13096,8 @@ div#notebook {
 <h1 id="geometry">geometry<a class="anchor-link" href="#geometry">&#182;</a></h1><p>This module allows the creation of reference frames, and simplifies passing
 coordinates from local to global reference frames and vice-versa.</p>
 <p>Points, vectors, sets of points, sets of vectors and matrices are all
-expressed as 2-dimension arrays:</p>
+expressed as 2-dimension arrays. By design, no component of this module is
+expressed as 1-dimension arrays.</p>
 <ul>
 <li><p>Points are represented as 2d arrays of shape 4x1:</p>
 
@@ -13135,7 +13136,7 @@ expressed as 2-dimension arrays:</p>
 </li>
 </ul>
 <p>Series of points, vectors, sets of points, sets of vectors and matrices are
-all expressed as 2-dimension arrays, with the first dimension corresponding
+all expressed as 3-dimension arrays, with the first dimension corresponding
 to time.</p>
 
 </div>
@@ -13158,6 +13159,222 @@ to time.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Create-a-rotation-matrix">Create a rotation matrix<a class="anchor-link" href="#Create-a-rotation-matrix">&#182;</a></h2><p>The function <code>ktk.geometry.create_rotation_matrix</code> allows creating 4x4 or
+series or 4x4 matrices around a given axis. For example:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrix</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>creates a null rotation matrix around the x axis (thus the identity matrix):</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[3]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrix</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>creates a rotation of 90 degrees around the x axis:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[ 1.,  0.,  0.,  0.],
+       [ 0.,  0., -1.,  0.],
+       [ 0.,  1.,  0.,  0.],
+       [ 0.,  0.,  0.,  1.]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>and</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrix</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>creates a series of 100 rotation matrices around the z axis, from 0 to
+360 degrees:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[7]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[[ 1.        , -0.        ,  0.        ,  0.        ],
+        [ 0.        ,  1.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[ 0.99798668, -0.06342392,  0.        ,  0.        ],
+        [ 0.06342392,  0.99798668,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[ 0.99195481, -0.12659245,  0.        ,  0.        ],
+        [ 0.12659245,  0.99195481,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       ...,
+
+       [[ 0.99195481,  0.12659245,  0.        ,  0.        ],
+        [-0.12659245,  0.99195481,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[ 0.99798668,  0.06342392,  0.        ,  0.        ],
+        [-0.06342392,  0.99798668,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[ 1.        ,  0.        ,  0.        ,  0.        ],
+        [-0.        ,  1.        ,  0.        ,  0.        ],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Create-reference-frames">Create reference frames<a class="anchor-link" href="#Create-reference-frames">&#182;</a></h2><p>Let's say we have the position of three markers, and we want to create a
 reference frame based on these markers. The function <code>create_reference_frame</code>
 aims to do this.</p>
@@ -13168,7 +13385,7 @@ aims to do this.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[2]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">global_markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
@@ -13200,7 +13417,7 @@ Biomechanics.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[3]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frame</span><span class="p">(</span><span class="n">global_markers</span><span class="p">)</span>
@@ -13217,7 +13434,7 @@ Biomechanics.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[3]:</div>
+    <div class="prompt output_prompt">Out[9]:</div>
 
 
 
@@ -13247,7 +13464,7 @@ frame, we can use the function <code>ktk.geometry.get_local_coordinates</code>.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">local_markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span><span class="n">global_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -13264,7 +13481,7 @@ frame, we can use the function <code>ktk.geometry.get_local_coordinates</code>.<
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[4]:</div>
+    <div class="prompt output_prompt">Out[10]:</div>
 
 
 
@@ -13294,7 +13511,7 @@ function <code>ktk.geometry.get_global_coordinates</code>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span><span class="n">local_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -13310,7 +13527,7 @@ function <code>ktk.geometry.get_global_coordinates</code>.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[5]:</div>
+    <div class="prompt output_prompt">Out[11]:</div>
 
 
 

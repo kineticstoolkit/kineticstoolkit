@@ -1,12 +1,13 @@
 # %%
 """
 geometry
-=====================
+========
 This module allows the creation of reference frames, and simplifies passing
 coordinates from local to global reference frames and vice-versa.
 
 Points, vectors, sets of points, sets of vectors and matrices are all
-expressed as 2-dimension arrays:
+expressed as 2-dimension arrays. By design, no component of this module is
+expressed as 1-dimension arrays.
 
 - Points are represented as 2d arrays of shape 4x1:
 
@@ -44,11 +45,59 @@ expressed as 2-dimension arrays:
          [0. , 0. , 0. , 1.]]
 
 Series of points, vectors, sets of points, sets of vectors and matrices are
-all expressed as 2-dimension arrays, with the first dimension corresponding
+all expressed as 3-dimension arrays, with the first dimension corresponding
 to time.
 """
 import ktk
 import numpy as np
+
+# %%
+"""
+Create a rotation matrix
+------------------------
+The function `ktk.geometry.create_rotation_matrix` allows creating 4x4 or
+series or 4x4 matrices around a given axis. For example:
+"""
+T = ktk.geometry.create_rotation_matrix('x', 0)
+
+# %%
+"""
+creates a null rotation matrix around the x axis (thus the identity matrix):
+"""
+T
+
+# %% exclude
+assert np.sum(np.abs(T - np.eye(4))) < 1E-15
+
+# %%
+T = ktk.geometry.create_rotation_matrix('x', np.pi/2)
+
+# %%
+"""
+creates a rotation of 90 degrees around the x axis:
+"""
+T
+
+# %% exclude
+assert np.sum(np.abs(T - np.array([
+       [1.,  0.,  0.,  0.],
+       [0.,  0., -1.,  0.],
+       [0.,  1.,  0.,  0.],
+       [0.,  0.,  0.,  1.]]
+       ))) < 1E-15
+
+# %%
+"""
+and
+"""
+T = ktk.geometry.create_rotation_matrix('z', np.linspace(0, 2 * np.pi, 100))
+
+# %%
+"""
+creates a series of 100 rotation matrices around the z axis, from 0 to
+360 degrees:
+"""
+T
 
 # %%
 """
