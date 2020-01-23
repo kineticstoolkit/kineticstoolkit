@@ -46,14 +46,16 @@ class Player:
         self.rigid_bodies.data['Global'] = np.repeat(
                 np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
 
-        # Add the origin without translation to the rigid bodies (for the
-        # fixed rigid body in the screen bottom-left
-        self.rigid_bodies.data['GlobalBottomLeft'] = np.repeat(
-                np.array([[1, 0, 0, 0],
-                          [0, 1, 0, 0],
-                          [0, 0, 1, 0],
-                          [0, 0, 0, 0]])[np.newaxis, :, :],
-                self.n_frames, axis=0)
+# TODO:  Continue the development to get a reference frame at the bottom left
+#        of the screen.
+#        # Add the origin without translation to the rigid bodies (for the
+#        # fixed rigid body in the screen bottom-left
+#        self.rigid_bodies.data['GlobalBottomLeft'] = np.repeat(
+#                np.array([[1, 0, 0, 0],
+#                          [0, 1, 0, 0],
+#                          [0, 0, 1, 0],
+#                          [0, 0, 0, 0]])[np.newaxis, :, :],
+#                self.n_frames, axis=0)
 
         # ---------------------------------------------------------------
         # Assign the segments
