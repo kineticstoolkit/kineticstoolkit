@@ -60,6 +60,7 @@ def generate_tutorials(name=None):
 Kinetics Toolkit (ktk)
 ======================
 [Home](index.html) -
+[Installing](install.html) -
 [TimeSeries](timeseries.html) -
 [geometry](geometry.html) -
 [kinematics](kinematics.html) -
