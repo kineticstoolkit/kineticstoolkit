@@ -91,7 +91,7 @@ def update():
     """
     current_dir = os.getcwd()
     os.chdir(ktk.config['RootFolder'])
-    print(subprocess.check_output(['git', 'pull']).decode('ascii'))
+    print(subprocess.check_output(['git', 'pull', 'origin', 'master']).decode('ascii'))
     os.chdir(current_dir)
 
 
