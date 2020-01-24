@@ -2,7 +2,8 @@
 ktk.geometry
 ============
 This module contains functions related to 3D geometry and linear algebra
-related to biomechanics.
+related to biomechanics. The first dimension of every array is always N and
+corresponds to time. For constants, use a length of 1 as the first dimension.
 
 Author : Felix Chenier
 Date : December 2019
@@ -11,84 +12,121 @@ Date : December 2019
 import numpy as np
 
 
-def create_rotation_matrix(axis, angle):
+def matmul(op1, op2):
     """
-    Create a 4x4 or Nx4x4 rotation matrix around a given axis.
+    Matrix multiplication between series of matrices.
+
+    This function is a wrapper for numpy's matmul function (operator @), that
+    helps numpy to understand ktk's convention that every point or vector is
+    always expressed as a series (first dimension is time).
+
+    It aligns and create additionnal dimensions if needed to avoid dimension
+    mismatch errors.
+
+    Parameters
+    ----------
+    op1, op2 : array
+        Series of floats, vectors or matrices.
+
+    Returns
+    -------
+    array : The product, as a series of Nx4 or Nx4xM matrices.
+    """
+    def perform_mul(op1, op2):
+        if isinstance(op1, np.ndarray) and isinstance(op2, np.ndarray):
+            return op1 @ op2
+        else:
+            return op1 * op2  # In the case where we have a series of floats.
+
+    # Match the time size of each input
+    if op1.shape[0] == 1:
+        op1 = np.repeat(op1, op2.shape[0], axis=0)
+
+    if op2.shape[0] == 1:
+        op2 = np.repeat(op2, op1.shape[0], axis=0)
+
+    if op1.shape[0] != op2.shape[0]:
+        raise ValueError(
+                'Could not match first dimension of op1 and op2')
+
+    n_samples = op1.shape[0]
+
+    # Get the expected shape by performing the first multiplication
+    temp = perform_mul(op1[0], op2[0])
+    result = np.empty((n_samples, *temp.shape))
+
+    # Perform the multiplication
+    for i_sample in range(n_samples):
+        result[i_sample] = perform_mul(op1[i_sample], op2[i_sample])
+
+    return result
+
+
+def create_rotation_matrices(axis, angles):
+    """
+    Create a Nx4x4 series of rotation matrices around a given axis.
 
     Parameters
     ----------
     axis : str
         Can be either 'x', 'y' or 'z'.
 
-    angle : float or array.
-        Angle in radians.
+    angle : array
+        Series of angles in radians.
 
     Returns
     -------
-    A 4x4 rotation matrix if angle is a float, or a Nx4x4 series of
-    rotation matrices if angle is an array of size N.
+    A Nx4x4 series of rotation matrices.
     """
-    angle = np.array(angle)
+    angles = np.array(angles)
 
-    # Temporarily add a first dimension to angle, if required
-    if angle.shape == ():
-        original_shape = ()
-        angle = angle[np.newaxis]
-    else:
-        original_shape = angle.shape
-
-    T = np.zeros((angle.shape[0], 4, 4))
+    T = np.zeros((angles.shape[0], 4, 4))
 
     if axis == 'x':
-        for i in range(angle.size):
-            T[i, 1, 1] = np.cos(angle[i])
-            T[i, 1, 2] = np.sin(-angle[i])
-            T[i, 2, 1] = np.sin(angle[i])
-            T[i, 2, 2] = np.cos(angle[i])
+        for i in range(angles.size):
+            T[i, 1, 1] = np.cos(angles[i])
+            T[i, 1, 2] = np.sin(-angles[i])
+            T[i, 2, 1] = np.sin(angles[i])
+            T[i, 2, 2] = np.cos(angles[i])
             T[i, 0, 0] = 1.0
             T[i, 3, 3] = 1.0
 
     elif axis == 'y':
-        for i in range(angle.size):
-            T[i, 0, 0] = np.cos(angle[i])
-            T[i, 2, 0] = np.sin(-angle[i])
-            T[i, 0, 2] = np.sin(angle[i])
-            T[i, 2, 2] = np.cos(angle[i])
+        for i in range(angles.size):
+            T[i, 0, 0] = np.cos(angles[i])
+            T[i, 2, 0] = np.sin(-angles[i])
+            T[i, 0, 2] = np.sin(angles[i])
+            T[i, 2, 2] = np.cos(angles[i])
             T[i, 1, 1] = 1.0
             T[i, 3, 3] = 1.0
 
     elif axis == 'z':
-        for i in range(angle.size):
-            T[i, 0, 0] = np.cos(angle[i])
-            T[i, 0, 1] = np.sin(-angle[i])
-            T[i, 1, 0] = np.sin(angle[i])
-            T[i, 1, 1] = np.cos(angle[i])
+        for i in range(angles.size):
+            T[i, 0, 0] = np.cos(angles[i])
+            T[i, 0, 1] = np.sin(-angles[i])
+            T[i, 1, 0] = np.sin(angles[i])
+            T[i, 1, 1] = np.cos(angles[i])
             T[i, 2, 2] = 1.0
             T[i, 3, 3] = 1.0
 
     else:
         raise ValueError("axis must be either 'x', 'y' or 'z'")
 
-    # Remove the first dimension if we added it to angle previously
-    if original_shape == ():
-        T = T[0, :, :]
-
     return T
 
 
-def create_reference_frame(global_points, method='ocx1'):
+def create_reference_frames(global_points, method='ocx1'):
     """
-    Create a reference frame based on a point cloud.
+    Create a Nx4x4 series of reference frames based on a point cloud series.
 
-    Create a reference frame based on global points, using the provided
-    method, and returns this reference frame as a transformation matrix
-    or series of transformation matrices.
+    Create reference frames based on global points, using the provided
+    method, and returns this series of reference frames as a series of
+    transformation matrices.
 
     Parameters
     ----------
     global_points : array
-        - A set of M points in a global reference frame (4xM) or
-        - A series of N sets of M points in a global reference frame (Nx4xM).
+        A series of N sets of M points in a global reference frame (Nx4xM).
 
     method : str (optional)
         The method to use to construct a reference frame based on these points.
@@ -104,7 +142,7 @@ def create_reference_frame(global_points, method='ocx1'):
         first points;
         - Y is the vectorial product of X and Z.
 
-        'o1z2' : A reference frame based on lateral and anterior
+        'o1z2' : Reference frame based on lateral and anterior
         vectors.
         - Origin = First point;
         - Z is directed toward the second point (right);
@@ -140,15 +178,8 @@ def create_reference_frame(global_points, method='ocx1'):
 
     Returns
     -------
-    array : Transformation matrix (4x4) or series of transformation matrices
-        (Nx4x4).
+    array : Series of transformation matrices (Nx4x4).
     """
-
-    # Transform to a series
-    original_size = len(global_points.shape)
-    if original_size == 2:
-        global_points = global_points[np.newaxis, :, :]
-
     def normalize(v):
 
         norm = np.linalg.norm(v, axis=1)
@@ -221,153 +252,75 @@ def create_reference_frame(global_points, method='ocx1'):
     T[:, 0:3, 3] = origin
     T[:, 3, 3] = np.ones(len(x))
 
-    if original_size == 2:
-        # Convert back to a simple matrix (not a series of matrices)
-        T = T[0, :, :]
-
     return T
 
 
-def get_local_coordinates(global_coordinates, reference_frame):
+def get_local_coordinates(global_coordinates, reference_frames):
     """
-    Express global coordinates in a local reference frame.
+    Express global coordinates in local reference frames.
 
     Parameters
     ----------
-    global_coordinates : array of 2 or 3 dimensions
-        The global coordinates, as either a matrix or series of N matrices.
-        The matrices could be either transformation matrices (4x4) or (Nx4x4),
-        vectors (4x1) or (Nx4x1) or sets of M vectors (4xM) or (Nx4xM).
+    global_coordinates : array
+        The global coordinates, as a series of N points, vectors or matrices.
         For example:
-            - A point or vector : 4x1
-            - A set of M points or vectors : 4xM
-            - A transformation matrix : 4x4
-            - A series of N points or vectors : Nx4x1
+            - A series of N points or vectors : Nx4
             - A series of N set of M points or vectors : Nx4xM
             - A series of N 4x4 transformation matrices : Nx4x4
 
-    reference_frame : array of 2 or 3 dimensions
-        The reference frame in which the local coordinates will be expressed.
-        It can be either:
-            - A reference frame : 4x4
-            - A series of N reference frames : Nx4x4
+    reference_frames : array
+        A series of N reference frames (Nx4x4) to express the global
+        coordinates in.
 
     Returns
     -------
-    array of 2 or 3 dimensions
-        The local coordinates, with the dimensions that adapt to
-        global_coordinates and reference_frame.
+    array of 2 or 3 dimensions : The series of local coordinates.
     """
-    (_global_coordinates, _reference_frame) = _match_size(
-            global_coordinates, reference_frame)
-
-    n_samples = _global_coordinates.shape[0]
+    n_samples = global_coordinates.shape[0]
 
     # Invert the reference frame to obtain the inverse transformation
-    ref_rot = _reference_frame[:, 0:3, 0:3]
-    ref_t = _reference_frame[:, 0:3, 3]
+    ref_rot = reference_frames[:, 0:3, 0:3]
+    ref_t = reference_frames[:, 0:3, 3]
 
     # Inverse rotation : transpose.
     inv_ref_rot = np.transpose(ref_rot, (0, 2, 1))
 
     # Inverse translation : we inverse-rotate the translation.
     inv_ref_t = np.zeros(ref_t.shape)
-    for i_sample in range(n_samples):
-        inv_ref_t[i_sample] = inv_ref_rot[i_sample] @ -ref_t[i_sample]
+    inv_ref_t = matmul(inv_ref_rot, -ref_t)
 
     inv_ref_T = np.zeros((n_samples, 4, 4))  # init
     inv_ref_T[:, 0:3, 0:3] = inv_ref_rot
     inv_ref_T[:, 0:3, 3] = inv_ref_t
     inv_ref_T[:, 3, 3] = np.ones(n_samples)
 
-    local_coordinates = np.zeros(_global_coordinates.shape)  # init
-    for i_sample in range(n_samples):
-        local_coordinates[i_sample] = \
-                inv_ref_T[i_sample] @ _global_coordinates[i_sample]
-
-    if len(global_coordinates.shape) == 2 and len(reference_frame.shape) == 2:
-        local_coordinates = local_coordinates[0, :, :]
+    local_coordinates = np.zeros(global_coordinates.shape)  # init
+    local_coordinates = matmul(inv_ref_T, global_coordinates)
 
     return local_coordinates
 
 
-def get_global_coordinates(local_coordinates, reference_frame):
+def get_global_coordinates(local_coordinates, reference_frames):
     """
-    Express local coordinates in a global reference frame.
+    Express local coordinates in the global reference frame.
 
     Parameters
     ----------
-    local_coordinates : array of 2 or 3 dimensions
-        The local coordinates, as either a matrix or series of N matrices.
-        The matrices could be either transformation matrices (4x4) or (Nx4x4),
-        vectors (4x1) or (Nx4x1) or sets of M vectors (4xM) or (Nx4xM).
+    local_coordinates : array
+        The local coordinates, as a series of N points, vectors or matrices.
         For example:
-            - A point or vector : 4x1
-            - A set of M points or vectors : 4xM
-            - A transformation matrix : 4x4
-            - A series of N points or vectors : Nx4x1
+            - A series of N points or vectors : Nx4
             - A series of N set of M points or vectors : Nx4xM
             - A series of N 4x4 transformation matrices : Nx4x4
 
-    reference_frame : array of 2 or 3 dimensions
-        The reference frame in which the local coordinates will be expressed.
-        It can be either:
-            - A reference frame : 4x4
-            - A series of N reference frames : Nx4x4
+    reference_frames : array
+        A series of N reference frames (Nx4x4) the local coordinates are
+        expressed in.
 
     Returns
     -------
-    array of 2 or 3 dimensions
-        The global coordinates, with the dimensions that adapt to
-        local_coordinates and reference_frame.
+    array of 2 or 3 dimensions : The series of global coordinates.
     """
-    (_local_coordinates, _reference_frame) = _match_size(
-            local_coordinates, reference_frame)
-
-    n_samples = _local_coordinates.shape[0]
-
-    global_coordinates = np.zeros(_local_coordinates.shape)
-    for i_sample in range(n_samples):
-        global_coordinates[i_sample] = \
-                _reference_frame[i_sample] @ _local_coordinates[i_sample]
-
-    if len(local_coordinates.shape) == 2 and len(reference_frame.shape) == 2:
-        global_coordinates = global_coordinates[0, :, :]
-
+    global_coordinates = np.zeros(local_coordinates.shape)
+    global_coordinates = matmul(reference_frames, local_coordinates)
     return global_coordinates
-
-
-def _match_size(op1, op2):
-    """
-    Match the time size so that op1 and op2 have the same time dimension.
-
-    This is a by-copy operation, the inputs are not modified.
-
-    Parameters
-    ----------
-    op1, op2 : array or shape 4xM or Nx4xM
-
-    Returns
-    -------
-    (op1, op2) where op1 and op2 are both of shape Nx4xM with matching N.
-    """
-    op1 = op1.copy()
-    op2 = op2.copy()
-
-    if len(op1.shape) == 2:
-        op1 = op1[np.newaxis, :, :]
-
-    if len(op2.shape) == 2:
-        op2 = op2[np.newaxis, :, :]
-
-    if op1.shape[0] == 1:
-        op1 = np.repeat(op1, op2.shape[0], axis=0)
-
-    if op2.shape[0] == 1:
-        op2 = np.repeat(op2, op1.shape[0], axis=0)
-
-    if op1.shape[0] != op2.shape[0]:
-        raise ValueError(
-                'Could not make op1 and op2 of matching first dimension.')
-
-    return (op1, op2)

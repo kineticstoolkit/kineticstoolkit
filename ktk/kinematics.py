@@ -52,30 +52,18 @@ def read_c3d_file(filename):
         raise(ValueError("Point unit must be 'm' or 'mm'."))
 
     n_labels = len(labels)
-    for i in range(n_labels):
-        labels[i] = labels[i].strip()  # Strip leading and ending spaces
-        # Begin with an increasing list, then convert to an array at the end.
-        output.data[labels[i]] = (point_factor *
-                                  reader['data']['points'][:, i, :].T)
-        output.add_data_info(labels[i], 'Unit', 'm')
+    for i_label in range(n_labels):
+        # Strip leading and ending spaces
+        labels[i_label] = labels[i_label].strip()
 
-#    # Convert the timeseries data to 2-dimension arrays
-#    # with nans as missing samples
-#    for label in labels:
-#        output.data[label] = np.array(output.data[label])
-#
-#        # Find missing samples
-#        nan_index = np.nonzero(output.data[label][:, 3])
-#        # Keep only x,y,z
-#        output.data[label] = output.data[label][:, 0:3]
-#        # Add ones to 4th element
-#        output.data[label] = np.block([output.data[label],
-#                                      np.ones([np.shape(
-#                                              output.data[label])[0], 1])])
-#        # Fill missing samples with nans
-#        output.data[label][nan_index, :] = np.nan
+        label_name = labels[i_label]
 
-    # Creating the timeseries time vector
+        output.data[label_name] = (point_factor *
+                                   reader['data']['points'][:, i_label, :].T)
+
+        output.add_data_info(label_name, 'Unit', 'm')
+
+    # Create the timeseries time vector
     output.time = np.arange(n_frames) / point_rate
 
     return output

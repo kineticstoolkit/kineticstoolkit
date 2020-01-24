@@ -13114,7 +13114,7 @@ conda update anaconda
 </code></pre>
 <p><a href="https://stackoverflow.com/questions/53381373/ipython-console-in-spyder-extremely-slow-in-anaconda/57618660#57618660">See this post for information and follow-up</a></p>
 <h2 id="Add-external-dependencies">Add external dependencies<a class="anchor-link" href="#Add-external-dependencies">&#182;</a></h2><p>Open the Anaconda console on Windows, or a terminal in macOS, and type these
-commands to install kineticstoolkit's additional dependencies:</p>
+commands to install ktk's additional dependencies:</p>
 
 <pre><code>conda install -c conda-forge ezc3d
 conda install pytest
@@ -13128,11 +13128,11 @@ IPython console:</p>
 print('Cloning repository...')
 os.system('git clone https://labofelixchenier@bitbucket.org/felixchenier/kineticstoolkit.git')
 print('Pulling origin/master...')
-os.system('cd kineticstoolkit')
+%cd kineticstoolkit
 os.system('git pull origin master')
 
 </code></pre>
-<h2 id="Add-kineticstoolkit-to-the-Python-path">Add kineticstoolkit to the Python path<a class="anchor-link" href="#Add-kineticstoolkit-to-the-Python-path">&#182;</a></h2><p>In Spyder, there is a Python Path editor. Add the kineticstoolkit folder that
+<h2 id="Add-kineticstoolkit-to-the-Python-path">Add kineticstoolkit to the Python path<a class="anchor-link" href="#Add-kineticstoolkit-to-the-Python-path">&#182;</a></h2><p>In Spyder, there is a PYTHONPATH manager. Add the kineticstoolkit folder that
 you just cloned to the python path, then restart Spyder. From now on,
 <code>import ktk</code> should find and import ktk.</p>
 <p>Congratulation, ktk is now installed. From now on, you can always update to

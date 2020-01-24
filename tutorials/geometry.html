@@ -13094,51 +13094,55 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="geometry">geometry<a class="anchor-link" href="#geometry">&#182;</a></h1><p>This module allows the creation of reference frames, and simplifies passing
-coordinates from local to global reference frames and vice-versa.</p>
-<p>Points, vectors, sets of points, sets of vectors and matrices are all
-expressed as 2-dimension arrays. By design, no component of this module is
-expressed as 1-dimension arrays.</p>
-<ul>
-<li><p>Points are represented as 2d arrays of shape 4x1:</p>
+<h1 id="geometry">geometry<a class="anchor-link" href="#geometry">&#182;</a></h1><p>This module simplifies the calculation of linear algebric operations on
+series of points, vectors and transformation matrices.</p>
+<p>Every point, vector or matrix is considered as a series, where the dimensions
+of the array are:</p>
 
-<pre><code>  [[x],
-   [y],
-   [z],
-   [1]]</code></pre>
-</li>
-<li><p>Vectors are represented as 2d arrays of shape 4x1:</p>
+<pre><code>- First dimension (N) : time. To represent constants, simply use N=1.
+- Second dimension (4) : point/vector coordinates, or matrix line.
+- Third dimension (M, optional) : point index (for sets of point),
+                                  or matrix column.
 
-<pre><code>  [[x],
-   [y],
-   [z],
-   [0]]</code></pre>
-</li>
-<li><p>Sets of M points are represented as 2d arrays of shape 4xM:</p>
+</code></pre>
+<p>More precisely, the points, vectors and matrices are expressed as following
+(here, N=2):</p>
+<p>Series of points:</p>
 
-<pre><code>  [[x1, x2, x3, ..., xM],
-   [y1, y2, y3, ..., yM],
-   [z1, z2, z3, ..., zM],
-   [1., 1., 1., ..., 1.]]</code></pre>
-</li>
-<li><p>Sets of M vectors are represented as 2d arrays of shape 4xM:</p>
+<pre><code>[[x(t1), y(t1), z(t1), 1.],
+ [y(t2), y(t2), z(t2), 1.]]
 
-<pre><code>  [[x1, x2, x3, ..., xM],
-   [y1, y2, y3, ..., yM],
-   [z1, z2, z3, ..., zM],
-   [0., 0., 0., ..., 0.]]</code></pre>
-</li>
-<li><p>Transformations matrices are represented as 2d arrays of shape 4x4:</p>
+</code></pre>
+<p>Series of vectors:</p>
 
-<pre><code>  [[R11, R12, R13, Tx],
-   [R21, R22, R23, Ty],
-   [R31, R32, R33, Tz],
-   [0. , 0. , 0. , 1.]]</code></pre>
-</li>
-</ul>
-<p>Series of points, vectors, sets of points, sets of vectors and matrices are
-all expressed as 3-dimension arrays, with the first dimension corresponding
-to time.</p>
+<pre><code>[[x(t1), y(t1), z(t1), 0.],
+ [y(t2), y(t2), z(t2), 0.]]
+
+</code></pre>
+<p>Series of sets of point:</p>
+
+<pre><code>[[[x1(t1), x2(t1), x3(t1), x4(t1)],
+  [y1(t1), y2(t1), y3(t1), y4(t1)],
+  [z1(t1), z2(t1), z3(t1), z4(t1)],
+  [  1.,     1.,     1.,      1. ]],
+
+ [[x1(t2), x2(t2), x3(t2), x4(t2)],
+  [y1(t2), y2(t2), y3(t2), y4(t2)],
+  [z1(t2), z2(t2), z3(t2), z4(t2)],
+  [  1.,     1.,     1.,     1.  ]]]
+
+</code></pre>
+<p>Series of matrices:</p>
+
+<pre><code>[[[R11(t1), R12(t1), R13(t1), Tx(t1)],
+  [R21(t1), R22(t1), R23(t1), Ty(t1)],
+  [R31(t1), R32(t1), R33(t1), Tz(t1)],
+  [   0.,      0.,      0.,     1.  ]],
+
+ [[R11(t2), R12(t2), R13(t2), Tx(t2)],
+  [R21(t2), R22(t2), R23(t2), Ty(t2)],
+  [R31(t2), R32(t2), R33(t2), Tz(t2)],
+  [   0.,      0.,      0.,     1.  ]]]</code></pre>
 
 </div>
 </div>
@@ -13160,8 +13164,12 @@ to time.</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Create-a-rotation-matrix">Create a rotation matrix<a class="anchor-link" href="#Create-a-rotation-matrix">&#182;</a></h2><p>The function <code>ktk.geometry.create_rotation_matrix</code> allows creating 4x4 or
-series or 4x4 matrices around a given axis. For example:</p>
+<p>To facilitate the multiplication of series of matrices, ktk.geometry provides
+a <code>matmul</code> function that matches both matrices' time dimensions, then applies
+the numpy's @ or * operator accordingly on each time iteration. Therefore, when
+dealing with series of floats, vectors, points or matrices, it is advisable to
+use ktk.geometry's <code>matmul</code> instead of the @ operator. For example:</p>
+<p>Matrix multiplication between a matrix and a series of points:</p>
 
 </div>
 </div>
@@ -13171,10 +13179,40 @@ series or 4x4 matrices around a given axis. For example:</p>
 <div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrix</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]))</span>
+<span class="n">result</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[2]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[0., 0., 0., 1.],
+       [2., 0., 0., 1.],
+       [3., 1., 0., 1.]])</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -13182,7 +13220,7 @@ series or 4x4 matrices around a given axis. For example:</p>
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>creates a null rotation matrix around the x axis (thus the identity matrix):</p>
+<p>Multiplication between a series of floats and a series of vectors:</p>
 
 </div>
 </div>
@@ -13192,7 +13230,13 @@ series or 4x4 matrices around a given axis. For example:</p>
 <div class="prompt input_prompt">In&nbsp;[3]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]]))</span>
+<span class="n">result</span>
 </pre></div>
 
     </div>
@@ -13211,10 +13255,122 @@ series or 4x4 matrices around a given axis. For example:</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[1., 0., 0., 0.],
-       [0., 1., 0., 0.],
-       [0., 0., 1., 0.],
-       [0., 0., 0., 1.]])</pre>
+<pre>array([[0., 0., 0., 0.],
+       [1., 0., 0., 0.],
+       [3., 0., 0., 0.],
+       [6., 0., 0., 0.]])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Dot product between a series of points and a single point:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]),</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]))</span>
+<span class="n">result</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[4]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([3., 4., 5.])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Create-a-series-of-rotation-matrices">Create a series of rotation matrices<a class="anchor-link" href="#Create-a-series-of-rotation-matrices">&#182;</a></h2><p>The function <code>ktk.geometry.create_rotation_matrices</code> allows creating series of
+Nx4x4 matrices around a given axis. For example:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>creates the identity matrix:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[6]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([[[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]]])</pre>
 </div>
 
 </div>
@@ -13225,10 +13381,10 @@ series or 4x4 matrices around a given axis. For example:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[4]:</div>
+<div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrix</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
 </pre></div>
 
     </div>
@@ -13246,7 +13402,7 @@ series or 4x4 matrices around a given axis. For example:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
@@ -13262,16 +13418,16 @@ series or 4x4 matrices around a given axis. For example:</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[5]:</div>
+    <div class="prompt output_prompt">Out[8]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[ 1.,  0.,  0.,  0.],
-       [ 0.,  0., -1.,  0.],
-       [ 0.,  1.,  0.,  0.],
-       [ 0.,  0.,  0.,  1.]])</pre>
+<pre>array([[[ 1.,  0.,  0.,  0.],
+        [ 0.,  0., -1.,  0.],
+        [ 0.,  1.,  0.,  0.],
+        [ 0.,  0.,  0.,  1.]]])</pre>
 </div>
 
 </div>
@@ -13290,10 +13446,10 @@ series or 4x4 matrices around a given axis. For example:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[6]:</div>
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrix</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
 </pre></div>
 
     </div>
@@ -13312,7 +13468,7 @@ series or 4x4 matrices around a given axis. For example:</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[7]:</div>
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span>
@@ -13328,7 +13484,7 @@ series or 4x4 matrices around a given axis. For example:</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[7]:</div>
+    <div class="prompt output_prompt">Out[10]:</div>
 
 
 
@@ -13377,7 +13533,7 @@ series or 4x4 matrices around a given axis. For example:</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h2 id="Create-reference-frames">Create reference frames<a class="anchor-link" href="#Create-reference-frames">&#182;</a></h2><p>Let's say we have the position of three markers, and we want to create a
-reference frame based on these markers. The function <code>create_reference_frame</code>
+reference frame based on these markers. The function <code>create_reference_frames</code>
 aims to do this.</p>
 <p>If the markers are at these positions (0, 0, 0), (1, 0, 0) and (0, 1, 0):</p>
 
@@ -13386,14 +13542,14 @@ aims to do this.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">global_markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
-         <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-         <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
-         <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+        <span class="p">[[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+          <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+          <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+          <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]])</span>
 </pre></div>
 
     </div>
@@ -13405,7 +13561,7 @@ aims to do this.</p>
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>A reference frame can be made of these markers. By default,
-<code>ktk.geometry.create_reference_frame</code> creates the origin at the centroid,
+<code>ktk.geometry.create_reference_frames</code> creates the origin at the centroid,
 aligns the x axis on the first marker and the z axis perpendicular to the
 plane formed by the origin, the first marker and the second marker.</p>
 <p>There are many construction methods for the function, defined in the
@@ -13418,10 +13574,10 @@ Biomechanics.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frame</span><span class="p">(</span><span class="n">global_markers</span><span class="p">)</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span><span class="n">global_markers</span><span class="p">)</span>
 <span class="n">T</span>
 </pre></div>
 
@@ -13435,16 +13591,16 @@ Biomechanics.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[9]:</div>
+    <div class="prompt output_prompt">Out[12]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[-0.70710678,  0.70710678,  0.        ,  0.33333333],
-       [-0.70710678, -0.70710678,  0.        ,  0.33333333],
-       [ 0.        ,  0.        ,  1.        ,  0.        ],
-       [ 0.        ,  0.        ,  0.        ,  1.        ]])</pre>
+<pre>array([[[-0.70710678,  0.70710678,  0.        ,  0.33333333],
+        [-0.70710678, -0.70710678,  0.        ,  0.33333333],
+        [ 0.        ,  0.        ,  1.        ,  0.        ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]]])</pre>
 </div>
 
 </div>
@@ -13465,7 +13621,7 @@ frame, we can use the function <code>ktk.geometry.get_local_coordinates</code>.<
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">local_markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span><span class="n">global_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -13482,16 +13638,16 @@ frame, we can use the function <code>ktk.geometry.get_local_coordinates</code>.<
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[10]:</div>
+    <div class="prompt output_prompt">Out[13]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[ 0.47140452, -0.23570226, -0.23570226],
-       [-0.        ,  0.70710678, -0.70710678],
-       [ 0.        ,  0.        ,  0.        ],
-       [ 1.        ,  1.        ,  1.        ]])</pre>
+<pre>array([[[ 0.47140452, -0.23570226, -0.23570226],
+        [ 0.        ,  0.70710678, -0.70710678],
+        [ 0.        ,  0.        ,  0.        ],
+        [ 1.        ,  1.        ,  1.        ]]])</pre>
 </div>
 
 </div>
@@ -13512,7 +13668,7 @@ function <code>ktk.geometry.get_global_coordinates</code>.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span><span class="n">local_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -13528,16 +13684,16 @@ function <code>ktk.geometry.get_global_coordinates</code>.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[11]:</div>
+    <div class="prompt output_prompt">Out[14]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>array([[0., 1., 0.],
-       [0., 0., 1.],
-       [0., 0., 0.],
-       [1., 1., 1.]])</pre>
+<pre>array([[[0., 1., 0.],
+        [0., 0., 1.],
+        [0., 0., 0.],
+        [1., 1., 1.]]])</pre>
 </div>
 
 </div>

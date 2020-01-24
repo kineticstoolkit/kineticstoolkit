@@ -1,3 +1,4 @@
+# %%
 """
 kinematics
 ==========
@@ -45,15 +46,12 @@ In the ktk.Player convention, the global reference frame is:
 Thus we need to rotate each marker's coordinates 90 degrees clockwise around
 the x axis.
 """
-R = ktk.geometry.create_rotation_matrix('x', -np.pi/2)
+R = ktk.geometry.create_rotation_matrices('x', [-np.pi/2])
 for key in ts.data:
-    ts.data[key] = ktk.geometry.get_local_coordinates(ts.data[key], R)
-#    for i_frame in range(np.size(ts.time)):
-#        ts.data[key][i_frame] = R @ ts.data[key][i_frame]
+    ts.data[key] = ktk.geometry.matmul(R, ts.data[key])
 
 # %%
 """
-We can now show these markers in a Player. TODO The orientation needs to be
-corrected.
+We can now show these markers in a Player.
 """
 player = ktk.Player(markers=ts)
