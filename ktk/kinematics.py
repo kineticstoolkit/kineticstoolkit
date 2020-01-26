@@ -15,6 +15,7 @@ from datetime import datetime
 from ezc3d import c3d as ezc3d
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
+import struct  # To unpack data from N3D files
 
 
 def read_c3d_file(filename):
@@ -28,8 +29,8 @@ def read_c3d_file(filename):
 
     Returns
     -------
-    ktk.TimeSeries where each point in the C3D correspond to a data entry in
-    the timeseries.
+    A TimeSeries where each point in the C3D correspond to a data entry in
+    the TimeSeries.
     """
     # Create the reader
     reader = ezc3d(filename)
@@ -107,6 +108,72 @@ def write_c3d_file(filename, ts):
         warnings.simplefilter('ignore', UserWarning)
         with open(filename, 'wb') as fid:
             writer.write(fid, labels)
+
+
+def read_n3d_file(filename, labels=[]):
+    """
+    Read an Optitrak N3D file.
+
+    Parameters
+    ----------
+    filename : str
+        Path of the N3D file.
+    labels : list of str (optional)
+        Marker names
+
+    Returns
+    -------
+    A TimeSeries where each point in the N3D correspond to a data entry in
+    the TimeSeries.
+    """
+    with open(filename, 'rb') as fid:
+        _ = fid.read(1)  # 32
+#        n_markers = int.from_bytes(fid.read(1), 'big')
+        n_markers = struct.unpack('h', fid.read(2))[0]
+        n_data_per_marker = struct.unpack('h', fid.read(2))[0]
+        n_columns = n_markers * n_data_per_marker
+
+        n_frames = struct.unpack('i', fid.read(4))[0]
+
+        collection_frame_frequency = struct.unpack('f', fid.read(4))[0]
+        user_comments = struct.unpack('60s', fid.read(60))[0]
+        system_comments = struct.unpack('60s', fid.read(60))[0]
+        file_description = struct.unpack('30s', fid.read(30))[0]
+        cutoff_filter_frequency = struct.unpack('h', fid.read(2))[0]
+        time_of_collection = struct.unpack('8s', fid.read(8))[0]
+        _ = fid.read(2)
+        date_of_collection = struct.unpack('8s', fid.read(8))[0]
+        extended_header = struct.unpack('73s', fid.read(73))[0]
+
+        # Read the rest and put it in an array
+        ndi_array = np.ones((n_frames, n_columns)) * np.NaN
+
+        for i_frame in range(n_frames):
+            for i_column in range(n_columns):
+                data = struct.unpack('f', fid.read(4))[0]
+                if (data < -1E25):  # technically, it is -3.697314e+28
+                    data = np.NaN
+                ndi_array[i_frame, i_column] = data
+
+        # Conversion from mm to meters
+        ndi_array /= 1000
+
+        # Transformation to a TimeSeries
+        ts = ktk.TimeSeries(
+                time=np.linspace(0, n_frames / collection_frame_frequency,
+                                 n_frames))
+
+        for i_marker in range(n_markers):
+            if labels != []:
+                label = labels[i_marker]
+            else:
+                label = f'Marker{i_marker}'
+
+            ts.data[label] = np.block([[
+                    ndi_array[:, 3*i_marker:3*i_marker+3],
+                    np.ones((n_frames, 1))]])
+
+    return ts
 
 
 def plot3d(markers=None, rigid_bodies=None, segments=None,
@@ -410,3 +477,210 @@ def open_in_mokka(markers=None, rigid_bodies=None, segments=None,
 #        else:
 #            # EOF
 #            return(the_timeseries)
+
+def create_rigid_body_config(markers, marker_names):
+    """
+    Create a rigid body configuration based on a static acquisition.
+
+    Parameters
+    ----------
+    markers : TimeSeries
+        Markers trajectories during the static acquisition.
+    marker_names : list of str
+        The markers that define the rigid body.
+
+    Returns
+    -------
+    dict with the following keys:
+        - MarkerNames : the same as marker_names
+        - LocalPoints : a 1x4xM array that indicates the local position of
+                        each M marker in the created rigid body config.
+    """
+    n_samples = len(markers.time)
+    n_markers = len(marker_names)
+
+    # Construct the global points array
+    global_points = np.empty((n_samples, 4, n_markers))
+
+    for i_marker, marker in enumerate(marker_names):
+        global_points[:, :, i_marker] = \
+                markers.data[marker][:, :]
+
+    # Remove samples where at least one marker is invisible
+    global_points = global_points[~ktk.geometry.isnan(global_points)]
+
+    rigid_bodies = ktk.geometry.create_reference_frames(global_points)
+    local_points = ktk.geometry.get_local_coordinates(
+            global_points, rigid_bodies)
+
+    # Take the average
+    local_points = np.mean(local_points, axis=0)
+    local_points = local_points[np.newaxis]
+
+    return {
+            'LocalPoints' : local_points,
+            'MarkerNames' : marker_names
+            }
+
+
+def register_markers(markers, rigid_body_configs, verbose=True):
+    """
+    Compute the rigid body trajectories using ktk.geometry.register_points.
+
+    Parameters
+    ----------
+    markers : TimeSeries
+        Markers trajectories to calculate the rigid body trajectories on.
+    rigid_body_configs : dict of dict
+        A dict where each key is a rigid body configuration, and where
+        each rigid body configuration is a dict with the following
+        keys: 'MarkerNames' and 'LocalPoints'.
+    verbose : bool (optional)
+        True to print the rigid body being computed. Default is True.
+
+    Returns
+    -------
+    TimeSeries where each data key is a Nx4x4 series of rigid transformations.
+    """
+    rigid_bodies = ktk.TimeSeries(time=markers.time,
+                                  time_info=markers.time_info,
+                                  events=markers.events)
+
+    for rigid_body_name in rigid_body_configs:
+        if verbose is True:
+            print(f'Computing trajectory of rigid body {rigid_body_name}...')
+
+            # Set local and global points
+            local_points = rigid_body_configs[rigid_body_name]['LocalPoints']
+
+            global_points = np.empty(
+                    (len(markers.time), 4, local_points.shape[2]))
+            for i_marker in range(global_points.shape[2]):
+                marker_name = rigid_body_configs[
+                        rigid_body_name]['MarkerNames'][i_marker]
+                global_points[:, :, i_marker] = markers.data[marker_name]
+
+            (local_points, global_points) = ktk.geometry.match_size(
+                    local_points, global_points)
+
+            # Compute the rigid body trajectory
+            rigid_bodies.data[rigid_body_name] = ktk.geometry.register_points(
+                    global_points, local_points)
+
+    return rigid_bodies
+
+
+def create_virtual_marker_config(markers, rigid_body_name, rigid_body_config,
+                                 probe_tip_label):
+    """
+    Create a virtual marker configuration based on a probing acquisition.
+
+    Parameters
+    ----------
+    markers : TimeSeries
+        Markers trajectories during the probing acquisition.
+    rigid_body_name : str
+        Name of the virtual marker's rigid body.
+    rigid_body_config : dict
+        Configuration of the rigid body. This dict must contain the keys
+        'MarkerNames' and 'LocalPoints'.
+    probe_tip_label : str
+        Name of the marker that corresponds to the probe tip.
+
+    Returns
+    -------
+    dict with the following keys:
+        RigidBodyName : Name of the virtual marker's rigid body
+        LocalPoint : Local position of this marker in the reference frame
+                     defined by the rigid body RigidBodyName. LocalPoint is
+                     expressed as a 1x4 array.
+    """
+    pass
+    """
+    % Créer une structure simplifiée de définition de corps rigides, pour
+    % accélérer le registering.
+    simpleDefRigidBodies.(rigidBodyName) = defRigidBodies.(rigidBodyName);
+    simpleDefRigidBodies.(probeName) = defRigidBodies.(probeName);
+
+    % Déterminer la liste de marqueurs dont on a besoin
+    defReferenceRigidBody = defRigidBodies.(rigidBodyName);
+    defProbe = defRigidBodies.(probeName);
+    simpleMarkerNames = [defReferenceRigidBody.MarkerNames defProbe.MarkerNames];
+
+    % Faire un subset de markers
+    nMarkers = length(simpleMarkerNames);
+    for iMarker = 1:nMarkers
+        theMarker = simpleMarkerNames{iMarker};
+        simpleMarkers.(theMarker) = markers.(theMarker);
+    end
+
+    % Remplir les trous jusqu'à un quart de seconde
+    time = simpleMarkers.(theMarker).Time;
+    fech = 1/(time(2) - time(1));
+    simpleMarkers = ktkTimeSeries.fillmissingsamples(simpleMarkers, 0.25 * fech);
+
+    % Statifier l'essai (ne conserver que la moyenne des samples où tous ces
+    % marqueurs sont visibles
+    doubleMarkers = ktkKinematics.meanstaticmarkers(simpleMarkers);
+
+    if isempty(doubleMarkers)
+        % Les marqueurs nécessaires ne sont jamais visibles en même temps. Tenter
+        % une autre approche : rigidifier tout l'essai et reconstruire les
+        % marqueurs nécessaires. Çe peut aider dans le cas où un corps rigide ou la
+        % probe comporte plus de 3 marqueurs.
+
+        rigidBodies = ktkKinematics.registermarkers(markers, simpleDefRigidBodies);
+
+        % Reconstruire les marqueurs du corps rigide
+        globalMarkers = ktkGeometry.getglobalcoordinates(...
+            simpleDefRigidBodies.(rigidBodyName).LocalPoints, rigidBodies.(rigidBodyName));
+
+        theMarkerNames = defReferenceRigidBody.MarkerNames;
+        for iMarker = 1:length(theMarkerNames)
+            theMarkerName = theMarkerNames{iMarker};
+            simpleMarkers.(theMarkerName).Data = globalMarkers.Data(:,iMarker,:);
+        end
+
+        % Reconstruire les marqueurs de la probe
+        globalMarkers = ktkGeometry.getglobalcoordinates(...
+            simpleDefRigidBodies.(probeName).LocalPoints, rigidBodies.(probeName));
+
+        theMarkerNames = defProbe.MarkerNames;
+        for iMarker = 1:length(theMarkerNames)
+            theMarkerName = theMarkerNames{iMarker};
+            simpleMarkers.(theMarkerName).Data = globalMarkers.Data(:,iMarker,:);
+        end
+
+
+        % Statifier l'essai (ne conserver que la moyenne des samples où tous ces
+        % marqueurs sont visibles
+        doubleMarkers = ktkKinematics.meanstaticmarkers(simpleMarkers);
+
+    end
+
+    if isempty(doubleMarkers) % Est-ce que la reconstruction des marqueurs manquants a réussi ?
+
+        warning('La tentative de reconstruction des marqueurs manquant a échoué. Impossible de définir ce marqueur virtuel.');
+        % Créer la structure de sortie
+        defVirtualMarker.RigidBodyName = rigidBodyName;
+        defVirtualMarker.LocalPoint = [NaN; NaN; NaN; 1];
+
+    else
+
+        % Register
+        rigidBodies = ktkKinematics.registermarkers(doubleMarkers, simpleDefRigidBodies);
+
+        % Trouver la position relative de la pointe de la probe
+        REF = rigidBodies.(rigidBodyName);
+        Probe = rigidBodies.(probeName);
+        position = ktkGeometry.getlocalcoordinates(Probe, REF);
+
+        % Créer la structure de sortie
+        defVirtualMarker.RigidBodyName = rigidBodyName;
+        defVirtualMarker.LocalPoint = position(:,4);
+
+    end
+
+end
+    """
+    return None

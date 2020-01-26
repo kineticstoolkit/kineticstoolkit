@@ -10,7 +10,8 @@ Date : December 2019
 """
 
 import numpy as np
-
+import pycpd
+import ktk.external.icp as icp
 
 def matmul(op1, op2):
     """
@@ -38,16 +39,7 @@ def matmul(op1, op2):
         else:
             return op1 * op2  # In the case where we have a series of floats.
 
-    # Match the time size of each input
-    if op1.shape[0] == 1:
-        op1 = np.repeat(op1, op2.shape[0], axis=0)
-
-    if op2.shape[0] == 1:
-        op2 = np.repeat(op2, op1.shape[0], axis=0)
-
-    if op1.shape[0] != op2.shape[0]:
-        raise ValueError(
-                'Could not match first dimension of op1 and op2')
+    (op1, op2) = match_size(op1, op2)
 
     n_samples = op1.shape[0]
 
@@ -324,3 +316,106 @@ def get_global_coordinates(local_coordinates, reference_frames):
     global_coordinates = np.zeros(local_coordinates.shape)
     global_coordinates = matmul(reference_frames, local_coordinates)
     return global_coordinates
+
+
+def isnan(input):
+    """
+    Checks which samples has at least one NaN.
+
+    Parameters
+    ----------
+    input : array
+        Array where the first dimension corresponds to time.
+
+    Returns
+    -------
+    list of bool that is the same size of input's first dimension, with True
+    for the samples that contain at least one NaN.
+    """
+    temp = np.isnan(input)
+    while len(temp.shape) > 1:
+        temp = (temp.sum(axis=1) > 0)
+    return temp
+
+
+def match_size(op1, op2):
+    """
+    Match the first dimension of op1 and op2.
+
+    match_size broadcasts the first dimension of op1 or op2, if required,
+    so that both inputs have the same size. If no modification is required
+    on an input, then the output is a reference to the same input. Otherwise,
+    the output is a new variable.
+
+    Parameters
+    ----------
+    op1, op2 : array
+        Inputs, where the first dimension corresponds to time. If both
+        first dimensions are not already equal, at least one must be of length
+        1 so that it can be broadcasted.
+
+    Returns
+    -------
+    (op1, op2) : tuple with the copies of op1 and op2 now matched in size.
+    """
+    if op1.shape[0] == 1:
+        op1 = np.repeat(op1, op2.shape[0], axis=0)
+
+    if op2.shape[0] == 1:
+        op2 = np.repeat(op2, op1.shape[0], axis=0)
+
+    if op1.shape[0] != op2.shape[0]:
+        raise ValueError(
+                'Could not match first dimension of op1 and op2')
+
+    return (op1, op2)
+
+
+def register_points(global_points, local_points):
+    """
+    Find the rigid transformations between two series of point clouds.
+
+    Parameters
+    ----------
+    global_points : array of shape Nx4xM
+        Destination points as a series of N sets of M points.
+    local_points : array of shape Nx4xM
+        Local points as a series of N sets of M points.
+        global_points and local_points must have the same shape.
+
+    Returns
+    -------
+    array of shape Nx4x4, expressing a series of 4x4 rigid transformation
+    matrices.
+    """
+    n_samples = global_points.shape[0]
+
+    # Prealloc the transformation matrix
+    T = np.zeros((n_samples, 4, 4))
+    T[:, 3, 3] = np.ones(n_samples)
+
+    for i_sample in range(n_samples):
+
+        # Identify which global points are visible
+        sample_global_points = global_points[i_sample]
+        sample_global_points_missing = np.isnan(
+                np.sum(sample_global_points, axis=0))
+
+        # Identify which local points are visible
+        sample_local_points = local_points[i_sample]
+        sample_local_points_missing = np.isnan(
+                np.sum(sample_local_points, axis=0))
+
+        sample_points_missing = np.logical_or(
+                sample_global_points_missing, sample_local_points_missing)
+
+        # If at least 3 common points are visible between local and global
+        # points, then we can regress the transformation.
+        if sum(~sample_points_missing) >= 3:
+            T[i_sample] = icp.best_fit_transform(
+                    sample_local_points[0:3, ~sample_points_missing].T,
+                    sample_global_points[0:3, ~sample_points_missing].T)[0]
+        else:
+            T[i_sample] = np.nan
+
+    return T
