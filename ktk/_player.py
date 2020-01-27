@@ -16,7 +16,8 @@ from ktk._timeseries import TimeSeries
 class Player:
 
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
-                 sample=0, marker_radius=0.008, rigid_body_size=0.1):
+                 sample=0, marker_radius=0.008, rigid_body_size=0.1,
+                 zoom=2.0, azimuth=0.0, elevation=0.0):
 
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
@@ -67,9 +68,9 @@ class Player:
         self.marker_radius = marker_radius
         self.rigid_body_size = rigid_body_size
         self.running = False
-        self.zoom = 2.0
-        self.azimuth = 0.0
-        self.elevation = 0.0
+        self.zoom = zoom
+        self.azimuth = azimuth
+        self.elevation = elevation
         self.target = (0.0, 0.0, 0.0)
         self.playback_speed = 1.0
 
@@ -266,12 +267,12 @@ class Player:
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, 0],
-                       [0, np.cos(self.elevation), -np.sin(self.elevation), 0],
-                       [0, np.sin(self.elevation), np.cos(self.elevation), 0],
+                       [0, np.cos(-self.elevation), np.sin(self.elevation), 0],
+                       [0, np.sin(-self.elevation), np.cos(-self.elevation), 0],
                        [0, 0, 0, 1]]) @
-             np.array([[np.cos(self.azimuth), 0, -np.sin(self.azimuth), 0],
+             np.array([[np.cos(-self.azimuth), 0, np.sin(self.azimuth), 0],
                        [0, 1, 0, 0],
-                       [np.sin(self.azimuth), 0, np.cos(self.azimuth), 0],
+                       [np.sin(-self.azimuth), 0, np.cos(-self.azimuth), 0],
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, -centroid[0]],  # Rotate around centroid
                        [0, 1, 0, -centroid[1]],
@@ -521,9 +522,9 @@ class Player:
 
         # Rotation:
         elif self.state['MouseLeftPressed'] and not self.state['ShiftPressed']:
-            self.azimuth = self.state['AzimutOnMousePress'] + \
+            self.azimuth = self.state['AzimutOnMousePress'] - \
                 (event.x - self.state['MousePositionOnPress'][0]) / 250
-            self.elevation = self.state['ElevationOnMousePress'] + \
+            self.elevation = self.state['ElevationOnMousePress'] - \
                 (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
 

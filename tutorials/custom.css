@@ -16,13 +16,13 @@ h3 {
 	font-size: 11pt !important;
 }
 
-div.prompt.input_prompt {
+div.prompt {
 	display: none;
 }
 
-div.prompt.output_prompt {
-	display: none;
-}
+div.output_png {
+	max-width: 100%;
+	}
 
 div.container {
 	max-width: 800px;

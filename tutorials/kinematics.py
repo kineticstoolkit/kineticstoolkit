@@ -147,7 +147,7 @@ markers = ktk.kinematics.read_n3d_file(
         'data/kinematics/sample_propulsion.n3d', labels=marker_names)
 
 # Show those markers in a player
-ktk.Player(markers=markers)
+ktk.Player(markers=markers, zoom=4, azimuth=0.8, elevation=0.16)
 
 # %%
 """
@@ -157,7 +157,8 @@ Compute the rigid body trajectories
 rigid_bodies = ktk.kinematics.register_markers(markers, config['RigidBodies'])
 
 # Show those rigid bodies and markers in a player
-ktk.Player(markers=markers, rigid_bodies=rigid_bodies)
+ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+           zoom=4, azimuth=0.8, elevation=0.16)
 
 # %%
 """
@@ -175,7 +176,8 @@ for virtual_marker in config['VirtualMarkers']:
     markers.add_data_info(virtual_marker, 'Color', 'c')
 
 # Show the markers and rigid bodies in a player
-ktk.Player(markers=markers, rigid_bodies=rigid_bodies)
+ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+           zoom=4, azimuth=0.8, elevation=0.16)
 
 # %%
 """
