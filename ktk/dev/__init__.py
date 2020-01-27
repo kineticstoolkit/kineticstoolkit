@@ -19,20 +19,20 @@ from time import sleep
 def run_tests(module=None):
     """Run all unit tests."""
 
-    # Run all tutorials
-    cwd = os.getcwd()
-    os.chdir(ktk.config['RootFolder'] + '/tutorials')
-    files = os.listdir()
-    for file in files:
-        if file[-3:].lower() == '.py':
-            print('==========================================')
-            print('Testing ' + file[:-3] + ' tutorial...')
-            print('------------------------------------------')
-            exec(open(file).read())
-            plt.close('all')
+#    # Run all tutorials
+#    cwd = os.getcwd()
+#    os.chdir(ktk.config['RootFolder'] + '/tutorials')
+#    files = os.listdir()
+#    for file in files:
+#        if file[-3:].lower() == '.py':
+#            print('==========================================')
+#            print('Testing ' + file[:-3] + ' tutorial...')
+#            print('------------------------------------------')
+#            exec(open(file).read())
+#            plt.close('all')
 #            _subprocess.call([os.sys.executable, file])
-
-    os.chdir(cwd)
+#
+#    os.chdir(cwd)
 
     # Run all old-fashioned tests
     pytest.main([ktk.config['RootFolder'] + '/ktk/dev'])

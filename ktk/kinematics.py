@@ -523,7 +523,7 @@ def create_rigid_body_config(markers, marker_names):
             }
 
 
-def register_markers(markers, rigid_body_configs, verbose=True):
+def register_markers(markers, rigid_body_configs, verbose=False):
     """
     Compute the rigid body trajectories using ktk.geometry.register_points.
 
@@ -536,7 +536,7 @@ def register_markers(markers, rigid_body_configs, verbose=True):
         each rigid body configuration is a dict with the following
         keys: 'MarkerNames' and 'LocalPoints'.
     verbose : bool (optional)
-        True to print the rigid body being computed. Default is True.
+        True to print the rigid body being computed. Default is False.
 
     Returns
     -------
@@ -550,42 +550,43 @@ def register_markers(markers, rigid_body_configs, verbose=True):
         if verbose is True:
             print(f'Computing trajectory of rigid body {rigid_body_name}...')
 
-            # Set local and global points
-            local_points = rigid_body_configs[rigid_body_name]['LocalPoints']
+        # Set local and global points
+        local_points = rigid_body_configs[rigid_body_name]['LocalPoints']
 
-            global_points = np.empty(
-                    (len(markers.time), 4, local_points.shape[2]))
-            for i_marker in range(global_points.shape[2]):
-                marker_name = rigid_body_configs[
-                        rigid_body_name]['MarkerNames'][i_marker]
-                global_points[:, :, i_marker] = markers.data[marker_name]
+        global_points = np.empty(
+                (len(markers.time), 4, local_points.shape[2]))
+        for i_marker in range(global_points.shape[2]):
+            marker_name = rigid_body_configs[
+                    rigid_body_name]['MarkerNames'][i_marker]
+            global_points[:, :, i_marker] = markers.data[marker_name]
 
-            (local_points, global_points) = ktk.geometry.match_size(
-                    local_points, global_points)
+        (local_points, global_points) = ktk.geometry.match_size(
+                local_points, global_points)
 
-            # Compute the rigid body trajectory
-            rigid_bodies.data[rigid_body_name] = ktk.geometry.register_points(
-                    global_points, local_points)
+        # Compute the rigid body trajectory
+        rigid_bodies.data[rigid_body_name] = ktk.geometry.register_points(
+                global_points, local_points)
 
     return rigid_bodies
 
 
-def create_virtual_marker_config(markers, rigid_body_name, rigid_body_config,
-                                 probe_tip_label):
+def create_virtual_marker_config(markers, rigid_bodies,
+                                 marker_name, rigid_body_name):
     """
     Create a virtual marker configuration based on a probing acquisition.
 
     Parameters
     ----------
     markers : TimeSeries
-        Markers trajectories during the probing acquisition.
+        Markers trajectories during the probing acquisition. This
+        TimeSeries must have at least marker_name in its data keys.
+    rigid_bodies : TimeSeries
+        Rigid body trajectories during this probing acquisition. This
+        TimeSeries must have at least rigid_body_name in its data keys.
+    marker_name : str
+        Name of the marker to express in local coordinates.
     rigid_body_name : str
-        Name of the virtual marker's rigid body.
-    rigid_body_config : dict
-        Configuration of the rigid body. This dict must contain the keys
-        'MarkerNames' and 'LocalPoints'.
-    probe_tip_label : str
-        Name of the marker that corresponds to the probe tip.
+        Name of the rigid body to express marker_name in relation to.
 
     Returns
     -------
@@ -595,92 +596,18 @@ def create_virtual_marker_config(markers, rigid_body_name, rigid_body_config,
                      defined by the rigid body RigidBodyName. LocalPoint is
                      expressed as a 1x4 array.
     """
-    pass
-    """
-    % Créer une structure simplifiée de définition de corps rigides, pour
-    % accélérer le registering.
-    simpleDefRigidBodies.(rigidBodyName) = defRigidBodies.(rigidBodyName);
-    simpleDefRigidBodies.(probeName) = defRigidBodies.(probeName);
+    marker = markers.data[marker_name]
+    rigid_body = rigid_bodies.data[rigid_body_name]
 
-    % Déterminer la liste de marqueurs dont on a besoin
-    defReferenceRigidBody = defRigidBodies.(rigidBodyName);
-    defProbe = defRigidBodies.(probeName);
-    simpleMarkerNames = [defReferenceRigidBody.MarkerNames defProbe.MarkerNames];
+    local_points = ktk.geometry.get_local_coordinates(marker, rigid_body)
+    to_keep = ~ktk.geometry.isnan(local_points)
 
-    % Faire un subset de markers
-    nMarkers = length(simpleMarkerNames);
-    for iMarker = 1:nMarkers
-        theMarker = simpleMarkerNames{iMarker};
-        simpleMarkers.(theMarker) = markers.(theMarker);
-    end
+    if np.all(to_keep is False):
+        raise UserWarning(f'There are no frame where both {marker_name} and'
+                          f'{rigid_body_name} are visible at the same time.')
 
-    % Remplir les trous jusqu'à un quart de seconde
-    time = simpleMarkers.(theMarker).Time;
-    fech = 1/(time(2) - time(1));
-    simpleMarkers = ktkTimeSeries.fillmissingsamples(simpleMarkers, 0.25 * fech);
+    local_points = local_points[to_keep]
+    local_points = np.mean(local_points, axis=0)[np.newaxis]
 
-    % Statifier l'essai (ne conserver que la moyenne des samples où tous ces
-    % marqueurs sont visibles
-    doubleMarkers = ktkKinematics.meanstaticmarkers(simpleMarkers);
-
-    if isempty(doubleMarkers)
-        % Les marqueurs nécessaires ne sont jamais visibles en même temps. Tenter
-        % une autre approche : rigidifier tout l'essai et reconstruire les
-        % marqueurs nécessaires. Çe peut aider dans le cas où un corps rigide ou la
-        % probe comporte plus de 3 marqueurs.
-
-        rigidBodies = ktkKinematics.registermarkers(markers, simpleDefRigidBodies);
-
-        % Reconstruire les marqueurs du corps rigide
-        globalMarkers = ktkGeometry.getglobalcoordinates(...
-            simpleDefRigidBodies.(rigidBodyName).LocalPoints, rigidBodies.(rigidBodyName));
-
-        theMarkerNames = defReferenceRigidBody.MarkerNames;
-        for iMarker = 1:length(theMarkerNames)
-            theMarkerName = theMarkerNames{iMarker};
-            simpleMarkers.(theMarkerName).Data = globalMarkers.Data(:,iMarker,:);
-        end
-
-        % Reconstruire les marqueurs de la probe
-        globalMarkers = ktkGeometry.getglobalcoordinates(...
-            simpleDefRigidBodies.(probeName).LocalPoints, rigidBodies.(probeName));
-
-        theMarkerNames = defProbe.MarkerNames;
-        for iMarker = 1:length(theMarkerNames)
-            theMarkerName = theMarkerNames{iMarker};
-            simpleMarkers.(theMarkerName).Data = globalMarkers.Data(:,iMarker,:);
-        end
-
-
-        % Statifier l'essai (ne conserver que la moyenne des samples où tous ces
-        % marqueurs sont visibles
-        doubleMarkers = ktkKinematics.meanstaticmarkers(simpleMarkers);
-
-    end
-
-    if isempty(doubleMarkers) % Est-ce que la reconstruction des marqueurs manquants a réussi ?
-
-        warning('La tentative de reconstruction des marqueurs manquant a échoué. Impossible de définir ce marqueur virtuel.');
-        % Créer la structure de sortie
-        defVirtualMarker.RigidBodyName = rigidBodyName;
-        defVirtualMarker.LocalPoint = [NaN; NaN; NaN; 1];
-
-    else
-
-        % Register
-        rigidBodies = ktkKinematics.registermarkers(doubleMarkers, simpleDefRigidBodies);
-
-        % Trouver la position relative de la pointe de la probe
-        REF = rigidBodies.(rigidBodyName);
-        Probe = rigidBodies.(probeName);
-        position = ktkGeometry.getlocalcoordinates(Probe, REF);
-
-        % Créer la structure de sortie
-        defVirtualMarker.RigidBodyName = rigidBodyName;
-        defVirtualMarker.LocalPoint = position(:,4);
-
-    end
-
-end
-    """
-    return None
+    return {'RigidBodyName': rigid_body_name,
+            'LocalPoint': local_points}
