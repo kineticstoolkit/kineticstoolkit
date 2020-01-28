@@ -35,10 +35,12 @@ marker_names = ['Probe1', 'Probe2', 'Probe3', 'Probe4', 'Probe5', 'Probe6',
                 'Head1', 'Head2', 'Head3',
                 'Sternum',
                 'ArmL1', 'ArmL2', 'ArmL3',
-                'LatEpicondyleL', 'ForearmL1', 'ForearmL2', 'ForearmL3', 'NAG',
+                'LateralEpicondyleL', 'ForearmL1', 'ForearmL2', 'ForearmL3',
+                'NAG',
                 'GloveL1', 'GloveL2', 'GloveL3',
                 'ArmR1', 'ArmR2', 'ArmR3',
-                'LatEpicondyleR', 'ForearmR1', 'ForearmR2', 'ForearmR3', 'NAR',
+                'LateralEpicondyleR', 'ForearmR1', 'ForearmR2', 'ForearmR3',
+                'NAR',
                 'GloveR1', 'GloveR2', 'GloveR3']
 
 # %%
@@ -133,6 +135,34 @@ config['VirtualMarkers']['UlnarStyloidR'] = process_probing_acquisition(
 
 # %%
 """
+Defining segment configurations
+-------------------------------
+This step is purely for visualization. Here, we define different segments
+that will be shown in the Player.
+"""
+config['Segments'] = dict()
+
+config['Segments']['ArmR'] = {
+        'Color': [1, 0.25, 0],
+        'Links': [['AcromionR', 'MedialEpicondyleR'],
+                  ['AcromionR', 'LateralEpicondyleR'],
+                  ['AcromionR', 'OlecraneR'],
+                  ['MedialEpicondyleR', 'LateralEpicondyleR'],
+                  ['LateralEpicondyleR', 'OlecraneR'],
+                  ['OlecraneR', 'MedialEpicondyleR']]
+        }
+
+config['Segments']['ForearmR'] = {
+        'Color': [1, 0.5, 0],
+        'Links': [['MedialEpicondyleR', 'RadialStyloidR'],
+                  ['LateralEpicondyleR', 'UlnarStyloidR'],
+                  ['OlecraneR', 'UlnarStyloidR'],
+                  ['OlecraneR', 'RadialStyloidR'],
+                  ['UlnarStyloidR', 'RadialStyloidR']]
+        }
+
+# %%
+"""
 Step 2. Process an experimental trial
 =====================================
 
@@ -178,6 +208,14 @@ for virtual_marker in config['VirtualMarkers']:
 # Show the markers and rigid bodies in a player
 ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
            zoom=4, azimuth=0.8, elevation=0.16)
+
+# %%
+"""
+Add the segments
+----------------
+"""
+ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+           segments=config['Segments'], zoom=4, azimuth=0.8, elevation=0.16)
 
 # %%
 """

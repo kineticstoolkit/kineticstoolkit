@@ -80,11 +80,12 @@ class Player:
         for color in self._colors:
             self.objects['PlotMarkers'][color] = None  # Not selected
             self.objects['PlotMarkers'][color + 's'] = None  # Selected
-
         self.objects['PlotRigidBodiesX'] = None
         self.objects['PlotRigidBodiesY'] = None
         self.objects['PlotRigidBodiesZ'] = None
         self.objects['PlotGroundPlane'] = None
+        self.objects['PlotSegments'] = dict()
+
         self.objects['Figure'] = None
         self.objects['Axes'] = None
         self.objects['Help'] = None
@@ -149,6 +150,13 @@ class Player:
                             np.nan, np.nan, '.',
                             c=colors[color], markersize=12)[0]
 
+        # Init the segments plots
+        if self.segments is not None:
+            for segment in self.segments:
+                self.objects['PlotSegments'][segment] = \
+                        self.objects['Axes'].plot(np.nan, np.nan, '-',
+                                    c=self.segments[segment]['Color'])[0]
+
         # Draw the markers
         self._update_plots()
 
@@ -197,7 +205,9 @@ class Player:
         else:
             n_markers = 0
 
-        markers_data = dict()
+        markers_data = dict()  # Used to draw the markers with different colors
+        segment_markers = dict()  # Used to draw the segments
+
         centroid = np.empty([n_markers, 4])
         for color in self._colors:
             markers_data[color] = np.empty([n_markers, 4])
@@ -217,6 +227,7 @@ class Player:
 
                 these_coordinates = markers.data[marker][self.current_frame]
                 markers_data[color][i_marker] = these_coordinates
+                segment_markers[marker] = these_coordinates
                 centroid[i_marker] = these_coordinates
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
@@ -282,6 +293,8 @@ class Player:
         for color in self._colors:
             markers_data[color] = (R @ markers_data[color].T).T
             markers_data[color + 's'] = (R @ markers_data[color + 's'].T).T
+        for marker in segment_markers:
+            segment_markers[marker] = (R @ segment_markers[marker])
         rbx_data = (R @ rbx_data.T).T
         rby_data = (R @ rby_data.T).T
         rbz_data = (R @ rbz_data.T).T
@@ -350,6 +363,23 @@ class Player:
             self.objects['PlotRigidBodiesX'].set_data(xx, yx)
             self.objects['PlotRigidBodiesY'].set_data(xy, yy)
             self.objects['PlotRigidBodiesZ'].set_data(xz, yz)
+
+        # Update the segments plot
+        if self.segments is not None:
+            for segment in self.segments:
+                n_links = len(self.segments[segment]['Links'])
+                coordinates = np.empty((2*n_links, 4))
+                for i_link in range(n_links):
+                    marker1 = self.segments[segment]['Links'][i_link][0]
+                    marker2 = self.segments[segment]['Links'][i_link][1]
+                    coordinates[2*i_link] = segment_markers[marker1]
+                    coordinates[2*i_link+1] = segment_markers[marker2]
+
+                x, y = get_perspective(coordinates[:, 0],
+                                       coordinates[:, 1],
+                                       coordinates[:, 2])
+
+                self.objects['PlotSegments'][segment].set_data(x, y)
 
         # Update the window title
         self.objects['Figure'].canvas.set_window_title(
