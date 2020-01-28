@@ -14,10 +14,62 @@ from ktk._timeseries import TimeSeries
 
 
 class Player:
+    """
+    A class that allows visualizing markers and rigid bodies in 3D.
+
+    player = ktk.Player(parameters) creates and launches a Player
+    instance.
+
+    Parameters
+    ----------
+    markers : TimeSeries (optional)
+        Contains the markers to visualize, where each data key is a marker
+        position expressed as Nx4 array (N=time). Default is None.
+        markers and rigid_bodies cannot be both set to None.
+    rigid_bodies : TimeSeries (optional)
+        Contains the rigid bodies to visualize, where each data key is
+        a rigid body pose expressed as a Nx4x4 array (N=time, the other
+        dimensions are transformation matrices). Default is None.
+        markers and rigid_bodies cannot be both set to None.
+    segments : dict
+        Used to draw lines between markers. Each key corresponds to a
+        segment, where a segment is another dict with the following keys:
+            - Links: list of list of 2 str, where each str is a marker
+                     name. For example, to link Marker1 to Marker2 and
+                     Marker1 to Marker3, Links would be:
+                         [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+            - Color: character or tuple that represents the color of the
+                     link. Color must be a valid value for matplotlib's
+                     plots.
+    current_frame : int (optional)
+        Sets the inital frame number to show. Default is 0.
+    marker_radius : float (optional)
+        Sets the marker radius as defined by matplotlib. Default is 0.008.
+    rigid_body_size : float (optional)
+        Sets the rigid body size in meters. Default is 0.1.
+    zoom : float (optional)
+        Sets the initial camera zoom. Default is 2.0.
+    azimuth : float (optional)
+        Sets the initial camera azimuth in radians. Default is 0.0.
+    elevation : float (optional)
+        Sets the initial camera elevation in radians. Default is 0.0.
+    translation : tuple of floats (optional)
+        Sets the initial camera translation (panning). Default is (0.0, 0.0)
+    target : tuple of floats or 'centroid' (optional)
+        Sets the camera target in meters. Default is (0.0, 0.8, 0.0)
+        If set to 'centroid', then the target is continuously updated to
+        the centroid of the markers, which allows following moving
+        objects more easily.
+
+    Returns
+    -------
+    Player
+    """
 
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
-                 sample=0, marker_radius=0.008, rigid_body_size=0.1,
-                 zoom=2.0, azimuth=0.0, elevation=0.0):
+                 current_frame=0, marker_radius=0.008, rigid_body_size=0.1,
+                 zoom=2.0, azimuth=0.0, elevation=0.0, translation=(0.0, 0.0),
+                 target=(0.0, 0.8, 0.0)):
 
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
@@ -64,14 +116,15 @@ class Player:
 
         # ---------------------------------------------------------------
         # Other initalizations
-        self.current_frame = sample
+        self.current_frame = current_frame
         self.marker_radius = marker_radius
         self.rigid_body_size = rigid_body_size
         self.running = False
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
-        self.target = (0.0, 0.0, 0.0)
+        self.target = target
+        self.translation = translation
         self.playback_speed = 1.0
 
         self.objects = dict()
@@ -98,7 +151,7 @@ class Player:
         self.state['MousePositionOnPress'] = (0.0, 0.0)
         self.state['MousePositionOnMiddlePress'] = (0.0, 0.0)
         self.state['MousePositionOnRightPress'] = (0.0, 0.0)
-        self.state['TargetOnMousePress'] = (0.0, 0.0, 0.0)
+        self.state['TranslationOnMousePress'] = (0.0, 0.0)
         self.state['AzimutOnMousePress'] = 0.0
         self.state['ElevationOnMousePress'] = 0.0
         self.state['SelfTimeOnPlay'] = self.time[0]
@@ -265,16 +318,19 @@ class Player:
         # Create the rotation matrix to convert the lab's coordinates
         # (x anterior, y up, z right) to the camera coordinates (x right,
         # y up, z deep)
-        centroid = np.nanmean(centroid, axis=0)
-        if np.all(np.isnan(centroid)):
-            centroid = np.nanmean(rbx_data, axis=0)
+        if self.target == 'centroid':
+            centroid = np.nanmean(centroid, axis=0)
+            if np.all(np.isnan(centroid)):
+                centroid = np.nanmean(rbx_data, axis=0)
+        else:
+            centroid = self.target
 
         R = (np.array([[self.zoom, 0, 0, 0],
                        [0, self.zoom, 0, 0],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
-             np.array([[1, 0, 0, self.target[0]],  # Pan
-                       [0, 1, 0, self.target[1]],
+             np.array([[1, 0, 0, self.translation[0]],  # Pan
+                       [0, 1, 0, self.translation[1]],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, 0],
@@ -379,7 +435,17 @@ class Player:
                                        coordinates[:, 1],
                                        coordinates[:, 2])
 
-                self.objects['PlotSegments'][segment].set_data(x, y)
+                # Separate each segment by nans
+                new_x = np.empty(int(3*x.shape[0]/2))
+                new_y = np.empty(int(3*y.shape[0]/2))
+                new_x[0::3] = x[0::2]
+                new_x[1::3] = x[1::2]
+                new_x[2::3] = np.nan
+                new_y[0::3] = y[0::2]
+                new_y[1::3] = y[1::2]
+                new_y[2::3] = np.nan
+
+                self.objects['PlotSegments'][segment].set_data(new_x, new_y)
 
         # Update the window title
         self.objects['Figure'].canvas.set_window_title(
@@ -515,7 +581,7 @@ class Player:
         self._update_plots()
 
     def _on_mouse_press(self, event):
-        self.state['TargetOnMousePress'] = self.target
+        self.state['TranslationOnMousePress'] = self.translation
         self.state['AzimutOnMousePress'] = self.azimuth
         self.state['ElevationOnMousePress'] = self.elevation
         self.state['ZoomOnMousePress'] = self.zoom
@@ -540,14 +606,13 @@ class Player:
         # Pan:
         if ((self.state['MouseLeftPressed'] and self.state['ShiftPressed']) or
                 self.state['MouseMiddlePressed']):
-            self.target = (
-                    self.state['TargetOnMousePress'][0] +
+            self.translation = (
+                    self.state['TranslationOnMousePress'][0] +
                     (event.x - self.state['MousePositionOnPress'][0]) /
                     (100 * self.zoom),
-                    self.state['TargetOnMousePress'][1] +
+                    self.state['TranslationOnMousePress'][1] +
                     (event.y - self.state['MousePositionOnPress'][1]) /
-                    (100 * self.zoom),
-                    0)
+                    (100 * self.zoom))
             self._update_plots()
 
         # Rotation:
