@@ -1,9 +1,7 @@
-#!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 """
-Created on Wed Dec 11 16:17:10 2019
+Implementation of the ktk.Player class.
 
-@author: felix
+Author: Felix Chenier
 """
 
 import matplotlib.pyplot as plt
@@ -48,7 +46,7 @@ class Player:
     rigid_body_size : float (optional)
         Sets the rigid body size in meters. Default is 0.1.
     zoom : float (optional)
-        Sets the initial camera zoom. Default is 2.0.
+        Sets the initial camera zoom. Default is 1.0.
     azimuth : float (optional)
         Sets the initial camera azimuth in radians. Default is 0.0.
     elevation : float (optional)
@@ -68,7 +66,7 @@ class Player:
 
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
                  current_frame=0, marker_radius=0.008, rigid_body_size=0.1,
-                 zoom=2.0, azimuth=0.0, elevation=0.0, translation=(0.0, 0.0),
+                 zoom=1.0, azimuth=0.0, elevation=0.0, translation=(0.0, 0.0),
                  target=(0.0, 0.8, 0.0)):
 
         # ---------------------------------------------------------------
@@ -325,8 +323,8 @@ class Player:
         else:
             centroid = self.target
 
-        R = (np.array([[self.zoom, 0, 0, 0],
-                       [0, self.zoom, 0, 0],
+        R = (np.array([[2*self.zoom, 0, 0, 0],
+                       [0, 2*self.zoom, 0, 0],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, self.translation[0]],  # Pan

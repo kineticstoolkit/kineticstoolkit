@@ -1,10 +1,14 @@
 """
-KTK Kinesiology Toolkit
-=======================
+Kinetics Toolkit
+================
 
-This is a skeleton for an all new Kinesiology toolkit based on Python instead
-of Matlab, so that it's free of Matlab limitations and more distributable and
-usable on onboard instruments.
+Kinetics Toolkit (ktk) is an in-house biomechanical library developed by
+Professor Félix Chénier at Université du Québec à Montréal. Originally
+programmed in and for Matlab, ktk is quickly becoming a collection of Python
+modules that aim to manage experimental files using a database and process
+3d kinetics, 3d kinematics and EMG data.
+
+Please see this webpage for support: https://felixchenier.com/kineticstoolkit
 
 Author: Félix Chénier
 
@@ -17,9 +21,9 @@ import numpy as _np
 
 
 # ---------------------------
-# Set KTK configuration
+# Set ktk configuration
 # ---------------------------
-# Root folder (KTK installation)
+# Root folder (ktk installation)
 config = dict()
 config['RootFolder'] = _os.path.dirname(_os.path.dirname(__file__))
 
@@ -29,7 +33,7 @@ config['IsMac'] = True if _platform.system() == 'Darwin' else False
 config['IsLinux'] = True if _platform.system() == 'Linux' else False
 
 # ---------------------------
-# KTK Imports
+# Imports
 # ---------------------------
 
 from ._timeseries import TimeSeries, TimeSeriesEvent
@@ -47,6 +51,9 @@ from . import dbinterface
 from . import cycles
 from . import _repr
 
+# ---------------------------
+# Customizations
+# ---------------------------
 
 # Modify the repr function for dicts in iPython
 try:
@@ -57,7 +64,6 @@ try:
                        _repr._ktk_format_dict(n, p, cycle))
 except Exception:
     pass
-
 
 # Set alternative defaults to matplotlib
 _mpl.rcParams['figure.figsize'] = [10, 5]

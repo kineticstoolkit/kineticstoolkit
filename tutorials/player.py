@@ -4,6 +4,9 @@ Player
 ======
 The Player class allows visualizing markers, rigid bodies and segments in
 movement and in 3D using a keyboard and mouse-driven user interface.
+
+This tutorial is still incomplete. Please see the `kinematics` tutorial, which
+make other uses of the Player class.
 """
 import ktk
 
@@ -23,7 +26,7 @@ kinematics
 """
 The player can be instanciated to show markers:
 """
-pl = ktk.Player(markers=kinematics['Markers'])
+pl = ktk.Player(markers=kinematics['Markers'], target='centroid')
 
 # %%
 """
@@ -41,20 +44,22 @@ kinematics['Markers'].add_data_info('SWR_Marker1', 'Color', 'r')
 kinematics['Markers'].add_data_info('SWR_Marker2', 'Color', 'r')
 kinematics['Markers'].add_data_info('SWR_Marker3', 'Color', 'r')
 kinematics['Markers'].add_data_info('SWR_Marker4', 'Color', 'r')
-pl = ktk.Player(markers=kinematics['Markers'])
+pl = ktk.Player(markers=kinematics['Markers'], target='centroid')
 
 # %%
 """
 The player can be instanciated to show rigid bodies:
 """
-pl = ktk.Player(rigid_bodies=kinematics['VirtualRigidBodies'])
+pl = ktk.Player(rigid_bodies=kinematics['VirtualRigidBodies'],
+                target='centroid')
 
 # %%
 """
 Or the player can be instanciated to show both markers and rigid bodies:
 """
 pl = ktk.Player(markers=kinematics['Markers'],
-                rigid_bodies=kinematics['VirtualRigidBodies'])
+                rigid_bodies=kinematics['VirtualRigidBodies'],
+                target='centroid')
 
 # %%
 """

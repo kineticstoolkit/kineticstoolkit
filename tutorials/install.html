@@ -13096,23 +13096,14 @@ div#notebook {
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Installing-Kinetics-Toolkit-(ktk)">Installing Kinetics Toolkit (ktk)<a class="anchor-link" href="#Installing-Kinetics-Toolkit-(ktk)">&#182;</a></h1><p>Please follow these steps to install ktk.</p>
 <h2 id="Obtain-access-to-ktk">Obtain access to ktk<a class="anchor-link" href="#Obtain-access-to-ktk">&#182;</a></h2><p>At the current time, ktk can only be used in the context of collaborations with
-me (Felix Chenier). Please <a href="mailto:chenier.felix@uqam.ca">email me</a> if you are
-interested to try ktk.</p>
-<h2 id="Download-and-install-git">Download and install git<a class="anchor-link" href="#Download-and-install-git">&#182;</a></h2><p>KTK is versionned using git, and includes functions to update itself. The first
-step to obtain KTK is to install git on your computer.</p>
+me (Felix Chenier). I do plan to open source it someday, but it needs to be
+polished before it is. Please <a href="mailto:chenier.felix@uqam.ca">email me</a> if you
+are interested to try out ktk.</p>
+<h2 id="Download-and-install-git">Download and install git<a class="anchor-link" href="#Download-and-install-git">&#182;</a></h2><p>Ktk is versionned using git, and includes functions to update itself. The first
+step to obtain ktk is to install git on your computer.</p>
 <p><a href="https://git-scm.com">git website</a></p>
 <p>Just use the default checkboxes in every dialog, everything should be fine.</p>
 <h2 id="Download-and-install-Anaconda-Python-3.7.">Download and install Anaconda Python 3.7.<a class="anchor-link" href="#Download-and-install-Anaconda-Python-3.7.">&#182;</a></h2><p><a href="https://www.anaconda.com/distribution/">Anaconda distribution website</a></p>
-<h2 id="Only-on-macOS:-Fixing-Spyder">Only on macOS: Fixing Spyder<a class="anchor-link" href="#Only-on-macOS:-Fixing-Spyder">&#182;</a></h2><p>In date of September 18, 2019, there is a bug in the ipykernel package that
-causes the IPython console to hand in Spyder. Do this to revert ipykernel to
-a working version. This is a workaround and it will hopefully become useless
-with time.</p>
-
-<pre><code>echo "ipykernel 4.10.0" &gt;&gt; ~/anaconda3/conda-meta/pinned
-conda update anaconda
-
-</code></pre>
-<p><a href="https://stackoverflow.com/questions/53381373/ipython-console-in-spyder-extremely-slow-in-anaconda/57618660#57618660">See this post for information and follow-up</a></p>
 <h2 id="Add-external-dependencies">Add external dependencies<a class="anchor-link" href="#Add-external-dependencies">&#182;</a></h2><p>Open the Anaconda console on Windows, or a terminal in macOS, and type these
 commands to install ktk's additional dependencies:</p>
 
@@ -13120,26 +13111,27 @@ commands to install ktk's additional dependencies:</p>
 conda install pytest
 
 </code></pre>
-<h2 id="Clone-KTK-from-bitbucket">Clone KTK from bitbucket<a class="anchor-link" href="#Clone-KTK-from-bitbucket">&#182;</a></h2><p>Open Spyder from your Anaconda distribution, navigate to the directory where
-you want to install KTK (for example, F:), and run these lines in the
-IPython console:</p>
+<h2 id="Clone-ktk-from-bitbucket">Clone ktk from bitbucket<a class="anchor-link" href="#Clone-ktk-from-bitbucket">&#182;</a></h2><p>Open Spyder from your Anaconda distribution, navigate to the directory where
+you want to install ktk (for example, F:), and run these lines in the
+IPython console, replacing YOUR_BITBUCKET_USERNAME with your bitbucket
+username.</p>
 
 <pre><code>import os
 print('Cloning repository...')
-os.system('git clone https://labofelixchenier@bitbucket.org/felixchenier/kineticstoolkit.git')
+os.system('git clone https://YOUR_BITBUCKET_USERNAME@bitbucket.org/felixchenier/kineticstoolkit.git')
 print('Pulling origin/master...')
 %cd kineticstoolkit
 os.system('git pull origin master')
 
 </code></pre>
-<h2 id="Add-kineticstoolkit-to-the-Python-path">Add kineticstoolkit to the Python path<a class="anchor-link" href="#Add-kineticstoolkit-to-the-Python-path">&#182;</a></h2><p>In Spyder, there is a PYTHONPATH manager. Add the kineticstoolkit folder that
+<h2 id="Add-the-kineticstoolkit-folder-to-the-Python-path">Add the kineticstoolkit folder to the Python path<a class="anchor-link" href="#Add-the-kineticstoolkit-folder-to-the-Python-path">&#182;</a></h2><p>In Spyder, there is a PYTHONPATH manager. Add the kineticstoolkit folder that
 you just cloned to the python path, then restart Spyder. From now on,
 <code>import ktk</code> should find and import ktk.</p>
 <p>Congratulation, ktk is now installed. From now on, you can always update to
 the most recent version using:</p>
 
 <pre><code>import ktk
-ktk.config.update()</code></pre>
+ktk.update()</code></pre>
 
 </div>
 </div>
