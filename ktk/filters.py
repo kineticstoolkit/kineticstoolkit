@@ -41,10 +41,9 @@ def savgol(tsin, window_length, poly_order, deriv=0):
     tsout : ktk.TimeSeries
         The filtered TimeSeries
 
-    The input timeseries must contain no missing samples. If missing samples
-    are found, a warning is issued, missing samples are interpolated using a
-    first-order interpolation before filtering, and then replaced by NaNs in
-    the filtered signal.
+    If the TimeSeries contains missing samples, a warning is issued, missing
+    samples are interpolated using a first-order interpolation before
+    filtering, and then replaced by NaNs in the filtered signal.
 
     """
     tsout = tsin.copy()

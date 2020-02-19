@@ -62,6 +62,7 @@ Kinetics Toolkit (ktk)
 [Home](index.html) -
 [Installing](install.html) -
 [TimeSeries](timeseries.html) -
+[filters](filters.html) -
 [geometry](geometry.html) -
 [kinematics](kinematics.html) -
 [pushrimkinetics](pushrimkinetics.html) -

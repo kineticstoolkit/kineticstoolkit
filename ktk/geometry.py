@@ -1,12 +1,12 @@
 """
-ktk.geometry
-============
+3d geometry and linear algebra related to biomechanics.
+
 This module contains functions related to 3D geometry and linear algebra
 related to biomechanics. The first dimension of every array is always N and
 corresponds to time. For constants, use a length of 1 as the first dimension.
 
-Author : Felix Chenier
-Date : December 2019
+A full tutorial on ktk.geometry is available in tutorials/geometry.html
+and on https://felixchenier.com/kineticstoolkit/geometry.html
 """
 
 import numpy as np
