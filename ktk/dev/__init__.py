@@ -59,18 +59,15 @@ def generate_tutorials(name=None):
     header = '''
 Kinetics Toolkit (ktk)
 ======================
-[Home](index.html) -
-[Installing](install.html) -
-[TimeSeries](timeseries.html) -
-[filters](filters.html) -
-[geometry](geometry.html) -
-[kinematics](kinematics.html) -
-[pushrimkinetics](pushrimkinetics.html) -
-[inversedynamics](inversedynamics.html) -
-[Player](player.html) -
-[dbinterface](dbinterface.html)
 
------------------------
+| Getting started            | Low-level modules             | High-level modules                      |
+|:--------------------------:|:-----------------------------:|:---------------------------------------:|
+| [Home](index.html)         | [TimeSeries](timeseries.html) | [kinematics](kinematics.html)           |
+| [Installing](install.html) | [filters](filters.html)       | [pushrimkinetics](pushrimkinetics.html) |
+|                            | [geometry](geometry.html)     | [inversedynamics](inversedynamics.html) |
+|                            |                               | [Player](player.html)                   |
+|                            |                               | [dbinterface](dbinterface.html)         |
+
 '''
 
     cwd = os.getcwd()
