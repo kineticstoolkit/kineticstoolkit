@@ -37,6 +37,7 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 # ---------------------------
 
 from ._timeseries import TimeSeries, TimeSeriesEvent
+from ._dbinterface import DBInterface
 from ._player import Player
 from ._loadsave import load, loadmat, save
 from . import filters
@@ -47,7 +48,6 @@ from . import kinematics
 from . import pushrimkinetics
 from . import inversedynamics
 from . import dev
-from . import dbinterface
 from . import cycles
 from . import _repr
 
