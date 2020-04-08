@@ -18,22 +18,22 @@ class DBInterface():
 
     @property
     def participants(self):
-        table = self._tables['Participants']['ParticipantLabel']
+        table = self.tables['Participants']['ParticipantLabel']
         return table.drop_duplicates().to_list()
 
     @property
     def sessions(self):
-        table = self._tables['Sessions']['SessionLabel']
+        table = self.tables['Sessions']['SessionLabel']
         return table.drop_duplicates().to_list()
 
     @property
     def trials(self):
-        table = self._tables['Trials']['TrialLabel']
+        table = self.tables['Trials']['TrialLabel']
         return table.drop_duplicates().to_list()
 
     @property
     def files(self):
-        table = self._tables['Files']['FileLabel']
+        table = self.tables['Files']['FileLabel']
         return table.drop_duplicates().to_list()
 
 
@@ -126,16 +126,16 @@ class DBInterface():
                             # Duplicate file
 
                             if warned_once is False:
-                                warnings.warn('Duplicate file(s) found.')
+                                warnings.warn('Duplicate file(s) found. See duplicates property.')
+
                                 warned_once = True
+                                self.duplicates = []
 
                             dup_index = dict_files['FileID'].index(dbfid)
                             dup_file = dict_files['FileName'][dup_index]
 
-                            print('----------------------------------')
-                            print(folder + '/' + file)
-                            print('has the same dbfid as')
-                            print(dup_file)
+                            self.duplicates.append(
+                                (folder + '/' + file, dup_file))
 
                         else:
                             dict_files['FileID'].append(dbfid)
@@ -145,17 +145,9 @@ class DBInterface():
         # Convert to a Pandas DataFrame
         return pd.DataFrame(dict_files)
 
+
     def _filter_table(self, table, filters):
         """Apply filters on a DataFrame, return the filtered DataFrame."""
-        # Remove all columns which name contains 'ID'
-        columns = table.columns
-        new_columns = []
-        for column in columns:
-            if not 'ID' in column:
-                new_columns.append(column)
-        table = table[new_columns]
-
-        # Filter
         for column in filters:
             if column in table.columns:
                 table = table[table[column] == filters[column]]
@@ -211,9 +203,9 @@ class DBInterface():
         else:
             raise ValueError('Bad combination of arguments')
 
-        table = self._tables[table_name]
+        table = self.tables[table_name]
         if contents_name != '':
-            contents = self._tables[contents_name]
+            contents = self.tables[contents_name]
         else:
             contents = None
 
@@ -263,49 +255,245 @@ class DBInterface():
                 repetition = ''
             return repetition
 
-        self._tables = dict()
+        self.tables = dict()
 
-        self._tables['Projects'] = self._fetch_table('Projects')
+        self.tables['Projects'] = self._fetch_table('Projects')
 
         # Participants
-        self._tables['Participants'] = self._fetch_table('Participants')
-        self._tables['Participants']['ProjectLabel'] = self.project_label
+        self.tables['Participants'] = self._fetch_table('Participants')
+        self.tables['Participants']['ProjectLabel'] = self.project_label
 
         # Sessions
-        self._tables['Sessions'] = self._fetch_table('Sessions')
-        self._tables['Sessions'] = self._tables['Sessions'].merge(
-            self._tables['Participants'][
-                ['ParticipantID', 'ParticipantLabel']], how='inner')
-        self._tables['Sessions']['SessionLabel'] = (
-            self._tables['Sessions']['PlaceLabel'] +
-            self._tables['Sessions']['SessionRepetition'].apply(repetition_to_str))
+        self.tables['Sessions'] = self._fetch_table('Sessions')
+        self.tables['Sessions'] = self.tables['Sessions'].merge(
+            self.tables['Participants'][
+                ['ParticipantID', 'ParticipantLabel']], how='left')
+        self.tables['Sessions']['SessionLabel'] = (
+            self.tables['Sessions']['PlaceLabel'] +
+            self.tables['Sessions']['SessionRepetition'].apply(repetition_to_str))
 
         # Trials
-        self._tables['Trials'] = self._fetch_table('Trials')
-        self._tables['TrialTypes'] = self._fetch_table('TrialTypes')
-        self._tables['Trials'] = self._tables['Trials'].merge(
-            self._tables['TrialTypes'], how='inner')
-        self._tables['Trials'] = self._tables['Trials'].merge(
-            self._tables['Sessions'][[
-                'SessionID', 'SessionLabel', 'ParticipantLabel']], how='inner')
-        self._tables['Trials']['TrialLabel'] = (
-            self._tables['Trials']['TrialTypeLabel'] +
-            self._tables['Trials']['TrialRepetition'].apply(repetition_to_str))
+        self.tables['Trials'] = self._fetch_table('Trials')
+        self.tables['TrialTypes'] = self._fetch_table('TrialTypes')
+        self.tables['Trials'] = self.tables['Trials'].merge(
+            self.tables['TrialTypes'], how='left')
+        self.tables['Trials'] = self.tables['Trials'].merge(
+            self.tables['Sessions'][[
+                'SessionID', 'SessionLabel', 'ParticipantLabel']], how='left')
+        self.tables['Trials']['TrialLabel'] = (
+            self.tables['Trials']['TrialTypeLabel'] +
+            self.tables['Trials']['TrialRepetition'].apply(repetition_to_str))
 
         # Files
-        self._tables['Files'] = self._fetch_table('Files')
-        self._tables['FileTypes'] = self._fetch_table('FileTypes')
-        self._tables['FileAssociations'] = self._scan_files()
+        self.tables['Files'] = self._fetch_table('Files')
+        self.tables['FileTypes'] = self._fetch_table('FileTypes')
+        self.tables['FileAssociations'] = self._scan_files()
 
-        self._tables['Files'] = self._tables['Files'].merge(
-            self._tables['FileTypes'], how='inner')
-        self._tables['Files'] = self._tables['Files'].merge(
-            self._tables['FileAssociations'], how='inner')
-        self._tables['Files'] = self._tables['Files'].merge(
-            self._tables['Trials'][[
+        self.tables['Files'] = self.tables['Files'].merge(
+            self.tables['FileTypes'], how='left')
+        self.tables['Files'] = self.tables['Files'].merge(
+            self.tables['FileAssociations'], how='left')
+        self.tables['Files'] = self.tables['Files'].merge(
+            self.tables['Trials'][[
                 'TrialID', 'TrialLabel', 'SessionLabel',
-                'ParticipantLabel']], how='inner')
-        self._tables['Files']['dbfid'] = ('dbfid' +
-            self._tables['Files']['FileID'].apply(str) + 'n')
-        self._tables['Files']['FileLabel'] = \
-            self._tables['Files']['FileTypeLabel']
+                'ParticipantLabel']], how='left')
+        self.tables['Files']['dbfid'] = ('dbfid' +
+            self.tables['Files']['FileID'].apply(str) + 'n')
+        self.tables['Files']['FileLabel'] = \
+            self.tables['Files']['FileTypeLabel']
+
+
+    def rename(self, filename, dbfid):
+        """
+        Rename a file to include or modify a dbfid code in its filename.
+
+        Parameters
+        ----------
+        file : str
+            Name of the file to rename
+        dbfid : int
+            FileID in database
+
+        Returns
+        -------
+        None.
+        """
+        base, ext = os.path.splitext(filename)
+
+        if 'dbfid' in base:
+            base_left_part, rest = base.split('dbfid')
+            old_file_id, base_right_part = rest.split('n')
+        else:
+            base_left_part = base + '_'
+            base_right_part = ''
+
+        new_filename = (base_left_part + 'dbfid' + str(dbfid) + 'n' +
+                        base_right_part + ext)
+
+        os.rename(filename, new_filename)
+
+
+    def add_file_entry(self, trial_id, file_type_label):
+        """
+        Create a file entry in the database.
+
+        The project's 'Files' table is updated after adding the file entry.
+
+        Parameters
+        ----------
+        trial_id : int
+            Trial identifier in the database. Can be obtained using
+            get(participant, session, trial)['TrialID'].
+        file_type_label str
+            File type label.
+
+        Returns
+        -------
+        None.
+        """
+        # Find the file type ID
+        file_type_table = self.tables['FileTypes']
+        file_type_table = file_type_table[
+            file_type_table['FileTypeLabel'] == file_type_label]
+        file_type_table = file_type_table['FileTypeID']
+        if file_type_table.shape[0] != 1:
+            raise ValueError('No or multiple IDs found for this file type id.')
+        else:
+            file_type_id = file_type_table.iloc[0]
+
+        print(f'Trial {trial_id}, FileTypeID {file_type_id}')
+        print(requests.post(self.url + '/kineticstoolkit/dbinterface.php',
+                            {'username': self.user,
+                             'password': self._password,
+                             'action': 'createfileentry',
+                             'trialid': trial_id,
+                             'filetypeid': file_type_id}).text)
+
+        self.refresh()
+        return
+
+
+    def batch_rename(self, folder, new_file_type_label,
+                     create_file_entries=False, dry_run=True):
+        """
+        Batch-rename a set of files to their new corresponding dbfid.
+
+        This function is helpful to quickly assign new dbfids to a batch
+        of processed file that share the same name as their preprocessed
+        counterpart, when the preprocessed files already have dbfids.
+
+        As a practical example, let's say we have a folder full of raw
+        kinematics take files, and we batch-export those files to a new
+        folder of c3d files. Both the raw take files and the c3d files share
+        the same name, apart from the extension.
+
+        Now, let say a project contains these filetypes:
+            - 'RawKinematics': raw kinematic take files;
+            - 'LabelledKinematics': c3d files with labelled markers.
+
+        If the raw kinematics files were correctly assigned to database entries
+        before batch-exporting, then the exported c3d files contain the
+        original (incorrect) dbfid entry in their file names.
+
+        This function changes the file names of the exported files so that
+        they match their correct entry in the database.
+
+        Parameters
+        ----------
+        folder : str
+            Folder that contains the set of files to rename. These files must
+            have the original dbfid in their name, to identify the trial they
+            belong to.
+        new_file_type_label : str
+            FileTypeLabel as set in the database. For example:
+            'LabelledKinematics'.
+        create_file_entries : bool (optional)
+            If a file entry for the specified file type ID does not exist in
+            the found trial, create the file entry in the database, then
+            rename the file accordingly. Default is False.
+        dry_run : bool (optional)
+            When True, the list of file renames is returned, but no action is
+            actually taken. Default is True.
+
+        Returns
+        -------
+        dict with these keys:
+            'Rename' :  list of tuples (old_file_name, new_file_name).
+            'Ignore' :  list of files without a dbfid.
+            'NoFileTypeLabel' : list of files which associated trial does not
+                                contain the specified FileTypeLabel
+        """
+        out = dict()
+        out['Rename'] = []
+        out['Ignore'] = []
+        out['NoFileTypeLabel'] = []
+
+        # Run through the specified folder
+        files = os.listdir(folder)
+
+        for filename in files:
+            if not 'dbfid' in filename:
+                out['Ignore'].append(filename)
+                continue
+
+            # Extract incorrect FileID
+            filename_left_part, rest = filename.split('dbfid')
+            old_file_id, filename_right_part = rest.split('n')
+
+            old_file_id = int(old_file_id)
+
+            # Find corresponding trial
+            trial_id = self.tables['Files']['TrialID'][
+                self.tables['Files']['FileID'] == old_file_id].iloc[0]
+
+            # Define correct FileID
+            def find_new_file_id():
+                # Return the file ID that corresponds to the specified
+                # trial id and file type label. This is a function so that
+                # it can easily be called twice.
+                trial_files = self.tables['Files'][
+                    self.tables['Files']['TrialID'] == trial_id]
+                trial_files = trial_files['FileID'][
+                    trial_files['FileTypeLabel'] == new_file_type_label]
+
+                if trial_files.shape[0] == 1:
+                    new_file_id = trial_files.iloc[0]
+                else:
+                    new_file_id = None
+                return new_file_id
+
+            new_file_id = find_new_file_id()
+
+            if new_file_id is None and dry_run is False:
+                # No FileID was found for this FileTypeLabel.
+                if create_file_entries is True:
+                    print(f'Adding file entry for {filename}')
+                    self.add_file_entry(trial_id, new_file_type_label)
+                    new_file_id = find_new_file_id()
+
+            if new_file_id is None:
+                # No FileID was found for this FileTypeLabel, even after
+                # creating the file entry. This shouldn't happen unless
+                # on dry runs.
+                print(f'Found no file entry for {filename}')
+                out['NoFileTypeLabel'].append(filename)
+                continue
+
+            # Set new file name
+            new_file_name = (filename_left_part + 'dbfid' +
+                             str(new_file_id) + 'n' +
+                             filename_right_part)
+
+            out['Rename'].append((filename, new_file_name))
+
+        if dry_run:
+            print('Dry run. No file was renamed.')
+        else:
+            for element in out['Rename']:
+                os.rename(folder + '/' + element[0],
+                          folder + '/' + element[1])
+            # Refresh the project, so that new-renamed files can be indexed
+            # accordingly.
+            self.refresh()
+
+        return out
