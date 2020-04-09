@@ -395,9 +395,10 @@ class DBInterface():
             file_name = file_record['FileName']
         else:
             dbfid = file_record['dbfid']
-            file_name = (self.root_folder + '/' + file + '/' +
-                         participant + '.' + session + '.' +
-                         trial + '_' + dbfid + '.ktk.zip')
+            folder_name = self.root_folder + '/' + file
+            os.mkdir(folder_name)
+            file_name = (folder_name + '/' + participant + '.' + session +
+                         '.' + trial + '_' + dbfid + '.ktk.zip')
 
         # Save
         ktk.save(file_name, variable)
@@ -406,6 +407,32 @@ class DBInterface():
         self.refresh()
 
         return file_name
+
+
+    def load(self, participant, session, trial, file):
+        """
+        Load a variable from a BIOMEC referenced file.
+
+        This method load the .ktk.zip file associated to a participant,
+        session, trial and file type.
+
+        Parameters
+        ----------
+        participant : str
+            Participant label. For example, 'P01'
+        session : str
+            Session label. For example, 'SB4320'
+        trial : str
+            Trial label. For example, 'StaticR1'
+        file : str
+            File type label. For example, 'SyncMarkers'
+
+        Returns
+        -------
+        The file's content
+        """
+        return ktk.load(self.get(
+            participant, session, trial, file)['FileName'])
 
 
     def rename(self, filename, dbfid):

@@ -126,7 +126,7 @@ def save(filename, variable):
     Parameters
     ----------
     filename : str
-        The name of the output file. The '.zip' extension is optional, it
+        The name of the output file. The '.ktk.zip' extension is optional, it
         is added automatically.
     variable : <any supported type>
         The variable to be saved. To save multiple variables at once, consider
@@ -141,6 +141,9 @@ def save(filename, variable):
 
     # Change to destination path if specified in filename
     save_folder = os.path.dirname(filename)
+    if save_folder == '':
+        save_folder = '.'
+
     filename = os.path.basename(filename)
     if len(save_folder) > 0:
         os.chdir(save_folder)
@@ -148,6 +151,8 @@ def save(filename, variable):
     # Remove .zip extension if present (to obtain only the base name)
     if filename.lower().endswith('.zip'):
         filename = filename[0:-len('.zip')]
+    elif not filename.lower().endswith('.ktk.zip'):
+        filename = filename + '.ktk'
 
     try:
         shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')

@@ -77,19 +77,20 @@ project.get('P1', 'GymnaseN1', 'Run1', 'Kinematics')['FileName']
 
 # %%
 """
-Saving data and link to BIOMEC
-------------------------------
+Saving data to a BIOMEC referenced file
+---------------------------------------
 The ktk library provides the function ktk.save to save a variable to a
 .ktk.zip file. The ktk.save function is helpful to save temporary results.
 
-Sometimes we need to save results to BIOMEC so that these results become new
-inputs for subsequent work. In this case, we use the dbinterface's save
-method.
+However, sometimes we need to save results to BIOMEC so that these results
+become new inputs for subsequent work. In this case, we use the
+ktk.DBInterface's ``save`` method.
 
 For example, let's say we just synchronized the kinematics for Run1 of
 participant 1:
 """
-synced_kinematics = 'For the demo, this will only be a string.'
+synced_kinematics = {'dummy_data':
+                     'Normally we would save something more useful'}
 
 """
 We can save these kinematics as a file that is referenced in BIOMEC, using:
@@ -101,3 +102,13 @@ This creates the file entry in BIOMEC if needed, then save the file with
 a relevant name into the project folder.
 """
 project.get('P1', 'GymnaseN1', 'Run1', 'SyncedKinematics')['FileName']
+
+"""
+Loading data from a BIOMEC referenced file
+------------------------------------------
+To load back data saved to BIOMEC, we use the ktk.DBInterface's ``load``
+method.
+"""
+test = project.load('P1', 'GymnaseN1', 'Run1', 'SyncedKinematics')
+
+test
