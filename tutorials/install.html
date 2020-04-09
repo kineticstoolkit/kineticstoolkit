@@ -13149,9 +13149,12 @@ print('Pulling origin/master...')
 os.system('git pull origin master')
 
 </code></pre>
-<h2 id="Add-the-kineticstoolkit-folder-to-the-Python-path">Add the kineticstoolkit folder to the Python path<a class="anchor-link" href="#Add-the-kineticstoolkit-folder-to-the-Python-path">&#182;</a></h2><p>In Spyder, there is a PYTHONPATH manager. Add the kineticstoolkit folder that
-you just cloned to the python path, then restart Spyder. From now on,
-<code>import ktk</code> should find and import ktk.</p>
+<h2 id="Configure-Spyder">Configure Spyder<a class="anchor-link" href="#Configure-Spyder">&#182;</a></h2><h3 id="Select-the-correct-matplotlib-framework">Select the correct matplotlib framework<a class="anchor-link" href="#Select-the-correct-matplotlib-framework">&#182;</a></h3><p>In Spyder's preference, go to the <strong>IPython console</strong> item, then to the
+<strong>Graphics</strong> pane. In the <strong>Graphics backend</strong> box, select <strong>Qt5</strong>.</p>
+<h3 id="Add-the-kineticstoolkit-folder-to-the-Python-path">Add the kineticstoolkit folder to the Python path<a class="anchor-link" href="#Add-the-kineticstoolkit-folder-to-the-Python-path">&#182;</a></h3><p>In Spyder, look for the <strong>PYTHONPATH manager</strong>. Open this manager and add the
+<code>kineticstoolkit</code> folder that you just cloned to the python path.</p>
+<p>Restart Spyder. From now on, <code>import ktk</code> should find and import ktk.</p>
+<hr>
 <p>Congratulation, ktk is now installed. From now on, you can always update to
 the most recent version using:</p>
 

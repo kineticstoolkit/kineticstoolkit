@@ -47,11 +47,22 @@ username.
     %cd kineticstoolkit
     os.system('git pull origin master')
 
-Add the kineticstoolkit folder to the Python path
+Configure Spyder
 -------------------------------------------------
-In Spyder, there is a PYTHONPATH manager. Add the kineticstoolkit folder that
-you just cloned to the python path, then restart Spyder. From now on,
-`import ktk` should find and import ktk.
+
+### Select the correct matplotlib framework ###
+
+In Spyder's preference, go to the **IPython console** item, then to the
+**Graphics** pane. In the **Graphics backend** box, select **Qt5**.
+
+### Add the kineticstoolkit folder to the Python path ###
+
+In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the
+`kineticstoolkit` folder that you just cloned to the python path.
+
+Restart Spyder. From now on, `import ktk` should find and import ktk.
+
+---------------------------------------------------
 
 Congratulation, ktk is now installed. From now on, you can always update to
 the most recent version using:

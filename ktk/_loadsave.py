@@ -160,8 +160,9 @@ def save(filename, variable):
     _save_to_current_folder(variable, filename)
 
     os.chdir(original_folder)
-    shutil.make_archive(filename, 'zip', 'KTK_SAVE_TEMPORARY_FOLDER')
-    shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
+    shutil.make_archive(save_folder + '/' + filename, 'zip',
+                        save_folder + '/KTK_SAVE_TEMPORARY_FOLDER')
+    shutil.rmtree(save_folder + '/KTK_SAVE_TEMPORARY_FOLDER')
 
 
 def _load_current_folder():

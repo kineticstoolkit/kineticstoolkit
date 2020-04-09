@@ -1,8 +1,8 @@
 # %%
 """
-dbinterface
+DBInterface
 ========================
-ktk.dbinterface connects to the BIOMEC database
+The ktk.DBInterface class interfaces with the BIOMEC database
 (https://felixchenier.uqam.ca/biomec) to fetch all non-personal information
 about a specified project.
 
@@ -12,61 +12,92 @@ valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.
 import ktk
 
 """
-Fetching a complete project from BIOMEC
+Connecting to a project in BIOMEC
 ---------------------------------------
-The easiest way to fetch a project is to use the fetch_project function:
+The class constructor connects to the project and asks the user's credentials
+and the folder where the data files are stored.
 
-``project = ktk.dbinterface.fetch_project(projectLabel)``
+``project = ktk.DBInterface(project_label)``
 
-which is an interactive function. For example:
+For example:
 
-``project = ktk.dbinterface.fetch_project('FC_XX18A')``
+``project = ktk.DBInterface.fetch_project('FC_XX18A')``
 
-The fetchproject function can also be run non-interactively:
+The constructor can also be run non-interactively:
 """
 project_label = 'dummyProject'
 username = 'dummyUser'
 password = 'dummyPassword'
 root_folder = 'data/dbinterface/FC_XX18A'
 url = ''
-url = 'http://localhost/biomec.uqam.ca'  # This line is only for this tutorial, please don't execute it.
+url = 'http://localhost/biomec'  # This line is only for this tutorial,
+                                         # please don't execute it.
 
-project = ktk.dbinterface.fetch_project(project_label, user=username, password=password, root_folder=root_folder,
-                                       url=url)
+project = ktk.DBInterface(project_label, user=username, password=password,
+                          root_folder=root_folder, url=url)
 
 # %%
 """
-Navigating in the project structure
------------------------------------
-The result of ktk.dbinterface.fetch_project is a nested dict with all the project information. Here are some examples to access all the different values contained in this tree.
+Navigating in the project
+-------------------------
+Just typing ``project`` gives an overview of the project's content.
 """
-
-# %%
 project
 
 # %%
-project['Participants']
+"""
+The method ``get`` is used to extract the project's contents. It always returns
+a dict with the fields corresponding to the request. For example:
+"""
+project.get()
 
 # %%
-project['Participants']['P1']
+project.get('P1')
 
 # %%
-project['Participants']['P1']['Sessions']
+project.get('P1')['Sessions']
 
 # %%
-project['Participants']['P1']['Sessions']['GymnaseN1']
+project.get('P1', 'GymnaseN1')
 
 # %%
-project['Participants']['P1']['Sessions']['GymnaseN1']['Trials']
+project.get('P1', 'GymnaseN1')['Trials']
 
 # %%
-project['Participants']['P1']['Sessions']['GymnaseN1']['Trials']['Run1']
+project.get('P1', 'GymnaseN1', 'Run1')
 
 # %%
-project['Participants']['P1']['Sessions']['GymnaseN1']['Trials']['Run1']['Files']
+project.get('P1', 'GymnaseN1', 'Run1')['Files']
 
 # %%
-project['Participants']['P1']['Sessions']['GymnaseN1']['Trials']['Run1']['Files']['Kinematics']
+project.get('P1', 'GymnaseN1', 'Run1', 'Kinematics')
 
 # %%
-project['Participants']['P1']['Sessions']['GymnaseN1']['Trials']['Run1']['Files']['Kinematics']['FileName']
+project.get('P1', 'GymnaseN1', 'Run1', 'Kinematics')['FileName']
+
+# %%
+"""
+Saving data and link to BIOMEC
+------------------------------
+The ktk library provides the function ktk.save to save a variable to a
+.ktk.zip file. The ktk.save function is helpful to save temporary results.
+
+Sometimes we need to save results to BIOMEC so that these results become new
+inputs for subsequent work. In this case, we use the dbinterface's save
+method.
+
+For example, let's say we just synchronized the kinematics for Run1 of
+participant 1:
+"""
+synced_kinematics = 'For the demo, this will only be a string.'
+
+"""
+We can save these kinematics as a file that is referenced in BIOMEC, using:
+"""
+project.save('P1', 'GymnaseN1', 'Run1', 'SyncedKinematics', synced_kinematics)
+
+"""
+This creates the file entry in BIOMEC if needed, then save the file with
+a relevant name into the project folder.
+"""
+project.get('P1', 'GymnaseN1', 'Run1', 'SyncedKinematics')['FileName']

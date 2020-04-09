@@ -13119,7 +13119,7 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="dbinterface">dbinterface<a class="anchor-link" href="#dbinterface">&#182;</a></h1><p>ktk.dbinterface connects to the BIOMEC database
+<h1 id="DBInterface">DBInterface<a class="anchor-link" href="#DBInterface">&#182;</a></h1><p>The ktk.DBInterface class interfaces with the BIOMEC database
 (<a href="https://felixchenier.uqam.ca/biomec">https://felixchenier.uqam.ca/biomec</a>) to fetch all non-personal information
 about a specified project.</p>
 <p>Please note that the user/password combination used in this tutorial is not
@@ -13144,11 +13144,12 @@ valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.<
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Fetching-a-complete-project-from-BIOMEC">Fetching a complete project from BIOMEC<a class="anchor-link" href="#Fetching-a-complete-project-from-BIOMEC">&#182;</a></h2><p>The easiest way to fetch a project is to use the fetch_project function:</p>
-<p><code>project = ktk.dbinterface.fetch_project(projectLabel)</code></p>
-<p>which is an interactive function. For example:</p>
-<p><code>project = ktk.dbinterface.fetch_project('FC_XX18A')</code></p>
-<p>The fetchproject function can also be run non-interactively:</p>
+<h2 id="Connecting-to-a-project-in-BIOMEC">Connecting to a project in BIOMEC<a class="anchor-link" href="#Connecting-to-a-project-in-BIOMEC">&#182;</a></h2><p>The class constructor connects to the project and asks the user's credentials
+and the folder where the data files are stored.</p>
+<p><code>project = ktk.DBInterface(project_label)</code></p>
+<p>For example:</p>
+<p><code>project = ktk.DBInterface.fetch_project('FC_XX18A')</code></p>
+<p>The constructor can also be run non-interactively:</p>
 
 </div>
 </div>
@@ -13163,34 +13164,14 @@ valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.<
 <span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;dummyPassword&#39;</span>
 <span class="n">root_folder</span> <span class="o">=</span> <span class="s1">&#39;data/dbinterface/FC_XX18A&#39;</span>
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost/biomec.uqam.ca&#39;</span>  <span class="c1"># This line is only for this tutorial, please don&#39;t execute it.</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost/biomec&#39;</span>  <span class="c1"># This line is only for this tutorial,</span>
+                                         <span class="c1"># please don&#39;t execute it.</span>
 
-<span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">dbinterface</span><span class="o">.</span><span class="n">fetch_project</span><span class="p">(</span><span class="n">project_label</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span> <span class="n">root_folder</span><span class="o">=</span><span class="n">root_folder</span><span class="p">,</span>
-                                       <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
+<span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                          <span class="n">root_folder</span><span class="o">=</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>Fetching project on http://localhost/biomec.uqam.ca
-Assigning root folder
-Building file associations
-Done
-</pre>
-</div>
-</div>
-
 </div>
 </div>
 
@@ -13198,7 +13179,7 @@ Done
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Navigating-in-the-project-structure">Navigating in the project structure<a class="anchor-link" href="#Navigating-in-the-project-structure">&#182;</a></h2><p>The result of ktk.dbinterface.fetch_project is a nested dict with all the project information. Here are some examples to access all the different values contained in this tree.</p>
+<h2 id="Navigating-in-the-project">Navigating in the project<a class="anchor-link" href="#Navigating-in-the-project">&#182;</a></h2><p>Just typing <code>project</code> gives an overview of the project's content.</p>
 
 </div>
 </div>
@@ -13227,15 +13208,25 @@ Done
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{
-    &#39;DuplicateFiles&#39;: &lt;list of 0 items&gt;
-             &#39;Files&#39;: &lt;list of 7 items&gt;,
-      &#39;MissingFiles&#39;: &lt;list of 0 items&gt;,
-      &#39;Participants&#39;: &lt;dict with 1 entries&gt;,
-         &#39;ProjectID&#39;: 11,
-      &#39;ProjectLabel&#39;: &#39;dummyProject&#39;,
-        &#39;RootFolder&#39;: &#39;data/dbinterface/FC_XX18A&#39;,
-}</pre>
+<pre>--------------------------------------------------
+DBInterface
+--------------------------------------------------
+          url: http://localhost/biomec
+         user: dummyUser
+project_label: dummyProject
+--------------------------------------------------
+participants:
+[&#39;P1&#39;]
+--------------------------------------------------
+sessions:
+[&#39;GymnaseN1&#39;]
+--------------------------------------------------
+trials:
+[&#39;Run1&#39;, &#39;Run2&#39;, &#39;Walk1&#39;, &#39;Walk2&#39;]
+--------------------------------------------------
+files:
+[&#39;Kinematics&#39;, &#39;Kinetics&#39;, &#39;SyncedKinematics&#39;]
+--------------------------------------------------</pre>
 </div>
 
 </div>
@@ -13243,13 +13234,22 @@ Done
 </div>
 </div>
 
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The method <code>get</code> is used to extract the project's contents. It always returns
+a dict with the fields corresponding to the request. For example:</p>
+
+</div>
+</div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
 <div class="prompt input_prompt">In&nbsp;[4]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
 </pre></div>
 
     </div>
@@ -13269,7 +13269,12 @@ Done
 
 <div class="output_text output_subarea output_execute_result">
 <pre>{
-    &#39;P1&#39;: &lt;dict with 11 entries&gt;
+        &#39;Participants&#39;: &lt;list of 1 items&gt;
+      &#39;ProjectEndDate&#39;: None,
+           &#39;ProjectID&#39;: 11,
+        &#39;ProjectLabel&#39;: &#39;dummyProject&#39;,
+    &#39;ProjectStartDate&#39;: None,
+        &#39;ProjectTitle&#39;: &#39;Dummy Project for the ktkDBInterface tutorial&#39;,
 }</pre>
 </div>
 
@@ -13284,7 +13289,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[5]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13304,17 +13309,19 @@ Done
 
 <div class="output_text output_subarea output_execute_result">
 <pre>{
-             &#39;AIS&#39;: &#39;&#39;,
-            &#39;DBID&#39;: 127,
-     &#39;DateOfBirth&#39;: &#39;&#39;,
-    &#39;DateOfInjury&#39;: &#39;&#39;,
-    &#39;DominantSide&#39;: &#39;&#39;,
-           &#39;Label&#39;: &#39;P1&#39;,
-       &#39;Pathology&#39;: &#39;Pathologie inconnue&#39;,
-        &#39;Sessions&#39;: &lt;dict with 1 entries&gt;,
-             &#39;Sex&#39;: &#39;&#39;,
-       &#39;Traumatic&#39;: &#39;&#39;
-             &#39;UID&#39;: 1,
+                 &#39;AIS&#39;: None,
+         &#39;DateOfBirth&#39;: None,
+        &#39;DateOfInjury&#39;: None,
+        &#39;DominantSide&#39;: None,
+       &#39;ParticipantID&#39;: 127,
+    &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+           &#39;Pathology&#39;: &#39;Pathologie inconnue&#39;,
+           &#39;ProjectID&#39;: 11,
+        &#39;ProjectLabel&#39;: &#39;dummyProject&#39;,
+            &#39;Sessions&#39;: &lt;list of 1 items&gt;
+                 &#39;Sex&#39;: None,
+           &#39;Traumatic&#39;: None,
+                 &#39;UID&#39;: 1,
 }</pre>
 </div>
 
@@ -13329,7 +13336,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[6]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">)[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13348,9 +13355,7 @@ Done
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{
-    &#39;GymnaseN1&#39;: &lt;dict with 6 entries&gt;
-}</pre>
+<pre>[&#39;GymnaseN1&#39;]</pre>
 </div>
 
 </div>
@@ -13364,7 +13369,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[7]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13384,12 +13389,15 @@ Done
 
 <div class="output_text output_subarea output_execute_result">
 <pre>{
-          &#39;DBID&#39;: 127,
-          &#39;Date&#39;: &#39;2018-10-17&#39;,
-         &#39;Notes&#39;: &#39;&#39;
-         &#39;Place&#39;: &#39;GymnaseN&#39;,
-    &#39;Repetition&#39;: &lt;list of 1 items&gt;,
-        &#39;Trials&#39;: &lt;dict with 3 entries&gt;,
+        &#39;ParticipantID&#39;: 127,
+     &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+           &#39;PlaceLabel&#39;: &#39;GymnaseN&#39;,
+          &#39;SessionDate&#39;: &#39;2018-10-17&#39;,
+            &#39;SessionID&#39;: 127,
+         &#39;SessionLabel&#39;: &#39;GymnaseN1&#39;,
+         &#39;SessionNotes&#39;: None,
+    &#39;SessionRepetition&#39;: 1,
+               &#39;Trials&#39;: &lt;list of 4 items&gt;
 }</pre>
 </div>
 
@@ -13404,7 +13412,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[8]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;Trials&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">)[</span><span class="s1">&#39;Trials&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13423,11 +13431,7 @@ Done
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{
-     &#39;Run1&#39;: &lt;dict with 6 entries&gt;,
-    &#39;Walk1&#39;: &lt;dict with 6 entries&gt;,
-    &#39;Walk2&#39;: &lt;dict with 6 entries&gt;
-}</pre>
+<pre>[&#39;Run1&#39;, &#39;Run2&#39;, &#39;Walk1&#39;, &#39;Walk2&#39;]</pre>
 </div>
 
 </div>
@@ -13441,7 +13445,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[9]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;Trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13461,12 +13465,17 @@ Done
 
 <div class="output_text output_subarea output_execute_result">
 <pre>{
-           &#39;DBID&#39;: 3152,
-    &#39;Description&#39;: &#39;&#39;,
-          &#39;Files&#39;: &lt;dict with 2 entries&gt;,
-          &#39;Notes&#39;: &#39;&#39;
-     &#39;Repetition&#39;: &lt;list of 1 items&gt;,
-      &#39;TrialType&#39;: &#39;Run&#39;,
+                   &#39;Files&#39;: &lt;list of 2 items&gt;
+        &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+               &#39;SessionID&#39;: 127,
+            &#39;SessionLabel&#39;: &#39;GymnaseN1&#39;,
+                 &#39;TrialID&#39;: 3150,
+              &#39;TrialLabel&#39;: &#39;Run1&#39;,
+              &#39;TrialNotes&#39;: None,
+         &#39;TrialRepetition&#39;: 1,
+    &#39;TrialTypeDescription&#39;: None,
+             &#39;TrialTypeID&#39;: 204,
+          &#39;TrialTypeLabel&#39;: &#39;Run&#39;,
 }</pre>
 </div>
 
@@ -13481,7 +13490,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[10]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;Trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">][</span><span class="s1">&#39;Files&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">)[</span><span class="s1">&#39;Files&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13500,10 +13509,7 @@ Done
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>{
-    &#39;Kinematics&#39;: &lt;dict with 3 entries&gt;,
-      &#39;Kinetics&#39;: &lt;dict with 3 entries&gt;
-}</pre>
+<pre>[&#39;Kinematics&#39;, &#39;Kinetics&#39;]</pre>
 </div>
 
 </div>
@@ -13517,7 +13523,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;Trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">][</span><span class="s1">&#39;Files&#39;</span><span class="p">][</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)</span>
 </pre></div>
 
     </div>
@@ -13537,9 +13543,19 @@ Done
 
 <div class="output_text output_subarea output_execute_result">
 <pre>{
-    &#39;Description&#39;: &#39;Kinematics recorded using a Vicon system&#39;,
-       &#39;FileName&#39;: &#39;data/dbinterface/FC_XX18A/kinetics_dbfid6683n.csv&#39;
-          &#39;dbfid&#39;: &#39;dbfid6683n&#39;,
+    &#39;FileFormatExtension&#39;: None,
+        &#39;FileFormatLabel&#39;: &#39;C3D&#39;,
+                 &#39;FileID&#39;: 6681,
+              &#39;FileLabel&#39;: &#39;Kinematics&#39;
+               &#39;FileName&#39;: &#39;data/dbinterface/FC_XX18A/kinetics_dbfid6681n.csv&#39;,
+    &#39;FileTypeDescription&#39;: &#39;Kinematics recorded using a Vicon system&#39;,
+             &#39;FileTypeID&#39;: 29,
+          &#39;FileTypeLabel&#39;: &#39;Kinematics&#39;,
+       &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+           &#39;SessionLabel&#39;: &#39;GymnaseN1&#39;,
+                &#39;TrialID&#39;: 3150,
+             &#39;TrialLabel&#39;: &#39;Run1&#39;,
+                  &#39;dbfid&#39;: &#39;dbfid6681n&#39;,
 }</pre>
 </div>
 
@@ -13554,7 +13570,7 @@ Done
 <div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="p">[</span><span class="s1">&#39;Participants&#39;</span><span class="p">][</span><span class="s1">&#39;P1&#39;</span><span class="p">][</span><span class="s1">&#39;Sessions&#39;</span><span class="p">][</span><span class="s1">&#39;GymnaseN1&#39;</span><span class="p">][</span><span class="s1">&#39;Trials&#39;</span><span class="p">][</span><span class="s1">&#39;Run1&#39;</span><span class="p">][</span><span class="s1">&#39;Files&#39;</span><span class="p">][</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">][</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span>
 </pre></div>
 
     </div>
@@ -13573,7 +13589,7 @@ Done
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;data/dbinterface/FC_XX18A/kinetics_dbfid6683n.csv&#39;</pre>
+<pre>&#39;data/dbinterface/FC_XX18A/kinetics_dbfid6681n.csv&#39;</pre>
 </div>
 
 </div>

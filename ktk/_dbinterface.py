@@ -61,7 +61,9 @@ class DBInterface():
         else:
             self.root_folder = root_folder
 
+
         # Assign tables
+        self.tables = dict()
         self.refresh()
 
 
@@ -246,16 +248,15 @@ class DBInterface():
 
         return dict_out
 
-    def refresh(self):
-        """Update from database and reindex files."""
+    def _refresh_tables(self):
+        """Fetch tables on BIOMEC and merge them in the class instance."""
+
         def repetition_to_str(repetition):
             try:
                 repetition = str(int(repetition))
             except Exception:
                 repetition = ''
             return repetition
-
-        self.tables = dict()
 
         self.tables['Projects'] = self._fetch_table('Projects')
 
@@ -287,7 +288,6 @@ class DBInterface():
         # Files
         self.tables['Files'] = self._fetch_table('Files')
         self.tables['FileTypes'] = self._fetch_table('FileTypes')
-        self.tables['FileAssociations'] = self._scan_files()
 
         self.tables['Files'] = self.tables['Files'].merge(
             self.tables['FileTypes'], how='left')
@@ -301,6 +301,111 @@ class DBInterface():
             self.tables['Files']['FileID'].apply(str) + 'n')
         self.tables['Files']['FileLabel'] = \
             self.tables['Files']['FileTypeLabel']
+
+
+    def refresh(self):
+        """Update from database and reindex files."""
+
+        self.tables['FileAssociations'] = self._scan_files()
+        self._refresh_tables()
+
+
+    def create_file_entry(self, trial_id, file_type_label):
+        """
+        Create a file entry in the database.
+
+        The project's tables are updated after adding the file entry.
+
+        Parameters
+        ----------
+        trial_id : int
+            Trial identifier in the database. Can be obtained using
+            get(participant, session, trial)['TrialID'].
+        file_type_label str
+            File type label.
+
+        Returns
+        -------
+        None.
+        """
+        # Find the file type ID
+        file_type_table = self.tables['FileTypes']
+        file_type_table = file_type_table[
+            file_type_table['FileTypeLabel'] == file_type_label]
+        file_type_table = file_type_table['FileTypeID']
+        if file_type_table.shape[0] != 1:
+            raise ValueError('No or multiple IDs found for this file type id.')
+        else:
+            file_type_id = file_type_table.iloc[0]
+
+        print(requests.post(self.url + '/kineticstoolkit/dbinterface.php',
+                            {'username': self.user,
+                             'password': self._password,
+                             'action': 'createfileentry',
+                             'trialid': trial_id,
+                             'filetypeid': file_type_id}).text)
+
+        self._refresh_tables()
+        return
+
+
+    def save(self, participant, session, trial, file, variable):
+        """
+        Save a variable to a BIOMEC referenced file.
+
+        This method saves the specified variable following either of these
+        cases:
+            A) If the participant, session, trial and file labels are already
+               associated to a file on disk:
+                   The file is overwritten.
+            B) If the participant, session, trial and file labels are
+               associated to a file entry but no file exists on disk:
+                   The file is created and saved in:
+                   root_folder/file_label/participant_label.session_label.
+                       trial_label.ktk.zip
+            C) If the participant, session, trial and file labels do not
+               correspond to a file entry in the database:
+                   - A file entry is created in the database;
+                   - Then the file is saved as in case B.
+
+        Parameters
+        ----------
+        participant : str
+            Participant label. For example, 'P01'
+        session : str
+            Session label. For example, 'SB4320'
+        trial : str
+            Trial label. For example, 'StaticR1'
+        file : str
+            File type label. For example, 'SyncMarkers'
+        variable : any variable supported by ktk.save
+
+        Returns
+        -------
+        str : the file path
+        """
+        # Create the file entry if not already in database
+        if file not in self.get(participant, session, trial)['Files']:
+            trial_id = self.get(participant, session, trial)['TrialID']
+            self.create_file_entry(trial_id, file)
+
+        # Set the filename
+        file_record = self.get(participant, session, trial, file)
+        if 'FileName' in file_record and file_record['FileName'] is not None:
+            file_name = file_record['FileName']
+        else:
+            dbfid = file_record['dbfid']
+            file_name = (self.root_folder + '/' + file + '/' +
+                         participant + '.' + session + '.' +
+                         trial + '_' + dbfid + '.ktk.zip')
+
+        # Save
+        ktk.save(file_name, variable)
+
+        # Refresh
+        self.refresh()
+
+        return file_name
 
 
     def rename(self, filename, dbfid):
@@ -333,54 +438,14 @@ class DBInterface():
         os.rename(filename, new_filename)
 
 
-    def add_file_entry(self, trial_id, file_type_label):
-        """
-        Create a file entry in the database.
-
-        The project's 'Files' table is updated after adding the file entry.
-
-        Parameters
-        ----------
-        trial_id : int
-            Trial identifier in the database. Can be obtained using
-            get(participant, session, trial)['TrialID'].
-        file_type_label str
-            File type label.
-
-        Returns
-        -------
-        None.
-        """
-        # Find the file type ID
-        file_type_table = self.tables['FileTypes']
-        file_type_table = file_type_table[
-            file_type_table['FileTypeLabel'] == file_type_label]
-        file_type_table = file_type_table['FileTypeID']
-        if file_type_table.shape[0] != 1:
-            raise ValueError('No or multiple IDs found for this file type id.')
-        else:
-            file_type_id = file_type_table.iloc[0]
-
-        print(f'Trial {trial_id}, FileTypeID {file_type_id}')
-        print(requests.post(self.url + '/kineticstoolkit/dbinterface.php',
-                            {'username': self.user,
-                             'password': self._password,
-                             'action': 'createfileentry',
-                             'trialid': trial_id,
-                             'filetypeid': file_type_id}).text)
-
-        self.refresh()
-        return
-
-
     def batch_rename(self, folder, new_file_type_label,
                      create_file_entries=False, dry_run=True):
         """
         Batch-rename a set of files to their new corresponding dbfid.
 
         This function is helpful to quickly assign new dbfids to a batch
-        of processed file that share the same name as their preprocessed
-        counterpart, when the preprocessed files already have dbfids.
+        of processed file based on files that are already referenced in the
+        database.
 
         As a practical example, let's say we have a folder full of raw
         kinematics take files, and we batch-export those files to a new
@@ -467,8 +532,8 @@ class DBInterface():
             if new_file_id is None and dry_run is False:
                 # No FileID was found for this FileTypeLabel.
                 if create_file_entries is True:
-                    print(f'Adding file entry for {filename}')
-                    self.add_file_entry(trial_id, new_file_type_label)
+                    print(f'Creating file entry for {filename}')
+                    self.create_file_entry(trial_id, new_file_type_label)
                     new_file_id = find_new_file_id()
 
             if new_file_id is None:
