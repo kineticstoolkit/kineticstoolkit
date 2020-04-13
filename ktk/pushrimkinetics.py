@@ -10,6 +10,7 @@ import ktk
 import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
+import warnings
 
 
 def __dir__():
@@ -229,7 +230,8 @@ def calculate_forces_and_moments(kinetics, calibration_id):
             'S18-179':      PATHOKIN Summer 2018, Serial 179
             'S18-180':      PATHOKIN Summer 2018, Serial 180
             'S18-181':      PATHOKIN Summer 2018, Serial 181
-            'S18-Racing-Prototype1':   Racing wheelchair prototype
+            'S18-Racing-Prototype1': Racing wheel prototype
+            'W20-Racing-Prototype1': Racing wh proto with calibration matrix
 
     Returns
     -------
@@ -293,6 +295,22 @@ def calculate_forces_and_moments(kinetics, calibration_id):
         forcecell = 'forcecell'
         gains = [-0.0314, -0.0300, 0.0576, 0.0037, 0.0019, -0.0019]
         offsets = [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]
+    
+    elif calibration_id == 'S20-Racing-Prototype1':
+        forcecell = 'matrix'
+        # Gains from calibration matrix
+        board_gains = np.array([-2., -2., -2., -2., -4., -4.])
+        adc_gains = (2.**15) / 10
+        gains = (np.array([
+            [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
+            [-0.840, 201.396, 2.119, 0.083, -6.877, 4.482],
+            [-1.935, -1.643, 402.286, 1.687, 0.897, -23.616],
+            [0.213, 0.122, 0.120, 25.190, -0.013, 0.147],
+            [-0.072, 0.286, 0.076, 0.012, 25.430, 0.146],
+            [0.016, -0.015, 0.046, -0.099, -0.076, 25.206]]) /
+            adc_gains / board_gains)
+        # Offsets from home calibration (S18-Racing-Prototype1)
+        offsets = [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]
 
     else:
         raise ValueError('This calibration ID is not available.')
@@ -340,7 +358,17 @@ def calculate_forces_and_moments(kinetics, calibration_id):
 
     elif forcecell == 'forcecell':
 
-        forces_moments = gains * kinetics.data['Channels'] + offsets
+        forces_moments = gains * kinetics.data['Channels'] + offsets        
+
+    elif forcecell == 'matrix':
+        
+        n_frames = kinetics.data['Channels'].shape[0]
+
+        forces_moments = np.empty((n_frames, 6))
+        for i_frame in range(n_frames):
+            forces_moments[i_frame] = (gains @
+                                       kinetics.data['Channels'][i_frame] +
+                                       offsets)
 
     # Format these data in the output timeseries
     kinetics = kinetics.copy()
@@ -498,9 +526,3 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
     tsout.events = events
 
     return tsout
-
-    ts_force.events = events
-
-
-    ts_force.plot()
-
