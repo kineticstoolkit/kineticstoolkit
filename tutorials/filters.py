@@ -10,8 +10,8 @@ import numpy as np
 
 # %%
 """
-Savitzky-Golay Filter
----------------------
+Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter
+------------------------------------------------------------------
 This filter applies the `scipy.signal.savgol_filter` filter to a TimeSeries.
 """
 help(ktk.filters.savgol)
@@ -84,8 +84,8 @@ assert np.max(np.abs(ddoty.data['data2'][tokeep] -
 
 # %%
 """
-Smooth Filter
--------------
+Smoothing a TimeSeries
+----------------------
 The smooth filter `ktk.smooth` is a convenience function that smooths a
 TimeSeries using a moving average of N samples. It calls the Savitzky-Golay
 filter with a polynom order of 0.

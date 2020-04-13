@@ -48,7 +48,7 @@ kinetics
 kinetics.data
 
 # %%
-plt.figure()
+plt.clf()
 kinetics.plot(['Forces', 'Moments'])
 
 # %%
@@ -87,7 +87,7 @@ Let's apply this function on the data we just loaded.
 """
 kinetics = ktk.pushrimkinetics.remove_sinusoids(kinetics)
 
-plt.figure()
+plt.clf()
 kinetics.plot(['Forces', 'Moments'])
 
 # %% exclude
@@ -112,7 +112,7 @@ baseline = ktk.pushrimkinetics.read_file(
         'data/pushrimkinetics/sample_swl_overground_baseline_withrubber.csv')
 kinetics = ktk.pushrimkinetics.remove_sinusoids(kinetics, baseline)
 
-plt.figure()
+plt.clf()
 kinetics.plot(['Forces', 'Moments'])
 
 # %% exclude
@@ -132,7 +132,7 @@ multiplying the velocity by the propulsion moment, using the
 kinetics = ktk.pushrimkinetics.calculate_velocity(kinetics)
 kinetics = ktk.pushrimkinetics.calculate_power(kinetics)
 
-plt.figure()
+plt.clf()
 kinetics.plot(['Velocity', 'Power'])
 
 # %%
@@ -160,7 +160,7 @@ _assert_almost_equal(np.mean(float_event_times), 17.212175000000002)
 """
 We see that the TimeSeries now has 77 items. Let's see these events on a plot.
 """
-plt.figure()
+plt.clf()
 kinetics.plot(['Forces', 'Moments'])
 
 # %%
@@ -178,7 +178,7 @@ the ``pushend`` event.
 """
 kinetics = ktk.cycles.time_normalize(kinetics, 'pushstart', 'pushend')
 
-plt.figure()
+plt.clf()
 kinetics.plot(['Forces', 'Moments'])
 
 # %%
@@ -191,7 +191,7 @@ data = ktk.cycles.get_reshaped_time_normalized_data(kinetics)
 data
 
 # %%
-plt.figure()
+plt.clf()
 
 for i in range(data['Forces'].shape[0]):
     plt.plot(data['Forces'][i])
