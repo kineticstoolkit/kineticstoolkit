@@ -180,8 +180,29 @@ class TimeSeries():
         """
         if signal_name in self.data_info:   # Assign the value
             self.data_info[signal_name][info_name] = value
-        else: #  Create and assign value
+        else:  # Create and assign value
             self.data_info[signal_name] = {info_name: value}
+
+    def rename_data(self, old_data_field, new_data_field):
+        """
+        Rename a key in data and data_info.
+
+        Parameters
+        ----------
+        old_data_field : str
+            Name of the data key.
+        new_data_field : str
+            New name of the data key.
+
+        Returns
+        -------
+        None.
+
+        """
+        if old_data_field in self.data:
+            self.data[new_data_field] = self.data.pop(old_data_field)
+        if old_data_field in self.data_info:
+            self.data_info[new_data_field] = self.data_info.pop(old_data_field)
 
     def add_event(self, time, name='event'):
         """
