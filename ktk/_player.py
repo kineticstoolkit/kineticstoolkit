@@ -117,13 +117,13 @@ class Player:
         self.current_frame = current_frame
         self.marker_radius = marker_radius
         self.rigid_body_size = rigid_body_size
-        self.running = False
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
         self.target = target
         self.translation = translation
         self.playback_speed = 1.0
+        self.anim = None
 
         self.objects = dict()
         self._colors = ['r', 'g', 'b', 'y', 'c', 'm', 'w']
@@ -213,10 +213,10 @@ class Player:
 
         plt.axis([-1.5, 1.5, -1, 1])
 
-        # Start the animation timer
-        self.anim = animation.FuncAnimation(self.objects['Figure'],
-                                            self._on_timer,
-                                            interval=33)  # 30 ips
+        # # Start the animation timer
+        # self.anim = animation.FuncAnimation(self.objects['Figure'],
+        #                                     self._on_timer,
+        #                                     interval=33)  # 30 ips
 
         # Connect the callback functions
         self.objects['Figure'].canvas.mpl_connect(
@@ -426,8 +426,15 @@ class Player:
                 for i_link in range(n_links):
                     marker1 = self.segments[segment]['Links'][i_link][0]
                     marker2 = self.segments[segment]['Links'][i_link][1]
-                    coordinates[2*i_link] = segment_markers[marker1]
-                    coordinates[2*i_link+1] = segment_markers[marker2]
+                    if marker1 in segment_markers:
+                        coordinates[2*i_link] = segment_markers[marker1]
+                    else:
+                        coordinates[2*i_link] = np.nan
+
+                    if marker2 in segment_markers:
+                        coordinates[2*i_link+1] = segment_markers[marker2]
+                    else:
+                        coordinates[2*i_link+1] = np.nan
 
                 x, y = get_perspective(coordinates[:, 0],
                                        coordinates[:, 1],
@@ -449,6 +456,8 @@ class Player:
         self.objects['Figure'].canvas.set_window_title(
                 f'Frame {self.current_frame}, ' +
                 '%2.2f s.' % self.time[self.current_frame])
+
+        self.objects['Figure'].canvas.draw()
 
     # ------------------------------------
     # Helper functions
@@ -481,8 +490,11 @@ class Player:
     # ------------------------------------
     # Callbacks
     def _on_timer(self, _):
-        """Callback for the animation timer object."""
-        if self.running is True:
+        if self.anim is not None:
+            # We check self.anim because the garbage collector may take time
+            # before deleting the animation timer, and unreferencing the
+            # animation timer is the recommended way to deactivate a timer.
+            """Callback for the animation timer object."""
             current_frame = self.current_frame
             self._set_time(self.time[self.current_frame] +
                            self.playback_speed * (
@@ -493,6 +505,7 @@ class Player:
                 # advance a frame.
                 self._set_frame(self._current_frame + 1)
             self.state['SystemTimeOnLastUpdate'] = time.time()
+            self._update_plots()
 
     def _on_pick(self, event):
         """Callback for marker selection."""
@@ -510,12 +523,21 @@ class Player:
     def _on_key(self, event):
         """Callback for keyboard key pressed."""
         if event.key == ' ':
-            if self.running is True:
-                self.running = False
-            else:
+            if self.anim is None:
+                # Start the animation timer
                 self.state['SystemTimeOnLastUpdate'] = time.time()
                 self.state['SelfTimeOnPlay'] = self.time[self.current_frame]
                 self.running = True
+
+                # Start the animation timer
+                self.anim = animation.FuncAnimation(self.objects['Figure'],
+                                                    self._on_timer,
+                                                    interval=33)  # 30 ips
+                self._update_plots()
+
+            else:
+                self.anim = None
+
 
         elif event.key == 'left':
             self._set_frame(self.current_frame - 1)
@@ -600,7 +622,6 @@ class Player:
             self.state['MouseRightPressed'] = False
 
     def _on_mouse_motion(self, event):
-
         # Pan:
         if ((self.state['MouseLeftPressed'] and self.state['ShiftPressed']) or
                 self.state['MouseMiddlePressed']):
