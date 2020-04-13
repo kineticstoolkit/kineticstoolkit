@@ -393,10 +393,16 @@ class DBInterface():
         file_record = self.get(participant, session, trial, file)
         if 'FileName' in file_record and file_record['FileName'] is not None:
             file_name = file_record['FileName']
+            if not file_name.lower().endswith('.ktk.zip'):
+                raise ValueError('This would overwrite a non-ktk file.')
+
         else:
             dbfid = file_record['dbfid']
             folder_name = self.root_folder + '/' + file
-            os.mkdir(folder_name)
+            try:
+                os.mkdir(folder_name)
+            except FileExistsError:
+                pass
             file_name = (folder_name + '/' + participant + '.' + session +
                          '.' + trial + '_' + dbfid + '.ktk.zip')
 
