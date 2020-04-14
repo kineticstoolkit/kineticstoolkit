@@ -117,6 +117,7 @@ class DBInterface():
 
         # Scan all files in root folder
         dict_files = {'FileID': [], 'FileName': []}
+        self.duplicates = []
 
         warned_once = False
         for folder, _, files in os.walk(self.root_folder):
@@ -470,9 +471,72 @@ class DBInterface():
 
         os.rename(filename, new_filename)
 
+    def batch_rename_files(self, include_trial_name=True, dry_run=True):
+        """
+        Rename all the files referenced by the project.
 
-    def batch_rename(self, folder, new_file_type_label,
-                     create_file_entries=False, dry_run=True):
+        This method renames all the files referenced by the project following
+        the given specifications. The resulting file can be either:
+            - ORIGINALNAME_dbfidXXXXn.EXT
+            - ORIGINALNAME_dbfidXXXXn_{TRIALNAME}.EXT
+
+        Parameters
+        ----------
+        include_trial_name : bool, optional
+            Include or exclude the trial name from the file name. The default
+            is True (include).
+        dry_run : bool, optional
+            False to perform the rename. The default is True.
+
+        Returns
+        -------
+        None.
+
+        """
+        # Check that the project has no duplicate files.
+        print('Checking that the project is clean, without duplicates...')
+        self.refresh()
+        if len(self.duplicates) > 0:
+            raise ValueError(
+                'Cannot run this method on a project with duplicates.')
+
+        print('Renaming the files...')
+        file_names = self.tables['Files']['FileName'].to_list()
+        trials = self.tables['Files']['TrialLabel'].to_list()
+
+        for i_filename, filename in enumerate(file_names):
+
+            if type(filename) != str or filename == '':
+                continue
+
+            # Get original_name, dbfid, string and ext
+            original_name, remain = filename.split('dbfid', maxsplit=1)
+            dbfid, remain = remain.split('n', maxsplit=1)
+            if remain[0:2] == '_{':
+                _, ext = remain.split('}')
+            else:
+                ext = remain
+
+            if include_trial_name is True:
+                new_filename = (original_name + 'dbfid' + dbfid + 'n_{' +
+                                trials[i_filename] + '}' + ext)
+            else:
+                new_filename = (original_name + 'dbfid' + dbfid + 'n' + ext)
+
+            if filename != new_filename:
+                if dry_run is False:
+                    os.rename(filename, new_filename)
+                else:
+                    print('-------------')
+                    print('Will rename:')
+                    print(filename)
+                    print(new_filename)
+
+        print('Refreshing project...')
+        self.refresh()
+
+    def batch_rename_folder(self, folder, new_file_type_label,
+                            create_file_entries=False, dry_run=True):
         """
         Batch-rename a set of files to their new corresponding dbfid.
 
