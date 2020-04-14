@@ -10,7 +10,6 @@ and on https://felixchenier.com/kineticstoolkit/geometry.html
 """
 
 import numpy as np
-import pycpd
 import ktk.external.icp as icp
 
 def matmul(op1, op2):
@@ -270,6 +269,11 @@ def get_local_coordinates(global_coordinates, reference_frames):
     """
     n_samples = global_coordinates.shape[0]
 
+    # Transform NaNs in global coordinates to zeros to perform the operation,
+    # then put back NaNs in the corresponding local coordinates.
+    nan_index = np.isnan(global_coordinates)
+    global_coordinates[nan_index] = 0
+
     # Invert the reference frame to obtain the inverse transformation
     ref_rot = reference_frames[:, 0:3, 0:3]
     ref_t = reference_frames[:, 0:3, 3]
@@ -288,6 +292,9 @@ def get_local_coordinates(global_coordinates, reference_frames):
 
     local_coordinates = np.zeros(global_coordinates.shape)  # init
     local_coordinates = matmul(inv_ref_T, global_coordinates)
+
+    # Put back the NaNs
+    local_coordinates[nan_index] = np.nan
 
     return local_coordinates
 
@@ -320,7 +327,7 @@ def get_global_coordinates(local_coordinates, reference_frames):
 
 def isnan(input):
     """
-    Checks which samples has at least one NaN.
+    Check which samples has at least one NaN.
 
     Parameters
     ----------
