@@ -9,6 +9,37 @@ about a specified project.
 Please note that the user/password combination used in this tutorial is not
 valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.
 """
+
+# %% exclude
+"""
+NOTE ON TEST DATABASE AND DUMMY USER.
+
+ktkDBInterfaceTest and ktkDBInterfaceTutorial run on a local database
+that has the same format as the one on biomec.uqam.ca. However, for the
+tests and tutorials to pass, a special user (dummyUser) must exist and
+have rights on a specially crafter project (dummyProject).
+
+To add this user, enter these SQL commands in mysql:
+
+SELECT ProjectID FROM Projects WHERE ProjectLabel = "dummyProject" INTO @ProjectID;
+INSERT INTO Users (username, password, role) VALUES ("dummyUser", "0726aee645e102b5607e7ed5ad4a029a", "STUDENT");
+SELECT UserID FROM Users WHERE username = "dummyUser" INTO @UserID;
+INSERT INTO ProjectsUsers (ProjectID, UserID) VALUES (@ProjectID, @UserID);
+
+---------
+IMPORTANT
+---------
+For security reasons, the dummyUser must not exist on the real database
+%iomec.uqam.ca. To remove this user, run these SQL commands in mysql:
+
+SELECT ProjectID FROM Projects WHERE ProjectLabel = "dummyProject" INTO @ProjectID;
+SELECT UserID FROM Users WHERE username = "dummyUser" INTO @UserID;
+SELECT ProjectUserID FROM ProjectsUsers WHERE ProjectID = @ProjectID AND UserID = @UserID INTO @ProjectUserID;
+DELETE FROM ProjectsUsers WHERE ProjectUserID = @ProjectUserID;
+DELETE FROM Users WHERE UserID = @UserID;
+"""
+
+# %%
 import ktk
 
 """

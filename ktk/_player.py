@@ -43,7 +43,7 @@ class Player:
         Sets the inital frame number to show. Default is 0.
     marker_radius : float (optional)
         Sets the marker radius as defined by matplotlib. Default is 0.008.
-    rigid_body_size : float (optional)
+    rigid_body_length : float (optional)
         Sets the rigid body size in meters. Default is 0.1.
     zoom : float (optional)
         Sets the initial camera zoom. Default is 1.0.
@@ -65,9 +65,10 @@ class Player:
     """
 
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
-                 current_frame=0, marker_radius=0.008, rigid_body_size=0.1,
-                 zoom=1.0, azimuth=0.0, elevation=0.0, translation=(0.0, 0.0),
-                 target=(0.0, 0.8, 0.0)):
+                 current_frame=0, marker_radius=0.008, rigid_body_length=0.1,
+                 rigid_body_width=3, segment_width=1.5,
+                 zoom=1.0, azimuth=0.0, elevation=0.0,
+                 translation=(0.0, 0.0), target=(0.0, 0.8, 0.0)):
 
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
@@ -95,18 +96,7 @@ class Player:
 
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(
-                np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
-
-# TODO:  Continue the development to get a reference frame at the bottom left
-#        of the screen.
-#        # Add the origin without translation to the rigid bodies (for the
-#        # fixed rigid body in the screen bottom-left
-#        self.rigid_bodies.data['GlobalBottomLeft'] = np.repeat(
-#                np.array([[1, 0, 0, 0],
-#                          [0, 1, 0, 0],
-#                          [0, 0, 1, 0],
-#                          [0, 0, 0, 0]])[np.newaxis, :, :],
-#                self.n_frames, axis=0)
+            np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
 
         # ---------------------------------------------------------------
         # Assign the segments
@@ -116,7 +106,9 @@ class Player:
         # Other initalizations
         self.current_frame = current_frame
         self.marker_radius = marker_radius
-        self.rigid_body_size = rigid_body_size
+        self.rigid_body_length = rigid_body_length
+        self.rigid_body_width = rigid_body_width
+        self.segment_width = segment_width
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
@@ -161,10 +153,10 @@ class Player:
         """Create the player's figure."""
         # Create the figure and axes
         self.objects['Figure'], self.objects['Axes'] = plt.subplots(
-                num=None,
-                figsize=(12, 9),
-                facecolor='k',
-                edgecolor='w')
+            num=None,
+            figsize=(12, 9),
+            facecolor='k',
+            edgecolor='w')
 
         # Remove the toolbar
         try:  # Try, setVisible method not always there
@@ -181,32 +173,34 @@ class Player:
         # Remove the background for faster plotting
         self.objects['Axes'].set_axis_off()
 
-        # Init the markers plots
-        colors = {
-                'r': [1, 0, 0],
-                'g': [0, 1, 0],
-                'b': [0.3, 0.3, 1],
-                'y': [1, 1, 0],
-                'm': [1, 0, 1],
-                'c': [0, 1, 1],
-                'w': [0.8, 0.8, 0.8]}
-
-        for color in self._colors:
-            self.objects['PlotMarkers'][color] = self.objects['Axes'].plot(
-                    np.nan, np.nan, '.',
-                    c=colors[color], markersize=4, picker=5)[0]
-        for color in self._colors:
-            self.objects['PlotMarkers'][color + 's'] = \
-                    self.objects['Axes'].plot(
-                            np.nan, np.nan, '.',
-                            c=colors[color], markersize=12)[0]
-
-        # Init the segments plots
+        # Create the segments plots
         if self.segments is not None:
             for segment in self.segments:
                 self.objects['PlotSegments'][segment] = \
-                        self.objects['Axes'].plot(np.nan, np.nan, '-',
-                                    c=self.segments[segment]['Color'])[0]
+                    self.objects['Axes'].plot(
+                        np.nan, np.nan, '-',
+                        c=self.segments[segment]['Color'],
+                        linewidth=self.segment_width)[0]
+
+        # Create the markers plots
+        colors = {
+            'r': [1, 0, 0],
+            'g': [0, 1, 0],
+            'b': [0.3, 0.3, 1],
+            'y': [1, 1, 0],
+            'm': [1, 0, 1],
+            'c': [0, 1, 1],
+            'w': [0.8, 0.8, 0.8]}
+
+        for color in self._colors:
+            self.objects['PlotMarkers'][color] = self.objects['Axes'].plot(
+                np.nan, np.nan, '.',
+                c=colors[color], markersize=4, picker=5)[0]
+        for color in self._colors:
+            self.objects['PlotMarkers'][color + 's'] = \
+                self.objects['Axes'].plot(
+                    np.nan, np.nan, '.',
+                    c=colors[color], markersize=12)[0]
 
         # Draw the markers
         self._update_plots()
@@ -220,27 +214,26 @@ class Player:
 
         # Connect the callback functions
         self.objects['Figure'].canvas.mpl_connect(
-                'pick_event', self._on_pick)
+            'pick_event', self._on_pick)
         self.objects['Figure'].canvas.mpl_connect(
-                'key_press_event', self._on_key)
+            'key_press_event', self._on_key)
         self.objects['Figure'].canvas.mpl_connect(
-                'key_release_event', self._on_release)
+            'key_release_event', self._on_release)
         self.objects['Figure'].canvas.mpl_connect(
-                'scroll_event', self._on_scroll)
+            'scroll_event', self._on_scroll)
         self.objects['Figure'].canvas.mpl_connect(
-                'button_press_event', self._on_mouse_press)
+            'button_press_event', self._on_mouse_press)
         self.objects['Figure'].canvas.mpl_connect(
-                'button_release_event', self._on_mouse_release)
+            'button_release_event', self._on_mouse_release)
         self.objects['Figure'].canvas.mpl_connect(
-                'motion_notify_event', self._on_mouse_motion)
+            'motion_notify_event', self._on_mouse_motion)
 
     def _update_plots(self):
         """Update the plots, or draw it if not plot has been drawn before."""
-
         def get_perspective(x, y, z):
             """Return x and y to plot, considering perspective."""
             # This uses ugly magical constants but it works fine for now.
-            denom = z/5+5
+            denom = z / 5 + 5
             x = x / denom
             y = y / denom
             with np.errstate(invalid='ignore'):
@@ -292,21 +285,21 @@ class Player:
         for i_rigid_body, rigid_body in enumerate(rigid_bodies.data):
             # Origin
             rbx_data[i_rigid_body * 3] = (
-                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+                rigid_bodies.data[rigid_body][self.current_frame, :, 3])
             rby_data[i_rigid_body * 3] = (
-                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+                rigid_bodies.data[rigid_body][self.current_frame, :, 3])
             rbz_data[i_rigid_body * 3] = (
-                    rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+                rigid_bodies.data[rigid_body][self.current_frame, :, 3])
             # Direction
             rbx_data[i_rigid_body * 3 + 1] = (
-                    rigid_bodies.data[rigid_body][self.current_frame] @
-                    np.array([self.rigid_body_size, 0, 0, 1]))
+                rigid_bodies.data[rigid_body][self.current_frame] @
+                np.array([self.rigid_body_length, 0, 0, 1]))
             rby_data[i_rigid_body * 3 + 1] = (
-                    rigid_bodies.data[rigid_body][self.current_frame] @
-                    np.array([0, self.rigid_body_size, 0, 1]))
+                rigid_bodies.data[rigid_body][self.current_frame] @
+                np.array([0, self.rigid_body_length, 0, 1]))
             rbz_data[i_rigid_body * 3 + 1] = (
-                    rigid_bodies.data[rigid_body][self.current_frame] @
-                    np.array([0, 0, self.rigid_body_size, 1]))
+                rigid_bodies.data[rigid_body][self.current_frame] @
+                np.array([0, 0, self.rigid_body_length, 1]))
             # NaN to cut the line between the different rigid bodies
             rbx_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
             rby_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
@@ -323,8 +316,8 @@ class Player:
         else:
             centroid = self.target
 
-        R = (np.array([[2*self.zoom, 0, 0, 0],
-                       [0, 2*self.zoom, 0, 0],
+        R = (np.array([[2 * self.zoom, 0, 0, 0],
+                       [0, 2 * self.zoom, 0, 0],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, self.translation[0]],  # Pan
@@ -358,16 +351,14 @@ class Player:
         gp_size = 30  # blocks
         gp_div = 4  # blocks per meter
         gp_x = np.block([
-                np.tile([-gp_size/gp_div, gp_size/gp_div, np.nan], gp_size),
-                np.repeat(
-                        np.linspace(-gp_size/gp_div, gp_size/gp_div, gp_size),
-                        3)])
+            np.tile([-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size),
+            np.repeat(
+                np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size), 3)])
         gp_y = np.zeros(6 * gp_size)
         gp_z = np.block([
-                np.repeat(
-                        np.linspace(-gp_size/gp_div, gp_size/gp_div, gp_size),
-                        3),
-                np.tile([-gp_size/gp_div, gp_size/gp_div, np.nan], gp_size)])
+            np.repeat(
+                np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size), 3),
+            np.tile([-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size)])
         gp_1 = np.ones(6 * gp_size)
         gp = R @ np.block([[gp_x], [gp_y], [gp_z], [gp_1]])
 
@@ -378,8 +369,7 @@ class Player:
         x, y = get_perspective(gp[0, :], gp[1, :], gp[2, :])
         if self.objects['PlotGroundPlane'] is None:  # Create the plot
             self.objects['PlotGroundPlane'] = self.objects['Axes'].plot(
-                    x, y, c=[0.3, 0.3, 0.3],
-                    linewidth=1)[0]
+                x, y, c=[0.3, 0.3, 0.3], linewidth=1)[0]
         else:  # Update the plot
             self.objects['PlotGroundPlane'].set_data(x, y)
 
@@ -395,7 +385,6 @@ class Player:
                                    markers_data[color + 's'][:, 2])
             self.objects['PlotMarkers'][color + 's'].set_data(x, y)
 
-
         # Create or update the rigid bodies plot
         xx, yx = get_perspective(rbx_data[:, 0],
                                  rbx_data[:, 1],
@@ -408,11 +397,11 @@ class Player:
                                  rbz_data[:, 2])
         if self.objects['PlotRigidBodiesX'] is None:  # Create the plot
             self.objects['PlotRigidBodiesX'] = self.objects['Axes'].plot(
-                    xx, yx, c='r', linewidth=2)[0]
+                xx, yx, c='r', linewidth=self.rigid_body_width)[0]
             self.objects['PlotRigidBodiesY'] = self.objects['Axes'].plot(
-                    xy, yy, c='g', linewidth=2)[0]
+                xy, yy, c='g', linewidth=self.rigid_body_width)[0]
             self.objects['PlotRigidBodiesZ'] = self.objects['Axes'].plot(
-                    xz, yz, c='b', linewidth=2)[0]
+                xz, yz, c='b', linewidth=self.rigid_body_width)[0]
         else:  # Update the plot
             self.objects['PlotRigidBodiesX'].set_data(xx, yx)
             self.objects['PlotRigidBodiesY'].set_data(xy, yy)
@@ -422,27 +411,27 @@ class Player:
         if self.segments is not None:
             for segment in self.segments:
                 n_links = len(self.segments[segment]['Links'])
-                coordinates = np.empty((2*n_links, 4))
+                coordinates = np.empty((2 * n_links, 4))
                 for i_link in range(n_links):
                     marker1 = self.segments[segment]['Links'][i_link][0]
                     marker2 = self.segments[segment]['Links'][i_link][1]
                     if marker1 in segment_markers:
-                        coordinates[2*i_link] = segment_markers[marker1]
+                        coordinates[2 * i_link] = segment_markers[marker1]
                     else:
-                        coordinates[2*i_link] = np.nan
+                        coordinates[2 * i_link] = np.nan
 
                     if marker2 in segment_markers:
-                        coordinates[2*i_link+1] = segment_markers[marker2]
+                        coordinates[2 * i_link + 1] = segment_markers[marker2]
                     else:
-                        coordinates[2*i_link+1] = np.nan
+                        coordinates[2 * i_link + 1] = np.nan
 
                 x, y = get_perspective(coordinates[:, 0],
                                        coordinates[:, 1],
                                        coordinates[:, 2])
 
                 # Separate each segment by nans
-                new_x = np.empty(int(3*x.shape[0]/2))
-                new_y = np.empty(int(3*y.shape[0]/2))
+                new_x = np.empty(int(3 * x.shape[0] / 2))
+                new_y = np.empty(int(3 * y.shape[0] / 2))
                 new_x[0::3] = x[0::2]
                 new_x[1::3] = x[1::2]
                 new_x[2::3] = np.nan
@@ -454,8 +443,8 @@ class Player:
 
         # Update the window title
         self.objects['Figure'].canvas.set_window_title(
-                f'Frame {self.current_frame}, ' +
-                '%2.2f s.' % self.time[self.current_frame])
+            f'Frame {self.current_frame}, ' +
+            '%2.2f s.' % self.time[self.current_frame])
 
         self.objects['Figure'].canvas.draw()
 
@@ -483,7 +472,7 @@ class Player:
                 try:
                     # Keep 1st character, remove the possible 's'
                     self.markers.data_info[marker]['Color'] = \
-                            self.markers.data_info[marker]['Color'][0]
+                        self.markers.data_info[marker]['Color'][0]
                 except KeyError:
                     self.markers.add_data_info(marker, 'Color', 'w')
 
@@ -517,7 +506,7 @@ class Player:
             # Mark selected
             self._select_none()
             self.markers.data_info[selected_marker]['Color'] = \
-                    self.markers.data_info[selected_marker]['Color'][0] + 's'
+                self.markers.data_info[selected_marker]['Color'][0] + 's'
             self._update_plots()
 
     def _on_key(self, event):
@@ -538,7 +527,6 @@ class Player:
             else:
                 self.anim = None
 
-
         elif event.key == 'left':
             self._set_frame(self.current_frame - 1)
 
@@ -554,17 +542,17 @@ class Player:
         elif event.key == '-':
             self.playback_speed /= 2
             self.objects['Axes'].set_title(
-                    f'Playback set to {self.playback_speed}x')
+                f'Playback set to {self.playback_speed}x')
 
         elif event.key == '+':
             self.playback_speed *= 2
             self.objects['Axes'].set_title(
-                    f'Playback set to {self.playback_speed}x')
+                f'Playback set to {self.playback_speed}x')
 
         elif event.key == 'h':
             if self.objects['Help'] is None:
                 self.objects['Help'] = self.objects['Axes'].text(-1.5, -1, '''
-                                  ktk.Player help
+                ktk.Player help
                 ----------------------------------------------------
                 KEYBOARD COMMANDS
                 show/hide this help : h
@@ -581,7 +569,7 @@ class Player:
                 3d rotate           : left-drag
                 pan                 : middle-drag or shift+left-drag
                 zoom                : right-drag or wheel
-                ''', color=[0,1,0], fontfamily='monospace')
+                ''', color=[0, 1, 0], fontfamily='monospace')
             else:
                 self.objects['Help'].remove()
                 self.objects['Help'] = None
@@ -626,12 +614,12 @@ class Player:
         if ((self.state['MouseLeftPressed'] and self.state['ShiftPressed']) or
                 self.state['MouseMiddlePressed']):
             self.translation = (
-                    self.state['TranslationOnMousePress'][0] +
-                    (event.x - self.state['MousePositionOnPress'][0]) /
-                    (100 * self.zoom),
-                    self.state['TranslationOnMousePress'][1] +
-                    (event.y - self.state['MousePositionOnPress'][1]) /
-                    (100 * self.zoom))
+                self.state['TranslationOnMousePress'][0] +
+                (event.x - self.state['MousePositionOnPress'][0]) /
+                (100 * self.zoom),
+                self.state['TranslationOnMousePress'][1] +
+                (event.y - self.state['MousePositionOnPress'][1]) /
+                (100 * self.zoom))
             self._update_plots()
 
         # Rotation:

@@ -14,33 +14,56 @@ import warnings
 
 
 class DBInterface():
-    """Interface for Felix Chenier's BIOMEC database."""
+    """Interface for Felix Chenier's BIOMEC database.
+
+    Parameters
+    ----------
+    project_label : str
+        Project label, for example 'FC_XX16E'.
+    user : str, optional
+        Username on BIOMEC. If none is supplied, a dialog box asks the user
+        for his/her credentials.
+    password : str, optional
+        Password on BIOMEC. The default is ''.
+    root_folder : str, optional
+        Project's root folder, where all data files are stored. If none is
+        given, a dialog box asks the user to point to this folder.
+    url : str, optional
+        BIOMEC's url. The default is 'https://felixchenier.uqam.ca/biomec'.
+
+    Returns
+    -------
+    A DBInterface class instance.
+
+    """
 
     @property
     def participants(self):
+        """Return a list of all participant labels in the project."""
         table = self.tables['Participants']['ParticipantLabel']
         return table.drop_duplicates().to_list()
 
     @property
     def sessions(self):
+        """Return a list of all session labels in the project."""
         table = self.tables['Sessions']['SessionLabel']
         return table.drop_duplicates().to_list()
 
     @property
     def trials(self):
+        """Return a list of all trial labels in the project."""
         table = self.tables['Trials']['TrialLabel']
         return table.drop_duplicates().to_list()
 
     @property
     def files(self):
+        """Return a list of all file labels in the project."""
         table = self.tables['Files']['FileLabel']
         return table.drop_duplicates().to_list()
 
-
     def __init__(self, project_label, user='', password='', root_folder='',
-                 url='https://felixchenier.uqam.ca/biomec',
-                 filters=dict()):
-
+                 url='https://felixchenier.uqam.ca/biomec'):
+        """Init."""
         # Simple assignations
         self.project_label = project_label
         self.url = url
@@ -61,14 +84,13 @@ class DBInterface():
         else:
             self.root_folder = root_folder
 
-
         # Assign tables
         self.tables = dict()
         self.refresh()
 
-
     def __repr__(self):
-        s =  f'--------------------------------------------------\n'
+        """Generate the instance's developer representation."""
+        s = f'--------------------------------------------------\n'
         s += 'DBInterface\n'
         s += f'--------------------------------------------------\n'
         s += f'          url: {self.url}\n'
@@ -88,7 +110,6 @@ class DBInterface():
         s += str(self.files) + '\n'
         s += f'--------------------------------------------------\n'
         return s
-
 
     def _fetch_table(self, table_name):
         global _module_user, _module_password
@@ -599,8 +620,8 @@ class DBInterface():
                 continue
 
             # Extract incorrect FileID
-            filename_left_part, rest = filename.split('dbfid')
-            old_file_id, filename_right_part = rest.split('n')
+            filename_left_part, rest = filename.split('dbfid', maxsplit=1)
+            old_file_id, filename_right_part = rest.split('n', maxsplit=1)
 
             old_file_id = int(old_file_id)
 
