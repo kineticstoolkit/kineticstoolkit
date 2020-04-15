@@ -13108,22 +13108,10 @@ div#notebook {
 <tr>
 <td style="text-align:center"></td>
 <td style="text-align:center"></td>
-<td style="text-align:center"><a href="dbinterface.html">dbinterface</a></td>
+<td style="text-align:center"><a href="dbinterface.html">DBinterface</a></td>
 </tr>
 </tbody>
 </table>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="DBInterface">DBInterface<a class="anchor-link" href="#DBInterface">&#182;</a></h1><p>The ktk.DBInterface class interfaces with the BIOMEC database
-(<a href="https://felixchenier.uqam.ca/biomec">https://felixchenier.uqam.ca/biomec</a>) to fetch all non-personal information
-about a specified project.</p>
-<p>Please note that the user/password combination used in this tutorial is not
-valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.</p>
 
 </div>
 </div>
@@ -13134,6 +13122,8 @@ valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.<
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 </pre></div>
 
     </div>
@@ -13165,7 +13155,7 @@ and the folder where the data files are stored.</p>
 <span class="n">root_folder</span> <span class="o">=</span> <span class="s1">&#39;data/dbinterface/FC_XX18A&#39;</span>
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
 <span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost/biomec&#39;</span>  <span class="c1"># This line is only for this tutorial,</span>
-                                         <span class="c1"># please don&#39;t execute it.</span>
+                                 <span class="c1"># please don&#39;t execute it.</span>
 
 <span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">,</span> <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
                           <span class="n">root_folder</span><span class="o">=</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
@@ -13214,12 +13204,13 @@ DBInterface
           url: http://localhost/biomec
          user: dummyUser
 project_label: dummyProject
+  root_folder: data/dbinterface/FC_XX18A
 --------------------------------------------------
 participants:
 [&#39;P1&#39;]
 --------------------------------------------------
 sessions:
-[&#39;GymnaseN1&#39;]
+[&#39;GymnaseN1&#39;, &#39;ArenaCESR1&#39;]
 --------------------------------------------------
 trials:
 [&#39;Run1&#39;, &#39;Run2&#39;, &#39;Walk1&#39;, &#39;Walk2&#39;]
@@ -13318,7 +13309,7 @@ a dict with the fields corresponding to the request. For example:</p>
            &#39;Pathology&#39;: &#39;Pathologie inconnue&#39;,
            &#39;ProjectID&#39;: 11,
         &#39;ProjectLabel&#39;: &#39;dummyProject&#39;,
-            &#39;Sessions&#39;: &lt;list of 1 items&gt;
+            &#39;Sessions&#39;: &lt;list of 2 items&gt;
                  &#39;Sex&#39;: None,
            &#39;Traumatic&#39;: None,
                  &#39;UID&#39;: 1,
@@ -13355,7 +13346,7 @@ a dict with the fields corresponding to the request. For example:</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>[&#39;GymnaseN1&#39;]</pre>
+<pre>[&#39;GymnaseN1&#39;, &#39;ArenaCESR1&#39;]</pre>
 </div>
 
 </div>
@@ -13547,7 +13538,7 @@ a dict with the fields corresponding to the request. For example:</p>
         &#39;FileFormatLabel&#39;: &#39;C3D&#39;,
                  &#39;FileID&#39;: 6681,
               &#39;FileLabel&#39;: &#39;Kinematics&#39;
-               &#39;FileName&#39;: &#39;data/dbinterface/FC_XX18A/kinetics_dbfid6681n.csv&#39;,
+               &#39;FileName&#39;: &#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;,
     &#39;FileTypeDescription&#39;: &#39;Kinematics recorded using a Vicon system&#39;,
              &#39;FileTypeID&#39;: 29,
           &#39;FileTypeLabel&#39;: &#39;Kinematics&#39;,
@@ -13589,7 +13580,7 @@ a dict with the fields corresponding to the request. For example:</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;data/dbinterface/FC_XX18A/kinetics_dbfid6681n.csv&#39;</pre>
+<pre>&#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;</pre>
 </div>
 
 </div>
@@ -13658,7 +13649,7 @@ participant 1:</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1.GymnaseN1.Run1_dbfid8501n.ktk.zip&#39;</pre>
+<pre>&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1.GymnaseN1.Run1_dbfid11524n.ktk.zip&#39;</pre>
 </div>
 
 </div>
@@ -13700,7 +13691,7 @@ a relevant name into the project folder.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1.GymnaseN1.Run1_dbfid8501n.ktk.zip&#39;</pre>
+<pre>&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1.GymnaseN1.Run1_dbfid11524n.ktk.zip&#39;</pre>
 </div>
 
 </div>
@@ -13747,6 +13738,570 @@ method.</p>
 <pre>{
     &#39;dummy_data&#39;: &#39;Normally we would save something more useful&#39;
 }</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We do a little clean up before going on.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/SyncedKinematics&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Dealing-with-external-software">Dealing with external software<a class="anchor-link" href="#Dealing-with-external-software">&#182;</a></h2><p>The DBInterface's <code>save</code> and <code>load</code> methods work very well for data that
+were processed in Python using ktk. However, things may get complicated when
+using external software to process data.</p>
+<p>In this example, we will synchronize the kinematics using an external
+synchronizing tool, then enter the resulting files into BIOMEC. We will work
+with these files:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">file_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Walk1&#39;</span><span class="p">,</span> <span class="s1">&#39;Walk2&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run2&#39;</span><span class="p">]:</span>
+    <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">])</span>
+
+<span class="n">file_list</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[18]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d&#39;,
+ &#39;data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d&#39;,
+ &#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;,
+ &#39;data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Let say we synchronized these files using an external software, and then we
+exported the synchronized files into a separate folder.</p>
+<p>(Here we will simply copy those files into a separate folder).</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+    <span class="n">dest_file</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[19]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;kinematics3_dbfid6685n.c3d&#39;,
+ &#39;kinematics2_dbfid6683n.c3d&#39;,
+ &#39;kinematics4_dbfid6687n.c3d&#39;,
+ &#39;kinematics1_dbfid6681n.c3d&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>All is good, but the dbfids in the new <code>synchronized_files</code> folder refer to
+the original <code>Kinematics</code> file type, not to the <code>SyncedKinematics</code> file
+type. Moreover, there are now duplicate dbfids in the project:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>/Users/felix/Documents/Recherche/kineticstoolkit/ktk/_dbinterface.py:154: UserWarning: Duplicate file(s) found. See duplicates property.
+  warnings.warn(&#39;Duplicate file(s) found. See duplicates property.&#39;)
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">duplicates</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[21]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[(&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics3_dbfid6685n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d&#39;),
+ (&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics2_dbfid6683n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d&#39;),
+ (&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics4_dbfid6687n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d&#39;),
+ (&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics1_dbfid6681n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;)]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Therefore we need to assign new dbfids to the files we just synchronized, so
+that they refer to <code>SyncedKinematics</code> entries in BIOMEC. The method
+<code>batch_fix_file_type</code> will help.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">batch_fix_file_type</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;SyncedKinematics&#39;</span><span class="p">,</span>
+                            <span class="n">create_file_entries</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[22]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+             &#39;Ignore&#39;: &lt;list of 0 items&gt;,
+    &#39;NoFileTypeLabel&#39;: &lt;list of 0 items&gt;
+             &#39;Rename&#39;: &lt;list of 4 items&gt;,
+}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now let see what happened in the <code>synchronized_files</code> folder:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[23]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;kinematics4_dbfid11526n.c3d&#39;,
+ &#39;kinematics1_dbfid11524n.c3d&#39;,
+ &#39;kinematics3_dbfid8491n.c3d&#39;,
+ &#39;kinematics2_dbfid11525n.c3d&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>The files' dbfid have been updated so they now refer to <code>SyncedKinematics</code>
+and not to <code>Kinematics</code> anymore. Moreover, the project does not have
+duplicate dbfids anymore:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We do a little clean up before going on.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
+<span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Including-information-in-file-names">Including information in file names<a class="anchor-link" href="#Including-information-in-file-names">&#182;</a></h2><p>It can be difficult to deal with a bunch of numbered files without knowing
+their signification without looking in BIOMEC. The <code>tag_files</code> method
+allows adding the trial name to the file names, so that their context is
+a bit clearer and less error-prone.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[26]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;kinetics_dbfid6688n.csv&#39;,
+ &#39;kinematics3_dbfid6685n.c3d&#39;,
+ &#39;kinetics_dbfid6684n.csv&#39;,
+ &#39;.DS_Store&#39;,
+ &#39;kinetics_dbfid6682n.csv&#39;,
+ &#39;kinematics2_dbfid6683n.c3d&#39;,
+ &#39;kinematics4_dbfid6687n.c3d&#39;,
+ &#39;kinetics_dbfid6686n.csv&#39;,
+ &#39;kinematics1_dbfid6681n.c3d&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Include the trial name in the file names:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">tag_files</span><span class="p">(</span><span class="n">include_trial_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Checking that the project is clean, without duplicates...
+Renaming the files...
+Refreshing project...
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[28]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;kinematics1_dbfid6681n_{Run1}.c3d&#39;,
+ &#39;kinetics_dbfid6682n_{Run1}.csv&#39;,
+ &#39;.DS_Store&#39;,
+ &#39;kinematics4_dbfid6687n_{Walk2}.c3d&#39;,
+ &#39;kinematics3_dbfid6685n_{Walk1}.c3d&#39;,
+ &#39;kinematics2_dbfid6683n_{Run2}.c3d&#39;,
+ &#39;kinetics_dbfid6688n_{Walk2}.csv&#39;,
+ &#39;kinetics_dbfid6684n_{Run2}.csv&#39;,
+ &#39;kinetics_dbfid6686n_{Walk1}.csv&#39;]</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Remove the trial name from the file names:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">tag_files</span><span class="p">(</span><span class="n">include_trial_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stdout output_text">
+<pre>Checking that the project is clean, without duplicates...
+Renaming the files...
+Refreshing project...
+</pre>
+</div>
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[30]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[&#39;kinetics_dbfid6688n.csv&#39;,
+ &#39;kinematics3_dbfid6685n.c3d&#39;,
+ &#39;kinetics_dbfid6684n.csv&#39;,
+ &#39;.DS_Store&#39;,
+ &#39;kinetics_dbfid6682n.csv&#39;,
+ &#39;kinematics2_dbfid6683n.c3d&#39;,
+ &#39;kinematics4_dbfid6687n.c3d&#39;,
+ &#39;kinetics_dbfid6686n.csv&#39;,
+ &#39;kinematics1_dbfid6681n.c3d&#39;]</pre>
 </div>
 
 </div>

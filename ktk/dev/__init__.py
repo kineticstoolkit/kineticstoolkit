@@ -66,7 +66,7 @@ Kinetics Toolkit (ktk)
 | [Installing](install.html) | [filters](filters.html)       | [pushrimkinetics](pushrimkinetics.html) |
 |                            | [geometry](geometry.html)     | [inversedynamics](inversedynamics.html) |
 |                            |                               | [Player](player.html)                   |
-|                            |                               | [dbinterface](dbinterface.html)         |
+|                            |                               | [DBinterface](dbinterface.html)         |
 
 '''
 

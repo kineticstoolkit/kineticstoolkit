@@ -96,6 +96,7 @@ class DBInterface():
         s += f'          url: {self.url}\n'
         s += f'         user: {self.user}\n'
         s += f'project_label: {self.project_label}\n'
+        s += f'  root_folder: {self.root_folder}\n'
         s += f'--------------------------------------------------\n'
         s += f'participants:\n'
         s += str(self.participants) + '\n'
@@ -492,9 +493,9 @@ class DBInterface():
 
         os.rename(filename, new_filename)
 
-    def batch_rename_files(self, include_trial_name=True, dry_run=True):
+    def tag_files(self, include_trial_name=True, dry_run=True):
         """
-        Rename all the files referenced by the project.
+        Rename all files to include tags in file names.
 
         This method renames all the files referenced by the project following
         the given specifications. The resulting file can be either:
@@ -556,10 +557,10 @@ class DBInterface():
         print('Refreshing project...')
         self.refresh()
 
-    def batch_rename_folder(self, folder, new_file_type_label,
+    def batch_fix_file_type(self, folder, new_file_type_label,
                             create_file_entries=False, dry_run=True):
         """
-        Batch-rename a set of files to their new corresponding dbfid.
+        Batch-rename files in a folder to their new corresponding dbfid.
 
         This function is helpful to quickly assign new dbfids to a batch
         of processed file based on files that are already referenced in the

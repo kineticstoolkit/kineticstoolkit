@@ -183,10 +183,7 @@ plt.figure()
 ts.plot('signal1', plot_event_names=True)
 plt.tight_layout()  # To resize the figure so we see the text completely.
 
-# %%
-"""
-TODO: Hide these tests.
-"""
+# %% exclude
 
 def test_get_index_before_time():
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
@@ -194,14 +191,14 @@ def test_get_index_before_time():
     assert ts.get_index_before_time(1) == 2
     assert ts.get_index_before_time(1.1) == 2
     assert np.isnan(ts.get_index_before_time(-1))
-
+test_get_index_before_time()
 
 def test_get_index_at_time():
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
     assert ts.get_index_at_time(0.9) == 2
     assert ts.get_index_at_time(1) == 2
     assert ts.get_index_at_time(1.1) == 2
-
+test_get_index_at_time()
 
 def test_get_index_after_time():
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
@@ -209,7 +206,7 @@ def test_get_index_after_time():
     assert ts.get_index_after_time(1) == 2
     assert ts.get_index_after_time(1.1) == 3
     assert np.isnan(ts.get_index_after_time(13))
-
+test_get_index_after_time()
 
 def test_get_event_time():
     ts = ktk.TimeSeries()
@@ -219,7 +216,7 @@ def test_get_event_time():
     assert ts.get_event_time('event1') == 5.5
     assert ts.get_event_time('event2', 0) == 2.3
     assert ts.get_event_time('event2', 1) == 10.8
-
+test_get_event_time()
 
 def test_get_ts_at_event___get_ts_at_time():
     ts = ktk.TimeSeries()
@@ -238,7 +235,7 @@ def test_get_ts_at_event___get_ts_at_time():
     assert new_ts.time == 2
     new_ts = ts.get_ts_at_event('event2', 1)
     assert new_ts.time == 11
-
+test_get_ts_at_event___get_ts_at_time()
 
 def tes_get_ts_before_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
@@ -250,7 +247,7 @@ def tes_get_ts_before_time():
     assert new_ts.time.tolist() == []
     new_ts = ts.get_ts_before_time(13)
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-
+tes_get_ts_before_time()
 
 def test_get_ts_after_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
@@ -262,7 +259,7 @@ def test_get_ts_after_time():
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_after_time(13)
     assert new_ts.time.tolist() == []
-
+test_get_ts_after_time()
 
 def test_get_ts_between_times():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
@@ -274,7 +271,7 @@ def test_get_ts_between_times():
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_between_times(-2, -1)
     assert new_ts.time.tolist() == []
-
+test_get_ts_between_times()
 
 def test_merge_and_resample():
     # Begin with two timeseries with identical times
@@ -364,3 +361,18 @@ def test_merge_and_resample():
     assert ts1.events[3] == ts2.events[0]
     assert ts1.events[4] == ts2.events[1]
     assert ts1.events[5] == ts2.events[2]
+test_merge_and_resample()
+
+def test_rename_data():
+    ts = ktk.TimeSeries(time=np.arange(100))
+    ts.data['data1'] = ts.time
+    ts.data['data2'] = ts.time
+    ts.add_data_info('data2', 'Unit', 'N')
+
+    ts.rename_data('data2', 'data3')
+
+    assert 'data2' not in ts.data
+    assert 'data2' not in ts.data_info
+    assert np.all(ts.data['data3'] == ts.time)
+    assert ts.data_info['data3']['Unit'] == 'N'
+test_rename_data()

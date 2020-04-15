@@ -558,7 +558,10 @@ def register_markers(markers, rigid_body_configs, verbose=False):
         for i_marker in range(global_points.shape[2]):
             marker_name = rigid_body_configs[
                     rigid_body_name]['MarkerNames'][i_marker]
-            global_points[:, :, i_marker] = markers.data[marker_name]
+            if marker_name in markers.data:
+                global_points[:, :, i_marker] = markers.data[marker_name]
+            else:
+                global_points[:, :, i_marker] = np.nan
 
         (local_points, global_points) = ktk.geometry.match_size(
                 local_points, global_points)
@@ -603,8 +606,8 @@ def create_virtual_marker_config(markers, rigid_bodies,
     to_keep = ~ktk.geometry.isnan(local_points)
 
     if np.all(to_keep is False):
-        raise UserWarning(f'There are no frame where both {marker_name} and'
-                          f'{rigid_body_name} are visible at the same time.')
+        warnings.warn(f'There are no frame where both {marker_name} and'
+                      f'{rigid_body_name} are visible at the same time.')
 
     local_points = local_points[to_keep]
     local_points = np.mean(local_points, axis=0)[np.newaxis]
