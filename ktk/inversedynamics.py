@@ -123,18 +123,18 @@ def calculate_proximal_wrench(ts, inertial_constants):
     n_frames = len(ts.time)
 
     ts.data['ProximalToDistalJointDistance'] = (
-            ts.data['DistalJointPosition'] -
-            ts.data['ProximalJointPosition'])
+        ts.data['DistalJointPosition'] -
+        ts.data['ProximalJointPosition'])
 
     ts.data['RadiusOfGyration'] = (
-            inertial_constants['GyrationCOMRatio'] *
-            ts.data['ProximalToDistalJointDistance'])
+        inertial_constants['GyrationCOMRatio'] *
+        ts.data['ProximalToDistalJointDistance'])
 
     # Center of mass position and acceleration
     ts.data['CenterOfMassPosition'] = (
-            inertial_constants['COMProximalRatio'] *
-            ts.data['ProximalToDistalJointDistance'] +
-            ts.data['ProximalJointPosition'])
+        inertial_constants['COMProximalRatio'] *
+        ts.data['ProximalToDistalJointDistance'] +
+        ts.data['ProximalJointPosition'])
 
     ts_com = ts.get_subset('CenterOfMassPosition')
     ts_acc = ktk.filters.savgol(ts_com, window_length=21, poly_order=2,
@@ -143,18 +143,18 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
     # Rotation angle, velocity and acceleration
     segment_angle_x = np.arctan2(
-            ts.data['ProximalToDistalJointDistance'][:, 2],
-            ts.data['ProximalToDistalJointDistance'][:, 1])
+        ts.data['ProximalToDistalJointDistance'][:, 2],
+        ts.data['ProximalToDistalJointDistance'][:, 1])
     segment_angle_y = np.arctan2(
-            ts.data['ProximalToDistalJointDistance'][:, 0],
-            ts.data['ProximalToDistalJointDistance'][:, 2])
+        ts.data['ProximalToDistalJointDistance'][:, 0],
+        ts.data['ProximalToDistalJointDistance'][:, 2])
     segment_angle_z = np.arctan2(
-            ts.data['ProximalToDistalJointDistance'][:, 1],
-            ts.data['ProximalToDistalJointDistance'][:, 0])
-    ts.data['Angle'] = np.block([
-            segment_angle_x[:, np.newaxis],
-            segment_angle_y[:, np.newaxis],
-            segment_angle_z[:, np.newaxis]])
+        ts.data['ProximalToDistalJointDistance'][:, 1],
+        ts.data['ProximalToDistalJointDistance'][:, 0])
+    ts.data['Angle'] = np.concatenate((
+        segment_angle_x[:, np.newaxis],
+        segment_angle_y[:, np.newaxis],
+        segment_angle_z[:, np.newaxis]), axis=1)
 
     ts_angle = ts.get_subset('Angle')
     ts_angvel = ktk.filters.savgol(ts_angle, window_length=21, poly_order=2,
@@ -194,36 +194,36 @@ def calculate_proximal_wrench(ts, inertial_constants):
     for i_frame in range(n_frames):
 
         skew_symmetric_c_i = np.array([
-                [0, -c_i[i_frame, 2], c_i[i_frame, 1]],
-                [c_i[i_frame, 2], 0, -c_i[i_frame, 0]],
-                [-c_i[i_frame, 1], c_i[i_frame, 0], 0]])
+            [0, -c_i[i_frame, 2], c_i[i_frame, 1]],
+            [c_i[i_frame, 2], 0, -c_i[i_frame, 0]],
+            [-c_i[i_frame, 1], c_i[i_frame, 0], 0]])
 
         skew_symmetric_d_i = np.array([
-                [0, -d_i[i_frame, 2], d_i[i_frame, 1]],
-                [d_i[i_frame, 2], 0, -d_i[i_frame, 0]],
-                [-d_i[i_frame, 1], d_i[i_frame, 0], 0]])
+            [0, -d_i[i_frame, 2], d_i[i_frame, 1]],
+            [d_i[i_frame, 2], 0, -d_i[i_frame, 0]],
+            [-d_i[i_frame, 1], d_i[i_frame, 0], 0]])
 
         matrix_1 = np.block(
-                [[segment_mass * np.eye(3), np.zeros((3, 3))],
-                 [segment_mass * skew_symmetric_c_i, I_i[i_frame]]])
+            [[segment_mass * np.eye(3), np.zeros((3, 3))],
+             [segment_mass * skew_symmetric_c_i, I_i[i_frame]]])
 
         matrix_2 = np.block([a_i[i_frame] - g, alpha_i[i_frame]])
         matrix_2 = matrix_2[:, np.newaxis]  # Convert 1d to column vector
 
         matrix_3 = np.block([
-                np.zeros(3),
-                np.cross(omega_i[i_frame], I_i[i_frame] @ omega_i[i_frame])])
+            np.zeros(3),
+            np.cross(omega_i[i_frame], I_i[i_frame] @ omega_i[i_frame])])
         matrix_3 = matrix_3[:, np.newaxis]  # Convert 1d to column vector
 
         matrix_4 = np.block([
-                [np.eye(3), np.zeros((3, 3))],
-                [skew_symmetric_d_i, np.eye(3)]])
+            [np.eye(3), np.zeros((3, 3))],
+            [skew_symmetric_d_i, np.eye(3)]])
 
         matrix_5 = np.block([F_i_minus_1[i_frame], M_i_minus_1[i_frame]])
         matrix_5 = matrix_5[:, np.newaxis]  # Convert 1d to column vector
 
         proximal_wrench[i_frame] = (
-                matrix_1 @ matrix_2 + matrix_3 + matrix_4 @ matrix_5)
+            matrix_1 @ matrix_2 + matrix_3 + matrix_4 @ matrix_5)
 
     # Initialize to a series of vectors of length 4
     ts.data['ProximalForces'] = np.zeros((n_frames, 4))
