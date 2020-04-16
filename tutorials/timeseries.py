@@ -131,7 +131,10 @@ assert ts.data_info['signal3']['Unit'] == 'm/s'
 """
 The time_info and data_info fields are not constrained to time/data units. We
 can add anything that can be helpful to describe the data.
+"""
 
+# %%
+"""
 Adding events to a TimeSeries
 -----------------------------
 In addition to add information to time and data, we can also add events to
@@ -173,7 +176,7 @@ ts.events[0].name
 # %%
 """
 When we plot a TimeSeries that contains events using the TimeSeries' ``plot``
-function, the events are also drawn. It is also possible to print out the
+method, the events are also drawn. It is also possible to print out the
 events' names on the plot:
 """
 plt.figure()
@@ -183,7 +186,202 @@ plt.figure()
 ts.plot('signal1', plot_event_names=True)
 plt.tight_layout()  # To resize the figure so we see the text completely.
 
+# %%
+"""
+Subsetting and merging TimeSeries
+---------------------------------
+Subsetting and merging can be done with the ``get_subset`` and ``merge```
+methods.
+
+We start by creating a random TimeSeries with three data keys:
+"""
+ts1 = ktk.TimeSeries(time=np.arange(10))
+ts1.data['signal1'] = ts1.time ** 2
+ts1.data['signal2'] = np.sin(ts1.time)
+ts1.data['signal3'] = np.cos(ts1.time)
+ts1.add_data_info('signal1', 'Unit', 'Unit1')
+ts1.add_data_info('signal2', 'Unit', 'Unit2')
+ts1.add_data_info('signal3', 'Unit', 'Unit3')
+ts1.add_event(1.53, 'test_event1')
+ts1.add_event(9.2, 'test_event2')
+ts1.add_event(1, 'test_event3')
+
+plt.figure()
+ts1.plot()
+
+"""
+The method ``get_subset`` allows extracting data, data_info and events from
+a TimeSeries to get a subset of this TimeSeries. For example, here we
+define a new TimeSeries that contains only signal1, and another that
+contains both signal2 and signal3.
+"""
+ts2 = ts1.get_subset('signal1')
+ts3 = ts1.get_subset(['signal2', 'signal3'])
+
+plt.figure()
+ts2.plot()
+
+plt.figure()
+ts3.plot()
+
+"""
+The method ``merge`` does the opposite: it merges the data, data_info and
+events from two TimeSeries.
+"""
+ts2.merge(ts3)
+
+plt.figure()
+ts2.plot()
+
+"""
+Options are available to allow resampling in case both TimeSeries do not share
+a same time vector, or to select the conflict resolution in case both
+TimeSeries share a same data key. Please see the ``ktk.TimeSeries.merge`` help
+for these special cases.
+"""
+
 # %% exclude
+assert ts1 == ts2
+
+# %%
+"""
+Resampling a TimeSeries
+-----------------------
+
+The method ``resample`` allows a TimeSeries to be resampled over a new time
+vector. Any interpolation method supported by ``scipy.interpolate.interp1d``
+is supported.
+
+"""
+plt.figure()
+ts1.plot()
+
+# %%
+ts2 = ts1.copy()
+ts2.resample(np.arange(0, 9, 0.01), 'linear')
+plt.figure()
+ts2.plot()
+
+# %%
+ts3 = ts1.copy()
+ts3.resample(np.arange(0, 9, 0.01), 'nearest')
+plt.figure()
+ts3.plot()
+
+# %%
+ts4 = ts1.copy()
+ts4.resample(np.arange(0, 9, 0.01), 'zero')
+plt.figure()
+ts4.plot()
+
+# %%
+ts5 = ts1.copy()
+ts5.resample(np.arange(0, 9, 0.01), 'slinear')
+plt.figure()
+ts5.plot()
+
+# %%
+ts6 = ts1.copy()
+ts6.resample(np.arange(0, 9, 0.01), 'quadratic')
+plt.figure()
+ts6.plot()
+
+# %%
+ts7 = ts1.copy()
+ts7.resample(np.arange(0, 9, 0.01), 'cubic')
+plt.figure()
+ts7.plot()
+
+# %%
+"""
+Filling missing data
+--------------------
+
+The method ``fill_missing_data`` allows reconstructing TimeSeries with
+missing data, for example trajectories with marker occlusion.
+
+"""
+ts1 = ktk.TimeSeries(time=np.arange(100.0))
+
+"""
+We build a TimeSeries where the first data key will have no missing data:
+"""
+ts1.data['data1'] = np.sin(ts1.time / 10)
+
+"""
+and where the second data keys will have missing data of various sizes:
+"""
+ts1.data['data2'] = np.cos(ts1.time / 10)
+ts1.data['data2'][15:30] = np.nan
+ts1.data['data2'][35:40] = np.nan
+ts1.data['data2'][95:] = np.nan
+ts1.data['data2'][0:5] = np.nan
+
+plt.figure()
+ts1.plot()
+
+"""
+The ``fill_missing_samples`` allows filling the gaps up to a given length,
+using any interpolation method that is supported by
+``scipy.interpolate.interp1d``.
+"""
+
+ts2 = ts1.copy()
+ts2.fill_missing_samples(max_missing_samples=10, method='linear')
+plt.figure()
+ts2.plot()
+
+# %%
+ts3 = ts1.copy()
+ts3.fill_missing_samples(max_missing_samples=100, method='linear')
+plt.figure()
+ts3.plot()
+
+# %%
+ts4 = ts1.copy()
+ts4.fill_missing_samples(max_missing_samples=10, method='cubic')
+plt.figure()
+ts4.plot()
+
+# %%
+ts5 = ts1.copy()
+ts5.fill_missing_samples(max_missing_samples=100, method='cubic')
+plt.figure()
+ts5.plot()
+
+# %% exclude
+
+# TODO Put some testing code for fill_missing_sample
+
+# %% exclude
+def test_empty_constructor():
+    ts = ktk.TimeSeries()
+    assert isinstance(ts.time, np.ndarray)
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.time_info, dict)
+    assert isinstance(ts.data_info, dict)
+    assert isinstance(ts.events, list)
+    assert ts.time_info['Unit'] == 's'
+test_empty_constructor()
+
+def test_add_data_info():
+    ts = ktk.TimeSeries()
+    ts.add_data_info('Force', 'Unit', 'N')
+    assert ts.data_info['Force']['Unit'] == 'N'
+test_add_data_info()
+
+def test_add_event():
+    ts = ktk.TimeSeries()
+    ts.add_event(15.34, 'test_event1')
+    ts.add_event(99.2, 'test_event2')
+    ts.add_event(1, 'test_event3')
+    assert ts.events[0].name == 'test_event3'
+    assert ts.events[1].name == 'test_event1'
+    assert ts.events[2].name == 'test_event2'
+    assert ts.events[0].time == 1
+    assert ts.events[1].time == 15.34
+    assert ts.events[2].time == 99.2
+test_add_event()
 
 def test_get_index_before_time():
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
@@ -283,9 +481,9 @@ def test_merge_and_resample():
     ts1.add_data_info('signal1', 'Unit', 'Unit1')
     ts1.add_data_info('signal2', 'Unit', 'Unit2')
     ts1.add_data_info('signal3', 'Unit', 'Unit3')
-    ts1.add_event(15.34, 'test_event1')
-    ts1.add_event(99.2, 'test_event2')
-    ts1.add_event(1, 'test_event3')
+    ts1.add_event(1.54, 'test_event1')
+    ts1.add_event(10.2, 'test_event2')
+    ts1.add_event(100, 'test_event3')
 
     ts2 = ktk.TimeSeries()
     ts2.time = np.linspace(0, 99, 100)
@@ -295,9 +493,9 @@ def test_merge_and_resample():
     ts2.add_data_info('signal4', 'Unit', 'Unit1')
     ts2.add_data_info('signal5', 'Unit', 'Unit2')
     ts2.add_data_info('signal6', 'Unit', 'Unit3')
-    ts2.add_event(15.34, 'test_event4')
-    ts2.add_event(99.2, 'test_event5')
-    ts2.add_event(1, 'test_event6')
+    ts2.add_event(1.54, 'test_event4')
+    ts2.add_event(10.2, 'test_event5')
+    ts2.add_event(100, 'test_event6')
 
     ts1.merge(ts2)
 
@@ -310,9 +508,6 @@ def test_merge_and_resample():
                   ts2.data_info['signal5']['Unit'])
     assert np.all(ts1.data_info['signal6']['Unit'] ==
                   ts2.data_info['signal6']['Unit'])
-    assert ts1.events[3] == ts2.events[0]
-    assert ts1.events[4] == ts2.events[1]
-    assert ts1.events[5] == ts2.events[2]
 
     # Try with two timeseries that don't fit in time. It must generate an
     # exception.
@@ -324,9 +519,9 @@ def test_merge_and_resample():
     ts1.add_data_info('signal1', 'Unit', 'Unit1')
     ts1.add_data_info('signal2', 'Unit', 'Unit2')
     ts1.add_data_info('signal3', 'Unit', 'Unit3')
-    ts1.add_event(15.34, 'test_event1')
-    ts1.add_event(99.2, 'test_event2')
-    ts1.add_event(1, 'test_event3')
+    ts1.add_event(1.54, 'test_event1')
+    ts1.add_event(10.2, 'test_event2')
+    ts1.add_event(100, 'test_event3')
 
     ts2 = ktk.TimeSeries()
     ts2.time = np.linspace(0, 99, 300, endpoint=False)
@@ -336,9 +531,9 @@ def test_merge_and_resample():
     ts2.add_data_info('signal4', 'Unit', 'Unit1')
     ts2.add_data_info('signal5', 'Unit', 'Unit2')
     ts2.add_data_info('signal6', 'Unit', 'Unit3')
-    ts2.add_event(15.34, 'test_event4')
-    ts2.add_event(99.2, 'test_event5')
-    ts2.add_event(1, 'test_event6')
+    ts2.add_event(1.54, 'test_event4')
+    ts2.add_event(10.2, 'test_event5')
+    ts2.add_event(100, 'test_event6')
 
     try:
         ts1.merge(ts2)
@@ -358,15 +553,12 @@ def test_merge_and_resample():
     assert ts1.data_info['signal4']['Unit'] == ts2.data_info['signal4']['Unit']
     assert ts1.data_info['signal5']['Unit'] == ts2.data_info['signal5']['Unit']
     assert ts1.data_info['signal6']['Unit'] == ts2.data_info['signal6']['Unit']
-    assert ts1.events[3] == ts2.events[0]
-    assert ts1.events[4] == ts2.events[1]
-    assert ts1.events[5] == ts2.events[2]
 test_merge_and_resample()
 
 def test_rename_data():
     ts = ktk.TimeSeries(time=np.arange(100))
-    ts.data['data1'] = ts.time
-    ts.data['data2'] = ts.time
+    ts.data['data1'] = ts.time.copy()
+    ts.data['data2'] = ts.time.copy()
     ts.add_data_info('data2', 'Unit', 'N')
 
     ts.rename_data('data2', 'data3')
@@ -376,3 +568,4 @@ def test_rename_data():
     assert np.all(ts.data['data3'] == ts.time)
     assert ts.data_info['data3']['Unit'] == 'N'
 test_rename_data()
+

@@ -204,6 +204,14 @@ class TimeSeries():
         if old_data_field in self.data_info:
             self.data_info[new_data_field] = self.data_info.pop(old_data_field)
 
+    def _ensure_sorted_and_unique_events(self):
+        """Ensure that all events in the TimeSeries are unique."""
+        self.events = sorted(self.events)
+        for i in range(len(self.events) - 1, 0, -1):
+            if ((self.events[i].time == self.events[i - 1].time) and
+                    (self.events[i].name == self.events[i - 1].name)):
+                self.events.pop(i)
+
     def add_event(self, time, name='event'):
         """
         Add an event to the TimeSeries.
@@ -231,6 +239,7 @@ class TimeSeries():
 
         """
         self.events.append(TimeSeriesEvent(time, name))
+        self._ensure_sorted_and_unique_events()
 
     def ui_add_event(self, name='event', plot=[], multiple_events=False):
         """
@@ -308,6 +317,7 @@ class TimeSeries():
         gui.message()
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
+        self._ensure_sorted_and_unique_events()
 
     def copy(self):
         """
@@ -834,6 +844,57 @@ class TimeSeries():
             values = np.sum(values, 1)
         return np.isnan(values)
 
+    def fill_missing_samples(self, max_missing_samples, method='linear'):
+        """
+        Fill missing samples with the given method.
+
+        The sample rate must be constant.
+
+        Parameters
+        ----------
+        max_missing_samples : int
+            Maximal number of consecutive missing samples to fill.
+        method : str (optional)
+            The interpolation method. This input may take any value
+            supported by scipy.interpolate.interp1d, such as:
+                - 'linear'
+                - 'nearest'
+                - 'zero'
+                - 'slinear'
+                - 'quadratic'
+                - 'cubic'
+                - 'previous'
+                - 'next'
+
+        Returns
+        -------
+        None.
+
+        """
+        max_missing_samples = int(max_missing_samples)
+
+        for data in self.data:
+
+            # Fill missing samples
+            is_visible = ~self.isnan(data)
+            ts = self.get_subset(data)
+            ts.data[data] = ts.data[data][is_visible]
+            ts.time = ts.time[is_visible]
+            ts.resample(self.time, method, fill_value='extrapolate')
+
+            # Put back missing samples in holes longer than max_missing_samples
+            hole_start_index = 0
+            to_keep = np.ones(self.time.shape)
+            for current_index in range(ts.time.shape[0]):
+                if is_visible[current_index]:
+                    hole_start_index = current_index
+                elif current_index - hole_start_index > max_missing_samples:
+                    to_keep[hole_start_index + 1:current_index + 1] = 0
+
+            ts.data[data][to_keep == 0] = np.nan
+
+            self.data[data] = ts.data[data]
+
     def ui_sync(self, data_keys=None):
         """
         Synchronize a TimeSeries by setting its zero-time interactively.
@@ -1029,3 +1090,4 @@ class TimeSeries():
         # Merge events
         for event in ts.events:
             self.events.append(event)
+        self._ensure_sorted_and_unique_events()
