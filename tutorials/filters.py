@@ -7,6 +7,7 @@ These filters are convenience wrappers for scipy's filters.
 """
 import ktk
 import numpy as np
+import matplotlib.pyplot as plt
 
 # %%
 """
@@ -86,9 +87,10 @@ assert np.max(np.abs(ddoty.data['data2'][tokeep] -
 """
 Smoothing a TimeSeries
 ----------------------
-The smooth filter `ktk.smooth` is a convenience function that smooths a
+The smoothing filter `smooth` is a convenience function that smooths a
 TimeSeries using a moving average of N samples. It calls the Savitzky-Golay
 filter with a polynom order of 0.
+
 """
 help(ktk.filters.smooth)
 
@@ -112,6 +114,7 @@ ts.plot()
 # %%
 """
 Now we smooth this function using a moving average on 5 samples.
+
 """
 y = ktk.filters.smooth(ts, 5)
 y.plot()
@@ -132,3 +135,40 @@ y = ktk.filters.smooth(ts, 5)
 assert np.abs(np.mean(ts.data['data'][4:8] - y.data['data'][6] < tol))
 # Test if it filters at all
 assert np.abs(np.mean(ts.data['data'][6] - y.data['data'][6] > tol))
+
+# %%
+"""
+Butterworth filter
+------------------
+The `butter` method applies a butterworth filter on a TimeSeries, using
+`scipy.signal`'s functions.
+
+Let define a TimeSeries with a sinusoidal signal at 1 Hz, with an amplitude
+of 1:
+"""
+
+ts = ktk.TimeSeries(time=np.linspace(0, 30, 1000))
+ts.data['data'] = np.sin(2 * np.pi * ts.time)
+
+plt.figure()
+ts.plot()
+
+# %%
+"""
+We filter at 1 Hz, with an order 1:
+"""
+
+new_ts = ktk.filters.butter(ts, 1, order=1)
+
+plt.figure()
+new_ts.plot()
+
+# %% exclude
+
+# Verify that the new RMS value is the half ot the first
+data1 = ts.data['data'][300:700]
+data2 = new_ts.data['data'][300:700]
+
+assert(np.abs(
+    np.sqrt(np.sum(data2 ** 2)) -
+    np.sqrt(np.sum(data1 ** 2)) / 2) < 0.001)

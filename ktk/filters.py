@@ -98,7 +98,7 @@ def smooth(tsin, window_length):
     Parameters
     ----------
     tsin : ktk.TimeSeries
-        Input TimeSeries
+        Input TimeSeries.
     window_length : int
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
@@ -111,3 +111,62 @@ def smooth(tsin, window_length):
     """
     tsout = savgol(tsin, window_length, 0)
     return tsout
+
+
+def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
+    """
+    Apply a Butterworth filter to a TimeSeries.
+
+    The sampling rate must be constant.
+
+    Parameters
+    ----------
+    tsin : ktk.TimeSeries
+        Input TimeSeries.
+    fc : float
+        Cut-off frequency.
+    order : int, optional
+        Order of the filter. The default is 2.
+    btype : {‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’}, optional
+        The default is 'lowpass'.
+    filtfilt : bool, optional
+        If True, the filter is applied two times in reverse direction to
+        eliminate time lag. If False, the filter is applied only in forward
+        direction. The default is True.
+
+    Returns
+    -------
+    tsout : ktk.TimeSeries
+        The filtered TimeSeries
+
+    """
+    # Create the filter
+    fs = (1 / (tsin.time[1] - tsin.time[0]))
+    sos = sgl.butter(order, fc, btype, analog=False,
+                     output='sos', fs=fs)
+
+    ts = tsin.copy()
+    for data in ts.data:
+
+        # Subset
+        subts = ts.get_subset(data)
+
+        # Save nans and interpolate
+        missing = subts.isnan(data)
+        subts.fill_missing_samples(0, method='cubic')
+
+        # Filter
+        if filtfilt is True:
+            subts.data[data] = sgl.sosfiltfilt(sos, subts.data[data],
+                                               axis=0)
+        else:
+            subts.data[data] = sgl.sosfilt(sos, subts.data[data],
+                                           axis=0)
+
+        # Put back nans
+        subts.data[data][missing] = np.nan
+
+        # Put back in main TimeSeries
+        ts.data[data] = subts.data[data]
+
+    return ts

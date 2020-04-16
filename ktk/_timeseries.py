@@ -8,6 +8,7 @@ Date: July 2019
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
+import warnings
 
 from copy import deepcopy
 
@@ -853,7 +854,8 @@ class TimeSeries():
         Parameters
         ----------
         max_missing_samples : int
-            Maximal number of consecutive missing samples to fill.
+            Maximal number of consecutive missing samples to fill. Set to
+            zero to fill all missing samples.
         method : str (optional)
             The interpolation method. This input may take any value
             supported by scipy.interpolate.interp1d, such as:
@@ -883,15 +885,17 @@ class TimeSeries():
             ts.resample(self.time, method, fill_value='extrapolate')
 
             # Put back missing samples in holes longer than max_missing_samples
-            hole_start_index = 0
-            to_keep = np.ones(self.time.shape)
-            for current_index in range(ts.time.shape[0]):
-                if is_visible[current_index]:
-                    hole_start_index = current_index
-                elif current_index - hole_start_index > max_missing_samples:
-                    to_keep[hole_start_index + 1:current_index + 1] = 0
+            if max_missing_samples > 0:
+                hole_start_index = 0
+                to_keep = np.ones(self.time.shape)
+                for current_index in range(ts.time.shape[0]):
+                    if is_visible[current_index]:
+                        hole_start_index = current_index
+                    elif (current_index - hole_start_index >
+                          max_missing_samples):
+                        to_keep[hole_start_index + 1:current_index + 1] = 0
 
-            ts.data[data][to_keep == 0] = np.nan
+                ts.data[data][to_keep == 0] = np.nan
 
             self.data[data] = ts.data[data]
 
@@ -998,8 +1002,8 @@ class TimeSeries():
         for key in self.data.keys():
             index = ~self.isnan(key)
 
-            if sum(index) < 2:  # Only Nans, cannot interpolate.
-                print(f'Warning: Only NaNs found in signal {key}.')
+            if sum(index) < 3:  # Only Nans, cannot interpolate.
+                print(f'Warning: Almost only NaNs found in signal {key}.')
                 # We generate an array of nans of the expected size.
                 new_shape = [len(new_time)]
                 for i in range(1, len(self.data[key].shape)):
@@ -1008,8 +1012,7 @@ class TimeSeries():
                 self.data[key][:] = np.nan
             else:  # Interpolate.
                 if ~np.all(index):
-                    print('Warning: Some NaNs were found. They were interpolated.')
-
+                    warnings.warn('Some NaNs were found. They were interpolated.')
                 f = sp.interpolate.interp1d(self.time[index],
                                             self.data[key][index],
                                             axis=0, fill_value=fill_value,
