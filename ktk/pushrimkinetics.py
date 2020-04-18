@@ -11,6 +11,7 @@ import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
 import warnings
+import struct  # to unpack binary data from SmartWheels' txt files
 
 
 def __dir__():
@@ -81,6 +82,66 @@ def read_file(filename, format='smartwheel'):
 
         ts.data['Battery'] = battery
         ts.add_data_info('Battery', 'Unit', 'raw')
+
+    elif format == 'smartwheeltxt':
+
+        data = {'ch1': [], 'ch2': [], 'ch3': [],
+                'ch4': [], 'ch5': [], 'ch6': [], 'angle_ticks': []}
+
+        length = 0
+        with open(filename, 'rb') as fid:
+
+            while True:
+                try:
+                    _ = fid.read(2)
+                    data['ch1'].append(struct.unpack('h', fid.read(2))[0])
+                    data['ch2'].append(struct.unpack('h', fid.read(2))[0])
+                    data['ch3'].append(struct.unpack('h', fid.read(2))[0])
+                    data['ch4'].append(struct.unpack('h', fid.read(2))[0])
+                    data['ch5'].append(struct.unpack('h', fid.read(2))[0])
+                    data['ch6'].append(struct.unpack('h', fid.read(2))[0])
+                    data['angle_ticks'].append(
+                        struct.unpack('i', fid.read(4))[0])
+                    _ = fid.read(8)
+                    length += 1
+                except Exception:
+                    break
+
+        ch1 = np.array(data['ch1'][1:length])  # Remove 1st sample to be
+        ch2 = np.array(data['ch2'][1:length])  # consistent with CSV file
+        ch3 = np.array(data['ch3'][1:length])
+        ch4 = np.array(data['ch4'][1:length])
+        ch5 = np.array(data['ch5'][1:length])
+        ch6 = np.array(data['ch6'][1:length])
+        angle_ticks = np.array(data['angle_ticks'][1:length])
+
+        # Keep only 12 least significant bytes
+        ch1 = np.mod(ch1, 2 ** 12)
+        ch2 = np.mod(ch2, 2 ** 12)
+        ch3 = np.mod(ch3, 2 ** 12)
+        ch4 = np.mod(ch4, 2 ** 12)
+        ch5 = np.mod(ch5, 2 ** 12)
+        ch6 = np.mod(ch6, 2 ** 12)
+
+        # Convert angle in radian
+        angle = angle_ticks / 4096 * 2 * np.pi
+
+        ts = ktk.TimeSeries(
+            time=np.linspace(0, (length - 1) / 240, length - 1))
+        ts.data['Channels'] = np.concatenate(
+            [ch1[:, np.newaxis],
+             ch2[:, np.newaxis],
+             ch3[:, np.newaxis],
+             ch4[:, np.newaxis],
+             ch5[:, np.newaxis],
+             ch6[:, np.newaxis]], axis=1)
+        ts.data['Angle'] = angle
+
+        ts.add_data_info('Channels', 'Unit', 'raw')
+        ts.add_data_info('Angle', 'Unit', 'rad')
+
+    else:
+        raise ValueError('Unknown file format.')
 
     return ts
 
@@ -295,7 +356,7 @@ def calculate_forces_and_moments(kinetics, calibration_id):
         forcecell = 'forcecell'
         gains = [-0.0314, -0.0300, 0.0576, 0.0037, 0.0019, -0.0019]
         offsets = [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]
-    
+
     elif calibration_id == 'S20-Racing-Prototype1':
         forcecell = 'matrix'
         # Gains from calibration matrix
@@ -358,10 +419,10 @@ def calculate_forces_and_moments(kinetics, calibration_id):
 
     elif forcecell == 'forcecell':
 
-        forces_moments = gains * kinetics.data['Channels'] + offsets        
+        forces_moments = gains * kinetics.data['Channels'] + offsets
 
     elif forcecell == 'matrix':
-        
+
         n_frames = kinetics.data['Channels'].shape[0]
 
         forces_moments = np.empty((n_frames, 6))
