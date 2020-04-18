@@ -388,26 +388,26 @@ def calculate_forces_and_moments(kinetics, calibration_id):
 
         # Calculate the forces and moments
         Fx = gains[0] * (
-                ch[:, 0] * sin(theta) +
-                ch[:, 2] * sin(theta+2*pi/3) +
-                ch[:, 4] * sin(theta+4*pi/3)) + offsets[0]
+            ch[:, 0] * sin(theta) +
+            ch[:, 2] * sin(theta + 2 * pi / 3) +
+            ch[:, 4] * sin(theta + 4 * pi / 3)) + offsets[0]
 
         Fy = gains[1] * (
-                ch[:, 0] * cos(theta) +
-                ch[:, 2] * cos(theta+2*pi/3) +
-                ch[:, 4] * cos(theta+4*pi/3)) + offsets[1]
+            ch[:, 0] * cos(theta) +
+            ch[:, 2] * cos(theta + 2 * pi / 3) +
+            ch[:, 4] * cos(theta + 4 * pi / 3)) + offsets[1]
 
         Fz = gains[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
 
         Mx = gains[3] * (
-                ch[:, 1] * sin(theta) +
-                ch[:, 3] * sin(theta+2*pi/3) +
-                ch[:, 5] * sin(theta+4*pi/3)) + offsets[3]
+            ch[:, 1] * sin(theta) +
+            ch[:, 3] * sin(theta + 2 * pi / 3) +
+            ch[:, 5] * sin(theta + 4 * pi / 3)) + offsets[3]
 
         My = gains[4] * (
-                ch[:, 1] * cos(theta) +
-                ch[:, 3] * cos(theta+2*pi/3) +
-                ch[:, 5] * cos(theta+4*pi/3)) + offsets[4]
+            ch[:, 1] * cos(theta) +
+            ch[:, 3] * cos(theta + 2 * pi / 3) +
+            ch[:, 5] * cos(theta + 4 * pi / 3)) + offsets[4]
 
         Mz = gains[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
         forces_moments = np.block([Fx[:, np.newaxis],
@@ -434,10 +434,14 @@ def calculate_forces_and_moments(kinetics, calibration_id):
     # Format these data in the output timeseries
     kinetics = kinetics.copy()
 
-    kinetics.data['Forces'] = forces_moments[:, 0:3]
+    kinetics.data['Forces'] = np.concatenate(
+        [forces_moments[:, 0:3], np.zeros((forces_moments.shape[0], 1))],
+        axis=1)
     kinetics.add_data_info('Forces', 'Unit', 'N')
 
-    kinetics.data['Moments'] = forces_moments[:, 3:6]
+    kinetics.data['Moments'] = np.concatenate(
+        [forces_moments[:, 3:6], np.zeros((forces_moments.shape[0], 1))],
+        axis=1)
     kinetics.add_data_info('Moments', 'Unit', 'Nm')
 
     return(kinetics)
