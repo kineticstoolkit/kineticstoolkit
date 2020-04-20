@@ -7,6 +7,7 @@ Date: September 2019
 
 import ktk
 import numpy as np
+import warnings
 
 
 def get_anthropometrics(segment_name, total_mass):
@@ -120,7 +121,7 @@ def calculate_proximal_wrench(ts, inertial_constants):
     """
     ts = ts.copy()
 
-    n_frames = len(ts.time)
+    n_frames = ts.time.shape[0]
 
     ts.data['ProximalToDistalJointDistance'] = (
         ts.data['DistalJointPosition'] -
@@ -146,8 +147,8 @@ def calculate_proximal_wrench(ts, inertial_constants):
         ts.data['ProximalToDistalJointDistance'][:, 2],
         ts.data['ProximalToDistalJointDistance'][:, 1])
     segment_angle_y = np.arctan2(
-        ts.data['ProximalToDistalJointDistance'][:, 0],
-        ts.data['ProximalToDistalJointDistance'][:, 2])
+        ts.data['ProximalToDistalJointDistance'][:, 2],
+        ts.data['ProximalToDistalJointDistance'][:, 0])
     segment_angle_z = np.arctan2(
         ts.data['ProximalToDistalJointDistance'][:, 1],
         ts.data['ProximalToDistalJointDistance'][:, 0])
@@ -172,6 +173,8 @@ def calculate_proximal_wrench(ts, inertial_constants):
     # Moments line of the wrench equation (16)
     c_i = (ts.data['CenterOfMassPosition'][:, 0:3] -
            ts.data['ProximalJointPosition'][:, 0:3])
+    d_i = (ts.data['ForceApplicationPosition'] -
+           ts.data['ProximalJointPosition'])[:, 0:3]
 
     segment_mass = inertial_constants['Mass']
     I_i_temp = segment_mass * ts.data['RadiusOfGyration'][:, 0:3] ** 2
@@ -183,9 +186,6 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
     alpha_i = ts.data['AngularAcceleration']
     omega_i = ts.data['AngularVelocity']
-
-    d_i = (ts.data['ForceApplicationPosition'] -
-           ts.data['ProximalJointPosition'])[:, 0:3]
 
     M_i_minus_1 = ts.data['DistalMoments'][:, 0:3]
 
