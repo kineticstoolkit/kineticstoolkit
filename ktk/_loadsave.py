@@ -261,6 +261,11 @@ def load(filename):
     -------
     The loaded variable.
     """
+    if filename is None:
+        raise ValueError('filename is empty.')
+    if not isinstance(filename, str):
+        raise ValueError('filename must be a string.')
+
     try:
         shutil.rmtree('KTK_LOAD_TEMPORARY_FOLDER')
     except Exception:
