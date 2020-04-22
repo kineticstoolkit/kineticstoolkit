@@ -37,6 +37,7 @@ def read_file(filename, format='smartwheel'):
         Format of the file. Can be either:
             'smartwheel' (default)
             'racingwheel'
+            'smartwheeltxt'
 
     Returns
     -------
@@ -45,6 +46,9 @@ def read_file(filename, format='smartwheel'):
     if format == 'smartwheel':
 
         dataframe = pd.read_csv(filename, delimiter=None, header=None)
+        if dataframe.shape[1] == 1:  # Retry with ; as separator
+            dataframe = pd.read_csv(filename, delimiter=';', header=None)
+
         data = dataframe.to_numpy()
         index = data[:, 1]
         time = np.arange(0, len(index)) / 240

@@ -20,6 +20,7 @@ def _assert_almost_equal(float1, float2):
 Read data from file
 -------------------
 The first step is to load data from a file. This is done using ``read_file``:
+
 """
 filename = ('data/pushrimkinetics/'
             'sample_swl_overground_propulsion_withrubber.csv')
@@ -37,10 +38,10 @@ _assert_almost_equal(np.mean(kinetics.data['Channels']),
                      2059.6018397986695163)
 _assert_almost_equal(np.mean(kinetics.data['Index']),
                      3841.5000000000000000)
-
 # %%
 """
 Now see what we just loaded.
+
 """
 kinetics
 
@@ -50,6 +51,31 @@ kinetics.data
 # %%
 plt.clf()
 kinetics.plot(['Forces', 'Moments'])
+
+"""
+If the data is not in a CSV form but instead in a TXT file from the
+SmartWheel's SD card, we can also read this file, by specifying the
+``smartwheeltxt`` format in ``read_file``.
+
+"""
+
+# %% exclude
+filename = 'data/pushrimkinetics/sample_sw_csvtxt.TXT'
+kinetics1 = ktk.pushrimkinetics.read_file(filename, format='smartwheeltxt')
+
+filename = 'data/pushrimkinetics/sample_sw_csvtxt.csv'
+kinetics2 = ktk.pushrimkinetics.read_file(filename, format='smartwheel')
+
+length = min(kinetics1.time.shape[0], kinetics2.time.shape[0])
+
+_assert_almost_equal(np.sum(kinetics1.data['Channels'][0:length]),
+                     np.sum(kinetics2.data['Channels'][0:length]))
+
+assert(np.sum(kinetics1.data['Angle'][0:length] -
+              kinetics1.data['Angle'][0]) -
+       np.sum(kinetics2.data['Angle'][0:length] -
+              kinetics2.data['Angle'][0]) < 1)
+
 
 # %%
 """
@@ -61,6 +87,7 @@ channels, index and angle. In this case, we must calculate the forces and
 moments based on a calibration matrix. The function
 ``calculate_forces_and_moments`` does this calculation and already includes
 calibration matrices based on SmartWheels' serial numbers. For example:
+
 """
 new_kinetics = ktk.pushrimkinetics.calculate_forces_and_moments(
             kinetics, 'LIO-123')
