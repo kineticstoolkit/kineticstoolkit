@@ -145,8 +145,8 @@ def save(filename, variable):
         save_folder = '.'
 
     filename = os.path.basename(filename)
-    if len(save_folder) > 0:
-        os.chdir(save_folder)
+
+    os.chdir(save_folder)
 
     # Remove .zip extension if present (to obtain only the base name)
     if filename.lower().endswith('.zip'):
@@ -154,20 +154,22 @@ def save(filename, variable):
     elif not filename.lower().endswith('.ktk.zip'):
         filename = filename + '.ktk'
 
+    temp_folder_name = '~temp.' + filename
+
     try:
-        shutil.rmtree('KTK_SAVE_TEMPORARY_FOLDER')
+        shutil.rmtree(temp_folder_name)
     except Exception:
         pass
-    os.mkdir('KTK_SAVE_TEMPORARY_FOLDER')
+    os.mkdir(temp_folder_name)
 
-    os.chdir('KTK_SAVE_TEMPORARY_FOLDER')
+    os.chdir(temp_folder_name)
 
     _save_to_current_folder(variable, filename)
 
     os.chdir(original_folder)
     shutil.make_archive(save_folder + '/' + filename, 'zip',
-                        save_folder + '/KTK_SAVE_TEMPORARY_FOLDER')
-    shutil.rmtree(save_folder + '/KTK_SAVE_TEMPORARY_FOLDER')
+                        save_folder + '/' + temp_folder_name)
+    shutil.rmtree(save_folder + '/' + temp_folder_name)
 
 
 def _load_current_folder():
@@ -266,17 +268,20 @@ def load(filename):
     if not isinstance(filename, str):
         raise ValueError('filename must be a string.')
 
+    basename = os.path.basename(filename)
+    temp_folder_name = '~temp.' + basename
+
     try:
-        shutil.rmtree('KTK_LOAD_TEMPORARY_FOLDER')
+        shutil.rmtree(temp_folder_name)
     except Exception:
         pass
 
-    os.mkdir('KTK_LOAD_TEMPORARY_FOLDER')
-    shutil.unpack_archive(filename, extract_dir='KTK_LOAD_TEMPORARY_FOLDER')
-    os.chdir('KTK_LOAD_TEMPORARY_FOLDER')
+    os.mkdir(temp_folder_name)
+    shutil.unpack_archive(filename, extract_dir=temp_folder_name)
+    os.chdir(temp_folder_name)
     variable = _load_current_folder()
     os.chdir('..')
-    shutil.rmtree('KTK_LOAD_TEMPORARY_FOLDER')
+    shutil.rmtree(temp_folder_name)
     # Extract the first element (and only one) of this variable, to mirror
     # save function.
     for key, value in variable.items():
