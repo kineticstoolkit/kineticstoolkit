@@ -9,6 +9,7 @@ from matplotlib import animation
 import numpy as np
 from numpy import sin, cos
 import time
+import copy
 from ktk._timeseries import TimeSeries
 
 # To intercept interactive navigation key presses:
@@ -99,10 +100,8 @@ class Player:
         # ---------------------------------------------------------------
         # Assign the markers
         self.markers = markers
-        self.markers.data['Origin'] = np.repeat(
-            np.array([[0, 0, 0, 1]]), markers.time.shape[0], axis=0)
         self._select_none()
-        self.last_selected_marker = 'Origin'
+        self.last_selected_marker = None
 
         # ---------------------------------------------------------------
         # Assign the rigid bodies
@@ -228,6 +227,12 @@ class Player:
         # Remove the background for faster plotting
         self.objects['Axes'].set_axis_off()
 
+        # Add the animation timer
+        self.anim = animation.FuncAnimation(self.objects['Figure'],
+                                            self._on_timer,
+                                            interval=33)  # 30 ips
+        self.running = False
+
         # Connect the callback functions
         self.objects['Figure'].canvas.mpl_connect(
             'pick_event', self._on_pick)
@@ -327,13 +332,6 @@ class Player:
         # (x anterior, y up, z right) to the camera coordinates (x right,
         # y up, z deep)
 
-        # TODO Put back centroid option.
-
-        # if self.target == 'centroid':
-        #     centroid = np.nanmean(centroid, axis=0)
-        #     if np.all(np.isnan(centroid)):
-        #         centroid = np.nanmean(rbx_data, axis=0)
-        # else:
         R = (np.array([[2 * self.zoom, 0, 0, 0],
                        [0, 2 * self.zoom, 0, 0],
                        [0, 0, 1, 0],
@@ -529,6 +527,9 @@ class Player:
         """Set new target and adapts translation and zoom consequently."""
         if np.sum(np.isnan(target)) > 0:
             return
+        initial_translation = copy.deepcopy(self.translation)
+        initial_zoom = copy.deepcopy(self.zoom)
+        initial_target = copy.deepcopy(self.target)
 
         n_markers = len(self.markers.data)
         markers = np.empty((n_markers, 4))
@@ -536,6 +537,15 @@ class Player:
             markers[i_marker] = self.markers.data[marker][self.current_frame]
 
         initial_projected_markers = self._get_projection(markers)
+        # Do not consider markers that are not in the screen
+        initial_projected_markers[
+            initial_projected_markers[:, 0] < -1.5] = np.nan
+        initial_projected_markers[
+            initial_projected_markers[:, 0] > 1.5] = np.nan
+        initial_projected_markers[
+            initial_projected_markers[:, 1] < -1.0] = np.nan
+        initial_projected_markers[
+            initial_projected_markers[:, 1] > 1.0] = np.nan
         self.target = target
 
         def error_function(input):
@@ -546,8 +556,12 @@ class Player:
                                 new_projected_markers) ** 2)
             return error
 
-        optim.minimize(error_function, np.hstack((self.translation,
-                                                  self.zoom)))
+        res = optim.minimize(error_function, np.hstack((self.translation,
+                                                        self.zoom)))
+        if res.success is False:
+            self.translation = initial_translation
+            self.zoom = initial_zoom
+            self.target = initial_target
 
     # ------------------------------------
     # Helper functions
@@ -560,15 +574,18 @@ class Player:
         else:
             self.current_frame = frame
 
-        if self.track is True and self.markers is not None:
-            self.target = self.markers.data[
+        if (self.track is True and
+                self.markers is not None):
+            new_target = self.markers.data[
                 self.last_selected_marker][self.current_frame]
+            if not np.isnan(np.sum(new_target)):
+                self.target = new_target
 
         self._update_plots()
 
     def _set_time(self, time):
         """Set current frame to a given time and update plots."""
-        index = np.argmin(np.abs(self.markers.time - time))
+        index = np.argmin(np.abs(self.time - time))
         self._set_frame(index)
 
     def _select_none(self):
@@ -585,7 +602,7 @@ class Player:
     # ------------------------------------
     # Callbacks
     def _on_timer(self, _):
-        if self.anim is not None:
+        if self.running is True:
             # We check self.anim because the garbage collector may take time
             # before deleting the animation timer, and unreferencing the
             # animation timer is the recommended way to deactivate a timer.
@@ -602,6 +619,8 @@ class Player:
             self.state['SystemTimeOnLastUpdate'] = time.time()
 
             self._update_plots()
+        else:
+            self.anim.event_source.stop()
 
     def _on_pick(self, event):
         """Callback for marker selection."""
@@ -627,20 +646,14 @@ class Player:
     def _on_key(self, event):
         """Callback for keyboard key pressed."""
         if event.key == ' ':
-            if self.anim is None:
-                # Start the animation timer
+            if self.running is False:
                 self.state['SystemTimeOnLastUpdate'] = time.time()
                 self.state['SelfTimeOnPlay'] = self.time[self.current_frame]
                 self.running = True
-
-                # Start the animation timer
-                self.anim = animation.FuncAnimation(self.objects['Figure'],
-                                                    self._on_timer,
-                                                    interval=33)  # 30 ips
-                self._update_plots()
-
+                self.anim.event_source.start()
             else:
-                self.anim = None
+                self.running = False
+                self.anim.event_source.stop()
 
         elif event.key == 'left':
             self._set_frame(self.current_frame - 1)
@@ -712,6 +725,12 @@ class Player:
         self._update_plots()
 
     def _on_mouse_press(self, event):
+
+        if self.last_selected_marker is not None:
+            self._set_new_target(
+                self.markers.data[
+                    self.last_selected_marker][self.current_frame])
+
         self.state['TranslationOnMousePress'] = self.translation
         self.state['AzimutOnMousePress'] = self.azimuth
         self.state['ElevationOnMousePress'] = self.elevation

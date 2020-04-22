@@ -26,7 +26,7 @@ kinematics
 """
 The player can be instanciated to show markers:
 """
-pl = ktk.Player(markers=kinematics['Markers'], target='centroid')
+pl = ktk.Player(markers=kinematics['Markers'], target=[-5, 0, 0])
 
 # %%
 """
@@ -44,14 +44,14 @@ kinematics['Markers'].add_data_info('SWR_Marker1', 'Color', 'r')
 kinematics['Markers'].add_data_info('SWR_Marker2', 'Color', 'r')
 kinematics['Markers'].add_data_info('SWR_Marker3', 'Color', 'r')
 kinematics['Markers'].add_data_info('SWR_Marker4', 'Color', 'r')
-pl = ktk.Player(markers=kinematics['Markers'], target='centroid')
+pl = ktk.Player(markers=kinematics['Markers'], target=[-5, 0, 0])
 
 # %%
 """
 The player can be instanciated to show rigid bodies:
 """
 pl = ktk.Player(rigid_bodies=kinematics['VirtualRigidBodies'],
-                target='centroid')
+                target=[-5, 0, 0])
 
 # %%
 """
@@ -59,7 +59,7 @@ Or the player can be instanciated to show both markers and rigid bodies:
 """
 pl = ktk.Player(markers=kinematics['Markers'],
                 rigid_bodies=kinematics['VirtualRigidBodies'],
-                target='centroid')
+                target=[-5, 0, 0])
 
 # %%
 """
