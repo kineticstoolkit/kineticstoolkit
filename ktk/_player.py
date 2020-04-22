@@ -7,15 +7,16 @@ Author: Felix Chenier
 import matplotlib.pyplot as plt
 from matplotlib import animation
 import numpy as np
-from numpy import sin, cos, pi
+from numpy import sin, cos
 import time
 from ktk._timeseries import TimeSeries
 
 # To intercept interactive navigation key presses:
 from matplotlib.backend_bases import NavigationToolbar2
 
-# To fit the new camera parameters on picking a new marker
+# To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
+
 
 class Player:
     """
@@ -52,18 +53,21 @@ class Player:
     rigid_body_length : float (optional)
         Sets the rigid body size in meters. Default is 0.1.
     zoom : float (optional)
-        Sets the initial camera zoom. Default is 1.0.
+        Sets the initial camera zoom. Default is 0.2.
     azimuth : float (optional)
         Sets the initial camera azimuth in radians. Default is 0.0.
     elevation : float (optional)
-        Sets the initial camera elevation in radians. Default is 0.0.
+        Sets the initial camera elevation in radians. Default is 1.0.
     translation : tuple of floats (optional)
         Sets the initial camera translation (panning). Default is (0.0, 0.0)
     target : tuple of floats or 'centroid' (optional)
-        Sets the camera target in meters. Default is (0.0, 0.8, 0.0)
+        Sets the camera target in meters. Default is (0.0, 0.0, 0.0)
         If set to 'centroid', then the target is continuously updated to
         the centroid of the markers, which allows following moving
         objects more easily.
+    track : bool (optional)
+        Set to True to track the last selected marker when changing frame,
+        or False to keep the scene static. Default is False.
     perspective : bool (optional)
         Sets if the scene must be drawn using perspective (True) or
         orthogonal (False). Default is True.
@@ -76,9 +80,9 @@ class Player:
     def __init__(self, markers=None, rigid_bodies=None, segments=None,
                  current_frame=0, marker_radius=0.008, rigid_body_length=0.1,
                  rigid_body_width=3, segment_width=1.5,
-                 zoom=1.0, azimuth=0.0, elevation=0.0,
-                 translation=(0.0, 0.0), target=(0.0, 0.8, 0.0),
-                 perspective=True):
+                 zoom=1.0, azimuth=0.0, elevation=0.2,
+                 translation=(0.0, 0.0), target=(0.0, 0.0, 0.0),
+                 track=False, perspective=True):
 
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
@@ -98,6 +102,7 @@ class Player:
         self.markers.data['Origin'] = np.repeat(
             np.array([[0, 0, 0, 1]]), markers.time.shape[0], axis=0)
         self._select_none()
+        self.last_selected_marker = 'Origin'
 
         # ---------------------------------------------------------------
         # Assign the rigid bodies
@@ -125,6 +130,7 @@ class Player:
         self.azimuth = azimuth
         self.elevation = elevation
         self.target = target
+        self.track = track
         self.translation = translation
         self.perspective = perspective
         self.playback_speed = 1.0
@@ -172,6 +178,7 @@ class Player:
             play/pause          : space
             2x playback speed   : +
             0.5x playback speed : -
+            toggle track        : t
             toggle perspective  : p
             ----------------------------------------------------
             MOUSE COMMANDS
@@ -335,10 +342,6 @@ class Player:
                        [0, 1, 0, self.translation[1]],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
-             np.array([[1, 0, 0, self.target[0]],  # Put back target
-                       [0, 1, 0, self.target[1]],
-                       [0, 0, 1, self.target[2]],
-                       [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, 0],
                        [0, cos(-self.elevation), sin(self.elevation), 0],
                        [0, sin(-self.elevation), cos(-self.elevation), 0],
@@ -362,7 +365,7 @@ class Player:
         # Apply perspective.
         if self.perspective is True:
             # This uses an ugly magical constant but it works fine for now.
-            denom = rotated_points_3d[:, 2] / 5 + 5
+            denom = rotated_points_3d[:, 2] / 10 + 5
             rotated_points_3d[:, 0] = rotated_points_3d[:, 0] / denom
             rotated_points_3d[:, 1] = rotated_points_3d[:, 1] / denom
             with np.errstate(invalid='ignore'):
@@ -522,6 +525,30 @@ class Player:
         self.objects['Axes'].axis([-1.5, 1.5, -1, 1])
         self.objects['Figure'].canvas.draw()
 
+    def _set_new_target(self, target):
+        """Set new target and adapts translation and zoom consequently."""
+        if np.sum(np.isnan(target)) > 0:
+            return
+
+        n_markers = len(self.markers.data)
+        markers = np.empty((n_markers, 4))
+        for i_marker, marker in enumerate(self.markers.data):
+            markers[i_marker] = self.markers.data[marker][self.current_frame]
+
+        initial_projected_markers = self._get_projection(markers)
+        self.target = target
+
+        def error_function(input):
+            self.translation = input[0:2]
+            self.zoom = input[2]
+            new_projected_markers = self._get_projection(markers)
+            error = np.nanmean((initial_projected_markers -
+                                new_projected_markers) ** 2)
+            return error
+
+        optim.minimize(error_function, np.hstack((self.translation,
+                                                  self.zoom)))
+
     # ------------------------------------
     # Helper functions
     def _set_frame(self, frame):
@@ -532,6 +559,11 @@ class Player:
             self.current_frame = 0
         else:
             self.current_frame = frame
+
+        if self.track is True and self.markers is not None:
+            self.target = self.markers.data[
+                self.last_selected_marker][self.current_frame]
+
         self._update_plots()
 
     def _set_time(self, time):
@@ -566,8 +598,9 @@ class Player:
             if current_frame == self.current_frame:
                 # The time wasn't enough to advance a frame. Articifically
                 # advance a frame.
-                self._set_frame(self._current_frame + 1)
+                self._set_frame(self.current_frame + 1)
             self.state['SystemTimeOnLastUpdate'] = time.time()
+
             self._update_plots()
 
     def _on_pick(self, event):
@@ -583,27 +616,12 @@ class Player:
                 self.markers.data_info[selected_marker]['Color'][0] + 's'
 
             # Set as new target
+            self.last_selected_marker = selected_marker
+            self._set_new_target(
+                self.markers.data[selected_marker][self.current_frame])
             marker_position = self.markers.data[selected_marker][
-                self.current_frame]
+            self.current_frame]
 
-            n_markers = len(self.markers.data)
-            markers = np.empty((n_markers, 4))
-            for i_marker, marker in enumerate(self.markers.data):
-                markers[i_marker] = self.markers.data[marker][self.current_frame]
-
-            initial_projected_markers = self._get_projection(markers)
-            self.target = marker_position
-
-            def error_function(input):
-                self.translation = input[0:2]
-                self.zoom = input[2]
-                new_projected_markers = self._get_projection(markers)
-                error = np.nanmean((initial_projected_markers -
-                                    new_projected_markers) ** 2)
-                return error
-
-            optim.minimize(error_function, np.hstack((self.translation,
-                                                      self.zoom)))
             self._update_plots()
 
     def _on_key(self, event):
@@ -649,14 +667,34 @@ class Player:
         elif event.key == 'h':
             if self.objects['Help'] is None:
                 self.objects['Help'] = self.objects['Axes'].text(
-                    -1.5, -1, self.help_text, color=[0, 1, 0],
+                    -1.5, -1, self._help_text, color=[0, 1, 0],
                     fontfamily='monospace')
             else:
                 self.objects['Help'].remove()
                 self.objects['Help'] = None
 
+            self._update_plots()
+
         elif event.key == 'p':
             self.perspective = not self.perspective
+            if self.perspective is True:
+                self.objects['Axes'].set_title(
+                    f'Camera set to perspective')
+            else:
+                self.objects['Axes'].set_title(
+                    f'Camera set to orthogonal')
+
+            self._update_plots()
+
+        elif event.key == 't':
+            self.track = not self.track
+            if self.track is True:
+                self.objects['Axes'].set_title(
+                    f'Marker tracking activated')
+            else:
+                self.objects['Axes'].set_title(
+                    f'Marker tracking deactivated')
+
             self._update_plots()
 
         elif event.key == 'shift':
