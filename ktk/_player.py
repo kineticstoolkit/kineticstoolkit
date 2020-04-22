@@ -11,6 +11,11 @@ from numpy import sin, cos, pi
 import time
 from ktk._timeseries import TimeSeries
 
+# To intercept interactive navigation key presses:
+from matplotlib.backend_bases import NavigationToolbar2
+
+# To fit the new camera parameters on picking a new marker
+import scipy.optimize as optim
 
 class Player:
     """
@@ -90,6 +95,8 @@ class Player:
         # ---------------------------------------------------------------
         # Assign the markers
         self.markers = markers
+        self.markers.data['Origin'] = np.repeat(
+            np.array([[0, 0, 0, 1]]), markers.time.shape[0], axis=0)
         self._select_none()
 
         # ---------------------------------------------------------------
@@ -195,6 +202,16 @@ class Player:
         except AttributeError:
             pass
 
+        # Redirect standard toolbar callbacks
+        def do_nothing(self, *args, **kwargs):
+            pass
+
+        NavigationToolbar2.home = do_nothing
+        NavigationToolbar2.pan = do_nothing
+        NavigationToolbar2.forward = do_nothing
+        NavigationToolbar2.back = do_nothing
+        NavigationToolbar2.zoom = do_nothing
+
         plt.tight_layout()
 
         # Add the title
@@ -219,6 +236,9 @@ class Player:
             'button_release_event', self._on_mouse_release)
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
+
+
+
 
     def _create_segments(self):
         """Create the segments plots in the player's figure."""
@@ -315,6 +335,10 @@ class Player:
                        [0, 1, 0, self.translation[1]],
                        [0, 0, 1, 0],
                        [0, 0, 0, 1]]) @
+             np.array([[1, 0, 0, self.target[0]],  # Put back target
+                       [0, 1, 0, self.target[1]],
+                       [0, 0, 1, self.target[2]],
+                       [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, 0],
                        [0, cos(-self.elevation), sin(self.elevation), 0],
                        [0, sin(-self.elevation), cos(-self.elevation), 0],
@@ -325,7 +349,7 @@ class Player:
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, -self.target[0]],  # Rotate around target
                        [0, 1, 0, -self.target[1]],
-                       [0, 0, -1, -self.target[2]],
+                       [0, 0, 1, -self.target[2]],
                        [0, 0, 0, 1]]))
 
         # Add a first dimension to R and match first dimension of points_3d
@@ -421,16 +445,6 @@ class Player:
 
                 coordinates = self._get_projection(coordinates)
 
-                # # Separate each segment by nans
-                # new_x = np.empty(int(3 * coordinates[:, 0].shape[0] / 2))
-                # new_y = np.empty(int(3 * coordinates[:, 1].shape[0] / 2))
-                # new_x[0::3] = coordinates[0::2, 0]
-                # new_x[1::3] = coordinates[1::2, 0]
-                # new_x[2::3] = np.nan
-                # new_y[0::3] = coordinates[0::2, 1]
-                # new_y[1::3] = coordinates[0::2, 1]
-                # new_y[2::3] = np.nan
-
                 self.objects['PlotSegments'][segment].set_data(
                     coordinates[:, 0], coordinates[:, 1])
 
@@ -505,6 +519,7 @@ class Player:
             f'Frame {self.current_frame}, ' +
             '%2.2f s.' % self.time[self.current_frame])
 
+        self.objects['Axes'].axis([-1.5, 1.5, -1, 1])
         self.objects['Figure'].canvas.draw()
 
     # ------------------------------------
@@ -566,6 +581,29 @@ class Player:
             self._select_none()
             self.markers.data_info[selected_marker]['Color'] = \
                 self.markers.data_info[selected_marker]['Color'][0] + 's'
+
+            # Set as new target
+            marker_position = self.markers.data[selected_marker][
+                self.current_frame]
+
+            n_markers = len(self.markers.data)
+            markers = np.empty((n_markers, 4))
+            for i_marker, marker in enumerate(self.markers.data):
+                markers[i_marker] = self.markers.data[marker][self.current_frame]
+
+            initial_projected_markers = self._get_projection(markers)
+            self.target = marker_position
+
+            def error_function(input):
+                self.translation = input[0:2]
+                self.zoom = input[2]
+                new_projected_markers = self._get_projection(markers)
+                error = np.nanmean((initial_projected_markers -
+                                    new_projected_markers) ** 2)
+                return error
+
+            optim.minimize(error_function, np.hstack((self.translation,
+                                                      self.zoom)))
             self._update_plots()
 
     def _on_key(self, event):
@@ -682,3 +720,4 @@ class Player:
             self.zoom = self.state['ZoomOnMousePress'] + \
                 (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
+
