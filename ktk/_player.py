@@ -178,7 +178,7 @@ class Player:
             2x playback speed   : +
             0.5x playback speed : -
             toggle track        : t
-            toggle perspective  : p
+            toggle perspective  : d (depth)
             ----------------------------------------------------
             MOUSE COMMANDS
             select a marker     : left-click
@@ -208,15 +208,15 @@ class Player:
         except AttributeError:
             pass
 
-        # Redirect standard toolbar callbacks
-        def do_nothing(self, *args, **kwargs):
-            pass
+        # # Redirect standard toolbar callbacks
+        # def do_nothing(self, *args, **kwargs):
+        #     pass
 
-        NavigationToolbar2.home = do_nothing
-        NavigationToolbar2.pan = do_nothing
-        NavigationToolbar2.forward = do_nothing
-        NavigationToolbar2.back = do_nothing
-        NavigationToolbar2.zoom = do_nothing
+        # NavigationToolbar2.home = do_nothing
+        # NavigationToolbar2.pan = do_nothing
+        # NavigationToolbar2.forward = do_nothing
+        # NavigationToolbar2.back = do_nothing
+        # NavigationToolbar2.zoom = do_nothing
 
         plt.tight_layout()
 
@@ -248,7 +248,8 @@ class Player:
             'button_release_event', self._on_mouse_release)
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
-
+        self.objects['Figure'].canvas.mpl_connect(
+            'close_event', self._on_close)
 
 
 
@@ -350,7 +351,7 @@ class Player:
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, -self.target[0]],  # Rotate around target
                        [0, 1, 0, -self.target[1]],
-                       [0, 0, -1, -self.target[2]],
+                       [0, 0, -1, self.target[2]],
                        [0, 0, 0, 1]]))
 
         # Add a first dimension to R and match first dimension of points_3d
@@ -601,6 +602,10 @@ class Player:
 
     # ------------------------------------
     # Callbacks
+    def _on_close(self, _):
+        # Release all references to objects
+        self.objects = None
+
     def _on_timer(self, _):
         if self.running is True:
             # We check self.anim because the garbage collector may take time
@@ -688,7 +693,7 @@ class Player:
 
             self._update_plots()
 
-        elif event.key == 'p':
+        elif event.key == 'd':
             self.perspective = not self.perspective
             if self.perspective is True:
                 self.objects['Axes'].set_title(
