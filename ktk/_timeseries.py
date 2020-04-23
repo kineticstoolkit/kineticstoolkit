@@ -956,44 +956,26 @@ class TimeSeries():
 
         Returns
         -------
-        - True if the sync operation was completed;
-        - False if the sync operation was cancelled by the user, in which case
-          none of the TimeSeries was modified.
+        None.
+
         """
-        def ensure_event_does_not_exit(ts, event_name):
-            if not np.isnan(ts.get_event_time(event_name)):
-                raise ValueError('Could not sync a TimeSeries that already '
-                                 f'contains the {event_name} event.')
-
-        def remove_event(ts, event_name):
-            new_events = []
-            for event in ts.events:
-                if event.name != event_name:
-                    new_events.append(event)
-            ts.events = new_events
-
-        def clean():
-            remove_event(self, '__zero_time_in_ts1__')
-            remove_event(self, '__common_event_in_ts1__')
-            if ts2 is not None:
-                remove_event(ts2, '__zero_time_in_ts2__')
-                remove_event(ts2, '__common_event_in_ts2__')
-
         if ts2 is None:
             # Synchronize ts1 only
-            ensure_event_does_not_exit(self, '__zero_time_in_ts1__')
-            if self.ui_add_event('__zero_time_in_ts1__', data_keys) is False:
-                clean()
-                return False
-            self.sync_on_event('__zero_time_in_ts1__')
-            remove_event(self, '__zero_time_in_ts1__')
-            return True
+            fig = plt.figure()
+            self.plot(data_keys)
+            choice = gui.button_dialog(
+                'Please zoom on the time zero and press Next.',
+                ['Cancel', 'Next'])
+            if choice != 1:
+                return
 
-        else:
-            ensure_event_does_not_exit(self, '__zero_time_in_ts1__')
-            ensure_event_does_not_exit(ts2, '__zero_time_in_ts2__')
-            ensure_event_does_not_exit(ts2, '__common_event_in_ts2__')
-            ensure_event_does_not_exit(self, '__common_event_in_ts1__')
+            gui.message('Click on the sync event.')
+            click = plt.ginput(1)
+            gui.message(None)
+            plt.close(fig)
+            self.sync_on_time(click[0][0])
+
+        else:  # Sync two TimeSeries together
 
             finished = False
             while finished is False:
@@ -1054,9 +1036,6 @@ class TimeSeries():
                 elif choice == 3:  # OK, quit.
                     plt.close(fig)
                     finished = True
-
-            clean()
-            return True
 
     def get_subset(self, data_keys):
         """
