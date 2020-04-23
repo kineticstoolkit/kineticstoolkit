@@ -61,9 +61,10 @@ This TimeSeries is empty, and is therefore pretty much useless. Let's put some
 data in there. We will allocate the time vector and add some random data.
 """
 ts.time = np.arange(100)
-ts.data['signal1'] = np.random.rand(100, 2)
-ts.data['signal2'] = np.random.rand(100, 2)
-ts.data['signal3'] = np.random.rand(100, 2)
+ts.data['signal1'] = np.sin(ts.time / 10)
+ts.data['signal2'] = np.cos(ts.time / 10)
+ts.data['signal3'] = np.hstack((np.sin(ts.time / 10)[:, np.newaxis],
+                                np.cos(ts.time / 10)[:, np.newaxis]))
 
 ts
 
@@ -178,12 +179,61 @@ ts.events[0].name
 When we plot a TimeSeries that contains events using the TimeSeries' ``plot``
 method, the events are also drawn. It is also possible to print out the
 events' names on the plot:
-"""
+
+    """
 plt.figure()
 ts.plot('signal1')
 
 plt.figure()
 ts.plot('signal1', plot_event_names=True)
+plt.tight_layout()  # To resize the figure so we see the text completely.
+
+# %%
+"""
+Using events
+------------
+The events of a TimeSeries are powerful to extract new TimeSeries after,
+before or between events. Among many methods that use events, the most
+important are ``get_ts_before_event``, ``get_ts_between_events`` and
+``get_ts_after_event``.
+
+"""
+ts1 = ts.get_ts_before_event('some_event_1')
+plt.figure()
+ts1.plot(plot_event_names=True)
+plt.tight_layout()  # To resize the figure so we see the text completely.
+
+# %%
+ts2 = ts.get_ts_between_events('some_event_3', 'some_event_1')
+plt.figure()
+ts2.plot(plot_event_names=True)
+plt.tight_layout()  # To resize the figure so we see the text completely.
+
+# %%
+ts3 = ts.get_ts_after_event('some_event_1')
+plt.figure()
+ts3.plot(plot_event_names=True)
+plt.tight_layout()  # To resize the figure so we see the text completely.
+
+"""
+An event can be used to define the time zero of a TimeSeries, which can
+help syncing different TimeSeries recorded using different instruments:
+
+"""
+
+plt.figure()
+ts.plot(plot_event_names=True)
+plt.tight_layout()  # To resize the figure so we see the text completely.
+
+"""
+Now we sync on event 'some_event_1', which becomes the new time zero:
+
+"""
+
+ts.sync_on_event('some_event_1')
+
+plt.figure()
+ts.plot(plot_event_names=True)
 plt.tight_layout()  # To resize the figure so we see the text completely.
 
 # %%
