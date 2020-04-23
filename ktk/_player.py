@@ -350,7 +350,7 @@ class Player:
                        [0, 0, 0, 1]]) @
              np.array([[1, 0, 0, -self.target[0]],  # Rotate around target
                        [0, 1, 0, -self.target[1]],
-                       [0, 0, 1, -self.target[2]],
+                       [0, 0, -1, -self.target[2]],
                        [0, 0, 0, 1]]))
 
         # Add a first dimension to R and match first dimension of points_3d
