@@ -167,7 +167,7 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
     # Forces line of the wrench equation (16)
     a_i = ts.data['CenterOfMassAcceleration'][:, 0:3]
-    g = np.array([0, 9.81, 0])
+    g = np.array([0, -9.81, 0])
     F_i_minus_1 = ts.data['DistalForces'][:, 0:3]
 
     # Moments line of the wrench equation (16)
