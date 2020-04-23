@@ -331,7 +331,7 @@ class TimeSeries():
         """
         return deepcopy(self)
 
-    def plot(self, data_keys=None, plot_event_names=False):
+    def plot(self, data_keys=None, plot_event_names=False, **kwargs):
         """
         Plot the TimeSeries using matplotlib.
 
@@ -344,10 +344,11 @@ class TimeSeries():
             >>> the_timeseries.plot(['Forces', 'Moments'])
             plots only the forces and moments, without plotting the angle.
             By default, all elements of the TimeSeries are plotted.
-
         plot_event_names : bool (optional)
             True to plot the event names on top of the event lines.
             Default = False.
+
+        Additional keyboard arguments are passed to the pyplot's plot function.
 
         Returns
         -------
@@ -376,57 +377,51 @@ class TimeSeries():
             event_times = np.array([])
 
         # Now plot
-        i_plot = 1
-        for the_keys in the_keys:
+        ax = plt.gca()
+        for the_key in the_keys:
 
-            if i_plot == 1:
-                ax = plt.subplot(n_plots, 1, i_plot)
-            else:
-                plt.subplot(n_plots, 1, i_plot, sharex=ax)
-
-            plt.cla()
+            # Set label
+            label = the_key
+            if (the_key in self.data_info and
+                    'Unit' in self.data_info[the_key]):
+                label += ' (' + self.data_info[the_key]['Unit'] + ')'
 
             # Plot data
-            plt.plot(self.time, self.data[the_keys])
+            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
 
-            if (the_keys in self.data_info and
-                    'Unit' in self.data_info[the_keys]):
-                plt.ylabel(the_keys + ' (' +
-                           self.data_info[the_keys]['Unit'] + ')')
-            else:
-                plt.ylabel(the_keys)
-
-            # Plot the events
-            a = plt.axis()
+        # Plot the events
+        if len(self.events) > 0:
+            a = ax.axis()
             min_y = a[2]
             max_y = a[3]
-            event_line_x = np.zeros(3*n_events)
-            event_line_y = np.zeros(3*n_events)
+            event_line_x = np.zeros(3 * n_events)
+            event_line_y = np.zeros(3 * n_events)
 
             for i_event in range(0, n_events):
-                event_line_x[3*i_event] = event_times[i_event]
-                event_line_x[3*i_event+1] = event_times[i_event]
-                event_line_x[3*i_event+2] = np.nan
+                event_line_x[3 * i_event] = event_times[i_event]
+                event_line_x[3 * i_event + 1] = event_times[i_event]
+                event_line_x[3 * i_event + 2] = np.nan
 
-                event_line_y[3*i_event] = min_y
-                event_line_y[3*i_event+1] = max_y
-                event_line_y[3*i_event+2] = np.nan
+                event_line_y[3 * i_event] = min_y
+                event_line_y[3 * i_event + 1] = max_y
+                event_line_y[3 * i_event + 2] = np.nan
 
-            plt.plot(event_line_x, event_line_y, 'c')
+            ax.plot(event_line_x, event_line_y, 'c', label='events')
 
             if plot_event_names:
                 for event in self.events:
-                    plt.text(event.time, max_y, event.name,
-                             rotation='vertical',
-                             horizontalalignment='center')
+                    ax.text(event.time, max_y, event.name,
+                            rotation='vertical',
+                            horizontalalignment='center')
 
-            # Next plot
-            i_plot += 1
+        # Add labels
+        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
 
-        # Add labels and format
-        plt.xlabel('Time (' + self.time_info['Unit'] + ')')
-        # plt.tight_layout(pad=0.05)
-        plt.show()
+        # Add legend if required
+        if len(the_keys) > 1 or len(self.events) > 0:
+            ax.legend()
+        else:  # Only one data, plot it on the y axis.
+            ax.set_ylabel(label)
 
     def get_index_at_time(self, time):
         """
@@ -899,6 +894,24 @@ class TimeSeries():
 
             self.data[data] = ts.data[data]
 
+    def sync_on_time(self, time):
+        """
+        Set the specified time to the new zero in both time and events.
+
+        Parameters
+        ----------
+        time : float
+            Time to be subtracted from time and events.
+
+        Returns
+        -------
+        None.
+
+        """
+        for event in self.events:
+            event.time = event.time - time
+        self.time = self.time - time
+
     def sync_on_event(self, event_name, event_occurrence=0):
         """
         Set an event to the new time zero of the TimeSeries.
@@ -916,10 +929,7 @@ class TimeSeries():
         None.
 
         """
-        time = self.get_event_time(event_name, event_occurrence)
-        for event in self.events:
-            event.time = event.time - time
-        self.time = self.time - time
+        self.sync_on_time(self.get_event_time(event_name, event_occurrence))
 
     def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
         """
@@ -985,26 +995,65 @@ class TimeSeries():
             ensure_event_does_not_exit(ts2, '__common_event_in_ts2__')
             ensure_event_does_not_exit(self, '__common_event_in_ts1__')
 
-            # First synchronize ts2
-            if ts2.ui_add_event('__zero_time_in_ts2__', data_keys) is False:
-                clean()
-                return False
-            if ts2.ui_add_event('__common_event_in_ts2__', data_keys) is False:
-                clean()
-                return False
+            finished = False
+            while finished is False:
+                fig = plt.figure()
+                ax = plt.subplot(2, 1, 1)
+                self.plot(data_keys)
+                plt.title('First TimeSeries (ts1)')
+                plt.grid(True)
+                plt.tight_layout()
 
-            # Then ts1
-            if self.ui_add_event(
-                    '__common_event_in_ts1__', data_keys) is False:
-                clean()
-                return False
+                plt.subplot(2, 1, 2, sharex=ax)
+                ts2.plot(data_keys2)
+                plt.title('Second TimeSeries (ts2)')
+                plt.grid(True)
+                plt.tight_layout()
 
-            self.sync_on_event('__common_event_in_ts1__')
-            ts2.sync_on_event('__common_event_in_ts2__')
-            self.add_event(ts2.get_event_time('__zero_time_in_ts2__'),
-                           '__zero_time_in_ts1__')
-            self.sync_on_event('__zero_time_in_ts1__')
-            ts2.sync_on_event('__zero_time_in_ts2__')
+                choice = gui.button_dialog(
+                    'Please select an option.',
+                    choices=['Sync on a common event',
+                             'Zero using ts1',
+                             'Zero using ts2',
+                             'OK'])
+
+                if choice == 0:  # Sync on a common event
+                    gui.message(
+                        'Click on the common event in the first TimeSeries.')
+                    click_1 = plt.ginput(1)
+                    gui.message('')
+                    gui.message(
+                        'Click on the common event in the second TimeSeries.')
+                    click_2 = plt.ginput(1)
+                    gui.message('')
+
+                    self.sync_on_time(click_1[0][0])
+                    ts2.sync_on_time(click_2[0][0])
+                    plt.close(fig)
+
+                elif choice == 1:  # Zero using TimeSeries 1
+                    gui.message(
+                        'Click on the time zero in the first TimeSeries.')
+                    click_1 = plt.ginput(1)
+                    gui.message('')
+
+                    self.sync_on_time(click_1[0][0])
+                    ts2.sync_on_time(click_1[0][0])
+                    plt.close(fig)
+
+                elif choice == 2:  # Zero using TimeSeries 2
+                    gui.message(
+                        'Click on the time zero in the second TimeSeries.')
+                    click_2 = plt.ginput(1)
+                    gui.message('')
+
+                    self.sync_on_time(click_2[0][0])
+                    ts2.sync_on_time(click_2[0][0])
+                    plt.close(fig)
+
+                elif choice == 3:  # OK, quit.
+                    plt.close(fig)
+                    finished = True
 
             clean()
             return True
