@@ -259,7 +259,8 @@ class TimeSeries():
 
         Returns
         -------
-        None.
+        - True if the event was added;
+        - False if the operation was cancelled by the user.
         """
         ts = self.copy()
 
@@ -279,8 +280,7 @@ class TimeSeries():
 
             if button <= 0:  # Cancel
                 plt.close(fig)
-                print('No event was added.')
-                return self.copy()
+                return False
 
             if multiple_events:
                 gui.message('Please left-click to add events, '
@@ -308,8 +308,7 @@ class TimeSeries():
                         ['Cancel', 'Add more', 'Finished'])
                 if button <= 0:  # Cancel
                     plt.close(fig)
-                    print('No event was added.')
-                    return self.copy()
+                    return False
                 elif button == 1:
                     finished = False
                 elif button == 2:
@@ -319,6 +318,7 @@ class TimeSeries():
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
         self._ensure_sorted_and_unique_events()
+        return True
 
     def copy(self):
         """
@@ -522,7 +522,7 @@ class TimeSeries():
         else:
             return np.nanargmin(diff)
 
-    def get_event_time(self, event_name, event_occurence=0):
+    def get_event_time(self, event_name, event_occurrence=0):
         """
         Get the time of the specified event.
 
@@ -530,7 +530,7 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 0.
+        event_occurrence : int, optional. Default is 0.
             i_th occurence of the event to look for in the events list,
             starting at 0.
 
@@ -556,10 +556,10 @@ class TimeSeries():
         10.8
 
         """
-        event_occurence = int(event_occurence)
+        event_occurrence = int(event_occurrence)
 
-        if event_occurence < 0:
-            raise ValueError('event_occurence must be positive')
+        if event_occurrence < 0:
+            raise ValueError('event_occurrence must be positive')
 
         the_event_times = np.array([x.time for x in self.events])
         the_event_indices = [(x.name == event_name) for x in self.events]
@@ -568,11 +568,11 @@ class TimeSeries():
         the_event_times = np.array(the_event_times[the_event_indices])
 
         n_events = len(the_event_times)
-        if n_events == 0 or event_occurence >= n_events:
+        if n_events == 0 or event_occurrence >= n_events:
             return np.nan
         else:
             the_event_times = np.sort(the_event_times)
-            return the_event_times[event_occurence]
+            return the_event_times[event_occurrence]
 
     def get_ts_at_time(self, time):
         """
@@ -595,7 +595,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    def get_ts_at_event(self, event_name, event_occurence=0):
+    def get_ts_at_event(self, event_name, event_occurrence=0):
         """
         Get a one-data subset of the TimeSeries at the event's nearest time.
 
@@ -603,7 +603,7 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 0.
+        event_occurrence : int, optional. Default is 0.
             i_th occurence of the event to look for in the events list,
             starting at 0.
 
@@ -613,7 +613,7 @@ class TimeSeries():
         nearest time.
 
         """
-        time = self.get_event_time(event_name, event_occurence)
+        time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_at_time(time)
 
     def get_ts_before_time(self, time):
@@ -658,7 +658,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_before_event(self, event_name, event_occurence=0):
+    def get_ts_before_event(self, event_name, event_occurrence=0):
         """
         Get a subset of the TimeSeries before and at the specified event.
 
@@ -666,7 +666,7 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 0.
+        event_occurrence : int, optional. Default is 0.
             i_th occurence of the event to look for in the events list,
             starting at 0.
 
@@ -675,7 +675,7 @@ class TimeSeries():
         TimeSeries.
 
         """
-        time = self.get_event_time(event_name, event_occurence)
+        time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_before_time(time)
 
     def get_ts_after_time(self, time):
@@ -720,7 +720,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_after_event(self, event_name, event_occurence=0):
+    def get_ts_after_event(self, event_name, event_occurrence=0):
         """
         Get a subset of the TimeSeries after and at the specified event.
 
@@ -728,7 +728,7 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurence : int, optional. Default is 0.
+        event_occurrence : int, optional. Default is 0.
             i_th occurence of the event to look for in the events list,
             starting at 0.
 
@@ -737,7 +737,7 @@ class TimeSeries():
         TimeSeries.
 
         """
-        time = self.get_event_time(event_name, event_occurence)
+        time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_after_time(time)
 
     def get_ts_between_times(self, time1, time2):
@@ -776,7 +776,7 @@ class TimeSeries():
         return new_ts
 
     def get_ts_between_events(self, event_name1, event_name2,
-                              event_occurence1=0, event_occurence2=0):
+                              event_occurrence1=0, event_occurrence2=0):
         """
         Get a subset of the TimeSeries between two specified events.
 
@@ -784,7 +784,7 @@ class TimeSeries():
         ----------
         event_name1, event_name2 : str
             Name of the events to look for in the events list.
-        event_occurence1, event_occurence2 : int, optional. Default is 0.
+        event_occurrence1, event_occurrence2 : int, optional. Default is 0.
             i_th occurence of the events to look for in the events list,
             starting at 0.
 
@@ -793,8 +793,8 @@ class TimeSeries():
         TimeSeries
 
         """
-        time1 = self.get_event_time(event_name1, event_occurence1)
-        time2 = self.get_event_time(event_name2, event_occurence2)
+        time1 = self.get_event_time(event_name1, event_occurrence1)
+        time2 = self.get_event_time(event_name2, event_occurrence2)
         return self.get_ts_between_times(time1, time2)
 
     def ui_get_ts_between_clicks(self, data_keys=None):
@@ -899,39 +899,115 @@ class TimeSeries():
 
             self.data[data] = ts.data[data]
 
-    def ui_sync(self, data_keys=None):
+    def sync_on_event(self, event_name, event_occurrence=0):
         """
-        Synchronize a TimeSeries by setting its zero-time interactively.
+        Set an event to the new time zero of the TimeSeries.
 
         Parameters
         ----------
-        data_keys : str or list of str (optional)
-            The data keys to plot. Default is None, which means that all data
-            is plotted.
+        event_name : str
+            Name of the event to sync on.
+        event_occurrence : int (optional)
+            Occurrence of the event to sync on. The default is 0, which
+            corresponds to the first occurrence of the event.
 
         Returns
         -------
         None.
+
         """
-        fig = plt.figure()
-        self.plot(data_keys)
-        choice = gui.button_dialog(
-                'Please zoom on the sync event and press Next.',
-                ['Cancel', 'Next'])
-        if choice != 1:
-            return
-
-        gui.message('Click on the sync event.')
-        click = plt.ginput(1)
-        gui.message(None)
-        plt.close(fig)
-
-        time = click[0][0]
-
+        time = self.get_event_time(event_name, event_occurrence)
         for event in self.events:
-            event.time -= time
+            event.time = event.time - time
+        self.time = self.time - time
 
-        self.time -= time
+    def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
+        """
+        Synchronize a TimeSeries by setting its zero-time interactively.
+
+        If a second TimeSeries is given, both TimeSeries are synchronized and
+        the sync process is done in three steps:
+            1. Click on the second TimeSeries's zero-time.
+            2. Click on the second TimeSeries on a recognizable event that
+               is common with the first TimeSeries.
+            3. Click on this same event on the first TimeSeries.
+
+        Parameters
+        ----------
+        data_keys : str or list of str (optional)
+            The data keys to plot. The default is None, which means that all
+            data is plotted.
+        ts2 : TimeSeries (optional)
+            A second TimeSeries that contains both a recognizable zero-time
+            event and a common event with the first TimeSeries.
+        data_keys2 : str or list of str (optional)
+            The data keys from the second TimeSeries to plot. The default is
+            None, which means that all data is plotted.
+
+        Returns
+        -------
+        - True if the sync operation was completed;
+        - False if the sync operation was cancelled by the user, in which case
+          none of the TimeSeries was modified.
+        """
+        def ensure_event_does_not_exit(ts, event_name):
+            if not np.isnan(ts.get_event_time(event_name)):
+                raise ValueError('Could not sync a TimeSeries that already '
+                                 f'contains the {event_name} event.')
+
+        def remove_event(ts, event_name):
+            new_events = []
+            for event in ts.events:
+                if event.name != event_name:
+                    new_events.append(event)
+            ts.events = new_events
+
+        def clean():
+            remove_event(self, '__zero_time_in_ts1__')
+            remove_event(self, '__common_event_in_ts1__')
+            if ts2 is not None:
+                remove_event(ts2, '__zero_time_in_ts2__')
+                remove_event(ts2, '__common_event_in_ts2__')
+
+        if ts2 is None:
+            # Synchronize ts1 only
+            ensure_event_does_not_exit(self, '__zero_time_in_ts1__')
+            if self.ui_add_event('__zero_time_in_ts1__', data_keys) is False:
+                clean()
+                return False
+            self.sync_on_event('__zero_time_in_ts1__')
+            remove_event(self, '__zero_time_in_ts1__')
+            return True
+
+        else:
+            ensure_event_does_not_exit(self, '__zero_time_in_ts1__')
+            ensure_event_does_not_exit(ts2, '__zero_time_in_ts2__')
+            ensure_event_does_not_exit(ts2, '__common_event_in_ts2__')
+            ensure_event_does_not_exit(self, '__common_event_in_ts1__')
+
+            # First synchronize ts2
+            if ts2.ui_add_event('__zero_time_in_ts2__', data_keys) is False:
+                clean()
+                return False
+            if ts2.ui_add_event('__common_event_in_ts2__', data_keys) is False:
+                clean()
+                return False
+
+            # Then ts1
+            if self.ui_add_event(
+                    '__common_event_in_ts1__', data_keys) is False:
+                clean()
+                return False
+
+            self.sync_on_event('__common_event_in_ts1__')
+            ts2.sync_on_event('__common_event_in_ts2__')
+            self.add_event(ts2.get_event_time('__zero_time_in_ts2__'),
+                           '__zero_time_in_ts1__')
+            self.sync_on_event('__zero_time_in_ts1__')
+            ts2.sync_on_event('__zero_time_in_ts2__')
+
+            clean()
+            return True
 
     def get_subset(self, data_keys):
         """
