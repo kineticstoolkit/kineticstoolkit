@@ -497,20 +497,19 @@ def calculate_power(tsin):
     return tsout
 
 
-def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
+def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
                   minimum_push_time=0.1, minimum_recovery_time=0.2):
     """
     Detect pushes and recoveries automatically.
-
 
     Parameters
     ----------
     tsin : TimeSeries
         Input TimeSeries that must contain a 'Forces' key in its data dict.
-    push_trigger : float, optional
+    push_threshold : float, optional
         The total force over which a push phase is triggered, in newton.
         The default is 5.
-    recovery_trigger : float, optional
+    recovery_threshold : float, optional
         The total force under which a recovery phase is triggered, in newton.
     minimum_push_time : float, optional
         The minimum time required for a push time, in seconds. Detected pushes
@@ -526,9 +525,8 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
     tsout : TimeSeries
         The output timeseries, which is identical to tsin but with the
         following added events:
-            - 'pushstart'
-            - 'pushend'
-            - 'cycleend'
+            - 'pusht'
+            - 'recovery'
 
     """
     # Calculate the total force
@@ -539,59 +537,16 @@ def detect_pushes(tsin, push_trigger=5, recovery_trigger=2,
     ts_force = ktk.filters.smooth(ts_force, 11)
 
     # Remove the median if it existed
-    ts_force.data['Ftot'] = \
-            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
+    ts_force.data['Ftot'] = (
+        ts_force.data['Ftot'] - np.median(ts_force.data['Ftot']))
 
     # Find the pushes
-    time = ts_force.time
-    data = ts_force.data['Ftot']
-
-    push_state = True   # We start on Push state to wait for a first release, which
-                        # allows to ensure the first push will be complete.
-    is_first_push = True
-
-    events = []
-
-    for i in range(0, len(data)):
-
-        if ((push_state is False) and (data[i] > push_trigger) and
-            (is_first_push is True or
-             time[i] - events[-1].time >= minimum_recovery_time)):
-
-            push_state = True
-
-            events.append(ktk.TimeSeriesEvent(time[i], 'pushstart'))
-
-            if is_first_push is False:
-                # It's not only the first push, it's also the end of a cycle.
-                events.append(ktk.TimeSeriesEvent(time[i]-1E-6, 'cycleend'))
-
-            is_first_push = False
-
-        elif ((push_state is True) and (data[i] < recovery_trigger)):
-
-            push_state = False
-
-            # Is the push long enough to be considered as a push?
-            if (len(events) == 0 or  # Not grab yet
-                    time[i] - events[-1].time >= minimum_push_time):
-                # Yes.
-                events.append(ktk.TimeSeriesEvent(time[i], 'pushend'))
-            else:
-                # No. Remove the last push start and cycle end.
-                events = events[0:-2]
-
-    # The first event in list was only to initiate the list. We must remove it.
-    # The second event in list is a release. We must remove it.
-    events = events[1:]
-
-    # If we stopped during a push, remove the last push_start to ensure that
-    # we only have complete pushes.
-    if push_state is True:
-        events = events[:-2]
+    ts_force = ktk.cycles.find_cycles(ts_force, 'Ftot', 'push', 'recovery',
+                                      push_threshold, recovery_threshold,
+                                      minimum_push_time, minimum_recovery_time)
 
     # Form the output timeseries
     tsout = tsin.copy()
-    tsout.events = events
+    tsout.events = ts_force.events
 
     return tsout

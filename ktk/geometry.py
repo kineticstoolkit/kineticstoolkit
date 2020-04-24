@@ -172,7 +172,6 @@ def create_reference_frames(global_points, method='ocx1'):
     array : Series of transformation matrices (Nx4x4).
     """
     def normalize(v):
-
         norm = np.linalg.norm(v, axis=1)
         return v / norm[..., np.newaxis]
 

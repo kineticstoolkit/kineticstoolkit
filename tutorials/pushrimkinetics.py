@@ -50,7 +50,11 @@ kinetics.data
 
 # %%
 plt.clf()
-kinetics.plot(['Forces', 'Moments'])
+plt.subplot(2, 1, 1)
+kinetics.plot('Forces')
+plt.subplot(2, 1, 2)
+kinetics.plot('Moments')
+
 
 """
 If the data is not in a CSV form but instead in a TXT file from the
@@ -92,6 +96,18 @@ calibration matrices based on SmartWheels' serial numbers. For example:
 new_kinetics = ktk.pushrimkinetics.calculate_forces_and_moments(
             kinetics, 'LIO-123')
 
+plt.clf()
+plt.subplot(2, 1, 1)
+new_kinetics.plot('Forces')
+plt.subplot(2, 1, 2)
+new_kinetics.plot('Moments')
+
+"""
+When the forces and moments are reconstructed from raw data, no modification
+has been applied on the signals by the SmartWheel software to account for
+wheel side. Therefore some signals may be inverted, as observed here.
+"""
+
 # %% exclude
 forces = np.nanmean(new_kinetics.data['Forces'], 0)
 moments = np.nanmean(new_kinetics.data['Moments'], 0)
@@ -115,7 +131,10 @@ Let's apply this function on the data we just loaded.
 kinetics = ktk.pushrimkinetics.remove_sinusoids(kinetics)
 
 plt.clf()
-kinetics.plot(['Forces', 'Moments'])
+plt.subplot(2, 1, 1)
+kinetics.plot('Forces')
+plt.subplot(2, 1, 2)
+kinetics.plot('Moments')
 
 # %% exclude
 kinetics = ktk.pushrimkinetics.read_file(filename)  # reload from csv
@@ -140,7 +159,10 @@ baseline = ktk.pushrimkinetics.read_file(
 kinetics = ktk.pushrimkinetics.remove_sinusoids(kinetics, baseline)
 
 plt.clf()
-kinetics.plot(['Forces', 'Moments'])
+plt.subplot(2, 1, 1)
+kinetics.plot('Forces')
+plt.subplot(2, 1, 2)
+kinetics.plot('Moments')
 
 # %% exclude
 _assert_almost_equal(np.mean(kinetics.data['Forces']),
@@ -180,15 +202,18 @@ event_times = np.array(kinetics.events)[:, 0]
 for i in range(0, len(event_times)):
     float_event_times.append(float(event_times[i]))
 
-assert len(kinetics.events) == 77
-_assert_almost_equal(np.mean(float_event_times), 17.212175000000002)
+assert len(kinetics.events) == 52
+_assert_almost_equal(np.mean(float_event_times), 17.10304487179487)
 
 # %%
 """
-We see that the TimeSeries now has 77 items. Let's see these events on a plot.
+We see that the TimeSeries now has 52 events. Let's see these events on a plot.
 """
 plt.clf()
-kinetics.plot(['Forces', 'Moments'])
+plt.subplot(2, 1, 1)
+kinetics.plot('Forces')
+plt.subplot(2, 1, 2)
+kinetics.plot('Moments')
 
 # %%
 """
@@ -203,10 +228,13 @@ module.
 Let's say we want to time-normalize each push from the ``pushstart`` event to
 the ``pushend`` event.
 """
-kinetics = ktk.cycles.time_normalize(kinetics, 'pushstart', 'pushend')
+kinetics = ktk.cycles.time_normalize(kinetics, 'push', 'recovery')
 
 plt.clf()
-kinetics.plot(['Forces', 'Moments'])
+plt.subplot(2, 1, 1)
+kinetics.plot('Forces')
+plt.subplot(2, 1, 2)
+kinetics.plot('Moments')
 
 # %%
 """

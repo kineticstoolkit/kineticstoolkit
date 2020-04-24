@@ -1,5 +1,77 @@
 import numpy as np
-from ktk import TimeSeries
+from ktk import TimeSeries, TimeSeriesEvent
+
+
+def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
+                minimum_time1, minimum_time2):
+    """
+    Find cycles in a TimeSeries based on a dual threshold approach.
+
+    Parameters
+    ----------
+    ts : TimeSeries
+        TimeSeries to analyze.
+    data_key : str
+        Name of the data key to analyze in the TimeSeries.
+    event_name1 : str
+        Name of the events that correspond to threshold1.
+    event_name2 : str
+        Name of the events that correspond to threshold2.
+    threshold1 : float
+        Threshold to cross while rising to trigger event1.
+    trigger2 : float
+        Threshold to cross while falling to trigger event2.
+    minimum_time1 : float
+        Minimal time since event1 to consider event2 as a true event.
+    minimum_time2 : float
+        Minimal time since event2 to consider event1 as a true event.
+
+    Returns
+    -------
+    TimeSeries : A copy of ts with the added events.
+
+    """
+    # Find the pushes
+    time = ts.time
+    data = ts.data[data_key]
+
+    # To wait for a first release, which allows to ensure the cycle will
+    # begin with event1:
+    is_first_part_of_cycle = True
+    is_first_cycle = True
+
+    events = []
+
+    for i in range(time.shape[0]):
+
+        if (is_first_part_of_cycle is False) and (data[i] > threshold1):
+
+            if ((is_first_cycle is True) or
+                    (time[i] - events[-1].time >= minimum_time2)):
+
+                is_first_part_of_cycle = True
+                is_first_cycle = False
+                events.append(TimeSeriesEvent(time[i], event_name1))
+
+        elif (is_first_part_of_cycle is True) and (data[i] < threshold2):
+
+            if ((is_first_cycle is True) or
+                    (time[i] - events[-1].time >= minimum_time2)):
+
+                is_first_part_of_cycle = False
+                events.append(TimeSeriesEvent(time[i], event_name2))
+
+    # The first event in list was only to initiate the list. We must remove it.
+    events = events[1:]
+
+    # Form the output timeseries
+    tsout = ts.copy()
+    for event in events:
+        tsout.add_event(event.time, event.name)
+    tsout.sort_events()
+
+    return tsout
+
 
 
 def time_normalize(ts, event_name1, event_name2, n_points=100):

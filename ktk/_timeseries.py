@@ -205,8 +205,19 @@ class TimeSeries():
         if old_data_field in self.data_info:
             self.data_info[new_data_field] = self.data_info.pop(old_data_field)
 
-    def _ensure_sorted_and_unique_events(self):
-        """Ensure that all events in the TimeSeries are unique."""
+    def sort_events(self):
+        """
+        Sorts the TimeSeries' events and ensure that all events are unique.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+
+        """
         self.events = sorted(self.events)
         for i in range(len(self.events) - 1, 0, -1):
             if ((self.events[i].time == self.events[i - 1].time) and
@@ -240,7 +251,7 @@ class TimeSeries():
 
         """
         self.events.append(TimeSeriesEvent(time, name))
-        self._ensure_sorted_and_unique_events()
+        self.sort_events()
 
     def ui_add_event(self, name='event', plot=[], multiple_events=False):
         """
@@ -317,7 +328,7 @@ class TimeSeries():
         gui.message()
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
-        self._ensure_sorted_and_unique_events()
+        self.sort_events()
         return True
 
     def copy(self):
@@ -1197,4 +1208,4 @@ class TimeSeries():
         # Merge events
         for event in ts.events:
             self.events.append(event)
-        self._ensure_sorted_and_unique_events()
+        self.sort_events()
