@@ -63,8 +63,8 @@ data in there. We will allocate the time vector and add some random data.
 ts.time = np.arange(100)
 ts.data['signal1'] = np.sin(ts.time / 10)
 ts.data['signal2'] = np.cos(ts.time / 10)
-ts.data['signal3'] = np.hstack((np.sin(ts.time / 10)[:, np.newaxis],
-                                np.cos(ts.time / 10)[:, np.newaxis]))
+ts.data['signal3'] = np.hstack((0.5 * np.sin(ts.time / 10)[:, np.newaxis],
+                                0.5 * np.cos(ts.time / 10)[:, np.newaxis]))
 
 ts
 
@@ -243,21 +243,9 @@ Subsetting and merging TimeSeries
 Subsetting and merging can be done with the ``get_subset`` and ``merge```
 methods.
 
-We start by creating a random TimeSeries with three data keys:
 """
-ts1 = ktk.TimeSeries(time=np.arange(10))
-ts1.data['signal1'] = ts1.time ** 2
-ts1.data['signal2'] = np.sin(ts1.time)
-ts1.data['signal3'] = np.cos(ts1.time)
-ts1.add_data_info('signal1', 'Unit', 'Unit1')
-ts1.add_data_info('signal2', 'Unit', 'Unit2')
-ts1.add_data_info('signal3', 'Unit', 'Unit3')
-ts1.add_event(1.53, 'test_event1')
-ts1.add_event(9.2, 'test_event2')
-ts1.add_event(1, 'test_event3')
-
 plt.figure()
-ts1.plot()
+ts.plot()
 
 """
 The method ``get_subset`` allows extracting data, data_info and events from
@@ -265,12 +253,13 @@ a TimeSeries to get a subset of this TimeSeries. For example, here we
 define a new TimeSeries that contains only signal1, and another that
 contains both signal2 and signal3.
 """
-ts2 = ts1.get_subset('signal1')
-ts3 = ts1.get_subset(['signal2', 'signal3'])
+ts2 = ts.get_subset('signal1')
+ts3 = ts.get_subset(['signal2', 'signal3'])
 
 plt.figure()
 ts2.plot()
 
+# %%
 plt.figure()
 ts3.plot()
 
@@ -302,7 +291,12 @@ The method ``resample`` allows a TimeSeries to be resampled over a new time
 vector. Any interpolation method supported by ``scipy.interpolate.interp1d``
 is supported.
 
+Let begin with a new TimeSeries with a poor sample rate, so we can see what
+resampling does.
 """
+ts1 = ktk.TimeSeries(time=np.arange(0, 10, 1))
+ts1.data['signal'] = np.sin(ts1.time)
+
 plt.figure()
 ts1.plot()
 

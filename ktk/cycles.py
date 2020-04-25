@@ -1,5 +1,5 @@
 import numpy as np
-from ktk import TimeSeries, TimeSeriesEvent
+import ktk
 
 
 def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
@@ -51,7 +51,7 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
 
                 is_first_part_of_cycle = True
                 is_first_cycle = False
-                events.append(TimeSeriesEvent(time[i], event_name1))
+                events.append(ktk.TimeSeriesEvent(time[i], event_name1))
 
         elif (is_first_part_of_cycle is True) and (data[i] < threshold2):
 
@@ -59,7 +59,7 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
                     (time[i] - events[-1].time >= minimum_time2)):
 
                 is_first_part_of_cycle = False
-                events.append(TimeSeriesEvent(time[i], event_name2))
+                events.append(ktk.TimeSeriesEvent(time[i], event_name2))
 
     # The first event in list was only to initiate the list. We must remove it.
     events = events[1:]
@@ -96,6 +96,9 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
     TimeSeries.
     """
     # Find the final number of cycles
+    if len(ts.events) < 2:
+        raise(ValueError('No cycle can be defined from these event names.'))
+
     n_cycles = np.min([
             np.sum(np.array(ts.events)[:, 1] == event_name1),
             np.sum(np.array(ts.events)[:, 1] == event_name2)])
@@ -114,6 +117,7 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
 
     dest_ts.time = np.arange(n_points * n_cycles)
     dest_ts.time_info['Unit'] = '%'
+
     for key in ts.data.keys():
         new_shape = list(ts.data[key].shape)
         new_shape[0] = n_points * n_cycles
@@ -134,12 +138,16 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
         # Resample the events and add the relevant ones to the
         # destination TimeSeries
         for i_event, event in enumerate(subts.events):
-            event.time = ((event.time - original_start) /
-                          (original_stop - original_start) *
-                          (n_points-1))
-            if event.time >= 0 and event.time < (n_points-1):
-                event.time += 100 * i_cycle
-                dest_ts.events.append(event)
+
+            tol = (subts.time[1] - subts.time[0]) / 2
+
+            if ((event.time >= original_start - tol) and
+                    (event.time < original_stop)):
+                # Resample
+                new_time = ((event.time - original_start) /
+                              (original_stop - original_start) *
+                              (n_points - 1)) + i_cycle * n_points
+                dest_ts.add_event(new_time, event.name)
 
         # Add this cycle to the destination TimeSeries
         for key in subts.data.keys():

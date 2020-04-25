@@ -10,7 +10,7 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-from ktk._timeseries import TimeSeries
+import ktk
 
 # To intercept interactive navigation key presses:
 from matplotlib.backend_bases import NavigationToolbar2
@@ -108,7 +108,7 @@ class Player:
         if rigid_bodies is not None:
             self.rigid_bodies = rigid_bodies.copy()
         else:
-            self.rigid_bodies = TimeSeries(time=markers.time)
+            self.rigid_bodies = ktk.TimeSeries(time=markers.time)
 
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(

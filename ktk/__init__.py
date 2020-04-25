@@ -36,20 +36,20 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 # Imports
 # ---------------------------
 
-from ._timeseries import TimeSeries, TimeSeriesEvent
-from ._dbinterface import DBInterface
-from ._player import Player
-from ._loadsave import load, loadmat, save
-from . import filters
-from . import gui
-from ._tools import explore, terminal, update, tutorials
-from . import geometry
-from . import kinematics
-from . import pushrimkinetics
-from . import inversedynamics
-from . import dev
-from . import cycles
-from . import _repr
+from ktk._timeseries import TimeSeries, TimeSeriesEvent
+from ktk._dbinterface import DBInterface
+from ktk._player import Player
+from ktk._loadsave import load, loadmat, save
+from ktk import filters
+from ktk import gui
+from ktk._tools import explore, terminal, update, tutorials
+from ktk import geometry
+from ktk import kinematics
+from ktk import pushrimkinetics
+from ktk import inversedynamics
+from ktk import dev
+from ktk import cycles
+from ktk import _repr
 
 # ---------------------------
 # Customizations

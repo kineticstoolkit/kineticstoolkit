@@ -12,8 +12,7 @@ import warnings
 
 from copy import deepcopy
 
-from . import gui
-from . import _repr
+import ktk
 
 
 class TimeSeriesEvent(list):
@@ -110,10 +109,10 @@ class TimeSeries():
             TimeSeries
 
         """
-        return _repr._format_class_attributes(self)
+        return ktk._repr._format_class_attributes(self)
 
     def __repr__(self):
-        return _repr._format_class_attributes(self)
+        return ktk._repr._format_class_attributes(self)
 
     def __eq__(self, ts):
         """
@@ -284,7 +283,7 @@ class TimeSeries():
         while finished is False:
             finished = True  # Only one pass by default
 
-            button = gui.button_dialog(
+            button = ktk.gui.button_dialog(
                     f'Adding the event "{name}"\n'
                     'Please zoom on the new event to add, then click Next.',
                     ['Cancel', 'Next'])
@@ -294,17 +293,17 @@ class TimeSeries():
                 return False
 
             if multiple_events:
-                gui.message('Please left-click to add events, '
+                ktk.gui.message('Please left-click to add events, '
                             'right-click to delete, '
                             'ENTER to finish.')
                 plt.pause(0.001)  # Update the plot
                 coordinates = plt.ginput(99999)
-                gui.message()
+                ktk.gui.message()
 
             else:
-                gui.message('Please left-click on the event to add.')
+                ktk.gui.message('Please left-click on the event to add.')
                 coordinates = plt.ginput(1)
-                gui.message()
+                ktk.gui.message()
 
             # Add these events
             for i in range(len(coordinates)):
@@ -313,7 +312,7 @@ class TimeSeries():
             if multiple_events:
                 plt.cla()
                 ts.plot(plot)
-                button = gui.button_dialog(
+                button = ktk.gui.button_dialog(
                         f'Adding the event "{name}"\n'
                         'Do you want to add more of these events?',
                         ['Cancel', 'Add more', 'Finished'])
@@ -325,7 +324,7 @@ class TimeSeries():
                 elif button == 2:
                     finished = True
 
-        gui.message()
+        ktk.gui.message()
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
         self.sort_events()
@@ -417,7 +416,7 @@ class TimeSeries():
                 event_line_y[3 * i_event + 1] = max_y
                 event_line_y[3 * i_event + 2] = np.nan
 
-            ax.plot(event_line_x, event_line_y, 'c', label='events')
+            ax.plot(event_line_x, event_line_y, label='events')
 
             if plot_event_names:
                 for event in self.events:
@@ -821,12 +820,12 @@ class TimeSeries():
         fig = plt.figure()
         self.plot(data_keys)
         plt.pause(0.001)  # Redraw
-        gui.message('Click on the left of the desired zone.')
+        ktk.gui.message('Click on the left of the desired zone.')
         left_point = plt.ginput(1)
-        gui.message('')
-        gui.message('Click on the right of the desired zone.')
+        ktk.gui.message('')
+        ktk.gui.message('Click on the right of the desired zone.')
         right_point = plt.ginput(1)
-        gui.message('')
+        ktk.gui.message('')
         plt.close(fig)
         return self.get_ts_between_times(left_point[0][0], right_point[0][0])
 
@@ -974,15 +973,15 @@ class TimeSeries():
             # Synchronize ts1 only
             fig = plt.figure()
             self.plot(data_keys)
-            choice = gui.button_dialog(
+            choice = ktk.gui.button_dialog(
                 'Please zoom on the time zero and press Next.',
                 ['Cancel', 'Next'])
             if choice != 1:
                 return
 
-            gui.message('Click on the sync event.')
+            ktk.gui.message('Click on the sync event.')
             click = plt.ginput(1)
-            gui.message(None)
+            ktk.gui.message(None)
             plt.close(fig)
             self.sync_on_time(click[0][0])
 
@@ -1003,7 +1002,7 @@ class TimeSeries():
                 plt.grid(True)
                 plt.tight_layout()
 
-                choice = gui.button_dialog(
+                choice = ktk.gui.button_dialog(
                     'Please select an option.',
                     choices=['Sync on a common event',
                              'Zero using ts1',
@@ -1011,34 +1010,34 @@ class TimeSeries():
                              'OK'])
 
                 if choice == 0:  # Sync on a common event
-                    gui.message(
+                    ktk.gui.message(
                         'Click on the common event in the first TimeSeries.')
                     click_1 = plt.ginput(1)
-                    gui.message('')
-                    gui.message(
+                    ktk.gui.message('')
+                    ktk.gui.message(
                         'Click on the common event in the second TimeSeries.')
                     click_2 = plt.ginput(1)
-                    gui.message('')
+                    ktk.gui.message('')
 
                     self.sync_on_time(click_1[0][0])
                     ts2.sync_on_time(click_2[0][0])
                     plt.close(fig)
 
                 elif choice == 1:  # Zero using TimeSeries 1
-                    gui.message(
+                    ktk.gui.message(
                         'Click on the time zero in the first TimeSeries.')
                     click_1 = plt.ginput(1)
-                    gui.message('')
+                    ktk.gui.message('')
 
                     self.sync_on_time(click_1[0][0])
                     ts2.sync_on_time(click_1[0][0])
                     plt.close(fig)
 
                 elif choice == 2:  # Zero using TimeSeries 2
-                    gui.message(
+                    ktk.gui.message(
                         'Click on the time zero in the second TimeSeries.')
                     click_2 = plt.ginput(1)
-                    gui.message('')
+                    ktk.gui.message('')
 
                     self.sync_on_time(click_2[0][0])
                     ts2.sync_on_time(click_2[0][0])
