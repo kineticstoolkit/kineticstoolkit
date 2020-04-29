@@ -42,6 +42,7 @@ from ktk._player import Player
 from ktk._loadsave import load, loadmat, save
 from ktk import filters
 from ktk import gui
+from ktk import mplhelper
 from ktk._tools import explore, terminal, update, tutorials
 from ktk import geometry
 from ktk import kinematics
@@ -55,7 +56,7 @@ from ktk import _repr
 # Customizations
 # ---------------------------
 
-# Modify the repr function for dicts in iPython
+# Modify the repr function for dicts in IPython
 try:
     import IPython as _IPython
     _ip = _IPython.get_ipython()
