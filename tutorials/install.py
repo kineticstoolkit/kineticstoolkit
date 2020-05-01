@@ -21,28 +21,59 @@ step to obtain ktk is to install git on your computer.
 
 Just use the default checkboxes in every dialog, everything should be fine.
 
-Download and install Anaconda Python 3.7.
-----------------------------------------
-[Anaconda distribution website](https://www.anaconda.com/distribution/)
+Download and install Python and the required packages
+-----------------------------------------------------
+There are many ways to do this. I recommend to install Anaconda or Miniconda, and use
+conda to install the required packages.
 
-Add external dependencies
--------------------------
-Open the Anaconda console on Windows, or a terminal in macOS, and type these
-commands to install ktk's additional dependencies:
+### Windows ###
+The easiest way is to install Anaconda, then add some additional packages.
+
+#### Download and install Anaconda ####
+[Anaconda individual website](https://www.anaconda.com/products/individual)
+
+#### Add external dependencies ####
+Open the Anaconda console and type these commands to install ktk's additional
+dependencies:
 
     conda install -c conda-forge ezc3d
     conda install pytest
+    
+From now on, you can open Spyder by clicking on its icon in the Windows start menu.
+
+### macOS ###
+
+#### Download and install Anaconda or Miniconda ####
+[Anaconda individual website](https://www.anaconda.com/products/individual)
+
+[Miniconda website](https://docs.conda.io/en/latest/miniconda.html)
+
+#### Create a virtual environment and install the external dependencies ####
+Open a terminal and type these commands to create a ``ktk`` virtual environment and
+install the dependencies in this environment. I wrote specific versions for some packages
+to help resolving some bugs with qt and matplotlib on macOS Catalina. Please note that
+an unresolved major bug exists in macOS Mojave that makes the whole session crash when
+using tkinter. Either upgrade to Catalina or revert to python 3.3.0.
+
+    conda create -n ktk
+    conda activate ktk
+    conda install -c conda-forge python=3.7 pyqt=5.12 matplotlib=3.2 ezc3d spyder
+    conda install -c conda-forge scipy pandas scikit-learn pytest jupyter
+
+From now on, you can open Spyder by opening a terminal and writing:
+
+	conda activate ktk
+	spyder
 
 Clone ktk from bitbucket
 ------------------------
-Open Spyder from your Anaconda distribution, navigate to the directory where
-you want to install ktk (for example, F:\), and run these lines in the
-IPython console, replacing YOUR_BITBUCKET_USERNAME with your bitbucket
-username.
+Open Spyder, navigate to the directory where you want to install ktk (for example, F:\),
+and run these lines in the IPython console, replacing USERNAME with your
+bitbucket username.
 
     import os
     print('Cloning repository...')
-    os.system('git clone https://YOUR_BITBUCKET_USERNAME@bitbucket.org/felixchenier/kineticstoolkit.git')
+    os.system('git clone https://USERNAME@bitbucket.org/felixchenier/kineticstoolkit.git')
     print('Pulling origin/master...')
     %cd kineticstoolkit
     os.system('git pull origin master')
@@ -60,7 +91,7 @@ In Spyder's preference, go to the **IPython console** item, then to the
 In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the
 `kineticstoolkit` folder that you just cloned to the python path.
 
-Restart Spyder. From now on, `import ktk` should find and import ktk.
+Restart Spyder. Writing `import ktk` should find and import ktk.
 
 ---------------------------------------------------
 
