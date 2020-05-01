@@ -12,7 +12,203 @@ import warnings
 
 from copy import deepcopy
 
-import ktk
+import ktk._repr
+import ktk.mplhelper
+import pandas as pd
+from ast import literal_eval
+
+
+# Helper functions
+def _dict_of_arrays_to_dataframe(dict_of_arrays):
+    """
+    Convert a numpy ndarray of any dimension to a pandas DataFrame.
+
+    Parameters
+    ----------
+    dict_of_array : dict
+        A dict that contains numpy arrays. Each array must have the same
+        first dimension's size.
+
+    Returns
+    -------
+    DataFrame
+
+    The rows in the output DataFrame correspond to the first dimension of the
+    numpy arrays.
+    - Vectors are converted to single-column DataFrames.
+    - 2-dimensional arrays are converted to multi-columns DataFrames.
+    - 3-dimensional (or more) arrays are also converted to DataFrames, but
+      indices in brackets are added to the column names.
+
+    Example
+    -------
+        >>> datadict = {'data': np.random.rand(10, 2, 2)}
+        >>> dataframe = ktk.loadsave.dict_of_arrays_to_dataframe(datadict)
+
+        >>> print(dataframe)
+            data[0,0]   data[0,1]   data[1,0]   data[1,1]
+        0   0.736891    0.902195    0.905907    0.065458
+        1   0.875474    0.414270    0.696410    0.872808
+        2   0.697806    0.542093    0.093780    0.394655
+        3   0.132531    0.073543    0.036600    0.697872
+        4   0.713446    0.672632    0.599467    0.211884
+        5   0.860927    0.769096    0.278852    0.317487
+        6   0.998223    0.831627    0.024960    0.960739
+        7   0.573798    0.191601    0.797447    0.728639
+        8   0.774073    0.942711    0.868428    0.667369
+        9   0.530900    0.737578    0.224186    0.895926
+
+    """
+    # Init
+    df_out = pd.DataFrame()
+
+    # Go through data
+    the_keys = dict_of_arrays.keys()
+    for the_key in the_keys:
+
+        # Assign data
+        original_data = dict_of_arrays[the_key]
+        original_data_shape = np.shape(original_data)
+        data_length = np.shape(original_data)[0]
+
+        reshaped_data = np.reshape(original_data, (data_length, -1))
+        reshaped_data_shape = np.shape(reshaped_data)
+
+        df_data = pd.DataFrame(reshaped_data)
+
+        # Get the column names index from the shape of the original data
+        # The strategy here is to build arrays of indices, that have
+        # the same shape as the original data, then reshape these matrices
+        # the same way we reshaped the original data. Then we know where
+        # the original indices are in the new reshaped data.
+        original_indices = np.indices(original_data_shape[1:])
+        reshaped_indices = np.reshape(original_indices,
+                                      (-1, reshaped_data_shape[1]))
+
+        # Hint for my future self:
+        # For a one-dimension series, reshaped_indices will be:
+        # [[0]].
+        # For a two-dimension series, reshaped_indices will be:
+        # [[0 1 2 ...]].
+        # For a three-dimension series, reshaped_indices will be:
+        # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
+        #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
+        # and so on.
+
+        # Assign column names
+        column_names = []
+        for i_column in range(0, len(df_data.columns)):
+            this_column_name = the_key
+            n_indices = np.shape(reshaped_indices)[0]
+            if n_indices > 0:
+                # This data is expressed in more than one dimension.
+                # We must add brackets to the column names to specify
+                # the indices.
+                this_column_name += '['
+
+                for i_indice in range(0, n_indices):
+                    this_column_name += str(
+                        reshaped_indices[i_indice, i_column])
+                    if i_indice == n_indices - 1:
+                        this_column_name += ']'
+                    else:
+                        this_column_name += ','
+
+            column_names.append(this_column_name)
+
+        df_data.columns = column_names
+
+        # Merge this dataframe with the output dataframe
+        df_out = pd.concat([df_out, df_data], axis=1)
+
+    return df_out
+
+
+def _dataframe_to_dict_of_arrays(dataframe):
+    """
+    Convert a pandas DataFrame to a dict of numpy ndarrays.
+
+    Parameters
+    ----------
+    pd_dataframe : pd.DataFrame
+        The dataframe to be converted.
+
+    Returns
+    -------
+    dict of ndarrays.
+
+    If all the dataframe columns have the same name but with different indices
+    in brackets, then the dataframe corresponds to a single array, which is
+    returned.
+
+    If the dataframe contains different column names (for example,
+    Forces[0], Forces[1], Forces[2], Moments[0], Moments[1], Moments[2]), then
+    a dict of arrays is returned. In this case, this dict would have the keys
+    'Forces' and 'Moments', which would each contain an array.
+
+    This function mirrors the dict_of_arrays_to_dataframe function. Its use is
+    mainly to convert high-dimension (>2) dataframes to high-dimension (>2)
+    arrays.
+    """
+    # Init output
+    out = dict()
+
+    # Search for the column names and highest dimensions
+    all_column_names = dataframe.columns
+    all_data_names = []
+    all_data_highest_indices = []
+    length = len(dataframe)
+
+    for one_column_name in all_column_names:
+        opening_bracket_position = one_column_name.find('[')
+        if opening_bracket_position == -1:
+            # No dimension for this data
+            all_data_names.append(one_column_name)
+            all_data_highest_indices.append([length - 1])
+        else:
+            # Extract name and dimension
+            data_name = one_column_name[0:opening_bracket_position]
+            data_dimension = literal_eval(
+                '[' + str(length - 1) + ',' +
+                one_column_name[opening_bracket_position + 1:])
+
+            all_data_names.append(data_name)
+            all_data_highest_indices.append(data_dimension)
+
+    # Create a set of unique_data_names
+    unique_data_names = []
+    for data_name in all_data_names:
+        if data_name not in unique_data_names:
+            unique_data_names.append(data_name)
+
+    for unique_data_name in unique_data_names:
+
+        # Create a Pandas DataFrame with only the columns that match
+        # this unique data name. In the same time, check the final
+        # dimension of the data to know to which dimension we will
+        # reshape the DataFrame's data.
+        sub_dataframe = pd.DataFrame()
+        unique_data_highest_index = []
+        for i in range(0, len(all_data_names)):
+            if all_data_names[i] == unique_data_name:
+                sub_dataframe[all_column_names[i]] = (
+                    dataframe[all_column_names[i]])
+                unique_data_highest_index.append(
+                    all_data_highest_indices[i])
+
+        # Sort the sub-dataframe's columns
+        sub_dataframe.reindex(sorted(sub_dataframe.columns), axis=1)
+
+        # Calculate the data dimension we must reshape to
+        unique_data_dimension = np.max(
+            np.array(unique_data_highest_index) + 1, axis=0)
+
+        # Convert the dataframe to a np.array, then reshape.
+        new_data = sub_dataframe.to_numpy()
+        new_data = np.reshape(new_data, unique_data_dimension)
+        out[unique_data_name] = new_data
+
+    return out
 
 
 class TimeSeriesEvent(list):
@@ -31,7 +227,9 @@ class TimeSeriesEvent(list):
         The time at which the event happened.
     name : str
         The name of the event.
+
     """
+
     def __init__(self, time=0., name='event'):
         list.__init__(self)
         self.append(float(time))
@@ -63,17 +261,17 @@ class TimeSeries():
 
     Attributes
     ----------
-        time : 1-dimension np.array. Default value is [].
-            Contains the time vector
+        time : 1-dimension np.array (optional)
+            Contains the time vector. The default is [].
 
-        data : dict. Default value is {}.
+        data : dict (optional)
             Contains the data, where each element contains a np.array which
-            first dimension corresponds to time.
+            first dimension corresponds to time. The default is {}.
 
-        time_info : dict. Default value is {'Unit': 's'}
-            Contains metadata relative to time.
+        time_info : dict (optional)
+            Contains metadata relative to time. The default is {'Unit': 's'}
 
-        data_info : dict. Default value is {}.
+        data_info : dict (optional)
             Contains facultative metadata relative to data. For example, the
             data_info attribute could indicate the unit of data['Forces']:
 
@@ -84,6 +282,8 @@ class TimeSeries():
 
             ``ktk.TimeSeries.add_data_info``
 
+            The default is {}.
+
     Example of creation
     -------------------
         >>> ts = ktk.TimeSeries(time=np.arange(0,100))
@@ -91,10 +291,12 @@ class TimeSeries():
     """
 
     def __init__(self, time=np.array([]), time_info={'Unit': 's'},
-                 data=dict(), data_info=dict(), events=list()):
+                 data=dict(), data_info=dict(), events=list(),
+                 from_dataframe=None):
+
         self.time = time.copy()
-        self.time_info = time_info.copy()
         self.data = data.copy()
+        self.time_info = time_info.copy()
         self.data_info = data_info.copy()
         self.events = events.copy()
 
@@ -152,6 +354,59 @@ class TimeSeries():
             return False
 
         return True
+
+    def to_dataframe(self):
+        """
+        Create a DataFrame by reshaping all data to one bidimensional table.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        DataFrame with the index as the TimeSeries' time. Vector data are
+        converted to single columns, and 2-dimensional (or more) data are
+        converted to multiple columns with the additional dimensions in
+        brackets in column name.
+
+        The TimeSeries's events and metadata such as time_info and data_info
+        are not included in the resulting DataFrame.
+
+        """
+        df = _dict_of_arrays_to_dataframe(self.data)
+        df.index = self.time
+        return df
+
+    def from_dataframe(self, dataframe):
+        """
+        Load time and data from a DataFrame.
+
+        The current TimeSeries' time and data properties are overwritten.
+
+        Parameters
+        ----------
+        dataframe : DataFrame
+            A Pandas DataFrame where the index corresponds to time, and
+            where each column corresponds to a data key. As special cases,
+            data in column which names end with bracketed indices such as
+            [0], [1], [0,0], [0,1], etc. are converted to multidimensional
+            arrays. For example, if a DataFrame has these column names:
+
+                Forces[0], Forces[1], Forces[2], Forces[3]
+
+            then a single data key is created (Forces) and the data itself
+            will be of shape Nx4, N being the number of samples (the length
+            of the DataFrame).
+
+        Returns
+        -------
+        self.
+
+        """
+        self.data = _dataframe_to_dict_of_arrays(dataframe)
+        self.time = dataframe.index
+        return self
 
     def add_data_info(self, signal_name, info_name, value):
         """
