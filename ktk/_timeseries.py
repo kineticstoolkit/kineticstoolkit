@@ -11,6 +11,7 @@ from copy import deepcopy
 
 import ktk._repr
 import pandas as pd
+import matplotlib.pyplot as plt
 from ast import literal_eval
 
 
@@ -404,6 +405,104 @@ class TimeSeries():
         self.time = dataframe.index
         return self
 
+    def plot(self, data_keys=None, plot_event_names=False,
+             max_legend_items=5, **kwargs):
+        """
+        Plot the TimeSeries using matplotlib.
+
+        Parameters
+        ----------
+        data_keys : string, list or tuple (optional)
+            String or list of strings corresponding to the signals to plot.
+            For example, if a TimeSeries's data attribute as keys 'Forces',
+            'Moments' and 'Angle', then:
+            >>> the_timeseries.plot(['Forces', 'Moments'])
+            plots only the forces and moments, without plotting the angle.
+            By default, all elements of the TimeSeries are plotted.
+        plot_event_names : bool (optional)
+            True to plot the event names on top of the event lines.
+            Default = False.
+        max_legend_items : int (optional)
+            Maximal number of legend items, including the 'events' entry. If
+            there are more items in the legend, then the legend is not shown
+            for space and performance considerations.
+
+        Additional keyboard arguments are passed to the pyplot's plot function.
+
+        Returns
+        -------
+        None.
+
+        """
+        if data_keys is None or len(data_keys) == 0:
+            # Plot all
+            the_keys = self.data.keys()
+        else:
+            # Plot only what is asked for.
+            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
+                the_keys = data_keys
+            elif isinstance(data_keys, str):
+                the_keys = [data_keys]
+            else:
+                raise(TypeError(
+                        'data_keys must be a string or list of strings'))
+
+        n_plots = len(the_keys)
+
+        n_events = len(self.events)
+        if n_events > 0:
+            event_times = np.array(self.events)[:, 0]
+        else:
+            event_times = np.array([])
+
+        # Now plot
+        ax = plt.gca()
+        for the_key in the_keys:
+
+            # Set label
+            label = the_key
+            if (the_key in self.data_info and
+                    'Unit' in self.data_info[the_key]):
+                label += ' (' + self.data_info[the_key]['Unit'] + ')'
+
+            # Plot data
+            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
+
+        # Plot the events
+        if len(self.events) > 0:
+            a = ax.axis()
+            min_y = a[2]
+            max_y = a[3]
+            event_line_x = np.zeros(3 * n_events)
+            event_line_y = np.zeros(3 * n_events)
+
+            for i_event in range(0, n_events):
+                event_line_x[3 * i_event] = event_times[i_event]
+                event_line_x[3 * i_event + 1] = event_times[i_event]
+                event_line_x[3 * i_event + 2] = np.nan
+
+                event_line_y[3 * i_event] = min_y
+                event_line_y[3 * i_event + 1] = max_y
+                event_line_y[3 * i_event + 2] = np.nan
+
+            ax.plot(event_line_x, event_line_y, label='events')
+
+            if plot_event_names:
+                for event in self.events:
+                    ax.text(event.time, max_y, event.name,
+                            rotation='vertical',
+                            horizontalalignment='center')
+
+        # Add labels
+        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
+
+        # Add legend if required
+        if len(the_keys) > 1 or len(self.events) > 0:
+            if len(the_keys) <= max_legend_items:
+                ax.legend()
+        else:  # Only one data, plot it on the y axis.
+            ax.set_ylabel(label)
+
     def add_data_info(self, signal_name, info_name, value):
         """
         Add information on a signal of the TimeSeries.
@@ -482,8 +581,26 @@ class TimeSeries():
 
         """
         self.events.append(TimeSeriesEvent(time, name))
-        self.sort_events()
+        self._sort_events()
 
+    def _sort_events(self):
+        """
+        Sorts the TimeSeries' events and ensure that all events are unique.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.events = sorted(self.events)
+        for i in range(len(self.events) - 1, 0, -1):
+            if ((self.events[i].time == self.events[i - 1].time) and
+                    (self.events[i].name == self.events[i - 1].name)):
+                self.events.pop(i)
 
     def copy(self):
         """
@@ -495,6 +612,104 @@ class TimeSeries():
 
         """
         return deepcopy(self)
+
+    def plot(self, data_keys=None, plot_event_names=False,
+             max_legend_items=5, **kwargs):
+        """
+        Plot the TimeSeries using matplotlib.
+
+        Parameters
+        ----------
+        data_keys : string, list or tuple (optional)
+            String or list of strings corresponding to the signals to plot.
+            For example, if a TimeSeries's data attribute as keys 'Forces',
+            'Moments' and 'Angle', then:
+            >>> the_timeseries.plot(['Forces', 'Moments'])
+            plots only the forces and moments, without plotting the angle.
+            By default, all elements of the TimeSeries are plotted.
+        plot_event_names : bool (optional)
+            True to plot the event names on top of the event lines.
+            Default = False.
+        max_legend_items : int (optional)
+            Maximal number of legend items, including the 'events' entry. If
+            there are more items in the legend, then the legend is not shown
+            for space and performance considerations.
+
+        Additional keyboard arguments are passed to the pyplot's plot function.
+
+        Returns
+        -------
+        None.
+
+        """
+        if data_keys is None or len(data_keys) == 0:
+            # Plot all
+            the_keys = self.data.keys()
+        else:
+            # Plot only what is asked for.
+            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
+                the_keys = data_keys
+            elif isinstance(data_keys, str):
+                the_keys = [data_keys]
+            else:
+                raise(TypeError(
+                        'data_keys must be a string or list of strings'))
+
+        n_plots = len(the_keys)
+
+        n_events = len(self.events)
+        if n_events > 0:
+            event_times = np.array(self.events)[:, 0]
+        else:
+            event_times = np.array([])
+
+        # Now plot
+        ax = plt.gca()
+        for the_key in the_keys:
+
+            # Set label
+            label = the_key
+            if (the_key in self.data_info and
+                    'Unit' in self.data_info[the_key]):
+                label += ' (' + self.data_info[the_key]['Unit'] + ')'
+
+            # Plot data
+            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
+
+        # Plot the events
+        if len(self.events) > 0:
+            a = ax.axis()
+            min_y = a[2]
+            max_y = a[3]
+            event_line_x = np.zeros(3 * n_events)
+            event_line_y = np.zeros(3 * n_events)
+
+            for i_event in range(0, n_events):
+                event_line_x[3 * i_event] = event_times[i_event]
+                event_line_x[3 * i_event + 1] = event_times[i_event]
+                event_line_x[3 * i_event + 2] = np.nan
+
+                event_line_y[3 * i_event] = min_y
+                event_line_y[3 * i_event + 1] = max_y
+                event_line_y[3 * i_event + 2] = np.nan
+
+            ax.plot(event_line_x, event_line_y, label='events')
+
+            if plot_event_names:
+                for event in self.events:
+                    ax.text(event.time, max_y, event.name,
+                            rotation='vertical',
+                            horizontalalignment='center')
+
+        # Add labels
+        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
+
+        # Add legend if required
+        if len(the_keys) > 1 or len(self.events) > 0:
+            if len(the_keys) <= max_legend_items:
+                ax.legend()
+        else:  # Only one data, plot it on the y axis.
+            ax.set_ylabel(label)
 
     def get_index_at_time(self, time):
         """
@@ -974,4 +1189,4 @@ class TimeSeries():
         # Merge events
         for event in ts.events:
             self.events.append(event)
-        self.sort_events()
+        self._sort_events()

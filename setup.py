@@ -18,6 +18,7 @@ setuptools.setup(
                       'ast',
                       'numpy',
                       'scipy',
+                      'matplotlib',
                       ],
     classifiers=[
         'Development Status :: 1 - Planning',

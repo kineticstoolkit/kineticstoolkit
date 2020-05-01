@@ -37,4 +37,5 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 # ---------------------------
 
 from ktk._timeseries import TimeSeries, TimeSeriesEvent
-from ktk._tools import explore, terminal
+from ktk._tools import explore, terminal, tutorials
+from ktk import dev
