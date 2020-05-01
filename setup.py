@@ -15,7 +15,10 @@ setuptools.setup(
     license='Copyright',
     packages=setuptools.find_packages(),
     install_requires=['pandas',
-                     ],
+                      'ast',
+                      'numpy',
+                      'scipy',
+                      ],
     classifiers=[
         'Development Status :: 1 - Planning',
         'Intended Audience :: Science/Research',
