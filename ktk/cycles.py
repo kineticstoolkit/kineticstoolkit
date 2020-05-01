@@ -37,29 +37,29 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
 
     # To wait for a first release, which allows to ensure the cycle will
     # begin with event1:
-    is_first_part_of_cycle = True
+    is_first_part_of_cycle = False
     is_first_cycle = True
 
     events = []
 
     for i in range(time.shape[0]):
 
-        if (is_first_part_of_cycle is False) and (data[i] > threshold1):
+        if (is_first_part_of_cycle is False) and (data[i] < threshold2):
 
             if ((is_first_cycle is True) or
                     (time[i] - events[-1].time >= minimum_time2)):
 
                 is_first_part_of_cycle = True
-                is_first_cycle = False
-                events.append(ktk.TimeSeriesEvent(time[i], event_name1))
+                events.append(ktk.TimeSeriesEvent(time[i], event_name2))
 
-        elif (is_first_part_of_cycle is True) and (data[i] < threshold2):
+        elif (is_first_part_of_cycle is True) and (data[i] > threshold1):
 
             if ((is_first_cycle is True) or
-                    (time[i] - events[-1].time >= minimum_time2)):
+                    (time[i] - events[-1].time >= minimum_time1)):
 
                 is_first_part_of_cycle = False
-                events.append(ktk.TimeSeriesEvent(time[i], event_name2))
+                is_first_cycle = False
+                events.append(ktk.TimeSeriesEvent(time[i], event_name1))
 
     # The first event in list was only to initiate the list. We must remove it.
     events = events[1:]
