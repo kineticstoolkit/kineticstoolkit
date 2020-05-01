@@ -525,7 +525,7 @@ def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
     tsout : TimeSeries
         The output timeseries, which is identical to tsin but with the
         following added events:
-            - 'pusht'
+            - 'push'
             - 'recovery'
 
     """
@@ -537,16 +537,55 @@ def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
     ts_force = ktk.filters.smooth(ts_force, 11)
 
     # Remove the median if it existed
-    ts_force.data['Ftot'] = (
-        ts_force.data['Ftot'] - np.median(ts_force.data['Ftot']))
+    ts_force.data['Ftot'] = \
+            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
 
     # Find the pushes
-    ts_force = ktk.cycles.find_cycles(ts_force, 'Ftot', 'push', 'recovery',
-                                      push_threshold, recovery_threshold,
-                                      minimum_push_time, minimum_recovery_time)
+    time = ts_force.time
+    data = ts_force.data['Ftot']
+
+    push_state = True   # We start on Push state to wait for a first release, which
+                        # allows to ensure the first push will be complete.
+    is_first_push = True
+
+    events = []
+
+    for i in range(0, len(data)):
+
+        if ((push_state is False) and (data[i] > push_threshold) and
+            (is_first_push is True or
+             time[i] - events[-1].time >= minimum_recovery_time)):
+
+            push_state = True
+
+            events.append(ktk.TimeSeriesEvent(time[i], 'push'))
+
+            is_first_push = False
+
+        elif ((push_state is True) and (data[i] < recovery_threshold)):
+
+            push_state = False
+
+            # Is the push long enough to be considered as a push?
+            if (len(events) == 0 or  # Not grab yet
+                    time[i] - events[-1].time >= minimum_push_time):
+                # Yes.
+                events.append(ktk.TimeSeriesEvent(time[i], 'recovery'))
+            else:
+                # No. Remove the last push start.
+                events = events[0:-1]
+
+    # The first event in list was only to initiate the list. We must remove it.
+    # The second event in list is a release. We must remove it.
+    events = events[1:]
+
+    # # If we stopped during a push, remove the last push_start to ensure that
+    # # we only have complete pushes.
+    # if push_state is True:
+    #     events = events[:-2]
 
     # Form the output timeseries
     tsout = tsin.copy()
-    tsout.events = ts_force.events
+    tsout.events = events
 
     return tsout
