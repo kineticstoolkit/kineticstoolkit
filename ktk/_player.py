@@ -582,8 +582,6 @@ class Player:
             if not np.isnan(np.sum(new_target)):
                 self.target = new_target
 
-        self._update_plots()
-
     def _set_time(self, time):
         """Set current frame to a given time and update plots."""
         index = np.argmin(np.abs(self.time - time))
@@ -691,8 +689,6 @@ class Player:
                 self.objects['Help'].remove()
                 self.objects['Help'] = None
 
-            self._update_plots()
-
         elif event.key == 'd':
             self.perspective = not self.perspective
             if self.perspective is True:
@@ -701,8 +697,6 @@ class Player:
             else:
                 self.objects['Axes'].set_title(
                     f'Camera set to orthogonal')
-
-            self._update_plots()
 
         elif event.key == 't':
             self.track = not self.track
@@ -713,10 +707,11 @@ class Player:
                 self.objects['Axes'].set_title(
                     f'Marker tracking deactivated')
 
-            self._update_plots()
-
         elif event.key == 'shift':
             self.state['ShiftPressed'] = True
+
+        self._update_plots()
+
 
     def _on_release(self, event):
         if event.key == 'shift':
