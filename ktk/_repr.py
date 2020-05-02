@@ -1,6 +1,29 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 """
+ktk._repr.py
+------------
+
 Format the console output of dictionaries and classes with attributes.
 
 This module formats the console output of dict in ipython, so that instead
@@ -9,11 +32,8 @@ values if required, so that there is a maximum of one key per line. This is
 very useful for nested dicts, since their repr() representation is recursive
 and becomes unmanagable when the dict becomes larger.
 
-It also provides helper functions to nicely formats the repr() of data classes.
+It also provides helper functions to nicely format the repr() of data classes.
 
-Author: Felix Chenier
-Date: July 16th, 2019
-felixchenier.com
 """
 
 import numpy as np
@@ -23,17 +43,6 @@ def _format_dict_entries(value, quotes=True):
     """
     Format a dict nicely on screen.
 
-    PARAMETERS:
-    -----------
-    value: dict
-        The dict that we want to show on screen.
-    quotes: bool (default is True)
-        Indicated if the keys must be surrounded by quotes.
-
-    RETURNS:
-    --------
-    A string that should be shown by the __repr__ method.
-
     This function makes every element of a dict appear on a separate line,
     with each keys right aligned:
         {
@@ -41,8 +50,20 @@ def _format_dict_entries(value, quotes=True):
            'key2' : value2
         'longkey' : value3
         }
-    """
 
+    Parameters
+    ----------
+    value : dict
+        The dict that we want to show on screen.
+    quotes : bool (optional)
+        Indicated if the keys must be surrounded by quotes. The default is
+        True.
+
+    Returns
+    -------
+    A string that should be shown by the __repr__ method.
+
+    """
     if quotes:
         quote_text = "'"
     else:
@@ -64,7 +85,7 @@ def _format_dict_entries(value, quotes=True):
 
             # Print the key
             to_show = quote_text + the_key + quote_text
-            out += (to_show.rjust(the_max_length+6) + ': ')  # +6 to tab
+            out += (to_show.rjust(the_max_length + 6) + ': ')  # +6 to tab
 
             # Print the value
             if isinstance(value[the_key], dict):
@@ -81,7 +102,7 @@ def _format_dict_entries(value, quotes=True):
                 if len(to_show) <= max_length_to_show:
                     out += to_show
                 else:
-                    out += (to_show[0:max_length_to_show-3] + '...')
+                    out += (to_show[0:max_length_to_show - 3] + '...')
 
             if the_key != list(the_keys)[-1]:
                 out += ','
@@ -104,14 +125,15 @@ def _format_class_attributes(obj):
            'attribute2' : value2
         'longattribute' : value3
 
-    PARAMETERS:
-    -----------
+    Parameters
+    ----------
     obj: Any
         The class instance.
 
-    RETURNS:
-    --------
+    Returns
+    -------
     A string that should be shown by the __repr__ method.
+
     """
     # Return the type of class (header)
     class_name = type(obj).__name__
@@ -136,8 +158,3 @@ def _ktk_format_dict(value, p, cycle):
 
     except:
         p.text(repr(value))
-
-# from IPython import get_ipython
-# try:
-# except:
-#     pass
