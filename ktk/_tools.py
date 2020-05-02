@@ -1,9 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Sep 11 07:54:15 2019
+#
+# Copyright 2020 Félix Chénier
 
-@author: felix
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
+"""
+ktk._tools
+----------
+This module provides various tools to the user.
+
 """
 import os
 import subprocess
@@ -72,35 +93,3 @@ def terminal(folder_name=''):
     else:
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
-
-
-def update():
-    """
-    Update KTK to the last available version.
-
-    KTK needs to be installed as a git repository. This is the case with the
-    default installation method using install.py.
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    None
-    """
-    current_dir = os.getcwd()
-    os.chdir(ktk.config['RootFolder'])
-    print(subprocess.check_output(['git', 'pull', 'origin', 'master']).decode('ascii'))
-    os.chdir(current_dir)
-
-
-def tutorials():
-    """
-    Open the KTK tutorials in a web browser.
-
-    Usage: ktk.tutorials()
-    """
-    _webbrowser.open('file:///' + ktk.config['RootFolder'] +
-                     '/tutorials/index.html',
-                     new=2)
