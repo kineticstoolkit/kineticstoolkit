@@ -34,6 +34,7 @@ import os
 
 def update_readme():
     """Copy ktk's docstring into readme.md."""
+    os.chdir(ktk.config['RootFolder'])
     with open('README.md', 'w') as fid:
         fid.write(ktk.__doc__)
 
@@ -46,8 +47,8 @@ def update_tutorial():
 def compile_for_pypi():
     """Compile for PyPi."""
     os.chdir(ktk.config['RootFolder'])
-    subprocess.call(['rm', '-rR', root_folder + '/dist'])
-    subprocess.call(['rm', '-rR', root_folder + '/build'])
+    subprocess.call(['rm', '-rR', '/dist'])
+    subprocess.call(['rm', '-rR', '/build'])
     subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
 
 def upload_to_pypi():
