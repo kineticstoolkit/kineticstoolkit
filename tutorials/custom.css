@@ -1,18 +1,24 @@
+/*
 p {
 	font-size: 10pt;
 }
+*/
+
 pre {
-	font-size: 9pt !important;
+	font-size: 10pt !important;
 }
+*/
 
-
-h1 {
-	font-size: 14pt !important;
-}
 h2 {
-	font-size: 12pt !important;
+	font-size: 18pt !important;
+	padding-top: 60px !important;
+	padding-bottom: 10px !important;
 }
 h3 {
+	font-size: 12pt !important;
+	padding-top: 40px !important;
+}
+h4 {
 	font-size: 11pt !important;
 }
 
@@ -25,7 +31,7 @@ div.output_png {
 	}
 
 div.container {
-	max-width: 800px;
+	max-width: 900px;
 }
 
 a.anchor-link {

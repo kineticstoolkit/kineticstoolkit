@@ -41,7 +41,7 @@ def update_readme():
 def update_tutorial():
     """Recompile the tutorial."""
     os.chdir(ktk.config['RootFolder'] + '/tutorials')
-    subprocess.call(['jupyter-nbconvert',
+    subprocess.call(['jupyter-nbconvert', '--execute',
                      '--to', 'html_toc', 'tutorial.ipynb'])
 
 def compile_for_pypi():
