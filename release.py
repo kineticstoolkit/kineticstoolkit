@@ -30,31 +30,39 @@ These little functions facilitates releasing ktk on PyPi.
 
 import ktk
 import subprocess
+import os
 
 def update_readme():
     """Copy ktk's docstring into readme.md."""
     with open('README.md', 'w') as fid:
         fid.write(ktk.__doc__)
 
+def update_tutorial():
+    """Recompile the tutorial."""
+    os.chdir(ktk.config['RootFolder'] + '/tutorials')
+    subprocess.call(['jupyter-nbconvert',
+                     '--to', 'html_toc', 'tutorial.ipynb'])
+
 def compile_for_pypi():
     """Compile for PyPi."""
-    root_folder = ktk.config['RootFolder']
+    os.chdir(ktk.config['RootFolder'])
     subprocess.call(['rm', '-rR', root_folder + '/dist'])
     subprocess.call(['rm', '-rR', root_folder + '/build'])
     subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
 
 def upload_to_pypi():
     """Upload to PyPi's test server."""
-    root_folder = ktk.config['RootFolder']
+    os.chdir(ktk.config['RootFolder'])
     subprocess.call([
             'osascript',
             '-e',
             'tell application "Terminal" to do script '
-            f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'])
+            f'"conda activate ktk; twine upload dist/*"'])
 
 #%%
 
 update_readme()
+update_tutorial()
 compile_for_pypi()
 
 #%%
