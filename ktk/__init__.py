@@ -14,12 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-__author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
-__email__ = "chenier.felix@uqam.ca"
-__license__ = "Apache 2.0"
-
 """
 Kinetics Toolkit
 ================
@@ -31,14 +25,17 @@ Most ot ktk is closed source for now. I usually wait several months before
 releasing to ensure the modules are stable and mature enough to be shared.
 
 If you are interesting in collaborating either in research or software
-development, please contact me.
+development, please contact me at chenier.felix@uqam.ca
 
-Please see this webpage for support: https://felixchenier.com/kineticstoolkit
+Project website: https://felixchenier.com/kineticstoolkit
 
-Author: Félix Chénier
-
-Date: Started on July 2019
 """
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 import os as _os
 import platform as _platform
 import matplotlib as _mpl
@@ -63,4 +60,3 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 
 from ktk._timeseries import TimeSeries, TimeSeriesEvent
 from ktk._tools import explore, terminal
-from ktk import dev
