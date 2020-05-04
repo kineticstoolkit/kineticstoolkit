@@ -24,7 +24,13 @@ Professor Félix Chénier at Université du Québec à Montréal.
 There are two versions of ktk: a private version that is exclusively used in
 my lab, and a public version that is distributed on PyPI. I usually wait
 several months before releasing to the public, to ensure the modules are
-stable and mature enough to be shared.
+stable and the API is mature enough to be shared.
+
+The public version API is mostly stable. Although some methods and functions will be
+added in the future, I do not expect to remove or rename much stuff. However please keep
+in mind that this is experimental software. If you are using ktk, you are warmly invited
+to contact me, first to say Hello, and so that I can warn you before doing major,
+possibly breaking changes.
 
 If you are interesting in collaborating either in research or software
 development, please contact me at chenier.felix@uqam.ca
@@ -33,7 +39,19 @@ Laboratory website: https://felixchenier.uqam.ca
 
 Kinetics Toolkit (ktk) website: https://felixchenier.uqam.ca/kineticstoolkit
 
-Tutorials: https://felixchenier.uqam.ca/ktk_dist/tutorials
+Public version
+--------------
+
+[Tutorials](https://felixchenier.uqam.ca/ktk_dist/tutorials)
+
+[API documentation](https://felixchenier.uqam.ca/ktk_dist/api)
+
+Private unstable version
+------------------------
+
+[Tutorials](https://felixchenier.uqam.ca/ktk_lab/tutorials)
+
+[API documentation](https://felixchenier.uqam.ca/ktk_lab/api)
 
 """
 
