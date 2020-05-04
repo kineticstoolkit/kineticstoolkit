@@ -27,7 +27,7 @@ releasing to ensure the modules are stable and mature enough to be shared.
 If you are interesting in collaborating either in research or software
 development, please contact me at chenier.felix@uqam.ca
 
-Project website: https://felixchenier.com/kineticstoolkit
+Project website: https://felixchenier.uqam.ca/kineticstoolkit
 
 """
 
