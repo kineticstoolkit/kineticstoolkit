@@ -21,13 +21,19 @@ Kinetics Toolkit
 Kinetics Toolkit (ktk) is an in-house biomechanical library developed by
 Professor Félix Chénier at Université du Québec à Montréal.
 
-Most ot ktk is closed source for now. I usually wait several months before
-releasing to ensure the modules are stable and mature enough to be shared.
+There are two versions of ktk: a private version that is exclusively used in
+my lab, and a public version that is distributed on PyPI. I usually wait
+several months before releasing to the public, to ensure the modules are
+stable and mature enough to be shared.
 
 If you are interesting in collaborating either in research or software
 development, please contact me at chenier.felix@uqam.ca
 
-Project website: https://felixchenier.com/kineticstoolkit
+Laboratory website: https://felixchenier.uqam.ca
+
+Kinetics Toolkit (ktk) website: https://felixchenier.uqam.ca/kineticstoolkit
+
+Tutorials: https://felixchenier.uqam.ca/ktk_dist/tutorials
 
 """
 
@@ -41,6 +47,7 @@ import platform as _platform
 import matplotlib as _mpl
 import numpy as _np
 
+__pdoc__ = {'dev': False}
 
 # ---------------------------
 # Set ktk configuration
@@ -59,20 +66,25 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 # ---------------------------
 
 from ktk._timeseries import TimeSeries, TimeSeriesEvent
+from ktk._tools import explore, terminal, update, tutorials
 from ktk._dbinterface import DBInterface
 from ktk._player import Player
 from ktk._loadsave import load, loadmat, save
 from ktk import filters
 from ktk import gui
 from ktk import mplhelper
-from ktk._tools import explore, terminal, update, tutorials
 from ktk import geometry
 from ktk import kinematics
 from ktk import pushrimkinetics
 from ktk import inversedynamics
-from ktk import dev
 from ktk import cycles
 from ktk import _repr
+
+try:
+    from ktk import dev
+except Exception:
+    pass
+
 
 # ---------------------------
 # Customizations

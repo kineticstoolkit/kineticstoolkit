@@ -1,3 +1,8 @@
 __pycache__
 tutorials/.ipynb_checkpoints
 .DS_Store
+.spyproject
+build
+dist
+ktk.egg-info
+*.orig

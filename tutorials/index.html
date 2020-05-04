@@ -2,7 +2,7 @@
 <html>
 <head><meta charset="utf-8" />
 
-<title>index.html</title>
+<title>index</title>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.1.10/require.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
@@ -13070,6 +13070,28 @@ div#notebook {
     });
     </script>
     <!-- End of mathjax configuration --></head>
+
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.css">
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+<link rel="stylesheet" type="text/css" href="https://rawgit.com/ipython-contrib/jupyter_contrib_nbextensions/master/src/jupyter_contrib_nbextensions/nbextensions/toc2/main.css">
+
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<script src="https://rawgit.com/ipython-contrib/jupyter_contrib_nbextensions/master/src/jupyter_contrib_nbextensions/nbextensions/toc2/toc2.js"></script>
+
+<script>
+$( document ).ready(function(){
+
+            var cfg = {"base_numbering": "1", "nav_menu": {}, "number_sections": true, "sideBar": true, "skip_h1_title": true, "title_cell": "Table of Contents", "title_sidebar": "Contents", "toc_cell": true, "toc_position": {"height": "calc(100% - 180px)", "left": "10px", "top": "150px", "width": "288px"}, "toc_section_display": false, "toc_window_display": true};
+
+            // fire the main function with these parameters
+            require(['nbextensions/toc2/toc2'], function (toc2) {
+                toc2.table_of_contents(cfg);
+            });
+    });
+</script>
 <body>
   <div tabindex="-1" id="notebook" class="border-box-sizing">
     <div class="container" id="notebook-container">
@@ -13077,41 +13099,9 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Kinetics-Toolkit-(ktk)">Kinetics Toolkit (ktk)<a class="anchor-link" href="#Kinetics-Toolkit-(ktk)">&#182;</a></h1><table>
-<thead><tr>
-<th style="text-align:center">Getting started</th>
-<th style="text-align:center">Low-level modules</th>
-<th style="text-align:center">High-level modules</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td style="text-align:center"><a href="index.html">Home</a></td>
-<td style="text-align:center"><a href="timeseries.html">TimeSeries</a></td>
-<td style="text-align:center"><a href="kinematics.html">kinematics</a></td>
-</tr>
-<tr>
-<td style="text-align:center"><a href="install.html">Installing</a></td>
-<td style="text-align:center"><a href="filters.html">filters</a></td>
-<td style="text-align:center"><a href="pushrimkinetics.html">pushrimkinetics</a></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"><a href="geometry.html">geometry</a></td>
-<td style="text-align:center"><a href="inversedynamics.html">inversedynamics</a></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center"><a href="player.html">Player</a></td>
-</tr>
-<tr>
-<td style="text-align:center"></td>
-<td style="text-align:center"></td>
-<td style="text-align:center"><a href="dbinterface.html">DBinterface</a></td>
-</tr>
-</tbody>
-</table>
+<h1 id="Kinetics-Toolkit-Tutorial">Kinetics Toolkit Tutorial<a class="anchor-link" href="#Kinetics-Toolkit-Tutorial">&#182;</a></h1><p>Laboratory website: <a href="https://felixchenier.uqam.ca">https://felixchenier.uqam.ca</a></p>
+<p>Kinetics Toolkit (ktk) website: <a href="https://felixchenier.uqam.ca/kineticstoolkit">https://felixchenier.uqam.ca/kineticstoolkit</a></p>
+<p>Reference documentation for ktk: <a href="https://felixchenier.uqam.ca/ktk_dist/doc">https://felixchenier.uqam.ca/ktk_dist/doc</a></p>
 
 </div>
 </div>
@@ -13119,26 +13109,833 @@ div#notebook {
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Kinetics-toolkit-tutorials">Kinetics toolkit tutorials<a class="anchor-link" href="#Kinetics-toolkit-tutorials">&#182;</a></h1><p>Kinetics Toolkit (ktk) is an in-house biomechanical library developed by
-Professor Félix Chénier at Université du Québec à Montréal. Originally
-programmed in and for Matlab, ktk is quickly becoming a collection of Python
-modules that aim to manage experimental files using a database and process
-3d kinetics, 3d kinematics and EMG data.</p>
-<p>Although ktk is developed primarily for my laboratory, it is my plan to
-opensource it someday, when it is more polished and complete. In the mean
-time, it will be my great pleasure to initiate collaborations and use this
-library to share expertise and data with other researchers. Please feel free
-to communicate with me to discuss about such collaborations:</p>
-
-<pre><code>Félix Chénier
-Professor, Department of physical activity science
-Université du Québec à Montréal (UQAM)
-Email: chenier.felix@uqam.ca
-Phone: 514-987-3000 ext. 5553
-Website: felixchenier.com</code></pre>
+<p><h1>Table of Contents<span class="tocSkip"></span></h1></p>
+<div class="toc"><ul class="toc-item"><li><span><a href="#Introduction" data-toc-modified-id="Introduction-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Introduction</a></span></li><li><span><a href="#Installing" data-toc-modified-id="Installing-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Installing</a></span></li><li><span><a href="#TimeSeries" data-toc-modified-id="TimeSeries-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>TimeSeries</a></span><ul class="toc-item"><li><span><a href="#Properties" data-toc-modified-id="Properties-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Properties</a></span><ul class="toc-item"><li><span><a href="#time" data-toc-modified-id="time-3.1.1"><span class="toc-item-num">3.1.1&nbsp;&nbsp;</span>time</a></span></li><li><span><a href="#data" data-toc-modified-id="data-3.1.2"><span class="toc-item-num">3.1.2&nbsp;&nbsp;</span>data</a></span><ul class="toc-item"><li><span><a href="#data-as-n-dimensional-arrays" data-toc-modified-id="data-as-n-dimensional-arrays-3.1.2.1"><span class="toc-item-num">3.1.2.1&nbsp;&nbsp;</span>data as n-dimensional arrays</a></span></li></ul></li><li><span><a href="#time_info" data-toc-modified-id="time_info-3.1.3"><span class="toc-item-num">3.1.3&nbsp;&nbsp;</span>time_info</a></span></li><li><span><a href="#data_info" data-toc-modified-id="data_info-3.1.4"><span class="toc-item-num">3.1.4&nbsp;&nbsp;</span>data_info</a></span></li><li><span><a href="#events" data-toc-modified-id="events-3.1.5"><span class="toc-item-num">3.1.5&nbsp;&nbsp;</span>events</a></span></li></ul></li><li><span><a href="#Using-events-to-extract-sub-timeseries" data-toc-modified-id="Using-events-to-extract-sub-timeseries-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>Using events to extract sub-timeseries</a></span></li><li><span><a href="#Synchronizing-TimeSeries" data-toc-modified-id="Synchronizing-TimeSeries-3.3"><span class="toc-item-num">3.3&nbsp;&nbsp;</span>Synchronizing TimeSeries</a></span></li><li><span><a href="#Subsetting-and-merging-timeseries" data-toc-modified-id="Subsetting-and-merging-timeseries-3.4"><span class="toc-item-num">3.4&nbsp;&nbsp;</span>Subsetting and merging timeseries</a></span></li></ul></li></ul></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This is a tutorial to get started with ktk. The complete reference API can be found here: <a href="https://felixchenier.uqam.ca/ktk_dist/doc">https://felixchenier.uqam.ca/ktk_dist/doc</a></p>
 
 </div>
 </div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="Installing">Installing<a class="anchor-link" href="#Installing">&#182;</a></h2><p>The public version of ktk is hosted on <a href="https://pypi.org/project/ktk/">PyPI</a>. As such, installing ktk is as simple as this:</p>
+
+<pre><code>pip install ktk
+
+</code></pre>
+<p>Now we can import ktk and some other libraries used in this tutorial.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[8]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="TimeSeries">TimeSeries<a class="anchor-link" href="#TimeSeries">&#182;</a></h2><p>At this time, the TimeSeries class is the only interesting thing in ktk. This class is the basis of every future ktk module and is in my opinion very helpful in manipulating biomechanical data.</p>
+<hr>
+<p><strong><em>The three roles of the TimeSeries class are to:</em></strong></p>
+<ol>
+<li><em>organize any temporal data in time;</em></li>
+<li><em>deal with events;</em></li>
+<li><em>associate metadata to data.</em></li>
+</ol>
+<hr>
+<p>Although we often see the concept of time series in financial, forecast, and even psychological science, the concept of time series also applies very well to biomechanics: biomechanical data is almost always expressed as series of data in time (e.g., the trajectory of a marker, an electromyographic signal).</p>
+<p>While in python, time series analyses are often performed using Pandas DataFrames, I believe DataFrames are suboptimal in biomechanics processing:</p>
+<ol>
+<li><p>We often have to deal not just with series of data points, but also with <strong>series of vectors</strong> (e.g., trajectory of a marker) and <strong>series of matrices</strong> (e.g., series of transformation matrices). Expressing series of vectors and matrices in a bidimensional DataFrame is not convenient.</p>
+</li>
+<li><p>We often have different measures with <strong>different units</strong>, and there is no practical way with a DataFrame to associate units to columns, other than by keeping a separate dictionary.</p>
+</li>
+<li><p>We often deal with <strong>events</strong> (e.g., heel contact), and there is no practical way using a DataFrame to keep a list of those events with their corresponding times, other than by keeping a separate list.</p>
+</li>
+</ol>
+<p>To overcome these limitation, <code>ktk</code> provides the <code>TimeSeries</code> and <code>TimeSeriesEvent</code> classes, which are the basis of every <code>ktk</code> module. These classes are largely inspired by Matlab's <code>timeseries</code>, <code>tsdata.event</code> and <code>tscollection</code>. Note that TimeSeries are fully compatible with Pandas DataFrame using their conversion methods <code>from_dataframe</code> and <code>to_dataframe</code>.</p>
+<p>To better understand the role and capabilities of the TimeSeries class, we will begin by opening some columns of a csv file as a Pandas DataFrame. This file contains forces and moments applied on an instrumented wheelchair wheel during the propulsion of a manual wheelchair.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[9]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Read some columns</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/timeseries/smartwheel.csv&#39;</span><span class="p">,</span>
+                 <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
+                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Fx&#39;</span><span class="p">,</span> <span class="s1">&#39;Fy&#39;</span><span class="p">,</span> <span class="s1">&#39;Fz&#39;</span><span class="p">,</span> <span class="s1">&#39;Mx&#39;</span><span class="p">,</span> <span class="s1">&#39;My&#39;</span><span class="p">,</span> <span class="s1">&#39;Mz&#39;</span><span class="p">])</span>
+
+<span class="c1"># Assign time to the DataFrame&#39;s index, where the sampling rate is 240 Hz.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">240</span>
+<span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[9]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Fx</th>
+      <th>Fy</th>
+      <th>Fz</th>
+      <th>Mx</th>
+      <th>My</th>
+      <th>Mz</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.000000</th>
+      <td>1.27</td>
+      <td>-0.89</td>
+      <td>-0.20</td>
+      <td>-0.03</td>
+      <td>0.05</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>0.004167</th>
+      <td>0.49</td>
+      <td>-0.83</td>
+      <td>-0.51</td>
+      <td>0.02</td>
+      <td>-0.01</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>0.008333</th>
+      <td>0.00</td>
+      <td>-0.78</td>
+      <td>-0.51</td>
+      <td>0.04</td>
+      <td>-0.07</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.012500</th>
+      <td>-0.13</td>
+      <td>-0.93</td>
+      <td>-0.41</td>
+      <td>0.03</td>
+      <td>-0.16</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.016667</th>
+      <td>-0.02</td>
+      <td>-0.89</td>
+      <td>0.00</td>
+      <td>0.01</td>
+      <td>-0.21</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>65.566667</th>
+      <td>0.52</td>
+      <td>-0.62</td>
+      <td>1.33</td>
+      <td>0.17</td>
+      <td>0.21</td>
+      <td>-0.15</td>
+    </tr>
+    <tr>
+      <th>65.570833</th>
+      <td>0.47</td>
+      <td>-0.52</td>
+      <td>1.63</td>
+      <td>0.11</td>
+      <td>0.13</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>65.575000</th>
+      <td>0.43</td>
+      <td>-0.23</td>
+      <td>2.04</td>
+      <td>0.02</td>
+      <td>0.08</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>65.579167</th>
+      <td>0.51</td>
+      <td>0.06</td>
+      <td>2.35</td>
+      <td>-0.05</td>
+      <td>0.12</td>
+      <td>0.03</td>
+    </tr>
+    <tr>
+      <th>65.583333</th>
+      <td>0.58</td>
+      <td>0.34</td>
+      <td>2.65</td>
+      <td>-0.09</td>
+      <td>0.17</td>
+      <td>0.08</td>
+    </tr>
+  </tbody>
+</table>
+<p>15741 rows × 6 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now, we can convert this DataFrame to a TimeSeries:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[5]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">ts</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[5]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TimeSeries with attributes:
+           data: &lt;dict with 6 entries&gt;,
+      data_info: &lt;dict with 0 entries&gt;,
+         events: &lt;list of 0 items&gt;
+           time: &lt;array of shape (15741,)&gt;,
+      time_info: &lt;dict with 1 entries&gt;,</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Properties">Properties<a class="anchor-link" href="#Properties">&#182;</a></h3><h4 id="time">time<a class="anchor-link" href="#time">&#182;</a></h4><p>The <code>time</code> property is the time vector, which tells at which time correspond each of the samples.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[10]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[10]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>array([0.00000000e+00, 4.16666667e-03, 8.33333333e-03, ...,
+       6.55750000e+01, 6.55791667e+01, 6.55833333e+01])</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="data">data<a class="anchor-link" href="#data">&#182;</a></h4><p>The <code>data</code> property contains the TimeSeries' data in a dictionary. Here, we had 6 columns in the DataFrame: each of these columns corresponds to a data key.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[14]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[14]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;Fx&#39;: array([1.27, 0.49, 0.  , ..., 0.43, 0.51, 0.58]),
+ &#39;Fy&#39;: array([-0.89, -0.83, -0.78, ..., -0.23,  0.06,  0.34]),
+ &#39;Fz&#39;: array([-0.2 , -0.51, -0.51, ...,  2.04,  2.35,  2.65]),
+ &#39;Mx&#39;: array([-0.03,  0.02,  0.04, ...,  0.02, -0.05, -0.09]),
+ &#39;My&#39;: array([ 0.05, -0.01, -0.07, ...,  0.08,  0.12,  0.17]),
+ &#39;Mz&#39;: array([-0.03, -0.13, -0.18, ..., -0.03,  0.03,  0.08])}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h5 id="data-as-n-dimensional-arrays">data as n-dimensional arrays<a class="anchor-link" href="#data-as-n-dimensional-arrays">&#182;</a></h5><p>Up to now, there is no true benefit to using a TimeSeries instead of a DataFrame to process the forces and moments measured by the instrumented wheel. Let's see how the TimeSeries addresses point 1: <strong>dealing with series of vectors and matrices</strong>.</p>
+<p>In reality, Fx, Fy and Fz are components of a single entity which is a force vector. Similarly, Mx, My and Mz are components of a single entity which is a moment vector. Let's see what happens if we name the DataFrames' columns differently.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Forces[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[2]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[2]&#39;</span><span class="p">]</span>
+<span class="n">df</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[15]:</div>
+
+
+
+<div class="output_html rendered_html output_subarea output_execute_result">
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Forces[0]</th>
+      <th>Forces[1]</th>
+      <th>Forces[2]</th>
+      <th>Moments[0]</th>
+      <th>Moments[1]</th>
+      <th>Moments[2]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.000000</th>
+      <td>1.27</td>
+      <td>-0.89</td>
+      <td>-0.20</td>
+      <td>-0.03</td>
+      <td>0.05</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>0.004167</th>
+      <td>0.49</td>
+      <td>-0.83</td>
+      <td>-0.51</td>
+      <td>0.02</td>
+      <td>-0.01</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>0.008333</th>
+      <td>0.00</td>
+      <td>-0.78</td>
+      <td>-0.51</td>
+      <td>0.04</td>
+      <td>-0.07</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.012500</th>
+      <td>-0.13</td>
+      <td>-0.93</td>
+      <td>-0.41</td>
+      <td>0.03</td>
+      <td>-0.16</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.016667</th>
+      <td>-0.02</td>
+      <td>-0.89</td>
+      <td>0.00</td>
+      <td>0.01</td>
+      <td>-0.21</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>65.566667</th>
+      <td>0.52</td>
+      <td>-0.62</td>
+      <td>1.33</td>
+      <td>0.17</td>
+      <td>0.21</td>
+      <td>-0.15</td>
+    </tr>
+    <tr>
+      <th>65.570833</th>
+      <td>0.47</td>
+      <td>-0.52</td>
+      <td>1.63</td>
+      <td>0.11</td>
+      <td>0.13</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>65.575000</th>
+      <td>0.43</td>
+      <td>-0.23</td>
+      <td>2.04</td>
+      <td>0.02</td>
+      <td>0.08</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>65.579167</th>
+      <td>0.51</td>
+      <td>0.06</td>
+      <td>2.35</td>
+      <td>-0.05</td>
+      <td>0.12</td>
+      <td>0.03</td>
+    </tr>
+    <tr>
+      <th>65.583333</th>
+      <td>0.58</td>
+      <td>0.34</td>
+      <td>2.65</td>
+      <td>-0.09</td>
+      <td>0.17</td>
+      <td>0.08</td>
+    </tr>
+  </tbody>
+</table>
+<p>15741 rows × 6 columns</p>
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now we convert this DataFrame to a TimeSeries:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[16]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;Forces&#39;: array([[ 1.27, -0.89, -0.2 ],
+        [ 0.49, -0.83, -0.51],
+        [ 0.  , -0.78, -0.51],
+        ...,
+        [ 0.43, -0.23,  2.04],
+        [ 0.51,  0.06,  2.35],
+        [ 0.58,  0.34,  2.65]]),
+ &#39;Moments&#39;: array([[-0.03,  0.05, -0.03],
+        [ 0.02, -0.01, -0.13],
+        [ 0.04, -0.07, -0.18],
+        ...,
+        [ 0.02,  0.08, -0.03],
+        [-0.05,  0.12,  0.03],
+        [-0.09,  0.17,  0.08]])}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>We see that instead of being separated into 6 separate components, the three components of both the forces and moments are now grouped in two Nx3 arrays. This may greatly simplify subsequent data processing. For example, if we are interested in calculating the vectorial sum of the forces, then one could add this new data to the TimeSeries with this line:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[17]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Ftot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[17]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;Forces&#39;: array([[ 1.27, -0.89, -0.2 ],
+        [ 0.49, -0.83, -0.51],
+        [ 0.  , -0.78, -0.51],
+        ...,
+        [ 0.43, -0.23,  2.04],
+        [ 0.51,  0.06,  2.35],
+        [ 0.58,  0.34,  2.65]]),
+ &#39;Moments&#39;: array([[-0.03,  0.05, -0.03],
+        [ 0.02, -0.01, -0.13],
+        [ 0.04, -0.07, -0.18],
+        ...,
+        [ 0.02,  0.08, -0.03],
+        [-0.05,  0.12,  0.03],
+        [-0.09,  0.17,  0.08]]),
+ &#39;Ftot&#39;: array([1.56364958, 1.09045862, 0.93193347, ..., 2.09747467, 2.40545214,
+        2.73395318])}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="time_info">time_info<a class="anchor-link" href="#time_info">&#182;</a></h4><p>The <code>time_info</code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code>time_info</code> includes the <code>Unit</code> metadata, which corresponds to <code>s</code>. Any other metadata can be added by adding new keys in <code>time_info</code>.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[18]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">time_info</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[18]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;Unit&#39;: &#39;s&#39;}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="data_info">data_info<a class="anchor-link" href="#data_info">&#182;</a></h4><p>Similarly to <code>time_info</code>, the <code>data_info</code> property associates metadata to data. This is especially useful for addressing point 2: <strong>dealing with several units</strong>. This property is a dictionary of dictionaries, where the first key corresponds to the data key, and the second key is the metadata itself.</p>
+<p>To ease the management of <code>data_info</code>, one can use the TimeSeries' <code>add_data_info</code> method.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Nm&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Ftot&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data_info</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[19]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{&#39;Forces&#39;: {&#39;Unit&#39;: &#39;N&#39;}, &#39;Moments&#39;: {&#39;Unit&#39;: &#39;Nm&#39;}, &#39;Ftot&#39;: {&#39;Unit&#39;: &#39;N&#39;}}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>Now it is time to plot our TimeSeries, using its builtin <code>plot</code> method which makes use of <code>data_info</code> to write the data units in the legend.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[20]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="index_files/index_24_0.png"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h4 id="events">events<a class="anchor-link" href="#events">&#182;</a></h4><p>To be continued.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Using-events-to-extract-sub-timeseries">Using events to extract sub-timeseries<a class="anchor-link" href="#Using-events-to-extract-sub-timeseries">&#182;</a></h3><p>To be continued.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Synchronizing-TimeSeries">Synchronizing TimeSeries<a class="anchor-link" href="#Synchronizing-TimeSeries">&#182;</a></h3><p>To be continued.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="anchor-link" href="#Subsetting-and-merging-timeseries">&#182;</a></h3><p>To be continued.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+
+    </div>
+</div>
+</div>
+
 </div>
     </div>
   </div>

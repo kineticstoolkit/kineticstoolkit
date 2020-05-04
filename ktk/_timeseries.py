@@ -21,13 +21,11 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 """
-Kinetics Toolkit (ktk)
-======================
-
 _timeseries.py
---------------
+==============
 
-Module that provides the TimeSeries and TimeSeriesEvent classes.
+Module that provides the TimeSeries and TimeSeriesEvent classes. The classes
+defined in this module are loaded into the toplevel ktk namespace.
 
 """
 
@@ -37,10 +35,9 @@ import scipy as sp
 import warnings
 
 from copy import deepcopy
-
 import ktk._repr
-import ktk.mplhelper
 import pandas as pd
+import matplotlib.pyplot as plt
 from ast import literal_eval
 
 
@@ -245,7 +242,11 @@ class TimeSeriesEvent(list):
     two-items list with the first item being the time and the second item
     being the name of the event.
 
-    Dependent properties time and name are added for convenience.
+    The dependent properties `time` and `name` can be used both in read and
+    write for convenience.
+
+    This class is rarely used by itself, it is easier to use the `TimeSeries``
+    methods to deal with events.
 
     Properties
     ----------
@@ -253,6 +254,14 @@ class TimeSeriesEvent(list):
         The time at which the event happened.
     name : str
         The name of the event.
+
+    Example
+    -------
+    >>> event = ktk.TimeSeriesEvent()
+    >>> event.time = 1.5
+    >>> event.name = 'event_name'
+    >>> print(event)
+        [1.5, 'event_name']
 
     """
 
@@ -287,32 +296,30 @@ class TimeSeries():
 
     Attributes
     ----------
-        time : 1-dimension np.array (optional)
-            Contains the time vector. The default is [].
+    time : 1-dimension np.array (optional)
+        Contains the time vector. The default is [].
 
-        data : dict (optional)
-            Contains the data, where each element contains a np.array which
-            first dimension corresponds to time. The default is {}.
+    data : dict (optional)
+        Contains the data, where each element contains a np.array which
+        first dimension corresponds to time. The default is {}.
 
-        time_info : dict (optional)
-            Contains metadata relative to time. The default is {'Unit': 's'}
+    time_info : dict (optional)
+        Contains metadata relative to time. The default is {'Unit': 's'}
 
-        data_info : dict (optional)
-            Contains facultative metadata relative to data. For example, the
-            data_info attribute could indicate the unit of data['Forces']:
+    data_info : dict (optional)
+        Contains facultative metadata relative to data. For example, the
+        data_info attribute could indicate the unit of data['Forces']:
 
-            >>> data['Forces'] = {'Unit': 'N'}.
+        >>> data['Forces'] = {'Unit': 'N'}.
 
-            To facilitate the management of data_info, please refer to the
-            class method:
+        To facilitate the management of data_info, please use
+        `ktk.TimeSeries.add_data_info`.
 
-            ``ktk.TimeSeries.add_data_info``
+        The default is {}.
 
-            The default is {}.
-
-    Example of creation
-    -------------------
-        >>> ts = ktk.TimeSeries(time=np.arange(0,100))
+    Example
+    -------
+    >>> ts = ktk.TimeSeries(time=np.arange(0,100))
 
     """
 
@@ -391,13 +398,12 @@ class TimeSeries():
 
         Returns
         -------
-        DataFrame with the index as the TimeSeries' time. Vector data are
-        converted to single columns, and 2-dimensional (or more) data are
-        converted to multiple columns with the additional dimensions in
-        brackets in column name.
-
-        The TimeSeries's events and metadata such as time_info and data_info
-        are not included in the resulting DataFrame.
+        df : DataFrame
+            DataFrame with the index as the TimeSeries' time. Vector data are
+            converted to single columns, and 2-dimensional (or more) data are
+            converted to multiple columns with the additional dimensions in
+            brackets. The TimeSeries's events and metadata such as time_info
+            and data_info are not included in the resulting DataFrame.
 
         """
         df = _dict_of_arrays_to_dataframe(self.data)
@@ -433,196 +439,6 @@ class TimeSeries():
         self.data = _dataframe_to_dict_of_arrays(dataframe)
         self.time = dataframe.index.to_numpy()
         return self
-
-    def add_data_info(self, signal_name, info_name, value):
-        """
-        Add information on a signal of the TimeSeries.
-
-        Parameters
-        ----------
-        signel_name : str
-            The data key the info corresponds to.
-        info_name : str
-            The name of the info.
-        value : any type
-            The info.
-
-        Returns
-        -------
-        None
-
-        Examples
-        --------
-            >>> the_timeseries.add_info('Forces', 'Unit', 'N')
-            >>> the_timeseries.add_info('Marker1', 'Color', [43, 2, 255])
-
-        This creates a corresponding entries in the 'data_info' dict.
-
-        """
-        if signal_name in self.data_info:   # Assign the value
-            self.data_info[signal_name][info_name] = value
-        else:  # Create and assign value
-            self.data_info[signal_name] = {info_name: value}
-
-    def rename_data(self, old_data_field, new_data_field):
-        """
-        Rename a key in data and data_info.
-
-        Parameters
-        ----------
-        old_data_field : str
-            Name of the data key.
-        new_data_field : str
-            New name of the data key.
-
-        Returns
-        -------
-        None.
-
-        """
-        if old_data_field in self.data:
-            self.data[new_data_field] = self.data.pop(old_data_field)
-        if old_data_field in self.data_info:
-            self.data_info[new_data_field] = self.data_info.pop(old_data_field)
-
-    def sort_events(self):
-        """
-        Sorts the TimeSeries' events and ensure that all events are unique.
-
-        Parameters
-        ----------
-        None.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.events = sorted(self.events)
-        for i in range(len(self.events) - 1, 0, -1):
-            if ((self.events[i].time == self.events[i - 1].time) and
-                    (self.events[i].name == self.events[i - 1].name)):
-                self.events.pop(i)
-
-    def add_event(self, time, name='event'):
-        """
-        Add an event to the TimeSeries.
-
-        Parameters
-        ----------
-        time : float
-            The time of the event, in the same unit as the time_info{'Unit'}
-            attribute of the TimeSeries (default: 's').
-        name : str (optional)
-            The name of the event.
-
-        Returns
-        -------
-        None.
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries()
-        >>> ts.add_event(5.5, 'event1')
-        >>> ts.add_event(10.8, 'event2')
-        >>> ts.add_event(2.3, 'event2')
-        >>> print(ts.events)
-        [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
-
-        """
-        self.events.append(TimeSeriesEvent(time, name))
-        self.sort_events()
-
-    def ui_add_event(self, name='event', plot=[], multiple_events=False):
-        """
-        Add one or many events interactively to the TimeSeries.
-
-        Parameters
-        ----------
-        name : str (optional)
-            The name of the event.
-        plot : str, list of str or tuple of str (optional)
-            A signal name of list of signal name to be plotted, similar to
-            the argument of ktk.TimeSeries.plot().
-        multiple_events : bool (optional)
-            - True to add multiple events with the same name.
-            - False to add only one event (default).
-
-        Returns
-        -------
-        - True if the event was added;
-        - False if the operation was cancelled by the user.
-        """
-        ts = self.copy()
-
-        fig = plt.figure()
-        ts.plot(plot)
-
-        finished = False
-
-        while finished is False:
-            finished = True  # Only one pass by default
-
-            button = ktk.mplhelper.button_dialog(
-                f'Adding the event "{name}".\n'
-                'Please zoom on the location to \n'
-                'add the event, then click Next.',
-                ['Cancel', 'Next'])
-
-            if button <= 0:  # Cancel
-                plt.close(fig)
-                return False
-
-            if multiple_events:
-                ktk.mplhelper.message(
-                    'Left-click to add events; \n'
-                    'Right-click to delete; \n'
-                    'ENTER to finish.')
-                plt.pause(0.001)  # Update the plot
-                coordinates = plt.ginput(99999)
-                ktk.mplhelper.message('')
-
-            else:
-                ktk.mplhelper.message(
-                    'Please left-click on the event to add.')
-                coordinates = plt.ginput(1)
-                ktk.mplhelper.message('')
-
-            # Add these events
-            for i in range(len(coordinates)):
-                ts.add_event(coordinates[i][0], name)
-
-            if multiple_events:
-                plt.cla()
-                ts.plot(plot)
-                button = ktk.mplhelper.button_dialog(
-                    f'Adding the event "{name}".\n'
-                    'Do you want to add more of these events?',
-                    ['Cancel', 'Add more', "Finished"])
-                if button <= 0:  # Cancel
-                    plt.close(fig)
-                    return False
-                elif button == 1:
-                    finished = False
-                elif button == 2:
-                    finished = True
-
-        ktk.mplhelper.message('')
-        plt.close(fig)
-        self.events = ts.events  # Add the events to self.
-        self.sort_events()
-        return True
-
-    def copy(self):
-        """
-        Deep copy of a TimeSeries.
-
-        Returns
-        -------
-        A deep copy of the original TimeSeries.
-
-        """
-        return deepcopy(self)
 
     def plot(self, data_keys=None, plot_event_names=False,
              max_legend_items=5, **kwargs):
@@ -722,6 +538,239 @@ class TimeSeries():
         else:  # Only one data, plot it on the y axis.
             ax.set_ylabel(label)
 
+    def add_data_info(self, signal_name, info_name, value):
+        """
+        Add metadata to TimeSeries' data.
+
+        Parameters
+        ----------
+        signel_name : str
+            The data key the info corresponds to.
+        info_name : str
+            The name of the info.
+        value : any type
+            The info.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+        >>> the_timeseries.add_data_info('Forces', 'Unit', 'N')
+        >>> the_timeseries.add_data_info('Marker1', 'Color', [43, 2, 255])
+
+        """
+        if signal_name in self.data_info:   # Assign the value
+            self.data_info[signal_name][info_name] = value
+        else:  # Create and assign value
+            self.data_info[signal_name] = {info_name: value}
+
+    def rename_data(self, old_data_field, new_data_field):
+        """
+        Rename a key in data and data_info.
+
+        Parameters
+        ----------
+        old_data_field : str
+            Name of the data key.
+        new_data_field : str
+            New name of the data key.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts.data['test'] = np.arange(10)
+        >>> ts.add_data_info('test', 'Unit', 'm')
+
+        >>> ts.data
+            {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+
+        >>> ts.data_info
+            {'test': {'Unit': 'm'}}
+
+        >>> ts.rename_data('test', 'signal')
+
+        >>> ts.data
+            {'signal': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+
+        >>> ts.data_info
+            {'signal': {'Unit': 'm'}}
+
+        """
+        if old_data_field in self.data:
+            self.data[new_data_field] = self.data.pop(old_data_field)
+        if old_data_field in self.data_info:
+            self.data_info[new_data_field] = self.data_info.pop(old_data_field)
+
+    def add_event(self, time, name='event'):
+        """
+        Add an event to the TimeSeries.
+
+        Parameters
+        ----------
+        time : float
+            The time of the event, in the same unit as `time_info['Unit']`
+            (default: 's').
+        name : str (optional)
+            The name of the event.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts.add_event(5.5, 'event1')
+        >>> ts.add_event(10.8, 'event2')
+        >>> ts.add_event(2.3, 'event2')
+
+        >>> print(ts.events)
+            [[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
+
+        """
+        self.events.append(TimeSeriesEvent(time, name))
+        self._sort_events()
+
+    def _sort_events(self):
+        """
+        Sorts the TimeSeries' events and ensure that all events are unique.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.events = sorted(self.events)
+        for i in range(len(self.events) - 1, 0, -1):
+            if ((self.events[i].time == self.events[i - 1].time) and
+                    (self.events[i].name == self.events[i - 1].name)):
+                self.events.pop(i)
+
+    def copy(self):
+        """
+        Deep copy of a TimeSeries.
+
+        Returns
+        -------
+        A deep copy of the original TimeSeries.
+
+        """
+        return deepcopy(self)
+
+    def plot(self, data_keys=None, plot_event_names=False,
+             max_legend_items=5, **kwargs):
+        """
+        Plot the TimeSeries using matplotlib.
+
+        Parameters
+        ----------
+        data_keys : string, list or tuple (optional)
+            String or list of strings corresponding to the signals to plot.
+            By default, all elements of the TimeSeries are plotted.
+        plot_event_names : bool (optional)
+            True to plot the event names on top of the event lines.
+            The default is False.
+        max_legend_items : int (optional)
+            Maximal number of legend items, including the 'events' entry. If
+            there are more items in the legend, then the legend is not shown
+            for space and performance considerations.
+
+        Additional keyboard arguments are passed to the pyplot's plot function.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+        If a TimeSeries's data attribute as keys 'Forces', 'Moments' and
+        'Angle', then:
+
+        >>> the_timeseries.plot(['Forces', 'Moments'])
+
+        plots only the forces and moments, without plotting the angle.
+
+
+        """
+        if data_keys is None or len(data_keys) == 0:
+            # Plot all
+            the_keys = self.data.keys()
+        else:
+            # Plot only what is asked for.
+            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
+                the_keys = data_keys
+            elif isinstance(data_keys, str):
+                the_keys = [data_keys]
+            else:
+                raise(TypeError(
+                        'data_keys must be a string or list of strings'))
+
+        n_plots = len(the_keys)
+
+        n_events = len(self.events)
+        if n_events > 0:
+            event_times = np.array(self.events)[:, 0]
+        else:
+            event_times = np.array([])
+
+        # Now plot
+        ax = plt.gca()
+        for the_key in the_keys:
+
+            # Set label
+            label = the_key
+            if (the_key in self.data_info and
+                    'Unit' in self.data_info[the_key]):
+                label += ' (' + self.data_info[the_key]['Unit'] + ')'
+
+            # Plot data
+            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
+
+        # Plot the events
+        if len(self.events) > 0:
+            a = ax.axis()
+            min_y = a[2]
+            max_y = a[3]
+            event_line_x = np.zeros(3 * n_events)
+            event_line_y = np.zeros(3 * n_events)
+
+            for i_event in range(0, n_events):
+                event_line_x[3 * i_event] = event_times[i_event]
+                event_line_x[3 * i_event + 1] = event_times[i_event]
+                event_line_x[3 * i_event + 2] = np.nan
+
+                event_line_y[3 * i_event] = min_y
+                event_line_y[3 * i_event + 1] = max_y
+                event_line_y[3 * i_event + 2] = np.nan
+
+            ax.plot(event_line_x, event_line_y, label='events')
+
+            if plot_event_names:
+                for event in self.events:
+                    ax.text(event.time, max_y, event.name,
+                            rotation='vertical',
+                            horizontalalignment='center')
+
+        # Add labels
+        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
+
+        # Add legend if required
+        if len(the_keys) > 1 or len(self.events) > 0:
+            if len(the_keys) <= max_legend_items:
+                ax.legend()
+        else:  # Only one data, plot it on the y axis.
+            ax.set_ylabel(label)
+
     def get_index_at_time(self, time):
         """
         Get the time index that is the closest to the specified time.
@@ -729,21 +778,25 @@ class TimeSeries():
         Parameters
         ----------
         time : float
-            Time to lookfor in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time vector.
 
         Returns
         -------
-        The index in the time vector : int.
+        index : int
+            The index in the time vector.
 
-        Examples of use
-        ---------------
+        Example
+        -------
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
         >>> ts.get_index_at_time(0.9)
-        2
+            2
+
         >>> ts.get_index_at_time(1)
-        2
+            2
+
         >>> ts.get_index_at_time(1.1)
-        2
+            2
 
         """
         return np.argmin(np.abs(self.time - time))
@@ -755,24 +808,29 @@ class TimeSeries():
         Parameters
         ----------
         time : float
-            Time to lookfor in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time vector.
 
         Returns
         -------
-        int : the index in the time vector. If no value is before the
-        specified time, a value of np.nan is returned.
+        index : int
+            The index in the time vector. If no value is before the specified
+            time, a value of np.nan is returned.
 
-        Examples of use
-        ---------------
+        Example
+        -------
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
         >>> ts.get_index_before_time(0.9)
-        1
+            1
+
         >>> ts.get_index_before_time(1)
-        2
+            2
+
         >>> ts.get_index_before_time(1.1)
-        2
+            2
+
         >>> ts.get_index_before_time(-1)
-        nan
+            nan
 
         """
         diff = time - self.time
@@ -793,20 +851,25 @@ class TimeSeries():
 
         Returns
         -------
-        int : the index in the time vector. If no value is after the
-        specified time, a value of np.nan is returned.
+        index : int
+            The index in the time vector. If no value is after the
+            specified time, a value of np.nan is returned.
 
-        Examples of use
-        ---------------
+        Example
+        -------
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
         >>> ts.get_index_after_time(0.9)
-        2
+            2
+
         >>> ts.get_index_after_time(1)
-        2
+            2
+
         >>> ts.get_index_after_time(1.1)
-        3
+            3
+
         >>> ts.get_index_after_time(13)
-        nan
+            nan
 
         """
         diff = self.time - time
@@ -824,30 +887,32 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurrence : int, optional. Default is 0.
+        event_occurrence : int (optional)
             i_th occurence of the event to look for in the events list,
-            starting at 0.
+            starting at 0. The default is 0.
 
         Returns
         -------
-        The time of the specified event, as a float. If no corresponding event
-        is found, then np.nan is returned.
+        event_time : float
+            The time of the specified event, as a float. If no corresponding
+            event is found, then np.nan is returned.
 
-        Examples of use
-        ---------------
+        Example
+        -------
         >>> # Instanciate a timeseries with some events
         >>> ts = ktk.TimeSeries()
         >>> ts.add_event(5.5, 'event1')
         >>> ts.add_event(10.8, 'event2')
         >>> ts.add_event(2.3, 'event2')
 
-        >>> # Now let call ``get_event_time``
         >>> ts.get_event_time('event1')
-        5.5
+            5.5
+
         >>> ts.get_event_time('event2', 0)
-        2.3
+            2.3
+
         >>> ts.get_event_time('event2', 1)
-        10.8
+            10.8
 
         """
         event_occurrence = int(event_occurrence)
@@ -879,7 +944,9 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
+        ts : TimeSeries
+            A TimeSeries of length 1, at the time neasest to the specified
+            time.
 
         """
         out_ts = self.copy()
@@ -897,14 +964,14 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurrence : int, optional. Default is 0.
+        event_occurrence : int (optional)
             i_th occurence of the event to look for in the events list,
-            starting at 0.
+            starting at 0. The default is 0.
 
         Returns
         -------
-        TimeSeries : A one-data subset of the TimeSeries at the event's
-        nearest time.
+        ts : TimeSeries
+            A TimeSeries of length 1, at the event's nearest time.
 
         """
         time = self.get_event_time(event_name, event_occurrence)
@@ -921,23 +988,8 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
-
-        Examples of use
-        ---------------
-        >>> ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-        >>> new_ts = ts.get_ts_before_time(3)
-        >>> print(new_ts.time)
-        [0., 1., 2., 3.]
-        >>> new_ts = ts.get_ts_before_time(3.5)
-        >>> print(new_ts.time)
-        [0., 1., 2., 3.]
-        >>> new_ts = ts.get_ts_before_time(-2)
-        >>> print(new_ts.time)
-        []
-        >>> new_ts = ts.get_ts_before_time(13)
-        >>> print(new_ts.time)
-        [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
+        ts : TimeSeries
+            A new TimeSeries following the specification.
 
         """
         out_ts = self.copy()
@@ -960,13 +1012,14 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurrence : int, optional. Default is 0.
+        event_occurrence : int (optional)
             i_th occurence of the event to look for in the events list,
-            starting at 0.
+            starting at 0. The default is 0.
 
         Returns
         -------
-        TimeSeries.
+        ts : TimeSeries
+            A new TimeSeries following the specification.
 
         """
         time = self.get_event_time(event_name, event_occurrence)
@@ -983,23 +1036,8 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
-
-        Examples of use
-        ---------------
-        >>> ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-        >>> new_ts = ts.get_ts_after_time(3)
-        >>> print(new_ts.time)
-        [3., 4., 5., 6., 7., 8., 9.]
-        >>> new_ts = ts.get_ts_after_time(3.5)
-        >>> print(new_ts.time)
-        [4., 5., 6., 7., 8., 9.]
-        >>> new_ts = ts.get_ts_after_time(-2)
-        >>> print(new_ts.time)
-        [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-        >>> new_ts = ts.get_ts_after_time(13)
-        >>> print(new_ts.time)
-        []
+        ts : TimeSeries
+            A new TimeSeries following the specification.
 
         """
         out_ts = self.copy()
@@ -1022,13 +1060,14 @@ class TimeSeries():
         ----------
         event_name : str
             Name of the event to look for in the events list.
-        event_occurrence : int, optional. Default is 0.
+        event_occurrence : int (optional)
             i_th occurence of the event to look for in the events list,
-            starting at 0.
+            starting at 0. The default is 0.
 
         Returns
         -------
-        TimeSeries.
+        ts : TimeSeries
+            A new TimeSeries following the specification.
 
         """
         time = self.get_event_time(event_name, event_occurrence)
@@ -1045,23 +1084,8 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
-
-        Examples of use
-        ---------------
-        >>> ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-        >>> new_ts = ts.get_ts_between_times(3, 6)
-        >>> print(new_ts.time)
-        [3., 4., 5., 6.]
-        >>> new_ts = ts.get_ts_between_time(3.5, 5.5)
-        >>> print(new_ts.time)
-        [4., 5.]
-        >>> new_ts = ts.get_ts_between_times(-2, 13)
-        >>> print(new_ts.time)
-        [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-        >>> new_ts = ts.get_ts_between_times(-2, -1)
-        >>> print(new_ts.time)
-        []
+        ts : TimeSeries
+            A new TimeSeries following the specification.
 
         """
         sorted_times = np.sort([time1, time2])
@@ -1078,277 +1102,31 @@ class TimeSeries():
         ----------
         event_name1, event_name2 : str
             Name of the events to look for in the events list.
-        event_occurrence1, event_occurrence2 : int, optional. Default is 0.
-            i_th occurence of the events to look for in the events list,
-            starting at 0.
+        event_occurrence1, event_occurrence2 : int (optional)
+            i_th occurence of the event to look for in the events list,
+            starting at 0. The default is 0.
 
         Returns
         -------
-        TimeSeries
+        ts : TimeSeries
+            A new TimeSeries following the specification.
 
         """
         time1 = self.get_event_time(event_name1, event_occurrence1)
         time2 = self.get_event_time(event_name2, event_occurrence2)
         return self.get_ts_between_times(time1, time2)
 
-    def ui_get_ts_between_clicks(self, data_keys=None):
-        """
-        Get a subset of the TimeSeries between two mouse clicks.
-
-        Parameters
-        ----------
-        data_keys : string, list or tuple (optional)
-            String or list of strings corresponding to the signals to plot.
-            See TimeSeries.plot() for more information.
-
-        Returns
-        -------
-        TimeSeries
-
-        """
-        fig = plt.figure()
-        self.plot(data_keys)
-        ktk.mplhelper.message('Click on both sides of the portion to keep.')
-        plt.pause(0.001)  # Redraw
-        points = plt.ginput(2)
-        ktk.mplhelper.message('')
-        times = [points[0][0], points[1][0]]
-        plt.close(fig)
-        return self.get_ts_between_times(min(times), max(times))
-
-    def isnan(self, data_key):
-        """
-        Return a boolean array of missing samples.
-
-        Parameters
-        ----------
-        data_key : str
-            Key value of the data signal to analyze.
-
-        Returns
-        -------
-        A boolean array of the same size as the time vector, where True values
-        represent missing samples (samples that contain at least one NaN
-        value).
-        """
-        values = self.data[data_key].copy()
-        # Reduce the dimension of values while keeping the time dimension.
-        while len(np.shape(values)) > 1:
-            values = np.sum(values, 1)
-        return np.isnan(values)
-
-    def fill_missing_samples(self, max_missing_samples, method='linear'):
-        """
-        Fill missing samples with the given method.
-
-        The sample rate must be constant.
-
-        Parameters
-        ----------
-        max_missing_samples : int
-            Maximal number of consecutive missing samples to fill. Set to
-            zero to fill all missing samples.
-        method : str (optional)
-            The interpolation method. This input may take any value
-            supported by scipy.interpolate.interp1d, such as:
-                - 'linear'
-                - 'nearest'
-                - 'zero'
-                - 'slinear'
-                - 'quadratic'
-                - 'cubic'
-                - 'previous'
-                - 'next'
-
-        Returns
-        -------
-        None.
-
-        """
-        max_missing_samples = int(max_missing_samples)
-
-        for data in self.data:
-
-            # Fill missing samples
-            is_visible = ~self.isnan(data)
-            ts = self.get_subset(data)
-            ts.data[data] = ts.data[data][is_visible]
-            ts.time = ts.time[is_visible]
-            ts.resample(self.time, method, fill_value='extrapolate')
-
-            # Put back missing samples in holes longer than max_missing_samples
-            if max_missing_samples > 0:
-                hole_start_index = 0
-                to_keep = np.ones(self.time.shape)
-                for current_index in range(ts.time.shape[0]):
-                    if is_visible[current_index]:
-                        hole_start_index = current_index
-                    elif (current_index - hole_start_index >
-                          max_missing_samples):
-                        to_keep[hole_start_index + 1:current_index + 1] = 0
-
-                ts.data[data][to_keep == 0] = np.nan
-
-            self.data[data] = ts.data[data]
-
-    def sync_on_time(self, time):
-        """
-        Set the specified time to the new zero in both time and events.
-
-        Parameters
-        ----------
-        time : float
-            Time to be subtracted from time and events.
-
-        Returns
-        -------
-        None.
-
-        """
-        for event in self.events:
-            event.time = event.time - time
-        self.time = self.time - time
-
-    def sync_on_event(self, event_name, event_occurrence=0):
-        """
-        Set an event to the new time zero of the TimeSeries.
-
-        Parameters
-        ----------
-        event_name : str
-            Name of the event to sync on.
-        event_occurrence : int (optional)
-            Occurrence of the event to sync on. The default is 0, which
-            corresponds to the first occurrence of the event.
-
-        Returns
-        -------
-        None.
-
-        """
-        self.sync_on_time(self.get_event_time(event_name, event_occurrence))
-
-    def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
-        """
-        Synchronize a TimeSeries by setting its zero-time interactively.
-
-        If a second TimeSeries is given, both TimeSeries are synchronized and
-        the sync process is done in three steps:
-            1. Click on the second TimeSeries's zero-time.
-            2. Click on the second TimeSeries on a recognizable event that
-               is common with the first TimeSeries.
-            3. Click on this same event on the first TimeSeries.
-
-        Parameters
-        ----------
-        data_keys : str or list of str (optional)
-            The data keys to plot. The default is None, which means that all
-            data is plotted.
-        ts2 : TimeSeries (optional)
-            A second TimeSeries that contains both a recognizable zero-time
-            event and a common event with the first TimeSeries.
-        data_keys2 : str or list of str (optional)
-            The data keys from the second TimeSeries to plot. The default is
-            None, which means that all data is plotted.
-
-        Returns
-        -------
-        None.
-
-        """
-        fig = plt.figure()
-
-        if ts2 is None:
-            # Synchronize ts1 only
-            self.plot(data_keys)
-            choice = ktk.mplhelper.button_dialog(
-                'Please zoom on the time zero and press Next.',
-                ['Cancel', 'Next'])
-            if choice != 1:
-                plt.close(fig)
-                return
-
-            ktk.mplhelper.message('Click on the sync event.')
-            click = plt.ginput(1)
-            ktk.mplhelper.message(None)
-            plt.close(fig)
-            self.sync_on_time(click[0][0])
-
-        else:  # Sync two TimeSeries together
-
-            finished = False
-            axes = []
-            while finished is False:
-
-                if len(axes) == 0:
-                    axes.append(plt.subplot(2, 1, 1))
-                    axes.append(plt.subplot(2, 1, 2, sharex=axes[0]))
-
-                plt.sca(axes[0])
-                axes[0].cla()
-                self.plot(data_keys)
-                plt.title('First TimeSeries (ts1)')
-                plt.grid(True)
-                plt.tight_layout()
-
-                plt.sca(axes[1])
-                axes[1].cla()
-                ts2.plot(data_keys2)
-                plt.title('Second TimeSeries (ts2)')
-                plt.grid(True)
-                plt.tight_layout()
-
-                choice = ktk.mplhelper.button_dialog(
-                    'Please select an option.',
-                    choices=['Sync both TimeSeries on a common event',
-                             'Zero both TimeSeries using ts1',
-                             'Zero both TimeSeries using ts2',
-                             'OK'])
-
-                if choice == 0:  # Sync on a common event
-                    ktk.mplhelper.message(
-                        'Click on the common event in ts1.')
-                    click_1 = plt.ginput(1)
-                    ktk.mplhelper.message(
-                        'Click on the common event in ts2.')
-                    click_2 = plt.ginput(1)
-                    ktk.mplhelper.message('')
-
-                    self.sync_on_time(click_1[0][0])
-                    ts2.sync_on_time(click_2[0][0])
-
-                elif choice == 1:  # Zero using TimeSeries 1
-                    ktk.mplhelper.message(
-                        'Click on the time zero in ts1.')
-                    click_1 = plt.ginput(1)
-                    ktk.mplhelper.message('')
-
-                    self.sync_on_time(click_1[0][0])
-                    ts2.sync_on_time(click_1[0][0])
-
-                elif choice == 2:  # Zero using TimeSeries 2
-                    ktk.mplhelper.message(
-                        'Click on the time zero in ts2.')
-                    click_2 = plt.ginput(1)
-                    ktk.mplhelper.message('')
-
-                    self.sync_on_time(click_2[0][0])
-                    ts2.sync_on_time(click_2[0][0])
-
-                elif choice == 3 or choice < -1:  # OK or closed figure, quit.
-                    plt.close(fig)
-                    finished = True
-
-
     def get_subset(self, data_keys):
         """
         Return a subset of the TimeSeries.
 
-        This method returns a TimeSeries that contains only specific data
+        This method returns a TimeSeries that contains only selected data
         keys. For example, if a TimeSeries ts has the fields Forces, Moments
         and Angle, then:
-            >>> ts.get_subset(['Forces', 'Moments'])
-        returns an identical timeseries, but without the data key 'Angle'.
+
+        >>> ts.get_subset(['Forces', 'Moments'])
+
+        returns an identical timeseries, but without the data key Angle.
 
         The corresponding data_info keys are copied in the new TimeSeries.
         All events are also copied in the new TimeSeries.
@@ -1360,7 +1138,9 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries, minus the unspecified data keys.
+        ts : TimeSeries
+            A copy of the TimeSeries, minus the unspecified data keys.
+
         """
         if isinstance(data_keys, str):
             data_keys = [data_keys]
