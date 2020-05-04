@@ -5,3 +5,4 @@ tutorials/.ipynb_checkpoints
 build
 dist
 ktk.egg-info
+*.orig

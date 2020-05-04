@@ -13099,9 +13099,10 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Kinetics-Toolkit-Tutorial">Kinetics Toolkit Tutorial<a class="anchor-link" href="#Kinetics-Toolkit-Tutorial">&#182;</a></h1><p>Laboratory website: <a href="https://felixchenier.uqam.ca">https://felixchenier.uqam.ca</a></p>
-<p>Kinetics Toolkit (ktk) website: <a href="https://felixchenier.uqam.ca/kineticstoolkit">https://felixchenier.uqam.ca/kineticstoolkit</a></p>
-<p>Reference documentation for ktk: <a href="https://felixchenier.uqam.ca/ktk_dist/doc">https://felixchenier.uqam.ca/ktk_dist/doc</a></p>
+<h1 id="Kinetics-Toolkit-(ktk)---Getting-Started-Tutorial">Kinetics Toolkit (ktk) - Getting Started Tutorial<a class="anchor-link" href="#Kinetics-Toolkit-(ktk)---Getting-Started-Tutorial">&#182;</a></h1><p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
+<p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
+<p><a href="https://felixchenier.uqam.ca/ktk_dist/api">API documentation</a></p>
+<p>This is the getting started tutorial for the <strong>stable public version</strong>. <a href="https://felixchenier.uqam.ca/ktk_lab/tutorials">Switch to the private version</a></p>
 
 </div>
 </div>
@@ -13110,15 +13111,7 @@ $( document ).ready(function(){
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p><h1>Table of Contents<span class="tocSkip"></span></h1></p>
-<div class="toc"><ul class="toc-item"><li><span><a href="#Introduction" data-toc-modified-id="Introduction-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Introduction</a></span></li><li><span><a href="#Installing" data-toc-modified-id="Installing-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Installing</a></span></li><li><span><a href="#TimeSeries" data-toc-modified-id="TimeSeries-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>TimeSeries</a></span><ul class="toc-item"><li><span><a href="#Properties" data-toc-modified-id="Properties-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Properties</a></span><ul class="toc-item"><li><span><a href="#time" data-toc-modified-id="time-3.1.1"><span class="toc-item-num">3.1.1&nbsp;&nbsp;</span>time</a></span></li><li><span><a href="#data" data-toc-modified-id="data-3.1.2"><span class="toc-item-num">3.1.2&nbsp;&nbsp;</span>data</a></span><ul class="toc-item"><li><span><a href="#data-as-n-dimensional-arrays" data-toc-modified-id="data-as-n-dimensional-arrays-3.1.2.1"><span class="toc-item-num">3.1.2.1&nbsp;&nbsp;</span>data as n-dimensional arrays</a></span></li></ul></li><li><span><a href="#time_info" data-toc-modified-id="time_info-3.1.3"><span class="toc-item-num">3.1.3&nbsp;&nbsp;</span>time_info</a></span></li><li><span><a href="#data_info" data-toc-modified-id="data_info-3.1.4"><span class="toc-item-num">3.1.4&nbsp;&nbsp;</span>data_info</a></span></li><li><span><a href="#events" data-toc-modified-id="events-3.1.5"><span class="toc-item-num">3.1.5&nbsp;&nbsp;</span>events</a></span></li></ul></li><li><span><a href="#Using-events-to-extract-sub-timeseries" data-toc-modified-id="Using-events-to-extract-sub-timeseries-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>Using events to extract sub-timeseries</a></span></li><li><span><a href="#Synchronizing-TimeSeries" data-toc-modified-id="Synchronizing-TimeSeries-3.3"><span class="toc-item-num">3.3&nbsp;&nbsp;</span>Synchronizing TimeSeries</a></span></li><li><span><a href="#Subsetting-and-merging-timeseries" data-toc-modified-id="Subsetting-and-merging-timeseries-3.4"><span class="toc-item-num">3.4&nbsp;&nbsp;</span>Subsetting and merging timeseries</a></span></li></ul></li></ul></div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Introduction">Introduction<a class="anchor-link" href="#Introduction">&#182;</a></h2><p>This is a tutorial to get started with ktk. The complete reference API can be found here: <a href="https://felixchenier.uqam.ca/ktk_dist/doc">https://felixchenier.uqam.ca/ktk_dist/doc</a></p>
-
+<div class="toc"><ul class="toc-item"><li><span><a href="#Installing" data-toc-modified-id="Installing-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Installing</a></span></li><li><span><a href="#TimeSeries" data-toc-modified-id="TimeSeries-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>TimeSeries</a></span><ul class="toc-item"><li><span><a href="#Properties" data-toc-modified-id="Properties-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>Properties</a></span><ul class="toc-item"><li><span><a href="#time" data-toc-modified-id="time-2.1.1"><span class="toc-item-num">2.1.1&nbsp;&nbsp;</span>time</a></span></li><li><span><a href="#data" data-toc-modified-id="data-2.1.2"><span class="toc-item-num">2.1.2&nbsp;&nbsp;</span>data</a></span><ul class="toc-item"><li><span><a href="#data-as-n-dimensional-arrays" data-toc-modified-id="data-as-n-dimensional-arrays-2.1.2.1"><span class="toc-item-num">2.1.2.1&nbsp;&nbsp;</span>data as n-dimensional arrays</a></span></li></ul></li><li><span><a href="#time_info" data-toc-modified-id="time_info-2.1.3"><span class="toc-item-num">2.1.3&nbsp;&nbsp;</span>time_info</a></span></li><li><span><a href="#data_info" data-toc-modified-id="data_info-2.1.4"><span class="toc-item-num">2.1.4&nbsp;&nbsp;</span>data_info</a></span></li><li><span><a href="#events" data-toc-modified-id="events-2.1.5"><span class="toc-item-num">2.1.5&nbsp;&nbsp;</span>events</a></span></li></ul></li><li><span><a href="#Using-events-to-extract-sub-timeseries" data-toc-modified-id="Using-events-to-extract-sub-timeseries-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>Using events to extract sub-timeseries</a></span></li><li><span><a href="#Synchronizing-TimeSeries" data-toc-modified-id="Synchronizing-TimeSeries-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>Synchronizing TimeSeries</a></span></li><li><span><a href="#Subsetting-and-merging-timeseries" data-toc-modified-id="Subsetting-and-merging-timeseries-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>Subsetting and merging timeseries</a></span></li></ul></li></ul></div>
 </div>
 </div>
 </div>
@@ -13882,7 +13875,7 @@ $( document ).ready(function(){
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_24_0.png"
+<img src="index_files/index_23_0.png"
 >
 </div>
 
