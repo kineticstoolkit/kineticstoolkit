@@ -117,7 +117,8 @@ def upload_to_pypi():
 
 
 def release():
-    """Run all functions for release, without uploading to PyPI."""
+    """Run all functions for release, without packaging and uploading."""
     run_tests()
+    update_readme()
     generate_tutorials()
     generate_doc()
