@@ -44,17 +44,17 @@ def run_tests(module=None):
     pytest.main([ktk.config['RootFolder'] + '/tests'])
 
 
-def generate_tutorial():
-    """Generate the tutorial in html."""
+def generate_tutorials():
+    """Generate the tutorials in html."""
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tutorials')
     subprocess.call(['jupyter-nbconvert', '--to', 'html_toc',
-                     'tutorial.ipynb'])
+                     'index.ipynb'])
     os.chdir(cwd)
 
     # Open tutorial
     webbrowser.open_new_tab(
-        'file://' + ktk.config['RootFolder'] + '/tutorials/tutorial.html')
+        'file://' + ktk.config['RootFolder'] + '/tutorials/index.html')
 
 
 def generate_doc():
@@ -119,5 +119,5 @@ def upload_to_pypi():
 def release():
     """Run all functions for release, without uploading to PyPI."""
     run_tests()
-    generate_tutorial()
+    generate_tutorials()
     generate_doc()

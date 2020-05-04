@@ -24,11 +24,15 @@
 <h1 id="kinetics-toolkit">Kinetics Toolkit</h1>
 <p>Kinetics Toolkit (ktk) is an in-house biomechanical library developed by
 Professor Félix Chénier at Université du Québec à Montréal.</p>
-<p>Most ot ktk is closed source for now. I usually wait several months before
-releasing to ensure the modules are stable and mature enough to be shared.</p>
+<p>There are two versions of ktk: a private version that is exclusively used in
+my lab, and a public version that is distributed on PyPI. I usually wait
+several months before releasing to the public, to ensure the modules are
+stable and mature enough to be shared.</p>
 <p>If you are interesting in collaborating either in research or software
 development, please contact me at chenier.felix@uqam.ca</p>
-<p>Project website: <a href="https://felixchenier.uqam.ca/kineticstoolkit">https://felixchenier.uqam.ca/kineticstoolkit</a></p>
+<p>Laboratory website: <a href="https://felixchenier.uqam.ca">https://felixchenier.uqam.ca</a></p>
+<p>Kinetics Toolkit (ktk) website: <a href="https://felixchenier.uqam.ca/kineticstoolkit">https://felixchenier.uqam.ca/kineticstoolkit</a></p>
+<p>Tutorials: <a href="https://felixchenier.uqam.ca/ktk_dist/tutorials">https://felixchenier.uqam.ca/ktk_dist/tutorials</a></p>
 </section>
 <section>
 </section>
@@ -48,30 +52,31 @@ development, please contact me at chenier.felix@uqam.ca</p>
 <p>This class implements a Timeseries in a way that resembles the timeseries
 and tscollection found in Matlab.</p>
 <h2 id="attributes">Attributes</h2>
-<pre><code>time : 1-dimension np.array (optional)
-    Contains the time vector. The default is [].
-
-data : dict (optional)
-    Contains the data, where each element contains a np.array which
-    first dimension corresponds to time. The default is {}.
-
-time_info : dict (optional)
-    Contains metadata relative to time. The default is {'Unit': 's'}
-
-data_info : dict (optional)
-    Contains facultative metadata relative to data. For example, the
-    data_info attribute could indicate the unit of data['Forces']:
-
-    &gt;&gt;&gt; data['Forces'] = {'Unit': 'N'}.
-
-    To facilitate the management of data_info, please refer to the
-    class method:
-
-    `&lt;a title="ktk.TimeSeries.add_data_info" href="#ktk.TimeSeries.add_data_info"&gt;`TimeSeries.add_data_info()`&lt;/a&gt;`
-
-    The default is {}.
-</code></pre>
-<h2 id="example-of-creation">Example of creation</h2>
+<dl>
+<dt><strong><code>time</code></strong> :&ensp;<code>1</code>-<code>dimension</code> <code>np.array</code> (optional)</dt>
+<dd>Contains the time vector. The default is [].</dd>
+<dt><strong><code>data</code></strong> :&ensp;<code>dict</code> (optional)</dt>
+<dd>Contains the data, where each element contains a np.array which
+first dimension corresponds to time. The default is {}.</dd>
+<dt><strong><code>time_info</code></strong> :&ensp;<code>dict</code> (optional)</dt>
+<dd>Contains metadata relative to time. The default is {'Unit': 's'}</dd>
+<dt><strong><code>data_info</code></strong> :&ensp;<code>dict</code> (optional)</dt>
+<dd>
+<p>Contains facultative metadata relative to data. For example, the
+data_info attribute could indicate the unit of data['Forces']:</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>data['Forces'] = {'Unit': 'N'}.</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>To facilitate the management of data_info, please use
+<a title="ktk.TimeSeries.add_data_info" href="#ktk.TimeSeries.add_data_info"><code>TimeSeries.add_data_info()</code></a>.</p>
+<p>The default is {}.</p>
+</dd>
+</dl>
+<h2 id="example">Example</h2>
 <pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0,100))
 </code></pre></section>
 <h3>Methods</h3>
@@ -80,7 +85,7 @@ data_info : dict (optional)
 <span>def <span class="ident">add_data_info</span></span>(<span>self, signal_name, info_name, value)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Add information on a signal of the TimeSeries.</p>
+<section class="desc"><p>Add metadata to TimeSeries' data.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>signel_name</code></strong> :&ensp;<code>str</code></dt>
@@ -91,15 +96,11 @@ data_info : dict (optional)
 <dd>The info.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>None</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="examples">Examples</h2>
-<pre><code>&gt;&gt;&gt; the_timeseries.add_info('Forces', 'Unit', 'N')
-&gt;&gt;&gt; the_timeseries.add_info('Marker1', 'Color', [43, 2, 255])
-</code></pre>
-<p>This creates a corresponding entries in the 'data_info' dict.</p></section>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; the_timeseries.add_data_info('Forces', 'Unit', 'N')
+&gt;&gt;&gt; the_timeseries.add_data_info('Marker1', 'Color', [43, 2, 255])
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.add_event"><code class="name flex">
 <span>def <span class="ident">add_event</span></span>(<span>self, time, name='event')</span>
@@ -109,8 +110,8 @@ data_info : dict (optional)
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
-<dd>The time of the event, in the same unit as the time_info{'Unit'}
-attribute of the TimeSeries (default: 's').</dd>
+<dd>The time of the event, in the same unit as <code>time_info['Unit']</code>
+(default: 's').</dd>
 <dt><strong><code>name</code></strong> :&ensp;<code>str</code> (optional)</dt>
 <dd>The name of the event.</dd>
 </dl>
@@ -121,8 +122,9 @@ attribute of the TimeSeries (default: 's').</dd>
 &gt;&gt;&gt; ts.add_event(5.5, 'event1')
 &gt;&gt;&gt; ts.add_event(10.8, 'event2')
 &gt;&gt;&gt; ts.add_event(2.3, 'event2')
+
 &gt;&gt;&gt; print(ts.events)
-[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
+    [[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.copy"><code class="name flex">
@@ -167,30 +169,31 @@ of the DataFrame).</p>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the event to look for in the events list.</dd>
+<dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>i_th occurence of the event to look for in the events list,
+starting at 0. The default is 0.</dd>
 </dl>
-<p>event_occurrence : int, optional. Default is 0.
-i_th occurence of the event to look for in the events list,
-starting at 0.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>The</code> <code>time</code> of <code>the</code> <code>specified</code> <code>event</code>, <code>as</code> <code>a</code> <code>float.</code> <code>If</code> <code>no</code> <code>corresponding</code> <code>event</code></dt>
-<dd>&nbsp;</dd>
+<dt><strong><code>event_time</code></strong> :&ensp;<code>float</code></dt>
+<dd>The time of the specified event, as a float. If no corresponding
+event is found, then np.nan is returned.</dd>
 </dl>
-<p>is found, then np.nan is returned.</p>
-<h2 id="examples-of-use">Examples of use</h2>
+<h2 id="example">Example</h2>
 <pre><code>&gt;&gt;&gt; # Instanciate a timeseries with some events
 &gt;&gt;&gt; ts = ktk.TimeSeries()
 &gt;&gt;&gt; ts.add_event(5.5, 'event1')
 &gt;&gt;&gt; ts.add_event(10.8, 'event2')
 &gt;&gt;&gt; ts.add_event(2.3, 'event2')
 
-&gt;&gt;&gt; # Now let call ``get_event_time``
 &gt;&gt;&gt; ts.get_event_time('event1')
-5.5
+    5.5
+
 &gt;&gt;&gt; ts.get_event_time('event2', 0)
-2.3
+    2.3
+
 &gt;&gt;&gt; ts.get_event_time('event2', 1)
-10.8
+    10.8
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_after_time"><code class="name flex">
@@ -205,53 +208,25 @@ starting at 0.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>int</code></strong> :&ensp;<code>the</code> <code>index</code> <code>in</code> <code>the</code> <code>time</code> <code>vector.</code> <code>If</code> <code>no</code> <code>value</code> <code>is</code> <code>after</code> <code>the</code></dt>
-<dd>&nbsp;</dd>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index in the time vector. If no value is after the
+specified time, a value of np.nan is returned.</dd>
 </dl>
-<p>specified time, a value of np.nan is returned.</p>
-<h2 id="examples-of-use">Examples of use</h2>
+<h2 id="example">Example</h2>
 <pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
 &gt;&gt;&gt; ts.get_index_after_time(0.9)
-**`2`**
-</code></pre>
-<dl>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_after_time(1)
-<strong><code>2</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_after_time(1.1)
-<strong><code>3</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_after_time(13)
-<strong><code>nan</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-</dd>
-</dl></section>
+    2
+
+&gt;&gt;&gt; ts.get_index_after_time(1)
+    2
+
+&gt;&gt;&gt; ts.get_index_after_time(1.1)
+    3
+
+&gt;&gt;&gt; ts.get_index_after_time(13)
+    nan
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_at_time"><code class="name flex">
 <span>def <span class="ident">get_index_at_time</span></span>(<span>self, time)</span>
@@ -261,42 +236,25 @@ starting at 0.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
-<dd>Time to lookfor in the TimeSeries' time vector.</dd>
+<dd>Time to look for in the TimeSeries' time vector.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>The index in the time vector : int.</p>
-<h2 id="examples-of-use">Examples of use</h2>
-<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
-&gt;&gt;&gt; ts.get_index_at_time(0.9)
-**`2`**
-</code></pre>
 <dl>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_at_time(1)
-<strong><code>2</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_at_time(1.1)
-<strong><code>2</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-</dd>
-</dl></section>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index in the time vector.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
+&gt;&gt;&gt; ts.get_index_at_time(0.9)
+    2
+
+&gt;&gt;&gt; ts.get_index_at_time(1)
+    2
+
+&gt;&gt;&gt; ts.get_index_at_time(1.1)
+    2
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_before_time"><code class="name flex">
 <span>def <span class="ident">get_index_before_time</span></span>(<span>self, time)</span>
@@ -306,68 +264,41 @@ starting at 0.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
-<dd>Time to lookfor in the TimeSeries' time vector.</dd>
+<dd>Time to look for in the TimeSeries' time vector.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>int</code></strong> :&ensp;<code>the</code> <code>index</code> <code>in</code> <code>the</code> <code>time</code> <code>vector.</code> <code>If</code> <code>no</code> <code>value</code> <code>is</code> <code>before</code> <code>the</code></dt>
-<dd>&nbsp;</dd>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>The index in the time vector. If no value is before the specified
+time, a value of np.nan is returned.</dd>
 </dl>
-<p>specified time, a value of np.nan is returned.</p>
-<h2 id="examples-of-use">Examples of use</h2>
+<h2 id="example">Example</h2>
 <pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
 &gt;&gt;&gt; ts.get_index_before_time(0.9)
-**`1`**
-</code></pre>
-<dl>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_before_time(1)
-<strong><code>2</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_before_time(1.1)
-<strong><code>2</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-<blockquote>
-<blockquote>
-<blockquote>
-<p>ts.get_index_before_time(-1)
-<strong><code>nan</code></strong></p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
-<dd>
-<p>&nbsp;</p>
-</dd>
-</dl></section>
+    1
+
+&gt;&gt;&gt; ts.get_index_before_time(1)
+    2
+
+&gt;&gt;&gt; ts.get_index_before_time(1.1)
+    2
+
+&gt;&gt;&gt; ts.get_index_before_time(-1)
+    nan
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_subset"><code class="name flex">
 <span>def <span class="ident">get_subset</span></span>(<span>self, data_keys)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Return a subset of the TimeSeries.</p>
-<p>This method returns a TimeSeries that contains only specific data
+<p>This method returns a TimeSeries that contains only selected data
 keys. For example, if a TimeSeries ts has the fields Forces, Moments
-and Angle, then:
-&gt;&gt;&gt; ts.get_subset(['Forces', 'Moments'])
-returns an identical timeseries, but without the data key 'Angle'.</p>
+and Angle, then:</p>
+<pre><code>&gt;&gt;&gt; ts.get_subset(['Forces', 'Moments'])
+</code></pre>
+<p>returns an identical timeseries, but without the data key Angle.</p>
 <p>The corresponding data_info keys are copied in the new TimeSeries.
 All events are also copied in the new TimeSeries.</p>
 <h2 id="parameters">Parameters</h2>
@@ -376,7 +307,10 @@ All events are also copied in the new TimeSeries.</p>
 <dd>The data keys to extract from the timeseries.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>A copy of the TimeSeries, minus the unspecified data keys.</p></section>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A copy of the TimeSeries, minus the unspecified data keys.</dd>
+</dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_after_event"><code class="name flex">
 <span>def <span class="ident">get_ts_after_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
@@ -387,12 +321,15 @@ All events are also copied in the new TimeSeries.</p>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the event to look for in the events list.</dd>
+<dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>i_th occurence of the event to look for in the events list,
+starting at 0. The default is 0.</dd>
 </dl>
-<p>event_occurrence : int, optional. Default is 0.
-i_th occurence of the event to look for in the events list,
-starting at 0.</p>
 <h2 id="returns">Returns</h2>
-<p>TimeSeries.</p></section>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_after_time"><code class="name flex">
 <span>def <span class="ident">get_ts_after_time</span></span>(<span>self, time)</span>
@@ -406,24 +343,9 @@ starting at 0.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="examples-of-use">Examples of use</h2>
-<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-&gt;&gt;&gt; new_ts = ts.get_ts_after_time(3)
-&gt;&gt;&gt; print(new_ts.time)
-[3., 4., 5., 6., 7., 8., 9.]
-&gt;&gt;&gt; new_ts = ts.get_ts_after_time(3.5)
-&gt;&gt;&gt; print(new_ts.time)
-[4., 5., 6., 7., 8., 9.]
-&gt;&gt;&gt; new_ts = ts.get_ts_after_time(-2)
-&gt;&gt;&gt; print(new_ts.time)
-[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-&gt;&gt;&gt; new_ts = ts.get_ts_after_time(13)
-&gt;&gt;&gt; print(new_ts.time)
-[]
-</code></pre></section>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_at_event"><code class="name flex">
 <span>def <span class="ident">get_ts_at_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
@@ -434,16 +356,15 @@ starting at 0.</p>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the event to look for in the events list.</dd>
+<dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>i_th occurence of the event to look for in the events list,
+starting at 0. The default is 0.</dd>
 </dl>
-<p>event_occurrence : int, optional. Default is 0.
-i_th occurence of the event to look for in the events list,
-starting at 0.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></strong> :&ensp;<code>A</code> <code>one</code>-<code>data</code> <code>subset</code> of <code>the</code> <a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> <code>at</code> <code>the</code> <code>event's</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>nearest time.</p></section>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A TimeSeries of length 1, at the event's nearest time.</dd>
+</dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_at_time"><code class="name flex">
 <span>def <span class="ident">get_ts_at_time</span></span>(<span>self, time)</span>
@@ -457,8 +378,9 @@ starting at 0.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>&nbsp;</dd>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A TimeSeries of length 1, at the time neasest to the specified
+time.</dd>
 </dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_before_event"><code class="name flex">
@@ -470,12 +392,15 @@ starting at 0.</p>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the event to look for in the events list.</dd>
+<dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>i_th occurence of the event to look for in the events list,
+starting at 0. The default is 0.</dd>
 </dl>
-<p>event_occurrence : int, optional. Default is 0.
-i_th occurence of the event to look for in the events list,
-starting at 0.</p>
 <h2 id="returns">Returns</h2>
-<p>TimeSeries.</p></section>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_before_time"><code class="name flex">
 <span>def <span class="ident">get_ts_before_time</span></span>(<span>self, time)</span>
@@ -489,24 +414,9 @@ starting at 0.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="examples-of-use">Examples of use</h2>
-<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-&gt;&gt;&gt; new_ts = ts.get_ts_before_time(3)
-&gt;&gt;&gt; print(new_ts.time)
-[0., 1., 2., 3.]
-&gt;&gt;&gt; new_ts = ts.get_ts_before_time(3.5)
-&gt;&gt;&gt; print(new_ts.time)
-[0., 1., 2., 3.]
-&gt;&gt;&gt; new_ts = ts.get_ts_before_time(-2)
-&gt;&gt;&gt; print(new_ts.time)
-[]
-&gt;&gt;&gt; new_ts = ts.get_ts_before_time(13)
-&gt;&gt;&gt; print(new_ts.time)
-[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-</code></pre></section>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_events"><code class="name flex">
 <span>def <span class="ident">get_ts_between_events</span></span>(<span>self, event_name1, event_name2, event_occurrence1=0, event_occurrence2=0)</span>
@@ -517,14 +427,14 @@ starting at 0.</p>
 <dl>
 <dt><strong><code>event_name1</code></strong>, <strong><code>event_name2</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the events to look for in the events list.</dd>
+<dt><strong><code>event_occurrence1</code></strong>, <strong><code>event_occurrence2</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>i_th occurence of the event to look for in the events list,
+starting at 0. The default is 0.</dd>
 </dl>
-<p>event_occurrence1, event_occurrence2 : int, optional. Default is 0.
-i_th occurence of the events to look for in the events list,
-starting at 0.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>&nbsp;</dd>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
 </dl></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_times"><code class="name flex">
@@ -539,52 +449,8 @@ starting at 0.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>&nbsp;</dd>
-</dl>
-<h2 id="examples-of-use">Examples of use</h2>
-<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-&gt;&gt;&gt; new_ts = ts.get_ts_between_times(3, 6)
-&gt;&gt;&gt; print(new_ts.time)
-[3., 4., 5., 6.]
-&gt;&gt;&gt; new_ts = ts.get_ts_between_time(3.5, 5.5)
-&gt;&gt;&gt; print(new_ts.time)
-[4., 5.]
-&gt;&gt;&gt; new_ts = ts.get_ts_between_times(-2, 13)
-&gt;&gt;&gt; print(new_ts.time)
-[0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-&gt;&gt;&gt; new_ts = ts.get_ts_between_times(-2, -1)
-&gt;&gt;&gt; print(new_ts.time)
-[]
-</code></pre></section>
-</dd>
-<dt id="ktk.TimeSeries.merge"><code class="name flex">
-<span>def <span class="ident">merge</span></span>(<span>self, ts, data_keys=None, resample=False, overwrite=True)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Merge another TimeSeries into the current TimeSeries.</p>
-<p>This method merges a TimeSeries into the current TimeSeries, copying
-the data, data_info and events.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>The TimeSeries to merge into the current TimeSeries.</dd>
-<dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
-<dd>The data keys to merge from ts. Default is None, which means that
-all the data keys are merged.</dd>
-<dt><strong><code>resample</code></strong> :&ensp;<code>bool</code> (optional</dt>
-<dd>Set to True to resample the source TimeSeries, in case the time
-vectors are not matched. If the time vectors are not matched and
-resample is False, an exception is raised. Default is False.</dd>
-<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>If duplicates are found and overwrite is True, then the source (ts)
-overwrites the destination. Otherwise (overwrite is False), the
-duplicated data is ignored. Default is True.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>None</code></dt>
-<dd>&nbsp;</dd>
+<dd>A new TimeSeries following the specification.</dd>
 </dl></section>
 </dd>
 <dt id="ktk.TimeSeries.plot"><code class="name flex">
@@ -596,20 +462,10 @@ duplicated data is ignored. Default is True.</dd>
 <dl>
 <dt><strong><code>data_keys</code></strong> :&ensp;<code>string</code>, <code>list</code> or <code>tuple</code> (optional)</dt>
 <dd>String or list of strings corresponding to the signals to plot.
-For example, if a TimeSeries's data attribute as keys 'Forces',
-'Moments' and 'Angle', then:<blockquote>
-<blockquote>
-<blockquote>
-<p>the_timeseries.plot(['Forces', 'Moments'])
-plots only the forces and moments, without plotting the angle.
-By default, all elements of the TimeSeries are plotted.</p>
-</blockquote>
-</blockquote>
-</blockquote>
-</dd>
+By default, all elements of the TimeSeries are plotted.</dd>
 <dt><strong><code>plot_event_names</code></strong> :&ensp;<code>bool</code> (optional)</dt>
 <dd>True to plot the event names on top of the event lines.
-Default = False.</dd>
+The default is False.</dd>
 <dt><strong><code>max_legend_items</code></strong> :&ensp;<code>int</code> (optional)</dt>
 <dd>Maximal number of legend items, including the 'events' entry. If
 there are more items in the legend, then the legend is not shown
@@ -617,7 +473,13 @@ for space and performance considerations.</dd>
 </dl>
 <p>Additional keyboard arguments are passed to the pyplot's plot function.</p>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<p>If a TimeSeries's data attribute as keys 'Forces', 'Moments' and
+'Angle', then:</p>
+<pre><code>&gt;&gt;&gt; the_timeseries.plot(['Forces', 'Moments'])
+</code></pre>
+<p>plots only the forces and moments, without plotting the angle.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.rename_data"><code class="name flex">
 <span>def <span class="ident">rename_data</span></span>(<span>self, old_data_field, new_data_field)</span>
@@ -632,7 +494,26 @@ for space and performance considerations.</dd>
 <dd>New name of the data key.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries()
+&gt;&gt;&gt; ts.data['test'] = np.arange(10)
+&gt;&gt;&gt; ts.add_data_info('test', 'Unit', 'm')
+
+&gt;&gt;&gt; ts.data
+    {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+
+&gt;&gt;&gt; ts.data_info
+    {'test': {'Unit': 'm'}}
+
+&gt;&gt;&gt; ts.rename_data('test', 'signal')
+
+&gt;&gt;&gt; ts.data
+    {'signal': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+
+&gt;&gt;&gt; ts.data_info
+    {'signal': {'Unit': 'm'}}
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.to_dataframe"><code class="name flex">
 <span>def <span class="ident">to_dataframe</span></span>(<span>self)</span>
@@ -643,19 +524,13 @@ for space and performance considerations.</dd>
 <p>None.</p>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>DataFrame</code> <code>with</code> <code>the</code> <code>index</code> <code>as</code> <code>the</code> <code>TimeSeries'</code> <code>time.</code> <code>Vector</code> <code>data</code> <code>are</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>converted</code> <code>to</code> <code>single</code> <code>columns</code>, <code>and</code> <code>2</code>-<code>dimensional</code> (or <code>more</code>) <code>data</code> <code>are</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>converted</code> <code>to</code> <code>multiple</code> <code>columns</code> <code>with</code> <code>the</code> <code>additional</code> <code>dimensions</code> <code>in</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>brackets in column name.</p>
-<dl>
-<dt><code>The</code> <code>TimeSeries's</code> <code>events</code> <code>and</code> <code>metadata</code> <code>such</code> <code>as</code> <code>time_info</code> <code>and</code> <code>data_info</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>are not included in the resulting DataFrame.</p></section>
+<dt><strong><code>df</code></strong> :&ensp;<code>DataFrame</code></dt>
+<dd>DataFrame with the index as the TimeSeries' time. Vector data are
+converted to single columns, and 2-dimensional (or more) data are
+converted to multiple columns with the additional dimensions in
+brackets. The TimeSeries's events and metadata such as time_info
+and data_info are not included in the resulting DataFrame.</dd>
+</dl></section>
 </dd>
 </dl>
 </dd>
@@ -668,14 +543,24 @@ for space and performance considerations.</dd>
 <p>This class derives from the list class. A TimeSeriesEvent is always a
 two-items list with the first item being the time and the second item
 being the name of the event.</p>
-<p>Dependent properties time and name are added for convenience.</p>
+<p>The dependent properties <code>time</code> and <code>name</code> can be used both in read and
+write for convenience.</p>
+<p>This class is rarely used by itself, it is easier to use the <a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a>`
+methods to deal with events.</p>
 <h2 id="properties">Properties</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
 <dd>The time at which the event happened.</dd>
 <dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
 <dd>The name of the event.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; event = ktk.TimeSeriesEvent()
+&gt;&gt;&gt; event.time = 1.5
+&gt;&gt;&gt; event.name = 'event_name'
+&gt;&gt;&gt; print(event)
+    [1.5, 'event_name']
+</code></pre></section>
 <h3>Ancestors</h3>
 <ul class="hlist">
 <li>builtins.list</li>
@@ -725,7 +610,6 @@ being the name of the event.</p>
 <li><code><a title="ktk.TimeSeries.get_ts_before_time" href="#ktk.TimeSeries.get_ts_before_time">get_ts_before_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_events" href="#ktk.TimeSeries.get_ts_between_events">get_ts_between_events</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_times" href="#ktk.TimeSeries.get_ts_between_times">get_ts_between_times</a></code></li>
-<li><code><a title="ktk.TimeSeries.merge" href="#ktk.TimeSeries.merge">merge</a></code></li>
 <li><code><a title="ktk.TimeSeries.plot" href="#ktk.TimeSeries.plot">plot</a></code></li>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
