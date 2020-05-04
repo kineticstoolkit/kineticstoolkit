@@ -1,3 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
+"""
+Identify cycles and time-normalize data.
+
+This module in early development provides functions to identify cycles and
+time-normalize data.
+
+"""
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 import numpy as np
 import ktk
 
@@ -28,7 +47,8 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
 
     Returns
     -------
-    TimeSeries : A copy of ts with the added events.
+    ts_copy : TimeSeries
+    	A copy of ts with the added events.
 
     """
     # Find the pushes
@@ -73,7 +93,6 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
     return tsout
 
 
-
 def time_normalize(ts, event_name1, event_name2, n_points=100):
     """
     Time-normalize cycles in a TimeSeries
@@ -86,6 +105,8 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
 
     Parameters
     ----------
+    ts : TimeSeries
+    	The TimeSeries to analyze.
     event_name1, event_name2 : str
         The events that correspond to the begin and end of a cycle.
     n_points : int (optional)
@@ -93,7 +114,8 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
 
     Returns
     -------
-    TimeSeries.
+    ts_copy : TimeSeries
+    	A new TimeSeries where each cycles has been time-normalized.
     """
     # Find the final number of cycles
     if len(ts.events) < 2:
@@ -164,7 +186,8 @@ def get_reshaped_time_normalized_data(ts, n_points=100):
 
     This methods returns the data of a time-normalized TimeSeries, reshaped
     into this form:
-        n_cycles x n_points x data_shape
+    
+    n_cycles x n_points x data_shape
 
     Parameters
     ----------
@@ -174,8 +197,9 @@ def get_reshaped_time_normalized_data(ts, n_points=100):
 
     Returns
     -------
-    A dictionary that contains every TimeSeries data keys, expressed into
-    the form n_points x n_cycles x data_shape.
+    data : dict
+	    A dictionary that contains every TimeSeries data keys, expressed into
+	    the form n_points x n_cycles x data_shape.
     """
     if np.mod(len(ts.time), n_points) != 0:
         raise(ValueError(

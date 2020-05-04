@@ -1,1 +1,0 @@
-mcc -m ktkMATtoPython.m

@@ -1,3 +1,9 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """Helper functions for Matplotlib."""
 
 import matplotlib.pyplot as plt
@@ -19,7 +25,6 @@ _AXES_ID = {
     'Message': 'ktk.mplhelper.message'
     }
 
-
 def get_axes(identifier):
     """
     Return the axes containing the side pane in the current figure.
@@ -31,8 +36,9 @@ def get_axes(identifier):
 
     Returns
     -------
-    Axes containing the side pane in the current figure, or none if the
-    current figure does not contain a side pane.
+    axes : matplotlib axes
+        Axes containing the side pane in the current figure, or none if the
+        current figure does not contain a side pane.
 
     """
     fig = plt.gcf()
@@ -87,7 +93,8 @@ def message(text):
 
     Returns
     -------
-    Axes that contains the message.
+    axes : matplotlib axes
+        Axes that contains the message.
 
     """
     # Remove last text message if required.
@@ -129,17 +136,18 @@ def button_dialog(text='Please select an option.',
 
     Parameters
     ----------
-    message : str
+    text : str
         Message that is presented to the user.
-        Default is 'Please select an option'.
+        The default is 'Please select an option'.
     choices : list of str
-        List of button text. Default is ['Cancel', 'OK'].
+        List of button text. The default is ['Cancel', 'OK'].
 
     Returns
     -------
-    int : the button number (0 = First button, 1 = Second button, etc. If the
-    user closes the window instead of clicking a button, a value of -1 is
-    returned.
+    button : int
+        The button number (0 = First button, 1 = Second button, etc. If the
+        user closes the window instead of clicking a button, a value of -1 is
+        returned.
 
     """
     fig = plt.gcf()

@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
 Module that provides simple GUI functions.
-
-Author: Félix Chénier
-
-Started on June 2019
 """
 
 import subprocess
@@ -93,7 +93,8 @@ def set_color_order(setting):
 
     Returns
     -------
-    None
+    None.
+
     """
     if isinstance(setting, str):
         if setting == 'default':
@@ -120,8 +121,10 @@ def get_credentials():
 
     Returns
     -------
-    A tuple of two strings containing the username and password, respectively,
-    or an empty tuple if the user closed the window.
+    credentials : tuple
+        A tuple of two strings containing the username and password,
+        respectively, or an empty tuple if the user closed the window.
+
     """
     str_call = ['get_credentials', 'KTK',
                 'Please enter your login information.']
@@ -148,13 +151,15 @@ def get_folder(title='KTK', initial_folder='.'):
 
     Returns
     -------
-    A string with the full path of the selected folder.
+    folder : str
+        A string with the full path of the selected folder.
+
     """
     str_call = ['get_folder', title, initial_folder]
     result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                      stderr=subprocess.DEVNULL)
     result = result.decode('ascii')
-    result = result.replace('\n', '').replace('\r', '')    
+    result = result.replace('\n', '').replace('\r', '')
     return result
 
 
@@ -173,7 +178,8 @@ def get_filename(title='KTK', initial_folder='.'):
 
     Returns
     -------
-    A string with the full path of the selected file.
+    file : str
+        A string with the full path of the selected file.
     """
     str_call = ['get_filename', title, initial_folder]
     result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
@@ -198,9 +204,10 @@ def button_dialog(message='Please select an option.',
 
     Returns
     -------
-    int : the button number (0 = First button, 1 = Second button, etc. If the
-    user closes the window instead of clicking a button, a value of -1 is
-    returned.
+    button : int
+        The button number (0 = First button, 1 = Second button, etc. If the
+        user closes the window instead of clicking a button, a value of -1 is
+        returned.
     """
 
     # Run the button dialog in a separate thread to allow updating matplotlib

@@ -22,29 +22,76 @@
 </header>
 <section id="section-intro">
 <h1 id="kinetics-toolkit">Kinetics Toolkit</h1>
-<p>Kinetics Toolkit (ktk) is an in-house biomechanical library developed by
-Professor Félix Chénier at Université du Québec à Montréal.</p>
-<p>There are two versions of ktk: a private version that is exclusively used in
-my lab, and a public version that is distributed on PyPI. I usually wait
-several months before releasing to the public, to ensure the modules are
-stable and the API is mature enough to be shared.</p>
-<p>The public version API is mostly stable. Although some methods and functions will be
-added in the future, I do not expect to remove or rename much stuff. However please keep
-in mind that this is experimental software. If you are using ktk, you are warmly invited
-to contact me, first to say Hello, and so that I can warn you before doing major,
-possibly breaking changes.</p>
-<p>If you are interesting in collaborating either in research or software
-development, please contact me at chenier.felix@uqam.ca</p>
-<p>Laboratory website: <a href="https://felixchenier.uqam.ca">https://felixchenier.uqam.ca</a></p>
-<p>Kinetics Toolkit (ktk) website: <a href="https://felixchenier.uqam.ca/kineticstoolkit">https://felixchenier.uqam.ca/kineticstoolkit</a></p>
+<p>Kinetics Toolkit (ktk) is an in-house biomechanical library developed
+exclusively in Python, by Professor Félix Chénier at Université du Québec
+à Montréal.</p>
+<p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
+<p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
 <h2 id="public-version">Public version</h2>
+<p>The public version API is mostly stable (although currently almost empty). I
+do not expect to remove or rename much stuff. However please keep in mind that
+this is experimental software. If you are using ktk or are planning to be, you
+are warmly invited to contact me, first to say Hello :-), and so that I can
+warn you before doing major, possibly breaking changes.</p>
 <p><a href="https://felixchenier.uqam.ca/ktk_dist/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_dist/api">API documentation</a></p>
 <h2 id="private-unstable-version">Private unstable version</h2>
+<p>This version is exclusively used in my lab and is developed in parallel with
+my research projects, following the needs of the moment. I usually wait several
+months before releasing code to the public, mostly to ensure the modules are
+stable and the API is mature and global enough to be shared. If you are
+interested in collaborating either in research or software development, please
+contact me at chenier.felix@uqam.ca</p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/api">API documentation</a></p>
+<h2 id="credits">Credits</h2>
+<p>Some external code has been included into ktk's source code. Here are the
+credits for these nice people.</p>
+<ul>
+<li>Clay Flannigan : <a href="https://github.com/ClayFlannigan/icp">icp</a> -
+Python implementation of m-dimensional Iterative Closest Point method</li>
+</ul>
 </section>
 <section>
+<h2 class="section-title" id="header-submodules">Sub-modules</h2>
+<dl>
+<dt><code class="name"><a title="ktk.cycles" href="cycles.html">ktk.cycles</a></code></dt>
+<dd>
+<section class="desc"><p>Identify cycles and time-normalize data …</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.external" href="external/index.html">ktk.external</a></code></dt>
+<dd>
+<section class="desc"><p>External code from other authors …</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.filters" href="filters.html">ktk.filters</a></code></dt>
+<dd>
+<section class="desc"><p>Standard filters for TimeSeries.</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.geometry" href="geometry.html">ktk.geometry</a></code></dt>
+<dd>
+<section class="desc"><p>3d geometry and linear algebra related to biomechanics …</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.gui" href="gui.html">ktk.gui</a></code></dt>
+<dd>
+<section class="desc"><p>Module that provides simple GUI functions.</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.inversedynamics" href="inversedynamics.html">ktk.inversedynamics</a></code></dt>
+<dd>
+<section class="desc"><p>Calculate inverse dynamics.</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.kinematics" href="kinematics.html">ktk.kinematics</a></code></dt>
+<dd>
+<section class="desc"><p>Kinematics analysis.</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.mplhelper" href="mplhelper.html">ktk.mplhelper</a></code></dt>
+<dd>
+<section class="desc"><p>Helper functions for Matplotlib.</p></section>
+</dd>
+<dt><code class="name"><a title="ktk.pushrimkinetics" href="pushrimkinetics.html">ktk.pushrimkinetics</a></code></dt>
+<dd>
+<section class="desc"><p>Processing of kinetic data measured using instrumented wheelchair wheels.</p></section>
+</dd>
+</dl>
 </section>
 <section>
 </section>
@@ -463,6 +510,35 @@ starting at 0. The default is 0.</dd>
 <dd>A new TimeSeries following the specification.</dd>
 </dl></section>
 </dd>
+<dt id="ktk.TimeSeries.merge"><code class="name flex">
+<span>def <span class="ident">merge</span></span>(<span>self, ts, data_keys=None, resample=False, overwrite=True)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Merge another TimeSeries into the current TimeSeries.</p>
+<p>This method merges a TimeSeries into the current TimeSeries, copying
+the data, data_info and events.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>The TimeSeries to merge into the current TimeSeries.</dd>
+<dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
+<dd>The data keys to merge from ts. Default is None, which means that
+all the data keys are merged.</dd>
+<dt><strong><code>resample</code></strong> :&ensp;<code>bool</code> (optional</dt>
+<dd>Set to True to resample the source TimeSeries, in case the time
+vectors are not matched. If the time vectors are not matched and
+resample is False, an exception is raised. Default is False.</dd>
+<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>If duplicates are found and overwrite is True, then the source (ts)
+overwrites the destination. Otherwise (overwrite is False), the
+duplicated data is ignored. Default is True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+</dd>
 <dt id="ktk.TimeSeries.plot"><code class="name flex">
 <span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, plot_event_names=False, max_legend_items=5, **kwargs)</span>
 </code></dt>
@@ -524,6 +600,34 @@ for space and performance considerations.</dd>
 &gt;&gt;&gt; ts.data_info
     {'signal': {'Unit': 'm'}}
 </code></pre></section>
+</dd>
+<dt id="ktk.TimeSeries.resample"><code class="name flex">
+<span>def <span class="ident">resample</span></span>(<span>self, new_time, kind='linear', fill_value=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Resample the TimeSeries.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>new_time</code></strong> :&ensp;<code>np.array</code></dt>
+<dd>The new time vector to resample the TimeSeries to.</dd>
+<dt><strong><code>kind</code></strong> :&ensp;<code>str</code> (optional)</dt>
+<dd>The interpolation method. This input may take any value
+supported by scipy.interpolate.interp1d, such as:
+- 'linear'
+- 'nearest'
+- 'zero'
+- 'slinear'
+- 'quadratic'
+- 'cubic'
+- 'previous'
+- 'next'</dd>
+<dt><strong><code>fill_value</code></strong> :&ensp;<code>array</code>-<code>like</code> or <code>'extrapolate'</code> (optional)</dt>
+<dd>The fill value to use if new_time vector contains point outside
+the current TimeSeries' time vector. Use 'extrapolate' to
+extrapolate.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.to_dataframe"><code class="name flex">
 <span>def <span class="ident">to_dataframe</span></span>(<span>self)</span>
@@ -597,11 +701,25 @@ methods to deal with events.</p>
 <li><a href="#kinetics-toolkit">Kinetics Toolkit</a><ul>
 <li><a href="#public-version">Public version</a></li>
 <li><a href="#private-unstable-version">Private unstable version</a></li>
+<li><a href="#credits">Credits</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <ul id="index">
+<li><h3><a href="#header-submodules">Sub-modules</a></h3>
+<ul>
+<li><code><a title="ktk.cycles" href="cycles.html">ktk.cycles</a></code></li>
+<li><code><a title="ktk.external" href="external/index.html">ktk.external</a></code></li>
+<li><code><a title="ktk.filters" href="filters.html">ktk.filters</a></code></li>
+<li><code><a title="ktk.geometry" href="geometry.html">ktk.geometry</a></code></li>
+<li><code><a title="ktk.gui" href="gui.html">ktk.gui</a></code></li>
+<li><code><a title="ktk.inversedynamics" href="inversedynamics.html">ktk.inversedynamics</a></code></li>
+<li><code><a title="ktk.kinematics" href="kinematics.html">ktk.kinematics</a></code></li>
+<li><code><a title="ktk.mplhelper" href="mplhelper.html">ktk.mplhelper</a></code></li>
+<li><code><a title="ktk.pushrimkinetics" href="pushrimkinetics.html">ktk.pushrimkinetics</a></code></li>
+</ul>
+</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
 <li>
@@ -624,8 +742,10 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.get_ts_before_time" href="#ktk.TimeSeries.get_ts_before_time">get_ts_before_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_events" href="#ktk.TimeSeries.get_ts_between_events">get_ts_between_events</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_times" href="#ktk.TimeSeries.get_ts_between_times">get_ts_between_times</a></code></li>
+<li><code><a title="ktk.TimeSeries.merge" href="#ktk.TimeSeries.merge">merge</a></code></li>
 <li><code><a title="ktk.TimeSeries.plot" href="#ktk.TimeSeries.plot">plot</a></code></li>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
+<li><code><a title="ktk.TimeSeries.resample" href="#ktk.TimeSeries.resample">resample</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
 </ul>
 </li>

@@ -1,9 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
-Module that processes pushrim kinetic data measured using instrumented
-wheelchair wheels.
-
-To see the functions of this module:
-    dir(ktk.pushrimkinetics)
+Processing of kinetic data measured using instrumented wheelchair wheels.
 """
 
 import ktk
@@ -12,17 +14,6 @@ from numpy import sin, cos, pi
 import pandas as pd
 import warnings
 import struct  # to unpack binary data from SmartWheels' txt files
-
-
-def __dir__():
-    """Generate a dir for tab-completion in IPython."""
-    return ('read_file',
-            'find_recovery_indices',
-            'remove_sinusoids',
-            'calculate_forces_and_moments',
-            'calculate_velocity',
-            'calculate_power',
-            'detect_pushes')
 
 
 def read_file(filename, format='smartwheel'):
@@ -35,13 +26,14 @@ def read_file(filename, format='smartwheel'):
         Name of the file to open
     format : str (optional)
         Format of the file. Can be either:
-            'smartwheel' (default)
-            'racingwheel'
-            'smartwheeltxt'
+            - 'smartwheel' (default)
+            - 'racingwheel'
+            - 'smartwheeltxt'
 
     Returns
     -------
-    TimeSeries with the file contents.
+    kinetics : TimeSeries
+	    TimeSeries with the file contents.
     """
     if format == 'smartwheel':
 
@@ -158,7 +150,7 @@ def find_recovery_indices(Mz):
     pushes and which data correspond to recoveries. The method is very
     conservative on what could be considered as a recovery, so that every
     index returned by this function is almost certain to correspond to a
-    recovery. This function is used by pushrimkinetics.remove_sinusoids
+    recovery. This function is used by `pushrimkinetics.remove_sinusoids`
     to identify the instants with no hand contact. It should not be used to
     isolate the push and recovery phases (use pushrimkinetics.detectpushes
     instead).
@@ -285,24 +277,25 @@ def calculate_forces_and_moments(kinetics, calibration_id):
     calibration_id : str
         Calibration identifier, resulting from factory or custom calibration.
         Available values are:
-            'PATHOKIN-93':  PATHOKIN 24" SmartWheel, Serial #93
-            'PATHOKIN-94':  PATHOKIN 24" SmartWheel, Serial #94
-            'LIO-123':      LIO 24" SmartWheel, Serial #123
-            'LIO-124':      LIO 24" SmartWheel, Serial #124
-            'LIO-125':      LIO 24" SmartWheel, Serial #125
-            'LIO-126':      LIO 26" SmartWheel, Serial #126
-            'S18-126':      PATHOKIN Summer 2018, Serial 126
-            'S18-179':      PATHOKIN Summer 2018, Serial 179
-            'S18-180':      PATHOKIN Summer 2018, Serial 180
-            'S18-181':      PATHOKIN Summer 2018, Serial 181
-            'S18-Racing-Prototype1': Racing wheel prototype
-            'W20-Racing-Prototype1': Racing wh proto with calibration matrix
+            - 'PATHOKIN-93':  PATHOKIN 24" SmartWheel, Serial #93
+            - 'PATHOKIN-94':  PATHOKIN 24" SmartWheel, Serial #94
+            - 'LIO-123':      LIO 24" SmartWheel, Serial #123
+            - 'LIO-124':      LIO 24" SmartWheel, Serial #124
+            - 'LIO-125':      LIO 24" SmartWheel, Serial #125
+            - 'LIO-126':      LIO 26" SmartWheel, Serial #126
+            - 'S18-126':      PATHOKIN Summer 2018, Serial 126
+            - 'S18-179':      PATHOKIN Summer 2018, Serial 179
+            - 'S18-180':      PATHOKIN Summer 2018, Serial 180
+            - 'S18-181':      PATHOKIN Summer 2018, Serial 181
+            - 'S18-Racing-Prototype1': Racing wheel prototype
+            - 'W20-Racing-Prototype1': Racing wh proto with calibration matrix
 
     Returns
     -------
-    TimeSeries : a copy of the kinetics TimeSeries, with the added 'Forces'
-    and 'Moments' in the data dict. These timeseries are formatted with time
-    in first dimension and x, y, z components in second dimension.
+    kinetics : TimeSeries
+		A copy of the input TimeSeries, with the added 'Forces'
+		and 'Moments' data keys.
+		
     """
 
     # Get the gains and offsets based on calibration id
@@ -462,7 +455,8 @@ def calculate_velocity(tsin):
 
     Returns
     -------
-    A new TimeSeries with the added data key 'Velocity'.
+    tsout : TimeSeries
+    	A new TimeSeries with the added data key 'Velocity'.
     """
     tsangle = ktk.TimeSeries()
     tsangle.time = tsin.time
@@ -488,7 +482,9 @@ def calculate_power(tsin):
 
     Returns
     -------
-    A new TimeSeries with the added data key 'Power'.
+    tsout : TimeSeries
+    	A new TimeSeries with the added data key 'Power'.
+
     """
     tsout = tsin.copy()
     tsout.data['Power'] = (tsout.data['Velocity'] *
@@ -544,8 +540,8 @@ def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
     time = ts_force.time
     data = ts_force.data['Ftot']
 
-    push_state = True   # We start on Push state to wait for a first release, which
-                        # allows to ensure the first push will be complete.
+    push_state = True   # We start on Push state to wait for a first release,
+    					# which allows to ensure the first push is complete.
     is_first_push = True
 
     events = []

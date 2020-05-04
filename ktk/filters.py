@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
-Apply standard filters on TimeSeries.
-
-Author: Félix Chénier
-Started on Aug 1st, 2019.
+Standard filters for TimeSeries.
 """
 
 import numpy as np
@@ -13,17 +14,13 @@ import scipy.signal as sgl
 import warnings
 
 
-def __dir__():
-    return ['savgol', 'smooth']
-
-
 def savgol(tsin, window_length, poly_order, deriv=0):
     """
     Apply a Savitzky-Golay filter on a TimeSeries.
 
     Parameters
     ----------
-    tsin : ktk.TimeSeries
+    tsin : TimeSeries
         Input TimeSeries
     window_length : int
         The length of the filter window. window_length must be a positive
@@ -31,14 +28,14 @@ def savgol(tsin, window_length, poly_order, deriv=0):
     poly_order : int
         The order of the polynomial used to fit the samples. polyorder must be
         less than window_length.
-    deriv : int, optional
+    deriv : int (optional)
         The order of the derivative to compute. This must be a nonnegative
         integer. The default is 0, which means to filter the data without
         differentiating.
 
     Returns
     -------
-    tsout : ktk.TimeSeries
+    tsout : TimeSeries
         The filtered TimeSeries
 
     If the TimeSeries contains missing samples, a warning is issued, missing
@@ -97,7 +94,7 @@ def smooth(tsin, window_length):
 
     Parameters
     ----------
-    tsin : ktk.TimeSeries
+    tsin : TimeSeries
         Input TimeSeries.
     window_length : int
         The length of the filter window. window_length must be a positive
@@ -105,7 +102,7 @@ def smooth(tsin, window_length):
 
     Returns
     -------
-    tsout : ktk.TimeSeries
+    tsout : TimeSeries
         The filtered TimeSeries
 
     """
@@ -121,22 +118,22 @@ def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
 
     Parameters
     ----------
-    tsin : ktk.TimeSeries
+    tsin : TimeSeries
         Input TimeSeries.
     fc : float
         Cut-off frequency.
-    order : int, optional
+    order : int (optional)
         Order of the filter. The default is 2.
     btype : {‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’}, optional
         The default is 'lowpass'.
-    filtfilt : bool, optional
+    filtfilt : bool (optional)
         If True, the filter is applied two times in reverse direction to
         eliminate time lag. If False, the filter is applied only in forward
         direction. The default is True.
 
     Returns
     -------
-    tsout : ktk.TimeSeries
+    tsout : TimeSeries
         The filtered TimeSeries
 
     """

@@ -1,13 +1,15 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
-kinematics module for KTK.
-
-Work in progress
+Kinematics analysis.
 """
 
-# import os.path
 import numpy as np
 import ktk
-import external.pyc3d.c3d as c3d
 import warnings
 import subprocess
 from time import sleep
@@ -20,7 +22,7 @@ import struct  # To unpack data from N3D files
 
 def read_c3d_file(filename):
     """
-    Read a C3D file.
+    Read markers from a C3D file.
 
     Parameters
     ----------
@@ -29,8 +31,9 @@ def read_c3d_file(filename):
 
     Returns
     -------
-    A TimeSeries where each point in the C3D correspond to a data entry in
-    the TimeSeries.
+    markers : TimeSeries
+        A TimeSeries where each point in the C3D correspond to a data key in
+        the TimeSeries.
     """
     # Create the reader
     reader = ezc3d(filename)
@@ -70,49 +73,9 @@ def read_c3d_file(filename):
     return output
 
 
-def write_c3d_file(filename, ts):
-    """Write a C3D file based on a timeseries of markers."""
-    # Convert the timeseries data to a large 3d array:
-    # First dimension = marker
-    # Second dimension = time
-    # Third dimension = x y z -visible -visible
-    labels = sorted(list(ts.data.keys()))
-    n_labels = len(labels)
-    n_frames = len(ts.time)
-    point_rate = 1 / (ts.time[1] - ts.time[0])
-
-    all_points = np.zeros([n_labels, n_frames, 5])
-
-    for i_label in range(len(labels)):
-        the_label = labels[i_label]
-
-        points = ts.data[the_label].copy()
-
-        # Multiply by -1000 to get mm with correct scaling.
-        points = np.block([-1000 * points, np.ones([n_frames, 1])])
-        # Set -1 to fourth and fifth dimensions on missing samples
-        nan_indices = ts.isnan(the_label)
-        points[nan_indices, 3:5] = -1
-        points[~nan_indices, 3:5] = 0
-        # Remove nans
-        points[nan_indices, 0:3] = 0
-
-        all_points[i_label, :, :] = points
-
-    # Create the c3d file
-    writer = c3d.Writer(point_rate=point_rate)
-    for i_frame in range(n_frames):
-        writer.add_frames([(all_points[:, i_frame, :], np.array([[]]))])
-
-    with warnings.catch_warnings():
-        warnings.simplefilter('ignore', UserWarning)
-        with open(filename, 'wb') as fid:
-            writer.write(fid, labels)
-
-
 def read_n3d_file(filename, labels=[]):
     """
-    Read an Optitrak N3D file.
+    Read markers from an Optitrak N3D file.
 
     Parameters
     ----------
@@ -123,12 +86,12 @@ def read_n3d_file(filename, labels=[]):
 
     Returns
     -------
-    A TimeSeries where each point in the N3D correspond to a data entry in
-    the TimeSeries.
+    markers : TimeSeries
+        A TimeSeries where each point in the N3D correspond to a data key in
+        the TimeSeries.
     """
     with open(filename, 'rb') as fid:
         _ = fid.read(1)  # 32
-#        n_markers = int.from_bytes(fid.read(1), 'big')
         n_markers = struct.unpack('h', fid.read(2))[0]
         n_data_per_marker = struct.unpack('h', fid.read(2))[0]
         n_columns = n_markers * n_data_per_marker
@@ -174,61 +137,6 @@ def read_n3d_file(filename, labels=[]):
                     np.ones((n_frames, 1))]])
 
     return ts
-
-
-def plot3d(markers=None, rigid_bodies=None, segments=None,
-           sample=0, marker_radius=0.008, rigid_body_size=0.1):
-    """Plot a TimeSeries of markers and/or rigid bodies on a 3D MPL axis."""
-    markers = markers.copy()  # Since we add stuff to it.
-
-    # Plot every marker at a given index
-    x = []
-    y = []
-    z = []
-    min_coordinate = 99999999.
-    max_coordinate = -99999999.
-
-    for data in markers.data:
-        temp_data = markers.data[data]
-        x.append(temp_data[sample, 0])
-        y.append(temp_data[sample, 2])
-        z.append(temp_data[sample, 1])
-        min_coordinate = np.min([min_coordinate, np.nanmin(temp_data[:, 0])])
-        min_coordinate = np.min([min_coordinate, np.nanmin(temp_data[:, 1])])
-        min_coordinate = np.min([min_coordinate, np.nanmin(temp_data[:, 2])])
-        max_coordinate = np.max([max_coordinate, np.nanmax(temp_data[:, 0])])
-        max_coordinate = np.max([max_coordinate, np.nanmax(temp_data[:, 1])])
-        max_coordinate = np.max([max_coordinate, np.nanmax(temp_data[:, 2])])
-
-    # Create the 3d figure
-    fig = plt.figure()
-    ax = fig.add_subplot(111, projection='3d')
-
-    ax.scatter(x, y, z, s=marker_radius*1000, c='b')
-
-    xlim = ax.get_xlim()
-    ylim = ax.get_ylim()
-    zlim = ax.get_zlim()
-    lim = np.max([xlim[1] - xlim[0], ylim[1] - ylim[0], zlim[1] - zlim[0]])
-    xlim = [np.mean(xlim) - lim/2, np.mean(xlim) + lim/2]
-    ylim = [np.mean(ylim) - lim/2, np.mean(ylim) + lim/2]
-    zlim = [np.mean(zlim) - lim/2, np.mean(zlim) + lim/2]
-    ax.set_xlim(xlim)
-    ax.set_ylim(ylim)
-    ax.set_zlim(zlim)
-
-
-    # ax.scatter(
-    #     [min_coordinate, min_coordinate, min_coordinate, min_coordinate,
-    #       max_coordinate, max_coordinate, max_coordinate, max_coordinate],
-    #     [min_coordinate, min_coordinate, max_coordinate, max_coordinate,
-    #       min_coordinate, min_coordinate, max_coordinate, max_coordinate],
-    #     [min_coordinate, max_coordinate, min_coordinate, max_coordinate,
-    #       min_coordinate, max_coordinate, min_coordinate, max_coordinate],
-    #     s=1E-6)
-    ax.set_xlabel('x')
-    ax.set_ylabel('z')
-    ax.set_zlabel('y')
 
 
 # def read_xml_file(file_name):
@@ -343,6 +251,7 @@ def plot3d(markers=None, rigid_bodies=None, segments=None,
 #            # EOF
 #            return(the_timeseries)
 
+
 def create_rigid_body_config(markers, marker_names):
     """
     Create a rigid body configuration based on a static acquisition.
@@ -356,10 +265,11 @@ def create_rigid_body_config(markers, marker_names):
 
     Returns
     -------
-    dict with the following keys:
-        - MarkerNames : the same as marker_names
-        - LocalPoints : a 1x4xM array that indicates the local position of
-                        each M marker in the created rigid body config.
+    rigid_body_config : dict
+        Dictionary with the following keys:
+            - MarkerNames : the same as marker_names
+            - LocalPoints : a 1x4xM array that indicates the local position of
+                            each M marker in the created rigid body config.
     """
     n_samples = len(markers.time)
     n_markers = len(marker_names)
@@ -390,7 +300,10 @@ def create_rigid_body_config(markers, marker_names):
 
 def register_markers(markers, rigid_body_configs, verbose=False):
     """
-    Compute the rigid body trajectories using ktk.geometry.register_points.
+    Calculates the trajectory of rigid bodies.
+    
+    Calculates the trajectory of rigid bodies using
+    `ktk.geometry.register_points`.
 
     Parameters
     ----------
@@ -405,7 +318,9 @@ def register_markers(markers, rigid_body_configs, verbose=False):
 
     Returns
     -------
-    TimeSeries where each data key is a Nx4x4 series of rigid transformations.
+    rigid_bodies : TimeSeries
+        TimeSeries where each data key is a Nx4x4 series of rigid
+        transformations.
     """
     rigid_bodies = ktk.TimeSeries(time=markers.time,
                                   time_info=markers.time_info,
@@ -458,11 +373,13 @@ def create_virtual_marker_config(markers, rigid_bodies,
 
     Returns
     -------
-    dict with the following keys:
-        RigidBodyName : Name of the virtual marker's rigid body
-        LocalPoint : Local position of this marker in the reference frame
-                     defined by the rigid body RigidBodyName. LocalPoint is
-                     expressed as a 1x4 array.
+    virtual_marker_config : dict
+        Dictionary with the following keys:
+            - RigidBodyName : Name of the virtual marker's rigid body
+            - LocalPoint : Local position of this marker in the reference frame
+                           defined by the rigid body RigidBodyName. LocalPoint
+                           is expressed as a 1x4 array.
+                       
     """
     marker = markers.data[marker_name]
     rigid_body = rigid_bodies.data[rigid_body_name]

@@ -18,40 +18,51 @@
 Kinetics Toolkit
 ================
 
-Kinetics Toolkit (ktk) is an in-house biomechanical library developed by
-Professor Félix Chénier at Université du Québec à Montréal.
+Kinetics Toolkit (ktk) is an in-house biomechanical library developed
+exclusively in Python, by Professor Félix Chénier at Université du Québec
+à Montréal.
 
-There are two versions of ktk: a private version that is exclusively used in
-my lab, and a public version that is distributed on PyPI. I usually wait
-several months before releasing to the public, to ensure the modules are
-stable and the API is mature enough to be shared.
+[Laboratory website](https://felixchenier.uqam.ca)
 
-The public version API is mostly stable. Although some methods and functions will be
-added in the future, I do not expect to remove or rename much stuff. However please keep
-in mind that this is experimental software. If you are using ktk, you are warmly invited
-to contact me, first to say Hello, and so that I can warn you before doing major,
-possibly breaking changes.
-
-If you are interesting in collaborating either in research or software
-development, please contact me at chenier.felix@uqam.ca
-
-Laboratory website: https://felixchenier.uqam.ca
-
-Kinetics Toolkit (ktk) website: https://felixchenier.uqam.ca/kineticstoolkit
+[Kinetics Toolkit (ktk) website](https://felixchenier.uqam.ca/kineticstoolkit)
 
 Public version
 --------------
+
+The public version API is mostly stable (although currently almost empty). I
+do not expect to remove or rename much stuff. However please keep in mind that
+this is experimental software. If you are using ktk or are planning to be, you
+are warmly invited to contact me, first to say Hello :-), and so that I can
+warn you before doing major, possibly breaking changes.
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_dist/tutorials)
 
 [API documentation](https://felixchenier.uqam.ca/ktk_dist/api)
 
+
 Private unstable version
 ------------------------
+
+This version is exclusively used in my lab and is developed in parallel with
+my research projects, following the needs of the moment. I usually wait several
+months before releasing code to the public, mostly to ensure the modules are
+stable and the API is mature and global enough to be shared. If you are
+interested in collaborating either in research or software development, please
+contact me at chenier.felix@uqam.ca
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_lab/tutorials)
 
 [API documentation](https://felixchenier.uqam.ca/ktk_lab/api)
+
+
+Credits
+-------
+
+Some external code has been included into ktk's source code. Here are the
+credits for these nice people.
+
+- Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) - 
+Python implementation of m-dimensional Iterative Closest Point method
 
 """
 
@@ -65,7 +76,7 @@ import platform as _platform
 import matplotlib as _mpl
 import numpy as _np
 
-__pdoc__ = {'dev': False}
+__pdoc__ = {'dev': False, 'cmdgui': False}
 
 # ---------------------------
 # Set ktk configuration

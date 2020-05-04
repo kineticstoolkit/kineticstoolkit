@@ -1,12 +1,18 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
 3d geometry and linear algebra related to biomechanics.
 
 This module contains functions related to 3D geometry and linear algebra
-related to biomechanics. The first dimension of every array is always N and
-corresponds to time. For constants, use a length of 1 as the first dimension.
+related to biomechanics.
 
-A full tutorial on ktk.geometry is available in tutorials/geometry.html
-and on https://felixchenier.com/kineticstoolkit/geometry.html
+The first dimension of every array is always N and corresponds to time. For
+constants, use a length of 1 as the first dimension.
+
 """
 
 import numpy as np
@@ -17,8 +23,8 @@ def matmul(op1, op2):
     Matrix multiplication between series of matrices.
 
     This function is a wrapper for numpy's matmul function (operator @), that
-    helps numpy to understand ktk's convention that every point or vector is
-    always expressed as a series (first dimension is time).
+    helps numpy to understand ktk's convention that the first dimension always
+    corresponds to time.
 
     It aligns and create additionnal dimensions if needed to avoid dimension
     mismatch errors.
@@ -30,7 +36,9 @@ def matmul(op1, op2):
 
     Returns
     -------
-    array : The product, as a series of Nx4 or Nx4xM matrices.
+    result : array
+        The product, as a series of Nx4 or Nx4xM matrices.
+        
     """
     def perform_mul(op1, op2):
         if isinstance(op1, np.ndarray) and isinstance(op2, np.ndarray):
@@ -67,7 +75,9 @@ def create_rotation_matrices(axis, angles):
 
     Returns
     -------
-    A Nx4x4 series of rotation matrices.
+    T : array
+        A Nx4x4 series of rotation matrices.
+        
     """
     angles = np.array(angles)
 
@@ -125,41 +135,41 @@ def create_reference_frames(global_points, method='ocx1'):
 
         Available values are:
 
-        'ocx1' : An arbitraty system that is useful for marker clusters
-        (default).
-        - Origin = Centroid of all points;
-        - X is directed toward the first point;
-        - Z is normal to the plane formed by the origin and both
-        first points;
-        - Y is the vectorial product of X and Z.
+        - 'ocx1' : An arbitraty system that is useful for marker clusters
+          (default).
+          Origin = Centroid of all points;
+          X is directed toward the first point;
+          Z is normal to the plane formed by the origin and both
+          first points;
+          Y is the vectorial product of X and Z.
 
-        'o1z2' : Reference frame based on lateral and anterior
-        vectors.
-        - Origin = First point;
-        - Z is directed toward the second point (right);
-        - Y is normal to the plane formed by the three markers (up);
-        - X is the vectorial product of Y and Z.
+        - 'o1z2' : Reference frame based on lateral and anterior
+          vectors.
+          Origin = First point;
+          Z is directed toward the second point (right);
+          Y is normal to the plane formed by the three markers (up);
+          X is the vectorial product of Y and Z.
 
-        'isb-humerus' : Reference frame of the humerus as suggested by
-        the International Society of Biomechanics [1], when the elbow is
-        flexed by 90 degrees and the forearm is in complete pronation.
-        - Origin = GH joint;
-        - X is directed forward;
-        - Y is directed upward;
-        - Z is directed to the right;
-        - Point 1 = GH joint;
-        - Point 2 = Elbow center;
-        - Point 3 = Ulnar styloid.
+        - 'isb-humerus' : Reference frame of the humerus as suggested by
+          the International Society of Biomechanics [1], when the elbow is
+          flexed by 90 degrees and the forearm is in complete pronation.
+          Origin = GH joint;
+          X is directed forward;
+          Y is directed upward;
+          Z is directed to the right;
+          Point 1 = GH joint;
+          Point 2 = Elbow center;
+          Point 3 = Ulnar styloid.
 
-        'isb-forarm' : Reference frame of the forearm as suggested by
-        the International Society of Biomechanics [1].
-        - Origin = Ulnar Styloid;
-        - X is directed forward in anatomic position;
-        - Y is directed upward in anatomic position;
-        - Z is directed to the right in anatomic position;
-        - Point 1 = Ulnar Styloid;
-        - Point 2 = Elbow center;
-        - Point 3 = Radial styloid.
+        - 'isb-forarm' : Reference frame of the forearm as suggested by
+          the International Society of Biomechanics [1].
+          Origin = Ulnar Styloid;
+          X is directed forward in anatomic position;
+          Y is directed upward in anatomic position;
+          Z is directed to the right in anatomic position;
+          Point 1 = Ulnar Styloid;
+          Point 2 = Elbow center;
+          Point 3 = Radial styloid.
 
     [1] G. Wu et al., "ISB recommendation on definitions of joint
     coordinate systems of various joints for the reporting of human joint
@@ -169,7 +179,8 @@ def create_reference_frames(global_points, method='ocx1'):
 
     Returns
     -------
-    array : Series of transformation matrices (Nx4x4).
+    T : array
+        Series of transformation matrices (Nx4x4).
     """
     def normalize(v):
         norm = np.linalg.norm(v, axis=1)
@@ -264,7 +275,10 @@ def get_local_coordinates(global_coordinates, reference_frames):
 
     Returns
     -------
-    array of 2 or 3 dimensions : The series of local coordinates.
+    local_coordinates : array
+        Series of local coordinates in the same shape than
+        `global_coordinates`.
+
     """
     n_samples = global_coordinates.shape[0]
 
@@ -317,7 +331,9 @@ def get_global_coordinates(local_coordinates, reference_frames):
 
     Returns
     -------
-    array of 2 or 3 dimensions : The series of global coordinates.
+    global_coordinates : array
+        Series of global coordinates in the same shape than `local_coordinates`.
+
     """
     global_coordinates = np.zeros(local_coordinates.shape)
     global_coordinates = matmul(reference_frames, local_coordinates)
@@ -335,8 +351,10 @@ def isnan(input):
 
     Returns
     -------
-    list of bool that is the same size of input's first dimension, with True
-    for the samples that contain at least one NaN.
+    output : array
+        Array of bool that is the same size of input's first dimension, with True
+        for the samples that contain at least one NaN.
+        
     """
     temp = np.isnan(input)
     while len(temp.shape) > 1:
@@ -348,21 +366,23 @@ def match_size(op1, op2):
     """
     Match the first dimension of op1 and op2.
 
-    match_size broadcasts the first dimension of op1 or op2, if required,
-    so that both inputs have the same size. If no modification is required
-    on an input, then the output is a reference to the same input. Otherwise,
-    the output is a new variable.
+    Broadcasts the first dimension of op1 or op2, if required, so that both
+    inputs have the same size in first dimension. If no modification is
+    required on an input, then the output is a reference to the same input.
+    Otherwise, the output is a new variable.
 
     Parameters
     ----------
-    op1, op2 : array
+    op1, op2 : arrays
         Inputs, where the first dimension corresponds to time. If both
         first dimensions are not already equal, at least one must be of length
         1 so that it can be broadcasted.
 
     Returns
     -------
-    (op1, op2) : tuple with the copies of op1 and op2 now matched in size.
+    op1, op2 : arrays
+        References or copies of op1 and op2 now matched in size.
+
     """
     if op1.shape[0] == 1:
         op1 = np.repeat(op1, op2.shape[0], axis=0)
@@ -372,9 +392,9 @@ def match_size(op1, op2):
 
     if op1.shape[0] != op2.shape[0]:
         raise ValueError(
-                'Could not match first dimension of op1 and op2')
+            'Could not match first dimension of op1 and op2')
 
-    return (op1, op2)
+    return op1, op2
 
 
 def register_points(global_points, local_points):
@@ -391,8 +411,10 @@ def register_points(global_points, local_points):
 
     Returns
     -------
-    array of shape Nx4x4, expressing a series of 4x4 rigid transformation
-    matrices.
+    T : array
+        Array of shape Nx4x4, expressing a series of 4x4 rigid transformation
+        matrices.
+        
     """
     n_samples = global_points.shape[0]
 

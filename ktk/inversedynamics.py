@@ -1,8 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
-Inverse dynamics module for KTK.
-
-Author: Felix Chenier
-Date: September 2019
+Calculate inverse dynamics.
 """
 
 import ktk
@@ -16,9 +19,9 @@ def get_anthropometrics(segment_name, total_mass):
 
     For the moment, only this table is available:
 
-        - D. A. Winter, Biomechanics and Motor Control of Human Movement,
-          4th ed. University of Waterloo, Waterloo, Ontario, Canada,
-          John Wiley & Sons, 2009.
+    D. A. Winter, Biomechanics and Motor Control of Human Movement,
+    4th ed. University of Waterloo, Waterloo, Ontario, Canada,
+    John Wiley & Sons, 2009.
 
     Other tables may become available in the future.
 
@@ -43,20 +46,21 @@ def get_anthropometrics(segment_name, total_mass):
 
     Returns
     -------
-    A dict with the following keys:
-        - 'Mass' : Mass of the segment, in kg.
-        - 'COMProximalRatio' : Distance between the segment's center of mass
-                and the proximal joint, as a ratio of the distance between
-                both joints.
-        - 'COMDistalRatio' : Distance between the segment's center of mass
-                and the distal joint, as a ratio of the distance between
-                both joints.
-        - 'GyrationCOMRatio': Radius of gyration around the segment's center
-                of mass, as a ratio of the distance between both joints.
-        - 'GyrationProximalRatio': Radius of gyration around the segment's
-                proximal joint, as a ratio of the distance between both joints.
-        - 'GyrationDistalRatio': Radius of gyration around the segment's
-                distal joint, as a ratio of the distance between both joints.
+    values : dict
+        A dict with the following keys:
+            - 'Mass' : Mass of the segment, in kg.
+            - 'COMProximalRatio' : Distance between the segment's center of
+               mass and the proximal joint, as a ratio of the distance between
+               both joints.
+            - 'COMDistalRatio' : Distance between the segment's center of mass
+               and the distal joint, as a ratio of the distance between
+               both joints.
+            - 'GyrationCOMRatio': Radius of gyration around the segment's center
+               of mass, as a ratio of the distance between both joints.
+            - 'GyrationProximalRatio': Radius of gyration around the segment's
+               proximal joint, as a ratio of the distance between both joints.
+            - 'GyrationDistalRatio': Radius of gyration around the segment's
+               distal joint, as a ratio of the distance between both joints.
     """
     table = dict()
     table['Hand'] = [0.006, 0.506, 0.494, 0.297, 0.587, 0.577]
@@ -95,29 +99,30 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
     Parameters
     ----------
-        ts : TimeSeries
-            A TimeSeries with the following data keys:
-                - ProximalJointPosition (Nx4)
-                - DistalJointPosition (Nx4)
-                - ForceApplicationPosition (Nx4)
-                - DistalForces (Nx4)
-                - DistalMoments (Nx4)
-        inertial_constants : dict
-            A dict that contains the following keys:
-                - 'Mass' : Mass of the segment, in kg.
-                - 'COMProximalRatio' : Distance between the segment's center
-                        of mass and the proximal joint, as a ratio of the
-                        distance between both joints.
-                - 'GyrationCOMRatio': Radius of gyration around the segment's
-                        center of mass, as a ratio of the distance between
-                        both joints.
+    ts : TimeSeries
+        A TimeSeries with the following data keys:
+            - ProximalJointPosition (Nx4)
+            - DistalJointPosition (Nx4)
+            - ForceApplicationPosition (Nx4)
+            - DistalForces (Nx4)
+            - DistalMoments (Nx4)
+    inertial_constants : dict
+        A dict that contains the following keys:
+            - 'Mass' : Mass of the segment, in kg.
+            - 'COMProximalRatio' : Distance between the segment's center
+                of mass and the proximal joint, as a ratio of the
+                distance between both joints.
+            - 'GyrationCOMRatio': Radius of gyration around the segment's
+                center of mass, as a ratio of the distance between
+                both joints.
             This dict may be generated using the get_anthropometrics function.
 
     Returns
     -------
-    The input timeseries, with these added data keys:
-        - ProximalForces (Nx4)
-        - ProximalMoments (Nx4)
+    out : TimeSeries
+        A copy of the input timeseries plus these extra data keys:
+            - ProximalForces (Nx4)
+            - ProximalMoments (Nx4)
     """
     ts = ts.copy()
 
