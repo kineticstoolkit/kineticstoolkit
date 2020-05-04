@@ -41,6 +41,7 @@ import platform as _platform
 import matplotlib as _mpl
 import numpy as _np
 
+__pdoc__ = {'dev': False}
 
 # ---------------------------
 # Set ktk configuration
@@ -60,3 +61,8 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 
 from ktk._timeseries import TimeSeries, TimeSeriesEvent
 from ktk._tools import explore, terminal
+
+try:
+    from ktk import dev
+except Exception:
+    pass

@@ -31,93 +31,93 @@ import ktk
 import pytest
 import os
 import ktk.dev.tutorialcompiler as tutorialcompiler
+import subprocess
+import shutil
+import webbrowser
+
 from functools import partial
 from threading import Thread
 from time import sleep
 
 def run_tests(module=None):
     """Run all unit tests."""
-
-#    # Run all tutorials
-#    cwd = os.getcwd()
-#    os.chdir(ktk.config['RootFolder'] + '/tutorials')
-#    files = os.listdir()
-#    for file in files:
-#        if file[-3:].lower() == '.py':
-#            print('==========================================')
-#            print('Testing ' + file[:-3] + ' tutorial...')
-#            print('------------------------------------------')
-#            exec(open(file).read())
-#            plt.close('all')
-#            _subprocess.call([os.sys.executable, file])
-#
-#    os.chdir(cwd)
-
-    # Run all old-fashioned tests
-    pytest.main([ktk.config['RootFolder'] + '/ktk/dev'])
+    pytest.main([ktk.config['RootFolder'] + '/tests'])
 
 
-def generate_tutorials(name=None):
-    """
-    Generate the tutorials into their final html form.
-
-    Parameters
-    ----------
-    name : str (optional)
-        Name of the tutorial to build. For example: 'dbinterface'.
-        Default is None, which means all tutorials are generated.
-
-    Returns
-    -------
-    None.
-
-    Open the function to modify the common header that is generated for each
-    tutorial page, including the menu.
-    """
-
-    header = '''
-Kinetics Toolkit (ktk)
-======================
-
-| Getting started            | Low-level modules             | High-level modules                      |
-|:--------------------------:|:-----------------------------:|:---------------------------------------:|
-| [Home](index.html)         | [TimeSeries](timeseries.html) | [kinematics](kinematics.html)           |
-| [Installing](install.html) | [filters](filters.html)       | [pushrimkinetics](pushrimkinetics.html) |
-|                            | [geometry](geometry.html)     | [inversedynamics](inversedynamics.html) |
-|                            |                               | [Player](player.html)                   |
-|                            |                               | [DBinterface](dbinterface.html)         |
-
-'''
-
+def generate_tutorial():
+    """Generate the tutorial in html."""
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tutorials')
-
-    if name is None:
-        files = os.listdir()
-    else:
-        files = [name + '.py']
-
-    print('==========================================')
-    threads_running = [0]  # List of len 1 with the number of running threads
-    for file in files:
-        if file[-3:].lower() == '.py':
-            print('Starting compiling ' + file[:-3] + ' tutorial...')
-            threaded_function = partial(tutorialcompiler.compile,
-                                        file, file[:-3] + '.html', header,
-                                        threads_running)
-            thread = Thread(target=threaded_function)
-            thread.start()
-            threads_running[0] += 1
-#            tutorialcompiler.compile(file, file[:-3] + '.html', header)
-
+    subprocess.call(['jupyter-nbconvert', '--to', 'html_toc',
+                     'tutorial.ipynb'])
     os.chdir(cwd)
 
-    while threads_running[0] > 0:
-        sleep(0.5)
+    # Open tutorial
+    webbrowser.open_new_tab(
+        'file://' + ktk.config['RootFolder'] + '/tutorials/tutorial.html')
 
-    ktk.tutorials()
+
+def generate_doc():
+    """Generate ktk's reference using pdoc."""
+    cwd = os.getcwd()
+
+    # Create a mirror of ktk
+    shutil.rmtree(ktk.config['RootFolder'] + '/tmp', ignore_errors=True)
+    shutil.rmtree(ktk.config['RootFolder'] + '/doc', ignore_errors=True)
+    os.mkdir(ktk.config['RootFolder'] + '/tmp')
+    shutil.copytree(ktk.config['RootFolder'] + '/ktk',
+                    ktk.config['RootFolder'] + '/tmp/ktk')
+
+    # Append the class definitions to ktk/__init__.py
+    # so that pdoc includes the classes into ktk's toplevel
+    with open(ktk.config['RootFolder'] + '/ktk/_timeseries.py',
+              'r') as in_file:
+        with open(ktk.config['RootFolder'] + '/tmp/ktk/__init__.py',
+                  'a') as out_file:
+            for line in in_file:
+                out_file.write(line)
+
+    # Run pdoc
+    os.chdir(ktk.config['RootFolder'] + '/tmp')
+    subprocess.call(['pdoc', '--html', '--config', 'show_source_code=False',
+                     '--output-dir', ktk.config['RootFolder'] + '/doc', 'ktk'])
+
+    # Cleanup
+    shutil.rmtree(ktk.config['RootFolder'] + '/tmp', ignore_errors=True)
+    os.chdir(cwd)
+
+    # Open doc
+    webbrowser.open_new_tab(
+        'file://' + ktk.config['RootFolder'] + '/doc/ktk/index.html')
+
+
+def update_readme():
+    """Copy ktk's docstring into readme.md."""
+    os.chdir(ktk.config['RootFolder'])
+    with open('README.md', 'w') as fid:
+        fid.write(ktk.__doc__)
+
+
+def compile_for_pypi():
+    """Compile for PyPi."""
+    os.chdir(ktk.config['RootFolder'])
+    subprocess.call(['rm', '-rR', '/dist'])
+    subprocess.call(['rm', '-rR', '/build'])
+    subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
+
+
+def upload_to_pypi():
+    """Upload to PyPi."""
+    os.chdir(ktk.config['RootFolder'])
+    subprocess.call([
+            'osascript',
+            '-e',
+            'tell application "Terminal" to do script '
+            f'"conda activate ktk; twine upload dist/*"'])
 
 
 def release():
+    """Run all functions for release, without uploading to PyPI."""
     run_tests()
-    generate_tutorials()
+    generate_tutorial()
+    generate_doc()
