@@ -28,9 +28,7 @@ This module contains fonctions related to development, tests and release.
 """
 
 import ktk
-import pytest
 import os
-import ktk.dev.tutorialcompiler as tutorialcompiler
 import subprocess
 import shutil
 import webbrowser
@@ -39,9 +37,15 @@ from functools import partial
 from threading import Thread
 from time import sleep
 
+
 def run_tests(module=None):
     """Run all unit tests."""
-    pytest.main([ktk.config['RootFolder'] + '/tests'])
+    # Run pytest in another process to ensure that the workspace is and stays
+    # clean, and all Matplotlib windows are closed correctly after the tests.
+    cwd = os.getcwd()
+    os.chdir(ktk.config['RootFolder'] + '/tests')
+    subprocess.call(['pytest'])
+    os.chdir(cwd)
 
 
 def generate_tutorials():
@@ -109,7 +113,7 @@ def compile_for_pypi():
 def upload_to_pypi():
     """Upload to PyPi."""
     root_folder = ktk.config['RootFolder']
-    
+
     subprocess.call([
             'osascript',
             '-e',

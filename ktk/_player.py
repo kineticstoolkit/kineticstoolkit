@@ -12,9 +12,6 @@ import time
 import copy
 import ktk
 
-# To intercept interactive navigation key presses:
-from matplotlib.backend_bases import NavigationToolbar2
-
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
 
@@ -716,7 +713,6 @@ class Player:
             self.state['ShiftPressed'] = True
 
         self._update_plots()
-
 
     def _on_release(self, event):
         if event.key == 'shift':
