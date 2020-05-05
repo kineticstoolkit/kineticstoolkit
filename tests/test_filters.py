@@ -3,7 +3,7 @@
 
 # Copyright Félix Chénier 2020
 """
-Tests for ktk.filters
+Unit tests for ktk.filters.
 """
 import ktk
 import numpy as np
