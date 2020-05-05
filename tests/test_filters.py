@@ -7,6 +7,8 @@ Unit tests for ktk.filters.
 """
 import ktk
 import numpy as np
+import warnings
+
 
 def test_savgol():
     """Test savgol filter."""
@@ -40,9 +42,11 @@ def test_savgol():
     # Test if it still works with nans in data
     tsin.data['data2'][0] = np.nan
 
-    y = ktk.filters.savgol(tsin, 3, 2, 0)
-    doty = ktk.filters.savgol(tsin, 3, 2, 1)
-    ddoty = ktk.filters.savgol(tsin, 3, 2, 2)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        y = ktk.filters.savgol(tsin, 3, 2, 0)
+        doty = ktk.filters.savgol(tsin, 3, 2, 1)
+        ddoty = ktk.filters.savgol(tsin, 3, 2, 2)
 
     y.data['data2'][0] = np.nan
     y.data['data2'][-1] = np.nan
@@ -85,7 +89,11 @@ def test_smooth():
 
     # Test if it works with nan
     ts.data['data'][9] = np.nan
-    y = ktk.filters.smooth(ts, 5)
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        y = ktk.filters.smooth(ts, 5)
+
     # Test that if filters well
     assert np.abs(np.mean(ts.data['data'][4:8] - y.data['data'][6] < tol))
     # Test if it filters at all
