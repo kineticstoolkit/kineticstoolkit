@@ -74,12 +74,18 @@ def generate_doc():
 
     # Append the class definitions to ktk/__init__.py
     # so that pdoc includes the classes into ktk's toplevel
-    with open(ktk.config['RootFolder'] + '/ktk/_timeseries.py',
-              'r') as in_file:
-        with open(ktk.config['RootFolder'] + '/tmp/ktk/__init__.py',
-                  'a') as out_file:
+    with open(ktk.config['RootFolder'] + '/tmp/ktk/__init__.py',
+              'a') as out_file:
+        with open(ktk.config['RootFolder'] + '/ktk/_timeseries.py',
+                  'r') as in_file:
             for line in in_file:
                 out_file.write(line)
+
+        with open(ktk.config['RootFolder'] + '/ktk/_player.py',
+                  'r') as in_file:
+            for line in in_file:
+                out_file.write(line)
+
 
     # Run pdoc
     os.chdir(ktk.config['RootFolder'] + '/tmp')
