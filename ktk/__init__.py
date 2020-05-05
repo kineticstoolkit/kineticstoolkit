@@ -30,11 +30,11 @@ exclusively in Python, by Professor Félix Chénier at Université du Québec
 Public version
 --------------
 
-The public version API is mostly stable (although currently almost empty). I
-do not expect to remove or rename much stuff. However please keep in mind that
-this is experimental software. If you are using ktk or are planning to be, you
-are warmly invited to contact me, first to say Hello :-), and so that I can
-warn you before doing major, possibly breaking changes.
+The public open-source version API is mostly stable (although currently almost
+empty). I do not expect to remove or rename much stuff. However please keep
+in mind that this is experimental software. If you are using ktk or are
+planning to be, you are warmly invited to contact me, first to say Hello :-),
+and so that I can warn you before doing major, possibly breaking changes.
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_dist/tutorials)
 
