@@ -192,6 +192,32 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 <h2 id="returns">Returns</h2>
 <p>A deep copy of the original TimeSeries.</p></section>
 </dd>
+<dt id="ktk.TimeSeries.fill_missing_samples"><code class="name flex">
+<span>def <span class="ident">fill_missing_samples</span></span>(<span>self, max_missing_samples, method='linear')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Fill missing samples with the given method.</p>
+<p>The sample rate must be constant.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>max_missing_samples</code></strong> :&ensp;<code>int</code></dt>
+<dd>Maximal number of consecutive missing samples to fill. Set to
+zero to fill all missing samples.</dd>
+<dt><strong><code>method</code></strong> :&ensp;<code>str</code> (optional)</dt>
+<dd>The interpolation method. This input may take any value
+supported by scipy.interpolate.interp1d, such as:
+- 'linear'
+- 'nearest'
+- 'zero'
+- 'slinear'
+- 'quadratic'
+- 'cubic'
+- 'previous'
+- 'next'</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
 <dt id="ktk.TimeSeries.from_dataframe"><code class="name flex">
 <span>def <span class="ident">from_dataframe</span></span>(<span>self, dataframe)</span>
 </code></dt>
@@ -510,6 +536,24 @@ starting at 0. The default is 0.</dd>
 <dd>A new TimeSeries following the specification.</dd>
 </dl></section>
 </dd>
+<dt id="ktk.TimeSeries.isnan"><code class="name flex">
+<span>def <span class="ident">isnan</span></span>(<span>self, data_key)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Return a boolean array of missing samples.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data_key</code></strong> :&ensp;<code>str</code></dt>
+<dd>Key value of the data signal to analyze.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>nans</code></strong> :&ensp;<code>array</code></dt>
+<dd>A boolean array of the same size as the time vector, where True
+values represent missing samples (samples that contain at least
+one nan value).</dd>
+</dl></section>
+</dd>
 <dt id="ktk.TimeSeries.merge"><code class="name flex">
 <span>def <span class="ident">merge</span></span>(<span>self, ts, data_keys=None, resample=False, overwrite=True)</span>
 </code></dt>
@@ -534,10 +578,7 @@ overwrites the destination. Otherwise (overwrite is False), the
 duplicated data is ignored. Default is True.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><code>None</code></dt>
-<dd>&nbsp;</dd>
-</dl></section>
+<p>None.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.plot"><code class="name flex">
 <span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, plot_event_names=False, max_legend_items=5, **kwargs)</span>
@@ -629,6 +670,35 @@ extrapolate.</dd>
 <h2 id="returns">Returns</h2>
 <p>None.</p></section>
 </dd>
+<dt id="ktk.TimeSeries.sync_on_event"><code class="name flex">
+<span>def <span class="ident">sync_on_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Set an event to the new time zero of the TimeSeries.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the event to sync on.</dd>
+<dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>Occurrence of the event to sync on. The default is 0, which
+corresponds to the first occurrence of the event.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
+<dt id="ktk.TimeSeries.sync_on_time"><code class="name flex">
+<span>def <span class="ident">sync_on_time</span></span>(<span>self, time)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Set the specified time to the new zero in both time and events.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
+<dd>Time to be subtracted from time and events.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
 <dt id="ktk.TimeSeries.to_dataframe"><code class="name flex">
 <span>def <span class="ident">to_dataframe</span></span>(<span>self)</span>
 </code></dt>
@@ -645,6 +715,80 @@ converted to multiple columns with the additional dimensions in
 brackets. The TimeSeries's events and metadata such as time_info
 and data_info are not included in the resulting DataFrame.</dd>
 </dl></section>
+</dd>
+<dt id="ktk.TimeSeries.ui_add_event"><code class="name flex">
+<span>def <span class="ident">ui_add_event</span></span>(<span>self, name='event', plot=[], multiple_events=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Add one or many events interactively to the TimeSeries.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>name</code></strong> :&ensp;<code>str</code> (optional)</dt>
+<dd>The name of the event.</dd>
+<dt><strong><code>plot</code></strong> :&ensp;<code>str</code>, <code>list</code> of <code>str</code> or <code>tuple</code> of <code>str</code> (optional)</dt>
+<dd>A signal name of list of signal name to be plotted, similar to
+the argument of ktk.TimeSeries.plot().</dd>
+<dt><strong><code>multiple_events</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>
+<ul>
+<li>True to add multiple events with the same name.</li>
+<li>False to add only one event (default).</li>
+</ul>
+</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>status</code></strong> :&ensp;<code>boolean</code></dt>
+<dd>
+<ul>
+<li>True if the event was added;</li>
+<li>False if the operation was cancelled by the user.</li>
+</ul>
+</dd>
+</dl></section>
+</dd>
+<dt id="ktk.TimeSeries.ui_get_ts_between_clicks"><code class="name flex">
+<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get a subset of the TimeSeries between two mouse clicks.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data_keys</code></strong> :&ensp;<code>string</code>, <code>list</code> or <code>tuple</code> (optional)</dt>
+<dd>String or list of strings corresponding to the signals to plot.
+See TimeSeries.plot() for more information.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the user interaction.</dd>
+</dl></section>
+</dd>
+<dt id="ktk.TimeSeries.ui_sync"><code class="name flex">
+<span>def <span class="ident">ui_sync</span></span>(<span>self, data_keys=None, ts2=None, data_keys2=None)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Synchronize a TimeSeries by setting its zero-time interactively.</p>
+<p>If a second TimeSeries is given, both TimeSeries are synchronized and
+the sync process is done in three steps:
+1. Click on the second TimeSeries's zero-time.
+2. Click on the second TimeSeries on a recognizable event that
+is common with the first TimeSeries.
+3. Click on this same event on the first TimeSeries.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
+<dd>The data keys to plot. The default is None, which means that all
+data is plotted.</dd>
+<dt><strong><code>ts2</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
+<dd>A second TimeSeries that contains both a recognizable zero-time
+event and a common event with the first TimeSeries.</dd>
+<dt><strong><code>data_keys2</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
+<dd>The data keys from the second TimeSeries to plot. The default is
+None, which means that all data is plotted.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
 </dd>
 </dl>
 </dd>
@@ -728,6 +872,7 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.add_data_info" href="#ktk.TimeSeries.add_data_info">add_data_info</a></code></li>
 <li><code><a title="ktk.TimeSeries.add_event" href="#ktk.TimeSeries.add_event">add_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.copy" href="#ktk.TimeSeries.copy">copy</a></code></li>
+<li><code><a title="ktk.TimeSeries.fill_missing_samples" href="#ktk.TimeSeries.fill_missing_samples">fill_missing_samples</a></code></li>
 <li><code><a title="ktk.TimeSeries.from_dataframe" href="#ktk.TimeSeries.from_dataframe">from_dataframe</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_event_time" href="#ktk.TimeSeries.get_event_time">get_event_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_index_after_time" href="#ktk.TimeSeries.get_index_after_time">get_index_after_time</a></code></li>
@@ -742,11 +887,17 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.get_ts_before_time" href="#ktk.TimeSeries.get_ts_before_time">get_ts_before_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_events" href="#ktk.TimeSeries.get_ts_between_events">get_ts_between_events</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_times" href="#ktk.TimeSeries.get_ts_between_times">get_ts_between_times</a></code></li>
+<li><code><a title="ktk.TimeSeries.isnan" href="#ktk.TimeSeries.isnan">isnan</a></code></li>
 <li><code><a title="ktk.TimeSeries.merge" href="#ktk.TimeSeries.merge">merge</a></code></li>
 <li><code><a title="ktk.TimeSeries.plot" href="#ktk.TimeSeries.plot">plot</a></code></li>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
 <li><code><a title="ktk.TimeSeries.resample" href="#ktk.TimeSeries.resample">resample</a></code></li>
+<li><code><a title="ktk.TimeSeries.sync_on_event" href="#ktk.TimeSeries.sync_on_event">sync_on_event</a></code></li>
+<li><code><a title="ktk.TimeSeries.sync_on_time" href="#ktk.TimeSeries.sync_on_time">sync_on_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
+<li><code><a title="ktk.TimeSeries.ui_add_event" href="#ktk.TimeSeries.ui_add_event">ui_add_event</a></code></li>
+<li><code><a title="ktk.TimeSeries.ui_get_ts_between_clicks" href="#ktk.TimeSeries.ui_get_ts_between_clicks">ui_get_ts_between_clicks</a></code></li>
+<li><code><a title="ktk.TimeSeries.ui_sync" href="#ktk.TimeSeries.ui_sync">ui_sync</a></code></li>
 </ul>
 </li>
 <li>

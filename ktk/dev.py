@@ -44,7 +44,7 @@ def run_tests(module=None):
     # clean, and all Matplotlib windows are closed correctly after the tests.
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tests')
-    subprocess.call(['pytest'])
+    subprocess.call(['pytest', '--ignore=interactive'])
     os.chdir(cwd)
 
 

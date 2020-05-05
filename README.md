@@ -39,3 +39,12 @@ contact me at chenier.felix@uqam.ca
 [API documentation](https://felixchenier.uqam.ca/ktk_lab/api)
 
 
+Credits
+-------
+
+Some external code has been included into ktk's source code. Here are the
+credits for these nice people.
+
+- Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) - 
+Python implementation of m-dimensional Iterative Closest Point method
+
