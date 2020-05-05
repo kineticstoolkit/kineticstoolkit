@@ -30,7 +30,6 @@ This module contains fonctions related to development, tests and release.
 import ktk
 import pytest
 import os
-import ktk.dev.tutorialcompiler as tutorialcompiler
 import subprocess
 import shutil
 import webbrowser
