@@ -440,104 +440,6 @@ class TimeSeries():
         self.time = dataframe.index.to_numpy()
         return self
 
-    def plot(self, data_keys=None, plot_event_names=False,
-             max_legend_items=5, **kwargs):
-        """
-        Plot the TimeSeries using matplotlib.
-
-        Parameters
-        ----------
-        data_keys : string, list or tuple (optional)
-            String or list of strings corresponding to the signals to plot.
-            For example, if a TimeSeries's data attribute as keys 'Forces',
-            'Moments' and 'Angle', then:
-            >>> the_timeseries.plot(['Forces', 'Moments'])
-            plots only the forces and moments, without plotting the angle.
-            By default, all elements of the TimeSeries are plotted.
-        plot_event_names : bool (optional)
-            True to plot the event names on top of the event lines.
-            Default = False.
-        max_legend_items : int (optional)
-            Maximal number of legend items, including the 'events' entry. If
-            there are more items in the legend, then the legend is not shown
-            for space and performance considerations.
-
-        Additional keyboard arguments are passed to the pyplot's plot function.
-
-        Returns
-        -------
-        None.
-
-        """
-        if data_keys is None or len(data_keys) == 0:
-            # Plot all
-            the_keys = self.data.keys()
-        else:
-            # Plot only what is asked for.
-            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
-                the_keys = data_keys
-            elif isinstance(data_keys, str):
-                the_keys = [data_keys]
-            else:
-                raise(TypeError(
-                        'data_keys must be a string or list of strings'))
-
-        n_plots = len(the_keys)
-
-        n_events = len(self.events)
-        if n_events > 0:
-            event_times = np.array(self.events)[:, 0]
-        else:
-            event_times = np.array([])
-
-        # Now plot
-        ax = plt.gca()
-        for the_key in the_keys:
-
-            # Set label
-            label = the_key
-            if (the_key in self.data_info and
-                    'Unit' in self.data_info[the_key]):
-                label += ' (' + self.data_info[the_key]['Unit'] + ')'
-
-            # Plot data
-            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
-
-        # Plot the events
-        if len(self.events) > 0:
-            a = ax.axis()
-            min_y = a[2]
-            max_y = a[3]
-            event_line_x = np.zeros(3 * n_events)
-            event_line_y = np.zeros(3 * n_events)
-
-            for i_event in range(0, n_events):
-                event_line_x[3 * i_event] = event_times[i_event]
-                event_line_x[3 * i_event + 1] = event_times[i_event]
-                event_line_x[3 * i_event + 2] = np.nan
-
-                event_line_y[3 * i_event] = min_y
-                event_line_y[3 * i_event + 1] = max_y
-                event_line_y[3 * i_event + 2] = np.nan
-
-            ax.plot(event_line_x, event_line_y, label='events')
-
-            if plot_event_names:
-                for event in self.events:
-                    ax.text(event.time, max_y, event.name,
-                            rotation='vertical',
-                            horizontalalignment='center')
-
-        # Add labels
-        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
-
-        # Add legend if required
-        if len(the_keys) > 1 or len(self.events) > 0:
-            if len(the_keys) <= max_legend_items:
-                ax.legend()
-        else:  # Only one data, plot it on the y axis.
-            ax.set_ylabel(label)
-
     def add_data_info(self, signal_name, info_name, value):
         """
         Add metadata to TimeSeries' data.
@@ -1116,6 +1018,82 @@ class TimeSeries():
         time2 = self.get_event_time(event_name2, event_occurrence2)
         return self.get_ts_between_times(time1, time2)
 
+    def isnan(self, data_key):
+        """
+        Return a boolean array of missing samples.
+
+        Parameters
+        ----------
+        data_key : str
+            Key value of the data signal to analyze.
+
+        Returns
+        -------
+        nans : array
+            A boolean array of the same size as the time vector, where True
+            values represent missing samples (samples that contain at least
+            one nan value).
+        """
+        values = self.data[data_key].copy()
+        # Reduce the dimension of values while keeping the time dimension.
+        while len(np.shape(values)) > 1:
+            values = np.sum(values, 1)
+        return np.isnan(values)
+
+    def fill_missing_samples(self, max_missing_samples, method='linear'):
+        """
+        Fill missing samples with the given method.
+
+        The sample rate must be constant.
+
+        Parameters
+        ----------
+        max_missing_samples : int
+            Maximal number of consecutive missing samples to fill. Set to
+            zero to fill all missing samples.
+        method : str (optional)
+            The interpolation method. This input may take any value
+            supported by scipy.interpolate.interp1d, such as:
+                - 'linear'
+                - 'nearest'
+                - 'zero'
+                - 'slinear'
+                - 'quadratic'
+                - 'cubic'
+                - 'previous'
+                - 'next'
+
+        Returns
+        -------
+        None.
+
+        """
+        max_missing_samples = int(max_missing_samples)
+
+        for data in self.data:
+
+            # Fill missing samples
+            is_visible = ~self.isnan(data)
+            ts = self.get_subset(data)
+            ts.data[data] = ts.data[data][is_visible]
+            ts.time = ts.time[is_visible]
+            ts.resample(self.time, method, fill_value='extrapolate')
+
+            # Put back missing samples in holes longer than max_missing_samples
+            if max_missing_samples > 0:
+                hole_start_index = 0
+                to_keep = np.ones(self.time.shape)
+                for current_index in range(ts.time.shape[0]):
+                    if is_visible[current_index]:
+                        hole_start_index = current_index
+                    elif (current_index - hole_start_index >
+                          max_missing_samples):
+                        to_keep[hole_start_index + 1:current_index + 1] = 0
+
+                ts.data[data][to_keep == 0] = np.nan
+
+            self.data[data] = ts.data[data]
+
     def get_subset(self, data_keys):
         """
         Return a subset of the TimeSeries.
@@ -1208,7 +1186,6 @@ class TimeSeries():
 
         self.time = new_time
 
-
     def merge(self, ts, data_keys=None, resample=False, overwrite=True):
         """
         Merge another TimeSeries into the current TimeSeries.
@@ -1234,7 +1211,7 @@ class TimeSeries():
 
         Returns
         -------
-        None
+        None.
         """
         ts = ts.copy()
         if data_keys is None or len(data_keys) == 0:
