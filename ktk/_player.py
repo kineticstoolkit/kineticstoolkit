@@ -598,11 +598,16 @@ class Player:
                 except KeyError:
                     self.markers.add_data_info(marker, 'Color', 'w')
 
+    def close(self):
+        """Close the Player and its associated window."""
+        plt.close(self.objects['Figure'])
+        self.objects = None
+
     # ------------------------------------
     # Callbacks
     def _on_close(self, _):
         # Release all references to objects
-        self.objects = None
+        self.close()
 
     def _on_timer(self, _):
         if self.running is True:
