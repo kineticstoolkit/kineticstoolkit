@@ -93,27 +93,28 @@ def generate_doc():
 
 def update_readme():
     """Copy ktk's docstring into readme.md."""
-    os.chdir(ktk.config['RootFolder'])
-    with open('README.md', 'w') as fid:
+    with open(ktk.config['RootFolder'] + '/README.md', 'w') as fid:
         fid.write(ktk.__doc__)
 
 
 def compile_for_pypi():
     """Compile for PyPi."""
+    update_readme()
+    shutil.rmtree(ktk.config['RootFolder'] + '/dist', ignore_errors=True)
+    shutil.rmtree(ktk.config['RootFolder'] + '/build', ignore_errors=True)
     os.chdir(ktk.config['RootFolder'])
-    subprocess.call(['rm', '-rR', '/dist'])
-    subprocess.call(['rm', '-rR', '/build'])
     subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
 
 
 def upload_to_pypi():
     """Upload to PyPi."""
-    os.chdir(ktk.config['RootFolder'])
+    root_folder = ktk.config['RootFolder']
+    
     subprocess.call([
             'osascript',
             '-e',
             'tell application "Terminal" to do script '
-            f'"conda activate ktk; twine upload dist/*"'])
+            f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'])
 
 
 def release():
