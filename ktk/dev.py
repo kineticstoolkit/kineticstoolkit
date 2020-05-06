@@ -32,10 +32,7 @@ import os
 import subprocess
 import shutil
 import webbrowser
-
-from functools import partial
-from threading import Thread
-from time import sleep
+import doctest
 
 
 def run_unit_tests():
@@ -51,13 +48,14 @@ def run_unit_tests():
 def run_doc_tests():
     """Run all doc tests."""
     print('Running doc tests...')
-    cwd = os.getcwd()
-    os.chdir(ktk.config['RootFolder'] + '/ktk')
     for file in os.listdir():
         if file.endswith('.py'):
             print(file)
-            subprocess.call(['python', '-m', 'doctest', file])
-    os.chdir(cwd)
+            try:
+                module = eval('ktk.' + file.split('.py')[0])
+                doctest.testmod(module)
+            except Exception:
+                pass
 
 
 def generate_tutorials():
