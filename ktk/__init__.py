@@ -56,15 +56,6 @@ contact me at chenier.felix@uqam.ca
 [API documentation](https://felixchenier.uqam.ca/ktk_lab/api)
 
 
-Credits
--------
-
-Some external code has been included into ktk's source code. Here are the
-credits for these nice people.
-
-- Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) - 
-Python implementation of m-dimensional Iterative Closest Point method
-
 """
 
 __author__ = "Félix Chénier"
@@ -77,7 +68,7 @@ import platform as _platform
 import matplotlib as _mpl
 import numpy as _np
 
-__pdoc__ = {'dev': False, 'cmdgui': False}
+__pdoc__ = {'dev': False}
 
 # ---------------------------
 # Set ktk configuration
@@ -96,19 +87,7 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 # ---------------------------
 
 from ktk._timeseries import TimeSeries, TimeSeriesEvent
-from ktk._tools import explore, terminal, update, tutorials
-from ktk._dbinterface import DBInterface
-from ktk._player import Player
-from ktk._loadsave import load, loadmat, save
-from ktk import filters
-from ktk import gui
-from ktk import mplhelper
-from ktk import geometry
-from ktk import kinematics
-from ktk import pushrimkinetics
-from ktk import inversedynamics
-from ktk import cycles
-from ktk import _repr
+from ktk._tools import explore, terminal
 
 try:
     from ktk import dev
