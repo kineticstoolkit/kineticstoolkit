@@ -396,23 +396,6 @@ def dict_of_arrays_to_dataframe(dict_of_arrays):
     - 3-dimensional (or more) arrays are also converted to DataFrames, but
       indices in brackets are added to the column names.
 
-    Example
-    -------
-        >>> datadict = {'data': np.random.rand(10, 2, 2)}
-        >>> dataframe = ktk.loadsave.dict_of_arrays_to_dataframe(datadict)
-
-        >>> print(dataframe)
-            data[0,0]   data[0,1]   data[1,0]   data[1,1]
-        0   0.736891    0.902195    0.905907    0.065458
-        1   0.875474    0.414270    0.696410    0.872808
-        2   0.697806    0.542093    0.093780    0.394655
-        3   0.132531    0.073543    0.036600    0.697872
-        4   0.713446    0.672632    0.599467    0.211884
-        5   0.860927    0.769096    0.278852    0.317487
-        6   0.998223    0.831627    0.024960    0.960739
-        7   0.573798    0.191601    0.797447    0.728639
-        8   0.774073    0.942711    0.868428    0.667369
-        9   0.530900    0.737578    0.224186    0.895926
     """
     # Init
     df_out = pd.DataFrame()
@@ -677,3 +660,5 @@ def _todict(variable):
         elem = variable.__dict__[strg]
         dict[strg] = elem
     return dict
+
+

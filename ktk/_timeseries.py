@@ -1190,14 +1190,14 @@ class TimeSeries():
 
             self.data[data] = ts.data[data]
 
-    def sync_on_time(self, time):
+    def shift(self, time):
         """
-        Set the specified time to the new zero in both time and events.
+        Shift time and events.time.
 
         Parameters
         ----------
-        time : float
-            Time to be subtracted from time and events.
+        time_shift : float
+            Time to be added to time and events.time.
 
         Returns
         -------
@@ -1205,12 +1205,12 @@ class TimeSeries():
 
         """
         for event in self.events:
-            event.time = event.time - time
+            event.time = event.time + time
         self.time = self.time - time
 
-    def sync_on_event(self, event_name, event_occurrence=0):
+    def sync_event(self, event_name, event_occurrence=0):
         """
-        Set an event to the new time zero of the TimeSeries.
+        Shift time and events.time so that event_name is the new time zero.
 
         Parameters
         ----------
@@ -1225,18 +1225,19 @@ class TimeSeries():
         None.
 
         """
-        self.sync_on_time(self.get_event_time(event_name, event_occurrence))
+        self.shift(-self.get_event_time(event_name, event_occurrence))
 
     def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
         """
-        Synchronize a TimeSeries by setting its zero-time interactively.
+        Synchronize one or two TimeSeries by shifting their time.
 
         If a second TimeSeries is given, both TimeSeries are synchronized and
         the sync process is done in three steps:
-            1. Click on the second TimeSeries's zero-time.
-            2. Click on the second TimeSeries on a recognizable event that
-               is common with the first TimeSeries.
-            3. Click on this same event on the first TimeSeries.
+
+        1. Click on the second TimeSeries's zero-time.
+        2. Click on the second TimeSeries on a recognizable event that
+           is common with the first TimeSeries.
+        3. Click on this same event on the first TimeSeries.
 
         Parameters
         ----------
@@ -1271,7 +1272,7 @@ class TimeSeries():
             click = plt.ginput(1)
             ktk.mplhelper.message(None)
             plt.close(fig)
-            self.sync_on_time(click[0][0])
+            self.shift(-click[0][0])
 
         else:  # Sync two TimeSeries together
 
@@ -1313,8 +1314,8 @@ class TimeSeries():
                     click_2 = plt.ginput(1)
                     ktk.mplhelper.message('')
 
-                    self.sync_on_time(click_1[0][0])
-                    ts2.sync_on_time(click_2[0][0])
+                    self.shift(-click_1[0][0])
+                    ts2.shift(-click_2[0][0])
 
                 elif choice == 1:  # Zero using TimeSeries 1
                     ktk.mplhelper.message(
@@ -1322,8 +1323,8 @@ class TimeSeries():
                     click_1 = plt.ginput(1)
                     ktk.mplhelper.message('')
 
-                    self.sync_on_time(click_1[0][0])
-                    ts2.sync_on_time(click_1[0][0])
+                    self.shift(-click_1[0][0])
+                    ts2.shift(-click_1[0][0])
 
                 elif choice == 2:  # Zero using TimeSeries 2
                     ktk.mplhelper.message(
@@ -1331,8 +1332,8 @@ class TimeSeries():
                     click_2 = plt.ginput(1)
                     ktk.mplhelper.message('')
 
-                    self.sync_on_time(click_2[0][0])
-                    ts2.sync_on_time(click_2[0][0])
+                    self.shift(-click_2[0][0])
+                    ts2.shift(-click_2[0][0])
 
                 elif choice == 3 or choice < -1:  # OK or closed figure, quit.
                     plt.close(fig)
@@ -1508,3 +1509,8 @@ class TimeSeries():
         for event in ts.events:
             self.events.append(event)
         self.sort_events()
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

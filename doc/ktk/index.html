@@ -803,11 +803,24 @@ extrapolate.</dd>
 <h2 id="returns">Returns</h2>
 <p>None.</p></section>
 </dd>
-<dt id="ktk.TimeSeries.sync_on_event"><code class="name flex">
-<span>def <span class="ident">sync_on_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
+<dt id="ktk.TimeSeries.shift"><code class="name flex">
+<span>def <span class="ident">shift</span></span>(<span>self, time)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Set an event to the new time zero of the TimeSeries.</p>
+<section class="desc"><p>Shift time and events.time.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>time_shift</code></strong> :&ensp;<code>float</code></dt>
+<dd>Time to be added to time and events.time.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
+<dt id="ktk.TimeSeries.sync_event"><code class="name flex">
+<span>def <span class="ident">sync_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Shift time and events.time so that event_name is the new time zero.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
@@ -815,19 +828,6 @@ extrapolate.</dd>
 <dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
 <dd>Occurrence of the event to sync on. The default is 0, which
 corresponds to the first occurrence of the event.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
-</dd>
-<dt id="ktk.TimeSeries.sync_on_time"><code class="name flex">
-<span>def <span class="ident">sync_on_time</span></span>(<span>self, time)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Set the specified time to the new zero in both time and events.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
-<dd>Time to be subtracted from time and events.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>None.</p></section>
@@ -901,13 +901,15 @@ See TimeSeries.plot() for more information.</dd>
 <span>def <span class="ident">ui_sync</span></span>(<span>self, data_keys=None, ts2=None, data_keys2=None)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Synchronize a TimeSeries by setting its zero-time interactively.</p>
+<section class="desc"><p>Synchronize one or two TimeSeries by shifting their time.</p>
 <p>If a second TimeSeries is given, both TimeSeries are synchronized and
-the sync process is done in three steps:
-1. Click on the second TimeSeries's zero-time.
-2. Click on the second TimeSeries on a recognizable event that
-is common with the first TimeSeries.
-3. Click on this same event on the first TimeSeries.</p>
+the sync process is done in three steps:</p>
+<ol>
+<li>Click on the second TimeSeries's zero-time.</li>
+<li>Click on the second TimeSeries on a recognizable event that
+is common with the first TimeSeries.</li>
+<li>Click on this same event on the first TimeSeries.</li>
+</ol>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
@@ -1038,8 +1040,8 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.plot" href="#ktk.TimeSeries.plot">plot</a></code></li>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
 <li><code><a title="ktk.TimeSeries.resample" href="#ktk.TimeSeries.resample">resample</a></code></li>
-<li><code><a title="ktk.TimeSeries.sync_on_event" href="#ktk.TimeSeries.sync_on_event">sync_on_event</a></code></li>
-<li><code><a title="ktk.TimeSeries.sync_on_time" href="#ktk.TimeSeries.sync_on_time">sync_on_time</a></code></li>
+<li><code><a title="ktk.TimeSeries.shift" href="#ktk.TimeSeries.shift">shift</a></code></li>
+<li><code><a title="ktk.TimeSeries.sync_event" href="#ktk.TimeSeries.sync_event">sync_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
 <li><code><a title="ktk.TimeSeries.ui_add_event" href="#ktk.TimeSeries.ui_add_event">ui_add_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.ui_get_ts_between_clicks" href="#ktk.TimeSeries.ui_get_ts_between_clicks">ui_get_ts_between_clicks</a></code></li>
