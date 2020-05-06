@@ -76,3 +76,16 @@ try:
     from ktk import dev
 except Exception:
     pass
+
+
+def _workspace():
+    """Set ktk in custom workspace mode."""
+    # Modify the repr function for dicts in IPython
+    try:
+        import IPython as _IPython
+        _ip = _IPython.get_ipython()
+        formatter = _ip.display_formatter.formatters['text/plain']
+        formatter.for_type(dict, lambda n, p, cycle:
+                           _repr._ktk_format_dict(n, p, cycle))
+    except Exception:
+        pass
