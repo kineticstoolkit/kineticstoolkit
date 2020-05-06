@@ -44,11 +44,6 @@ interested in collaborating either in research or software development, please
 contact me at chenier.felix@uqam.ca</p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/api">API documentation</a></p>
-<h2 id="credits">Credits</h2>
-<p>Some external code has been included into ktk's source code. Here are the
-credits for these nice people.</p>
-<p>Clay Flannigan : <a href="https://github.com/ClayFlannigan/icp">icp</a> -
-Python implementation of m-dimensional Iterative Closest Point method</p>
 <h2 id="customization">Customization</h2>
 <p>By default, importing ktk changes some defaults in IPython and matplotlib to
 get a more 'research' and less 'programming' experience. Please note that this
@@ -93,10 +88,6 @@ the following modifications are made to default matplotlib figures:</p>
 reducing the font size on screen.</li>
 <li>The standard figure size is changed to [10, 5], which is a little bigger
 than the default and is thus more practical for interactive navigation.</li>
-<li>The default color order is changed to (rgbcmyk). The first colors, red,
-green and blue, are consistent the colours assigned to x, y and z in most
-3D visualization softwares, and the next colours are consistent with
-Matlab's legacy color order.</li>
 </ul>
 <h3 id="changing-defaults">Changing defaults</h3>
 <p>In some case we would not want a module to change the behaviour of the
@@ -108,45 +99,6 @@ opened using:</p>
 </code></pre>
 </section>
 <section>
-<h2 class="section-title" id="header-submodules">Sub-modules</h2>
-<dl>
-<dt><code class="name"><a title="ktk.cycles" href="cycles.html">ktk.cycles</a></code></dt>
-<dd>
-<section class="desc"><p>Identify cycles and time-normalize data …</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.external" href="external/index.html">ktk.external</a></code></dt>
-<dd>
-<section class="desc"><p>External code from other authors …</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.filters" href="filters.html">ktk.filters</a></code></dt>
-<dd>
-<section class="desc"><p>Standard filters for TimeSeries.</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.geometry" href="geometry.html">ktk.geometry</a></code></dt>
-<dd>
-<section class="desc"><p>3d geometry and linear algebra related to biomechanics …</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.gui" href="gui.html">ktk.gui</a></code></dt>
-<dd>
-<section class="desc"><p>Module that provides simple GUI functions.</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.inversedynamics" href="inversedynamics.html">ktk.inversedynamics</a></code></dt>
-<dd>
-<section class="desc"><p>Calculate inverse dynamics.</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.kinematics" href="kinematics.html">ktk.kinematics</a></code></dt>
-<dd>
-<section class="desc"><p>Kinematics analysis.</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.mplhelper" href="mplhelper.html">ktk.mplhelper</a></code></dt>
-<dd>
-<section class="desc"><p>Helper functions for Matplotlib.</p></section>
-</dd>
-<dt><code class="name"><a title="ktk.pushrimkinetics" href="pushrimkinetics.html">ktk.pushrimkinetics</a></code></dt>
-<dd>
-<section class="desc"><p>Processing of kinetic data measured using instrumented wheelchair wheels.</p></section>
-</dd>
-</dl>
 </section>
 <section>
 </section>
@@ -155,76 +107,6 @@ opened using:</p>
 <section>
 <h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="ktk.Player"><code class="flex name class">
-<span>class <span class="ident">Player</span></span>
-<span>(</span><span>markers=None, rigid_bodies=None, segments=None, current_frame=0, marker_radius=0.008, rigid_body_length=0.1, rigid_body_width=3, segment_width=1.5, zoom=1.0, azimuth=0.0, elevation=0.2, translation=(0.0, 0.0), target=(0.0, 0.0, 0.0), track=False, perspective=True)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>A class that allows visualizing markers and rigid bodies in 3D.</p>
-<p>player = ktk.Player(parameters) creates and launches a Player
-instance.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>markers</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
-<dd>Contains the markers to visualize, where each data key is a marker
-position expressed as Nx4 array (N=time). Default is None.
-markers and rigid_bodies cannot be both set to None.</dd>
-<dt><strong><code>rigid_bodies</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
-<dd>Contains the rigid bodies to visualize, where each data key is
-a rigid body pose expressed as a Nx4x4 array (N=time, the other
-dimensions are transformation matrices). Default is None.
-markers and rigid_bodies cannot be both set to None.</dd>
-<dt><strong><code>segments</code></strong> :&ensp;<code>dict</code></dt>
-<dd>Used to draw lines between markers. Each key corresponds to a
-segment, where a segment is another dict with the following keys:
-- Links: list of list of 2 str, where each str is a marker
-name. For example, to link Marker1 to Marker2 and
-Marker1 to Marker3, Links would be:
-[['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
-- Color: character or tuple that represents the color of the
-link. Color must be a valid value for matplotlib's
-plots.</dd>
-<dt><strong><code>current_frame</code></strong> :&ensp;<code>int</code> (optional)</dt>
-<dd>Sets the inital frame number to show. Default is 0.</dd>
-<dt><strong><code>marker_radius</code></strong> :&ensp;<code>float</code> (optional)</dt>
-<dd>Sets the marker radius as defined by matplotlib. Default is 0.008.</dd>
-<dt><strong><code>rigid_body_length</code></strong> :&ensp;<code>float</code> (optional)</dt>
-<dd>Sets the rigid body size in meters. Default is 0.1.</dd>
-<dt><strong><code>zoom</code></strong> :&ensp;<code>float</code> (optional)</dt>
-<dd>Sets the initial camera zoom. Default is 0.2.</dd>
-<dt><strong><code>azimuth</code></strong> :&ensp;<code>float</code> (optional)</dt>
-<dd>Sets the initial camera azimuth in radians. Default is 0.0.</dd>
-<dt><strong><code>elevation</code></strong> :&ensp;<code>float</code> (optional)</dt>
-<dd>Sets the initial camera elevation in radians. Default is 1.0.</dd>
-<dt><strong><code>translation</code></strong> :&ensp;<code>tuple</code> of <code>floats</code> (optional)</dt>
-<dd>Sets the initial camera translation (panning). Default is (0.0, 0.0)</dd>
-<dt><strong><code>target</code></strong> :&ensp;<code>tuple</code> of <code>floats</code> or <code>'centroid'</code> (optional)</dt>
-<dd>Sets the camera target in meters. Default is (0.0, 0.0, 0.0)
-If set to 'centroid', then the target is continuously updated to
-the centroid of the markers, which allows following moving
-objects more easily.</dd>
-<dt><strong><code>track</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>Set to True to track the last selected marker when changing frame,
-or False to keep the scene static. Default is False.</dd>
-<dt><strong><code>perspective</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>Sets if the scene must be drawn using perspective (True) or
-orthogonal (False). Default is True.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><a title="ktk.Player" href="#ktk.Player"><code>Player</code></a></dt>
-<dd>&nbsp;</dd>
-</dl></section>
-<h3>Methods</h3>
-<dl>
-<dt id="ktk.Player.close"><code class="name flex">
-<span>def <span class="ident">close</span></span>(<span>self)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Close the Player and its associated window.</p></section>
-</dd>
-</dl>
-</dd>
 <dt id="ktk.TimeSeries"><code class="flex name class">
 <span>class <span class="ident">TimeSeries</span></span>
 <span>(</span><span>time=array([], dtype=float64), time_info={'Unit': 's'}, data={}, data_info={}, events=[], from_dataframe=None)</span>
@@ -317,32 +199,6 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 <section class="desc"><p>Deep copy of a TimeSeries.</p>
 <h2 id="returns">Returns</h2>
 <p>A deep copy of the original TimeSeries.</p></section>
-</dd>
-<dt id="ktk.TimeSeries.fill_missing_samples"><code class="name flex">
-<span>def <span class="ident">fill_missing_samples</span></span>(<span>self, max_missing_samples, method='linear')</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Fill missing samples with the given method.</p>
-<p>The sample rate must be constant.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>max_missing_samples</code></strong> :&ensp;<code>int</code></dt>
-<dd>Maximal number of consecutive missing samples to fill. Set to
-zero to fill all missing samples.</dd>
-<dt><strong><code>method</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The interpolation method. This input may take any value
-supported by scipy.interpolate.interp1d, such as:
-- 'linear'
-- 'nearest'
-- 'zero'
-- 'slinear'
-- 'quadratic'
-- 'cubic'
-- 'previous'
-- 'next'</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.from_dataframe"><code class="name flex">
 <span>def <span class="ident">from_dataframe</span></span>(<span>self, dataframe)</span>
@@ -895,50 +751,6 @@ array([0.3, 0.4])
 array([0.2, 0.3, 0.4, 0.5])
 </code></pre></section>
 </dd>
-<dt id="ktk.TimeSeries.isnan"><code class="name flex">
-<span>def <span class="ident">isnan</span></span>(<span>self, data_key)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Return a boolean array of missing samples.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_key</code></strong> :&ensp;<code>str</code></dt>
-<dd>Key value of the data signal to analyze.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>nans</code></strong> :&ensp;<code>array</code></dt>
-<dd>A boolean array of the same size as the time vector, where True
-values represent missing samples (samples that contain at least
-one nan value).</dd>
-</dl></section>
-</dd>
-<dt id="ktk.TimeSeries.merge"><code class="name flex">
-<span>def <span class="ident">merge</span></span>(<span>self, ts, data_keys=None, resample=False, overwrite=True)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Merge another TimeSeries into the current TimeSeries.</p>
-<p>This method merges a TimeSeries into the current TimeSeries, copying
-the data, data_info and events.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>The TimeSeries to merge into the current TimeSeries.</dd>
-<dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
-<dd>The data keys to merge from ts. Default is None, which means that
-all the data keys are merged.</dd>
-<dt><strong><code>resample</code></strong> :&ensp;<code>bool</code> (optional</dt>
-<dd>Set to True to resample the source TimeSeries, in case the time
-vectors are not matched. If the time vectors are not matched and
-resample is False, an exception is raised. Default is False.</dd>
-<dt><strong><code>overwrite</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>If duplicates are found and overwrite is True, then the source (ts)
-overwrites the destination. Otherwise (overwrite is False), the
-duplicated data is ignored. Default is True.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
-</dd>
 <dt id="ktk.TimeSeries.plot"><code class="name flex">
 <span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, plot_event_names=False, max_legend_items=5, **kwargs)</span>
 </code></dt>
@@ -1000,34 +812,6 @@ for space and performance considerations.</dd>
 &gt;&gt;&gt; ts.data_info
 {'signal': {'Unit': 'm'}}
 </code></pre></section>
-</dd>
-<dt id="ktk.TimeSeries.resample"><code class="name flex">
-<span>def <span class="ident">resample</span></span>(<span>self, new_time, kind='linear', fill_value=None)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Resample the TimeSeries.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>new_time</code></strong> :&ensp;<code>np.array</code></dt>
-<dd>The new time vector to resample the TimeSeries to.</dd>
-<dt><strong><code>kind</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The interpolation method. This input may take any value
-supported by scipy.interpolate.interp1d, such as:
-- 'linear'
-- 'nearest'
-- 'zero'
-- 'slinear'
-- 'quadratic'
-- 'cubic'
-- 'previous'
-- 'next'</dd>
-<dt><strong><code>fill_value</code></strong> :&ensp;<code>array</code>-<code>like</code> or <code>'extrapolate'</code> (optional)</dt>
-<dd>The fill value to use if new_time vector contains point outside
-the current TimeSeries' time vector. Use 'extrapolate' to
-extrapolate.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.shift"><code class="name flex">
 <span>def <span class="ident">shift</span></span>(<span>self, time)</span>
@@ -1103,85 +887,6 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 [[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
 </code></pre></section>
 </dd>
-<dt id="ktk.TimeSeries.ui_add_event"><code class="name flex">
-<span>def <span class="ident">ui_add_event</span></span>(<span>self, name='event', plot=[], multiple_events=False)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Add one or many events interactively to the TimeSeries.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>name</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The name of the event.</dd>
-<dt><strong><code>plot</code></strong> :&ensp;<code>str</code>, <code>list</code> of <code>str</code> or <code>tuple</code> of <code>str</code> (optional)</dt>
-<dd>A signal name of list of signal name to be plotted, similar to
-the argument of ktk.TimeSeries.plot().</dd>
-<dt><strong><code>multiple_events</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>
-<ul>
-<li>True to add multiple events with the same name.</li>
-<li>False to add only one event (default).</li>
-</ul>
-</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>status</code></strong> :&ensp;<code>boolean</code></dt>
-<dd>
-<ul>
-<li>True if the event was added;</li>
-<li>False if the operation was cancelled by the user.</li>
-</ul>
-</dd>
-</dl></section>
-</dd>
-<dt id="ktk.TimeSeries.ui_get_ts_between_clicks"><code class="name flex">
-<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None, inclusive=False)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Get a subset of the TimeSeries between two mouse clicks.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_keys</code></strong> :&ensp;<code>string</code>, <code>list</code> or <code>tuple</code> (optional)</dt>
-<dd>String or list of strings corresponding to the signals to plot.
-See TimeSeries.plot() for more information.</dd>
-<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>True to include the given time in the comparison. The default is
-False.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>A new TimeSeries following the user interaction.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.TimeSeries.ui_sync"><code class="name flex">
-<span>def <span class="ident">ui_sync</span></span>(<span>self, data_keys=None, ts2=None, data_keys2=None)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Synchronize one or two TimeSeries by shifting their time.</p>
-<p>If a second TimeSeries is given, both TimeSeries are synchronized and
-the sync process is done in three steps:</p>
-<ol>
-<li>Click on the second TimeSeries's zero-time.</li>
-<li>Click on the second TimeSeries on a recognizable event that
-is common with the first TimeSeries.</li>
-<li>Click on this same event on the first TimeSeries.</li>
-</ol>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
-<dd>The data keys to plot. The default is None, which means that all
-data is plotted.</dd>
-<dt><strong><code>ts2</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
-<dd>A second TimeSeries that contains both a recognizable zero-time
-event and a common event with the first TimeSeries.</dd>
-<dt><strong><code>data_keys2</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
-<dd>The data keys from the second TimeSeries to plot. The default is
-None, which means that all data is plotted.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
-</dd>
 </dl>
 </dd>
 <dt id="ktk.TimeSeriesEvent"><code class="flex name class">
@@ -1237,7 +942,6 @@ methods to deal with events.</p>
 <li><a href="#kinetics-toolkit">Kinetics Toolkit</a><ul>
 <li><a href="#public-version">Public version</a></li>
 <li><a href="#private-unstable-version">Private unstable version</a></li>
-<li><a href="#credits">Credits</a></li>
 <li><a href="#customization">Customization</a><ul>
 <li><a href="#modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
 <li><a href="#modification-of-repr-of-numpys-floats">Modification of repr of numpy's floats</a></li>
@@ -1250,34 +954,14 @@ methods to deal with events.</p>
 </ul>
 </div>
 <ul id="index">
-<li><h3><a href="#header-submodules">Sub-modules</a></h3>
-<ul>
-<li><code><a title="ktk.cycles" href="cycles.html">ktk.cycles</a></code></li>
-<li><code><a title="ktk.external" href="external/index.html">ktk.external</a></code></li>
-<li><code><a title="ktk.filters" href="filters.html">ktk.filters</a></code></li>
-<li><code><a title="ktk.geometry" href="geometry.html">ktk.geometry</a></code></li>
-<li><code><a title="ktk.gui" href="gui.html">ktk.gui</a></code></li>
-<li><code><a title="ktk.inversedynamics" href="inversedynamics.html">ktk.inversedynamics</a></code></li>
-<li><code><a title="ktk.kinematics" href="kinematics.html">ktk.kinematics</a></code></li>
-<li><code><a title="ktk.mplhelper" href="mplhelper.html">ktk.mplhelper</a></code></li>
-<li><code><a title="ktk.pushrimkinetics" href="pushrimkinetics.html">ktk.pushrimkinetics</a></code></li>
-</ul>
-</li>
 <li><h3><a href="#header-classes">Classes</a></h3>
 <ul>
-<li>
-<h4><code><a title="ktk.Player" href="#ktk.Player">Player</a></code></h4>
-<ul class="">
-<li><code><a title="ktk.Player.close" href="#ktk.Player.close">close</a></code></li>
-</ul>
-</li>
 <li>
 <h4><code><a title="ktk.TimeSeries" href="#ktk.TimeSeries">TimeSeries</a></code></h4>
 <ul class="">
 <li><code><a title="ktk.TimeSeries.add_data_info" href="#ktk.TimeSeries.add_data_info">add_data_info</a></code></li>
 <li><code><a title="ktk.TimeSeries.add_event" href="#ktk.TimeSeries.add_event">add_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.copy" href="#ktk.TimeSeries.copy">copy</a></code></li>
-<li><code><a title="ktk.TimeSeries.fill_missing_samples" href="#ktk.TimeSeries.fill_missing_samples">fill_missing_samples</a></code></li>
 <li><code><a title="ktk.TimeSeries.from_dataframe" href="#ktk.TimeSeries.from_dataframe">from_dataframe</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_event_time" href="#ktk.TimeSeries.get_event_time">get_event_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_index_after_time" href="#ktk.TimeSeries.get_index_after_time">get_index_after_time</a></code></li>
@@ -1295,18 +979,12 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.get_ts_between_events" href="#ktk.TimeSeries.get_ts_between_events">get_ts_between_events</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_indexes" href="#ktk.TimeSeries.get_ts_between_indexes">get_ts_between_indexes</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_times" href="#ktk.TimeSeries.get_ts_between_times">get_ts_between_times</a></code></li>
-<li><code><a title="ktk.TimeSeries.isnan" href="#ktk.TimeSeries.isnan">isnan</a></code></li>
-<li><code><a title="ktk.TimeSeries.merge" href="#ktk.TimeSeries.merge">merge</a></code></li>
 <li><code><a title="ktk.TimeSeries.plot" href="#ktk.TimeSeries.plot">plot</a></code></li>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
-<li><code><a title="ktk.TimeSeries.resample" href="#ktk.TimeSeries.resample">resample</a></code></li>
 <li><code><a title="ktk.TimeSeries.shift" href="#ktk.TimeSeries.shift">shift</a></code></li>
 <li><code><a title="ktk.TimeSeries.sync_event" href="#ktk.TimeSeries.sync_event">sync_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
 <li><code><a title="ktk.TimeSeries.trim_events" href="#ktk.TimeSeries.trim_events">trim_events</a></code></li>
-<li><code><a title="ktk.TimeSeries.ui_add_event" href="#ktk.TimeSeries.ui_add_event">ui_add_event</a></code></li>
-<li><code><a title="ktk.TimeSeries.ui_get_ts_between_clicks" href="#ktk.TimeSeries.ui_get_ts_between_clicks">ui_get_ts_between_clicks</a></code></li>
-<li><code><a title="ktk.TimeSeries.ui_sync" href="#ktk.TimeSeries.ui_sync">ui_sync</a></code></li>
 </ul>
 </li>
 <li>

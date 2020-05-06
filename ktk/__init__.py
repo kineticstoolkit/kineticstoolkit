@@ -56,16 +56,6 @@ contact me at chenier.felix@uqam.ca
 [API documentation](https://felixchenier.uqam.ca/ktk_lab/api)
 
 
-Credits
--------
-
-Some external code has been included into ktk's source code. Here are the
-credits for these nice people.
-
-Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) -
-Python implementation of m-dimensional Iterative Closest Point method
-
-
 Customization
 -------------
 
@@ -115,10 +105,6 @@ the following modifications are made to default matplotlib figures:
   reducing the font size on screen.
 - The standard figure size is changed to [10, 5], which is a little bigger
   than the default and is thus more practical for interactive navigation.
-- The default color order is changed to (rgbcmyk). The first colors, red,
-  green and blue, are consistent the colours assigned to x, y and z in most
-  3D visualization softwares, and the next colours are consistent with
-  Matlab's legacy color order.
 
 ### Changing defaults ###
 In some case we would not want a module to change the behaviour of the
@@ -161,18 +147,7 @@ config['IsLinux'] = True if _platform.system() == 'Linux' else False
 
 # --- Imports
 from ktk._timeseries import TimeSeries, TimeSeriesEvent
-from ktk._tools import explore, terminal, update, tutorials
-from ktk._dbinterface import DBInterface
-from ktk._player import Player
-from ktk._loadsave import load, loadmat, save
-from ktk import filters
-from ktk import gui
-from ktk import mplhelper
-from ktk import geometry
-from ktk import kinematics
-from ktk import pushrimkinetics
-from ktk import inversedynamics
-from ktk import cycles
+from ktk._tools import explore, terminal
 from ktk import _repr
 
 try:
@@ -200,7 +175,6 @@ if config['ChangeMatplotlibDefaults'] is True:
     _mpl.rcParams['figure.figsize'] = [10, 5]
     _mpl.rcParams['figure.dpi'] = 75
     _mpl.rcParams['lines.linewidth'] = 1
-    gui.set_color_order('xyz')
 
 if config['ChangeNumpyPrintOptions'] is True:
     import numpy as _np

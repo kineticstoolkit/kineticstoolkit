@@ -91,12 +91,6 @@ def generate_doc():
             for line in in_file:
                 out_file.write(line)
 
-        with open(ktk.config['RootFolder'] + '/ktk/_player.py',
-                  'r') as in_file:
-            for line in in_file:
-                out_file.write(line)
-
-
     # Run pdoc
     os.chdir(ktk.config['RootFolder'] + '/tmp')
     subprocess.call(['pdoc', '--html', '--config', 'show_source_code=False',

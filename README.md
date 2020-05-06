@@ -39,16 +39,6 @@ contact me at chenier.felix@uqam.ca
 [API documentation](https://felixchenier.uqam.ca/ktk_lab/api)
 
 
-Credits
--------
-
-Some external code has been included into ktk's source code. Here are the
-credits for these nice people.
-
-Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) -
-Python implementation of m-dimensional Iterative Closest Point method
-
-
 Customization
 -------------
 
@@ -98,10 +88,6 @@ the following modifications are made to default matplotlib figures:
   reducing the font size on screen.
 - The standard figure size is changed to [10, 5], which is a little bigger
   than the default and is thus more practical for interactive navigation.
-- The default color order is changed to (rgbcmyk). The first colors, red,
-  green and blue, are consistent the colours assigned to x, y and z in most
-  3D visualization softwares, and the next colours are consistent with
-  Matlab's legacy color order.
 
 ### Changing defaults ###
 In some case we would not want a module to change the behaviour of the

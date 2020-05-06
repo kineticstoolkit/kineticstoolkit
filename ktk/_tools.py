@@ -30,7 +30,6 @@ This module provides various tools to the user.
 import os
 import subprocess
 import ktk
-import webbrowser as _webbrowser
 
 
 def explore(folder_name=''):
@@ -95,34 +94,3 @@ def terminal(folder_name=''):
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
 
-
-def update():
-    """
-    Update KTK to the last available version.
-
-    KTK needs to be installed as a git repository. This is the case with the
-    default installation method using install.py.
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    None
-    """
-    current_dir = os.getcwd()
-    os.chdir(ktk.config['RootFolder'])
-    print(subprocess.check_output(['git', 'pull', 'origin', 'master']).decode('ascii'))
-    os.chdir(current_dir)
-
-
-def tutorials():
-    """
-    Open the KTK tutorials in a web browser.
-
-    Usage: ktk.tutorials()
-    """
-    _webbrowser.open('file:///' + ktk.config['RootFolder'] +
-                     '/tutorials/index.html',
-                     new=2)
