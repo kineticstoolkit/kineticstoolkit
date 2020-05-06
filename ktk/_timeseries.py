@@ -1206,7 +1206,7 @@ class TimeSeries():
         """
         for event in self.events:
             event.time = event.time + time
-        self.time = self.time - time
+        self.time = self.time + time
 
     def sync_event(self, event_name, event_occurrence=0):
         """
