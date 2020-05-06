@@ -406,14 +406,17 @@ event is found, then np.nan is returned.</dd>
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_after_time"><code class="name flex">
-<span>def <span class="ident">get_index_after_time</span></span>(<span>self, time)</span>
+<span>def <span class="ident">get_index_after_time</span></span>(<span>self, time, inclusive=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get the time index that is just after or at the specified time.</p>
+<section class="desc"><p>Get the time index that is just after the specified time.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
 <dd>Time to look for in the TimeSeries' time vector.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -428,6 +431,9 @@ specified time, a value of np.nan is returned.</dd>
 2
 
 &gt;&gt;&gt; ts.get_index_after_time(1)
+3
+
+&gt;&gt;&gt; ts.get_index_after_time(1, inclusive=True)
 2
 
 &gt;&gt;&gt; ts.get_index_after_time(1.1)
@@ -466,14 +472,17 @@ nan
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_before_time"><code class="name flex">
-<span>def <span class="ident">get_index_before_time</span></span>(<span>self, time)</span>
+<span>def <span class="ident">get_index_before_time</span></span>(<span>self, time, inclusive=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get the time index that is just before or at the specified time.</p>
+<section class="desc"><p>Get the time index that is just before the specified time.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
 <dd>Time to look for in the TimeSeries' time vector.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -482,16 +491,20 @@ nan
 time, a value of np.nan is returned.</dd>
 </dl>
 <h2 id="example">Example</h2>
-<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
 
-&gt;&gt;&gt; ts.get_index_before_time(0.9) == 1
-True
+&gt;&gt;&gt; ts.get_index_before_time(0.9)
+1
 
-&gt;&gt;&gt; ts.get_index_before_time(1) == 2
-True
+&gt;&gt;&gt; ts.get_index_before_time(1)
+1
 
-&gt;&gt;&gt; ts.get_index_before_time(1.1) == 2
-True
+&gt;&gt;&gt; ts.get_index_before_time(1, inclusive=True)
+2
+
+&gt;&gt;&gt; ts.get_index_before_time(1.1)
+2
 
 &gt;&gt;&gt; ts.get_index_before_time(-1)
 nan
@@ -529,10 +542,10 @@ dict_keys(['signal1', 'signal3'])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_after_event"><code class="name flex">
-<span>def <span class="ident">get_ts_after_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
+<span>def <span class="ident">get_ts_after_event</span></span>(<span>self, event_name, event_occurrence=0, inclusive=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get a subset of the TimeSeries after and at the specified event.</p>
+<section class="desc"><p>Get a subset of the TimeSeries after the specified event.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
@@ -540,28 +553,96 @@ dict_keys(['signal1', 'signal3'])
 <dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
 <dd>i_th occurence of the event to look for in the events list,
 starting at 0. The default is 0.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given event in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A new TimeSeries following the specification.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.add_event(0.2, 'event')
+&gt;&gt;&gt; ts.add_event(0.35, 'event')
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_event('event').time
+array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_event('event', inclusive=True).time
+array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_event('event', 1).time
+array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_event('event', 1, inclusive=True).time
+array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+</code></pre></section>
 </dd>
-<dt id="ktk.TimeSeries.get_ts_after_time"><code class="name flex">
-<span>def <span class="ident">get_ts_after_time</span></span>(<span>self, time)</span>
+<dt id="ktk.TimeSeries.get_ts_after_index"><code class="name flex">
+<span>def <span class="ident">get_ts_after_index</span></span>(<span>self, index, inclusive=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get a subset of the TimeSeries after and at the specified time.</p>
+<section class="desc"><p>Get a subset of the TimeSeries after the specified time index.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>Time index</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time index. The default is False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_index(2).time
+array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_index(2, inclusive=True).time
+array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+</code></pre></section>
+</dd>
+<dt id="ktk.TimeSeries.get_ts_after_time"><code class="name flex">
+<span>def <span class="ident">get_ts_after_time</span></span>(<span>self, time, inclusive=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get a subset of the TimeSeries after the specified time.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
 <dd>Time to look for in the TimeSeries' time vector.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A new TimeSeries following the specification.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_time(0.3).time
+array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_after_time(0.3, inclusive=True).time
+array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_at_event"><code class="name flex">
 <span>def <span class="ident">get_ts_at_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
@@ -597,13 +678,28 @@ starting at 0. The default is 0.</dd>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A TimeSeries of length 1, at the time neasest to the specified
 time.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+&gt;&gt;&gt; ts.time
+array([0. , 0.5, 1. , 1.5, 2. ])
+
+&gt;&gt;&gt; ts.get_index_at_time(0.9)
+2
+
+&gt;&gt;&gt; ts.get_index_at_time(1)
+2
+
+&gt;&gt;&gt; ts.get_index_at_time(1.1)
+2
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_before_event"><code class="name flex">
-<span>def <span class="ident">get_ts_before_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
+<span>def <span class="ident">get_ts_before_event</span></span>(<span>self, event_name, event_occurrence=0, inclusive=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get a subset of the TimeSeries before and at the specified event.</p>
+<section class="desc"><p>Get a subset of the TimeSeries before the specified event.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>event_name</code></strong> :&ensp;<code>str</code></dt>
@@ -611,31 +707,99 @@ time.</dd>
 <dt><strong><code>event_occurrence</code></strong> :&ensp;<code>int</code> (optional)</dt>
 <dd>i_th occurence of the event to look for in the events list,
 starting at 0. The default is 0.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A new TimeSeries following the specification.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.add_event(0.2, 'event')
+&gt;&gt;&gt; ts.add_event(0.35, 'event')
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_before_event('event').time
+array([0. , 0.1])
+
+&gt;&gt;&gt; ts.get_ts_before_event('event', inclusive=True).time
+array([0. , 0.1, 0.2])
+
+&gt;&gt;&gt; ts.get_ts_before_event('event', 1).time
+array([0. , 0.1, 0.2, 0.3])
+
+&gt;&gt;&gt; ts.get_ts_before_event('event', 1, inclusive=True).time
+array([0. , 0.1, 0.2, 0.3, 0.4])
+</code></pre></section>
 </dd>
-<dt id="ktk.TimeSeries.get_ts_before_time"><code class="name flex">
-<span>def <span class="ident">get_ts_before_time</span></span>(<span>self, time)</span>
+<dt id="ktk.TimeSeries.get_ts_before_index"><code class="name flex">
+<span>def <span class="ident">get_ts_before_index</span></span>(<span>self, index, inclusive=False)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Get a subset of the TimeSeries before and at the specified time.</p>
+<section class="desc"><p>Get a subset of the TimeSeries before the specified time index.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>index</code></strong> :&ensp;<code>int</code></dt>
+<dd>Time index</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time index. The default is False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_before_index(2).time
+array([0. , 0.1])
+
+&gt;&gt;&gt; ts.get_ts_before_index(2, inclusive=True).time
+array([0. , 0.1, 0.2])
+</code></pre></section>
+</dd>
+<dt id="ktk.TimeSeries.get_ts_before_time"><code class="name flex">
+<span>def <span class="ident">get_ts_before_time</span></span>(<span>self, time, inclusive=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get a subset of the TimeSeries before the specified time.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
 <dd>Time to look for in the TimeSeries' time vector.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A new TimeSeries following the specification.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_before_time(0.3).time
+array([0. , 0.1, 0.2])
+
+&gt;&gt;&gt; ts.get_ts_before_time(0.3, inclusive=True).time
+array([0. , 0.1, 0.2, 0.3])
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_events"><code class="name flex">
-<span>def <span class="ident">get_ts_between_events</span></span>(<span>self, event_name1, event_name2, event_occurrence1=0, event_occurrence2=0)</span>
+<span>def <span class="ident">get_ts_between_events</span></span>(<span>self, event_name1, event_name2, event_occurrence1=0, event_occurrence2=0, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries between two specified events.</p>
@@ -646,15 +810,62 @@ starting at 0. The default is 0.</dd>
 <dt><strong><code>event_occurrence1</code></strong>, <strong><code>event_occurrence2</code></strong> :&ensp;<code>int</code> (optional)</dt>
 <dd>i_th occurence of the event to look for in the events list,
 starting at 0. The default is 0.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A new TimeSeries following the specification.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.add_event(0.2, 'event')
+&gt;&gt;&gt; ts.add_event(0.55, 'event')
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_between_events('event', 'event', 0, 1).time
+array([0.3, 0.4, 0.5])
+
+&gt;&gt;&gt; ts.get_ts_between_events('event', 'event', 0, 1, True).time
+array([0.2, 0.3, 0.4, 0.5, 0.6])
+</code></pre></section>
+</dd>
+<dt id="ktk.TimeSeries.get_ts_between_indexes"><code class="name flex">
+<span>def <span class="ident">get_ts_between_indexes</span></span>(<span>self, index1, index2, inclusive=False)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Get a subset of the TimeSeries before two specified time indexes.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>index1</code></strong>, <strong><code>index2</code></strong> :&ensp;<code>int</code></dt>
+<dd>Time indexes</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time index. The default is False.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>A new TimeSeries following the specification.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_between_indexes(2, 5).time
+array([0.3, 0.4])
+
+&gt;&gt;&gt; ts.get_ts_between_indexes(2, 5, inclusive=True).time
+array([0.2, 0.3, 0.4, 0.5])
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_times"><code class="name flex">
-<span>def <span class="ident">get_ts_between_times</span></span>(<span>self, time1, time2)</span>
+<span>def <span class="ident">get_ts_between_times</span></span>(<span>self, time1, time2, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries between two specified times.</p>
@@ -662,12 +873,27 @@ starting at 0. The default is 0.</dd>
 <dl>
 <dt><strong><code>time1</code></strong>, <strong><code>time2</code></strong> :&ensp;<code>float</code></dt>
 <dd>Times to look for in the TimeSeries' time vector.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
 <dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
 <dd>A new TimeSeries following the specification.</dd>
-</dl></section>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(10)/10)
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+&gt;&gt;&gt; ts.get_ts_between_times(0.2, 0.5).time
+array([0.3, 0.4])
+
+&gt;&gt;&gt; ts.get_ts_between_times(0.2, 0.5, inclusive=True).time
+array([0.2, 0.3, 0.4, 0.5])
+</code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.isnan"><code class="name flex">
 <span>def <span class="ident">isnan</span></span>(<span>self, data_key)</span>
@@ -849,6 +1075,34 @@ brackets. The TimeSeries's events and metadata such as time_info
 and data_info are not included in the resulting DataFrame.</dd>
 </dl></section>
 </dd>
+<dt id="ktk.TimeSeries.trim_events"><code class="name flex">
+<span>def <span class="ident">trim_events</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Delete events that are outside the TimeSeries time vector.</p>
+<h2 id="parameters">Parameters</h2>
+<p>None.</p>
+<h2 id="returns">Returns</h2>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; ts = ktk.TimeSeries(time = np.arange(10))
+&gt;&gt;&gt; ts.time
+array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+&gt;&gt;&gt; ts.add_event(-2)
+&gt;&gt;&gt; ts.add_event(0)
+&gt;&gt;&gt; ts.add_event(5)
+&gt;&gt;&gt; ts.add_event(9)
+&gt;&gt;&gt; ts.add_event(10)
+&gt;&gt;&gt; ts.events
+[[-2.0, 'event'], [0.0, 'event'], [5.0, 'event'], [9.0, 'event'], [10.0, 'event']]
+
+&gt;&gt;&gt; ts.trim_events()
+&gt;&gt;&gt; ts.events
+[[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
+</code></pre></section>
+</dd>
 <dt id="ktk.TimeSeries.ui_add_event"><code class="name flex">
 <span>def <span class="ident">ui_add_event</span></span>(<span>self, name='event', plot=[], multiple_events=False)</span>
 </code></dt>
@@ -881,7 +1135,7 @@ the argument of ktk.TimeSeries.plot().</dd>
 </dl></section>
 </dd>
 <dt id="ktk.TimeSeries.ui_get_ts_between_clicks"><code class="name flex">
-<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None)</span>
+<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries between two mouse clicks.</p>
@@ -890,6 +1144,9 @@ the argument of ktk.TimeSeries.plot().</dd>
 <dt><strong><code>data_keys</code></strong> :&ensp;<code>string</code>, <code>list</code> or <code>tuple</code> (optional)</dt>
 <dd>String or list of strings corresponding to the signals to plot.
 See TimeSeries.plot() for more information.</dd>
+<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to include the given time in the comparison. The default is
+False.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -1028,12 +1285,15 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.get_index_before_time" href="#ktk.TimeSeries.get_index_before_time">get_index_before_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_subset" href="#ktk.TimeSeries.get_subset">get_subset</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_after_event" href="#ktk.TimeSeries.get_ts_after_event">get_ts_after_event</a></code></li>
+<li><code><a title="ktk.TimeSeries.get_ts_after_index" href="#ktk.TimeSeries.get_ts_after_index">get_ts_after_index</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_after_time" href="#ktk.TimeSeries.get_ts_after_time">get_ts_after_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_at_event" href="#ktk.TimeSeries.get_ts_at_event">get_ts_at_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_at_time" href="#ktk.TimeSeries.get_ts_at_time">get_ts_at_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_before_event" href="#ktk.TimeSeries.get_ts_before_event">get_ts_before_event</a></code></li>
+<li><code><a title="ktk.TimeSeries.get_ts_before_index" href="#ktk.TimeSeries.get_ts_before_index">get_ts_before_index</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_before_time" href="#ktk.TimeSeries.get_ts_before_time">get_ts_before_time</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_events" href="#ktk.TimeSeries.get_ts_between_events">get_ts_between_events</a></code></li>
+<li><code><a title="ktk.TimeSeries.get_ts_between_indexes" href="#ktk.TimeSeries.get_ts_between_indexes">get_ts_between_indexes</a></code></li>
 <li><code><a title="ktk.TimeSeries.get_ts_between_times" href="#ktk.TimeSeries.get_ts_between_times">get_ts_between_times</a></code></li>
 <li><code><a title="ktk.TimeSeries.isnan" href="#ktk.TimeSeries.isnan">isnan</a></code></li>
 <li><code><a title="ktk.TimeSeries.merge" href="#ktk.TimeSeries.merge">merge</a></code></li>
@@ -1043,6 +1303,7 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.shift" href="#ktk.TimeSeries.shift">shift</a></code></li>
 <li><code><a title="ktk.TimeSeries.sync_event" href="#ktk.TimeSeries.sync_event">sync_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
+<li><code><a title="ktk.TimeSeries.trim_events" href="#ktk.TimeSeries.trim_events">trim_events</a></code></li>
 <li><code><a title="ktk.TimeSeries.ui_add_event" href="#ktk.TimeSeries.ui_add_event">ui_add_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.ui_get_ts_between_clicks" href="#ktk.TimeSeries.ui_get_ts_between_clicks">ui_get_ts_between_clicks</a></code></li>
 <li><code><a title="ktk.TimeSeries.ui_sync" href="#ktk.TimeSeries.ui_sync">ui_sync</a></code></li>

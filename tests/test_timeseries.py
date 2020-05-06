@@ -52,26 +52,6 @@ def test_add_event():
     assert ts.events[1].time == 15.34
     assert ts.events[2].time == 99.2
 
-def test_get_index_before_time():
-    ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
-    assert ts.get_index_before_time(0.9) == 1
-    assert ts.get_index_before_time(1) == 2
-    assert ts.get_index_before_time(1.1) == 2
-    assert np.isnan(ts.get_index_before_time(-1))
-
-def test_get_index_at_time():
-    ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
-    assert ts.get_index_at_time(0.9) == 2
-    assert ts.get_index_at_time(1) == 2
-    assert ts.get_index_at_time(1.1) == 2
-
-def test_get_index_after_time():
-    ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
-    assert ts.get_index_after_time(0.9) == 2
-    assert ts.get_index_after_time(1) == 2
-    assert ts.get_index_after_time(1.1) == 3
-    assert np.isnan(ts.get_index_after_time(13))
-
 def test_get_event_time():
     ts = ktk.TimeSeries()
     ts.add_event(5.5, 'event1')
@@ -101,10 +81,6 @@ def test_get_ts_at_event___get_ts_at_time():
 
 def tes_get_ts_before_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-    new_ts = ts.get_ts_before_time(3)
-    assert new_ts.time.tolist() == [0., 1., 2., 3.]
-    new_ts = ts.get_ts_before_time(3.5)
-    assert new_ts.time.tolist() == [0., 1., 2., 3.]
     new_ts = ts.get_ts_before_time(-2)
     assert new_ts.time.tolist() == []
     new_ts = ts.get_ts_before_time(13)
@@ -112,10 +88,6 @@ def tes_get_ts_before_time():
 
 def test_get_ts_after_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-    new_ts = ts.get_ts_after_time(3)
-    assert new_ts.time.tolist() == [3., 4., 5., 6., 7., 8., 9.]
-    new_ts = ts.get_ts_after_time(3.5)
-    assert new_ts.time.tolist() == [4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_after_time(-2)
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_after_time(13)
@@ -123,10 +95,6 @@ def test_get_ts_after_time():
 
 def test_get_ts_between_times():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-    new_ts = ts.get_ts_between_times(3, 6)
-    assert new_ts.time.tolist() == [3., 4., 5., 6.]
-    new_ts = ts.get_ts_between_times(3.5, 5.5)
-    assert new_ts.time.tolist() == [4., 5.]
     new_ts = ts.get_ts_between_times(-2, 13)
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_between_times(-2, -1)
@@ -227,3 +195,9 @@ def test_rename_data():
     assert 'data2' not in ts.data_info
     assert np.all(ts.data['data3'] == ts.time)
     assert ts.data_info['data3']['Unit'] == 'N'
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])
+

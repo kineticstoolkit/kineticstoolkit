@@ -771,16 +771,19 @@ class TimeSeries():
             2
 
         """
-        return np.argmin(np.abs(self.time - time))
+        return np.argmin(np.abs(self.time - float(time)))
 
-    def get_index_before_time(self, time):
+    def get_index_before_time(self, time, inclusive=False):
         """
-        Get the time index that is just before or at the specified time.
+        Get the time index that is just before the specified time.
 
         Parameters
         ----------
         time : float
             Time to look for in the TimeSeries' time vector.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
 
         Returns
         -------
@@ -790,36 +793,46 @@ class TimeSeries():
 
         Example
         -------
+            >>> import ktk
             >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
 
-            >>> ts.get_index_before_time(0.9) == 1
-            True
+            >>> ts.get_index_before_time(0.9)
+            1
 
-            >>> ts.get_index_before_time(1) == 2
-            True
+            >>> ts.get_index_before_time(1)
+            1
 
-            >>> ts.get_index_before_time(1.1) == 2
-            True
+            >>> ts.get_index_before_time(1, inclusive=True)
+            2
+
+            >>> ts.get_index_before_time(1.1)
+            2
 
             >>> ts.get_index_before_time(-1)
             nan
 
         """
-        diff = time - self.time
-        diff[diff < 0] = np.nan
+        diff = float(time) - self.time
+        if inclusive:
+            diff[diff < 0] = np.nan
+        else:
+            diff[diff <= 0] = np.nan
         if np.all(np.isnan(diff)):  # All nans
             return np.nan
         else:
             return np.nanargmin(diff)
 
-    def get_index_after_time(self, time):
+    def get_index_after_time(self, time, inclusive=False):
         """
-        Get the time index that is just after or at the specified time.
+        Get the time index that is just after the specified time.
 
         Parameters
         ----------
         time : float
             Time to look for in the TimeSeries' time vector.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
 
         Returns
         -------
@@ -835,6 +848,9 @@ class TimeSeries():
             2
 
             >>> ts.get_index_after_time(1)
+            3
+
+            >>> ts.get_index_after_time(1, inclusive=True)
             2
 
             >>> ts.get_index_after_time(1.1)
@@ -844,8 +860,11 @@ class TimeSeries():
             nan
 
         """
-        diff = self.time - time
-        diff[diff < 0] = np.nan
+        diff = self.time - float(time)
+        if inclusive:
+            diff[diff < 0] = np.nan
+        else:
+            diff[diff <= 0] = np.nan
         if np.all(np.isnan(diff)):  # All nans
             return np.nan
         else:
@@ -920,6 +939,22 @@ class TimeSeries():
             A TimeSeries of length 1, at the time neasest to the specified
             time.
 
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+            >>> ts.time
+            array([0. , 0.5, 1. , 1.5, 2. ])
+
+            >>> ts.get_index_at_time(0.9)
+            2
+
+            >>> ts.get_index_at_time(1)
+            2
+
+            >>> ts.get_index_at_time(1.1)
+            2
+
         """
         out_ts = self.copy()
         index = self.get_index_at_time(time)
@@ -949,23 +984,171 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_at_time(time)
 
-    def get_ts_before_time(self, time):
+    def get_ts_before_index(self, index, inclusive=False):
         """
-        Get a subset of the TimeSeries before and at the specified time.
+        Get a subset of the TimeSeries before the specified time index.
 
         Parameters
         ----------
-        time : float
-            Time to look for in the TimeSeries' time vector.
+        index : int
+            Time index
+        inclusive : bool (optional)
+            True to include the given time index. The default is False.
 
         Returns
         -------
         ts : TimeSeries
             A new TimeSeries following the specification.
 
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_before_index(2).time
+            array([0. , 0.1])
+
+            >>> ts.get_ts_before_index(2, inclusive=True).time
+            array([0. , 0.1, 0.2])
+
         """
         out_ts = self.copy()
-        index = self.get_index_before_time(time)
+        if np.isnan(index):
+            index_range = []
+        else:
+            if inclusive:
+                index_range = range(index + 1)
+            else:
+                index_range = range(index)
+
+        out_ts.time = out_ts.time[index_range]
+        for the_data in out_ts.data.keys():
+            out_ts.data[the_data] = out_ts.data[the_data][index_range]
+        return out_ts
+
+    def get_ts_after_index(self, index, inclusive=False):
+        """
+        Get a subset of the TimeSeries after the specified time index.
+
+        Parameters
+        ----------
+        index : int
+            Time index
+        inclusive : bool (optional)
+            True to include the given time index. The default is False.
+
+        Returns
+        -------
+        ts : TimeSeries
+            A new TimeSeries following the specification.
+
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_index(2).time
+            array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_index(2, inclusive=True).time
+            array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        """
+        out_ts = self.copy()
+        if np.isnan(index):
+            index_range = []
+        else:
+            if inclusive:
+                index_range = range(index, len(self.time))
+            else:
+                index_range = range(index + 1, len(self.time))
+
+        out_ts.time = out_ts.time[index_range]
+        for the_data in out_ts.data.keys():
+            out_ts.data[the_data] = out_ts.data[the_data][index_range]
+        return out_ts
+
+    def get_ts_between_indexes(self, index1, index2, inclusive=False):
+        """
+        Get a subset of the TimeSeries before two specified time indexes.
+
+        Parameters
+        ----------
+        index1, index2 : int
+            Time indexes
+        inclusive : bool (optional)
+            True to include the given time index. The default is False.
+
+        Returns
+        -------
+        ts : TimeSeries
+            A new TimeSeries following the specification.
+
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_between_indexes(2, 5).time
+            array([0.3, 0.4])
+
+            >>> ts.get_ts_between_indexes(2, 5, inclusive=True).time
+            array([0.2, 0.3, 0.4, 0.5])
+
+        """
+        out_ts = self.copy()
+        if np.isnan(index1) or np.isnan(index2):
+            index_range = []
+        else:
+            if inclusive:
+                index_range = range(index1, index2 + 1)
+            else:
+                index_range = range(index1 + 1, index2)
+
+        out_ts.time = out_ts.time[index_range]
+        for the_data in out_ts.data.keys():
+            out_ts.data[the_data] = out_ts.data[the_data][index_range]
+        return out_ts
+
+    def get_ts_before_time(self, time, inclusive=False):
+        """
+        Get a subset of the TimeSeries before the specified time.
+
+        Parameters
+        ----------
+        time : float
+            Time to look for in the TimeSeries' time vector.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
+
+        Returns
+        -------
+        ts : TimeSeries
+            A new TimeSeries following the specification.
+
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_before_time(0.3).time
+            array([0. , 0.1, 0.2])
+
+            >>> ts.get_ts_before_time(0.3, inclusive=True).time
+            array([0. , 0.1, 0.2, 0.3])
+
+        """
+        out_ts = self.copy()
+        index = self.get_index_before_time(time, inclusive)
         if np.isnan(index):
             index_range = []
         else:
@@ -976,76 +1159,45 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_before_event(self, event_name, event_occurrence=0):
+    def get_ts_after_time(self, time, inclusive=False):
         """
-        Get a subset of the TimeSeries before and at the specified event.
-
-        Parameters
-        ----------
-        event_name : str
-            Name of the event to look for in the events list.
-        event_occurrence : int (optional)
-            i_th occurence of the event to look for in the events list,
-            starting at 0. The default is 0.
-
-        Returns
-        -------
-        ts : TimeSeries
-            A new TimeSeries following the specification.
-
-        """
-        time = self.get_event_time(event_name, event_occurrence)
-        return self.get_ts_before_time(time)
-
-    def get_ts_after_time(self, time):
-        """
-        Get a subset of the TimeSeries after and at the specified time.
+        Get a subset of the TimeSeries after the specified time.
 
         Parameters
         ----------
         time : float
             Time to look for in the TimeSeries' time vector.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
 
         Returns
         -------
         ts : TimeSeries
             A new TimeSeries following the specification.
 
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_time(0.3).time
+            array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_time(0.3, inclusive=True).time
+            array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
         """
-        out_ts = self.copy()
-        index = self.get_index_after_time(time)
-        if np.isnan(index):
-            index_range = []
+        if inclusive:
+            index = self.get_index_before_time(time, inclusive=True)
         else:
-            index_range = range(index, len(self.time))
+            index = self.get_index_after_time(time, inclusive=False)
 
-        out_ts.time = out_ts.time[index_range]
-        for the_data in out_ts.data.keys():
-            out_ts.data[the_data] = out_ts.data[the_data][index_range]
-        return out_ts
+        return self.get_ts_after_index(index, inclusive=True)
 
-    def get_ts_after_event(self, event_name, event_occurrence=0):
-        """
-        Get a subset of the TimeSeries after and at the specified event.
-
-        Parameters
-        ----------
-        event_name : str
-            Name of the event to look for in the events list.
-        event_occurrence : int (optional)
-            i_th occurence of the event to look for in the events list,
-            starting at 0. The default is 0.
-
-        Returns
-        -------
-        ts : TimeSeries
-            A new TimeSeries following the specification.
-
-        """
-        time = self.get_event_time(event_name, event_occurrence)
-        return self.get_ts_after_time(time)
-
-    def get_ts_between_times(self, time1, time2):
+    def get_ts_between_times(self, time1, time2, inclusive=False):
         """
         Get a subset of the TimeSeries between two specified times.
 
@@ -1053,20 +1205,139 @@ class TimeSeries():
         ----------
         time1, time2 : float
             Times to look for in the TimeSeries' time vector.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
 
         Returns
         -------
         ts : TimeSeries
             A new TimeSeries following the specification.
 
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_between_times(0.2, 0.5).time
+            array([0.3, 0.4])
+
+            >>> ts.get_ts_between_times(0.2, 0.5, inclusive=True).time
+            array([0.2, 0.3, 0.4, 0.5])
+
         """
         sorted_times = np.sort([time1, time2])
-        new_ts = self.get_ts_after_time(sorted_times[0])
-        new_ts = new_ts.get_ts_before_time(sorted_times[1])
+        new_ts = self.get_ts_after_time(sorted_times[0], inclusive)
+        new_ts = new_ts.get_ts_before_time(sorted_times[1], inclusive)
         return new_ts
 
+    def get_ts_before_event(self, event_name, event_occurrence=0,
+                            inclusive=False):
+        """
+        Get a subset of the TimeSeries before the specified event.
+
+        Parameters
+        ----------
+        event_name : str
+            Name of the event to look for in the events list.
+        event_occurrence : int (optional)
+            i_th occurence of the event to look for in the events list,
+            starting at 0. The default is 0.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
+
+        Returns
+        -------
+        ts : TimeSeries
+            A new TimeSeries following the specification.
+
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.add_event(0.2, 'event')
+            >>> ts.add_event(0.35, 'event')
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_before_event('event').time
+            array([0. , 0.1])
+
+            >>> ts.get_ts_before_event('event', inclusive=True).time
+            array([0. , 0.1, 0.2])
+
+            >>> ts.get_ts_before_event('event', 1).time
+            array([0. , 0.1, 0.2, 0.3])
+
+            >>> ts.get_ts_before_event('event', 1, inclusive=True).time
+            array([0. , 0.1, 0.2, 0.3, 0.4])
+
+        """
+        time = self.get_event_time(event_name, event_occurrence)
+        if inclusive:
+            index = self.get_index_after_time(time, inclusive=True)
+        else:
+            index = self.get_index_before_time(time, inclusive=False)
+
+        return self.get_ts_before_index(index, inclusive=True)
+
+    def get_ts_after_event(self, event_name, event_occurrence=0,
+                           inclusive=False):
+        """
+        Get a subset of the TimeSeries after the specified event.
+
+        Parameters
+        ----------
+        event_name : str
+            Name of the event to look for in the events list.
+        event_occurrence : int (optional)
+            i_th occurence of the event to look for in the events list,
+            starting at 0. The default is 0.
+        inclusive : bool (optional)
+            True to include the given event in the comparison. The default is
+            False.
+
+        Returns
+        -------
+        ts : TimeSeries
+            A new TimeSeries following the specification.
+
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.add_event(0.2, 'event')
+            >>> ts.add_event(0.35, 'event')
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_event('event').time
+            array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_event('event', inclusive=True).time
+            array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_event('event', 1).time
+            array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+            >>> ts.get_ts_after_event('event', 1, inclusive=True).time
+            array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        """
+        time = self.get_event_time(event_name, event_occurrence)
+        if inclusive:
+            index = self.get_index_before_time(time, inclusive=True)
+        else:
+            index = self.get_index_after_time(time, inclusive=False)
+
+        return self.get_ts_after_index(index, inclusive=True)
+
     def get_ts_between_events(self, event_name1, event_name2,
-                              event_occurrence1=0, event_occurrence2=0):
+                              event_occurrence1=0, event_occurrence2=0,
+                              inclusive=False):
         """
         Get a subset of the TimeSeries between two specified events.
 
@@ -1077,18 +1348,36 @@ class TimeSeries():
         event_occurrence1, event_occurrence2 : int (optional)
             i_th occurence of the event to look for in the events list,
             starting at 0. The default is 0.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
 
         Returns
         -------
         ts : TimeSeries
             A new TimeSeries following the specification.
 
-        """
-        time1 = self.get_event_time(event_name1, event_occurrence1)
-        time2 = self.get_event_time(event_name2, event_occurrence2)
-        return self.get_ts_between_times(time1, time2)
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+            >>> ts.add_event(0.2, 'event')
+            >>> ts.add_event(0.55, 'event')
+            >>> ts.time
+            array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-    def ui_get_ts_between_clicks(self, data_keys=None):
+            >>> ts.get_ts_between_events('event', 'event', 0, 1).time
+            array([0.3, 0.4, 0.5])
+
+            >>> ts.get_ts_between_events('event', 'event', 0, 1, True).time
+            array([0.2, 0.3, 0.4, 0.5, 0.6])
+
+        """
+        ts = self.get_ts_after_event(event_name1, event_occurrence1, inclusive)
+        ts = ts.get_ts_before_event(event_name2, event_occurrence2, inclusive)
+        return ts
+
+    def ui_get_ts_between_clicks(self, data_keys=None, inclusive=False):
         """
         Get a subset of the TimeSeries between two mouse clicks.
 
@@ -1097,6 +1386,9 @@ class TimeSeries():
         data_keys : string, list or tuple (optional)
             String or list of strings corresponding to the signals to plot.
             See TimeSeries.plot() for more information.
+        inclusive : bool (optional)
+            True to include the given time in the comparison. The default is
+            False.
 
         Returns
         -------
@@ -1112,7 +1404,7 @@ class TimeSeries():
         ktk.mplhelper.message('')
         times = [points[0][0], points[1][0]]
         plt.close(fig)
-        return self.get_ts_between_times(min(times), max(times))
+        return self.get_ts_between_times(min(times), max(times), inclusive)
 
     def isnan(self, data_key):
         """
@@ -1226,6 +1518,44 @@ class TimeSeries():
 
         """
         self.shift(-self.get_event_time(event_name, event_occurrence))
+
+    def trim_events(self):
+        """
+        Delete events that are outside the TimeSeries time vector.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+            >>> import ktk
+            >>> ts = ktk.TimeSeries(time = np.arange(10))
+            >>> ts.time
+            array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+            >>> ts.add_event(-2)
+            >>> ts.add_event(0)
+            >>> ts.add_event(5)
+            >>> ts.add_event(9)
+            >>> ts.add_event(10)
+            >>> ts.events
+            [[-2.0, 'event'], [0.0, 'event'], [5.0, 'event'], [9.0, 'event'], [10.0, 'event']]
+
+            >>> ts.trim_events()
+            >>> ts.events
+            [[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
+
+        """
+        events = self.events
+        self.events = []
+        for event in events:
+            if event.time >= self.time[0] and event.time <= self.time[-1]:
+                self.add_event(event.time, event.name)
 
     def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
         """
