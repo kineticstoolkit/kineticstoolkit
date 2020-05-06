@@ -59,24 +59,6 @@ def _dict_of_arrays_to_dataframe(dict_of_arrays):
     - 3-dimensional (or more) arrays are also converted to DataFrames, but
       indices in brackets are added to the column names.
 
-    Example
-    -------
-        >>> datadict = {'data': np.random.rand(10, 2, 2)}
-        >>> dataframe = ktk.loadsave.dict_of_arrays_to_dataframe(datadict)
-
-        >>> print(dataframe)
-            data[0,0]   data[0,1]   data[1,0]   data[1,1]
-        0   0.736891    0.902195    0.905907    0.065458
-        1   0.875474    0.414270    0.696410    0.872808
-        2   0.697806    0.542093    0.093780    0.394655
-        3   0.132531    0.073543    0.036600    0.697872
-        4   0.713446    0.672632    0.599467    0.211884
-        5   0.860927    0.769096    0.278852    0.317487
-        6   0.998223    0.831627    0.024960    0.960739
-        7   0.573798    0.191601    0.797447    0.728639
-        8   0.774073    0.942711    0.868428    0.667369
-        9   0.530900    0.737578    0.224186    0.895926
-
     """
     # Init
     df_out = pd.DataFrame()
@@ -253,10 +235,10 @@ class TimeSeriesEvent(list):
 
     Example
     -------
-    >>> event = ktk.TimeSeriesEvent()
-    >>> event.time = 1.5
-    >>> event.name = 'event_name'
-    >>> print(event)
+        >>> event = ktk.TimeSeriesEvent()
+        >>> event.time = 1.5
+        >>> event.name = 'event_name'
+        >>> event
         [1.5, 'event_name']
 
     """
@@ -306,7 +288,7 @@ class TimeSeries():
         Contains facultative metadata relative to data. For example, the
         data_info attribute could indicate the unit of data['Forces']:
 
-        >>> data['Forces'] = {'Unit': 'N'}.
+        data['Forces'] = {'Unit': 'N'}.
 
         To facilitate the management of data_info, please use
         `ktk.TimeSeries.add_data_info`.
@@ -315,7 +297,7 @@ class TimeSeries():
 
     Example
     -------
-    >>> ts = ktk.TimeSeries(time=np.arange(0,100))
+        >>> ts = ktk.TimeSeries(time=np.arange(0,100))
 
     """
 
@@ -436,104 +418,6 @@ class TimeSeries():
         self.time = dataframe.index.to_numpy()
         return self
 
-    def plot(self, data_keys=None, plot_event_names=False,
-             max_legend_items=5, **kwargs):
-        """
-        Plot the TimeSeries using matplotlib.
-
-        Parameters
-        ----------
-        data_keys : string, list or tuple (optional)
-            String or list of strings corresponding to the signals to plot.
-            For example, if a TimeSeries's data attribute as keys 'Forces',
-            'Moments' and 'Angle', then:
-            >>> the_timeseries.plot(['Forces', 'Moments'])
-            plots only the forces and moments, without plotting the angle.
-            By default, all elements of the TimeSeries are plotted.
-        plot_event_names : bool (optional)
-            True to plot the event names on top of the event lines.
-            Default = False.
-        max_legend_items : int (optional)
-            Maximal number of legend items, including the 'events' entry. If
-            there are more items in the legend, then the legend is not shown
-            for space and performance considerations.
-
-        Additional keyboard arguments are passed to the pyplot's plot function.
-
-        Returns
-        -------
-        None.
-
-        """
-        if data_keys is None or len(data_keys) == 0:
-            # Plot all
-            the_keys = self.data.keys()
-        else:
-            # Plot only what is asked for.
-            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
-                the_keys = data_keys
-            elif isinstance(data_keys, str):
-                the_keys = [data_keys]
-            else:
-                raise(TypeError(
-                        'data_keys must be a string or list of strings'))
-
-        n_plots = len(the_keys)
-
-        n_events = len(self.events)
-        if n_events > 0:
-            event_times = np.array(self.events)[:, 0]
-        else:
-            event_times = np.array([])
-
-        # Now plot
-        ax = plt.gca()
-        for the_key in the_keys:
-
-            # Set label
-            label = the_key
-            if (the_key in self.data_info and
-                    'Unit' in self.data_info[the_key]):
-                label += ' (' + self.data_info[the_key]['Unit'] + ')'
-
-            # Plot data
-            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
-
-        # Plot the events
-        if len(self.events) > 0:
-            a = ax.axis()
-            min_y = a[2]
-            max_y = a[3]
-            event_line_x = np.zeros(3 * n_events)
-            event_line_y = np.zeros(3 * n_events)
-
-            for i_event in range(0, n_events):
-                event_line_x[3 * i_event] = event_times[i_event]
-                event_line_x[3 * i_event + 1] = event_times[i_event]
-                event_line_x[3 * i_event + 2] = np.nan
-
-                event_line_y[3 * i_event] = min_y
-                event_line_y[3 * i_event + 1] = max_y
-                event_line_y[3 * i_event + 2] = np.nan
-
-            ax.plot(event_line_x, event_line_y, label='events')
-
-            if plot_event_names:
-                for event in self.events:
-                    ax.text(event.time, max_y, event.name,
-                            rotation='vertical',
-                            horizontalalignment='center')
-
-        # Add labels
-        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
-
-        # Add legend if required
-        if len(the_keys) > 1 or len(self.events) > 0:
-            if len(the_keys) <= max_legend_items:
-                ax.legend()
-        else:  # Only one data, plot it on the y axis.
-            ax.set_ylabel(label)
-
     def add_data_info(self, signal_name, info_name, value):
         """
         Add metadata to TimeSeries' data.
@@ -553,8 +437,15 @@ class TimeSeries():
 
         Example
         -------
-        >>> the_timeseries.add_data_info('Forces', 'Unit', 'N')
-        >>> the_timeseries.add_data_info('Marker1', 'Color', [43, 2, 255])
+            >>> ts = ktk.TimeSeries()
+            >>> ts.add_data_info('Forces', 'Unit', 'N')
+            >>> ts.add_data_info('Marker1', 'Color', [43, 2, 255])
+
+            >>> ts.data_info['Forces']
+            {'Unit': 'N'}
+
+            >>> ts.data_info['Marker1']
+            {'Color': [43, 2, 255]}
 
         """
         if signal_name in self.data_info:   # Assign the value
@@ -579,22 +470,22 @@ class TimeSeries():
 
         Example
         -------
-        >>> ts = ktk.TimeSeries()
-        >>> ts.data['test'] = np.arange(10)
-        >>> ts.add_data_info('test', 'Unit', 'm')
+            >>> ts = ktk.TimeSeries()
+            >>> ts.data['test'] = np.arange(10)
+            >>> ts.add_data_info('test', 'Unit', 'm')
 
-        >>> ts.data
+            >>> ts.data
             {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
 
-        >>> ts.data_info
+            >>> ts.data_info
             {'test': {'Unit': 'm'}}
 
-        >>> ts.rename_data('test', 'signal')
+            >>> ts.rename_data('test', 'signal')
 
-        >>> ts.data
+            >>> ts.data
             {'signal': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
 
-        >>> ts.data_info
+            >>> ts.data_info
             {'signal': {'Unit': 'm'}}
 
         """
@@ -621,12 +512,12 @@ class TimeSeries():
 
         Example
         -------
-        >>> ts = ktk.TimeSeries()
-        >>> ts.add_event(5.5, 'event1')
-        >>> ts.add_event(10.8, 'event2')
-        >>> ts.add_event(2.3, 'event2')
+            >>> ts = ktk.TimeSeries()
+            >>> ts.add_event(5.5, 'event1')
+            >>> ts.add_event(10.8, 'event2')
+            >>> ts.add_event(2.3, 'event2')
 
-        >>> print(ts.events)
+            >>> ts.events
             [[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
 
         """
@@ -689,10 +580,10 @@ class TimeSeries():
 
         Example
         -------
-        If a TimeSeries's data attribute as keys 'Forces', 'Moments' and
+        If a TimeSeries `ts`' data attribute as keys 'Forces', 'Moments' and
         'Angle', then:
 
-        >>> the_timeseries.plot(['Forces', 'Moments'])
+            ts.plot(['Forces', 'Moments'])
 
         plots only the forces and moments, without plotting the angle.
 
@@ -783,15 +674,15 @@ class TimeSeries():
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+            >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
 
-        >>> ts.get_index_at_time(0.9)
+            >>> ts.get_index_at_time(0.9)
             2
 
-        >>> ts.get_index_at_time(1)
+            >>> ts.get_index_at_time(1)
             2
 
-        >>> ts.get_index_at_time(1.1)
+            >>> ts.get_index_at_time(1.1)
             2
 
         """
@@ -814,18 +705,18 @@ class TimeSeries():
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+            >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
 
-        >>> ts.get_index_before_time(0.9)
-            1
+            >>> ts.get_index_before_time(0.9) == 1
+            True
 
-        >>> ts.get_index_before_time(1)
-            2
+            >>> ts.get_index_before_time(1) == 2
+            True
 
-        >>> ts.get_index_before_time(1.1)
-            2
+            >>> ts.get_index_before_time(1.1) == 2
+            True
 
-        >>> ts.get_index_before_time(-1)
+            >>> ts.get_index_before_time(-1)
             nan
 
         """
@@ -853,18 +744,18 @@ class TimeSeries():
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+            >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
 
-        >>> ts.get_index_after_time(0.9)
+            >>> ts.get_index_after_time(0.9)
             2
 
-        >>> ts.get_index_after_time(1)
+            >>> ts.get_index_after_time(1)
             2
 
-        >>> ts.get_index_after_time(1.1)
+            >>> ts.get_index_after_time(1.1)
             3
 
-        >>> ts.get_index_after_time(13)
+            >>> ts.get_index_after_time(13)
             nan
 
         """
@@ -895,19 +786,19 @@ class TimeSeries():
 
         Example
         -------
-        >>> # Instanciate a timeseries with some events
-        >>> ts = ktk.TimeSeries()
-        >>> ts.add_event(5.5, 'event1')
-        >>> ts.add_event(10.8, 'event2')
-        >>> ts.add_event(2.3, 'event2')
+            >>> # Instanciate a timeseries with some events
+            >>> ts = ktk.TimeSeries()
+            >>> ts.add_event(5.5, 'event1')
+            >>> ts.add_event(10.8, 'event2')
+            >>> ts.add_event(2.3, 'event2')
 
-        >>> ts.get_event_time('event1')
+            >>> ts.get_event_time('event1')
             5.5
 
-        >>> ts.get_event_time('event2', 0)
+            >>> ts.get_event_time('event2', 0)
             2.3
 
-        >>> ts.get_event_time('event2', 1)
+            >>> ts.get_event_time('event2', 1)
             10.8
 
         """
@@ -1117,15 +1008,8 @@ class TimeSeries():
         Return a subset of the TimeSeries.
 
         This method returns a TimeSeries that contains only selected data
-        keys. For example, if a TimeSeries ts has the fields Forces, Moments
-        and Angle, then:
-
-        >>> ts.get_subset(['Forces', 'Moments'])
-
-        returns an identical timeseries, but without the data key Angle.
-
-        The corresponding data_info keys are copied in the new TimeSeries.
-        All events are also copied in the new TimeSeries.
+        keys. The corresponding data_info keys are copied in the new
+        TimeSeries. All events are also copied in the new TimeSeries.
 
         Parameters
         ----------
@@ -1136,6 +1020,19 @@ class TimeSeries():
         -------
         ts : TimeSeries
             A copy of the TimeSeries, minus the unspecified data keys.
+
+        Example
+        -------
+            >>> ts = ktk.TimeSeries(time = np.arange(10))
+            >>> ts.data['signal1'] = ts.time
+            >>> ts.data['signal2'] = ts.time**2
+            >>> ts.data['signal3'] = ts.time**3
+            >>> ts.data.keys()
+            dict_keys(['signal1', 'signal2', 'signal3'])
+
+            >>> ts2 = ts.get_subset(['signal1', 'signal3'])
+            >>> ts2.data.keys()
+            dict_keys(['signal1', 'signal3'])
 
         """
         if isinstance(data_keys, str):
@@ -1153,3 +1050,8 @@ class TimeSeries():
                 ts.data_info[key] = deepcopy(self.data_info[key])
 
         return ts
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()

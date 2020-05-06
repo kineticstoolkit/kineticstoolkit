@@ -38,13 +38,25 @@ from threading import Thread
 from time import sleep
 
 
-def run_tests(module=None):
+def run_unit_tests():
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tests')
     subprocess.call(['pytest', '--ignore=interactive'])
+    os.chdir(cwd)
+
+
+def run_doc_tests():
+    """Run all doc tests."""
+    print('Running doc tests...')
+    cwd = os.getcwd()
+    os.chdir(ktk.config['RootFolder'] + '/ktk')
+    for file in os.listdir():
+        if file.endswith('.py'):
+            print(file)
+            subprocess.call(['python', '-m', 'doctest', file])
     os.chdir(cwd)
 
 
@@ -113,17 +125,17 @@ def compile_for_pypi():
 def upload_to_pypi():
     """Upload to PyPi."""
     root_folder = ktk.config['RootFolder']
-    
     subprocess.call([
-            'osascript',
-            '-e',
-            'tell application "Terminal" to do script '
-            f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'])
+        'osascript',
+        '-e',
+        'tell application "Terminal" to do script '
+        f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'])
 
 
 def release():
     """Run all functions for release, without packaging and uploading."""
-    run_tests()
+    run_doc_tests()
+    run_unit_tests()
     update_readme()
     generate_tutorials()
     generate_doc()
