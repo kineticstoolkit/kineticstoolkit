@@ -13165,7 +13165,7 @@ $( document ).ready(function(){
 <li><p>We often deal with <strong>events</strong> (e.g., heel contact), and there is no practical way using a DataFrame to keep a list of those events with their corresponding times, other than by keeping a separate list.</p>
 </li>
 </ol>
-<p>To overcome these limitation, <code>ktk</code> provides the <code>TimeSeries</code> and <code>TimeSeriesEvent</code> classes, which are the basis of every <code>ktk</code> module. These classes are largely inspired by Matlab's <code>timeseries</code>, <code>tsdata.event</code> and <code>tscollection</code>. Note that TimeSeries are fully compatible with Pandas DataFrame using their conversion methods <code>from_dataframe</code> and <code>to_dataframe</code>.</p>
+<p>To overcome these limitation, <code>ktk</code> provides the <code>TimeSeries</code> class, which is the basis of most <code>ktk</code> module. These classes are largely inspired by Matlab's <code>timeseries</code>, <code>tsdata.event</code> and <code>tscollection</code>. Note that TimeSeries are fully compatible with Pandas DataFrame using their conversion methods <code>from_dataframe</code> and <code>to_dataframe</code>.</p>
 <p>To better understand the role and capabilities of the TimeSeries class, we will begin by opening some columns of a csv file as a Pandas DataFrame. This file contains forces and moments applied on an instrumented wheelchair wheel during the propulsion of a manual wheelchair.</p>
 
 </div>
@@ -13991,7 +13991,7 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[16]:</div>
+<div class="prompt input_prompt">In&nbsp;[15]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">sync_event</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">)</span>
@@ -14034,14 +14034,12 @@ $( document ).ready(function(){
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[21]:</div>
+<div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Extract data push event 0 up to push event 4.</span>
 <span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="n">ts2</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">ts2</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 <span class="c1"># Remove the events that are not contained into the new time range.</span>
 <span class="n">ts2</span><span class="o">.</span><span class="n">trim_events</span><span class="p">()</span>
 
@@ -14061,22 +14059,10 @@ $( document ).ready(function(){
     <div class="prompt"></div>
 
 
-<div class="output_subarea output_stream output_stdout output_text">
-<pre>4.2125
-[[0.0, &#39;sync&#39;], [4.210000000000001, &#39;push&#39;], [5.58, &#39;recovery&#39;], [6.15, &#39;push&#39;], [6.77, &#39;recovery&#39;], [7.43, &#39;push&#39;], [7.98, &#39;recovery&#39;], [9.040000000000001, &#39;push&#39;], [9.530000000000001, &#39;recovery&#39;], [10.51, &#39;push&#39;], [10.950000000000001, &#39;recovery&#39;]]
-</pre>
-</div>
-</div>
-
-<div class="output_area">
-
-    <div class="prompt"></div>
-
-
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_32_1.png"
+<img src="index_files/index_32_0.png"
 >
 </div>
 
@@ -14089,20 +14075,79 @@ $( document ).ready(function(){
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="anchor-link" href="#Subsetting-and-merging-timeseries">&#182;</a></h3><p>To be continued.</p>
+<h3 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="anchor-link" href="#Subsetting-and-merging-timeseries">&#182;</a></h3><p>To process only a subset of a TimeSeries, we can use the <code>get_subset</code> method. For example, if we only want to process force information from the above TimeSeries, we could subset this TimeSeries.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[&nbsp;]:</div>
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span> 
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">])</span>
+
+<span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[23]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>{
+    &#39;Forces&#39;: &lt;array of shape (1514, 3)&gt;,
+      &#39;Ftot&#39;: &lt;array of shape (1514,)&gt;
+}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts3</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">plot_event_names</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="index_files/index_35_0.png"
+>
+</div>
+
+</div>
+
 </div>
 </div>
 
