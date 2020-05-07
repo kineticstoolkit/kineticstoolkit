@@ -37,7 +37,7 @@ def _save_to_current_folder(variable, variable_name):
                          sep='\t', quoting=csv.QUOTE_NONNUMERIC,
                          header=True)
 
-    elif type(variable) == ktk.TimeSeries:
+    elif str(type(variable)) == "<class 'ktk._timeseries.TimeSeries'>":
         os.mkdir(variable_name + '.TimeSeries')
         os.chdir(variable_name + '.TimeSeries')
 
@@ -78,14 +78,13 @@ def _save_to_current_folder(variable, variable_name):
         string = str(variable)
         try:
             test_variable = literal_eval(string)
-        except Exception:
-            test_variable = None
+            assert test_variable == variable
 
-        if test_variable == variable:
             file = open(variable_name + '.eval.txt', 'w')
             file.write(string)
             file.close()
-        else:
+
+        except Exception:
             warnings.warn(f'The variable {variable_name} could not be saved '
                           'because its type or contents is not supported.')
 

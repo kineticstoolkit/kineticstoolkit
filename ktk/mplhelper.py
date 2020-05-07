@@ -8,6 +8,7 @@
 
 import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
+import numpy as np
 from functools import partial
 
 
@@ -188,3 +189,37 @@ def button_dialog(text='Please select an option.',
     remove_side_pane()
 
     return button_pressed[0]
+
+
+def plot_mean_std(x, y, axis, color, label):
+    """
+    Plot a mean ± std curve with shaded std area.
+
+    Parameters
+    ----------
+    x : array
+        1-dimension array corresponding to the x axis.
+
+    y : array
+        2-dimension array corresponding to the y axis.
+
+    axis : int
+        Axis on which the data to average is aligned.
+
+    color : str or list-like
+        Color of the curve and shaded area.
+
+    label : str
+        Label of the curve, for the legend.
+
+    """
+    plt.plot(x, np.mean(y, axis=axis), color=color, linewidth=2,
+             label=label)
+
+    plt.fill_between(
+        x,
+        np.mean(y, axis=axis) -
+        np.std(y, axis=axis),
+        np.mean(y, axis=axis) +
+        np.std(y, axis=axis),
+        color=color, alpha=0.1)
