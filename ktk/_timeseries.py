@@ -672,8 +672,15 @@ class TimeSeries():
 
         plots only the forces and moments, without plotting the angle.
 
-
         """
+        format_sequence = [  # (linestyle, linewidth)
+            ('-', 1), ('--', 1), ('-.', 1),
+            ('-', 2), ('--', 2), ('-.', 2),
+            ('-', 3), ('--', 3), ('-.', 3),
+            ('-', 4), ('--', 4), ('-.', 4),
+            ('-', 5), ('--', 5), ('-.', 5)]
+        format_sequence_index = 0
+
         if data_keys is None or len(data_keys) == 0:
             # Plot all
             the_keys = self.data.keys()
@@ -697,6 +704,10 @@ class TimeSeries():
 
         # Now plot
         ax = plt.gca()
+        lines_and_labels = {
+            'lines': [],
+            'labels': []
+        }
         for the_key in the_keys:
 
             # Set label
@@ -706,7 +717,15 @@ class TimeSeries():
                 label += ' (' + self.data_info[the_key]['Unit'] + ')'
 
             # Plot data
-            ax.plot(self.time, self.data[the_key], label=label, **kwargs)
+            lines_and_labels['lines'].append(
+                ax.plot(self.time, self.data[the_key], **kwargs,
+                        linestyle=format_sequence[format_sequence_index][0],
+                        linewidth=format_sequence[format_sequence_index][1]
+                        )[0])
+            lines_and_labels['labels'].append(label)
+            format_sequence_index += 1
+            if format_sequence_index >= len(format_sequence):
+                format_sequence_index = 0
 
         # Plot the events
         if len(self.events) > 0:
@@ -725,7 +744,9 @@ class TimeSeries():
                 event_line_y[3 * i_event + 1] = max_y
                 event_line_y[3 * i_event + 2] = np.nan
 
-            ax.plot(event_line_x, event_line_y, label='events')
+            lines_and_labels['lines'].append(
+                ax.plot(event_line_x, event_line_y, ':k')[0])
+            lines_and_labels['labels'].append('events')
 
             if plot_event_names:
                 for event in self.events:
@@ -737,9 +758,10 @@ class TimeSeries():
         ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
 
         # Add legend if required
-        if len(the_keys) > 1 or len(self.events) > 0:
-            if len(the_keys) <= max_legend_items:
-                ax.legend()
+        if len(lines_and_labels) > 1:
+            if len(lines_and_labels) <= max_legend_items:
+                ax.legend(lines_and_labels['lines'],
+                          lines_and_labels['labels'])
         else:  # Only one data, plot it on the y axis.
             ax.set_ylabel(label)
 
