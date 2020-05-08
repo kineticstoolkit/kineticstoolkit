@@ -103,7 +103,7 @@ def set_color_order(setting):
         elif setting == 'classic':
             thelist = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
         elif setting == 'xyz':
-            thelist = ['r', 'g', 'b', 'c', 'm', 'y', 'k']
+            thelist = ['r', 'g', 'b', 'c', 'm', 'y', 'k', 'tab:orange']
         else:
             raise(ValueError('This setting is not recognized.'))
     elif isinstance(setting, list):
