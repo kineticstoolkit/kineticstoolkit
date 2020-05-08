@@ -213,13 +213,13 @@ def plot_mean_std(x, y, axis, color, label):
         Label of the curve, for the legend.
 
     """
-    plt.plot(x, np.mean(y, axis=axis), color=color, linewidth=2,
+    plt.plot(x, np.nanmean(y, axis=axis), color=color, linewidth=2,
              label=label)
 
     plt.fill_between(
         x,
-        np.mean(y, axis=axis) -
-        np.std(y, axis=axis),
-        np.mean(y, axis=axis) +
-        np.std(y, axis=axis),
+        np.nanmean(y, axis=axis) -
+        np.nanstd(y, axis=axis),
+        np.nanmean(y, axis=axis) +
+        np.nanstd(y, axis=axis),
         color=color, alpha=0.1)
