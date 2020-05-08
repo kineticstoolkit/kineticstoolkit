@@ -32,25 +32,13 @@ def test_empty_constructor():
     assert isinstance(ts.data, dict)
     assert isinstance(ts.time_info, dict)
     assert isinstance(ts.data_info, dict)
-    assert isinstance(ts.events, list)
+    assert isinstance(ts.events, set)
     assert ts.time_info['Unit'] == 's'
 
 def test_add_data_info():
     ts = ktk.TimeSeries()
     ts.add_data_info('Force', 'Unit', 'N')
     assert ts.data_info['Force']['Unit'] == 'N'
-
-def test_add_event():
-    ts = ktk.TimeSeries()
-    ts.add_event(15.34, 'test_event1')
-    ts.add_event(99.2, 'test_event2')
-    ts.add_event(1, 'test_event3')
-    assert ts.events[0].name == 'test_event3'
-    assert ts.events[1].name == 'test_event1'
-    assert ts.events[2].name == 'test_event2'
-    assert ts.events[0].time == 1
-    assert ts.events[1].time == 15.34
-    assert ts.events[2].time == 99.2
 
 def test_get_event_time():
     ts = ktk.TimeSeries()
