@@ -256,7 +256,7 @@ class DBInterface():
         dict_out = table.to_dict('record')
 
         if len(dict_out) < 1:
-            raise ValueError('No item found.')
+            raise ValueError(f'No data was found for {filters}.')
         elif len(dict_out) > 1:
             raise ValueError('More than one item found.')
         else:
