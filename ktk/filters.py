@@ -50,13 +50,18 @@ def savgol(tsin, window_length, poly_order, deriv=0):
     for key in tsout.data.keys():
 
         input_signal = tsout.data[key]
-        # Resample NaNs if the exist:
+        # Resample NaNs if they exist:
 
         # Find NaNs
         signal_shape = np.shape(input_signal)
 
         n_data = signal_shape[0]
         nan_index = tsout.isnan(key)
+
+        if np.sum(~nan_index) < poly_order + 1:
+            # We can't do anything without more points
+            warnings.warn('Not enough non-missing samples to filter.')
+            continue
 
         if not np.all(~nan_index):
             # There were NaNs, issue a warning.
