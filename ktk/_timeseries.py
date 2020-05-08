@@ -616,62 +616,31 @@ class TimeSeries():
         plots only the forces and moments, without plotting the angle.
 
         """
-        format_sequence = [  # (linestyle, linewidth)
-            ('-', 1), ('--', 1), ('-.', 1),
-            ('-', 2), ('--', 2), ('-.', 2),
-            ('-', 3), ('--', 3), ('-.', 3),
-            ('-', 4), ('--', 4), ('-.', 4),
-            ('-', 5), ('--', 5), ('-.', 5)]
-        format_sequence_index = 0
-
         if data_keys is None or len(data_keys) == 0:
             # Plot all
-            the_keys = self.data.keys()
+            ts = self
         else:
-            # Plot only what is asked for.
-            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
-                the_keys = data_keys
-            elif isinstance(data_keys, str):
-                the_keys = [data_keys]
-            else:
-                raise(TypeError(
-                        'data_keys must be a string or list of strings'))
+            ts = self.get_subset(data_keys)
 
-        n_plots = len(the_keys)
+        ax = ts.to_dataframe().plot()
 
-        n_events = len(self.events)
-        if n_events > 0:
-            event_times = np.array(self.events)[:, 0]
-        else:
-            event_times = np.array([])
+        # Add labels
+        ax.set_xlabel('Time (' + ts.time_info['Unit'] + ')')
 
-        # Now plot
-        ax = plt.gca()
-        lines_and_labels = {
-            'lines': [],
-            'labels': []
-        }
-        for the_key in the_keys:
-
-            # Set label
-            label = the_key
-            if (the_key in self.data_info and
-                    'Unit' in self.data_info[the_key]):
-                label += ' (' + self.data_info[the_key]['Unit'] + ')'
-
-            # Plot data
-            lines_and_labels['lines'].append(
-                ax.plot(self.time, self.data[the_key], **kwargs,
-                        linestyle=format_sequence[format_sequence_index][0],
-                        linewidth=format_sequence[format_sequence_index][1]
-                        )[0])
-            lines_and_labels['labels'].append(label)
-            format_sequence_index += 1
-            if format_sequence_index >= len(format_sequence):
-                format_sequence_index = 0
+        ylabel = ''
+        for data in ts.data_info:
+            for info in ts.data_info[data]:
+                if info == 'Unit':
+                    ylabel += ts.data_info[data][info] + ' '
+        ax.set_ylabel(ylabel)
 
         # Plot the events
-        if len(self.events) > 0:
+        n_events = len(ts.events)
+        event_times = []
+        for event in ts.events:
+            event_times.append(event.time)
+
+        if len(ts.events) > 0:
             a = ax.axis()
             min_y = a[2]
             max_y = a[3]
@@ -687,26 +656,13 @@ class TimeSeries():
                 event_line_y[3 * i_event + 1] = max_y
                 event_line_y[3 * i_event + 2] = np.nan
 
-            lines_and_labels['lines'].append(
-                ax.plot(event_line_x, event_line_y, ':k')[0])
-            lines_and_labels['labels'].append('events')
+            ax.plot(event_line_x, event_line_y, ':k')
 
             if plot_event_names:
-                for event in self.events:
+                for event in ts.events:
                     ax.text(event.time, max_y, event.name,
                             rotation='vertical',
                             horizontalalignment='center')
-
-        # Add labels
-        ax.set_xlabel('Time (' + self.time_info['Unit'] + ')')
-
-        # Add legend if required
-        if len(lines_and_labels) > 1:
-            if len(lines_and_labels) <= max_legend_items:
-                ax.legend(lines_and_labels['lines'],
-                          lines_and_labels['labels'])
-        else:  # Only one data, plot it on the y axis.
-            ax.set_ylabel(label)
 
     def get_index_at_time(self, time):
         """
