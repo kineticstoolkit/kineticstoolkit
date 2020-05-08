@@ -227,7 +227,7 @@ orthogonal (False). Default is True.</dd>
 </dd>
 <dt id="ktk.TimeSeries"><code class="flex name class">
 <span>class <span class="ident">TimeSeries</span></span>
-<span>(</span><span>time=array([], dtype=float64), time_info={'Unit': 's'}, data={}, data_info={}, events=[], from_dataframe=None)</span>
+<span>(</span><span>time=array([], dtype=float64), time_info={'Unit': 's'}, data={}, data_info={}, events=set(), from_dataframe=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>A class that implements TimeSeries.</p>
@@ -251,6 +251,8 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 <a title="ktk.TimeSeries.add_data_info" href="#ktk.TimeSeries.add_data_info"><code>TimeSeries.add_data_info()</code></a>.</p>
 <p>The default is {}.</p>
 </dd>
+<dt><strong><code>events</code></strong> :&ensp;<code>set</code> (optional)</dt>
+<dd>A set of TimeSeriesEvent. The default is set().</dd>
 </dl>
 <h2 id="example">Example</h2>
 <pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0,100))
@@ -307,7 +309,9 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 &gt;&gt;&gt; ts.add_event(2.3, 'event2')
 
 &gt;&gt;&gt; ts.events
-[[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
+{TimeSeriesEvent(time=2.3, name='event2'),
+ TimeSeriesEvent(time=5.5, name='event1'),
+ TimeSeriesEvent(time=10.8, name='event2')}
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.copy"><code class="name flex">
@@ -1095,12 +1099,18 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 &gt;&gt;&gt; ts.add_event(5)
 &gt;&gt;&gt; ts.add_event(9)
 &gt;&gt;&gt; ts.add_event(10)
-&gt;&gt;&gt; ts.events
-[[-2.0, 'event'], [0.0, 'event'], [5.0, 'event'], [9.0, 'event'], [10.0, 'event']]
 
 &gt;&gt;&gt; ts.trim_events()
-&gt;&gt;&gt; ts.events
-[[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
+&gt;&gt;&gt; ktk.TimeSeriesEvent(-2, 'event') in ts.events
+False
+&gt;&gt;&gt; ktk.TimeSeriesEvent(0, 'event') in ts.events
+True
+&gt;&gt;&gt; ktk.TimeSeriesEvent(5, 'event') in ts.events
+True
+&gt;&gt;&gt; ktk.TimeSeriesEvent(9, 'event') in ts.events
+True
+&gt;&gt;&gt; ktk.TimeSeriesEvent(10, 'event') in ts.events
+False
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.ui_add_event"><code class="name flex">
@@ -1186,44 +1196,25 @@ None, which means that all data is plotted.</dd>
 </dd>
 <dt id="ktk.TimeSeriesEvent"><code class="flex name class">
 <span>class <span class="ident">TimeSeriesEvent</span></span>
-<span>(</span><span>time=0.0, name='event')</span>
+<span>(</span><span>*args, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Define an event in a timeseries.</p>
-<p>This class derives from the list class. A TimeSeriesEvent is always a
-two-items list with the first item being the time and the second item
-being the name of the event.</p>
-<p>The dependent properties <code>time</code> and <code>name</code> can be used both in read and
-write for convenience.</p>
-<p>This class is rarely used by itself, it is easier to use the <a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a>`
-methods to deal with events.</p>
-<h2 id="properties">Properties</h2>
-<dl>
-<dt><strong><code>time</code></strong> :&ensp;<code>float</code></dt>
-<dd>The time at which the event happened.</dd>
-<dt><strong><code>name</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the event.</dd>
-</dl>
-<h2 id="example">Example</h2>
-<pre><code>&gt;&gt;&gt; event = ktk.TimeSeriesEvent()
-&gt;&gt;&gt; event.time = 1.5
-&gt;&gt;&gt; event.name = 'event_name'
-&gt;&gt;&gt; event
-[1.5, 'event_name']
-</code></pre></section>
+<p>A TimeSeriesEvent is a named tuple where the first item (<code>time</code>) is the
+time and the second item (<code>name</code>) is the name of the event.</p></section>
 <h3>Ancestors</h3>
 <ul class="hlist">
-<li>builtins.list</li>
+<li>builtins.tuple</li>
 </ul>
 <h3>Instance variables</h3>
 <dl>
 <dt id="ktk.TimeSeriesEvent.name"><code class="name">var <span class="ident">name</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Alias for field number 1</p></section>
 </dd>
 <dt id="ktk.TimeSeriesEvent.time"><code class="name">var <span class="ident">time</span></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Alias for field number 0</p></section>
 </dd>
 </dl>
 </dd>
