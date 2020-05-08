@@ -48,7 +48,7 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
     Returns
     -------
     ts_copy : TimeSeries
-    	A copy of ts with the added events.
+        A copy of ts with the added events.
 
     """
     # Find the pushes
@@ -95,7 +95,7 @@ def find_cycles(ts, data_key, event_name1, event_name2, threshold1, threshold2,
 
 def time_normalize(ts, event_name1, event_name2, n_points=100):
     """
-    Time-normalize cycles in a TimeSeries
+    Time-normalize cycles in a TimeSeries.
 
     This method time-normalizes the TimeSeries at each cycle defined by
     event_name1 and event_name2 on n_points. The time-normalized cycles are
@@ -106,7 +106,7 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
     Parameters
     ----------
     ts : TimeSeries
-    	The TimeSeries to analyze.
+        The TimeSeries to analyze.
     event_name1, event_name2 : str
         The events that correspond to the begin and end of a cycle.
     n_points : int (optional)
@@ -115,7 +115,7 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
     Returns
     -------
     ts_copy : TimeSeries
-    	A new TimeSeries where each cycles has been time-normalized.
+        A new TimeSeries where each cycles has been time-normalized.
     """
     # Find the final number of cycles
     if len(ts.events) < 2:
@@ -182,11 +182,11 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
 
 def get_reshaped_time_normalized_data(ts, n_points=100):
     """
-    Get reshaped data from a time-normalized TimeSeries
+    Get reshaped data from a time-normalized TimeSeries.
 
     This methods returns the data of a time-normalized TimeSeries, reshaped
     into this form:
-    
+
     n_cycles x n_points x data_shape
 
     Parameters
@@ -198,8 +198,8 @@ def get_reshaped_time_normalized_data(ts, n_points=100):
     Returns
     -------
     data : dict
-	    A dictionary that contains every TimeSeries data keys, expressed into
-	    the form n_points x n_cycles x data_shape.
+        A dictionary that contains every TimeSeries data keys, expressed into
+        the form n_points x n_cycles x data_shape.
     """
     if np.mod(len(ts.time), n_points) != 0:
         raise(ValueError(
@@ -213,3 +213,61 @@ def get_reshaped_time_normalized_data(ts, n_points=100):
             new_shape.append(ts.data[key].shape[i])
         data[key] = ts.data[key].reshape(new_shape, order='C')
     return data
+
+
+def most_repeatable_cycles(data, n_cycles):
+    """
+    Get the indexes of the most repeatable cycles in TimeSeries or array.
+    Data must be exempt of nan.
+
+    Parameters
+    ----------
+    data : array
+        Data to analyze, in the form of an array of shape (MxN). M corresponds
+        to cycles, and N corresponds to normalized time.
+
+    n_cycles : int
+        Number of cycles to keep
+
+    Returns
+    -------
+    cycles : list of int
+
+    Example
+    -------
+        >>> import ktk, numpy as np
+
+        >>> # 5 cycles with cycle 2 that is different from the others:
+        >>> data = np.array( \
+                [[0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
+                 [0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
+                 [3. , 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9], \
+                 [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
+                 [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
+
+        >>> ktk.cycles.most_repeatable_cycles(data, 4)
+        [0, 1, 3, 4]
+
+    """
+
+    data = data.copy()
+    cycles = list(range(data.shape[0]))
+
+    while len(cycles) > n_cycles:
+
+        current_mean_cycle = np.mean(data, axis=0)
+
+        rms = np.zeros(len(cycles))
+
+        for i_curve in range(len(cycles)):
+            rms[i_curve] = np.sqrt(np.mean(np.sum(
+                (data[i_curve] - current_mean_cycle) ** 2)))
+
+        cycles.pop(np.argmax(rms))
+
+    return cycles
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod()
