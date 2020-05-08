@@ -569,7 +569,6 @@ class TimeSeries():
         ktk.mplhelper.message('')
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
-        self.sort_events()
         return True
 
     def copy(self):
@@ -1789,8 +1788,7 @@ class TimeSeries():
 
         # Merge events
         for event in ts.events:
-            self.events.append(event)
-        self.sort_events()
+            self.events.add(event)
 
 
 if __name__ == "__main__":
