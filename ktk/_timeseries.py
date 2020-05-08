@@ -33,7 +33,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 import warnings
-import collections
 
 from copy import deepcopy
 import ktk._repr
@@ -217,15 +216,57 @@ def _dataframe_to_dict_of_arrays(dataframe):
     return out
 
 
-TimeSeriesEvent = collections.namedtuple(
-    'TimeSeriesEvent', ['time', 'name'])
-TimeSeriesEvent.__doc__ = """
+class TimeSeriesEvent(list):
+    """
     Define an event in a timeseries.
 
-    A TimeSeriesEvent is a named tuple where the first item (`time`) is the
-    time and the second item (`name`) is the name of the event.
+    This class derives from the list class. A TimeSeriesEvent is always a
+    two-items list with the first item being the time and the second item
+    being the name of the event.
+
+    The dependent properties `time` and `name` can be used both in read and
+    write for convenience.
+
+    This class is rarely used by itself, it is easier to use the `TimeSeries``
+    methods to deal with events.
+
+    Properties
+    ----------
+    time : float
+        The time at which the event happened.
+    name : str
+        The name of the event.
+
+    Example
+    -------
+        >>> event = ktk.TimeSeriesEvent()
+        >>> event.time = 1.5
+        >>> event.name = 'event_name'
+        >>> event
+        [1.5, 'event_name']
 
     """
+
+    def __init__(self, time=0., name='event'):
+        list.__init__(self)
+        self.append(float(time))
+        self.append(str(name))
+
+    @property
+    def time(self):
+        return self[0]
+
+    @time.setter
+    def time(self, time):
+        self[0] = float(time)
+
+    @property
+    def name(self):
+        return self[1]
+
+    @name.setter
+    def name(self, name):
+        self[1] = str(name)
 
 
 class TimeSeries():
@@ -258,9 +299,6 @@ class TimeSeries():
 
         The default is {}.
 
-    events : set (optional)
-        A set of TimeSeriesEvent. The default is set().
-
     Example
     -------
         >>> ts = ktk.TimeSeries(time=np.arange(0,100))
@@ -268,7 +306,7 @@ class TimeSeries():
     """
 
     def __init__(self, time=np.array([]), time_info={'Unit': 's'},
-                 data=dict(), data_info=dict(), events=set(),
+                 data=dict(), data_info=dict(), events=list(),
                  from_dataframe=None):
 
         self.time = time.copy()
@@ -484,12 +522,11 @@ class TimeSeries():
             >>> ts.add_event(2.3, 'event2')
 
             >>> ts.events
-            {TimeSeriesEvent(time=2.3, name='event2'),
-             TimeSeriesEvent(time=5.5, name='event1'),
-             TimeSeriesEvent(time=10.8, name='event2')}
+            [[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
 
         """
-        self.events.add(TimeSeriesEvent(time, name))
+        self.events.append(TimeSeriesEvent(time, name))
+        self._sort_events()
 
     def ui_add_event(self, name='event', plot=[], multiple_events=False):
         """
@@ -569,7 +606,27 @@ class TimeSeries():
         ktk.mplhelper.message('')
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
+        self._sort_events()
         return True
+
+    def _sort_events(self):
+        """
+        Sorts the TimeSeries' events and ensure that all events are unique.
+
+        Parameters
+        ----------
+        None.
+
+        Returns
+        -------
+        None.
+
+        """
+        self.events = sorted(self.events)
+        for i in range(len(self.events) - 1, 0, -1):
+            if ((self.events[i].time == self.events[i - 1].time) and
+                    (self.events[i].name == self.events[i - 1].name)):
+                self.events.pop(i)
 
     def copy(self):
         """
@@ -631,7 +688,9 @@ class TimeSeries():
         for data in ts.data_info:
             for info in ts.data_info[data]:
                 if info == 'Unit':
-                    ylabel += ts.data_info[data][info] + ' '
+                    if len(ylabel) > 0:
+                        ylabel += ', '
+                    ylabel += ts.data_info[data][info]
         ax.set_ylabel(ylabel)
 
         # Plot the events
@@ -1417,10 +1476,8 @@ class TimeSeries():
         None.
 
         """
-        new_events = set()
         for event in self.events:
-            new_events.add(ktk.TimeSeriesEvent(event.time + time, event.name))
-        self.events = new_events
+            event.time = event.time + time
         self.time = self.time + time
 
     def sync_event(self, event_name, event_occurrence=0):
@@ -1466,22 +1523,16 @@ class TimeSeries():
             >>> ts.add_event(5)
             >>> ts.add_event(9)
             >>> ts.add_event(10)
+            >>> ts.events
+            [[-2.0, 'event'], [0.0, 'event'], [5.0, 'event'], [9.0, 'event'], [10.0, 'event']]
 
             >>> ts.trim_events()
-            >>> ktk.TimeSeriesEvent(-2, 'event') in ts.events
-            False
-            >>> ktk.TimeSeriesEvent(0, 'event') in ts.events
-            True
-            >>> ktk.TimeSeriesEvent(5, 'event') in ts.events
-            True
-            >>> ktk.TimeSeriesEvent(9, 'event') in ts.events
-            True
-            >>> ktk.TimeSeriesEvent(10, 'event') in ts.events
-            False
+            >>> ts.events
+            [[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
 
         """
         events = self.events
-        self.events = set()
+        self.events = []
         for event in events:
             if event.time >= self.time[0] and event.time <= self.time[-1]:
                 self.add_event(event.time, event.name)
@@ -1766,7 +1817,8 @@ class TimeSeries():
 
         # Merge events
         for event in ts.events:
-            self.events.add(event)
+            self.events.append(event)
+        self._sort_events()
 
 
 if __name__ == "__main__":

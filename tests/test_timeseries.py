@@ -32,7 +32,7 @@ def test_empty_constructor():
     assert isinstance(ts.data, dict)
     assert isinstance(ts.time_info, dict)
     assert isinstance(ts.data_info, dict)
-    assert isinstance(ts.events, set)
+    assert isinstance(ts.events, list)
     assert ts.time_info['Unit'] == 's'
 
 def test_add_data_info():
