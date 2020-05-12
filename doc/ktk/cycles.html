@@ -87,7 +87,7 @@ the form n_points x n_cycles x data_shape.</dd>
 </code></dt>
 <dd>
 <section class="desc"><p>Get the indexes of the most repeatable cycles in TimeSeries or array.
-Data must be exempt of nan.</p>
+Cycles that include at least one NaN are excluded.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>data</code></strong> :&ensp;<code>array</code></dt>
@@ -104,11 +104,13 @@ to cycles, and N corresponds to normalized time.</dd>
 <h2 id="example">Example</h2>
 <pre><code>&gt;&gt;&gt; import ktk, numpy as np
 
-&gt;&gt;&gt; # 5 cycles with cycle 2 that is different from the others:
-&gt;&gt;&gt; data = np.array(                 [[0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],                  [0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],                  [3. , 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9],                  [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],                  [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
+&gt;&gt;&gt; # We create 8 cycles with:
+&gt;&gt;&gt; # - cycle 2 that is different from the others,
+&gt;&gt;&gt; # - cycles 5 and 6 that contain NaNs.
+&gt;&gt;&gt; data = np.array(                 [[0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],                  [0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],                  [3. ,    3.1,    3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9],                  [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],                  [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],                  [np.nan, np.nan, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],                  [np.nan, 0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],                  [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
 
-&gt;&gt;&gt; ktk.cycles.most_repeatable_cycles(data, 4)
-[0, 1, 3, 4]
+&gt;&gt;&gt; ktk.cycles.most_repeatable_cycles(data, 5)
+[0, 1, 3, 4, 7]
 </code></pre></section>
 </dd>
 <dt id="ktk.cycles.time_normalize"><code class="name flex">

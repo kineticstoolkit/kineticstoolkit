@@ -218,7 +218,7 @@ def get_reshaped_time_normalized_data(ts, n_points=100):
 def most_repeatable_cycles(data, n_cycles):
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
-    Data must be exempt of nan.
+    Cycles that include at least one NaN are excluded.
 
     Parameters
     ----------
@@ -237,31 +237,45 @@ def most_repeatable_cycles(data, n_cycles):
     -------
         >>> import ktk, numpy as np
 
-        >>> # 5 cycles with cycle 2 that is different from the others:
+        >>> # We create 8 cycles with:
+        >>> # - cycle 2 that is different from the others,
+        >>> # - cycles 5 and 6 that contain NaNs.
         >>> data = np.array( \
-                [[0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
-                 [0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
-                 [3. , 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9], \
-                 [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
-                 [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
+                [[0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
+                 [0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
+                 [3. ,    3.1,    3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9], \
+                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
+                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
+                 [np.nan, np.nan, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
+                 [np.nan, 0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
+                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
 
-        >>> ktk.cycles.most_repeatable_cycles(data, 4)
-        [0, 1, 3, 4]
+        >>> ktk.cycles.most_repeatable_cycles(data, 5)
+        [0, 1, 3, 4, 7]
 
     """
 
     data = data.copy()
     cycles = list(range(data.shape[0]))
 
+    # --- Exclude cycles with nans
+    new_cycles = []
+    for cycle in cycles:
+        if ~np.isnan(np.sum(data[cycle])):
+            new_cycles.append(cycle)
+    cycles = new_cycles
+
+    # --- Iteratively remove the cycle that is the most different from the
+    #     mean of the remaining cycles.
     while len(cycles) > n_cycles:
 
-        current_mean_cycle = np.mean(data, axis=0)
+        current_mean_cycle = np.mean(data[cycles], axis=0)
 
         rms = np.zeros(len(cycles))
 
         for i_curve in range(len(cycles)):
             rms[i_curve] = np.sqrt(np.mean(np.sum(
-                (data[i_curve] - current_mean_cycle) ** 2)))
+                (data[cycles[i_curve]] - current_mean_cycle) ** 2)))
 
         cycles.pop(np.argmax(rms))
 

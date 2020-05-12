@@ -104,7 +104,7 @@ def _format_dict_entries(value, quotes=True):
                 else:
                     out += (to_show[0:max_length_to_show - 3] + '...')
 
-            if the_key != list(the_keys)[-1]:
+            if the_key != sorted(the_keys)[-1]:
                 out += ','
 
             # Print the ending } if needed
