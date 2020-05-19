@@ -112,7 +112,9 @@ def set_color_order(setting):
         raise(ValueError('This setting is not recognized.'))
 
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(
-          'color', thelist)
+        linewidth=[1, 2, 3, 4]) * mpl.cycler(
+            linestyle=['-', '--', '-.', ':']) * mpl.cycler(
+                color=thelist)
 
 
 def get_credentials():

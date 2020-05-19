@@ -428,7 +428,7 @@ class TimeSeries():
 
         Parameters
         ----------
-        signel_name : str
+        signal_name : str
             The data key the info corresponds to.
         info_name : str
             The name of the info.
@@ -457,15 +457,49 @@ class TimeSeries():
         else:  # Create and assign value
             self.data_info[signal_name] = {info_name: value}
 
-    def rename_data(self, old_data_field, new_data_field):
+    def remove_data_info(self, signal_name, info_name):
+        """
+        Remove metadata from a TimeSeries' data.
+
+        Note: No warning or exception is raised if the data key does not exist.
+
+        Parameters
+        ----------
+        signal_name : str
+            The data key the info corresponds to.
+        info_name : str
+            The name of the info.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+            >>> ts = ktk.TimeSeries()
+            >>> ts.add_data_info('Forces', 'Unit', 'N')
+            >>> ts.data_info['Forces']
+            {'Unit': 'N'}
+
+            >>> ts.remove_data_info('Forces', 'Unit')
+            >>> ts.data_info['Forces']
+            {}
+
+        """
+        try:
+            self.data_info[signal_name].pop(info_name)
+        except KeyError:
+            pass
+
+    def rename_data(self, old_data_key, new_data_key):
         """
         Rename a key in data and data_info.
 
         Parameters
         ----------
-        old_data_field : str
+        old_data_key : str
             Name of the data key.
-        new_data_field : str
+        new_data_key : str
             New name of the data key.
 
         Returns
@@ -493,10 +527,58 @@ class TimeSeries():
             {'signal': {'Unit': 'm'}}
 
         """
-        if old_data_field in self.data:
-            self.data[new_data_field] = self.data.pop(old_data_field)
-        if old_data_field in self.data_info:
-            self.data_info[new_data_field] = self.data_info.pop(old_data_field)
+        if old_data_key in self.data:
+            self.data[new_data_key] = self.data.pop(old_data_key)
+        if old_data_key in self.data_info:
+            self.data_info[new_data_key] = self.data_info.pop(old_data_key)
+
+    def remove_data(self, data_key):
+        """
+        Remove a data key and its associated metadata.
+
+        Note: No warning or exception is raised if the data key does not exist.
+
+        Parameters
+        ----------
+        data_key: str
+            Name of the data key.
+
+        Returns
+        -------
+        None.
+
+        Example
+        -------
+            >>> # Prepare a test TimeSeries with data 'test'
+            >>> ts = ktk.TimeSeries()
+            >>> ts.data['test'] = np.arange(10)
+            >>> ts.add_data_info('test', 'Unit', 'm')
+
+            >>> ts.data
+            {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+
+            >>> ts.data_info
+            {'test': {'Unit': 'm'}}
+
+            >>> # Now remove data 'test'
+            >>> ts.remove_data('test')
+
+            >>> ts.data
+            {}
+
+            >>> ts.data_info
+            {}
+
+        """
+        try:
+            self.data.pop(data_key)
+        except KeyError:
+            pass
+        try:
+            self.data_info.pop(data_key)
+        except KeyError:
+            pass
+
 
     def add_event(self, time, name='event'):
         """
@@ -640,7 +722,7 @@ class TimeSeries():
         return deepcopy(self)
 
     def plot(self, data_keys=None, plot_event_names=False,
-             max_legend_items=5, **kwargs):
+             max_legend_items=None, **kwargs):
         """
         Plot the TimeSeries using matplotlib.
 
@@ -653,9 +735,9 @@ class TimeSeries():
             True to plot the event names on top of the event lines.
             The default is False.
         max_legend_items : int (optional)
-            Maximal number of legend items, including the 'events' entry. If
-            there are more items in the legend, then the legend is not shown
-            for space and performance considerations.
+            Maximal number of items in the legend. If the plot has more than
+            max_legend_items curbes, then the legend is not shown. The default
+            is None, which means a legend is always shown.
 
         Additional keyboard arguments are passed to the pyplot's plot function.
 
@@ -673,16 +755,28 @@ class TimeSeries():
         plots only the forces and moments, without plotting the angle.
 
         """
+        if max_legend_items is None:
+            max_legend_items = np.inf
+
         if data_keys is None or len(data_keys) == 0:
             # Plot all
             ts = self
         else:
             ts = self.get_subset(data_keys)
 
-        ax = ts.to_dataframe().plot()
+        df = ts.to_dataframe()
+        legend = df.columns.to_list()
+
+        for label in legend:
+            plt.plot(df.index.to_numpy(),
+                     df[label].to_numpy(), label=label, **kwargs)
+
+        if len(legend) <= max_legend_items:
+            plt.legend(loc='upper right',
+                       ncol=1+int(len(legend)/40))  # Max 40 items per line
 
         # Add labels
-        ax.set_xlabel('Time (' + ts.time_info['Unit'] + ')')
+        plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
 
         ylabel = ''
         for data in ts.data_info:
@@ -691,7 +785,7 @@ class TimeSeries():
                     if len(ylabel) > 0:
                         ylabel += ', '
                     ylabel += ts.data_info[data][info]
-        ax.set_ylabel(ylabel)
+        plt.ylabel(ylabel)
 
         # Plot the events
         n_events = len(ts.events)
@@ -700,7 +794,7 @@ class TimeSeries():
             event_times.append(event.time)
 
         if len(ts.events) > 0:
-            a = ax.axis()
+            a = plt.axis()
             min_y = a[2]
             max_y = a[3]
             event_line_x = np.zeros(3 * n_events)
@@ -715,11 +809,11 @@ class TimeSeries():
                 event_line_y[3 * i_event + 1] = max_y
                 event_line_y[3 * i_event + 2] = np.nan
 
-            ax.plot(event_line_x, event_line_y, ':k')
+            plt.plot(event_line_x, event_line_y, ':k')
 
             if plot_event_names:
                 for event in ts.events:
-                    ax.text(event.time, max_y, event.name,
+                    plt.text(event.time, max_y, event.name,
                             rotation='vertical',
                             horizontalalignment='center')
 
@@ -1566,7 +1660,7 @@ class TimeSeries():
         None.
 
         """
-        fig = plt.figure()
+        fig = plt.figure('ktk.TimeSeries.ui_sync')
 
         if ts2 is None:
             # Synchronize ts1 only
@@ -1591,8 +1685,8 @@ class TimeSeries():
             while finished is False:
 
                 if len(axes) == 0:
-                    axes.append(plt.subplot(2, 1, 1))
-                    axes.append(plt.subplot(2, 1, 2, sharex=axes[0]))
+                    axes.append(fig.add_subplot(2, 1, 1))
+                    axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
 
                 plt.sca(axes[0])
                 axes[0].cla()
@@ -1610,25 +1704,36 @@ class TimeSeries():
 
                 choice = ktk.mplhelper.button_dialog(
                     'Please select an option.',
-                    choices=['Sync both TimeSeries on a common event',
-                             'Zero both TimeSeries using ts1',
-                             'Zero both TimeSeries using ts2',
+                    choices=['Zero ts1 only',
+                             'Zero ts2 only',
+                             'Zero ts1 and ts2 using ts1',
+                             'Zero ts1 and ts2 using ts2',
+                             'Sync ts2 and ts2 on a common event',
                              'OK'])
 
-                if choice == 0:  # Sync on a common event
+                if choice == 0:  # Zero ts1 only
                     ktk.mplhelper.message(
-                        'Click on the common event in ts1.')
+                        'Zero ts1 only.\n'
+                        'Click on the time zero in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.mplhelper.message(
-                        'Click on the common event in ts2.')
-                    click_2 = plt.ginput(1)
                     ktk.mplhelper.message('')
 
                     self.shift(-click_1[0][0])
-                    ts2.shift(-click_2[0][0])
 
-                elif choice == 1:  # Zero using TimeSeries 1
+                elif choice == 1:  # Zero ts2 only
                     ktk.mplhelper.message(
+                        'Zero ts2 only.\n'
+                        '-------------\n'
+                        'Click on the time zero in ts2.')
+                    click_1 = plt.ginput(1)
+                    ktk.mplhelper.message('')
+
+                    ts2.shift(-click_1[0][0])
+
+                elif choice == 2:  # Zero ts1 and ts2 using ts1
+                    ktk.mplhelper.message(
+                        'Zero ts1 and ts2 using ts1.\n'
+                        '-------------\n'
                         'Click on the time zero in ts1.')
                     click_1 = plt.ginput(1)
                     ktk.mplhelper.message('')
@@ -1636,8 +1741,10 @@ class TimeSeries():
                     self.shift(-click_1[0][0])
                     ts2.shift(-click_1[0][0])
 
-                elif choice == 2:  # Zero using TimeSeries 2
+                elif choice == 3:  # Zero ts1 and ts2 using ts2
                     ktk.mplhelper.message(
+                        'Zero ts1 and ts2 using ts2.\n'
+                        '-------------\n'
                         'Click on the time zero in ts2.')
                     click_2 = plt.ginput(1)
                     ktk.mplhelper.message('')
@@ -1645,7 +1752,25 @@ class TimeSeries():
                     self.shift(-click_2[0][0])
                     ts2.shift(-click_2[0][0])
 
-                elif choice == 3 or choice < -1:  # OK or closed figure, quit.
+                elif choice == 4:  # Sync on a common event
+                    ktk.mplhelper.message(
+                        'Sync ts2 and ts2 on a common event.\n'
+                        '-------------\n'
+                        'Click on the common event in ts1.')
+                    click_1 = plt.ginput(1)
+                    ktk.mplhelper.message(
+                        'Sync ts2 and ts2 on a common event.\n'
+                        '-------------\n'
+                        'Click on the common event in ts1.\n'
+                        '-------------\n'
+                        'Click on the common event in ts2.')
+                    click_2 = plt.ginput(1)
+                    ktk.mplhelper.message('')
+
+                    self.shift(-click_1[0][0])
+                    ts2.shift(-click_2[0][0])
+
+                elif choice == 5 or choice < -1:  # OK or closed figure, quit.
                     plt.close(fig)
                     finished = True
 
@@ -1716,6 +1841,7 @@ class TimeSeries():
                 - 'cubic'
                 - 'previous'
                 - 'next'
+            Additionally, kind can be 'pchip'.
         fill_value : array-like or 'extrapolate' (optional)
             The fill value to use if new_time vector contains point outside
             the current TimeSeries' time vector. Use 'extrapolate' to
@@ -1738,12 +1864,21 @@ class TimeSeries():
                 self.data[key][:] = np.nan
             else:  # Interpolate.
                 if ~np.all(index):
-                    warnings.warn('Some NaNs were found. They were interpolated.')
-                f = sp.interpolate.interp1d(self.time[index],
-                                            self.data[key][index],
-                                            axis=0, fill_value=fill_value,
-                                            kind=kind)
-                self.data[key] = f(new_time)
+                    warnings.warn('Some NaNs were found. '
+                                  'They were interpolated.')
+
+                if kind == 'pchip':
+                    self.data[key] = sp.interpolate.pchip_interpolate(
+                        self.time[index],
+                        self.data[key][index],
+                        new_time,
+                        axis=0)
+                else:
+                    f = sp.interpolate.interp1d(self.time[index],
+                                                self.data[key][index],
+                                                axis=0, fill_value=fill_value,
+                                                kind=kind)
+                    self.data[key] = f(new_time)
 
         self.time = new_time
 
