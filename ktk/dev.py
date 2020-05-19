@@ -39,6 +39,7 @@ def run_unit_tests():
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
+    print('Running unit tests...')
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tests')
     subprocess.call(['pytest', '--ignore=interactive'])
@@ -48,6 +49,8 @@ def run_unit_tests():
 def run_doc_tests():
     """Run all doc tests."""
     print('Running doc tests...')
+    cwd = os.getcwd()
+    os.chdir(ktk.config['RootFolder'] + '/tests')
     for file in os.listdir():
         if file.endswith('.py'):
             print(file)
@@ -56,6 +59,7 @@ def run_doc_tests():
                 doctest.testmod(module)
             except Exception:
                 pass
+    os.chdir(cwd)
 
 
 def generate_tutorials():

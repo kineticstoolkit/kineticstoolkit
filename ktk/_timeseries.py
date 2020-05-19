@@ -721,8 +721,8 @@ class TimeSeries():
         """
         return deepcopy(self)
 
-    def plot(self, data_keys=None, plot_event_names=False,
-             max_legend_items=None, **kwargs):
+    def plot(self, data_keys=None, event_names=True, legend=True,
+             **kwargs):
         """
         Plot the TimeSeries using matplotlib.
 
@@ -731,13 +731,11 @@ class TimeSeries():
         data_keys : string, list or tuple (optional)
             String or list of strings corresponding to the signals to plot.
             By default, all elements of the TimeSeries are plotted.
-        plot_event_names : bool (optional)
+        event_names : bool (optional)
             True to plot the event names on top of the event lines.
-            The default is False.
-        max_legend_items : int (optional)
-            Maximal number of items in the legend. If the plot has more than
-            max_legend_items curbes, then the legend is not shown. The default
-            is None, which means a legend is always shown.
+            The default is True.
+        legend : bool (optional)
+            True to plot a legend, False otherwise. The default is True.
 
         Additional keyboard arguments are passed to the pyplot's plot function.
 
@@ -755,9 +753,6 @@ class TimeSeries():
         plots only the forces and moments, without plotting the angle.
 
         """
-        if max_legend_items is None:
-            max_legend_items = np.inf
-
         if data_keys is None or len(data_keys) == 0:
             # Plot all
             ts = self
@@ -771,9 +766,9 @@ class TimeSeries():
             plt.plot(df.index.to_numpy(),
                      df[label].to_numpy(), label=label, **kwargs)
 
-        if len(legend) <= max_legend_items:
+        if legend:
             plt.legend(loc='upper right',
-                       ncol=1+int(len(legend)/40))  # Max 40 items per line
+                       ncol=1 + int(len(legend) / 40))  # Max 40 items per line
 
         # Add labels
         plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
@@ -811,7 +806,7 @@ class TimeSeries():
 
             plt.plot(event_line_x, event_line_y, ':k')
 
-            if plot_event_names:
+            if event_names:
                 for event in ts.events:
                     plt.text(event.time, max_y, event.name,
                             rotation='vertical',

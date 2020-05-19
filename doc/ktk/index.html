@@ -264,7 +264,7 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 <section class="desc"><p>Add metadata to TimeSeries' data.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>signel_name</code></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>signal_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>The data key the info corresponds to.</dd>
 <dt><strong><code>info_name</code></strong> :&ensp;<code>str</code></dt>
 <dd>The name of the info.</dd>
@@ -940,7 +940,7 @@ duplicated data is ignored. Default is True.</dd>
 <p>None.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, plot_event_names=False, max_legend_items=5, **kwargs)</span>
+<span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, event_names=True, legend=True, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Plot the TimeSeries using matplotlib.</p>
@@ -949,13 +949,11 @@ duplicated data is ignored. Default is True.</dd>
 <dt><strong><code>data_keys</code></strong> :&ensp;<code>string</code>, <code>list</code> or <code>tuple</code> (optional)</dt>
 <dd>String or list of strings corresponding to the signals to plot.
 By default, all elements of the TimeSeries are plotted.</dd>
-<dt><strong><code>plot_event_names</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dt><strong><code>event_names</code></strong> :&ensp;<code>bool</code> (optional)</dt>
 <dd>True to plot the event names on top of the event lines.
-The default is False.</dd>
-<dt><strong><code>max_legend_items</code></strong> :&ensp;<code>int</code> (optional)</dt>
-<dd>Maximal number of legend items, including the 'events' entry. If
-there are more items in the legend, then the legend is not shown
-for space and performance considerations.</dd>
+The default is True.</dd>
+<dt><strong><code>legend</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to plot a legend, False otherwise. The default is True.</dd>
 </dl>
 <p>Additional keyboard arguments are passed to the pyplot's plot function.</p>
 <h2 id="returns">Returns</h2>
@@ -967,16 +965,77 @@ for space and performance considerations.</dd>
 </code></pre>
 <p>plots only the forces and moments, without plotting the angle.</p></section>
 </dd>
+<dt id="ktk.TimeSeries.remove_data"><code class="name flex">
+<span>def <span class="ident">remove_data</span></span>(<span>self, data_key)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Remove a data key and its associated metadata.</p>
+<p>Note: No warning or exception is raised if the data key does not exist.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>data_key</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the data key.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; # Prepare a test TimeSeries with data 'test'
+&gt;&gt;&gt; ts = ktk.TimeSeries()
+&gt;&gt;&gt; ts.data['test'] = np.arange(10)
+&gt;&gt;&gt; ts.add_data_info('test', 'Unit', 'm')
+
+&gt;&gt;&gt; ts.data
+{'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+
+&gt;&gt;&gt; ts.data_info
+{'test': {'Unit': 'm'}}
+
+&gt;&gt;&gt; # Now remove data 'test'
+&gt;&gt;&gt; ts.remove_data('test')
+
+&gt;&gt;&gt; ts.data
+{}
+
+&gt;&gt;&gt; ts.data_info
+{}
+</code></pre></section>
+</dd>
+<dt id="ktk.TimeSeries.remove_data_info"><code class="name flex">
+<span>def <span class="ident">remove_data_info</span></span>(<span>self, signal_name, info_name)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Remove metadata from a TimeSeries' data.</p>
+<p>Note: No warning or exception is raised if the data key does not exist.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>signal_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The data key the info corresponds to.</dd>
+<dt><strong><code>info_name</code></strong> :&ensp;<code>str</code></dt>
+<dd>The name of the info.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries()
+&gt;&gt;&gt; ts.add_data_info('Forces', 'Unit', 'N')
+&gt;&gt;&gt; ts.data_info['Forces']
+{'Unit': 'N'}
+
+&gt;&gt;&gt; ts.remove_data_info('Forces', 'Unit')
+&gt;&gt;&gt; ts.data_info['Forces']
+{}
+</code></pre></section>
+</dd>
 <dt id="ktk.TimeSeries.rename_data"><code class="name flex">
-<span>def <span class="ident">rename_data</span></span>(<span>self, old_data_field, new_data_field)</span>
+<span>def <span class="ident">rename_data</span></span>(<span>self, old_data_key, new_data_key)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Rename a key in data and data_info.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>old_data_field</code></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>old_data_key</code></strong> :&ensp;<code>str</code></dt>
 <dd>Name of the data key.</dd>
-<dt><strong><code>new_data_field</code></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>new_data_key</code></strong> :&ensp;<code>str</code></dt>
 <dd>New name of the data key.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
@@ -1020,7 +1079,8 @@ supported by scipy.interpolate.interp1d, such as:
 - 'quadratic'
 - 'cubic'
 - 'previous'
-- 'next'</dd>
+- 'next'
+Additionally, kind can be 'pchip'.</dd>
 <dt><strong><code>fill_value</code></strong> :&ensp;<code>array</code>-<code>like</code> or <code>'extrapolate'</code> (optional)</dt>
 <dd>The fill value to use if new_time vector contains point outside
 the current TimeSeries' time vector. Use 'extrapolate' to
@@ -1298,6 +1358,8 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.isnan" href="#ktk.TimeSeries.isnan">isnan</a></code></li>
 <li><code><a title="ktk.TimeSeries.merge" href="#ktk.TimeSeries.merge">merge</a></code></li>
 <li><code><a title="ktk.TimeSeries.plot" href="#ktk.TimeSeries.plot">plot</a></code></li>
+<li><code><a title="ktk.TimeSeries.remove_data" href="#ktk.TimeSeries.remove_data">remove_data</a></code></li>
+<li><code><a title="ktk.TimeSeries.remove_data_info" href="#ktk.TimeSeries.remove_data_info">remove_data_info</a></code></li>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
 <li><code><a title="ktk.TimeSeries.resample" href="#ktk.TimeSeries.resample">resample</a></code></li>
 <li><code><a title="ktk.TimeSeries.shift" href="#ktk.TimeSeries.shift">shift</a></code></li>
