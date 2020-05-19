@@ -85,8 +85,8 @@ def terminal(folder_name=''):
         subprocess.call([
                 'osascript',
                 '-e',
-                'tell application "Terminal" to do script "cd ' +
-                        str(folder_name) + '"'])
+                """tell application "Terminal" to do script "cd '""" +
+                    str(folder_name) + """'" """])
         subprocess.call([
                 'osascript',
                 '-e',
