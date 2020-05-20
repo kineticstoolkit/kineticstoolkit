@@ -37,183 +37,9 @@ import warnings
 from copy import deepcopy
 import ktk._repr
 import pandas as pd
-import matplotlib.pyplot as plt
 from ast import literal_eval
-
-
-# Helper functions
-def _dict_of_arrays_to_dataframe(dict_of_arrays):
-    """
-    Convert a numpy ndarray of any dimension to a pandas DataFrame.
-
-    Parameters
-    ----------
-    dict_of_array : dict
-        A dict that contains numpy arrays. Each array must have the same
-        first dimension's size.
-
-    Returns
-    -------
-    DataFrame
-
-    The rows in the output DataFrame correspond to the first dimension of the
-    numpy arrays.
-    - Vectors are converted to single-column DataFrames.
-    - 2-dimensional arrays are converted to multi-columns DataFrames.
-    - 3-dimensional (or more) arrays are also converted to DataFrames, but
-      indices in brackets are added to the column names.
-
-    """
-    # Init
-    df_out = pd.DataFrame()
-
-    # Go through data
-    the_keys = dict_of_arrays.keys()
-    for the_key in the_keys:
-
-        # Assign data
-        original_data = dict_of_arrays[the_key]
-        original_data_shape = np.shape(original_data)
-        data_length = np.shape(original_data)[0]
-
-        reshaped_data = np.reshape(original_data, (data_length, -1))
-        reshaped_data_shape = np.shape(reshaped_data)
-
-        df_data = pd.DataFrame(reshaped_data)
-
-        # Get the column names index from the shape of the original data
-        # The strategy here is to build arrays of indices, that have
-        # the same shape as the original data, then reshape these matrices
-        # the same way we reshaped the original data. Then we know where
-        # the original indices are in the new reshaped data.
-        original_indices = np.indices(original_data_shape[1:])
-        reshaped_indices = np.reshape(original_indices,
-                                      (-1, reshaped_data_shape[1]))
-
-        # Hint for my future self:
-        # For a one-dimension series, reshaped_indices will be:
-        # [[0]].
-        # For a two-dimension series, reshaped_indices will be:
-        # [[0 1 2 ...]].
-        # For a three-dimension series, reshaped_indices will be:
-        # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
-        #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
-        # and so on.
-
-        # Assign column names
-        column_names = []
-        for i_column in range(0, len(df_data.columns)):
-            this_column_name = the_key
-            n_indices = np.shape(reshaped_indices)[0]
-            if n_indices > 0:
-                # This data is expressed in more than one dimension.
-                # We must add brackets to the column names to specify
-                # the indices.
-                this_column_name += '['
-
-                for i_indice in range(0, n_indices):
-                    this_column_name += str(
-                        reshaped_indices[i_indice, i_column])
-                    if i_indice == n_indices - 1:
-                        this_column_name += ']'
-                    else:
-                        this_column_name += ','
-
-            column_names.append(this_column_name)
-
-        df_data.columns = column_names
-
-        # Merge this dataframe with the output dataframe
-        df_out = pd.concat([df_out, df_data], axis=1)
-
-    return df_out
-
-
-def _dataframe_to_dict_of_arrays(dataframe):
-    """
-    Convert a pandas DataFrame to a dict of numpy ndarrays.
-
-    Parameters
-    ----------
-    pd_dataframe : pd.DataFrame
-        The dataframe to be converted.
-
-    Returns
-    -------
-    dict of ndarrays.
-
-    If all the dataframe columns have the same name but with different indices
-    in brackets, then the dataframe corresponds to a single array, which is
-    returned.
-
-    If the dataframe contains different column names (for example,
-    Forces[0], Forces[1], Forces[2], Moments[0], Moments[1], Moments[2]), then
-    a dict of arrays is returned. In this case, this dict would have the keys
-    'Forces' and 'Moments', which would each contain an array.
-
-    This function mirrors the dict_of_arrays_to_dataframe function. Its use is
-    mainly to convert high-dimension (>2) dataframes to high-dimension (>2)
-    arrays.
-    """
-    # Init output
-    out = dict()
-
-    # Search for the column names and highest dimensions
-    all_column_names = dataframe.columns
-    all_data_names = []
-    all_data_highest_indices = []
-    length = len(dataframe)
-
-    for one_column_name in all_column_names:
-        opening_bracket_position = one_column_name.find('[')
-        if opening_bracket_position == -1:
-            # No dimension for this data
-            all_data_names.append(one_column_name)
-            all_data_highest_indices.append([length - 1])
-        else:
-            # Extract name and dimension
-            data_name = one_column_name[0:opening_bracket_position]
-            data_dimension = literal_eval(
-                '[' + str(length - 1) + ',' +
-                one_column_name[opening_bracket_position + 1:])
-
-            all_data_names.append(data_name)
-            all_data_highest_indices.append(data_dimension)
-
-    # Create a set of unique_data_names
-    unique_data_names = []
-    for data_name in all_data_names:
-        if data_name not in unique_data_names:
-            unique_data_names.append(data_name)
-
-    for unique_data_name in unique_data_names:
-
-        # Create a Pandas DataFrame with only the columns that match
-        # this unique data name. In the same time, check the final
-        # dimension of the data to know to which dimension we will
-        # reshape the DataFrame's data.
-        sub_dataframe = pd.DataFrame()
-        unique_data_highest_index = []
-        for i in range(0, len(all_data_names)):
-            if all_data_names[i] == unique_data_name:
-                sub_dataframe[all_column_names[i]] = (
-                    dataframe[all_column_names[i]])
-                unique_data_highest_index.append(
-                    all_data_highest_indices[i])
-
-        # Sort the sub-dataframe's columns
-        sub_dataframe.reindex(sorted(sub_dataframe.columns), axis=1)
-
-        # Calculate the data dimension we must reshape to
-        unique_data_dimension = np.max(
-            np.array(unique_data_highest_index) + 1, axis=0)
-
-        # Convert the dataframe to a np.array, then reshape.
-        new_data = sub_dataframe.to_numpy()
-        new_data = np.reshape(new_data, unique_data_dimension)
-        out[unique_data_name] = new_data
-
-    return out
+from ktk._loadsave import dict_of_arrays_to_dataframe
+from ktk._loadsave import dataframe_to_dict_of_arrays
 
 
 class TimeSeriesEvent(list):
@@ -388,7 +214,7 @@ class TimeSeries():
             and data_info are not included in the resulting DataFrame.
 
         """
-        df = _dict_of_arrays_to_dataframe(self.data)
+        df = dict_of_arrays_to_dataframe(self.data)
         df.index = self.time
         return df
 
@@ -418,7 +244,7 @@ class TimeSeries():
         self.
 
         """
-        self.data = _dataframe_to_dict_of_arrays(dataframe)
+        self.data = dataframe_to_dict_of_arrays(dataframe)
         self.time = dataframe.index.to_numpy()
         return self
 
