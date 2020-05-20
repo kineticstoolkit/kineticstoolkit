@@ -38,6 +38,13 @@ def _save_to_current_folder(variable, variable_name):
                          header=True)
 
     elif str(type(variable)) == "<class 'ktk._timeseries.TimeSeries'>":
+        # This string comparison instead of a type check is because ktk is
+        # often reloading in iPython with %autoreload activated. This causes
+        # new class definitions to be declared and old instances of
+        # TimeSeries are then not recognized as the same class than the new
+        # class definition. To work around this, I compare the string
+        # representation of type(variable), which does not change between
+        # class redefinitions.
         os.mkdir(variable_name + '.TimeSeries')
         os.chdir(variable_name + '.TimeSeries')
 

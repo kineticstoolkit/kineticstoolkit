@@ -64,11 +64,6 @@ def _format_dict_entries(value, quotes=True):
     A string that should be shown by the __repr__ method.
 
     """
-    if quotes:
-        quote_text = "'"
-    else:
-        quote_text = ""
-
     out = ''
 
     the_keys = value.keys()
@@ -77,14 +72,18 @@ def _format_dict_entries(value, quotes=True):
         # Find the widest field name
         the_max_length = 0
         for the_key in the_keys:
-            the_max_length = max(the_max_length, len(the_key))
+            the_max_length = max(the_max_length, len(repr(the_key)))
 
         max_length_to_show = 77 - the_max_length
 
         for the_key in sorted(the_keys):
 
             # Print the key
-            to_show = quote_text + the_key + quote_text
+            if quotes is False and isinstance(the_key, str):
+                to_show = repr(the_key)[1:-1]  # Remove quotes
+            else:
+                to_show = repr(the_key)
+
             out += (to_show.rjust(the_max_length + 6) + ': ')  # +6 to tab
 
             # Print the value
