@@ -586,15 +586,15 @@ class TimeSeries():
             ts = self.get_subset(data_keys)
 
         df = ts.to_dataframe()
-        legend = df.columns.to_list()
+        labels = df.columns.to_list()
 
-        for label in legend:
+        for label in labels:
             plt.plot(df.index.to_numpy(),
                      df[label].to_numpy(), label=label, **kwargs)
 
         if legend:
             plt.legend(loc='upper right',
-                       ncol=1 + int(len(legend) / 40))  # Max 40 items per line
+                       ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
         # Add labels
         plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
