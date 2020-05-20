@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
 import numpy as np
 from functools import partial
+import time
 
 
 _axes = {
@@ -178,9 +179,11 @@ def button_dialog(text='Please select an option.',
     fig.canvas.mpl_connect('close_event', partial(close_callback))
 
     # Wait for button press of figure close
+    plt.pause(0.1)
     while button_pressed[0] is None:
-        plt.pause(0.1)
-
+        fig.canvas.flush_events()
+        time.sleep(0.01)
+    
     # Clear text and buttons
     message('')
     for ax in ax_buttons:
