@@ -679,7 +679,10 @@ class TimeSeries():
         else:
             ts = self.get_subset(data_keys)
 
-        ax = ts.to_dataframe().plot()
+        df = ts.to_dataframe()
+        ax = plt.gca()
+        for column in df:
+            plt.plot(df[column])
 
         # Add labels
         ax.set_xlabel('Time (' + ts.time_info['Unit'] + ')')
