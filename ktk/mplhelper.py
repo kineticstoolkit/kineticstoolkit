@@ -18,16 +18,21 @@ _axes = {
     'Message': None
     }
 
+# Defaults for side panes
 _AX_LEFT = 0.65
 _AX_WIDTH = 0.34
+
+# Current pane
+_ax_left = _AX_LEFT
+_ax_width = _AX_WIDTH
 
 # axes identifiers
 _AXES_ID = {
     'SidePane': 'ktk.mplhelper.side_pane',
-    'Message': 'ktk.mplhelper.message'
-    }
+    'Message': 'ktk.mplhelper.message',
+}
 
-def get_axes(identifier):
+def _get_axes(identifier):
     """
     Return the axes containing the side pane in the current figure.
 
@@ -44,22 +49,34 @@ def get_axes(identifier):
 
     """
     fig = plt.gcf()
-    for axes in fig.get_axes():
+    for axes in fig._get_axes():
         if axes.get_label() == _AXES_ID[identifier]:
             return axes
     return None
 
 
-def add_side_pane():
+def _add_side_pane():
     """Add a side pane to the current figure."""
+    global _ax_left
+    global _ax_width
+
     # Make room to the right
-    _ = plt.gcf()  # Create a figure if there is no current figure.
-    plt.subplots_adjust(right=0.6)
+    fig = plt.gcf()  # Create a figure if there is no current figure.
+
+    # If this figure already has some axes, then create a side pane.
+    # Otherwise, the figure is empty and ths this will be a full pane.
+    if len(fig.get_axes()) > 0:
+        plt.subplots_adjust(right=0.6)
+        _ax_left = _AX_LEFT
+        _ax_width = _AX_WIDTH
+    else:
+        _ax_left = 0
+        _ax_width = 1
 
     # Add the SidePane axes if it doesn't exist.
-    side_pane = get_axes('SidePane')
+    side_pane = _get_axes('SidePane')
     if side_pane is None:
-        side_pane = plt.axes([_AX_LEFT, 0.01, _AX_WIDTH, 0.98],
+        side_pane = plt.axes([_ax_left, 0.01, _ax_width, 0.98],
                              xticklabels=[],
                              yticklabels=[],
                              xticks=[],
@@ -74,10 +91,10 @@ def add_side_pane():
     return side_pane
 
 
-def remove_side_pane():
+def _remove_side_pane():
     """Remove the side pane from the current figure."""
     try:
-        get_axes('SidePane').remove()
+        _get_axes('SidePane').remove()
     except Exception:
         pass
     plt.subplots_adjust(right=0.9)
@@ -101,21 +118,21 @@ def message(text):
     """
     # Remove last text message if required.
     try:
-        get_axes('Message').remove()
+        _get_axes('Message').remove()
     except Exception:
         pass
 
     # If we just wanted to erase
     if (text == '' or text is None):
-        remove_side_pane()
+        _remove_side_pane()
         return None
 
-    add_side_pane()
+    _add_side_pane()
 
     # Write message
-    ax_message = get_axes('Message')
+    ax_message = _get_axes('Message')
     if ax_message is None:
-        ax_message = plt.axes([_AX_LEFT, 0.01, _AX_WIDTH, 0.98],
+        ax_message = plt.axes([_ax_left, 0.01, _ax_width, 0.98],
                               xticklabels=[],
                               yticklabels=[],
                               xticks=[],
@@ -153,7 +170,7 @@ def button_dialog(text='Please select an option.',
 
     """
     fig = plt.gcf()
-    add_side_pane()
+    _add_side_pane()
 
     # Write message
     message(text)
@@ -171,8 +188,8 @@ def button_dialog(text='Please select an option.',
     buttons = []
     height = 0.075
     for i_choice, choice in enumerate(choices):
-        ax_buttons.append(plt.axes([_AX_LEFT + 0.01, 0.70 - height * i_choice,
-                                    _AX_WIDTH - 0.02, height - 0.01]))
+        ax_buttons.append(plt.axes([_ax_left + 0.01, 0.70 - height * i_choice,
+                                    _ax_width - 0.02, height - 0.01]))
         buttons.append(widgets.Button(ax_buttons[-1], choice))
         buttons[-1].on_clicked(partial(button_callback, i_choice))
 
@@ -183,13 +200,13 @@ def button_dialog(text='Please select an option.',
     while button_pressed[0] is None:
         fig.canvas.flush_events()
         time.sleep(0.01)
-    
+
     # Clear text and buttons
     message('')
     for ax in ax_buttons:
         ax.remove()
 
-    remove_side_pane()
+    _remove_side_pane()
 
     return button_pressed[0]
 

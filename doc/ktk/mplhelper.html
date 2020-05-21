@@ -29,12 +29,6 @@
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ktk.mplhelper.add_side_pane"><code class="name flex">
-<span>def <span class="ident">add_side_pane</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Add a side pane to the current figure.</p></section>
-</dd>
 <dt id="ktk.mplhelper.button_dialog"><code class="name flex">
 <span>def <span class="ident">button_dialog</span></span>(<span>text='Please select an option.', choices=['Cancel', 'OK'])</span>
 </code></dt>
@@ -54,23 +48,6 @@ The default is 'Please select an option'.</dd>
 <dd>The button number (0 = First button, 1 = Second button, etc. If the
 user closes the window instead of clicking a button, a value of -1 is
 returned.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.mplhelper.get_axes"><code class="name flex">
-<span>def <span class="ident">get_axes</span></span>(<span>identifier)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Return the axes containing the side pane in the current figure.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>identifier</code></strong> :&ensp;<code>str</code></dt>
-<dd>'SidePane' or 'Message'</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>axes</code></strong> :&ensp;<code>matplotlib</code> <code>axes</code></dt>
-<dd>Axes containing the side pane in the current figure, or none if the
-current figure does not contain a side pane.</dd>
 </dl></section>
 </dd>
 <dt id="ktk.mplhelper.message"><code class="name flex">
@@ -109,12 +86,6 @@ erases the last message.</dd>
 <dd>Label of the curve, for the legend.</dd>
 </dl></section>
 </dd>
-<dt id="ktk.mplhelper.remove_side_pane"><code class="name flex">
-<span>def <span class="ident">remove_side_pane</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Remove the side pane from the current figure.</p></section>
-</dd>
 </dl>
 </section>
 <section>
@@ -132,13 +103,10 @@ erases the last message.</dd>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="two-column">
-<li><code><a title="ktk.mplhelper.add_side_pane" href="#ktk.mplhelper.add_side_pane">add_side_pane</a></code></li>
+<ul class="">
 <li><code><a title="ktk.mplhelper.button_dialog" href="#ktk.mplhelper.button_dialog">button_dialog</a></code></li>
-<li><code><a title="ktk.mplhelper.get_axes" href="#ktk.mplhelper.get_axes">get_axes</a></code></li>
 <li><code><a title="ktk.mplhelper.message" href="#ktk.mplhelper.message">message</a></code></li>
 <li><code><a title="ktk.mplhelper.plot_mean_std" href="#ktk.mplhelper.plot_mean_std">plot_mean_std</a></code></li>
-<li><code><a title="ktk.mplhelper.remove_side_pane" href="#ktk.mplhelper.remove_side_pane">remove_side_pane</a></code></li>
 </ul>
 </li>
 </ul>
