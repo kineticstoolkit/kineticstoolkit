@@ -466,7 +466,7 @@ class TimeSeries():
         while finished is False:
             finished = True  # Only one pass by default
 
-            button = ktk.mplhelper.button_dialog(
+            button = ktk.gui.button_dialog(
                 f'Adding the event "{name}".\n'
                 'Please zoom on the location to \n'
                 'add the event, then click Next.',
@@ -477,19 +477,19 @@ class TimeSeries():
                 return False
 
             if multiple_events:
-                ktk.mplhelper.message(
+                ktk.gui.message(
                     'Left-click to add events; \n'
                     'Right-click to delete; \n'
                     'ENTER to finish.')
                 plt.pause(0.001)  # Update the plot
                 coordinates = plt.ginput(99999)
-                ktk.mplhelper.message('')
+                ktk.gui.message('')
 
             else:
-                ktk.mplhelper.message(
+                ktk.gui.message(
                     'Please left-click on the event to add.')
                 coordinates = plt.ginput(1)
-                ktk.mplhelper.message('')
+                ktk.gui.message('')
 
             # Add these events
             for i in range(len(coordinates)):
@@ -498,7 +498,7 @@ class TimeSeries():
             if multiple_events:
                 plt.cla()
                 ts.plot(plot)
-                button = ktk.mplhelper.button_dialog(
+                button = ktk.gui.button_dialog(
                     f'Adding the event "{name}".\n'
                     'Do you want to add more of these events?',
                     ['Cancel', 'Add more', "Finished"])
@@ -510,7 +510,7 @@ class TimeSeries():
                 elif button == 2:
                     finished = True
 
-        ktk.mplhelper.message('')
+        ktk.gui.message('')
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
         self._sort_events()
@@ -1299,10 +1299,10 @@ class TimeSeries():
         """
         fig = plt.figure()
         self.plot(data_keys)
-        ktk.mplhelper.message('Click on both sides of the portion to keep.')
+        ktk.gui.message('Click on both sides of the portion to keep.')
         plt.pause(0.001)  # Redraw
         points = plt.ginput(2)
-        ktk.mplhelper.message('')
+        ktk.gui.message('')
         times = [points[0][0], points[1][0]]
         plt.close(fig)
         return self.get_ts_between_times(min(times), max(times), inclusive)
@@ -1492,16 +1492,16 @@ class TimeSeries():
         if ts2 is None:
             # Synchronize ts1 only
             self.plot(data_keys)
-            choice = ktk.mplhelper.button_dialog(
+            choice = ktk.gui.button_dialog(
                 'Please zoom on the time zero and press Next.',
                 ['Cancel', 'Next'])
             if choice != 1:
                 plt.close(fig)
                 return
 
-            ktk.mplhelper.message('Click on the sync event.')
+            ktk.gui.message('Click on the sync event.')
             click = plt.ginput(1)
-            ktk.mplhelper.message(None)
+            ktk.gui.message(None)
             plt.close(fig)
             self.shift(-click[0][0])
 
@@ -1529,7 +1529,7 @@ class TimeSeries():
                 plt.grid(True)
                 plt.tight_layout()
 
-                choice = ktk.mplhelper.button_dialog(
+                choice = ktk.gui.button_dialog(
                     'Please select an option.',
                     choices=['Zero ts1 only',
                              'Zero ts2 only',
@@ -1539,60 +1539,60 @@ class TimeSeries():
                              'OK'])
 
                 if choice == 0:  # Zero ts1 only
-                    ktk.mplhelper.message(
+                    ktk.gui.message(
                         'Zero ts1 only.\n'
                         'Click on the time zero in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.mplhelper.message('')
+                    ktk.gui.message('')
 
                     self.shift(-click_1[0][0])
 
                 elif choice == 1:  # Zero ts2 only
-                    ktk.mplhelper.message(
+                    ktk.gui.message(
                         'Zero ts2 only.\n'
                         '-------------\n'
                         'Click on the time zero in ts2.')
                     click_1 = plt.ginput(1)
-                    ktk.mplhelper.message('')
+                    ktk.gui.message('')
 
                     ts2.shift(-click_1[0][0])
 
                 elif choice == 2:  # Zero ts1 and ts2 using ts1
-                    ktk.mplhelper.message(
+                    ktk.gui.message(
                         'Zero ts1 and ts2 using ts1.\n'
                         '-------------\n'
                         'Click on the time zero in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.mplhelper.message('')
+                    ktk.gui.message('')
 
                     self.shift(-click_1[0][0])
                     ts2.shift(-click_1[0][0])
 
                 elif choice == 3:  # Zero ts1 and ts2 using ts2
-                    ktk.mplhelper.message(
+                    ktk.gui.message(
                         'Zero ts1 and ts2 using ts2.\n'
                         '-------------\n'
                         'Click on the time zero in ts2.')
                     click_2 = plt.ginput(1)
-                    ktk.mplhelper.message('')
+                    ktk.gui.message('')
 
                     self.shift(-click_2[0][0])
                     ts2.shift(-click_2[0][0])
 
                 elif choice == 4:  # Sync on a common event
-                    ktk.mplhelper.message(
+                    ktk.gui.message(
                         'Sync ts2 and ts2 on a common event.\n'
                         '-------------\n'
                         'Click on the common event in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.mplhelper.message(
+                    ktk.gui.message(
                         'Sync ts2 and ts2 on a common event.\n'
                         '-------------\n'
                         'Click on the common event in ts1.\n'
                         '-------------\n'
                         'Click on the common event in ts2.')
                     click_2 = plt.ginput(1)
-                    ktk.mplhelper.message('')
+                    ktk.gui.message('')
 
                     self.shift(-click_1[0][0])
                     ts2.shift(-click_2[0][0])

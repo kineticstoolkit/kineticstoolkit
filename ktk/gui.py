@@ -15,63 +15,216 @@ import matplotlib.pyplot as plt
 import sys
 import os
 import ktk
+import matplotlib.pyplot as plt
+import matplotlib.widgets as widgets
+import numpy as np
+from functools import partial
+import time
 
+
+def __dir__():
+    return ['message', 'button_dialog', 'set_color_order',
+            'get_credentials', 'get_folder', 'get_filename']
 
 CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
 _message_window_int = [0]
 
+_axes = {
+    'SidePane': None,
+    'Message': None
+    }
 
-def __dir__():
-    return ('button_dialog',
-            'get_credentials',
-            'get_folder',
-            'get_filename',
-            'set_color_order',
-            'message')
+# Defaults for side panes
+_AX_LEFT = 0.65
+_AX_WIDTH = 0.34
 
+# Current pane
+_ax_left = _AX_LEFT
+_ax_width = _AX_WIDTH
 
-def message(message=None):
+# axes identifiers
+_AXES_ID = {
+    'SidePane': 'ktk.gui.side_pane',
+    'Message': 'ktk.gui.message',
+}
+
+def _get_axes(identifier):
     """
-    Show a message window.
+    Return the axes containing the side pane in the current figure.
 
     Parameters
     ----------
-    message : str
-        The message to show. Use '' or None to close every message window.
+    identifier : str
+        'SidePane' or 'Message'
 
     Returns
     -------
-    None.
+    axes : matplotlib axes
+        Axes containing the side pane in the current figure, or none if the
+        current figure does not contain a side pane.
+
     """
-    # If we want to close the window
-    if message is None or message == '':
-        print('-' * 36 + ' Done ' + '-' * 37)
-        for file in os.listdir(ktk.config['RootFolder'] + '/ktk/tmp'):
-            if 'gui_message_flag' in file:
-                os.remove(ktk.config['RootFolder'] + '/ktk/tmp/' + file)
-        return
+    fig = plt.gcf()
+    for axes in fig._get_axes():
+        if axes.get_label() == _AXES_ID[identifier]:
+            return axes
+    return None
 
-    # Else, we want to show the window
-    print('=' * 33 + ' KTK Message ' + '=' * 33)
-    print(message)
 
-    _message_window_int[0] += 1
-    flagfile = (ktk.config['RootFolder'] + '/ktk/tmp/gui_message_flag' +
-                str(_message_window_int))
+def _add_side_pane():
+    """Add a side pane to the current figure."""
+    global _ax_left
+    global _ax_width
 
-    fid = open(flagfile, 'w')
-    fid.write('DELETE THIS FILE TO CLOSE THE KTK GUI MESSAGE WINDOW.')
-    fid.close()
+    # Make room to the right
+    fig = plt.gcf()  # Create a figure if there is no current figure.
 
-    command_call = [sys.executable, CMDGUI, 'message', 'KTK Message',
-                    message, flagfile]
+    # If this figure already has some axes, then create a side pane.
+    # Otherwise, the figure is empty and ths this will be a full pane.
+    if len(fig.get_axes()) > 0:
+        plt.subplots_adjust(right=0.6)
+        _ax_left = _AX_LEFT
+        _ax_width = _AX_WIDTH
+    else:
+        _ax_left = 0
+        _ax_width = 1
 
-    def threaded_function():
-        subprocess.call(command_call,
-                        stderr=subprocess.DEVNULL)
+    # Add the SidePane axes if it doesn't exist.
+    side_pane = _get_axes('SidePane')
+    if side_pane is None:
+        side_pane = plt.axes([_ax_left, 0.01, _ax_width, 0.98],
+                             xticklabels=[],
+                             yticklabels=[],
+                             xticks=[],
+                             yticks=[],
+                             facecolor='w')
+        side_pane.spines['top'].set_visible(False)
+        side_pane.spines['right'].set_visible(False)
+        side_pane.spines['bottom'].set_visible(False)
+        side_pane.spines['left'].set_visible(False)
+        side_pane.set_label(_AXES_ID['SidePane'])
 
-    thread = Thread(target=threaded_function)
-    thread.start()
+    return side_pane
+
+
+def _remove_side_pane():
+    """Remove the side pane from the current figure."""
+    try:
+        _get_axes('SidePane').remove()
+    except Exception:
+        pass
+    plt.subplots_adjust(right=0.9)
+
+
+def message(text):
+    """
+    Write a message on the current figure.
+
+    Parameters
+    ----------
+    text : str
+        Message to write on the right of the current figure. If '' or None,
+        erases the last message.
+
+    Returns
+    -------
+    axes : matplotlib axes
+        Axes that contains the message.
+
+    """
+    # Remove last text message if required.
+    try:
+        _get_axes('Message').remove()
+    except Exception:
+        pass
+
+    # If we just wanted to erase
+    if (text == '' or text is None):
+        _remove_side_pane()
+        return None
+
+    _add_side_pane()
+
+    # Write message
+    ax_message = _get_axes('Message')
+    if ax_message is None:
+        ax_message = plt.axes([_ax_left, 0.01, _ax_width, 0.98],
+                              xticklabels=[],
+                              yticklabels=[],
+                              xticks=[],
+                              yticks=[])
+        ax_message.set_label(_AXES_ID['Message'])
+        ax_message.set_frame_on(False)
+
+    ax_message.text(0.5, 0.8, text, wrap=True,
+                    horizontalalignment='center')
+
+    # Update
+    plt.pause(0.01)
+    return ax_message
+
+
+def button_dialog(text='Please select an option.',
+                  choices=['Cancel', 'OK']):
+    """
+    Ask the user to select a button from a list of buttons.
+
+    Parameters
+    ----------
+    text : str
+        Message that is presented to the user.
+        The default is 'Please select an option'.
+    choices : list of str
+        List of button text. The default is ['Cancel', 'OK'].
+
+    Returns
+    -------
+    button : int
+        The button number (0 = First button, 1 = Second button, etc. If the
+        user closes the window instead of clicking a button, a value of -1 is
+        returned.
+
+    """
+    fig = plt.gcf()
+    _add_side_pane()
+
+    # Write message
+    message(text)
+
+    # Write buttons
+    button_pressed = [None]
+
+    def button_callback(i_button, *args):
+        button_pressed[0] = i_button
+
+    def close_callback(*args):
+        button_pressed[0] = -1
+
+    ax_buttons = []
+    buttons = []
+    height = 0.075
+    for i_choice, choice in enumerate(choices):
+        ax_buttons.append(plt.axes([_ax_left + 0.01, 0.70 - height * i_choice,
+                                    _ax_width - 0.02, height - 0.01]))
+        buttons.append(widgets.Button(ax_buttons[-1], choice))
+        buttons[-1].on_clicked(partial(button_callback, i_choice))
+
+    fig.canvas.mpl_connect('close_event', partial(close_callback))
+
+    # Wait for button press of figure close
+    plt.pause(0.1)
+    while button_pressed[0] is None:
+        fig.canvas.flush_events()
+        time.sleep(0.01)
+
+    # Clear text and buttons
+    message('')
+    for ax in ax_buttons:
+        ax.remove()
+
+    _remove_side_pane()
+
+    return button_pressed[0]
 
 
 def set_color_order(setting):
@@ -186,42 +339,3 @@ def get_filename(title='KTK', initial_folder='.'):
     result = result.decode('ascii')
     result = result.replace('\n', '').replace('\r', '')
     return result
-
-
-def button_dialog(message='Please select an option.',
-                  choices=['Cancel', 'OK']):
-    """
-    Create a blocking dialog message window with a selection of buttons.
-
-    Parameters
-    ----------
-    message : str
-        Message that is presented to the user.
-        Default is 'Please select an option'.
-    choices : list of str
-        List of button text. Default is ['Cancel', 'OK'].
-
-    Returns
-    -------
-    button : int
-        The button number (0 = First button, 1 = Second button, etc. If the
-        user closes the window instead of clicking a button, a value of -1 is
-        returned.
-    """
-
-    # Run the button dialog in a separate thread to allow updating matplotlib
-    button = [None]
-    command_call = [sys.executable, CMDGUI, 'button_dialog', 'KTK Dialog',
-                    message] + choices
-
-    def threaded_function():
-        button[0] = int(subprocess.check_output(command_call,
-                        stderr=subprocess.DEVNULL))
-
-    thread = Thread(target=threaded_function)
-    thread.start()
-
-    while button[0] is None:
-        plt.pause(0.2)  # Update matplotlib so that is responds to user input
-
-    return button[0]
