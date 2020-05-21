@@ -66,7 +66,8 @@ def generate_tutorials():
     """Generate the tutorials in html."""
     cwd = os.getcwd()
     os.chdir(ktk.config['RootFolder'] + '/tutorials')
-    subprocess.call(['jupyter-nbconvert', '--to', 'html_toc',
+    subprocess.call(['pwd'])
+    subprocess.call(['jupyter-nbconvert', '--execute', '--to', 'html_toc',
                      'index.ipynb'])
     os.chdir(cwd)
 

@@ -29,6 +29,7 @@ defined in this module are loaded into the toplevel ktk namespace.
 
 """
 
+import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
@@ -36,8 +37,6 @@ import warnings
 
 from copy import deepcopy
 import ktk._repr
-import pandas as pd
-from ast import literal_eval
 from ktk._loadsave import dict_of_arrays_to_dataframe
 from ktk._loadsave import dataframe_to_dict_of_arrays
 
@@ -588,12 +587,19 @@ class TimeSeries():
         df = ts.to_dataframe()
         labels = df.columns.to_list()
 
-        for label in labels:
-            plt.plot(df.index.to_numpy(),
+        axes = plt.gca()
+        axes.set_prop_cycle(mpl.cycler(
+            linewidth=[1, 2, 3, 4]) * mpl.cycler(
+                linestyle=['-', '--', '-.', ':']) * mpl.cycler(
+                    color=['r', 'g', 'b', 'c', 'm', 'y', 'k', 'tab:orange']))
+
+        # Plot the curves
+        for i_label, label in enumerate(labels):
+            axes.plot(df.index.to_numpy(),
                      df[label].to_numpy(), label=label, **kwargs)
 
         if legend:
-            plt.legend(loc='upper right',
+            axes.legend(loc='upper right',
                        ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
         # Add labels
