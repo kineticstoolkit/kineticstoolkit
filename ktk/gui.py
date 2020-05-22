@@ -9,15 +9,11 @@ Module that provides simple GUI functions.
 """
 
 import subprocess
-from threading import Thread
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
-import os
 import ktk
-import matplotlib.pyplot as plt
 import matplotlib.widgets as widgets
-import numpy as np
 from functools import partial
 import time
 
@@ -26,13 +22,14 @@ def __dir__():
     return ['message', 'button_dialog', 'set_color_order',
             'get_credentials', 'get_folder', 'get_filename']
 
+
 CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
 _message_window_int = [0]
 
 _axes = {
-    'SidePane': None,
+    'GUIPane': None,
     'Message': None
-    }
+}
 
 # Defaults for side panes
 _AX_LEFT = 0.65
@@ -44,9 +41,61 @@ _ax_width = _AX_WIDTH
 
 # axes identifiers
 _AXES_ID = {
-    'SidePane': 'ktk.gui.side_pane',
+    'GUIPane': 'ktk.gui.gui_pane',
     'Message': 'ktk.gui.message',
 }
+
+
+def _figure_safe_close(figure):
+    """
+    Bind the figure's close event to window destroy.
+
+    This is a workaround for plt.close and close button that keep a zombie
+    window lying behind.
+
+    This bug is submitted to matplotlib.
+    https://github.com/matplotlib/matplotlib/issues/17109
+    """
+    figure.canvas.mpl_connect('close_event',
+                              lambda _: figure.canvas.manager.window.destroy())
+
+
+def _figure():
+    """
+    Create a figure and bind its close event to window destroy.
+
+    This is a workaround for plt.close and close button that keep a zombie
+    window lying behind.
+
+    This bug is submitted to matplotlib.
+    https://github.com/matplotlib/matplotlib/issues/17109
+    """
+    figure = plt.figure()
+    _figure_safe_close(figure)
+    return figure
+
+
+def _pause(time):
+    """Pause a figure to refresh and work around matplotlib issue 17109."""
+    plt.pause(time)
+    _figure_safe_close(plt.gcf())
+
+
+def _gcf():
+    """
+    Get current figure and bind its close event to window destroy.
+
+    This is a workaround for plt.close and close button that keep a zombie
+    window lying behind.
+
+    This bug is submitted to matplotlib.
+    https://github.com/matplotlib/matplotlib/issues/17109
+    """
+    figure = plt.gcf()
+    _figure_safe_close(figure)
+    return figure
+
+
 
 def _get_axes(identifier):
     """
@@ -55,7 +104,7 @@ def _get_axes(identifier):
     Parameters
     ----------
     identifier : str
-        'SidePane' or 'Message'
+        'GUIPane' or 'Message'
 
     Returns
     -------
@@ -64,20 +113,41 @@ def _get_axes(identifier):
         current figure does not contain a side pane.
 
     """
-    fig = plt.gcf()
+    fig = _gcf()
+
     for axes in fig._get_axes():
         if axes.get_label() == _AXES_ID[identifier]:
             return axes
     return None
 
 
-def _add_side_pane():
-    """Add a side pane to the current figure."""
+def _show_toolbar():
+    """Reveal matplotlib's toolbar in current figure (Qt only)."""
+    try:  # Try, setVisible method not always there
+        _gcf().canvas.toolbar.setVisible(True)
+    except AttributeError:
+        pass
+
+
+def _hide_toolbar():
+    """Hide matplotlib's toolbar in current figure (Qt only)."""
+    try:  # Try, setVisible method not always there
+        _gcf().canvas.toolbar.setVisible(False)
+    except AttributeError:
+        pass
+
+
+def _set_title(title):
+    """Set the title of the current figure window."""
+    _gcf().canvas.set_window_title(title)
+
+
+def _add_gui_pane():
+    """Add a side pane or fullframe pane to the current figure."""
     global _ax_left
     global _ax_width
 
-    # Make room to the right
-    fig = plt.gcf()  # Create a figure if there is no current figure.
+    fig = _gcf()  # Create a figure if there is no current figure.
 
     # If this figure already has some axes, then create a side pane.
     # Otherwise, the figure is empty and ths this will be a full pane.
@@ -88,32 +158,38 @@ def _add_side_pane():
     else:
         _ax_left = 0
         _ax_width = 1
+        _hide_toolbar()
+        _set_title('Kinetics Toolkit')
 
-    # Add the SidePane axes if it doesn't exist.
-    side_pane = _get_axes('SidePane')
-    if side_pane is None:
-        side_pane = plt.axes([_ax_left, 0.01, _ax_width, 0.98],
-                             xticklabels=[],
-                             yticklabels=[],
-                             xticks=[],
-                             yticks=[],
-                             facecolor='w')
-        side_pane.spines['top'].set_visible(False)
-        side_pane.spines['right'].set_visible(False)
-        side_pane.spines['bottom'].set_visible(False)
-        side_pane.spines['left'].set_visible(False)
-        side_pane.set_label(_AXES_ID['SidePane'])
+    # Add the GUIPane axes if it doesn't exist.
+    gui_pane = _get_axes('GUIPane')
+    if gui_pane is None:
+        gui_pane = plt.axes([_ax_left, 0.01, _ax_width, 0.98],
+                            xticklabels=[],
+                            yticklabels=[],
+                            xticks=[],
+                            yticks=[],
+                            facecolor='w')
+        gui_pane.spines['top'].set_visible(False)
+        gui_pane.spines['right'].set_visible(False)
+        gui_pane.spines['bottom'].set_visible(False)
+        gui_pane.spines['left'].set_visible(False)
+        gui_pane.set_label(_AXES_ID['GUIPane'])
 
-    return side_pane
+    return gui_pane
 
 
-def _remove_side_pane():
-    """Remove the side pane from the current figure."""
+def _remove_gui_pane():
+    """Remove the gui pane from the current figure."""
     try:
-        _get_axes('SidePane').remove()
+        _get_axes('GUIPane').remove()
     except Exception:
         pass
     plt.subplots_adjust(right=0.9)
+
+    # If there is nothing left in the figure, then close it.
+    if len(_gcf().get_axes()) == 0:
+        plt.close()
 
 
 def message(text):
@@ -128,8 +204,7 @@ def message(text):
 
     Returns
     -------
-    axes : matplotlib axes
-        Axes that contains the message.
+    None
 
     """
     # Remove last text message if required.
@@ -140,10 +215,10 @@ def message(text):
 
     # If we just wanted to erase
     if (text == '' or text is None):
-        _remove_side_pane()
+        _remove_gui_pane()
         return None
 
-    _add_side_pane()
+    _add_gui_pane()
 
     # Write message
     ax_message = _get_axes('Message')
@@ -158,10 +233,6 @@ def message(text):
 
     ax_message.text(0.5, 0.8, text, wrap=True,
                     horizontalalignment='center')
-
-    # Update
-    plt.pause(0.01)
-    return ax_message
 
 
 def button_dialog(text='Please select an option.',
@@ -185,11 +256,12 @@ def button_dialog(text='Please select an option.',
         returned.
 
     """
-    fig = plt.gcf()
-    _add_side_pane()
-
-    # Write message
+    # Write message (this will take care of creating the gui pane)
+    message('')
     message(text)
+
+    fig = _gcf()
+    _figure_safe_close(fig)
 
     # Write buttons
     button_pressed = [None]
@@ -212,19 +284,24 @@ def button_dialog(text='Please select an option.',
     fig.canvas.mpl_connect('close_event', partial(close_callback))
 
     # Wait for button press of figure close
-    plt.pause(0.1)
+    plt.show(block=False)
+    fig.canvas.start_event_loop(0.01)
+
+    # _figure_safe_close(fig)
     while button_pressed[0] is None:
         fig.canvas.flush_events()
         time.sleep(0.01)
+
+    to_return = int(button_pressed[0])
 
     # Clear text and buttons
     message('')
     for ax in ax_buttons:
         ax.remove()
 
-    _remove_side_pane()
+    _remove_gui_pane()
 
-    return button_pressed[0]
+    return to_return
 
 
 def set_color_order(setting):

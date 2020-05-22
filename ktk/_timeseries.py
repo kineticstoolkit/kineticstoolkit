@@ -458,7 +458,7 @@ class TimeSeries():
         """
         ts = self.copy()
 
-        fig = plt.figure()
+        fig = ktk.gui._figure()
         ts.plot(plot)
 
         finished = False
@@ -1297,7 +1297,7 @@ class TimeSeries():
             A new TimeSeries following the user interaction.
 
         """
-        fig = plt.figure()
+        fig = ktk.gui._figure()
         self.plot(data_keys)
         ktk.gui.message('Click on both sides of the portion to keep.')
         plt.pause(0.001)  # Redraw

@@ -29,44 +29,6 @@
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ktk.mplhelper.button_dialog"><code class="name flex">
-<span>def <span class="ident">button_dialog</span></span>(<span>text='Please select an option.', choices=['Cancel', 'OK'])</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Ask the user to select a button from a list of buttons.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
-<dd>Message that is presented to the user.
-The default is 'Please select an option'.</dd>
-<dt><strong><code>choices</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
-<dd>List of button text. The default is ['Cancel', 'OK'].</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>button</code></strong> :&ensp;<code>int</code></dt>
-<dd>The button number (0 = First button, 1 = Second button, etc. If the
-user closes the window instead of clicking a button, a value of -1 is
-returned.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.mplhelper.message"><code class="name flex">
-<span>def <span class="ident">message</span></span>(<span>text)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Write a message on the current figure.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
-<dd>Message to write on the right of the current figure. If '' or None,
-erases the last message.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>axes</code></strong> :&ensp;<code>matplotlib</code> <code>axes</code></dt>
-<dd>Axes that contains the message.</dd>
-</dl></section>
-</dd>
 <dt id="ktk.mplhelper.plot_mean_std"><code class="name flex">
 <span>def <span class="ident">plot_mean_std</span></span>(<span>x, y, axis, color, label)</span>
 </code></dt>
@@ -104,8 +66,6 @@ erases the last message.</dd>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="ktk.mplhelper.button_dialog" href="#ktk.mplhelper.button_dialog">button_dialog</a></code></li>
-<li><code><a title="ktk.mplhelper.message" href="#ktk.mplhelper.message">message</a></code></li>
 <li><code><a title="ktk.mplhelper.plot_mean_std" href="#ktk.mplhelper.plot_mean_std">plot_mean_std</a></code></li>
 </ul>
 </li>
