@@ -512,13 +512,11 @@ class Player:
             self.objects['PlotRigidBodiesZ'].set_data(
                 rbz_data[:, 0], rbz_data[:, 1])
 
-
         # Update the window title
         self.objects['Figure'].canvas.set_window_title(
             f'Frame {self.current_frame}, ' +
             '%2.2f s.' % self.time[self.current_frame])
 
-        self.objects['Axes'].axis([-1.5, 1.5, -1, 1])
         self.objects['Figure'].canvas.draw()
 
     def _set_new_target(self, target):
