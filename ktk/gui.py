@@ -46,57 +46,6 @@ _AXES_ID = {
 }
 
 
-def _figure_safe_close(figure):
-    """
-    Bind the figure's close event to window destroy.
-
-    This is a workaround for plt.close and close button that keep a zombie
-    window lying behind.
-
-    This bug is submitted to matplotlib.
-    https://github.com/matplotlib/matplotlib/issues/17109
-    """
-    figure.canvas.mpl_connect('close_event',
-                              lambda _: figure.canvas.manager.window.destroy())
-
-
-def _figure():
-    """
-    Create a figure and bind its close event to window destroy.
-
-    This is a workaround for plt.close and close button that keep a zombie
-    window lying behind.
-
-    This bug is submitted to matplotlib.
-    https://github.com/matplotlib/matplotlib/issues/17109
-    """
-    figure = plt.figure()
-    _figure_safe_close(figure)
-    return figure
-
-
-def _pause(time):
-    """Pause a figure to refresh and work around matplotlib issue 17109."""
-    plt.pause(time)
-    _figure_safe_close(plt.gcf())
-
-
-def _gcf():
-    """
-    Get current figure and bind its close event to window destroy.
-
-    This is a workaround for plt.close and close button that keep a zombie
-    window lying behind.
-
-    This bug is submitted to matplotlib.
-    https://github.com/matplotlib/matplotlib/issues/17109
-    """
-    figure = plt.gcf()
-    _figure_safe_close(figure)
-    return figure
-
-
-
 def _get_axes(identifier):
     """
     Return the axes containing the side pane in the current figure.
@@ -113,7 +62,7 @@ def _get_axes(identifier):
         current figure does not contain a side pane.
 
     """
-    fig = _gcf()
+    fig = plt.gcf()
 
     for axes in fig._get_axes():
         if axes.get_label() == _AXES_ID[identifier]:
@@ -124,7 +73,7 @@ def _get_axes(identifier):
 def _show_toolbar():
     """Reveal matplotlib's toolbar in current figure (Qt only)."""
     try:  # Try, setVisible method not always there
-        _gcf().canvas.toolbar.setVisible(True)
+        plt.gcf().canvas.toolbar.setVisible(True)
     except AttributeError:
         pass
 
@@ -132,14 +81,14 @@ def _show_toolbar():
 def _hide_toolbar():
     """Hide matplotlib's toolbar in current figure (Qt only)."""
     try:  # Try, setVisible method not always there
-        _gcf().canvas.toolbar.setVisible(False)
+        plt.gcf().canvas.toolbar.setVisible(False)
     except AttributeError:
         pass
 
 
 def _set_title(title):
     """Set the title of the current figure window."""
-    _gcf().canvas.set_window_title(title)
+    plt.gcf().canvas.set_window_title(title)
 
 
 def _add_gui_pane():
@@ -147,7 +96,7 @@ def _add_gui_pane():
     global _ax_left
     global _ax_width
 
-    fig = _gcf()  # Create a figure if there is no current figure.
+    fig = plt.gcf()  # Create a figure if there is no current figure.
 
     # If this figure already has some axes, then create a side pane.
     # Otherwise, the figure is empty and ths this will be a full pane.
@@ -187,9 +136,11 @@ def _remove_gui_pane():
         pass
     plt.subplots_adjust(right=0.9)
 
-    # If there is nothing left in the figure, then close it.
-    if len(_gcf().get_axes()) == 0:
-        plt.close()
+    # # If there is nothing left in the figure, then close it.
+    # # Commented because the figure is stuck.
+    # fig = plt.gcf()
+    # if len(fig.get_axes()) == 0:
+    #     plt.close(fig)
 
 
 def message(text):
@@ -260,8 +211,7 @@ def button_dialog(text='Please select an option.',
     message('')
     message(text)
 
-    fig = _gcf()
-    _figure_safe_close(fig)
+    fig = plt.gcf()
 
     # Write buttons
     button_pressed = [None]
@@ -284,10 +234,7 @@ def button_dialog(text='Please select an option.',
     fig.canvas.mpl_connect('close_event', partial(close_callback))
 
     # Wait for button press of figure close
-    plt.show(block=False)
-    fig.canvas.start_event_loop(0.01)
-
-    # _figure_safe_close(fig)
+    plt.pause(0.1)
     while button_pressed[0] is None:
         fig.canvas.flush_events()
         time.sleep(0.01)

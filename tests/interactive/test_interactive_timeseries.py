@@ -21,7 +21,7 @@ def test_uisync():
     ts.ui_sync('signal1')
     fig = plt.figure()
     ts.plot()
-    ktk.mplhelper.button_dialog('Check that this setted the zero.', ['OK'])
+    ktk.gui.button_dialog('Check that this setted the zero.', ['OK'])
     plt.close(fig)
 
 

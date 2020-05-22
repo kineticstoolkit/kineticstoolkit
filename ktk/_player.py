@@ -198,8 +198,6 @@ class Player:
             figsize=(12, 9),
             facecolor='k',
             edgecolor='w')
-        # Matplolib issue 17109 workaround
-        ktk.gui._figure_safe_close(self.objects['Figure'])
 
         # Remove the toolbar
         try:  # Try, setVisible method not always there
