@@ -205,16 +205,6 @@ class Player:
         except AttributeError:
             pass
 
-        # # Redirect standard toolbar callbacks
-        # def do_nothing(self, *args, **kwargs):
-        #     pass
-
-        # NavigationToolbar2.home = do_nothing
-        # NavigationToolbar2.pan = do_nothing
-        # NavigationToolbar2.forward = do_nothing
-        # NavigationToolbar2.back = do_nothing
-        # NavigationToolbar2.zoom = do_nothing
-
         plt.tight_layout()
 
         # Add the title
@@ -245,8 +235,8 @@ class Player:
             'button_release_event', self._on_mouse_release)
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
-        self.objects['Figure'].canvas.mpl_connect(
-            'close_event', self._on_close)
+        # self.objects['Figure'].canvas.mpl_connect(
+        #     'close_event', self._on_close)
 
 
 

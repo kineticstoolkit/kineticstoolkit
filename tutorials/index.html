@@ -13150,10 +13150,12 @@ conda to install the required packages.</p>
 <p><strong>Create a virtual environment and install the external dependencies</strong></p>
 <p>Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code>ktk</code> virtual environment and install the dependencies in this environment.</p>
 
-<pre><code>conda create -n ktk python=3.8
+<pre><code>conda create -n ktk
+
 conda activate ktk
-conda install matplotlib scipy pandas scikit-learn pytest jupyter spyder pdoc3
-conda install -c conda-forge ezc3d jupyter_contrib_nbextensions
+
+conda install -c conda-forge python=3.7 matplotlib scipy pandas scikit-learn pytest jupyter spyder pdoc3 ezc3d jupyter_contrib_nbextensions
+
 jupyter-nbextension enable toc2/main
 
 </code></pre>
@@ -14346,7 +14348,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk._player.Player at 0x11d15d710&gt;</pre>
+<pre>&lt;ktk._player.Player at 0x11fd26110&gt;</pre>
 </div>
 
 </div>
@@ -14586,7 +14588,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk._player.Player at 0x11d59ec10&gt;</pre>
+<pre>&lt;ktk._player.Player at 0x11fbf0450&gt;</pre>
 </div>
 
 </div>
@@ -14638,7 +14640,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk._player.Player at 0x11d59ee90&gt;</pre>
+<pre>&lt;ktk._player.Player at 0x11fbf0e50&gt;</pre>
 </div>
 
 </div>
@@ -14700,7 +14702,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk._player.Player at 0x1275bddd0&gt;</pre>
+<pre>&lt;ktk._player.Player at 0x12a18e610&gt;</pre>
 </div>
 
 </div>
@@ -14750,7 +14752,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk._player.Player at 0x12860f3d0&gt;</pre>
+<pre>&lt;ktk._player.Player at 0x12b1eb090&gt;</pre>
 </div>
 
 </div>

@@ -136,11 +136,12 @@ def _remove_gui_pane():
         pass
     plt.subplots_adjust(right=0.9)
 
-    # # If there is nothing left in the figure, then close it.
-    # # Commented because the figure is stuck.
-    # fig = plt.gcf()
-    # if len(fig.get_axes()) == 0:
-    #     plt.close(fig)
+    # If there is nothing left in the figure, then close it.
+    # Commented because the figure is stuck.
+    fig = plt.gcf()
+    if len(fig.get_axes()) == 0:
+        plt.close(fig)
+        fig.canvas.manager.window.destroy()
 
 
 def message(text):
