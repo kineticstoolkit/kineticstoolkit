@@ -161,3 +161,8 @@ def test_tag_files():
     project.tag_files(include_trial_name=False, dry_run=False)
     assert ('Run1' not in
             project.get('P1', 'GymnaseN1', 'Run1', 'Kinematics')['FileName'])
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])
