@@ -25,6 +25,8 @@ These are the unit tests for the TimeSeries class.
 """
 import ktk
 import numpy as np
+import matplotlib.pyplot as plt
+
 
 def test_empty_constructor():
     ts = ktk.TimeSeries()
@@ -40,6 +42,7 @@ def test_add_data_info():
     ts.add_data_info('Force', 'Unit', 'N')
     assert ts.data_info['Force']['Unit'] == 'N'
 
+
 def test_get_event_time():
     ts = ktk.TimeSeries()
     ts.add_event(5.5, 'event1')
@@ -48,6 +51,7 @@ def test_get_event_time():
     assert ts.get_event_time('event1') == 5.5
     assert ts.get_event_time('event2', 0) == 2.3
     assert ts.get_event_time('event2', 1) == 10.8
+
 
 def test_get_ts_at_event___get_ts_at_time():
     ts = ktk.TimeSeries()
@@ -67,12 +71,14 @@ def test_get_ts_at_event___get_ts_at_time():
     new_ts = ts.get_ts_at_event('event2', 1)
     assert new_ts.time == 11
 
+
 def tes_get_ts_before_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
     new_ts = ts.get_ts_before_time(-2)
     assert new_ts.time.tolist() == []
     new_ts = ts.get_ts_before_time(13)
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
+
 
 def test_get_ts_after_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
@@ -81,12 +87,14 @@ def test_get_ts_after_time():
     new_ts = ts.get_ts_after_time(13)
     assert new_ts.time.tolist() == []
 
+
 def test_get_ts_between_times():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
     new_ts = ts.get_ts_between_times(-2, 13)
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_between_times(-2, -1)
     assert new_ts.time.tolist() == []
+
 
 def test_merge_and_resample():
     # Begin with two timeseries with identical times
@@ -171,6 +179,7 @@ def test_merge_and_resample():
     assert ts1.data_info['signal5']['Unit'] == ts2.data_info['signal5']['Unit']
     assert ts1.data_info['signal6']['Unit'] == ts2.data_info['signal6']['Unit']
 
+
 def test_rename_data():
     ts = ktk.TimeSeries(time=np.arange(100))
     ts.data['data1'] = ts.time.copy()
@@ -183,6 +192,52 @@ def test_rename_data():
     assert 'data2' not in ts.data_info
     assert np.all(ts.data['data3'] == ts.time)
     assert ts.data_info['data3']['Unit'] == 'N'
+
+
+def test_plot():
+    """Test that many parameter combinations doesn't crash."""
+    ts = ktk.TimeSeries(time=np.arange(100))
+    ts.data['data1'] = ts.time.copy()
+    fig = plt.figure()
+    ts.plot()
+    plt.close(fig)
+
+    # Add another data
+    ts.data['data2'] = np.hstack([ts.time[:, np.newaxis],
+                                  ts.time[:, np.newaxis]])
+    fig = plt.figure()
+    ts.plot()
+    plt.close(fig)
+
+    # Add units
+    ts.add_data_info('data1', 'Unit', 'm')
+    fig = plt.figure()
+    ts.plot()
+    plt.close(fig)
+
+    # Add another unit
+    ts.add_data_info('data2', 'Unit', 'mm')
+    fig = plt.figure()
+    ts.plot()
+    plt.close(fig)
+
+    # Plot only one signal
+    fig = plt.figure()
+    ts.plot(['data1'])
+    plt.close(fig)
+
+    # Add events
+    ts.add_event(0)
+    ts.add_event(2)
+    ts.add_event(3)
+    fig = plt.figure()
+    ts.plot()
+    plt.close(fig)
+
+    # Plot without event_names and iwhtout legend
+    fig = plt.figure()
+    ts.plot(['data1'], event_names=False, legend=False)
+    plt.close(fig)
 
 
 if __name__ == "__main__":
