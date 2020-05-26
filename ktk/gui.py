@@ -141,7 +141,10 @@ def _remove_gui_pane():
     fig = plt.gcf()
     if len(fig.get_axes()) == 0:
         plt.close(fig)
-        fig.canvas.manager.window.destroy()
+        try:
+            fig.canvas.manager.window.destroy()
+        except AttributeError:  # This may not be a qt backend.
+            pass
 
 
 def message(text):
