@@ -25,15 +25,11 @@ class Player:
 
     Parameters
     ----------
-    markers : TimeSeries (optional)
-        Contains the markers to visualize, where each data key is a marker
-        position expressed as Nx4 array (N=time). Default is None.
-        markers and rigid_bodies cannot be both set to None.
-    rigid_bodies : TimeSeries (optional)
-        Contains the rigid bodies to visualize, where each data key is
-        a rigid body pose expressed as a Nx4x4 array (N=time, the other
-        dimensions are transformation matrices). Default is None.
-        markers and rigid_bodies cannot be both set to None.
+    *ts : TimeSeries
+        Contains the markers and rigid bodies to visualize, where each data
+        key is either a marker position expressed as Nx4 array (N=time),
+        or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
+        can be provided, e.g., ktk.Player(markers, rigid_bodies)
     segments : dict
         Used to draw lines between markers. Each key corresponds to a
         segment, where a segment is another dict with the following keys:
@@ -75,7 +71,7 @@ class Player:
     Player
     """
 
-    def __init__(self, markers=None, rigid_bodies=None, segments=None,
+    def __init__(self, *ts, segments=None,
                  current_frame=0, marker_radius=0.008, rigid_body_length=0.1,
                  rigid_body_width=3, segment_width=1.5,
                  zoom=1.0, azimuth=0.0, elevation=0.2,
@@ -85,27 +81,25 @@ class Player:
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
         # markers or rigid bodies.
-        if markers is not None:
-            self.time = markers.time
-            self.n_frames = len(markers.time)
-        elif rigid_bodies is not None:
-            self.time = rigid_bodies.time
-            self.n_frames = len(rigid_bodies.time)
-        else:
-            raise(ValueError('Either markers or rigid_bodies must be set.'))
+        self.time = ts[0].time
+        self.n_frames = len(ts[0].time)
 
         # ---------------------------------------------------------------
-        # Assign the markers
-        self.markers = markers
+        # Assign the markers and rigid bodies
+        self.markers = ktk.TimeSeries()
+        self.rigid_bodies = ktk.TimeSeries()
+
+        for one_ts in ts:
+            for key in one_ts.data:
+                if one_ts.data[key].shape[1:] == (4,):
+                    self.markers.data[key] = one_ts.data[key]
+                elif one_ts.data[key].shape[1:] == (4, 4):
+                    self.rigid_bodies.data[key] = one_ts.data[key]
+                else:
+                    raise ValueError('TimeSeries data must be of shape Nx4 '
+                                     '(markers) or Nx4x4 (rigid bodies)')
         self._select_none()
         self.last_selected_marker = None
-
-        # ---------------------------------------------------------------
-        # Assign the rigid bodies
-        if rigid_bodies is not None:
-            self.rigid_bodies = rigid_bodies.copy()
-        else:
-            self.rigid_bodies = ktk.TimeSeries(time=markers.time)
 
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(
@@ -235,10 +229,6 @@ class Player:
             'button_release_event', self._on_mouse_release)
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
-        # self.objects['Figure'].canvas.mpl_connect(
-        #     'close_event', self._on_close)
-
-
 
     def _create_segments(self):
         """Create the segments plots in the player's figure."""
