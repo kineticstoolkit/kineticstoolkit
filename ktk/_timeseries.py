@@ -429,11 +429,10 @@ class TimeSeries():
             >>> ts.add_event(2.3, 'event2')
 
             >>> ts.events
-            [[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
+            [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
 
         """
         self.events.append(TimeSeriesEvent(time, name))
-        self._sort_events()
 
     def ui_add_event(self, name='event', plot=[], multiple_events=False):
         """
@@ -513,27 +512,49 @@ class TimeSeries():
         ktk.gui.message('')
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
-        self._sort_events()
         return True
 
-    def _sort_events(self):
+    def sort_events(self, make_unique=True):
         """
-        Sorts the TimeSeries' events and ensure that all events are unique.
+        Sorts the TimeSeries' events from the earliest to the latest.
 
         Parameters
         ----------
-        None.
+        make_unique : bool (optional)
+            True to make events unique (no two events can have both the same
+            name and the same time). The default is True.
 
         Returns
         -------
         None.
 
+        Example
+        -------
+            >>> ts = ktk.TimeSeries(time=np.arange(100)/10)
+            >>> ts.add_event(2, 'two')
+            >>> ts.add_event(1, 'one')
+            >>> ts.add_event(3, 'three')
+            >>> ts.add_event(3, 'three')
+
+            >>> ts.events
+            [[2.0, 'two'], [1.0, 'one'], [3.0, 'three'], [3.0, 'three']]
+
+            >>> ts.sort_events(make_unique=False)
+            >>> ts.events
+            [[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]
+
+            >>> ts.sort_events()
+            >>> ts.events
+            [[1.0, 'one'], [2.0, 'two'], [3.0, 'three']]
+
         """
         self.events = sorted(self.events)
-        for i in range(len(self.events) - 1, 0, -1):
-            if ((self.events[i].time == self.events[i - 1].time) and
-                    (self.events[i].name == self.events[i - 1].name)):
-                self.events.pop(i)
+
+        if make_unique is True:
+            for i in range(len(self.events) - 1, 0, -1):
+                if ((self.events[i].time == self.events[i - 1].time) and
+                        (self.events[i].name == self.events[i - 1].name)):
+                    self.events.pop(i)
 
     def copy(self):
         """
@@ -1780,7 +1801,7 @@ class TimeSeries():
         # Merge events
         for event in ts.events:
             self.events.append(event)
-        self._sort_events()
+        self.sort_events()
 
 
 if __name__ == "__main__":

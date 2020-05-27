@@ -303,7 +303,7 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 &gt;&gt;&gt; ts.add_event(2.3, 'event2')
 
 &gt;&gt;&gt; ts.events
-[[2.3, 'event2'], [5.5, 'event1'], [10.8, 'event2']]
+[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.copy"><code class="name flex">
@@ -1098,6 +1098,38 @@ extrapolate.</dd>
 <h2 id="returns">Returns</h2>
 <p>None.</p></section>
 </dd>
+<dt id="ktk.TimeSeries.sort_events"><code class="name flex">
+<span>def <span class="ident">sort_events</span></span>(<span>self, make_unique=True)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Sorts the TimeSeries' events from the earliest to the latest.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>make_unique</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>True to make events unique (no two events can have both the same
+name and the same time). The default is True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(100)/10)
+&gt;&gt;&gt; ts.add_event(2, 'two')
+&gt;&gt;&gt; ts.add_event(1, 'one')
+&gt;&gt;&gt; ts.add_event(3, 'three')
+&gt;&gt;&gt; ts.add_event(3, 'three')
+
+&gt;&gt;&gt; ts.events
+[[2.0, 'two'], [1.0, 'one'], [3.0, 'three'], [3.0, 'three']]
+
+&gt;&gt;&gt; ts.sort_events(make_unique=False)
+&gt;&gt;&gt; ts.events
+[[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]
+
+&gt;&gt;&gt; ts.sort_events()
+&gt;&gt;&gt; ts.events
+[[1.0, 'one'], [2.0, 'two'], [3.0, 'three']]
+</code></pre></section>
+</dd>
 <dt id="ktk.TimeSeries.sync_event"><code class="name flex">
 <span>def <span class="ident">sync_event</span></span>(<span>self, event_name, event_occurrence=0)</span>
 </code></dt>
@@ -1359,6 +1391,7 @@ methods to deal with events.</p>
 <li><code><a title="ktk.TimeSeries.rename_data" href="#ktk.TimeSeries.rename_data">rename_data</a></code></li>
 <li><code><a title="ktk.TimeSeries.resample" href="#ktk.TimeSeries.resample">resample</a></code></li>
 <li><code><a title="ktk.TimeSeries.shift" href="#ktk.TimeSeries.shift">shift</a></code></li>
+<li><code><a title="ktk.TimeSeries.sort_events" href="#ktk.TimeSeries.sort_events">sort_events</a></code></li>
 <li><code><a title="ktk.TimeSeries.sync_event" href="#ktk.TimeSeries.sync_event">sync_event</a></code></li>
 <li><code><a title="ktk.TimeSeries.to_dataframe" href="#ktk.TimeSeries.to_dataframe">to_dataframe</a></code></li>
 <li><code><a title="ktk.TimeSeries.trim_events" href="#ktk.TimeSeries.trim_events">trim_events</a></code></li>
