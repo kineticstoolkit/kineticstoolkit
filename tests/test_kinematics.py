@@ -171,7 +171,7 @@ def test_reconstruction():
         '/tutorials/data/kinematics/sample_propulsion.n3d', labels=marker_names)
 
     # Show those markers in a player
-    ktk.Player(markers=markers, zoom=2, azimuth=0.8, elevation=0.16,
+    ktk.Player(markers, zoom=2, azimuth=0.8, elevation=0.16,
                translation=(0.2, -0.7))
 
     # %%
@@ -182,7 +182,7 @@ def test_reconstruction():
     rigid_bodies = ktk.kinematics.register_markers(markers, config['RigidBodies'])
 
     # Show those rigid bodies and markers in a player
-    ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+    ktk.Player(markers, rigid_bodies,
                zoom=2, azimuth=0.8, elevation=0.16, translation=(0.2, -0.7))
 
     # %%
@@ -201,7 +201,7 @@ def test_reconstruction():
         markers.add_data_info(virtual_marker, 'Color', 'c')
 
     # Show the markers and rigid bodies in a player
-    ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+    ktk.Player(markers, rigid_bodies,
                zoom=2, azimuth=0.8, elevation=0.16, translation=(0.2, -0.7))
 
     # %%
@@ -209,7 +209,7 @@ def test_reconstruction():
     Add the segments
     ----------------
     """
-    ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+    ktk.Player(markers, rigid_bodies,
                segments=config['Segments'], zoom=2, azimuth=0.8, elevation=0.16,
                translation=(0.2, -0.7))
 
@@ -221,3 +221,8 @@ def test_reconstruction():
     conventions, then calculate Euler angles based on the rigid tranformations
     between these rigid bodies. To be done in a near future.
     """
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])

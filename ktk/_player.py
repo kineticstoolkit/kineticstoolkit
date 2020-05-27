@@ -93,8 +93,15 @@ class Player:
             for key in one_ts.data:
                 if one_ts.data[key].shape[1:] == (4,):
                     self.markers.data[key] = one_ts.data[key]
+                    if key in one_ts.data_info:
+                        self.markers.data_info[key] = one_ts.data_info[key]
+
                 elif one_ts.data[key].shape[1:] == (4, 4):
                     self.rigid_bodies.data[key] = one_ts.data[key]
+                    if key in one_ts.data_info:
+                        self.rigid_bodies.data_info[key] = \
+                            one_ts.data_info[key]
+
                 else:
                     raise ValueError('TimeSeries data must be of shape Nx4 '
                                      '(markers) or Nx4x4 (rigid bodies)')

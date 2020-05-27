@@ -157,7 +157,7 @@ opened using:</p>
 <dl>
 <dt id="ktk.Player"><code class="flex name class">
 <span>class <span class="ident">Player</span></span>
-<span>(</span><span>markers=None, rigid_bodies=None, segments=None, current_frame=0, marker_radius=0.008, rigid_body_length=0.1, rigid_body_width=3, segment_width=1.5, zoom=1.0, azimuth=0.0, elevation=0.2, translation=(0.0, 0.0), target=(0.0, 0.0, 0.0), track=False, perspective=True)</span>
+<span>(</span><span>*ts, segments=None, current_frame=0, marker_radius=0.008, rigid_body_length=0.1, rigid_body_width=3, segment_width=1.5, zoom=1.0, azimuth=0.0, elevation=0.2, translation=(0.0, 0.0), target=(0.0, 0.0, 0.0), track=False, perspective=True)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>A class that allows visualizing markers and rigid bodies in 3D.</p>
@@ -165,15 +165,11 @@ opened using:</p>
 instance.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>markers</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
-<dd>Contains the markers to visualize, where each data key is a marker
-position expressed as Nx4 array (N=time). Default is None.
-markers and rigid_bodies cannot be both set to None.</dd>
-<dt><strong><code>rigid_bodies</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
-<dd>Contains the rigid bodies to visualize, where each data key is
-a rigid body pose expressed as a Nx4x4 array (N=time, the other
-dimensions are transformation matrices). Default is None.
-markers and rigid_bodies cannot be both set to None.</dd>
+<dt><strong><code>*ts</code></strong> :&ensp;<a title="ktk.TimeSeries" href="#ktk.TimeSeries"><code>TimeSeries</code></a></dt>
+<dd>Contains the markers and rigid bodies to visualize, where each data
+key is either a marker position expressed as Nx4 array (N=time),
+or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
+can be provided, e.g., ktk.Player(markers, rigid_bodies)</dd>
 <dt><strong><code>segments</code></strong> :&ensp;<code>dict</code></dt>
 <dd>Used to draw lines between markers. Each key corresponds to a
 segment, where a segment is another dict with the following keys:
