@@ -7,8 +7,13 @@ Professor Félix Chénier at Université du Québec à Montréal, Canada. It doe
 attempt to provide user-friendly graphical user interfaces (apart from the
 Player class to visualize 3d kinematics) or other magical blackboxes that
 process everything automatically. It is rather a framework that aims to
-integrate flexible classes and functions in a way that facilitates research in
-biomechanics. It is addressed mainly to researchers and students in
+integrate flexible classes and functions to facilitate research in
+biomechanics. Although most ktk modules express data using the custom
+ktk.TimeSeries class, it is still easy to integrate ktk with other environments
+using pandas Dataframes as intermediary containers, using the TimeSeries'
+from_dataframe and to_dataframe methods.
+
+Kinetics Toolkit is addressed mainly to researchers and students in
 biomechanics, who want to understand and control their data. This is why a
 particular effort is made on API documentation, with examples and tutorials.
 
@@ -21,8 +26,8 @@ Public version
 
 The public open-source version API is mostly stable and currently includes:
 
-- `timeseries.TimeSeries` : a generic class to represent time-varying n-dimensional
-  data and events, which has many methods to extract, merge and subset
+- `timeseries.TimeSeries` : a generic class to represent time-varying
+  n-dimensional data and events, with many methods to extract, merge and subset
   TimeSeries data.
 
 - `kinematics` : a module that loads c3d and n3d files as TimeSeries of
@@ -34,8 +39,8 @@ The public open-source version API is mostly stable and currently includes:
 Please be warned that this is mostly experimental software. If you are using
 ktk or are planning to be, you are warmly invited to contact me, first to say
 Hello :-), and so that I can warn you before doing major, possibly breaking
-changes. Also remind that I develop ktk mainly for my lab and I have
-limited resources for troubleshooting. You can however
+changes. Also remind that I develop ktk mainly for my lab and I have limited
+resources for troubleshooting. You can however
 [ask your questions](mailto:chenier.felix@uqam.ca)
 and if I can answer, I'll do.
 
@@ -61,8 +66,8 @@ shared.
 Credits
 -------
 
-Some external code has been included into ktk's source code. Here are the
-credits for these nice people.
+Some external code has been directly included into ktk's source code. Here are
+the credits for these nice people.
 
 - Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) -
   Python implementation of m-dimensional Iterative Closest Point method

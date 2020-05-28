@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
+#
+# This file is not for redistribution.
 """
-Created on Tue Jul 16 13:29:24 2019
-
-@author: felix
+Provides functions to load .mat and .ktk.zip files, and to save .ktk.zip files.
 """
 
 from ktk.timeseries import TimeSeries

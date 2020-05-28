@@ -13100,9 +13100,27 @@ $( document ).ready(function(){
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Kinetics-Toolkit-(ktk)---Getting-Started-Tutorial">Kinetics Toolkit (ktk) - Getting Started Tutorial<a class="anchor-link" href="#Kinetics-Toolkit-(ktk)---Getting-Started-Tutorial">&#182;</a></h1><p>Félix Chénier, 2020</p>
-<p>This is the getting started tutorial for the <strong>unstable private version</strong>. <a href="https://felixchenier.uqam.ca/ktk_dist/tutorials">Switch to the public version</a>.</p>
+<p>This is the getting started tutorial for the <strong>private development version</strong>. <a href="https://felixchenier.uqam.ca/ktk_dist/tutorials">Switch to the public version</a>.</p>
 <hr>
-<p>The ktk library is a Python API that aims to ease the processing of biomechanical data. Since this is an API and not a GUI, some experience in programming is required. Here is a probably non-exhaustive list of prerequesites :</p>
+<p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
+<p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
+<p><a href="https://felixchenier.uqam.ca/ktk_dist/api">API documentation</a></p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p><h1>Table of Contents<span class="tocSkip"></span></h1></p>
+<div class="toc"><ul class="toc-item"><li><span><a href="#User-requirements" data-toc-modified-id="User-requirements-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>User requirements</a></span></li><li><span><a href="#Installing" data-toc-modified-id="Installing-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>Installing</a></span><ul class="toc-item"><li><span><a href="#Installing-the-requirements" data-toc-modified-id="Installing-the-requirements-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>Installing the requirements</a></span></li><li><span><a href="#Installing-ktk" data-toc-modified-id="Installing-ktk-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>Installing ktk</a></span><ul class="toc-item"><li><span><a href="#Public-version" data-toc-modified-id="Public-version-2.2.1"><span class="toc-item-num">2.2.1&nbsp;&nbsp;</span>Public version</a></span></li><li><span><a href="#Development-version" data-toc-modified-id="Development-version-2.2.2"><span class="toc-item-num">2.2.2&nbsp;&nbsp;</span>Development version</a></span></li></ul></li><li><span><a href="#Configuring-Spyder" data-toc-modified-id="Configuring-Spyder-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>Configuring Spyder</a></span><ul class="toc-item"><li><span><a href="#Select-the-Qt5-backend" data-toc-modified-id="Select-the-Qt5-backend-2.3.1"><span class="toc-item-num">2.3.1&nbsp;&nbsp;</span>Select the Qt5 backend</a></span></li><li><span><a href="#Development-version-only:-Add-the-kineticstoolkit-folder-to-the-Python-path" data-toc-modified-id="Development-version-only:-Add-the-kineticstoolkit-folder-to-the-Python-path-2.3.2"><span class="toc-item-num">2.3.2&nbsp;&nbsp;</span>Development version only: Add the kineticstoolkit folder to the Python path</a></span></li></ul></li><li><span><a href="#Updating-ktk" data-toc-modified-id="Updating-ktk-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>Updating ktk</a></span><ul class="toc-item"><li><span><a href="#Public-version" data-toc-modified-id="Public-version-2.4.1"><span class="toc-item-num">2.4.1&nbsp;&nbsp;</span>Public version</a></span></li><li><span><a href="#Development-version" data-toc-modified-id="Development-version-2.4.2"><span class="toc-item-num">2.4.2&nbsp;&nbsp;</span>Development version</a></span></li></ul></li></ul></li><li><span><a href="#TimeSeries" data-toc-modified-id="TimeSeries-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>TimeSeries</a></span><ul class="toc-item"><li><span><a href="#Properties" data-toc-modified-id="Properties-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Properties</a></span><ul class="toc-item"><li><span><a href="#time-and-data" data-toc-modified-id="time-and-data-3.1.1"><span class="toc-item-num">3.1.1&nbsp;&nbsp;</span>time and data</a></span></li><li><span><a href="#time_info-and-data_info" data-toc-modified-id="time_info-and-data_info-3.1.2"><span class="toc-item-num">3.1.2&nbsp;&nbsp;</span>time_info and data_info</a></span></li><li><span><a href="#events" data-toc-modified-id="events-3.1.3"><span class="toc-item-num">3.1.3&nbsp;&nbsp;</span>events</a></span></li></ul></li><li><span><a href="#Using-events-to-synchronize-TimeSeries" data-toc-modified-id="Using-events-to-synchronize-TimeSeries-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>Using events to synchronize TimeSeries</a></span></li><li><span><a href="#Using-events-to-extract-sub-TimeSeries" data-toc-modified-id="Using-events-to-extract-sub-TimeSeries-3.3"><span class="toc-item-num">3.3&nbsp;&nbsp;</span>Using events to extract sub-TimeSeries</a></span></li><li><span><a href="#Subsetting-and-merging-timeseries" data-toc-modified-id="Subsetting-and-merging-timeseries-3.4"><span class="toc-item-num">3.4&nbsp;&nbsp;</span>Subsetting and merging timeseries</a></span></li></ul></li><li><span><a href="#Kinematics" data-toc-modified-id="Kinematics-4"><span class="toc-item-num">4&nbsp;&nbsp;</span>Kinematics</a></span><ul class="toc-item"><li><span><a href="#Loading-a-c3d-or-n3d-file" data-toc-modified-id="Loading-a-c3d-or-n3d-file-4.1"><span class="toc-item-num">4.1&nbsp;&nbsp;</span>Loading a c3d or n3d file</a></span></li><li><span><a href="#Visualizing-the-markers" data-toc-modified-id="Visualizing-the-markers-4.2"><span class="toc-item-num">4.2&nbsp;&nbsp;</span>Visualizing the markers</a></span></li><li><span><a href="#Reconstructing-kinematics" data-toc-modified-id="Reconstructing-kinematics-4.3"><span class="toc-item-num">4.3&nbsp;&nbsp;</span>Reconstructing kinematics</a></span><ul class="toc-item"><li><span><a href="#Defining-rigid-body-configurations-using-a-static-acquisition" data-toc-modified-id="Defining-rigid-body-configurations-using-a-static-acquisition-4.3.1"><span class="toc-item-num">4.3.1&nbsp;&nbsp;</span>Defining rigid body configurations using a static acquisition</a></span></li><li><span><a href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" data-toc-modified-id="Defining-the-virtual-marker-configurations-based-on-probing-acquisitions-4.3.2"><span class="toc-item-num">4.3.2&nbsp;&nbsp;</span>Defining the virtual marker configurations based on probing acquisitions</a></span></li><li><span><a href="#Defining-segment-configurations" data-toc-modified-id="Defining-segment-configurations-4.3.3"><span class="toc-item-num">4.3.3&nbsp;&nbsp;</span>Defining segment configurations</a></span></li></ul></li><li><span><a href="#Processing-an-experimental-trial" data-toc-modified-id="Processing-an-experimental-trial-4.4"><span class="toc-item-num">4.4&nbsp;&nbsp;</span>Processing an experimental trial</a></span></li></ul></li></ul></div>
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h2 id="User-requirements">User requirements<a class="anchor-link" href="#User-requirements">&#182;</a></h2><p>The ktk library is a Python API that aims to ease the processing of biomechanical data. Since this is an API and not a GUI, some experience in programming is required. Here is a probably non-exhaustive list of prerequesites :</p>
 <ul>
 <li>Basic python skills :<ul>
 <li>Variable types : bool, int, float, str, dict, list, tuple</li>
@@ -13119,34 +13137,10 @@ $( document ).ready(function(){
 </li>
 </ul>
 <p>Although there are some references to object-oriented programming (classes) and Pandas DataFrames, using ktk does not require mastering those concepts and tools.</p>
-<hr>
-<p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
-<p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
-<p><a href="https://felixchenier.uqam.ca/ktk_dist/api">API documentation</a></p>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<p><h1>Table of Contents<span class="tocSkip"></span></h1></p>
-<div class="toc"><ul class="toc-item"><li><span><a href="#Installing" data-toc-modified-id="Installing-1"><span class="toc-item-num">1&nbsp;&nbsp;</span>Installing</a></span><ul class="toc-item"><li><span><a href="#Obtain-access-to-ktk" data-toc-modified-id="Obtain-access-to-ktk-1.1"><span class="toc-item-num">1.1&nbsp;&nbsp;</span>Obtain access to ktk</a></span></li><li><span><a href="#Download-and-install-git" data-toc-modified-id="Download-and-install-git-1.2"><span class="toc-item-num">1.2&nbsp;&nbsp;</span>Download and install git</a></span></li><li><span><a href="#Download-and-install-Python-and-the-required-packages" data-toc-modified-id="Download-and-install-Python-and-the-required-packages-1.3"><span class="toc-item-num">1.3&nbsp;&nbsp;</span>Download and install Python and the required packages</a></span></li><li><span><a href="#Clone-ktk-from-bitbucket" data-toc-modified-id="Clone-ktk-from-bitbucket-1.4"><span class="toc-item-num">1.4&nbsp;&nbsp;</span>Clone ktk from bitbucket</a></span></li><li><span><a href="#Configure-Spyder" data-toc-modified-id="Configure-Spyder-1.5"><span class="toc-item-num">1.5&nbsp;&nbsp;</span>Configure Spyder</a></span><ul class="toc-item"><li><span><a href="#Select-the-correct-matplotlib-backend" data-toc-modified-id="Select-the-correct-matplotlib-backend-1.5.1"><span class="toc-item-num">1.5.1&nbsp;&nbsp;</span>Select the correct matplotlib backend</a></span></li><li><span><a href="#Add-the-kineticstoolkit-folder-to-the-Python-path" data-toc-modified-id="Add-the-kineticstoolkit-folder-to-the-Python-path-1.5.2"><span class="toc-item-num">1.5.2&nbsp;&nbsp;</span>Add the kineticstoolkit folder to the Python path</a></span></li></ul></li></ul></li><li><span><a href="#TimeSeries" data-toc-modified-id="TimeSeries-2"><span class="toc-item-num">2&nbsp;&nbsp;</span>TimeSeries</a></span><ul class="toc-item"><li><span><a href="#Properties" data-toc-modified-id="Properties-2.1"><span class="toc-item-num">2.1&nbsp;&nbsp;</span>Properties</a></span><ul class="toc-item"><li><span><a href="#time" data-toc-modified-id="time-2.1.1"><span class="toc-item-num">2.1.1&nbsp;&nbsp;</span>time</a></span></li><li><span><a href="#data" data-toc-modified-id="data-2.1.2"><span class="toc-item-num">2.1.2&nbsp;&nbsp;</span>data</a></span><ul class="toc-item"><li><span><a href="#data-as-n-dimensional-arrays" data-toc-modified-id="data-as-n-dimensional-arrays-2.1.2.1"><span class="toc-item-num">2.1.2.1&nbsp;&nbsp;</span>data as n-dimensional arrays</a></span></li></ul></li><li><span><a href="#time_info" data-toc-modified-id="time_info-2.1.3"><span class="toc-item-num">2.1.3&nbsp;&nbsp;</span>time_info</a></span></li><li><span><a href="#data_info" data-toc-modified-id="data_info-2.1.4"><span class="toc-item-num">2.1.4&nbsp;&nbsp;</span>data_info</a></span></li><li><span><a href="#events" data-toc-modified-id="events-2.1.5"><span class="toc-item-num">2.1.5&nbsp;&nbsp;</span>events</a></span></li></ul></li><li><span><a href="#Using-events-to-synchronize-TimeSeries" data-toc-modified-id="Using-events-to-synchronize-TimeSeries-2.2"><span class="toc-item-num">2.2&nbsp;&nbsp;</span>Using events to synchronize TimeSeries</a></span></li><li><span><a href="#Using-events-to-extract-sub-TimeSeries" data-toc-modified-id="Using-events-to-extract-sub-TimeSeries-2.3"><span class="toc-item-num">2.3&nbsp;&nbsp;</span>Using events to extract sub-TimeSeries</a></span></li><li><span><a href="#Subsetting-and-merging-timeseries" data-toc-modified-id="Subsetting-and-merging-timeseries-2.4"><span class="toc-item-num">2.4&nbsp;&nbsp;</span>Subsetting and merging timeseries</a></span></li></ul></li><li><span><a href="#Kinematics" data-toc-modified-id="Kinematics-3"><span class="toc-item-num">3&nbsp;&nbsp;</span>Kinematics</a></span><ul class="toc-item"><li><span><a href="#Creating-configurations-of-rigid-bodies,-virtual-markers-and-segments" data-toc-modified-id="Creating-configurations-of-rigid-bodies,-virtual-markers-and-segments-3.1"><span class="toc-item-num">3.1&nbsp;&nbsp;</span>Creating configurations of rigid bodies, virtual markers and segments</a></span><ul class="toc-item"><li><span><a href="#Defining-marker-names" data-toc-modified-id="Defining-marker-names-3.1.1"><span class="toc-item-num">3.1.1&nbsp;&nbsp;</span>Defining marker names</a></span></li><li><span><a href="#Defining-rigid-body-configurations-using-a-static-acquisition" data-toc-modified-id="Defining-rigid-body-configurations-using-a-static-acquisition-3.1.2"><span class="toc-item-num">3.1.2&nbsp;&nbsp;</span>Defining rigid body configurations using a static acquisition</a></span></li><li><span><a href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" data-toc-modified-id="Defining-the-virtual-marker-configurations-based-on-probing-acquisitions-3.1.3"><span class="toc-item-num">3.1.3&nbsp;&nbsp;</span>Defining the virtual marker configurations based on probing acquisitions</a></span></li><li><span><a href="#Defining-segment-configurations" data-toc-modified-id="Defining-segment-configurations-3.1.4"><span class="toc-item-num">3.1.4&nbsp;&nbsp;</span>Defining segment configurations</a></span></li></ul></li><li><span><a href="#Processing-an-experimental-trial" data-toc-modified-id="Processing-an-experimental-trial-3.2"><span class="toc-item-num">3.2&nbsp;&nbsp;</span>Processing an experimental trial</a></span></li></ul></li></ul></div>
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
-</div><div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
-<h2 id="Installing">Installing<a class="anchor-link" href="#Installing">&#182;</a></h2><p>Please follow these steps to install the private version of ktk.</p>
-<h3 id="Obtain-access-to-ktk">Obtain access to ktk<a class="anchor-link" href="#Obtain-access-to-ktk">&#182;</a></h3><p>Please <a href="mailto:chenier.felix@uqam.ca">email me</a> if you are interested to collaborate on research and/or ktk development.</p>
-<h3 id="Download-and-install-git">Download and install git<a class="anchor-link" href="#Download-and-install-git">&#182;</a></h3><p>ktk is versionned using git, and includes functions to update itself. The first step to obtain ktk is to install git on your computer.</p>
-<p><a href="https://git-scm.com">git website</a></p>
-<p>Just use the default checkboxes in every dialog, everything should be fine.</p>
-<h3 id="Download-and-install-Python-and-the-required-packages">Download and install Python and the required packages<a class="anchor-link" href="#Download-and-install-Python-and-the-required-packages">&#182;</a></h3><p>There are many ways to do this. I recommend to install Anaconda or Miniconda, and use
-conda to install the required packages.</p>
-<p><strong>Download and install Miniconda</strong></p>
-<p><a href="https://docs.conda.io/en/latest/miniconda.html">Miniconda website</a> - Select the Python 3.x version that corresponds to your system.</p>
+<h2 id="Installing">Installing<a class="anchor-link" href="#Installing">&#182;</a></h2><h3 id="Installing-the-requirements">Installing the requirements<a class="anchor-link" href="#Installing-the-requirements">&#182;</a></h3><p>Although ktk is distributed via <code>pip</code>, I strongly recommend using a conda environment, if only to install <code>ezc3d</code> which is required for opening c3d files and which is distributed via <code>conda-forge</code>.</p>
+<p><strong>Download and install Anaconda or Miniconda</strong></p>
+<p>I suggest Miniconda as it is way smaller than the whole Anaconda suite.</p>
+<p><a href="https://docs.conda.io/en/latest/miniconda.html">Miniconda website</a> - Select the Python 3.7 version that corresponds to your system.</p>
 <p><strong>Create a virtual environment and install the external dependencies</strong></p>
 <p>Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code>ktk</code> virtual environment and install the dependencies in this environment.</p>
 
@@ -13154,38 +13148,73 @@ conda to install the required packages.</p>
 
 conda activate ktk
 
-conda install -c conda-forge python=3.7 matplotlib scipy pandas scikit-learn pytest jupyter spyder pdoc3 ezc3d jupyter_contrib_nbextensions
+conda install -c conda-forge python=3.7 matplotlib scipy pandas scikit-learn ezc3d
+
+</code></pre>
+<p>Additional dependencies for the private development version:</p>
+
+<pre><code>conda install -c conda-forge pytest jupyter pdoc3 jupyter_contrib_nbextensions
 
 jupyter-nbextension enable toc2/main
 
 </code></pre>
-<h3 id="Clone-ktk-from-bitbucket">Clone ktk from bitbucket<a class="anchor-link" href="#Clone-ktk-from-bitbucket">&#182;</a></h3><p>Open a git bash (on Windows) or a terminal (on macOS and Linux) and run these lines, replacing USERNAME with your bitbucket username. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running this command.</p>
+<p>Optional but suggested as as very good IDE for research and development:</p>
+
+<pre><code>conda install -c conda-forge spyder
+
+</code></pre>
+<h3 id="Installing-ktk">Installing ktk<a class="anchor-link" href="#Installing-ktk">&#182;</a></h3><h4 id="Public-version">Public version<a class="anchor-link" href="#Public-version">&#182;</a></h4><p>The public, open-source version of ktk is distributed va <code>pip</code>. Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:</p>
+
+<pre><code>pip install ktk
+
+</code></pre>
+<h4 id="Development-version">Development version<a class="anchor-link" href="#Development-version">&#182;</a></h4><ol>
+<li><p>Obtain access: Please <a href="mailto:chenier.felix@uqam.ca">email me</a> if you are interested to collaborate on research and/or ktk development.</p>
+</li>
+<li><p>Install git: <a href="https://git-scm.com">git website</a>. Just use the default checkboxes in every dialog, everything should be fine.</p>
+</li>
+<li><p>Clone ktk from bitbucket: Open a git bash (on Windows) or a terminal (on macOS and Linux) and run these lines one by one, replacing USERNAME with your bitbucket username. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.</p>
+</li>
+</ol>
 
 <pre><code>git clone https://USERNAME@bitbucket.org/felixchenier/kineticstoolkit.git')
+
 cd kineticstoolkit
+
 git pull origin
 
 </code></pre>
-<h3 id="Configure-Spyder">Configure Spyder<a class="anchor-link" href="#Configure-Spyder">&#182;</a></h3><p>On Windows, open Spyder by selecting 'Spyder (ktk)' from the Anaconda3 menu. On macOS and Linux, open a terminal and write:</p>
+<h3 id="Configuring-Spyder">Configuring Spyder<a class="anchor-link" href="#Configuring-Spyder">&#182;</a></h3><p>On Windows, open Spyder by selecting 'Spyder (ktk)' from the Anaconda3 menu. On macOS and Linux, open a terminal and write:</p>
 
 <pre><code>conda activate ktk
 spyder
 
 </code></pre>
-<h4 id="Select-the-correct-matplotlib-backend">Select the correct matplotlib backend<a class="anchor-link" href="#Select-the-correct-matplotlib-backend">&#182;</a></h4><p>In Spyder's preference, go to the <strong>IPython console</strong> item, then to the
-<strong>Graphics</strong> pane. In the <strong>Graphics backend</strong> box, select <strong>Qt5</strong>.</p>
-<h4 id="Add-the-kineticstoolkit-folder-to-the-Python-path">Add the kineticstoolkit folder to the Python path<a class="anchor-link" href="#Add-the-kineticstoolkit-folder-to-the-Python-path">&#182;</a></h4><p>In Spyder, look for the <strong>PYTHONPATH manager</strong>. Open this manager and add the
-<code>kineticstoolkit</code> folder that you just cloned to the python path.</p>
-<p>Restart Spyder. Writing <code>import ktk</code> should find and import ktk.</p>
-<hr>
-<p>Congratulation, ktk is now installed. From now on, you can always update to
-the most recent version using:</p>
+<h4 id="Select-the-Qt5-backend">Select the Qt5 backend<a class="anchor-link" href="#Select-the-Qt5-backend">&#182;</a></h4><p>KTK uses Matplotlib for user interaction. Therefore we must specify that we want an interactive Matplotlib backend. In IPython console, this can be set temporarily by writing:</p>
 
-<pre><code>import ktk
-ktk.update()
+<pre><code>%matplotlib Qt5
 
 </code></pre>
-<p>Now we can import ktk and some other libraries used in this tutorial.</p>
+<p>To set it permanently in Spyder, go to the Spyder's preferences, to the <strong>IPython console</strong> item, then to the
+<strong>Graphics</strong> pane. In the <strong>Graphics backend</strong> box, select <strong>Qt5</strong>.</p>
+<h4 id="Development-version-only:-Add-the-kineticstoolkit-folder-to-the-Python-path">Development version only: Add the kineticstoolkit folder to the Python path<a class="anchor-link" href="#Development-version-only:-Add-the-kineticstoolkit-folder-to-the-Python-path">&#182;</a></h4><p>In Spyder, look for the <strong>PYTHONPATH manager</strong>. Open this manager and add the
+<code>kineticstoolkit</code> folder that you just cloned to the python path.</p>
+<p>Restart Spyder. Writing <code>import ktk</code> should now find and import ktk without error.</p>
+<h3 id="Updating-ktk">Updating ktk<a class="anchor-link" href="#Updating-ktk">&#182;</a></h3><p>To keep ktk up to date:</p>
+<h4 id="Public-version">Public version<a class="anchor-link" href="#Public-version">&#182;</a></h4><p>Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:</p>
+
+<pre><code>pip upgrade ktk
+
+</code></pre>
+<h4 id="Development-version">Development version<a class="anchor-link" href="#Development-version">&#182;</a></h4><p>In an IPython console, type:</p>
+
+<pre><code>import ktk
+ktk.update()    
+
+
+</code></pre>
+<hr>
+<p>Now we can import ktk and some other libraries that will be used in this tutorial.</p>
 
 </div>
 </div>
@@ -13217,16 +13246,7 @@ ktk.update()
 <li><em>associate metadata to data.</em></li>
 </ol>
 <hr>
-<p>Although we often see the concept of time series in financial, forecast, and even psychological science, the concept of time series also applies very well to biomechanics: biomechanical data is almost always expressed as series of data in time (e.g., the trajectory of a marker, an electromyographic signal).</p>
-<p>While in python, time series analyses are often performed using Pandas DataFrames, I believe DataFrames are suboptimal in biomechanics processing:</p>
-<ol>
-<li><p>We often have to deal not just with series of data points, but also with <strong>series of vectors</strong> (e.g., trajectory of a marker) and <strong>series of matrices</strong> (e.g., series of transformation matrices). Expressing series of vectors and matrices in a bidimensional DataFrame is not convenient.</p>
-</li>
-<li><p>We often have different measures with <strong>different units</strong>, and there is no practical way with a DataFrame to associate units to columns, other than by keeping a separate dictionary.</p>
-</li>
-<li><p>We often deal with <strong>events</strong> (e.g., heel contact), and there is no practical way using a DataFrame to keep a list of those events with their corresponding times, other than by keeping a separate list.</p>
-</li>
-</ol>
+<p>As Biomechanical data is almost always expressed as series of data in time (e.g., the trajectory of a marker, an electromyographic signal), then time series are well suited to biomechanics. In python, time series analysis is often performed using Pandas DataFrames. However I believe DataFrames are suboptimal in biomechanics processing, mainly because they cannot readily represent series of n-dimensional data, such as <strong>series of transformation matrices</strong>, for example. Moreover, DataFrames cannot be associated with <strong>different units</strong> and <strong>lists of events</strong> (e.g., heel contact) other than by keeping separate lists or dictionaries.</p>
 <p>To overcome these limitation, ktk provides the <code>TimeSeries</code> class. This class is largely inspired by Matlab's <code>timeseries</code> and <code>tscollection</code>.</p>
 <p>To better understand the role and capabilities of the TimeSeries class, we will begin by opening some columns of a csv file as a Pandas DataFrame. This file contains forces and moments applied on an instrumented wheelchair wheel during the propulsion of a manual wheelchair.</p>
 
@@ -13452,7 +13472,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Properties">Properties<a class="anchor-link" href="#Properties">&#182;</a></h3><h4 id="time">time<a class="anchor-link" href="#time">&#182;</a></h4><p>The <code>time</code> property is the time vector, which tells at which time correspond each of the samples.</p>
+<h3 id="Properties">Properties<a class="anchor-link" href="#Properties">&#182;</a></h3><h4 id="time-and-data">time and data<a class="anchor-link" href="#time-and-data">&#182;</a></h4><p>The <code>time</code> property is the time vector, which tells at which time correspond each of the samples.</p>
 
 </div>
 </div>
@@ -13494,7 +13514,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="data">data<a class="anchor-link" href="#data">&#182;</a></h4><p>The <code>data</code> property contains the TimeSeries' data in a dictionary. Here, we had 6 columns in the DataFrame: each of these columns corresponds to a data key.</p>
+<p>The <code>data</code> property contains the TimeSeries' data in a dictionary. Each of the 6 DataFrame's columns now corresponds to a data key.</p>
 
 </div>
 </div>
@@ -13542,7 +13562,6 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h5 id="data-as-n-dimensional-arrays">data as n-dimensional arrays<a class="anchor-link" href="#data-as-n-dimensional-arrays">&#182;</a></h5><p>Up to now, there is no true benefit to using a TimeSeries instead of a DataFrame to process the forces and moments measured by the instrumented wheel. Let's see how the TimeSeries addresses point 1: <strong>dealing with series of vectors and matrices</strong>.</p>
 <p>In reality, Fx, Fy and Fz are components of a single entity which is a force vector. Similarly, Mx, My and Mz are components of a single entity which is a moment vector. Let's see what happens if we name the DataFrames' columns differently.</p>
 
 </div>
@@ -13758,7 +13777,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We see that instead of being separated into 6 separate components, the three components of both the forces and moments are now grouped in two Nx3 arrays. This may greatly simplify subsequent data processing. For example, if we are interested in calculating the vectorial sum of the forces, then one could add this new data to the TimeSeries with this line:</p>
+<p>Instead of being separated into 6 separate components, the three components of both the forces and moments are now grouped in two Nx3 arrays. This may greatly simplify subsequent data processing. For example, if we are interested in calculating the vectorial sum of the forces, then one could add this new data to the TimeSeries with this line:</p>
 
 </div>
 </div>
@@ -13804,7 +13823,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="time_info">time_info<a class="anchor-link" href="#time_info">&#182;</a></h4><p>The <code>time_info</code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code>time_info</code> includes the <code>Unit</code> metadata, which corresponds to <code>s</code>. Any other metadata can be added by adding new keys in <code>time_info</code>.</p>
+<h4 id="time_info-and-data_info">time_info and data_info<a class="anchor-link" href="#time_info-and-data_info">&#182;</a></h4><p>The <code>time_info</code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code>time_info</code> includes the <code>Unit</code> metadata, which corresponds to <code>s</code>. Any other metadata can be added by adding new keys in <code>time_info</code>.</p>
 
 </div>
 </div>
@@ -13847,8 +13866,8 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="data_info">data_info<a class="anchor-link" href="#data_info">&#182;</a></h4><p>Similarly to <code>time_info</code>, the <code>data_info</code> property associates metadata to data. This is especially useful for addressing point 2: <strong>dealing with several units</strong>. This property is a dictionary of dictionaries, where the first key corresponds to the data key, and the second key is the metadata itself.</p>
-<p>To ease the management of <code>data_info</code>, one can use the TimeSeries' <code>add_data_info</code> method.</p>
+<p>Similarly, the <code>data_info</code> property associates metadata to data. This property is a dictionary of dictionaries, where the first key corresponds to the data key, and the second key is the metadata.</p>
+<p>The <code>add_data_info</code> method eases the management of <code>data_info</code>.</p>
 
 </div>
 </div>
@@ -13861,69 +13880,9 @@ ktk.update()
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Nm&#39;</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Ftot&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data_info</span>
 </pre></div>
 
     </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[10]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{
-       &#39;Forces&#39;: &lt;dict with 1 entries&gt;,
-         &#39;Ftot&#39;: &lt;dict with 1 entries&gt;,
-      &#39;Moments&#39;: &lt;dict with 1 entries&gt;
-}</pre>
-</div>
-
-</div>
-
-</div>
-</div>
-
-</div>
-<div class="cell border-box-sizing code_cell rendered">
-<div class="input">
-<div class="prompt input_prompt">In&nbsp;[11]:</div>
-<div class="inner_cell">
-    <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">data_info</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span>
-</pre></div>
-
-    </div>
-</div>
-</div>
-
-<div class="output_wrapper">
-<div class="output">
-
-
-<div class="output_area">
-
-    <div class="prompt output_prompt">Out[11]:</div>
-
-
-
-
-<div class="output_text output_subarea output_execute_result">
-<pre>{
-      &#39;Unit&#39;: &#39;N&#39;
-}</pre>
-</div>
-
-</div>
-
 </div>
 </div>
 
@@ -13931,14 +13890,14 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Now it is time to plot our TimeSeries, using its builtin <code>plot</code> method which makes use of <code>data_info</code> to write the data units in the legend.</p>
+<p>Unless explicitly mentioned, metadata is not used for calculation. It is rather a way to clarify the data by adding information to it. Some ktk functions however read those metadata: for example, the <code>TimeSeries.plot</code> method looks for <code>Unit</code> information and print it on the y axis.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[12]:</div>
+<div class="prompt input_prompt">In&nbsp;[11]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
@@ -13960,7 +13919,7 @@ ktk.update()
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_24_0.png"
+<img src="index_files/index_23_0.png"
 >
 </div>
 
@@ -13973,14 +13932,14 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="events">events<a class="anchor-link" href="#events">&#182;</a></h4><p>Events are maybe the most interesting thing about the <code>TimeSeries</code> class. In the figure above, we clearly see that the TimeSeries consists in a series of events. A first event corresponds to a synchronization signal generated by creating an impact of the instrumented pushrim. Then, we have a series of pushes and recoveries. Although functions are implemented, for example in the <code>pushrimkinetics</code> or <code>cycle</code> submodules, to analyze signals and add events, we will start here by adding these events by hand.</p>
+<h4 id="events">events<a class="anchor-link" href="#events">&#182;</a></h4><p>In the figure above, we see that the TimeSeries has cyclic information that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Then, we see a series of pushes and recoveries. For now, we will add these events in the TimeSeries by hand.</p>
 
 </div>
 </div>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="prompt input_prompt">In&nbsp;[12]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">4.35</span><span class="p">,</span> <span class="s1">&#39;sync&#39;</span><span class="p">)</span>
@@ -13997,6 +13956,57 @@ ktk.update()
 </pre></div>
 
     </div>
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<p>These events are now added to the TimeSeries' list of events:</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[13]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[13]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>[[4.35, &#39;sync&#39;],
+ [8.56, &#39;push&#39;],
+ [9.93, &#39;recovery&#39;],
+ [10.5, &#39;push&#39;],
+ [11.12, &#39;recovery&#39;],
+ [11.78, &#39;push&#39;],
+ [12.33, &#39;recovery&#39;],
+ [13.39, &#39;push&#39;],
+ [13.88, &#39;recovery&#39;],
+ [14.86, &#39;push&#39;],
+ [15.3, &#39;recovery&#39;]]</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -14033,7 +14043,7 @@ ktk.update()
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_28_0.png"
+<img src="index_files/index_29_0.png"
 >
 </div>
 
@@ -14076,7 +14086,7 @@ ktk.update()
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_30_0.png"
+<img src="index_files/index_31_0.png"
 >
 </div>
 
@@ -14089,7 +14099,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Using-events-to-extract-sub-TimeSeries">Using events to extract sub-TimeSeries<a class="anchor-link" href="#Using-events-to-extract-sub-TimeSeries">&#182;</a></h3><p>The <code>TimeSeries</code> class comes with a myriad of methods such as <code>get_ts_after_event</code>, <code>get_ts_between_events</code>, etc. For example, if we want to analyze data of the four first pushes, and get rid of any other data, we could extract a new TimeSeries using:</p>
+<h3 id="Using-events-to-extract-sub-TimeSeries">Using events to extract sub-TimeSeries<a class="anchor-link" href="#Using-events-to-extract-sub-TimeSeries">&#182;</a></h3><p>The <code>TimeSeries</code> class comes with a myriad of methods such as <code>get_ts_after_event</code>, <code>get_ts_between_events</code>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
 
 </div>
 </div>
@@ -14124,7 +14134,7 @@ ktk.update()
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_32_0.png"
+<img src="index_files/index_33_0.png"
 >
 </div>
 
@@ -14137,7 +14147,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h3 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="anchor-link" href="#Subsetting-and-merging-timeseries">&#182;</a></h3><p>To process only a subset of a TimeSeries, we can use the <code>get_subset</code> method. For example, if we only want to process force information from the above TimeSeries, we could subset this TimeSeries.</p>
+<h3 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="anchor-link" href="#Subsetting-and-merging-timeseries">&#182;</a></h3><p>We can use the <code>get_subset</code> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
 
 </div>
 </div>
@@ -14204,7 +14214,7 @@ ktk.update()
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_35_0.png"
+<img src="index_files/index_36_0.png"
 >
 </div>
 
@@ -14217,7 +14227,7 @@ ktk.update()
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Using python's list comprehension is a nice way to extract a TimeSeries subset based on a selection criterion. For example, we could have obtained <code>ts3</code> by selecting every data key that contains the letter 'F':</p>
+<p>Using python's list comprehension is a nice way to extract a TimeSeries subset based on a selection criterion. For example, we could have obtained <code>ts3</code> by selecting every data key that begins with the letter 'F':</p>
 
 </div>
 </div>
@@ -14227,7 +14237,7 @@ ktk.update()
 <div class="prompt input_prompt">In&nbsp;[19]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts2</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="s1">&#39;F&#39;</span> <span class="ow">in</span> <span class="n">key</span><span class="p">])</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts2</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)])</span>
 
 <span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
@@ -14273,8 +14283,15 @@ files, and process those trajectory to:</p>
 <li>and other operations that will be implemented in the future.</li>
 </ul>
 <p>Here is a quick example of how to reconstruct complete kinematics during a task, based on a static acquisition and probing acquisitions.</p>
-<h3 id="Creating-configurations-of-rigid-bodies,-virtual-markers-and-segments">Creating configurations of rigid bodies, virtual markers and segments<a class="anchor-link" href="#Creating-configurations-of-rigid-bodies,-virtual-markers-and-segments">&#182;</a></h3><h4 id="Defining-marker-names">Defining marker names<a class="anchor-link" href="#Defining-marker-names">&#182;</a></h4><p>The n3d file used in this example contains a series of numbered markers, but does not contain the markers names. If we had used
-another system such as Optitrack or Vicon, the marker names would be included in the c3d files and this step wouldn't be required.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file<a class="anchor-link" href="#Loading-a-c3d-or-n3d-file">&#182;</a></h3><p>The <code>kinematics</code> module provide the methods <code>read_c3d_file</code> and <code>read_n3d_file</code> to read files generated by common motion capture devices. Reading c3d files is provided by the external <a href="https://github.com/pyomeca/ezc3d">ezc3d</a> module; see the <em>Installing</em> section for information on how to install <code>ezc3d</code>.</p>
+<p>In this tutorial, we will read a n3d file generated by an Optotrak system.</p>
 
 </div>
 </div>
@@ -14284,7 +14301,8 @@ another system such as Optitrack or Vicon, the marker names would be included in
 <div class="prompt input_prompt">In&nbsp;[20]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">marker_names</span> <span class="o">=</span> <span class="p">[</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Names of the markers</span>
+<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">&#39;Probe1&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe2&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe3&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe4&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe5&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe6&#39;</span><span class="p">,</span>
     <span class="s1">&#39;WheelchairRearR&#39;</span><span class="p">,</span> <span class="s1">&#39;WheelchairRearL&#39;</span><span class="p">,</span> <span class="s1">&#39;WheelchairFront&#39;</span><span class="p">,</span>
     <span class="s1">&#39;ScapulaL1&#39;</span><span class="p">,</span> <span class="s1">&#39;ScapulaL2&#39;</span><span class="p">,</span> <span class="s1">&#39;ScapulaL3&#39;</span><span class="p">,</span>
@@ -14299,9 +14317,39 @@ another system such as Optitrack or Vicon, the marker names would be included in
     <span class="s1">&#39;LateralEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR3&#39;</span><span class="p">,</span>
     <span class="s1">&#39;NAR&#39;</span><span class="p">,</span>
     <span class="s1">&#39;GloveR1&#39;</span><span class="p">,</span> <span class="s1">&#39;GloveR2&#39;</span><span class="p">,</span> <span class="s1">&#39;GloveR3&#39;</span><span class="p">]</span>
+
+<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="s1">&#39;data/kinematics/sample_static.n3d&#39;</span><span class="p">,</span>
+                                       <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+
+<span class="n">markers</span>
 </pre></div>
 
     </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[20]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>TimeSeries with attributes:
+             data: &lt;dict with 41 entries&gt;,
+        data_info: &lt;dict with 0 entries&gt;,
+           events: &lt;list of 0 items&gt;,
+             time: &lt;array of shape (700,)&gt;,
+        time_info: &lt;dict with 1 entries&gt;</pre>
+</div>
+
+</div>
+
 </div>
 </div>
 
@@ -14309,8 +14357,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 <div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
 </div><div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h4 id="Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition<a class="anchor-link" href="#Defining-rigid-body-configurations-using-a-static-acquisition">&#182;</a></h4><p>One of the aims of the static trial is to have a sample where every marker is visible. We use this trial to define the rigid body configuration. A rigid body configuration is a list of markers that form a rigid body, along with their local position in the rigid body's reference frame.</p>
-<p>For this example, we will create rigid bodies for the markers triads 'ArmR' and 'ForearmR'.</p>
+<p>Each data key corresponds to the trajectory of one marker:</p>
 
 </div>
 </div>
@@ -14320,16 +14367,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 <div class="prompt input_prompt">In&nbsp;[21]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>                 <span class="c1"># Will contain all configuration data.</span>
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all rigid body configurations.</span>
-
-<span class="c1"># Read the static trial</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="s1">&#39;data/kinematics/sample_static.n3d&#39;</span><span class="p">,</span>
-                                       <span class="n">labels</span><span class="o">=</span><span class="n">marker_names</span><span class="p">)</span>
-
-<span class="c1"># Show this trial, just to inspect it</span>
-<span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
-           <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">markers</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 
     </div>
@@ -14348,7 +14386,90 @@ another system such as Optitrack or Vicon, the marker names would be included in
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk.player.Player at 0x1253eef90&gt;</pre>
+<pre>{
+                   &#39;ArmL1&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;ArmL2&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;ArmL3&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;ArmR1&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;ArmR2&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;ArmR3&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ForearmL1&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ForearmL2&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ForearmL3&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ForearmR1&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ForearmR2&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ForearmR3&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;GloveL1&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;GloveL2&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;GloveL3&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;GloveR1&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;GloveR2&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;GloveR3&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;Head1&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;Head2&#39;: &lt;array of shape (700, 4)&gt;,
+                   &#39;Head3&#39;: &lt;array of shape (700, 4)&gt;,
+      &#39;LateralEpicondyleL&#39;: &lt;array of shape (700, 4)&gt;,
+      &#39;LateralEpicondyleR&#39;: &lt;array of shape (700, 4)&gt;,
+                     &#39;NAG&#39;: &lt;array of shape (700, 4)&gt;,
+                     &#39;NAR&#39;: &lt;array of shape (700, 4)&gt;,
+                  &#39;Probe1&#39;: &lt;array of shape (700, 4)&gt;,
+                  &#39;Probe2&#39;: &lt;array of shape (700, 4)&gt;,
+                  &#39;Probe3&#39;: &lt;array of shape (700, 4)&gt;,
+                  &#39;Probe4&#39;: &lt;array of shape (700, 4)&gt;,
+                  &#39;Probe5&#39;: &lt;array of shape (700, 4)&gt;,
+                  &#39;Probe6&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ScapulaL1&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ScapulaL2&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ScapulaL3&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ScapulaR1&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ScapulaR2&#39;: &lt;array of shape (700, 4)&gt;,
+               &#39;ScapulaR3&#39;: &lt;array of shape (700, 4)&gt;,
+                 &#39;Sternum&#39;: &lt;array of shape (700, 4)&gt;,
+         &#39;WheelchairFront&#39;: &lt;array of shape (700, 4)&gt;,
+         &#39;WheelchairRearL&#39;: &lt;array of shape (700, 4)&gt;,
+         &#39;WheelchairRearR&#39;: &lt;array of shape (700, 4)&gt;
+}</pre>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Visualizing-the-markers">Visualizing the markers<a class="anchor-link" href="#Visualizing-the-markers">&#182;</a></h3><p>The <code>Player</code> class is a matplotlib based user interface to visualize markers, rigid bodies and segments in three dimensions. It is important to select an interactive IPython's GUI front-end, or the Player's figure will simply print out without being interactive. See the <em>Installing</em> section for more information.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[22]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;ktk.player.Player at 0x1226920d0&gt;</pre>
 </div>
 
 </div>
@@ -14361,7 +14482,72 @@ another system such as Optitrack or Vicon, the marker names would be included in
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_41_1.png"
+<img src="index_files/index_45_1.png"
+>
+</div>
+
+</div>
+
+</div>
+</div>
+
+</div>
+<div class="cell border-box-sizing text_cell rendered"><div class="prompt input_prompt">
+</div><div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Reconstructing-kinematics">Reconstructing kinematics<a class="anchor-link" href="#Reconstructing-kinematics">&#182;</a></h3><h4 id="Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition<a class="anchor-link" href="#Defining-rigid-body-configurations-using-a-static-acquisition">&#182;</a></h4><p>One of the aims of the static trial is to have a sample where every marker is visible. We use this trial to define the rigid body configuration. A rigid body configuration is a list of markers that form a rigid body, along with their local position in the rigid body's reference frame.</p>
+<p>For this example, we will create rigid bodies for the markers triads 'ArmR' and 'ForearmR'.</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing code_cell rendered">
+<div class="input">
+<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="inner_cell">
+    <div class="input_area">
+<div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>                 <span class="c1"># Will contain all configuration data.</span>
+<span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all rigid body configurations.</span>
+
+<span class="c1"># Read the static trial</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="s1">&#39;data/kinematics/sample_static.n3d&#39;</span><span class="p">,</span>
+                                       <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
+
+<span class="c1"># Show this trial, just to inspect it</span>
+<span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
+           <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
+</pre></div>
+
+    </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+    <div class="prompt output_prompt">Out[23]:</div>
+
+
+
+
+<div class="output_text output_subarea output_execute_result">
+<pre>&lt;ktk.player.Player at 0x1259b7f10&gt;</pre>
+</div>
+
+</div>
+
+<div class="output_area">
+
+    <div class="prompt"></div>
+
+
+
+
+<div class="output_png output_subarea ">
+<img src="index_files/index_47_1.png"
 >
 </div>
 
@@ -14373,7 +14559,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[22]:</div>
+<div class="prompt input_prompt">In&nbsp;[24]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Create the rigid body configurations</span>
@@ -14399,7 +14585,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[25]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">][</span><span class="s1">&#39;Probe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -14428,7 +14614,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[24]:</div>
+<div class="prompt input_prompt">In&nbsp;[26]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all virtual marker configurations</span>
@@ -14449,13 +14635,13 @@ another system such as Optitrack or Vicon, the marker names would be included in
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[25]:</div>
+<div class="prompt input_prompt">In&nbsp;[27]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">process_probing_acquisition</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">):</span>
 
     <span class="c1"># Load the markers</span>
-    <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">marker_names</span><span class="p">)</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
 
     <span class="c1"># Calculate rigid body trajectories using these markers</span>
     <span class="n">rigid_bodies</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">register_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span>
@@ -14486,7 +14672,7 @@ another system such as Optitrack or Vicon, the marker names would be included in
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[26]:</div>
+<div class="prompt input_prompt">In&nbsp;[28]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="s1">&#39;AcromionR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
@@ -14521,7 +14707,7 @@ that will be shown in the Player.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[29]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;Segments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all segment definitions</span>
@@ -14560,12 +14746,12 @@ that will be shown in the Player.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[28]:</div>
+<div class="prompt input_prompt">In&nbsp;[30]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Load the markers of the experimental trial</span>
 <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_propulsion.n3d&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">marker_names</span><span class="p">)</span>
+        <span class="s1">&#39;data/kinematics/sample_propulsion.n3d&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
 
 <span class="c1"># Show those markers in a player</span>
 <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
@@ -14582,13 +14768,13 @@ that will be shown in the Player.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[28]:</div>
+    <div class="prompt output_prompt">Out[30]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk.player.Player at 0x10eff7750&gt;</pre>
+<pre>&lt;ktk.player.Player at 0x122ff0850&gt;</pre>
 </div>
 
 </div>
@@ -14601,7 +14787,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_54_1.png"
+<img src="index_files/index_60_1.png"
 >
 </div>
 
@@ -14613,7 +14799,7 @@ that will be shown in the Player.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[29]:</div>
+<div class="prompt input_prompt">In&nbsp;[31]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Compute the rigid body trajectories</span>
@@ -14634,13 +14820,13 @@ that will be shown in the Player.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[29]:</div>
+    <div class="prompt output_prompt">Out[31]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk.player.Player at 0x12783ad10&gt;</pre>
+<pre>&lt;ktk.player.Player at 0x122ff8bd0&gt;</pre>
 </div>
 
 </div>
@@ -14653,7 +14839,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_55_1.png"
+<img src="index_files/index_61_1.png"
 >
 </div>
 
@@ -14665,7 +14851,7 @@ that will be shown in the Player.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[32]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Add the virtual markers</span>
@@ -14696,13 +14882,13 @@ that will be shown in the Player.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[30]:</div>
+    <div class="prompt output_prompt">Out[32]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk.player.Player at 0x127851290&gt;</pre>
+<pre>&lt;ktk.player.Player at 0x12f548290&gt;</pre>
 </div>
 
 </div>
@@ -14715,7 +14901,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_56_1.png"
+<img src="index_files/index_62_1.png"
 >
 </div>
 
@@ -14727,7 +14913,7 @@ that will be shown in the Player.</p>
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[33]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Add the segments</span>
@@ -14746,13 +14932,13 @@ that will be shown in the Player.</p>
 
 <div class="output_area">
 
-    <div class="prompt output_prompt">Out[31]:</div>
+    <div class="prompt output_prompt">Out[33]:</div>
 
 
 
 
 <div class="output_text output_subarea output_execute_result">
-<pre>&lt;ktk.player.Player at 0x131f31110&gt;</pre>
+<pre>&lt;ktk.player.Player at 0x1304d04d0&gt;</pre>
 </div>
 
 </div>
@@ -14765,7 +14951,7 @@ that will be shown in the Player.</p>
 
 
 <div class="output_png output_subarea ">
-<img src="index_files/index_57_1.png"
+<img src="index_files/index_63_1.png"
 >
 </div>
 
