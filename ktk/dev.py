@@ -117,9 +117,10 @@ def generate_doc():
 
 
 def update_readme():
-    """Copy ktk's docstring into readme.md."""
+    """Copy ktk's docstring into readme.md (up to the -------- separator)."""
     with open(ktk.config['RootFolder'] + '/README.md', 'w') as fid:
-        fid.write(ktk.__doc__)
+        fid.write(ktk.__doc__.split(
+            '------------------------------------------------------------')[0])
 
 
 def compile_for_pypi():

@@ -247,16 +247,16 @@ class TimeSeries():
         self.time = dataframe.index.to_numpy()
         return self
 
-    def add_data_info(self, signal_name, info_name, value):
+    def add_data_info(self, data_key, info_key, value):
         """
         Add metadata to TimeSeries' data.
 
         Parameters
         ----------
-        signal_name : str
+        data_key : str
             The data key the info corresponds to.
-        info_name : str
-            The name of the info.
+        info_key : str
+            The key of the info dict.
         value : any type
             The info.
 
@@ -277,12 +277,12 @@ class TimeSeries():
             {'Color': [43, 2, 255]}
 
         """
-        if signal_name in self.data_info:   # Assign the value
-            self.data_info[signal_name][info_name] = value
+        if data_key in self.data_info:   # Assign the value
+            self.data_info[data_key][info_key] = value
         else:  # Create and assign value
-            self.data_info[signal_name] = {info_name: value}
+            self.data_info[data_key] = {info_key: value}
 
-    def remove_data_info(self, signal_name, info_name):
+    def remove_data_info(self, data_key, info_key):
         """
         Remove metadata from a TimeSeries' data.
 
@@ -290,10 +290,10 @@ class TimeSeries():
 
         Parameters
         ----------
-        signal_name : str
+        data_key : str
             The data key the info corresponds to.
-        info_name : str
-            The name of the info.
+        info_key : str
+            The key of the info dict.
 
         Returns
         -------
@@ -312,7 +312,7 @@ class TimeSeries():
 
         """
         try:
-            self.data_info[signal_name].pop(info_name)
+            self.data_info[data_key].pop(info_key)
         except KeyError:
             pass
 
@@ -567,7 +567,7 @@ class TimeSeries():
         """
         return deepcopy(self)
 
-    def plot(self, data_keys=None, event_names=True, legend=True,
+    def plot(self, data_keys=None, *, event_names=True, legend=True,
              **kwargs):
         """
         Plot the TimeSeries using matplotlib.
@@ -695,7 +695,7 @@ class TimeSeries():
         """
         return np.argmin(np.abs(self.time - float(time)))
 
-    def get_index_before_time(self, time, inclusive=False):
+    def get_index_before_time(self, time, *, inclusive=False):
         """
         Get the time index that is just before the specified time.
 
@@ -744,7 +744,7 @@ class TimeSeries():
         else:
             return np.nanargmin(diff)
 
-    def get_index_after_time(self, time, inclusive=False):
+    def get_index_after_time(self, time, *, inclusive=False):
         """
         Get the time index that is just after the specified time.
 
@@ -906,7 +906,7 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_at_time(time)
 
-    def get_ts_before_index(self, index, inclusive=False):
+    def get_ts_before_index(self, index, *, inclusive=False):
         """
         Get a subset of the TimeSeries before the specified time index.
 
@@ -950,7 +950,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_after_index(self, index, inclusive=False):
+    def get_ts_after_index(self, index, *, inclusive=False):
         """
         Get a subset of the TimeSeries after the specified time index.
 
@@ -994,7 +994,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_between_indexes(self, index1, index2, inclusive=False):
+    def get_ts_between_indexes(self, index1, index2, *, inclusive=False):
         """
         Get a subset of the TimeSeries before two specified time indexes.
 
@@ -1038,7 +1038,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_before_time(self, time, inclusive=False):
+    def get_ts_before_time(self, time, *, inclusive=False):
         """
         Get a subset of the TimeSeries before the specified time.
 
@@ -1070,7 +1070,7 @@ class TimeSeries():
 
         """
         out_ts = self.copy()
-        index = self.get_index_before_time(time, inclusive)
+        index = self.get_index_before_time(time, inclusive=inclusive)
         if np.isnan(index):
             index_range = []
         else:
@@ -1081,7 +1081,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_after_time(self, time, inclusive=False):
+    def get_ts_after_time(self, time, *, inclusive=False):
         """
         Get a subset of the TimeSeries after the specified time.
 
@@ -1119,7 +1119,7 @@ class TimeSeries():
 
         return self.get_ts_after_index(index, inclusive=True)
 
-    def get_ts_between_times(self, time1, time2, inclusive=False):
+    def get_ts_between_times(self, time1, time2, *, inclusive=False):
         """
         Get a subset of the TimeSeries between two specified times.
 
@@ -1151,11 +1151,13 @@ class TimeSeries():
 
         """
         sorted_times = np.sort([time1, time2])
-        new_ts = self.get_ts_after_time(sorted_times[0], inclusive)
-        new_ts = new_ts.get_ts_before_time(sorted_times[1], inclusive)
+        new_ts = self.get_ts_after_time(sorted_times[0],
+                                        inclusive=inclusive)
+        new_ts = new_ts.get_ts_before_time(sorted_times[1],
+                                           inclusive=inclusive)
         return new_ts
 
-    def get_ts_before_event(self, event_name, event_occurrence=0,
+    def get_ts_before_event(self, event_name, event_occurrence=0, *,
                             inclusive=False):
         """
         Get a subset of the TimeSeries before the specified event.
@@ -1206,7 +1208,7 @@ class TimeSeries():
 
         return self.get_ts_before_index(index, inclusive=True)
 
-    def get_ts_after_event(self, event_name, event_occurrence=0,
+    def get_ts_after_event(self, event_name, event_occurrence=0, *,
                            inclusive=False):
         """
         Get a subset of the TimeSeries after the specified event.
@@ -1259,7 +1261,7 @@ class TimeSeries():
 
     def get_ts_between_events(self, event_name1, event_name2,
                               event_occurrence1=0, event_occurrence2=0,
-                              inclusive=False):
+                              *, inclusive=False):
         """
         Get a subset of the TimeSeries between two specified events.
 
@@ -1291,15 +1293,18 @@ class TimeSeries():
             >>> ts.get_ts_between_events('event', 'event', 0, 1).time
             array([0.3, 0.4, 0.5])
 
-            >>> ts.get_ts_between_events('event', 'event', 0, 1, True).time
+            >>> ts.get_ts_between_events('event', 'event', 0, 1, \
+                                         inclusive=True).time
             array([0.2, 0.3, 0.4, 0.5, 0.6])
 
         """
-        ts = self.get_ts_after_event(event_name1, event_occurrence1, inclusive)
-        ts = ts.get_ts_before_event(event_name2, event_occurrence2, inclusive)
+        ts = self.get_ts_after_event(event_name1, event_occurrence1,
+                                     inclusive=inclusive)
+        ts = ts.get_ts_before_event(event_name2, event_occurrence2,
+                                    inclusive=inclusive)
         return ts
 
-    def ui_get_ts_between_clicks(self, data_keys=None, inclusive=False):
+    def ui_get_ts_between_clicks(self, data_keys=None, *, inclusive=False):
         """
         Get a subset of the TimeSeries between two mouse clicks.
 
@@ -1326,7 +1331,8 @@ class TimeSeries():
         ktk.gui.message('')
         times = [points[0][0], points[1][0]]
         plt.close(fig)
-        return self.get_ts_between_times(min(times), max(times), inclusive)
+        return self.get_ts_between_times(min(times), max(times),
+                                         inclusive=inclusive)
 
     def isnan(self, data_key):
         """
@@ -1350,9 +1356,12 @@ class TimeSeries():
             values = np.sum(values, 1)
         return np.isnan(values)
 
-    def fill_missing_samples(self, max_missing_samples, method='linear'):
+    def fill_missing_samples(self, max_missing_samples, *, method='linear'):
         """
         Fill missing samples with the given method.
+
+        This function is experimental and its signature and default values
+        may change in future.
 
         The sample rate must be constant.
 
@@ -1482,6 +1491,8 @@ class TimeSeries():
     def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
         """
         Synchronize one or two TimeSeries by shifting their time.
+
+        This function is experimental and may change signature.
 
         If a second TimeSeries is given, both TimeSeries are synchronized and
         the sync process is done in three steps:
@@ -1670,9 +1681,11 @@ class TimeSeries():
 
         return ts
 
-    def resample(self, new_time, kind='linear', fill_value=None):
+    def resample(self, new_time, kind='linear', *, fill_value=None):
         """
         Resample the TimeSeries.
+
+        This function is experimental and may change signature.
 
         Parameters
         ----------
@@ -1730,9 +1743,11 @@ class TimeSeries():
 
         self.time = new_time
 
-    def merge(self, ts, data_keys=None, resample=False, overwrite=True):
+    def merge(self, ts, data_keys=None, *, resample=False, overwrite=True):
         """
         Merge another TimeSeries into the current TimeSeries.
+
+        This function is experimental and may change signature.
 
         This method merges a TimeSeries into the current TimeSeries, copying
         the data, data_info and events.
@@ -1794,9 +1809,9 @@ class TimeSeries():
             self.data[key] = ts.data[key]
 
             if key in ts.data_info:
-                for info_name in ts.data_info[key].keys():
-                    self.add_data_info(key, info_name,
-                                       ts.data_info[key][info_name])
+                for info_key in ts.data_info[key].keys():
+                    self.add_data_info(key, info_key,
+                                       ts.data_info[key][info_key])
 
         # Merge events
         for event in ts.events:

@@ -41,8 +41,8 @@ and so that I can warn you before doing major, possibly breaking changes.
 [API documentation](https://felixchenier.uqam.ca/ktk_dist/api)
 
 
-Private unstable version
-------------------------
+Private development version
+---------------------------
 
 This version is exclusively used in my lab and is developed in parallel with
 my research projects, following the needs of the moment. I usually wait several
@@ -66,6 +66,9 @@ Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) -
 Python implementation of m-dimensional Iterative Closest Point method
 
 
+-------------------------------------------------------------------------------
+
+
 Customization
 -------------
 
@@ -79,11 +82,11 @@ printouts when we simply want to see the dictionary's contents. Importing ktk
 changes the repr of dictionaries in IPython so that a summary of the dict's
 content is shown, more like the representation of a Matlab struct.
 
-    import numpy as np
-    data = dict()
-    data['data1'] = np.arange(30)
-    data['data2'] = np.arange(30) ** 2
-    data['data3'] = np.arange(30) ** 3
+    >>> import numpy as np
+    >>> data = dict()
+    >>> data['data1'] = np.arange(30)
+    >>> data['data2'] = np.arange(30) ** 2
+    >>> data['data3'] = np.arange(30) ** 3
 
     data
     {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
@@ -96,8 +99,8 @@ content is shown, more like the representation of a Matlab struct.
              5832,  6859,  8000,  9261, 10648, 12167, 13824, 15625, 17576,
             19683, 21952, 24389])}
 
-    import ktk
-    data
+    >>> import ktk
+    >>> data
     {
         'data1': <array of shape (30,)>,
         'data2': <array of shape (30,)>,
@@ -126,8 +129,8 @@ console. To change ktk's defaults, open ktk's `__init__`.py and change the
 corresponding entries in the config dictionary. Most often this file can be
 opened using:
 
-        import ktk
-        edit ktk
+    >>> import ktk
+    >>> edit ktk
 
 """
 

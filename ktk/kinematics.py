@@ -11,13 +11,13 @@ Kinematics analysis.
 import numpy as np
 import ktk
 import warnings
-import subprocess
-from time import sleep
-from datetime import datetime
-from ezc3d import c3d as ezc3d
-import matplotlib.pyplot as plt
-import matplotlib.widgets as widgets
 import struct  # To unpack data from N3D files
+
+try:
+    from ezc3d import c3d as ezc3d
+except ModuleNotFoundError:
+    warnings.warn('Could not load ezc3d. Function kinematics.read_c3d_file '
+                  'will not work.')
 
 
 def read_c3d_file(filename):
@@ -301,7 +301,7 @@ def create_rigid_body_config(markers, marker_names):
 def register_markers(markers, rigid_body_configs, verbose=False):
     """
     Calculates the trajectory of rigid bodies.
-    
+
     Calculates the trajectory of rigid bodies using
     `ktk.geometry.register_points`.
 
@@ -379,7 +379,7 @@ def create_virtual_marker_config(markers, rigid_bodies,
             - LocalPoint : Local position of this marker in the reference frame
                            defined by the rigid body RigidBodyName. LocalPoint
                            is expressed as a 1x4 array.
-                       
+
     """
     marker = markers.data[marker_name]
     rigid_body = rigid_bodies.data[rigid_body_name]

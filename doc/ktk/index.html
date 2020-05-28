@@ -35,7 +35,7 @@ planning to be, you are warmly invited to contact me, first to say Hello :-),
 and so that I can warn you before doing major, possibly breaking changes.</p>
 <p><a href="https://felixchenier.uqam.ca/ktk_dist/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_dist/api">API documentation</a></p>
-<h2 id="private-unstable-version">Private unstable version</h2>
+<h2 id="private-development-version">Private development version</h2>
 <p>This version is exclusively used in my lab and is developed in parallel with
 my research projects, following the needs of the moment. I usually wait several
 months before releasing code to the public, mostly to ensure the modules are
@@ -49,6 +49,7 @@ contact me at chenier.felix@uqam.ca</p>
 credits for these nice people.</p>
 <p>Clay Flannigan : <a href="https://github.com/ClayFlannigan/icp">icp</a> -
 Python implementation of m-dimensional Iterative Closest Point method</p>
+<hr>
 <h2 id="customization">Customization</h2>
 <p>By default, importing ktk changes some defaults in IPython and matplotlib to
 get a more 'research' and less 'programming' experience. Please note that this
@@ -58,11 +59,11 @@ does not affect anything besides visual representations.</p>
 printouts when we simply want to see the dictionary's contents. Importing ktk
 changes the repr of dictionaries in IPython so that a summary of the dict's
 content is shown, more like the representation of a Matlab struct.</p>
-<pre><code>import numpy as np
-data = dict()
-data['data1'] = np.arange(30)
-data['data2'] = np.arange(30) ** 2
-data['data3'] = np.arange(30) ** 3
+<pre><code>&gt;&gt;&gt; import numpy as np
+&gt;&gt;&gt; data = dict()
+&gt;&gt;&gt; data['data1'] = np.arange(30)
+&gt;&gt;&gt; data['data2'] = np.arange(30) ** 2
+&gt;&gt;&gt; data['data3'] = np.arange(30) ** 3
 
 data
 {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
@@ -75,8 +76,8 @@ data
          5832,  6859,  8000,  9261, 10648, 12167, 13824, 15625, 17576,
         19683, 21952, 24389])}
 
-import ktk
-data
+&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; data
 {
     'data1': &lt;array of shape (30,)&gt;,
     'data2': &lt;array of shape (30,)&gt;,
@@ -103,8 +104,8 @@ Matlab's legacy color order.</li>
 console. To change ktk's defaults, open ktk's <code>__init__</code>.py and change the
 corresponding entries in the config dictionary. Most often this file can be
 opened using:</p>
-<pre><code>    import ktk
-    edit ktk
+<pre><code>&gt;&gt;&gt; import ktk
+&gt;&gt;&gt; edit ktk
 </code></pre>
 </section>
 <section>
@@ -254,16 +255,16 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 <h3>Methods</h3>
 <dl>
 <dt id="ktk.TimeSeries.add_data_info"><code class="name flex">
-<span>def <span class="ident">add_data_info</span></span>(<span>self, signal_name, info_name, value)</span>
+<span>def <span class="ident">add_data_info</span></span>(<span>self, data_key, info_key, value)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Add metadata to TimeSeries' data.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>signal_name</code></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>data_key</code></strong> :&ensp;<code>str</code></dt>
 <dd>The data key the info corresponds to.</dd>
-<dt><strong><code>info_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the info.</dd>
+<dt><strong><code>info_key</code></strong> :&ensp;<code>str</code></dt>
+<dd>The key of the info dict.</dd>
 <dt><strong><code>value</code></strong> :&ensp;<code>any</code> <code>type</code></dt>
 <dd>The info.</dd>
 </dl>
@@ -315,10 +316,12 @@ data_info attribute could indicate the unit of data['Forces']:</p>
 <p>A deep copy of the original TimeSeries.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.fill_missing_samples"><code class="name flex">
-<span>def <span class="ident">fill_missing_samples</span></span>(<span>self, max_missing_samples, method='linear')</span>
+<span>def <span class="ident">fill_missing_samples</span></span>(<span>self, max_missing_samples, *, method='linear')</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Fill missing samples with the given method.</p>
+<p>This function is experimental and its signature and default values
+may change in future.</p>
 <p>The sample rate must be constant.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -402,7 +405,7 @@ event is found, then np.nan is returned.</dd>
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_after_time"><code class="name flex">
-<span>def <span class="ident">get_index_after_time</span></span>(<span>self, time, inclusive=False)</span>
+<span>def <span class="ident">get_index_after_time</span></span>(<span>self, time, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get the time index that is just after the specified time.</p>
@@ -468,7 +471,7 @@ nan
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_index_before_time"><code class="name flex">
-<span>def <span class="ident">get_index_before_time</span></span>(<span>self, time, inclusive=False)</span>
+<span>def <span class="ident">get_index_before_time</span></span>(<span>self, time, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get the time index that is just before the specified time.</p>
@@ -538,7 +541,7 @@ dict_keys(['signal1', 'signal3'])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_after_event"><code class="name flex">
-<span>def <span class="ident">get_ts_after_event</span></span>(<span>self, event_name, event_occurrence=0, inclusive=False)</span>
+<span>def <span class="ident">get_ts_after_event</span></span>(<span>self, event_name, event_occurrence=0, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries after the specified event.</p>
@@ -580,7 +583,7 @@ array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_after_index"><code class="name flex">
-<span>def <span class="ident">get_ts_after_index</span></span>(<span>self, index, inclusive=False)</span>
+<span>def <span class="ident">get_ts_after_index</span></span>(<span>self, index, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries after the specified time index.</p>
@@ -610,7 +613,7 @@ array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_after_time"><code class="name flex">
-<span>def <span class="ident">get_ts_after_time</span></span>(<span>self, time, inclusive=False)</span>
+<span>def <span class="ident">get_ts_after_time</span></span>(<span>self, time, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries after the specified time.</p>
@@ -692,7 +695,7 @@ array([0. , 0.5, 1. , 1.5, 2. ])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_before_event"><code class="name flex">
-<span>def <span class="ident">get_ts_before_event</span></span>(<span>self, event_name, event_occurrence=0, inclusive=False)</span>
+<span>def <span class="ident">get_ts_before_event</span></span>(<span>self, event_name, event_occurrence=0, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries before the specified event.</p>
@@ -734,7 +737,7 @@ array([0. , 0.1, 0.2, 0.3, 0.4])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_before_index"><code class="name flex">
-<span>def <span class="ident">get_ts_before_index</span></span>(<span>self, index, inclusive=False)</span>
+<span>def <span class="ident">get_ts_before_index</span></span>(<span>self, index, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries before the specified time index.</p>
@@ -764,7 +767,7 @@ array([0. , 0.1, 0.2])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_before_time"><code class="name flex">
-<span>def <span class="ident">get_ts_before_time</span></span>(<span>self, time, inclusive=False)</span>
+<span>def <span class="ident">get_ts_before_time</span></span>(<span>self, time, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries before the specified time.</p>
@@ -795,7 +798,7 @@ array([0. , 0.1, 0.2, 0.3])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_events"><code class="name flex">
-<span>def <span class="ident">get_ts_between_events</span></span>(<span>self, event_name1, event_name2, event_occurrence1=0, event_occurrence2=0, inclusive=False)</span>
+<span>def <span class="ident">get_ts_between_events</span></span>(<span>self, event_name1, event_name2, event_occurrence1=0, event_occurrence2=0, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries between two specified events.</p>
@@ -826,12 +829,12 @@ array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 &gt;&gt;&gt; ts.get_ts_between_events('event', 'event', 0, 1).time
 array([0.3, 0.4, 0.5])
 
-&gt;&gt;&gt; ts.get_ts_between_events('event', 'event', 0, 1, True).time
+&gt;&gt;&gt; ts.get_ts_between_events('event', 'event', 0, 1,                                          inclusive=True).time
 array([0.2, 0.3, 0.4, 0.5, 0.6])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_indexes"><code class="name flex">
-<span>def <span class="ident">get_ts_between_indexes</span></span>(<span>self, index1, index2, inclusive=False)</span>
+<span>def <span class="ident">get_ts_between_indexes</span></span>(<span>self, index1, index2, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries before two specified time indexes.</p>
@@ -861,7 +864,7 @@ array([0.2, 0.3, 0.4, 0.5])
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.get_ts_between_times"><code class="name flex">
-<span>def <span class="ident">get_ts_between_times</span></span>(<span>self, time1, time2, inclusive=False)</span>
+<span>def <span class="ident">get_ts_between_times</span></span>(<span>self, time1, time2, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries between two specified times.</p>
@@ -910,10 +913,11 @@ one nan value).</dd>
 </dl></section>
 </dd>
 <dt id="ktk.TimeSeries.merge"><code class="name flex">
-<span>def <span class="ident">merge</span></span>(<span>self, ts, data_keys=None, resample=False, overwrite=True)</span>
+<span>def <span class="ident">merge</span></span>(<span>self, ts, data_keys=None, *, resample=False, overwrite=True)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Merge another TimeSeries into the current TimeSeries.</p>
+<p>This function is experimental and may change signature.</p>
 <p>This method merges a TimeSeries into the current TimeSeries, copying
 the data, data_info and events.</p>
 <h2 id="parameters">Parameters</h2>
@@ -936,7 +940,7 @@ duplicated data is ignored. Default is True.</dd>
 <p>None.</p></section>
 </dd>
 <dt id="ktk.TimeSeries.plot"><code class="name flex">
-<span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, event_names=True, legend=True, **kwargs)</span>
+<span>def <span class="ident">plot</span></span>(<span>self, data_keys=None, *, event_names=True, legend=True, **kwargs)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Plot the TimeSeries using matplotlib.</p>
@@ -997,17 +1001,17 @@ The default is True.</dd>
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.remove_data_info"><code class="name flex">
-<span>def <span class="ident">remove_data_info</span></span>(<span>self, signal_name, info_name)</span>
+<span>def <span class="ident">remove_data_info</span></span>(<span>self, data_key, info_key)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Remove metadata from a TimeSeries' data.</p>
 <p>Note: No warning or exception is raised if the data key does not exist.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>signal_name</code></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>data_key</code></strong> :&ensp;<code>str</code></dt>
 <dd>The data key the info corresponds to.</dd>
-<dt><strong><code>info_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the info.</dd>
+<dt><strong><code>info_key</code></strong> :&ensp;<code>str</code></dt>
+<dd>The key of the info dict.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>None.</p>
@@ -1057,10 +1061,11 @@ The default is True.</dd>
 </code></pre></section>
 </dd>
 <dt id="ktk.TimeSeries.resample"><code class="name flex">
-<span>def <span class="ident">resample</span></span>(<span>self, new_time, kind='linear', fill_value=None)</span>
+<span>def <span class="ident">resample</span></span>(<span>self, new_time, kind='linear', *, fill_value=None)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Resample the TimeSeries.</p>
+<p>This function is experimental and may change signature.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>new_time</code></strong> :&ensp;<code>np.array</code></dt>
@@ -1223,7 +1228,7 @@ the argument of ktk.TimeSeries.plot().</dd>
 </dl></section>
 </dd>
 <dt id="ktk.TimeSeries.ui_get_ts_between_clicks"><code class="name flex">
-<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None, inclusive=False)</span>
+<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None, *, inclusive=False)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Get a subset of the TimeSeries between two mouse clicks.</p>
@@ -1247,6 +1252,7 @@ False.</dd>
 </code></dt>
 <dd>
 <section class="desc"><p>Synchronize one or two TimeSeries by shifting their time.</p>
+<p>This function is experimental and may change signature.</p>
 <p>If a second TimeSeries is given, both TimeSeries are synchronized and
 the sync process is done in three steps:</p>
 <ol>
@@ -1324,7 +1330,7 @@ methods to deal with events.</p>
 <ul>
 <li><a href="#kinetics-toolkit">Kinetics Toolkit</a><ul>
 <li><a href="#public-version">Public version</a></li>
-<li><a href="#private-unstable-version">Private unstable version</a></li>
+<li><a href="#private-development-version">Private development version</a></li>
 <li><a href="#credits">Credits</a></li>
 <li><a href="#customization">Customization</a><ul>
 <li><a href="#modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
