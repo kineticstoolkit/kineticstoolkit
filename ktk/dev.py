@@ -27,7 +27,8 @@ This module contains fonctions related to development, tests and release.
 
 """
 
-import ktk
+import ktk.config
+
 import os
 import subprocess
 import shutil
@@ -41,7 +42,7 @@ def run_unit_tests():
     # clean, and all Matplotlib windows are closed correctly after the tests.
     print('Running unit tests...')
     cwd = os.getcwd()
-    os.chdir(ktk.config['RootFolder'] + '/tests')
+    os.chdir(ktk.config.root_folder + '/tests')
     subprocess.call(['pytest', '--ignore=interactive'])
     os.chdir(cwd)
 
@@ -50,7 +51,7 @@ def run_doc_tests():
     """Run all doc tests."""
     print('Running doc tests...')
     cwd = os.getcwd()
-    os.chdir(ktk.config['RootFolder'] + '/tests')
+    os.chdir(ktk.config.root_folder + '/tests')
     for file in os.listdir():
         if file.endswith('.py'):
             print(file)
@@ -65,7 +66,7 @@ def run_doc_tests():
 def generate_tutorials():
     """Generate the tutorials in html."""
     cwd = os.getcwd()
-    os.chdir(ktk.config['RootFolder'] + '/tutorials')
+    os.chdir(ktk.config.root_folder + '/tutorials')
     subprocess.call(['pwd'])
     subprocess.call(['jupyter-nbconvert', '--execute', '--to', 'html_toc',
                      'index.ipynb'])
@@ -73,68 +74,58 @@ def generate_tutorials():
 
     # Open tutorial
     webbrowser.open_new_tab(
-        'file://' + ktk.config['RootFolder'] + '/tutorials/index.html')
+        'file://' + ktk.config.root_folder + '/tutorials/index.html')
 
 
 def generate_doc():
     """Generate ktk's reference using pdoc."""
     cwd = os.getcwd()
 
-    # Create a mirror of ktk
-    shutil.rmtree(ktk.config['RootFolder'] + '/tmp', ignore_errors=True)
-    shutil.rmtree(ktk.config['RootFolder'] + '/doc', ignore_errors=True)
-    os.mkdir(ktk.config['RootFolder'] + '/tmp')
-    shutil.copytree(ktk.config['RootFolder'] + '/ktk',
-                    ktk.config['RootFolder'] + '/tmp/ktk')
-
-    # Append the class definitions to ktk/__init__.py
-    # so that pdoc includes the classes into ktk's toplevel
-    with open(ktk.config['RootFolder'] + '/tmp/ktk/__init__.py',
-              'a') as out_file:
-        with open(ktk.config['RootFolder'] + '/ktk/_timeseries.py',
-                  'r') as in_file:
-            for line in in_file:
-                out_file.write(line)
-
-        with open(ktk.config['RootFolder'] + '/ktk/_player.py',
-                  'r') as in_file:
-            for line in in_file:
-                out_file.write(line)
-
-
     # Run pdoc
-    os.chdir(ktk.config['RootFolder'] + '/tmp')
+    try:
+        os.mkdir(ktk.config.root_folder + '/doc/')
+    except Exception:
+        pass
+
+    try:
+        shutil.rmtree(ktk.config.root_folder + '/doc/ktk')
+    except Exception:
+        pass
+
+    os.chdir(ktk.config.root_folder + '/ktk')
     subprocess.call(['pdoc', '--html', '--config', 'show_source_code=False',
-                     '--output-dir', ktk.config['RootFolder'] + '/doc', 'ktk'])
+                     '--output-dir', ktk.config.root_folder + '/doc', 'ktk'])
 
     # Cleanup
-    shutil.rmtree(ktk.config['RootFolder'] + '/tmp', ignore_errors=True)
     os.chdir(cwd)
 
     # Open doc
     webbrowser.open_new_tab(
-        'file://' + ktk.config['RootFolder'] + '/doc/ktk/index.html')
+        'file://' + ktk.config.root_folder + '/doc/ktk/index.html')
 
 
 def update_readme():
     """Copy ktk's docstring into readme.md (up to the -------- separator)."""
-    with open(ktk.config['RootFolder'] + '/README.md', 'w') as fid:
-        fid.write(ktk.__doc__.split(
+    from ktk import __doc__ as ktkdoc
+    # I only load it here because I don't want the whole ktk suite to be loaded
+    # automatically, which would be the case if dev loaded it.
+    with open(ktk.config.root_folder + '/README.md', 'w') as fid:
+        fid.write(ktkdoc.split(
             '------------------------------------------------------------')[0])
 
 
 def compile_for_pypi():
     """Compile for PyPi."""
     update_readme()
-    shutil.rmtree(ktk.config['RootFolder'] + '/dist', ignore_errors=True)
-    shutil.rmtree(ktk.config['RootFolder'] + '/build', ignore_errors=True)
-    os.chdir(ktk.config['RootFolder'])
+    shutil.rmtree(ktk.config.root_folder + '/dist', ignore_errors=True)
+    shutil.rmtree(ktk.config.root_folder + '/build', ignore_errors=True)
+    os.chdir(ktk.config.root_folder)
     subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
 
 
 def upload_to_pypi():
     """Upload to PyPi."""
-    root_folder = ktk.config['RootFolder']
+    root_folder = ktk.config.root_folder
     subprocess.call([
         'osascript',
         '-e',

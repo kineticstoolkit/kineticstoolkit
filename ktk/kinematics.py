@@ -8,8 +8,10 @@
 Kinematics analysis.
 """
 
+import ktk.geometry
+from ktk.timeseries import TimeSeries
+
 import numpy as np
-import ktk
 import warnings
 import struct  # To unpack data from N3D files
 
@@ -39,7 +41,7 @@ def read_c3d_file(filename):
     reader = ezc3d(filename)
 
     # Create the output timeseries
-    output = ktk.TimeSeries()
+    output = TimeSeries()
 
     # Get the marker label names and create a timeseries data entry for each
     # Get the labels
@@ -122,7 +124,7 @@ def read_n3d_file(filename, labels=[]):
         ndi_array /= 1000
 
         # Transformation to a TimeSeries
-        ts = ktk.TimeSeries(
+        ts = TimeSeries(
                 time=np.linspace(0, n_frames / collection_frame_frequency,
                                  n_frames))
 
@@ -322,7 +324,7 @@ def register_markers(markers, rigid_body_configs, verbose=False):
         TimeSeries where each data key is a Nx4x4 series of rigid
         transformations.
     """
-    rigid_bodies = ktk.TimeSeries(time=markers.time,
+    rigid_bodies = TimeSeries(time=markers.time,
                                   time_info=markers.time_info,
                                   events=markers.events)
 

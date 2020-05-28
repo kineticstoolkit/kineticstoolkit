@@ -26,10 +26,10 @@ ktk._tools
 This module provides various tools to the user.
 
 """
+import ktk.config
 
 import os
 import subprocess
-import ktk
 import webbrowser as _webbrowser
 
 
@@ -50,10 +50,10 @@ def explore(folder_name=''):
     if not folder_name:
         folder_name = os.getcwd()
 
-    if ktk.config['IsPC'] is True:
+    if ktk.config.is_pc is True:
         os.system(f'start explorer {folder_name}')
 
-    elif ktk.config['IsMac'] is True:
+    elif ktk.config.is_mac is True:
         subprocess.call(['open', folder_name])
 
     else:
@@ -78,10 +78,10 @@ def terminal(folder_name=''):
     if not folder_name:
         folder_name = os.getcwd()
 
-    if ktk.config['IsPC'] is True:
+    if ktk.config.is_pc is True:
         os.system(f'cmd /c start /D {folder_name} cmd')
 
-    elif ktk.config['IsMac'] is True:
+    elif ktk.config.is_mac is True:
         subprocess.call([
                 'osascript',
                 '-e',
@@ -112,8 +112,9 @@ def update():
     None
     """
     current_dir = os.getcwd()
-    os.chdir(ktk.config['RootFolder'])
-    print(subprocess.check_output(['git', 'pull', 'origin', 'master']).decode('ascii'))
+    os.chdir(ktk.config.root_folder)
+    print(subprocess.check_output(
+        ['git', 'pull', 'origin', 'master']).decode('ascii'))
     os.chdir(current_dir)
 
 
@@ -123,6 +124,6 @@ def tutorials():
 
     Usage: ktk.tutorials()
     """
-    _webbrowser.open('file:///' + ktk.config['RootFolder'] +
+    _webbrowser.open('file:///' + ktk.config.root_folder +
                      '/tutorials/index.html',
                      new=2)

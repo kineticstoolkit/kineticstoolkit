@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>ktk.dbinterface API documentation</title>
+<meta name="description" content="Module that manages the DBInterface class …" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ktk.dbinterface</code></h1>
+</header>
+<section id="section-intro">
+<p>Module that manages the DBInterface class.</p>
+<p>Author: Felix Chenier
+Date: April 2020</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="ktk.dbinterface.DBInterface"><code class="flex name class">
+<span>class <span class="ident">DBInterface</span></span>
+<span>(</span><span>project_label, user='', password='', root_folder='', url='https://felixchenier.uqam.ca/biomec')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Interface for Felix Chenier's BIOMEC database.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>project_label</code></strong> :&ensp;<code>str</code></dt>
+<dd>Project label, for example 'FC_XX16E'.</dd>
+<dt><strong><code>user</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Username on BIOMEC. If none is supplied, a dialog box asks the user
+for his/her credentials.</dd>
+<dt><strong><code>password</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Password on BIOMEC. The default is ''.</dd>
+<dt><strong><code>root_folder</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Project's root folder, where all data files are stored. If none is
+given, a dialog box asks the user to point to this folder.</dd>
+<dt><strong><code>url</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>BIOMEC's url. The default is 'https://felixchenier.uqam.ca/biomec'.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>A DBInterface class instance.</p>
+<p>Init.</p></section>
+<h3>Instance variables</h3>
+<dl>
+<dt id="ktk.dbinterface.DBInterface.files"><code class="name">var <span class="ident">files</span></code></dt>
+<dd>
+<section class="desc"><p>Return a list of all file labels in the project.</p></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.participants"><code class="name">var <span class="ident">participants</span></code></dt>
+<dd>
+<section class="desc"><p>Return a list of all participant labels in the project.</p></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.sessions"><code class="name">var <span class="ident">sessions</span></code></dt>
+<dd>
+<section class="desc"><p>Return a list of all session labels in the project.</p></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.trials"><code class="name">var <span class="ident">trials</span></code></dt>
+<dd>
+<section class="desc"><p>Return a list of all trial labels in the project.</p></section>
+</dd>
+</dl>
+<h3>Methods</h3>
+<dl>
+<dt id="ktk.dbinterface.DBInterface.batch_fix_file_type"><code class="name flex">
+<span>def <span class="ident">batch_fix_file_type</span></span>(<span>self, folder, new_file_type_label, create_file_entries=False, dry_run=True)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Batch-rename files in a folder to their new corresponding dbfid.</p>
+<p>This function is helpful to quickly assign new dbfids to a batch
+of processed file based on files that are already referenced in the
+database.</p>
+<p>As a practical example, let's say we have a folder full of raw
+kinematics take files, and we batch-export those files to a new
+folder of c3d files. Both the raw take files and the c3d files share
+the same name, apart from the extension.</p>
+<p>Now, let say a project contains these filetypes:
+- 'RawKinematics': raw kinematic take files;
+- 'LabelledKinematics': c3d files with labelled markers.</p>
+<p>If the raw kinematics files were correctly assigned to database entries
+before batch-exporting, then the exported c3d files contain the
+original (incorrect) dbfid entry in their file names.</p>
+<p>This function changes the file names of the exported files so that
+they match their correct entry in the database.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>folder</code></strong> :&ensp;<code>str</code></dt>
+<dd>Folder that contains the set of files to rename. These files must
+have the original dbfid in their name, to identify the trial they
+belong to.</dd>
+<dt><strong><code>new_file_type_label</code></strong> :&ensp;<code>str</code></dt>
+<dd>FileTypeLabel as set in the database. For example:
+'LabelledKinematics'.</dd>
+<dt><strong><code>create_file_entries</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>If a file entry for the specified file type ID does not exist in
+the found trial, create the file entry in the database, then
+rename the file accordingly. Default is False.</dd>
+<dt><strong><code>dry_run</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>When True, the list of file renames is returned, but no action is
+actually taken. Default is True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code> <code>with</code> <code>these</code> <code>keys</code>:</dt>
+<dd>'Rename' :
+list of tuples (old_file_name, new_file_name).
+'Ignore' :
+list of files without a dbfid.
+'NoFileTypeLabel' : list of files which associated trial does not
+contain the specified FileTypeLabel</dd>
+</dl></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.create_file_entry"><code class="name flex">
+<span>def <span class="ident">create_file_entry</span></span>(<span>self, trial_id, file_type_label)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Create a file entry in the database.</p>
+<p>The project's tables are updated after adding the file entry.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>trial_id</code></strong> :&ensp;<code>int</code></dt>
+<dd>Trial identifier in the database. Can be obtained using
+get(participant, session, trial)['TrialID'].</dd>
+</dl>
+<p>file_type_label str
+File type label.</p>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.get"><code class="name flex">
+<span>def <span class="ident">get</span></span>(<span>self, participant='', session='', trial='', file='')</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Extract information from a project.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>participant</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Participant label (for example, 'P01'). The default is ''.</dd>
+<dt><strong><code>session</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Session label (for example, 'SB4320'). The default is ''.</dd>
+<dt><strong><code>trial</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>Trial label (for example, 'StaticAnatomic'). The default is ''.</dd>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>File label (for example, 'Kinematics'). The default is ''.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>dict</code></dt>
+<dd>A record of the specified information.</dd>
+</dl></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.load"><code class="name flex">
+<span>def <span class="ident">load</span></span>(<span>self, participant, session, trial, file)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Load a variable from a BIOMEC referenced file.</p>
+<p>This method load the .ktk.zip file associated to a participant,
+session, trial and file type.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>participant</code></strong> :&ensp;<code>str</code></dt>
+<dd>Participant label. For example, 'P01'</dd>
+<dt><strong><code>session</code></strong> :&ensp;<code>str</code></dt>
+<dd>Session label. For example, 'SB4320'</dd>
+<dt><strong><code>trial</code></strong> :&ensp;<code>str</code></dt>
+<dd>Trial label. For example, 'StaticR1'</dd>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>File type label. For example, 'SyncMarkers'</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>The</code> <code>file's</code> <code>content</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.refresh"><code class="name flex">
+<span>def <span class="ident">refresh</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Update from database and reindex files.</p></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.rename"><code class="name flex">
+<span>def <span class="ident">rename</span></span>(<span>self, filename, dbfid)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Rename a file to include or modify a dbfid code in its filename.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>Name of the file to rename</dd>
+<dt><strong><code>dbfid</code></strong> :&ensp;<code>int</code></dt>
+<dd>FileID in database</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.save"><code class="name flex">
+<span>def <span class="ident">save</span></span>(<span>self, participant, session, trial, file, variable)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Save a variable to a BIOMEC referenced file.</p>
+<p>This method saves the specified variable following either of these
+cases:
+A) If the participant, session, trial and file labels are already
+associated to a file on disk:
+The file is overwritten.
+B) If the participant, session, trial and file labels are
+associated to a file entry but no file exists on disk:
+The file is created and saved in:
+root_folder/file_label/participant/session/
+dbfidxxxxn_{trial}.ktk.zip
+C) If the participant, session, trial and file labels do not
+correspond to a file entry in the database:
+- A file entry is created in the database;
+- Then the file is saved as in case B.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>participant</code></strong> :&ensp;<code>str</code></dt>
+<dd>Participant label. For example, 'P01'</dd>
+<dt><strong><code>session</code></strong> :&ensp;<code>str</code></dt>
+<dd>Session label. For example, 'SB4320'</dd>
+<dt><strong><code>trial</code></strong> :&ensp;<code>str</code></dt>
+<dd>Trial label. For example, 'StaticR1'</dd>
+<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
+<dd>File type label. For example, 'SyncMarkers'</dd>
+<dt><strong><code>variable</code></strong> :&ensp;<code>any</code> <code>variable</code> <code>supported</code> <code>by</code> <code>ktk.save</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>str</code></strong> :&ensp;<code>the</code> <code>file</code> <code>path</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
+</dd>
+<dt id="ktk.dbinterface.DBInterface.tag_files"><code class="name flex">
+<span>def <span class="ident">tag_files</span></span>(<span>self, include_trial_name=True, dry_run=True)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Rename all files to include tags in file names.</p>
+<p>This method renames all the files referenced by the project following
+the given specifications. The resulting file can be either:
+- ORIGINALNAME_dbfidXXXXn.EXT
+- ORIGINALNAME_dbfidXXXXn_{TRIALNAME}.EXT</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>include_trial_name</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>Include or exclude the trial name from the file name. The default
+is True (include).</dd>
+<dt><strong><code>dry_run</code></strong> :&ensp;<code>bool</code>, optional</dt>
+<dd>False to perform the rename. The default is True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>None.</p></section>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ktk" href="index.html">ktk</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ktk.dbinterface.DBInterface" href="#ktk.dbinterface.DBInterface">DBInterface</a></code></h4>
+<ul class="two-column">
+<li><code><a title="ktk.dbinterface.DBInterface.batch_fix_file_type" href="#ktk.dbinterface.DBInterface.batch_fix_file_type">batch_fix_file_type</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.create_file_entry" href="#ktk.dbinterface.DBInterface.create_file_entry">create_file_entry</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.files" href="#ktk.dbinterface.DBInterface.files">files</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.get" href="#ktk.dbinterface.DBInterface.get">get</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.load" href="#ktk.dbinterface.DBInterface.load">load</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.participants" href="#ktk.dbinterface.DBInterface.participants">participants</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.refresh" href="#ktk.dbinterface.DBInterface.refresh">refresh</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.rename" href="#ktk.dbinterface.DBInterface.rename">rename</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.save" href="#ktk.dbinterface.DBInterface.save">save</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.sessions" href="#ktk.dbinterface.DBInterface.sessions">sessions</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.tag_files" href="#ktk.dbinterface.DBInterface.tag_files">tag_files</a></code></li>
+<li><code><a title="ktk.dbinterface.DBInterface.trials" href="#ktk.dbinterface.DBInterface.trials">trials</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

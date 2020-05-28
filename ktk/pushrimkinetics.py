@@ -8,7 +8,9 @@
 Processing of kinetic data measured using instrumented wheelchair wheels.
 """
 
-import ktk
+import ktk.filters
+from ktk.timeseries import TimeSeries, TimeSeriesEvent
+
 import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
@@ -50,7 +52,7 @@ def read_file(filename, format='smartwheel'):
         angle_deg = data[:, 3]
         angle_rad = np.unwrap(np.deg2rad(angle_deg))
 
-        ts = ktk.TimeSeries(time=time)
+        ts = TimeSeries(time=time)
 
         ts.data['Index'] = index
         ts.data['Channels'] = channels
@@ -71,7 +73,7 @@ def read_file(filename, format='smartwheel'):
         channels = data[:, 1:7]
         battery = data[:, 8]
 
-        ts = ktk.TimeSeries(time=time)
+        ts = TimeSeries(time=time)
 
         ts.data['Channels'] = channels
         ts.add_data_info('Channels', 'Unit', 'raw')
@@ -122,7 +124,7 @@ def read_file(filename, format='smartwheel'):
         # Convert angle in radian
         angle = angle_ticks / 4096 * 2 * np.pi
 
-        ts = ktk.TimeSeries(
+        ts = TimeSeries(
             time=np.linspace(0, (length - 1) / 240, length - 1))
         ts.data['Channels'] = np.concatenate(
             [ch1[:, np.newaxis],
@@ -295,7 +297,7 @@ def calculate_forces_and_moments(kinetics, calibration_id):
     kinetics : TimeSeries
 		A copy of the input TimeSeries, with the added 'Forces'
 		and 'Moments' data keys.
-		
+
     """
 
     # Get the gains and offsets based on calibration id
@@ -458,7 +460,7 @@ def calculate_velocity(tsin):
     tsout : TimeSeries
     	A new TimeSeries with the added data key 'Velocity'.
     """
-    tsangle = ktk.TimeSeries()
+    tsangle = TimeSeries()
     tsangle.time = tsin.time
     tsangle.data['Angle'] = tsin.data['Angle']
     tsvelocity = ktk.filters.savgol(tsangle, window_length=21,
@@ -527,7 +529,7 @@ def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
     """
     # Calculate the total force
     f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
-    ts_force = ktk.TimeSeries(time=tsin.time, data={'Ftot': f_tot})
+    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
 
     # Smooth the total force to avoid detecting pushes on glitches
     ts_force = ktk.filters.smooth(ts_force, 11)
@@ -554,7 +556,7 @@ def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
 
             push_state = True
 
-            events.append(ktk.TimeSeriesEvent(time[i], 'push'))
+            events.append(TimeSeriesEvent(time[i], 'push'))
 
             is_first_push = False
 
@@ -566,7 +568,7 @@ def detect_pushes(tsin, push_threshold=5, recovery_threshold=2,
             if (len(events) == 0 or  # Not grab yet
                     time[i] - events[-1].time >= minimum_push_time):
                 # Yes.
-                events.append(ktk.TimeSeriesEvent(time[i], 'recovery'))
+                events.append(TimeSeriesEvent(time[i], 'recovery'))
             else:
                 # No. Remove the last push start.
                 events = events[0:-1]

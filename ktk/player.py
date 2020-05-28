@@ -1,8 +1,27 @@
-"""
-Implementation of the ktk.Player class.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
 
-Author: Felix Chenier
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
+Module that provides the class Player to visualize markers and rigid bodies
+in three dimensions.
+
+"""
+
+from ktk.timeseries import TimeSeries
 
 import matplotlib.pyplot as plt
 from matplotlib import animation
@@ -10,7 +29,6 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-import ktk
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
@@ -30,38 +48,51 @@ class Player:
         key is either a marker position expressed as Nx4 array (N=time),
         or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
         can be provided, e.g., ktk.Player(markers, rigid_bodies)
+
     segments : dict
         Used to draw lines between markers. Each key corresponds to a
         segment, where a segment is another dict with the following keys:
-            - Links: list of list of 2 str, where each str is a marker
-                     name. For example, to link Marker1 to Marker2 and
-                     Marker1 to Marker3, Links would be:
-                         [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
-            - Color: character or tuple that represents the color of the
-                     link. Color must be a valid value for matplotlib's
-                     plots.
+
+        - Links: list of list of 2 str, where each str is a marker
+                 name. For example, to link Marker1 to Marker2 and
+                 Marker1 to Marker3, Links would be:
+
+                 [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+
+        - Color: character or tuple that represents the color of the
+                 link. Color must be a valid value for matplotlib's
+                 plots.
     current_frame : int (optional)
         Sets the inital frame number to show. Default is 0.
+
     marker_radius : float (optional)
         Sets the marker radius as defined by matplotlib. Default is 0.008.
+
     rigid_body_length : float (optional)
         Sets the rigid body size in meters. Default is 0.1.
+
     zoom : float (optional)
         Sets the initial camera zoom. Default is 0.2.
+
     azimuth : float (optional)
         Sets the initial camera azimuth in radians. Default is 0.0.
+
     elevation : float (optional)
         Sets the initial camera elevation in radians. Default is 1.0.
+
     translation : tuple of floats (optional)
         Sets the initial camera translation (panning). Default is (0.0, 0.0)
+
     target : tuple of floats or 'centroid' (optional)
         Sets the camera target in meters. Default is (0.0, 0.0, 0.0)
         If set to 'centroid', then the target is continuously updated to
         the centroid of the markers, which allows following moving
         objects more easily.
+
     track : bool (optional)
         Set to True to track the last selected marker when changing frame,
         or False to keep the scene static. Default is False.
+
     perspective : bool (optional)
         Sets if the scene must be drawn using perspective (True) or
         orthogonal (False). Default is True.
@@ -86,8 +117,8 @@ class Player:
 
         # ---------------------------------------------------------------
         # Assign the markers and rigid bodies
-        self.markers = ktk.TimeSeries()
-        self.rigid_bodies = ktk.TimeSeries()
+        self.markers = TimeSeries()
+        self.rigid_bodies = TimeSeries()
 
         for one_ts in ts:
             for key in one_ts.data:

@@ -47,7 +47,7 @@ def test_reconstruction():
 
     # Read the static trial
     markers = ktk.kinematics.read_n3d_file(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_static.n3d',
         labels=marker_names)
 
@@ -108,23 +108,23 @@ def test_reconstruction():
     Now, we can process every probing acquisition.
     """
     config['VirtualMarkers']['AcromionR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_acromion_R.n3d', 'ArmR')
 
     config['VirtualMarkers']['MedialEpicondyleR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_medial_epicondyle_R.n3d', 'ArmR')
 
     config['VirtualMarkers']['OlecraneR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_olecrane_R.n3d', 'ForearmR')
 
     config['VirtualMarkers']['RadialStyloidR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_radial_styloid_R.n3d', 'ForearmR')
 
     config['VirtualMarkers']['UlnarStyloidR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_ulnar_styloid_R.n3d', 'ForearmR')
 
     # %%
@@ -167,7 +167,7 @@ def test_reconstruction():
     ------------------------------------------
     """
     markers = ktk.kinematics.read_n3d_file(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_propulsion.n3d', labels=marker_names)
 
     # Show those markers in a player

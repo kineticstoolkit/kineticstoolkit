@@ -5,7 +5,9 @@ Author: Felix Chenier
 Date: April 2020
 """
 
-import ktk
+import ktk.gui
+from ktk.loadsave import save, load
+
 import requests
 import os
 from io import StringIO
@@ -441,7 +443,7 @@ class DBInterface():
                                      '.ktk.zip')
 
         # Save
-        ktk.save(file_name, variable)
+        save(file_name, variable)
 
         # Refresh
         self.refresh()
@@ -470,7 +472,7 @@ class DBInterface():
         -------
         The file's content
         """
-        return ktk.load(self.get(
+        return load(self.get(
             participant, session, trial, file)['FileName'])
 
     def rename(self, filename, dbfid):

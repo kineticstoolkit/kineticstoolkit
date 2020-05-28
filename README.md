@@ -2,9 +2,15 @@
 Kinetics Toolkit
 ================
 
-Kinetics Toolkit (ktk) is an in-house biomechanical library developed
-exclusively in Python, by Professor Félix Chénier at Université du Québec
-à Montréal.
+Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by
+Professor Félix Chénier at Université du Québec à Montréal, Canada. It does not
+attempt to provide user-friendly graphical user interfaces (apart from the
+Player class to visualize 3d kinematics) or other magical blackboxes that
+process everything automatically. It is rather a framework that aims to
+integrate flexible classes and functions in a way that facilitates research in
+biomechanics. It is addressed mainly to researchers and students in
+biomechanics, who want to understand and control their data. This is why a
+particular effort is made on API documentation, with examples and tutorials.
 
 [Laboratory website](https://felixchenier.uqam.ca)
 
@@ -13,11 +19,25 @@ exclusively in Python, by Professor Félix Chénier at Université du Québec
 Public version
 --------------
 
-The public open-source version API is mostly stable (although currently almost
-empty). I do not expect to remove or rename much stuff. However please keep
-in mind that this is experimental software. If you are using ktk or are
-planning to be, you are warmly invited to contact me, first to say Hello :-),
-and so that I can warn you before doing major, possibly breaking changes.
+The public open-source version API is mostly stable and currently includes:
+
+- `timeseries.TimeSeries` : a generic class to represent time-varying n-dimensional
+  data and events, which has many methods to extract, merge and subset
+  TimeSeries data.
+
+- `kinematics` : a module that loads c3d and n3d files as TimeSeries of
+  3d marker positions.
+
+- `player.Player` : a class that allows visualizing 3d markers using a simple
+  graphical user interface.
+
+Please be warned that this is mostly experimental software. If you are using
+ktk or are planning to be, you are warmly invited to contact me, first to say
+Hello :-), and so that I can warn you before doing major, possibly breaking
+changes. Also remind that I develop ktk mainly for my lab and I have
+limited resources for troubleshooting. You can however
+[ask your questions](mailto:chenier.felix@uqam.ca)
+and if I can answer, I'll do.
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_dist/tutorials)
 
@@ -27,12 +47,11 @@ and so that I can warn you before doing major, possibly breaking changes.
 Private development version
 ---------------------------
 
-This version is exclusively used in my lab and is developed in parallel with
-my research projects, following the needs of the moment. I usually wait several
-months before releasing code to the public, mostly to ensure the modules are
-stable and the API is mature and global enough to be shared. If you are
-interested in collaborating either in research or software development, please
-contact me at chenier.felix@uqam.ca
+The development version is exclusively used in my lab and is developed in
+parallel with my research projects, following the needs of the moment. I
+usually wait several months before releasing code to the public, mostly to
+ensure the modules are stable and the API is mature and global enough to be
+shared.
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_lab/tutorials)
 
@@ -45,7 +64,14 @@ Credits
 Some external code has been included into ktk's source code. Here are the
 credits for these nice people.
 
-Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) -
-Python implementation of m-dimensional Iterative Closest Point method
+- Clay Flannigan : [icp](https://github.com/ClayFlannigan/icp) -
+  Python implementation of m-dimensional Iterative Closest Point method
 
+I also want to credit the people involved in ktk's dependencies:
+
+- Pariterre and contributors : [ezc3d](https://github.com/pyomeca/ezc3d) -
+  Easy to use C3D reader/writer for C++, Python and Matlab
+
+- The dedicated people behind major software and packages like python, numpy,
+  matplotlib, pandas, pytest, etc.
 

@@ -8,11 +8,12 @@
 Module that provides simple GUI functions.
 """
 
+import ktk.config
+
 import subprocess
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
-import ktk
 import matplotlib.widgets as widgets
 from functools import partial
 import time
@@ -23,7 +24,7 @@ def __dir__():
             'get_credentials', 'get_folder', 'get_filename']
 
 
-CMDGUI = ktk.config['RootFolder'] + "/ktk/cmdgui.py"
+CMDGUI = ktk.config.root_folder + "/ktk/cmdgui.py"
 _message_window_int = [0]
 
 _axes = {

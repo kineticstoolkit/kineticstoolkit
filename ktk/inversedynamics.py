@@ -8,7 +8,8 @@
 Calculate inverse dynamics.
 """
 
-import ktk
+import ktk.filters
+
 import numpy as np
 import warnings
 
