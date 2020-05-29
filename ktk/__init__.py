@@ -184,18 +184,10 @@ __pdoc__ = {'dev': False, 'cmdgui': False}
 # --- Imports
 from ktk import config
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
-from ktk.tools import explore, terminal, update, tutorials
-from ktk.dbinterface import DBInterface
+from ktk.tools import explore, terminal, tutorials
 from ktk.player import Player
-from ktk.loadsave import load, loadmat, save
-from ktk import filters
 from ktk import gui
-from ktk import mplhelper
-from ktk import geometry
 from ktk import kinematics
-from ktk import pushrimkinetics
-from ktk import inversedynamics
-from ktk import cycles
 from ktk import _repr
 
 try:

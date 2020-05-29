@@ -30,11 +30,11 @@ __license__ = "Apache 2.0"
 
 
 import ktk._repr
-
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
+import scipy.interpolate
 import pandas as pd
 import warnings
 from ast import literal_eval
@@ -685,86 +685,6 @@ class TimeSeries():
 
         """
         self.events.append(TimeSeriesEvent(time, name))
-
-    def ui_add_event(self, name='event', plot=[], multiple_events=False):
-        """
-        Add one or many events interactively to the TimeSeries.
-
-        Parameters
-        ----------
-        name : str (optional)
-            The name of the event.
-        plot : str, list of str or tuple of str (optional)
-            A signal name of list of signal name to be plotted, similar to
-            the argument of ktk.TimeSeries.plot().
-        multiple_events : bool (optional)
-            - True to add multiple events with the same name.
-            - False to add only one event (default).
-
-        Returns
-        -------
-        status : boolean
-            - True if the event was added;
-            - False if the operation was cancelled by the user.
-        """
-        ts = self.copy()
-
-        fig = plt.figure()
-        ts.plot(plot)
-
-        finished = False
-
-        while finished is False:
-            finished = True  # Only one pass by default
-
-            button = ktk.gui.button_dialog(
-                f'Adding the event "{name}".\n'
-                'Please zoom on the location to \n'
-                'add the event, then click Next.',
-                ['Cancel', 'Next'])
-
-            if button <= 0:  # Cancel
-                plt.close(fig)
-                return False
-
-            if multiple_events:
-                ktk.gui.message(
-                    'Left-click to add events; \n'
-                    'Right-click to delete; \n'
-                    'ENTER to finish.')
-                plt.pause(0.001)  # Update the plot
-                coordinates = plt.ginput(99999)
-                ktk.gui.message('')
-
-            else:
-                ktk.gui.message(
-                    'Please left-click on the event to add.')
-                coordinates = plt.ginput(1)
-                ktk.gui.message('')
-
-            # Add these events
-            for i in range(len(coordinates)):
-                ts.add_event(coordinates[i][0], name)
-
-            if multiple_events:
-                plt.cla()
-                ts.plot(plot)
-                button = ktk.gui.button_dialog(
-                    f'Adding the event "{name}".\n'
-                    'Do you want to add more of these events?',
-                    ['Cancel', 'Add more', "Finished"])
-                if button <= 0:  # Cancel
-                    plt.close(fig)
-                    return False
-                elif button == 1:
-                    finished = False
-                elif button == 2:
-                    finished = True
-
-        ktk.gui.message('')
-        plt.close(fig)
-        self.events = ts.events  # Add the events to self.
-        return True
 
     def sort_events(self, unique=True):
         """
@@ -1563,36 +1483,6 @@ class TimeSeries():
                                     inclusive=inclusive)
         return ts
 
-    def ui_get_ts_between_clicks(self, data_keys=None, *, inclusive=False):
-        """
-        Get a subset of the TimeSeries between two mouse clicks.
-
-        Parameters
-        ----------
-        data_keys : string, list or tuple (optional)
-            String or list of strings corresponding to the signals to plot.
-            See TimeSeries.plot() for more information.
-        inclusive : bool (optional)
-            True to include the given time in the comparison. The default is
-            False.
-
-        Returns
-        -------
-        ts : TimeSeries
-            A new TimeSeries following the user interaction.
-
-        """
-        fig = plt.figure()
-        self.plot(data_keys)
-        ktk.gui.message('Click on both sides of the portion to keep.')
-        plt.pause(0.001)  # Redraw
-        points = plt.ginput(2)
-        ktk.gui.message('')
-        times = [points[0][0], points[1][0]]
-        plt.close(fig)
-        return self.get_ts_between_times(min(times), max(times),
-                                         inclusive=inclusive)
-
     def isnan(self, data_key):
         """
         Return a boolean array of missing samples.
@@ -1655,7 +1545,7 @@ class TimeSeries():
             ts = self.get_subset(data)
             ts.data[data] = ts.data[data][is_visible]
             ts.time = ts.time[is_visible]
-            ts.resample(self.time, method, fill_value='extrapolate')
+            ts._resample(self.time, method, fill_value='extrapolate')
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:
@@ -1747,151 +1637,6 @@ class TimeSeries():
             if event.time >= self.time[0] and event.time <= self.time[-1]:
                 self.add_event(event.time, event.name)
 
-    def ui_sync(self, data_keys=None, ts2=None, data_keys2=None):
-        """
-        Synchronize one or two TimeSeries by shifting their time.
-
-        This function is experimental and may change signature.
-
-        If a second TimeSeries is given, both TimeSeries are synchronized and
-        the sync process is done in three steps:
-
-        1. Click on the second TimeSeries's zero-time.
-        2. Click on the second TimeSeries on a recognizable event that
-           is common with the first TimeSeries.
-        3. Click on this same event on the first TimeSeries.
-
-        Parameters
-        ----------
-        data_keys : str or list of str (optional)
-            The data keys to plot. The default is None, which means that all
-            data is plotted.
-        ts2 : TimeSeries (optional)
-            A second TimeSeries that contains both a recognizable zero-time
-            event and a common event with the first TimeSeries.
-        data_keys2 : str or list of str (optional)
-            The data keys from the second TimeSeries to plot. The default is
-            None, which means that all data is plotted.
-
-        Returns
-        -------
-        None.
-
-        """
-        fig = plt.figure('ktk.TimeSeries.ui_sync')
-
-        if ts2 is None:
-            # Synchronize ts1 only
-            self.plot(data_keys)
-            choice = ktk.gui.button_dialog(
-                'Please zoom on the time zero and press Next.',
-                ['Cancel', 'Next'])
-            if choice != 1:
-                plt.close(fig)
-                return
-
-            ktk.gui.message('Click on the sync event.')
-            click = plt.ginput(1)
-            ktk.gui.message(None)
-            plt.close(fig)
-            self.shift(-click[0][0])
-
-        else:  # Sync two TimeSeries together
-
-            finished = False
-            axes = []
-            while finished is False:
-
-                if len(axes) == 0:
-                    axes.append(fig.add_subplot(2, 1, 1))
-                    axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
-
-                plt.sca(axes[0])
-                axes[0].cla()
-                self.plot(data_keys)
-                plt.title('First TimeSeries (ts1)')
-                plt.grid(True)
-                plt.tight_layout()
-
-                plt.sca(axes[1])
-                axes[1].cla()
-                ts2.plot(data_keys2)
-                plt.title('Second TimeSeries (ts2)')
-                plt.grid(True)
-                plt.tight_layout()
-
-                choice = ktk.gui.button_dialog(
-                    'Please select an option.',
-                    choices=['Zero ts1 only',
-                             'Zero ts2 only',
-                             'Zero ts1 and ts2 using ts1',
-                             'Zero ts1 and ts2 using ts2',
-                             'Sync ts2 and ts2 on a common event',
-                             'OK'])
-
-                if choice == 0:  # Zero ts1 only
-                    ktk.gui.message(
-                        'Zero ts1 only.\n'
-                        'Click on the time zero in ts1.')
-                    click_1 = plt.ginput(1)
-                    ktk.gui.message('')
-
-                    self.shift(-click_1[0][0])
-
-                elif choice == 1:  # Zero ts2 only
-                    ktk.gui.message(
-                        'Zero ts2 only.\n'
-                        '-------------\n'
-                        'Click on the time zero in ts2.')
-                    click_1 = plt.ginput(1)
-                    ktk.gui.message('')
-
-                    ts2.shift(-click_1[0][0])
-
-                elif choice == 2:  # Zero ts1 and ts2 using ts1
-                    ktk.gui.message(
-                        'Zero ts1 and ts2 using ts1.\n'
-                        '-------------\n'
-                        'Click on the time zero in ts1.')
-                    click_1 = plt.ginput(1)
-                    ktk.gui.message('')
-
-                    self.shift(-click_1[0][0])
-                    ts2.shift(-click_1[0][0])
-
-                elif choice == 3:  # Zero ts1 and ts2 using ts2
-                    ktk.gui.message(
-                        'Zero ts1 and ts2 using ts2.\n'
-                        '-------------\n'
-                        'Click on the time zero in ts2.')
-                    click_2 = plt.ginput(1)
-                    ktk.gui.message('')
-
-                    self.shift(-click_2[0][0])
-                    ts2.shift(-click_2[0][0])
-
-                elif choice == 4:  # Sync on a common event
-                    ktk.gui.message(
-                        'Sync ts2 and ts2 on a common event.\n'
-                        '-------------\n'
-                        'Click on the common event in ts1.')
-                    click_1 = plt.ginput(1)
-                    ktk.gui.message(
-                        'Sync ts2 and ts2 on a common event.\n'
-                        '-------------\n'
-                        'Click on the common event in ts1.\n'
-                        '-------------\n'
-                        'Click on the common event in ts2.')
-                    click_2 = plt.ginput(1)
-                    ktk.gui.message('')
-
-                    self.shift(-click_1[0][0])
-                    ts2.shift(-click_2[0][0])
-
-                elif choice == 5 or choice < -1:  # OK or closed figure, quit.
-                    plt.close(fig)
-                    finished = True
-
     def get_subset(self, data_keys):
         """
         Return a subset of the TimeSeries.
@@ -1940,7 +1685,7 @@ class TimeSeries():
 
         return ts
 
-    def resample(self, new_time, kind='linear', *, fill_value=None):
+    def _resample(self, new_time, kind='linear', *, fill_value=None):
         """
         Resample the TimeSeries.
 
@@ -1988,13 +1733,13 @@ class TimeSeries():
                                   'They were interpolated.')
 
                 if kind == 'pchip':
-                    self.data[key] = sp.interpolate.pchip_interpolate(
+                    self.data[key] = scipy.interpolate.pchip_interpolate(
                         self.time[index],
                         self.data[key][index],
                         new_time,
                         axis=0)
                 else:
-                    f = sp.interpolate.interp1d(self.time[index],
+                    f = scipy.interpolate.interp1d(self.time[index],
                                                 self.data[key][index],
                                                 axis=0, fill_value=fill_value,
                                                 kind=kind)
@@ -2055,7 +1800,7 @@ class TimeSeries():
                 'Time vectors do not match, resampling is required.')
 
         if must_resample is True:
-            ts.resample(self.time, fill_value='extrapolate')
+            ts._resample(self.time, fill_value='extrapolate')
 
         for key in data_keys:
 

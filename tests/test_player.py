@@ -12,27 +12,12 @@ def test_instanciate():
     """Test that instanciating a Player does not crash."""
 
     # Load markers
-    kinematics = ktk.loadmat(
+    kinematics = ktk.kinematics.read_c3d_file(
         ktk.config.root_folder +
-        '/tutorials/data/inversedynamics/basketball_kinematics.mat')
-
-    kinematics = kinematics['kinematics']
+        '/tutorials/data/sample_OptiTrack_walking.c3d')
 
     # The player can be instanciated to show markers
-    pl = ktk.Player(kinematics['Markers'], target=[-5, 0, 0])
-    plt.pause(0.01)
-    pl.close()
-
-    # The player can be instanciated to show rigid bodies
-    pl = ktk.Player(kinematics['VirtualRigidBodies'],
-        target=[-5, 0, 0])
-    plt.pause(0.01)
-    pl.close()
-
-    # Or the player can be instanciated to show both markers and rigid bodies
-    pl = ktk.Player(kinematics['Markers'],
-        kinematics['VirtualRigidBodies'],
-        target=[-5, 0, 0])
+    pl = ktk.Player(kinematics, target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 

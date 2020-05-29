@@ -37,7 +37,7 @@ import webbrowser as _webbrowser
 
 def explore(folder_name=''):
     """
-    Open an Explorer window (on Windows) or a Finder window (on macOS)
+    Open an Explorer window (on Windows) or a Finder window (on macOS).
 
     Parameters
     ----------
@@ -96,30 +96,6 @@ def terminal(folder_name=''):
     else:
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
-
-
-def update():
-    """
-    Update ktk to the last available version - Not for the public version.
-
-    If ktk was installed using pip (default when using the public open-source
-    version), then update ktk using pip instead:
-
-        pip upgrade ktk
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    None
-    """
-    current_dir = os.getcwd()
-    os.chdir(ktk.config.root_folder)
-    print(subprocess.check_output(
-        ['git', 'pull', 'origin', 'master']).decode('ascii'))
-    os.chdir(current_dir)
 
 
 def tutorials():

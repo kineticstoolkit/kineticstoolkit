@@ -992,36 +992,6 @@ The default is True.</dd>
 {'signal': {'Unit': 'm'}}
 </code></pre></section>
 </dd>
-<dt id="ktk.timeseries.TimeSeries.resample"><code class="name flex">
-<span>def <span class="ident">resample</span></span>(<span>self, new_time, kind='linear', *, fill_value=None)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Resample the TimeSeries.</p>
-<p>This function is experimental and may change signature.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>new_time</code></strong> :&ensp;<code>np.array</code></dt>
-<dd>The new time vector to resample the TimeSeries to.</dd>
-<dt><strong><code>kind</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The interpolation method. This input may take any value
-supported by scipy.interpolate.interp1d, such as:
-- 'linear'
-- 'nearest'
-- 'zero'
-- 'slinear'
-- 'quadratic'
-- 'cubic'
-- 'previous'
-- 'next'
-Additionally, kind can be 'pchip'.</dd>
-<dt><strong><code>fill_value</code></strong> :&ensp;<code>array</code>-<code>like</code> or <code>'extrapolate'</code> (optional)</dt>
-<dd>The fill value to use if new_time vector contains point outside
-the current TimeSeries' time vector. Use 'extrapolate' to
-extrapolate.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
-</dd>
 <dt id="ktk.timeseries.TimeSeries.shift"><code class="name flex">
 <span>def <span class="ident">shift</span></span>(<span>self, time)</span>
 </code></dt>
@@ -1128,86 +1098,6 @@ array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 [[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
 </code></pre></section>
 </dd>
-<dt id="ktk.timeseries.TimeSeries.ui_add_event"><code class="name flex">
-<span>def <span class="ident">ui_add_event</span></span>(<span>self, name='event', plot=[], multiple_events=False)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Add one or many events interactively to the TimeSeries.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>name</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The name of the event.</dd>
-<dt><strong><code>plot</code></strong> :&ensp;<code>str</code>, <code>list</code> of <code>str</code> or <code>tuple</code> of <code>str</code> (optional)</dt>
-<dd>A signal name of list of signal name to be plotted, similar to
-the argument of ktk.TimeSeries.plot().</dd>
-<dt><strong><code>multiple_events</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>
-<ul>
-<li>True to add multiple events with the same name.</li>
-<li>False to add only one event (default).</li>
-</ul>
-</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>status</code></strong> :&ensp;<code>boolean</code></dt>
-<dd>
-<ul>
-<li>True if the event was added;</li>
-<li>False if the operation was cancelled by the user.</li>
-</ul>
-</dd>
-</dl></section>
-</dd>
-<dt id="ktk.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="name flex">
-<span>def <span class="ident">ui_get_ts_between_clicks</span></span>(<span>self, data_keys=None, *, inclusive=False)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Get a subset of the TimeSeries between two mouse clicks.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_keys</code></strong> :&ensp;<code>string</code>, <code>list</code> or <code>tuple</code> (optional)</dt>
-<dd>String or list of strings corresponding to the signals to plot.
-See TimeSeries.plot() for more information.</dd>
-<dt><strong><code>inclusive</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>True to include the given time in the comparison. The default is
-False.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>ts</code></strong> :&ensp;<a title="ktk.timeseries.TimeSeries" href="#ktk.timeseries.TimeSeries"><code>TimeSeries</code></a></dt>
-<dd>A new TimeSeries following the user interaction.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.timeseries.TimeSeries.ui_sync"><code class="name flex">
-<span>def <span class="ident">ui_sync</span></span>(<span>self, data_keys=None, ts2=None, data_keys2=None)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Synchronize one or two TimeSeries by shifting their time.</p>
-<p>This function is experimental and may change signature.</p>
-<p>If a second TimeSeries is given, both TimeSeries are synchronized and
-the sync process is done in three steps:</p>
-<ol>
-<li>Click on the second TimeSeries's zero-time.</li>
-<li>Click on the second TimeSeries on a recognizable event that
-is common with the first TimeSeries.</li>
-<li>Click on this same event on the first TimeSeries.</li>
-</ol>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>data_keys</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
-<dd>The data keys to plot. The default is None, which means that all
-data is plotted.</dd>
-<dt><strong><code>ts2</code></strong> :&ensp;<a title="ktk.timeseries.TimeSeries" href="#ktk.timeseries.TimeSeries"><code>TimeSeries</code></a> (optional)</dt>
-<dd>A second TimeSeries that contains both a recognizable zero-time
-event and a common event with the first TimeSeries.</dd>
-<dt><strong><code>data_keys2</code></strong> :&ensp;<code>str</code> or <code>list</code> of <code>str</code> (optional)</dt>
-<dd>The data keys from the second TimeSeries to plot. The default is
-None, which means that all data is plotted.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
-</dd>
 </dl>
 </dd>
 <dt id="ktk.timeseries.TimeSeriesEvent"><code class="flex name class">
@@ -1305,15 +1195,11 @@ methods to deal with events.</p>
 <li><code><a title="ktk.timeseries.TimeSeries.remove_data" href="#ktk.timeseries.TimeSeries.remove_data">remove_data</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.remove_data_info" href="#ktk.timeseries.TimeSeries.remove_data_info">remove_data_info</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.rename_data" href="#ktk.timeseries.TimeSeries.rename_data">rename_data</a></code></li>
-<li><code><a title="ktk.timeseries.TimeSeries.resample" href="#ktk.timeseries.TimeSeries.resample">resample</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.shift" href="#ktk.timeseries.TimeSeries.shift">shift</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.sort_events" href="#ktk.timeseries.TimeSeries.sort_events">sort_events</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.sync_event" href="#ktk.timeseries.TimeSeries.sync_event">sync_event</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.to_dataframe" href="#ktk.timeseries.TimeSeries.to_dataframe">to_dataframe</a></code></li>
 <li><code><a title="ktk.timeseries.TimeSeries.trim_events" href="#ktk.timeseries.TimeSeries.trim_events">trim_events</a></code></li>
-<li><code><a title="ktk.timeseries.TimeSeries.ui_add_event" href="#ktk.timeseries.TimeSeries.ui_add_event">ui_add_event</a></code></li>
-<li><code><a title="ktk.timeseries.TimeSeries.ui_get_ts_between_clicks" href="#ktk.timeseries.TimeSeries.ui_get_ts_between_clicks">ui_get_ts_between_clicks</a></code></li>
-<li><code><a title="ktk.timeseries.TimeSeries.ui_sync" href="#ktk.timeseries.TimeSeries.ui_sync">ui_sync</a></code></li>
 </ul>
 </li>
 <li>

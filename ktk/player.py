@@ -795,4 +795,3 @@ class Player:
             self.zoom = self.state['ZoomOnMousePress'] + \
                 (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
-

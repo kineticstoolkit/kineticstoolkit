@@ -29,96 +29,6 @@
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ktk.gui.button_dialog"><code class="name flex">
-<span>def <span class="ident">button_dialog</span></span>(<span>text='Please select an option.', choices=['Cancel', 'OK'])</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Ask the user to select a button from a list of buttons.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
-<dd>Message that is presented to the user.
-The default is 'Please select an option'.</dd>
-<dt><strong><code>choices</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
-<dd>List of button text. The default is ['Cancel', 'OK'].</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>button</code></strong> :&ensp;<code>int</code></dt>
-<dd>The button number (0 = First button, 1 = Second button, etc. If the
-user closes the window instead of clicking a button, a value of -1 is
-returned.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.gui.get_credentials"><code class="name flex">
-<span>def <span class="ident">get_credentials</span></span>(<span>)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Ask the user's username and password.</p>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>credentials</code></strong> :&ensp;<code>tuple</code></dt>
-<dd>A tuple of two strings containing the username and password,
-respectively, or an empty tuple if the user closed the window.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.gui.get_filename"><code class="name flex">
-<span>def <span class="ident">get_filename</span></span>(<span>title='KTK', initial_folder='.')</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Get file name interactively using a file dialog window.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>title</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The title of the file dialog. On many OSes, no title is shown so it is
-a good idea to not rely on this title to give instructions to the user.
-Default : 'KTK'</dd>
-<dt><strong><code>initial_folder</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The initial folder of the file dialog. Default is the current folder.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>file</code></strong> :&ensp;<code>str</code></dt>
-<dd>A string with the full path of the selected file.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.gui.get_folder"><code class="name flex">
-<span>def <span class="ident">get_folder</span></span>(<span>title='KTK', initial_folder='.')</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Get folder interactively using a file dialog window.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>title</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The title of the file dialog. On many OSes, no title is shown so it is
-a good idea to not rely on this title to give instructions to the user.
-Default : 'KTK'</dd>
-<dt><strong><code>initial_folder</code></strong> :&ensp;<code>str</code> (optional)</dt>
-<dd>The initial folder of the file dialog. Default is the current folder.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>folder</code></strong> :&ensp;<code>str</code></dt>
-<dd>A string with the full path of the selected folder.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.gui.message"><code class="name flex">
-<span>def <span class="ident">message</span></span>(<span>text)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Write a message on the current figure.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
-<dd>Message to write on the right of the current figure. If '' or None,
-erases the last message.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><code>None</code></dt>
-<dd>&nbsp;</dd>
-</dl></section>
-</dd>
 <dt id="ktk.gui.set_color_order"><code class="name flex">
 <span>def <span class="ident">set_color_order</span></span>(<span>setting)</span>
 </code></dt>
@@ -130,7 +40,8 @@ erases the last message.</dd>
 <dd>Either a string or a list of colors.
 - If a string, it can be either:
 - 'default' : Default v2.0 matplotlib colors.
-- 'classic' : Default classic Matlab colors (bgrcmyk).
+- 'classic' : Default classic Matlab colors (bgrcmyk) with an added
+'orange' at the end.
 - 'xyz' :
 Same as classic but begins with rgb instead of bgr to
 be consistent with most 3d visualization softwares.
@@ -158,12 +69,7 @@ axes.prop_cycle rcParam.</dd>
 </ul>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
-<ul class="two-column">
-<li><code><a title="ktk.gui.button_dialog" href="#ktk.gui.button_dialog">button_dialog</a></code></li>
-<li><code><a title="ktk.gui.get_credentials" href="#ktk.gui.get_credentials">get_credentials</a></code></li>
-<li><code><a title="ktk.gui.get_filename" href="#ktk.gui.get_filename">get_filename</a></code></li>
-<li><code><a title="ktk.gui.get_folder" href="#ktk.gui.get_folder">get_folder</a></code></li>
-<li><code><a title="ktk.gui.message" href="#ktk.gui.message">message</a></code></li>
+<ul class="">
 <li><code><a title="ktk.gui.set_color_order" href="#ktk.gui.set_color_order">set_color_order</a></code></li>
 </ul>
 </li>
