@@ -117,3 +117,8 @@ def test_butter():
     assert(np.abs(
         np.sqrt(np.sum(data2 ** 2)) -
         np.sqrt(np.sum(data1 ** 2)) / 2) < 0.001)
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])

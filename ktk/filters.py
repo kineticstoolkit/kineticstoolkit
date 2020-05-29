@@ -5,12 +5,13 @@
 #
 # This file is not for redistribution.
 """
-Standard filters for TimeSeries.
+Provides standard filters for TimeSeries.
 """
 
 import numpy as np
 import scipy as sp
 import scipy.signal as sgl
+import scipy.ndimage as ndi
 import warnings
 
 
@@ -142,12 +143,16 @@ def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
         The filtered TimeSeries
 
     """
+    ts = tsin.copy()
+
     # Create the filter
     fs = (1 / (tsin.time[1] - tsin.time[0]))
+    if np.isnan(fs):
+        raise ValueError("The TimeSeries' time vector must not contain NaNs.")
+
     sos = sgl.butter(order, fc, btype, analog=False,
                      output='sos', fs=fs)
 
-    ts = tsin.copy()
     for data in ts.data:
 
         # Subset
@@ -155,7 +160,7 @@ def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
 
         # Save nans and interpolate
         missing = subts.isnan(data)
-        subts.fill_missing_samples(0, method='cubic')
+        subts.fill_missing_samples(0, method='pchip')
 
         # Filter
         if filtfilt is True:
@@ -172,3 +177,130 @@ def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
         ts.data[data] = subts.data[data]
 
     return ts
+
+
+def deriv(ts, n=1):
+    """
+    Calculate the nth numerical derivative.
+
+    Parameters
+    ----------
+    ts : TimeSeries
+        Input timeseries
+
+    n : int (optional)
+        Order of the derivative. The default is 1.
+
+    Returns
+    -------
+    ts : TimeSeries
+        A copy of the TimeSeries where each data key has been derivated n
+        times.
+
+    Notes
+    -----
+    The sample rate must be constant.
+
+    Example
+    -------
+        >>> import ktk, numpy as np
+        >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+        >>> ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+
+        >>> # Source data
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4])
+        >>> ts.data['data']
+        array([0., 0., 1., 1., 0.])
+
+        >>> # First derivative
+        >>> ts1 = ktk.filters.deriv(ts)
+
+        >>> ts1.time
+        array([0.05, 0.15, 0.25, 0.35])
+        >>> ts1.data['data']
+        array([  0.,  10.,   0., -10.])
+
+        >>> # Second derivative
+        >>> ts2 = ktk.filters.deriv(ts, n=2)
+
+        >>> ts2.time
+        array([0.1, 0.2, 0.3])
+        >>> ts2.data['data']
+        array([ 100., -100., -100.])
+
+    """
+    out_ts = ts.copy()
+
+    for i in range(n):
+        out_ts.time = (out_ts.time[1:] + out_ts.time[0:-1]) / 2
+
+    for key in ts.data:
+        out_ts.data[key] = sp.diff(
+            ts.data[key], n=n, axis=0) / (ts.time[1] - ts.time[0]) ** n
+
+    return out_ts
+
+
+def median(ts, window_length=3):
+    """
+    Calculate a moving median.
+
+    Parameters
+    ----------
+    ts : TimeSeries
+        Input TimeSeries
+
+    window_length : int (optinal)
+        Kernel size, must be odd. The default is 3.
+
+    Returns
+    -------
+    ts : TimeSeries
+        A copy of the input TimeSeries with filtered data.
+
+    Example
+    -------
+        >>> import ktk, numpy as np
+        >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+
+        >>> # Works on 1-dimension data
+        >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
+
+        >>> # and also on n-dimension data
+        >>> ts.data['data2'] = np.array( \
+                [[0., 10.], \
+                 [0., 11.], \
+                 [1., 11.], \
+                 [1., 20.], \
+                 [2., 14.], \
+                 [2., 15.]])
+
+        >>> # Filter
+        >>> ts = ktk.filters.median(ts)
+
+        >>> ts.data['data1']
+        array([10., 11., 11., 14., 15., 15.])
+
+        >>> ts.data['data2']
+        array([[ 0., 10.],
+               [ 0., 11.],
+               [ 1., 11.],
+               [ 1., 14.],
+               [ 2., 15.],
+               [ 2., 15.]])
+
+    """
+    out_ts = ts.copy()
+    for key in ts.data:
+        window_shape = [1 for i in range(len(ts.data[key].shape))]
+        window_shape[0] = window_length
+        out_ts.data[key] = ndi.median_filter(
+            ts.data[key], size=window_shape)
+
+    return out_ts
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

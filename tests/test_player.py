@@ -13,28 +13,30 @@ def test_instanciate():
 
     # Load markers
     kinematics = ktk.loadmat(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/inversedynamics/basketball_kinematics.mat')
 
     kinematics = kinematics['kinematics']
 
     # The player can be instanciated to show markers
-    pl = ktk.Player(
-        markers=kinematics['Markers'], target=[-5, 0, 0])
+    pl = ktk.Player(kinematics['Markers'], target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 
     # The player can be instanciated to show rigid bodies
-    pl = ktk.Player(
-        rigid_bodies=kinematics['VirtualRigidBodies'],
+    pl = ktk.Player(kinematics['VirtualRigidBodies'],
         target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 
     # Or the player can be instanciated to show both markers and rigid bodies
-    pl = ktk.Player(
-        markers=kinematics['Markers'],
-        rigid_bodies=kinematics['VirtualRigidBodies'],
+    pl = ktk.Player(kinematics['Markers'],
+        kinematics['VirtualRigidBodies'],
         target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])

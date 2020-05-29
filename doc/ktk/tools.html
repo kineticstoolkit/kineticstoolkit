@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>ktk.kinematics API documentation</title>
-<meta name="description" content="Provides functions related to kinematics analysis." />
+<title>ktk.tools API documentation</title>
+<meta name="description" content="Provides miscelleanous helper functions to the user …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,10 +17,12 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>ktk.kinematics</code></h1>
+<h1 class="title">Module <code>ktk.tools</code></h1>
 </header>
 <section id="section-intro">
-<p>Provides functions related to kinematics analysis.</p>
+<p>Provides miscelleanous helper functions to the user.</p>
+<p>These functions are accessible from ktk's toplevel namespace
+(i.e., ktk.explore).</p>
 </section>
 <section>
 </section>
@@ -29,114 +31,59 @@
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ktk.kinematics.create_rigid_body_config"><code class="name flex">
-<span>def <span class="ident">create_rigid_body_config</span></span>(<span>markers, marker_names)</span>
+<dt id="ktk.tools.explore"><code class="name flex">
+<span>def <span class="ident">explore</span></span>(<span>folder_name='')</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Create a rigid body configuration based on a static acquisition.</p>
+<section class="desc"><p>Open an Explorer window (on Windows) or a Finder window (on macOS)</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>Markers trajectories during the static acquisition.</dd>
-<dt><strong><code>marker_names</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
-<dd>The markers that define the rigid body.</dd>
+<dt><strong><code>folder_name</code></strong> :&ensp;<code>str</code> (optional)</dt>
+<dd>The name of the folder to open the window in. Default is the current
+folder.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>rigid_body_config</code></strong> :&ensp;<code>dict</code></dt>
-<dd>Dictionary with the following keys:
-- MarkerNames : the same as marker_names
-- LocalPoints : a 1x4xM array that indicates the local position of
-each M marker in the created rigid body config.</dd>
-</dl></section>
+<p>None.</p></section>
 </dd>
-<dt id="ktk.kinematics.create_virtual_marker_config"><code class="name flex">
-<span>def <span class="ident">create_virtual_marker_config</span></span>(<span>markers, rigid_bodies, marker_name, rigid_body_name)</span>
+<dt id="ktk.tools.terminal"><code class="name flex">
+<span>def <span class="ident">terminal</span></span>(<span>folder_name='')</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Create a virtual marker configuration based on a probing acquisition.</p>
+<section class="desc"><p>Open a terminal window.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>Markers trajectories during the probing acquisition. This
-TimeSeries must have at least marker_name in its data keys.</dd>
-<dt><strong><code>rigid_bodies</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>Rigid body trajectories during this probing acquisition. This
-TimeSeries must have at least rigid_body_name in its data keys.</dd>
-<dt><strong><code>marker_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>Name of the marker to express in local coordinates.</dd>
-<dt><strong><code>rigid_body_name</code></strong> :&ensp;<code>str</code></dt>
-<dd>Name of the rigid body to express marker_name in relation to.</dd>
+<dt><strong><code>folder_name</code></strong> :&ensp;<code>str</code> (optional)</dt>
+<dd>The name of the folder to open the terminal window in. Default is the
+current folder.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>virtual_marker_config</code></strong> :&ensp;<code>dict</code></dt>
-<dd>Dictionary with the following keys:
-- RigidBodyName : Name of the virtual marker's rigid body
-- LocalPoint : Local position of this marker in the reference frame
-defined by the rigid body RigidBodyName. LocalPoint
-is expressed as a 1x4 array.</dd>
-</dl></section>
+<p>None.</p></section>
 </dd>
-<dt id="ktk.kinematics.read_c3d_file"><code class="name flex">
-<span>def <span class="ident">read_c3d_file</span></span>(<span>filename)</span>
+<dt id="ktk.tools.tutorials"><code class="name flex">
+<span>def <span class="ident">tutorials</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Read markers from a C3D file.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
-<dd>Path of the C3D file</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>A TimeSeries where each point in the C3D correspond to a data key in
-the TimeSeries.</dd>
-</dl></section>
+<section class="desc"><p>Open the KTK tutorials in a web browser.</p>
+<p>Usage: ktk.tutorials()</p></section>
 </dd>
-<dt id="ktk.kinematics.read_n3d_file"><code class="name flex">
-<span>def <span class="ident">read_n3d_file</span></span>(<span>filename, labels=[])</span>
+<dt id="ktk.tools.update"><code class="name flex">
+<span>def <span class="ident">update</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Read markers from an Optitrak N3D file.</p>
+<section class="desc"><p>Update ktk to the last available version - Not for the public version.</p>
+<p>If ktk was installed using pip (default when using the public open-source
+version), then update ktk using pip instead:</p>
+<pre><code>pip upgrade ktk
+</code></pre>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
-<dd>Path of the N3D file.</dd>
-<dt><strong><code>labels</code></strong> :&ensp;<code>list</code> of <code>str</code> (optional)</dt>
-<dd>Marker names</dd>
+<dt><strong><code>None</code></strong></dt>
+<dd>&nbsp;</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>A TimeSeries where each point in the N3D correspond to a data key in
-the TimeSeries.</dd>
-</dl></section>
-</dd>
-<dt id="ktk.kinematics.register_markers"><code class="name flex">
-<span>def <span class="ident">register_markers</span></span>(<span>markers, rigid_body_configs, verbose=False)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Calculates the trajectory of rigid bodies.</p>
-<p>Calculates the trajectory of rigid bodies using
-<a title="ktk.geometry.register_points" href="geometry.html#ktk.geometry.register_points"><code>register_points()</code></a>.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>Markers trajectories to calculate the rigid body trajectories on.</dd>
-<dt><strong><code>rigid_body_configs</code></strong> :&ensp;<code>dict</code> of <code>dict</code></dt>
-<dd>A dict where each key is a rigid body configuration, and where
-each rigid body configuration is a dict with the following
-keys: 'MarkerNames' and 'LocalPoints'.</dd>
-<dt><strong><code>verbose</code></strong> :&ensp;<code>bool</code> (optional)</dt>
-<dd>True to print the rigid body being computed. Default is False.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<dl>
-<dt><strong><code>rigid_bodies</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>TimeSeries where each data key is a Nx4x4 series of rigid
-transformations.</dd>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
 </dl></section>
 </dd>
 </dl>
@@ -157,11 +104,10 @@ transformations.</dd>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="ktk.kinematics.create_rigid_body_config" href="#ktk.kinematics.create_rigid_body_config">create_rigid_body_config</a></code></li>
-<li><code><a title="ktk.kinematics.create_virtual_marker_config" href="#ktk.kinematics.create_virtual_marker_config">create_virtual_marker_config</a></code></li>
-<li><code><a title="ktk.kinematics.read_c3d_file" href="#ktk.kinematics.read_c3d_file">read_c3d_file</a></code></li>
-<li><code><a title="ktk.kinematics.read_n3d_file" href="#ktk.kinematics.read_n3d_file">read_n3d_file</a></code></li>
-<li><code><a title="ktk.kinematics.register_markers" href="#ktk.kinematics.register_markers">register_markers</a></code></li>
+<li><code><a title="ktk.tools.explore" href="#ktk.tools.explore">explore</a></code></li>
+<li><code><a title="ktk.tools.terminal" href="#ktk.tools.terminal">terminal</a></code></li>
+<li><code><a title="ktk.tools.tutorials" href="#ktk.tools.tutorials">tutorials</a></code></li>
+<li><code><a title="ktk.tools.update" href="#ktk.tools.update">update</a></code></li>
 </ul>
 </li>
 </ul>

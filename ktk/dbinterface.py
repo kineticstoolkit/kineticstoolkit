@@ -1,11 +1,13 @@
 """
-Module that manages the DBInterface class.
+Provides the DBInterface class.
 
 Author: Felix Chenier
 Date: April 2020
 """
 
-import ktk
+import ktk.gui
+from ktk.loadsave import save, load
+
 import requests
 import os
 from io import StringIO
@@ -384,8 +386,8 @@ class DBInterface():
             B) If the participant, session, trial and file labels are
                associated to a file entry but no file exists on disk:
                    The file is created and saved in:
-                   root_folder/file_label/participant_label.session_label.
-                       trial_label.ktk.zip
+                   root_folder/file_label/participant/session/
+                   dbfidxxxxn_{trial}.ktk.zip
             C) If the participant, session, trial and file labels do not
                correspond to a file entry in the database:
                    - A file entry is created in the database;
@@ -414,29 +416,39 @@ class DBInterface():
 
         # Set the filename
         file_record = self.get(participant, session, trial, file)
+
         if 'FileName' in file_record and file_record['FileName'] is not None:
             file_name = file_record['FileName']
             if not file_name.lower().endswith('.ktk.zip'):
                 raise ValueError('This would overwrite a non-ktk file.')
 
         else:
+
+            def make_dir(dir_name):
+                """Make directory without complaining if it already exists."""
+                try:
+                    os.mkdir(dir_name)
+                except FileExistsError:
+                    pass
+
             dbfid = file_record['dbfid']
-            folder_name = self.root_folder + '/' + file
-            try:
-                os.mkdir(folder_name)
-            except FileExistsError:
-                pass
-            file_name = (folder_name + '/' + participant + '.' + session +
-                         '.' + trial + '_' + dbfid + '.ktk.zip')
+
+            make_dir(os.path.join(self.root_folder, file))
+            make_dir(os.path.join(self.root_folder, file, participant))
+            make_dir(os.path.join(self.root_folder, file, participant,
+                                  session))
+
+            file_name = os.path.join(self.root_folder, file, participant,
+                                     session, dbfid + '_{' + trial + '}' +
+                                     '.ktk.zip')
 
         # Save
-        ktk.save(file_name, variable)
+        save(file_name, variable)
 
         # Refresh
         self.refresh()
 
         return file_name
-
 
     def load(self, participant, session, trial, file):
         """
@@ -460,9 +472,8 @@ class DBInterface():
         -------
         The file's content
         """
-        return ktk.load(self.get(
+        return load(self.get(
             participant, session, trial, file)['FileName'])
-
 
     def rename(self, filename, dbfid):
         """

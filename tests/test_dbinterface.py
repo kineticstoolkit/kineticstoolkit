@@ -46,7 +46,7 @@ def test_connect():
     project_label = 'dummyProject'
     username = 'dummyUser'
     password = 'dummyPassword'
-    root_folder = (ktk.config['RootFolder'] +
+    root_folder = (ktk.config.root_folder +
                    '/tutorials/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
@@ -72,7 +72,7 @@ def test_load_save():
     project_label = 'dummyProject'
     username = 'dummyUser'
     password = 'dummyPassword'
-    root_folder = (ktk.config['RootFolder'] +
+    root_folder = (ktk.config.root_folder +
                    '/tutorials/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
@@ -102,7 +102,7 @@ def test_batch_fix_file_type():
     project_label = 'dummyProject'
     username = 'dummyUser'
     password = 'dummyPassword'
-    root_folder = (ktk.config['RootFolder'] +
+    root_folder = (ktk.config.root_folder +
                    '/tutorials/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
@@ -147,7 +147,7 @@ def test_tag_files():
     project_label = 'dummyProject'
     username = 'dummyUser'
     password = 'dummyPassword'
-    root_folder = (ktk.config['RootFolder'] +
+    root_folder = (ktk.config.root_folder +
                    '/tutorials/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
@@ -161,3 +161,8 @@ def test_tag_files():
     project.tag_files(include_trial_name=False, dry_run=False)
     assert ('Run1' not in
             project.get('P1', 'GymnaseN1', 'Run1', 'Kinematics')['FileName'])
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])

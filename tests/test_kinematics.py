@@ -47,7 +47,7 @@ def test_reconstruction():
 
     # Read the static trial
     markers = ktk.kinematics.read_n3d_file(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_static.n3d',
         labels=marker_names)
 
@@ -108,23 +108,23 @@ def test_reconstruction():
     Now, we can process every probing acquisition.
     """
     config['VirtualMarkers']['AcromionR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_acromion_R.n3d', 'ArmR')
 
     config['VirtualMarkers']['MedialEpicondyleR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_medial_epicondyle_R.n3d', 'ArmR')
 
     config['VirtualMarkers']['OlecraneR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_olecrane_R.n3d', 'ForearmR')
 
     config['VirtualMarkers']['RadialStyloidR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_radial_styloid_R.n3d', 'ForearmR')
 
     config['VirtualMarkers']['UlnarStyloidR'] = process_probing_acquisition(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_probing_ulnar_styloid_R.n3d', 'ForearmR')
 
     # %%
@@ -167,11 +167,11 @@ def test_reconstruction():
     ------------------------------------------
     """
     markers = ktk.kinematics.read_n3d_file(
-        ktk.config['RootFolder'] +
+        ktk.config.root_folder +
         '/tutorials/data/kinematics/sample_propulsion.n3d', labels=marker_names)
 
     # Show those markers in a player
-    ktk.Player(markers=markers, zoom=2, azimuth=0.8, elevation=0.16,
+    ktk.Player(markers, zoom=2, azimuth=0.8, elevation=0.16,
                translation=(0.2, -0.7))
 
     # %%
@@ -182,7 +182,7 @@ def test_reconstruction():
     rigid_bodies = ktk.kinematics.register_markers(markers, config['RigidBodies'])
 
     # Show those rigid bodies and markers in a player
-    ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+    ktk.Player(markers, rigid_bodies,
                zoom=2, azimuth=0.8, elevation=0.16, translation=(0.2, -0.7))
 
     # %%
@@ -201,7 +201,7 @@ def test_reconstruction():
         markers.add_data_info(virtual_marker, 'Color', 'c')
 
     # Show the markers and rigid bodies in a player
-    ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+    ktk.Player(markers, rigid_bodies,
                zoom=2, azimuth=0.8, elevation=0.16, translation=(0.2, -0.7))
 
     # %%
@@ -209,7 +209,7 @@ def test_reconstruction():
     Add the segments
     ----------------
     """
-    ktk.Player(markers=markers, rigid_bodies=rigid_bodies,
+    ktk.Player(markers, rigid_bodies,
                segments=config['Segments'], zoom=2, azimuth=0.8, elevation=0.16,
                translation=(0.2, -0.7))
 
@@ -221,3 +221,8 @@ def test_reconstruction():
     conventions, then calculate Euler angles based on the rigid tranformations
     between these rigid bodies. To be done in a near future.
     """
+
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
 <title>ktk.filters API documentation</title>
-<meta name="description" content="Standard filters for TimeSeries." />
+<meta name="description" content="Provides standard filters for TimeSeries." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 <h1 class="title">Module <code>ktk.filters</code></h1>
 </header>
 <section id="section-intro">
-<p>Standard filters for TimeSeries.</p>
+<p>Provides standard filters for TimeSeries.</p>
 </section>
 <section>
 </section>
@@ -56,6 +56,96 @@ direction. The default is True.</dd>
 <dd>The filtered TimeSeries</dd>
 </dl></section>
 </dd>
+<dt id="ktk.filters.deriv"><code class="name flex">
+<span>def <span class="ident">deriv</span></span>(<span>ts, n=1)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate the nth numerical derivative.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input timeseries</dd>
+<dt><strong><code>n</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>Order of the derivative. The default is 1.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>A copy of the TimeSeries where each data key has been derivated n
+times.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>The sample rate must be constant.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk, numpy as np
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+&gt;&gt;&gt; ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+
+&gt;&gt;&gt; # Source data
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4])
+&gt;&gt;&gt; ts.data['data']
+array([0., 0., 1., 1., 0.])
+
+&gt;&gt;&gt; # First derivative
+&gt;&gt;&gt; ts1 = ktk.filters.deriv(ts)
+
+&gt;&gt;&gt; ts1.time
+array([0.05, 0.15, 0.25, 0.35])
+&gt;&gt;&gt; ts1.data['data']
+array([  0.,  10.,   0., -10.])
+
+&gt;&gt;&gt; # Second derivative
+&gt;&gt;&gt; ts2 = ktk.filters.deriv(ts, n=2)
+
+&gt;&gt;&gt; ts2.time
+array([0.1, 0.2, 0.3])
+&gt;&gt;&gt; ts2.data['data']
+array([ 100., -100., -100.])
+</code></pre></section>
+</dd>
+<dt id="ktk.filters.median"><code class="name flex">
+<span>def <span class="ident">median</span></span>(<span>ts, window_length=3)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate a moving median.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input TimeSeries</dd>
+<dt><strong><code>window_length</code></strong> :&ensp;<code>int</code> (<code>optinal</code>)</dt>
+<dd>Kernel size, must be odd. The default is 3.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>A copy of the input TimeSeries with filtered data.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk, numpy as np
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+
+&gt;&gt;&gt; # Works on 1-dimension data
+&gt;&gt;&gt; ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
+
+&gt;&gt;&gt; # and also on n-dimension data
+&gt;&gt;&gt; ts.data['data2'] = np.array(                 [[0., 10.],                  [0., 11.],                  [1., 11.],                  [1., 20.],                  [2., 14.],                  [2., 15.]])
+
+&gt;&gt;&gt; # Filter
+&gt;&gt;&gt; ts = ktk.filters.median(ts)
+
+&gt;&gt;&gt; ts.data['data1']
+array([10., 11., 11., 14., 15., 15.])
+
+&gt;&gt;&gt; ts.data['data2']
+array([[ 0., 10.],
+       [ 0., 11.],
+       [ 1., 11.],
+       [ 1., 14.],
+       [ 2., 15.],
+       [ 2., 15.]])
+</code></pre></section>
+</dd>
 <dt id="ktk.filters.savgol"><code class="name flex">
 <span>def <span class="ident">savgol</span></span>(<span>tsin, window_length, poly_order, deriv=0)</span>
 </code></dt>
@@ -71,7 +161,7 @@ odd integer less or equal than the length of the TimeSeries.</dd>
 <dt><strong><code>poly_order</code></strong> :&ensp;<code>int</code></dt>
 <dd>The order of the polynomial used to fit the samples. polyorder must be
 less than window_length.</dd>
-<dt><strong><code>deriv</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dt><strong><a title="ktk.filters.deriv" href="#ktk.filters.deriv"><code>deriv()</code></a></strong> :&ensp;<code>int</code> (optional)</dt>
 <dd>The order of the derivative to compute. This must be a nonnegative
 integer. The default is 0, which means to filter the data without
 differentiating.</dd>
@@ -125,6 +215,8 @@ odd integer less or equal than the length of the TimeSeries.</dd>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
 <li><code><a title="ktk.filters.butter" href="#ktk.filters.butter">butter</a></code></li>
+<li><code><a title="ktk.filters.deriv" href="#ktk.filters.deriv">deriv</a></code></li>
+<li><code><a title="ktk.filters.median" href="#ktk.filters.median">median</a></code></li>
 <li><code><a title="ktk.filters.savgol" href="#ktk.filters.savgol">savgol</a></code></li>
 <li><code><a title="ktk.filters.smooth" href="#ktk.filters.smooth">smooth</a></code></li>
 </ul>

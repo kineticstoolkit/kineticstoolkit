@@ -1,8 +1,28 @@
-"""
-Implementation of the ktk.Player class.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
 
-Author: Felix Chenier
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
+Provides the Player class to visualize markers and rigid bodies in 3d.
+
+The Player class is accessible directly from the toplevel ktk namespace
+(i.e., ktk.Player).
+"""
+
+from ktk.timeseries import TimeSeries
 
 import matplotlib.pyplot as plt
 from matplotlib import animation
@@ -10,7 +30,6 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-import ktk
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
@@ -25,47 +44,56 @@ class Player:
 
     Parameters
     ----------
-    markers : TimeSeries (optional)
-        Contains the markers to visualize, where each data key is a marker
-        position expressed as Nx4 array (N=time). Default is None.
-        markers and rigid_bodies cannot be both set to None.
-    rigid_bodies : TimeSeries (optional)
-        Contains the rigid bodies to visualize, where each data key is
-        a rigid body pose expressed as a Nx4x4 array (N=time, the other
-        dimensions are transformation matrices). Default is None.
-        markers and rigid_bodies cannot be both set to None.
+    *ts : TimeSeries
+        Contains the markers and rigid bodies to visualize, where each data
+        key is either a marker position expressed as Nx4 array (N=time),
+        or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
+        can be provided, e.g., ktk.Player(markers, rigid_bodies)
+
     segments : dict
         Used to draw lines between markers. Each key corresponds to a
         segment, where a segment is another dict with the following keys:
-            - Links: list of list of 2 str, where each str is a marker
-                     name. For example, to link Marker1 to Marker2 and
-                     Marker1 to Marker3, Links would be:
-                         [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
-            - Color: character or tuple that represents the color of the
-                     link. Color must be a valid value for matplotlib's
-                     plots.
+
+        - Links: list of list of 2 str, where each str is a marker
+                 name. For example, to link Marker1 to Marker2 and
+                 Marker1 to Marker3, Links would be:
+
+                 [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+
+        - Color: character or tuple that represents the color of the
+                 link. Color must be a valid value for matplotlib's
+                 plots.
     current_frame : int (optional)
         Sets the inital frame number to show. Default is 0.
+
     marker_radius : float (optional)
         Sets the marker radius as defined by matplotlib. Default is 0.008.
+
     rigid_body_length : float (optional)
         Sets the rigid body size in meters. Default is 0.1.
+
     zoom : float (optional)
         Sets the initial camera zoom. Default is 0.2.
+
     azimuth : float (optional)
         Sets the initial camera azimuth in radians. Default is 0.0.
+
     elevation : float (optional)
         Sets the initial camera elevation in radians. Default is 1.0.
+
     translation : tuple of floats (optional)
         Sets the initial camera translation (panning). Default is (0.0, 0.0)
+
     target : tuple of floats or 'centroid' (optional)
         Sets the camera target in meters. Default is (0.0, 0.0, 0.0)
         If set to 'centroid', then the target is continuously updated to
         the centroid of the markers, which allows following moving
         objects more easily.
+
     track : bool (optional)
         Set to True to track the last selected marker when changing frame,
         or False to keep the scene static. Default is False.
+
     perspective : bool (optional)
         Sets if the scene must be drawn using perspective (True) or
         orthogonal (False). Default is True.
@@ -75,7 +103,7 @@ class Player:
     Player
     """
 
-    def __init__(self, markers=None, rigid_bodies=None, segments=None,
+    def __init__(self, *ts, segments=None,
                  current_frame=0, marker_radius=0.008, rigid_body_length=0.1,
                  rigid_body_width=3, segment_width=1.5,
                  zoom=1.0, azimuth=0.0, elevation=0.2,
@@ -85,27 +113,32 @@ class Player:
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
         # markers or rigid bodies.
-        if markers is not None:
-            self.time = markers.time
-            self.n_frames = len(markers.time)
-        elif rigid_bodies is not None:
-            self.time = rigid_bodies.time
-            self.n_frames = len(rigid_bodies.time)
-        else:
-            raise(ValueError('Either markers or rigid_bodies must be set.'))
+        self.time = ts[0].time
+        self.n_frames = len(ts[0].time)
 
         # ---------------------------------------------------------------
-        # Assign the markers
-        self.markers = markers
+        # Assign the markers and rigid bodies
+        self.markers = TimeSeries()
+        self.rigid_bodies = TimeSeries()
+
+        for one_ts in ts:
+            for key in one_ts.data:
+                if one_ts.data[key].shape[1:] == (4,):
+                    self.markers.data[key] = one_ts.data[key]
+                    if key in one_ts.data_info:
+                        self.markers.data_info[key] = one_ts.data_info[key]
+
+                elif one_ts.data[key].shape[1:] == (4, 4):
+                    self.rigid_bodies.data[key] = one_ts.data[key]
+                    if key in one_ts.data_info:
+                        self.rigid_bodies.data_info[key] = \
+                            one_ts.data_info[key]
+
+                else:
+                    raise ValueError('TimeSeries data must be of shape Nx4 '
+                                     '(markers) or Nx4x4 (rigid bodies)')
         self._select_none()
         self.last_selected_marker = None
-
-        # ---------------------------------------------------------------
-        # Assign the rigid bodies
-        if rigid_bodies is not None:
-            self.rigid_bodies = rigid_bodies.copy()
-        else:
-            self.rigid_bodies = ktk.TimeSeries(time=markers.time)
 
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(
@@ -205,16 +238,6 @@ class Player:
         except AttributeError:
             pass
 
-        # # Redirect standard toolbar callbacks
-        # def do_nothing(self, *args, **kwargs):
-        #     pass
-
-        # NavigationToolbar2.home = do_nothing
-        # NavigationToolbar2.pan = do_nothing
-        # NavigationToolbar2.forward = do_nothing
-        # NavigationToolbar2.back = do_nothing
-        # NavigationToolbar2.zoom = do_nothing
-
         plt.tight_layout()
 
         # Add the title
@@ -245,10 +268,6 @@ class Player:
             'button_release_event', self._on_mouse_release)
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
-        self.objects['Figure'].canvas.mpl_connect(
-            'close_event', self._on_close)
-
-
 
     def _create_segments(self):
         """Create the segments plots in the player's figure."""
@@ -512,13 +531,11 @@ class Player:
             self.objects['PlotRigidBodiesZ'].set_data(
                 rbz_data[:, 0], rbz_data[:, 1])
 
-
         # Update the window title
         self.objects['Figure'].canvas.set_window_title(
             f'Frame {self.current_frame}, ' +
             '%2.2f s.' % self.time[self.current_frame])
 
-        self.objects['Axes'].axis([-1.5, 1.5, -1, 1])
         self.objects['Figure'].canvas.draw()
 
     def _set_new_target(self, target):

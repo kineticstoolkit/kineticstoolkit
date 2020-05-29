@@ -10,6 +10,7 @@ Interactive tests for TimeSeries.
 
 import ktk
 import numpy as np
+import matplotlib.pyplot as plt
 
 def test_uisync():
     """Test the uisync method of TimeSeries."""
@@ -17,9 +18,13 @@ def test_uisync():
     ts.data['signal1'] = np.sin(ts.time)
     ts.data['signal2'] = np.cos(ts.time)
 
-    print('Click somewhere to check that it becomes the new zero time.')
     ts.ui_sync('signal1')
+    fig = plt.figure()
     ts.plot()
+    ktk.gui.button_dialog('Check that this setted the zero.', ['OK'])
+    plt.close(fig)
 
-    ktk.mplhelper.button_dialog('Check that this setted the zero.', ['OK'])
 
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])

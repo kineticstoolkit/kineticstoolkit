@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
-<title>ktk.mplhelper API documentation</title>
-<meta name="description" content="Helper functions for Matplotlib." />
+<title>ktk.player API documentation</title>
+<meta name="description" content="Provides the Player class to visualize markers and rigid bodies in 3d …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -17,40 +17,96 @@
 <main>
 <article id="content">
 <header>
-<h1 class="title">Module <code>ktk.mplhelper</code></h1>
+<h1 class="title">Module <code>ktk.player</code></h1>
 </header>
 <section id="section-intro">
-<p>Helper functions for Matplotlib.</p>
+<p>Provides the Player class to visualize markers and rigid bodies in 3d.</p>
+<p>The Player class is accessible directly from the toplevel ktk namespace
+(i.e., ktk.Player).</p>
 </section>
 <section>
 </section>
 <section>
 </section>
 <section>
-<h2 class="section-title" id="header-functions">Functions</h2>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
 <dl>
-<dt id="ktk.mplhelper.plot_mean_std"><code class="name flex">
-<span>def <span class="ident">plot_mean_std</span></span>(<span>x, y, axis, color, label)</span>
+<dt id="ktk.player.Player"><code class="flex name class">
+<span>class <span class="ident">Player</span></span>
+<span>(</span><span>*ts, segments=None, current_frame=0, marker_radius=0.008, rigid_body_length=0.1, rigid_body_width=3, segment_width=1.5, zoom=1.0, azimuth=0.0, elevation=0.2, translation=(0.0, 0.0), target=(0.0, 0.0, 0.0), track=False, perspective=True)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Plot a mean ± std curve with shaded std area.</p>
+<section class="desc"><p>A class that allows visualizing markers and rigid bodies in 3D.</p>
+<p>player = ktk.Player(parameters) creates and launches a Player
+instance.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>x</code></strong> :&ensp;<code>array</code></dt>
-<dd>1-dimension array corresponding to the x axis.</dd>
-<dt><strong><code>y</code></strong> :&ensp;<code>array</code></dt>
-<dd>2-dimension array corresponding to the y axis.</dd>
-<dt><strong><code>axis</code></strong> :&ensp;<code>int</code></dt>
-<dd>Axis on which the data to average is aligned.</dd>
-<dt><strong><code>color</code></strong> :&ensp;<code>str</code> or <code>list</code>-<code>like</code></dt>
-<dd>Color of the curve and shaded area.</dd>
-<dt><strong><code>label</code></strong> :&ensp;<code>str</code></dt>
-<dd>Label of the curve, for the legend.</dd>
+<dt><strong><code>*ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Contains the markers and rigid bodies to visualize, where each data
+key is either a marker position expressed as Nx4 array (N=time),
+or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
+can be provided, e.g., ktk.Player(markers, rigid_bodies)</dd>
+<dt><strong><code>segments</code></strong> :&ensp;<code>dict</code></dt>
+<dd>
+<p>Used to draw lines between markers. Each key corresponds to a
+segment, where a segment is another dict with the following keys:</p>
+<ul>
+<li>Links: list of list of 2 str, where each str is a marker
+name. For example, to link Marker1 to Marker2 and
+Marker1 to Marker3, Links would be:</li>
+</ul>
+<pre><code>     [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+</code></pre>
+<ul>
+<li>Color: character or tuple that represents the color of the
+link. Color must be a valid value for matplotlib's
+plots.</li>
+</ul>
+</dd>
+<dt><strong><code>current_frame</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>Sets the inital frame number to show. Default is 0.</dd>
+<dt><strong><code>marker_radius</code></strong> :&ensp;<code>float</code> (optional)</dt>
+<dd>Sets the marker radius as defined by matplotlib. Default is 0.008.</dd>
+<dt><strong><code>rigid_body_length</code></strong> :&ensp;<code>float</code> (optional)</dt>
+<dd>Sets the rigid body size in meters. Default is 0.1.</dd>
+<dt><strong><code>zoom</code></strong> :&ensp;<code>float</code> (optional)</dt>
+<dd>Sets the initial camera zoom. Default is 0.2.</dd>
+<dt><strong><code>azimuth</code></strong> :&ensp;<code>float</code> (optional)</dt>
+<dd>Sets the initial camera azimuth in radians. Default is 0.0.</dd>
+<dt><strong><code>elevation</code></strong> :&ensp;<code>float</code> (optional)</dt>
+<dd>Sets the initial camera elevation in radians. Default is 1.0.</dd>
+<dt><strong><code>translation</code></strong> :&ensp;<code>tuple</code> of <code>floats</code> (optional)</dt>
+<dd>Sets the initial camera translation (panning). Default is (0.0, 0.0)</dd>
+<dt><strong><code>target</code></strong> :&ensp;<code>tuple</code> of <code>floats</code> or <code>'centroid'</code> (optional)</dt>
+<dd>Sets the camera target in meters. Default is (0.0, 0.0, 0.0)
+If set to 'centroid', then the target is continuously updated to
+the centroid of the markers, which allows following moving
+objects more easily.</dd>
+<dt><strong><code>track</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>Set to True to track the last selected marker when changing frame,
+or False to keep the scene static. Default is False.</dd>
+<dt><strong><code>perspective</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>Sets if the scene must be drawn using perspective (True) or
+orthogonal (False). Default is True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><a title="ktk.player.Player" href="#ktk.player.Player"><code>Player</code></a></dt>
+<dd>&nbsp;</dd>
 </dl></section>
+<h3>Methods</h3>
+<dl>
+<dt id="ktk.player.Player.close"><code class="name flex">
+<span>def <span class="ident">close</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Close the Player and its associated window.</p></section>
 </dd>
 </dl>
-</section>
-<section>
+</dd>
+</dl>
 </section>
 </article>
 <nav id="sidebar">
@@ -64,9 +120,14 @@
 <li><code><a title="ktk" href="index.html">ktk</a></code></li>
 </ul>
 </li>
-<li><h3><a href="#header-functions">Functions</a></h3>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ktk.player.Player" href="#ktk.player.Player">Player</a></code></h4>
 <ul class="">
-<li><code><a title="ktk.mplhelper.plot_mean_std" href="#ktk.mplhelper.plot_mean_std">plot_mean_std</a></code></li>
+<li><code><a title="ktk.player.Player.close" href="#ktk.player.Player.close">close</a></code></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>

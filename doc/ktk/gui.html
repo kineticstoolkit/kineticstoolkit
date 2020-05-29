@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
 <title>ktk.gui API documentation</title>
-<meta name="description" content="Module that provides simple GUI functions." />
+<meta name="description" content="Provides simple GUI functions." />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 <h1 class="title">Module <code>ktk.gui</code></h1>
 </header>
 <section id="section-intro">
-<p>Module that provides simple GUI functions.</p>
+<p>Provides simple GUI functions.</p>
 </section>
 <section>
 </section>
@@ -30,17 +30,17 @@
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
 <dt id="ktk.gui.button_dialog"><code class="name flex">
-<span>def <span class="ident">button_dialog</span></span>(<span>message='Please select an option.', choices=['Cancel', 'OK'])</span>
+<span>def <span class="ident">button_dialog</span></span>(<span>text='Please select an option.', choices=['Cancel', 'OK'])</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Create a blocking dialog message window with a selection of buttons.</p>
+<section class="desc"><p>Ask the user to select a button from a list of buttons.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><a title="ktk.gui.message" href="#ktk.gui.message"><code>message()</code></a></strong> :&ensp;<code>str</code></dt>
+<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
 <dd>Message that is presented to the user.
-Default is 'Please select an option'.</dd>
+The default is 'Please select an option'.</dd>
 <dt><strong><code>choices</code></strong> :&ensp;<code>list</code> of <code>str</code></dt>
-<dd>List of button text. Default is ['Cancel', 'OK'].</dd>
+<dd>List of button text. The default is ['Cancel', 'OK'].</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
@@ -103,17 +103,21 @@ Default : 'KTK'</dd>
 </dl></section>
 </dd>
 <dt id="ktk.gui.message"><code class="name flex">
-<span>def <span class="ident">message</span></span>(<span>message=None)</span>
+<span>def <span class="ident">message</span></span>(<span>text)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Show a message window.</p>
+<section class="desc"><p>Write a message on the current figure.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><a title="ktk.gui.message" href="#ktk.gui.message"><code>message()</code></a></strong> :&ensp;<code>str</code></dt>
-<dd>The message to show. Use '' or None to close every message window.</dd>
+<dt><strong><code>text</code></strong> :&ensp;<code>str</code></dt>
+<dd>Message to write on the right of the current figure. If '' or None,
+erases the last message.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<dl>
+<dt><code>None</code></dt>
+<dd>&nbsp;</dd>
+</dl></section>
 </dd>
 <dt id="ktk.gui.set_color_order"><code class="name flex">
 <span>def <span class="ident">set_color_order</span></span>(<span>setting)</span>

@@ -116,3 +116,8 @@ def test_create_reference_frames_get_local_global_coordinates():
 
     assert np.sum(np.abs(test_global - global_markers)) < 1E-10
 
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])
+

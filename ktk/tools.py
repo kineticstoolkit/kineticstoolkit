@@ -15,21 +15,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Provides miscelleanous helper functions to the user.
+
+These functions are accessible from ktk's toplevel namespace
+(i.e., ktk.explore).
+"""
+
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-"""
-ktk._tools
-----------
-This module provides various tools to the user.
-
-"""
+import ktk.config
 
 import os
 import subprocess
-import ktk
 import webbrowser as _webbrowser
 
 
@@ -50,10 +52,10 @@ def explore(folder_name=''):
     if not folder_name:
         folder_name = os.getcwd()
 
-    if ktk.config['IsPC'] is True:
+    if ktk.config.is_pc is True:
         os.system(f'start explorer {folder_name}')
 
-    elif ktk.config['IsMac'] is True:
+    elif ktk.config.is_mac is True:
         subprocess.call(['open', folder_name])
 
     else:
@@ -78,15 +80,15 @@ def terminal(folder_name=''):
     if not folder_name:
         folder_name = os.getcwd()
 
-    if ktk.config['IsPC'] is True:
+    if ktk.config.is_pc is True:
         os.system(f'cmd /c start /D {folder_name} cmd')
 
-    elif ktk.config['IsMac'] is True:
+    elif ktk.config.is_mac is True:
         subprocess.call([
                 'osascript',
                 '-e',
-                'tell application "Terminal" to do script "cd ' +
-                        str(folder_name) + '"'])
+                """tell application "Terminal" to do script "cd '""" +
+                    str(folder_name) + """'" """])
         subprocess.call([
                 'osascript',
                 '-e',
@@ -98,10 +100,12 @@ def terminal(folder_name=''):
 
 def update():
     """
-    Update KTK to the last available version.
+    Update ktk to the last available version - Not for the public version.
 
-    KTK needs to be installed as a git repository. This is the case with the
-    default installation method using install.py.
+    If ktk was installed using pip (default when using the public open-source
+    version), then update ktk using pip instead:
+
+        pip upgrade ktk
 
     Parameters
     ----------
@@ -112,8 +116,9 @@ def update():
     None
     """
     current_dir = os.getcwd()
-    os.chdir(ktk.config['RootFolder'])
-    print(subprocess.check_output(['git', 'pull', 'origin', 'master']).decode('ascii'))
+    os.chdir(ktk.config.root_folder)
+    print(subprocess.check_output(
+        ['git', 'pull', 'origin', 'master']).decode('ascii'))
     os.chdir(current_dir)
 
 
@@ -123,6 +128,6 @@ def tutorials():
 
     Usage: ktk.tutorials()
     """
-    _webbrowser.open('file:///' + ktk.config['RootFolder'] +
+    _webbrowser.open('file:///' + ktk.config.root_folder +
                      '/tutorials/index.html',
                      new=2)
