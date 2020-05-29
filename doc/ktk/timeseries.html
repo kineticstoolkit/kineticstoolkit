@@ -36,6 +36,8 @@ defined in this module are loaded into the toplevel ktk namespace.</p>
 </code></dt>
 <dd>
 <section class="desc"><p>Convert a pandas DataFrame to a dict of numpy ndarrays.</p>
+<p>This function mirrors the dict_of_arrays_to_dataframe function. It is
+mainly used by the TimeSeries.from_dataframe method.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>pd_dataframe</code></strong> :&ensp;<code>pd.DataFrame</code></dt>
@@ -43,35 +45,59 @@ defined in this module are loaded into the toplevel ktk namespace.</p>
 </dl>
 <h2 id="returns">Returns</h2>
 <p>dict of ndarrays.</p>
-<dl>
-<dt><code>If</code> <code>all</code> <code>the</code> <code>dataframe</code> <code>columns</code> <code>have</code> <code>the</code> <code>same</code> <code>name</code> <code>but</code> <code>with</code> <code>different</code> <code>indices</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>in</code> <code>brackets</code>, <code>then</code> <code>the</code> <code>dataframe</code> <code>corresponds</code> <code>to</code> <code>a</code> <code>single</code> <code>array</code>, <code>which</code> <code>is</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>returned.</p>
-<dl>
-<dt><code>If</code> <code>the</code> <code>dataframe</code> <code>contains</code> <code>different</code> <code>column</code> <code>names</code> (<code>for</code> <code>example</code>,</dt>
-<dd>&nbsp;</dd>
-<dt><code>Forces</code>[<code>0</code>], <code>Forces</code>[<code>1</code>], <code>Forces</code>[<code>2</code>], <code>Moments</code>[<code>0</code>], <code>Moments</code>[<code>1</code>], <code>Moments</code>[<code>2</code>]), <code>then</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>a</code> <code>dict</code> of <code>arrays</code> <code>is</code> <code>returned.</code> <code>In</code> <code>this</code> <code>case</code>, <code>this</code> <code>dict</code> <code>would</code> <code>have</code> <code>the</code> <code>keys</code></dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>'Forces' and 'Moments', which would each contain an array.</p>
-<dl>
-<dt><code>This</code> <code>function</code> <code>mirrors</code> <code>the</code> <a title="ktk.timeseries.dict_of_arrays_to_dataframe" href="#ktk.timeseries.dict_of_arrays_to_dataframe"><code>dict_of_arrays_to_dataframe()</code></a> <code>function.</code> <code>Its</code> <code>use</code> <code>is</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>mainly</code> <code>to</code> <code>convert</code> <code>high</code>-<code>dimension</code> (&gt;<code>2</code>) <code>dataframes</code> <code>to</code> <code>high</code>-<code>dimension</code> (&gt;<code>2</code>)</dt>
-<dd>&nbsp;</dd>
-</dl>
-<p>arrays.</p></section>
+<h2 id="examples">Examples</h2>
+<p>In the simplest case, each dataframe column becomes a dict key.</p>
+<pre><code>&gt;&gt;&gt; df = pd.DataFrame([[0, 3], [1, 4], [2, 5]])
+&gt;&gt;&gt; df.columns = ['column1', 'column2']
+&gt;&gt;&gt; df
+   column1  column2
+0        0        3
+1        1        4
+2        2        5
+
+&gt;&gt;&gt; data = dataframe_to_dict_of_arrays(df)
+
+&gt;&gt;&gt; data['column1']
+array([0, 1, 2])
+
+&gt;&gt;&gt; data['column2']
+array([3, 4, 5])
+</code></pre>
+<p>If the dataframe contains similar column names with indices in brackets
+(for example, Forces[0], Forces[1], Forces[2]), then these columns are
+combined in a single array.</p>
+<pre><code>&gt;&gt;&gt; df = pd.DataFrame([[0, 3, 6, 9], [1, 4, 7, 10], [2, 5, 8, 11]])
+&gt;&gt;&gt; df.columns = ['Forces[0]', 'Forces[1]', 'Forces[2]', 'Other']
+&gt;&gt;&gt; df
+   Forces[0]  Forces[1]  Forces[2]  Other
+0          0          3          6      9
+1          1          4          7     10
+2          2          5          8     11
+
+&gt;&gt;&gt; data = dataframe_to_dict_of_arrays(df)
+
+&gt;&gt;&gt; data['Forces']
+array([[0, 3, 6],
+       [1, 4, 7],
+       [2, 5, 8]])
+
+&gt;&gt;&gt; data['Other']
+array([ 9, 10, 11])
+</code></pre></section>
 </dd>
 <dt id="ktk.timeseries.dict_of_arrays_to_dataframe"><code class="name flex">
 <span>def <span class="ident">dict_of_arrays_to_dataframe</span></span>(<span>dict_of_arrays)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Convert a numpy ndarray of any dimension to a pandas DataFrame.</p>
+<section class="desc"><p>Convert a dict of ndarray of any dimension to a pandas DataFrame.</p>
+<p>This function mirrors the dataframe_to_dict_of_arrays function. It is
+mainly used by the TimeSeries.to_dataframe method.</p>
+<p>The rows in the output DataFrame correspond to the first dimension of the
+numpy arrays.
+- Vectors are converted to single-column DataFrames.
+- 2-dimensional arrays are converted to multi-columns DataFrames.
+- 3-dimensional (or more) arrays are also converted to DataFrames, but
+indices in brackets are added to the column names.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>dict_of_array</code></strong> :&ensp;<code>dict</code></dt>
@@ -80,16 +106,48 @@ first dimension's size.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><code>pd.DataFrame</code></dt>
-<dd>&nbsp;</dd>
-<dt><code>The</code> <code>rows</code> <code>in</code> <code>the</code> <code>output</code> <code>DataFrame</code> <code>correspond</code> <code>to</code> <code>the</code> <code>first</code> <code>dimension</code> of <code>the</code></dt>
+<dt><code>DataFrame</code></dt>
 <dd>&nbsp;</dd>
 </dl>
-<p>numpy arrays.
-- Vectors are converted to single-column DataFrames.
-- 2-dimensional arrays are converted to multi-columns DataFrames.
-- 3-dimensional (or more) arrays are also converted to DataFrames, but
-indices in brackets are added to the column names.</p></section>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; data = dict()
+&gt;&gt;&gt; data['Forces'] = np.arange(12).reshape((4, 3))
+&gt;&gt;&gt; data['Other'] = np.arange(4)
+
+&gt;&gt;&gt; data['Forces']
+array([[ 0,  1,  2],
+       [ 3,  4,  5],
+       [ 6,  7,  8],
+       [ 9, 10, 11]])
+
+&gt;&gt;&gt; data['Other']
+array([0, 1, 2, 3])
+
+&gt;&gt;&gt; df = dict_of_arrays_to_dataframe(data)
+
+&gt;&gt;&gt; df
+   Forces[0]  Forces[1]  Forces[2]  Other
+0          0          1          2      0
+1          3          4          5      1
+2          6          7          8      2
+3          9         10         11      3
+</code></pre>
+<p>It also works with higher dimensions:</p>
+<pre><code>&gt;&gt;&gt; data = {'3d_data': np.arange(8).reshape((2, 2, 2))}
+
+&gt;&gt;&gt; data['3d_data']
+array([[[0, 1],
+        [2, 3]],
+       [[4, 5],
+        [6, 7]]])
+
+&gt;&gt;&gt; df = dict_of_arrays_to_dataframe(data)
+
+&gt;&gt;&gt; df
+   3d_data[0,0]  3d_data[0,1]  3d_data[1,0]  3d_data[1,1]
+0             0             1             2             3
+1             4             5             6             7
+</code></pre></section>
 </dd>
 </dl>
 </section>
@@ -978,13 +1036,13 @@ extrapolate.</dd>
 <p>None.</p></section>
 </dd>
 <dt id="ktk.timeseries.TimeSeries.sort_events"><code class="name flex">
-<span>def <span class="ident">sort_events</span></span>(<span>self, make_unique=True)</span>
+<span>def <span class="ident">sort_events</span></span>(<span>self, unique=True)</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Sorts the TimeSeries' events from the earliest to the latest.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
-<dt><strong><code>make_unique</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dt><strong><code>unique</code></strong> :&ensp;<code>bool</code> (optional)</dt>
 <dd>True to make events unique (no two events can have both the same
 name and the same time). The default is True.</dd>
 </dl>
@@ -1000,7 +1058,7 @@ name and the same time). The default is True.</dd>
 &gt;&gt;&gt; ts.events
 [[2.0, 'two'], [1.0, 'one'], [3.0, 'three'], [3.0, 'three']]
 
-&gt;&gt;&gt; ts.sort_events(make_unique=False)
+&gt;&gt;&gt; ts.sort_events(unique=False)
 &gt;&gt;&gt; ts.events
 [[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]
 

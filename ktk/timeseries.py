@@ -43,6 +43,9 @@ def dataframe_to_dict_of_arrays(dataframe):
     """
     Convert a pandas DataFrame to a dict of numpy ndarrays.
 
+    This function mirrors the dict_of_arrays_to_dataframe function. It is
+    mainly used by the TimeSeries.from_dataframe method.
+
     Parameters
     ----------
     pd_dataframe : pd.DataFrame
@@ -52,18 +55,49 @@ def dataframe_to_dict_of_arrays(dataframe):
     -------
     dict of ndarrays.
 
-    If all the dataframe columns have the same name but with different indices
-    in brackets, then the dataframe corresponds to a single array, which is
-    returned.
 
-    If the dataframe contains different column names (for example,
-    Forces[0], Forces[1], Forces[2], Moments[0], Moments[1], Moments[2]), then
-    a dict of arrays is returned. In this case, this dict would have the keys
-    'Forces' and 'Moments', which would each contain an array.
+    Examples
+    --------
+    In the simplest case, each dataframe column becomes a dict key.
 
-    This function mirrors the dict_of_arrays_to_dataframe function. Its use is
-    mainly to convert high-dimension (>2) dataframes to high-dimension (>2)
-    arrays.
+        >>> df = pd.DataFrame([[0, 3], [1, 4], [2, 5]])
+        >>> df.columns = ['column1', 'column2']
+        >>> df
+           column1  column2
+        0        0        3
+        1        1        4
+        2        2        5
+
+        >>> data = dataframe_to_dict_of_arrays(df)
+
+        >>> data['column1']
+        array([0, 1, 2])
+
+        >>> data['column2']
+        array([3, 4, 5])
+
+    If the dataframe contains similar column names with indices in brackets
+    (for example, Forces[0], Forces[1], Forces[2]), then these columns are
+    combined in a single array.
+
+        >>> df = pd.DataFrame([[0, 3, 6, 9], [1, 4, 7, 10], [2, 5, 8, 11]])
+        >>> df.columns = ['Forces[0]', 'Forces[1]', 'Forces[2]', 'Other']
+        >>> df
+           Forces[0]  Forces[1]  Forces[2]  Other
+        0          0          3          6      9
+        1          1          4          7     10
+        2          2          5          8     11
+
+        >>> data = dataframe_to_dict_of_arrays(df)
+
+        >>> data['Forces']
+        array([[0, 3, 6],
+               [1, 4, 7],
+               [2, 5, 8]])
+
+        >>> data['Other']
+        array([ 9, 10, 11])
+
     """
     # Init output
     out = dict()
@@ -79,13 +113,13 @@ def dataframe_to_dict_of_arrays(dataframe):
         if opening_bracket_position == -1:
             # No dimension for this data
             all_data_names.append(one_column_name)
-            all_data_highest_indices.append([length-1])
+            all_data_highest_indices.append([length - 1])
         else:
             # Extract name and dimension
             data_name = one_column_name[0:opening_bracket_position]
             data_dimension = literal_eval(
-                    '[' + str(length-1) + ',' +
-                    one_column_name[opening_bracket_position+1:])
+                '[' + str(length - 1) + ',' +
+                one_column_name[opening_bracket_position + 1:])
 
             all_data_names.append(data_name)
             all_data_highest_indices.append(data_dimension)
@@ -128,7 +162,17 @@ def dataframe_to_dict_of_arrays(dataframe):
 
 def dict_of_arrays_to_dataframe(dict_of_arrays):
     """
-    Convert a numpy ndarray of any dimension to a pandas DataFrame.
+    Convert a dict of ndarray of any dimension to a pandas DataFrame.
+
+    This function mirrors the dataframe_to_dict_of_arrays function. It is
+    mainly used by the TimeSeries.to_dataframe method.
+
+    The rows in the output DataFrame correspond to the first dimension of the
+    numpy arrays.
+    - Vectors are converted to single-column DataFrames.
+    - 2-dimensional arrays are converted to multi-columns DataFrames.
+    - 3-dimensional (or more) arrays are also converted to DataFrames, but
+      indices in brackets are added to the column names.
 
     Parameters
     ----------
@@ -138,14 +182,48 @@ def dict_of_arrays_to_dataframe(dict_of_arrays):
 
     Returns
     -------
-    pd.DataFrame
+    DataFrame
 
-    The rows in the output DataFrame correspond to the first dimension of the
-    numpy arrays.
-    - Vectors are converted to single-column DataFrames.
-    - 2-dimensional arrays are converted to multi-columns DataFrames.
-    - 3-dimensional (or more) arrays are also converted to DataFrames, but
-      indices in brackets are added to the column names.
+    Example
+    -------
+        >>> data = dict()
+        >>> data['Forces'] = np.arange(12).reshape((4, 3))
+        >>> data['Other'] = np.arange(4)
+
+        >>> data['Forces']
+        array([[ 0,  1,  2],
+               [ 3,  4,  5],
+               [ 6,  7,  8],
+               [ 9, 10, 11]])
+
+        >>> data['Other']
+        array([0, 1, 2, 3])
+
+        >>> df = dict_of_arrays_to_dataframe(data)
+
+        >>> df
+           Forces[0]  Forces[1]  Forces[2]  Other
+        0          0          1          2      0
+        1          3          4          5      1
+        2          6          7          8      2
+        3          9         10         11      3
+
+    It also works with higher dimensions:
+
+        >>> data = {'3d_data': np.arange(8).reshape((2, 2, 2))}
+
+        >>> data['3d_data']
+        array([[[0, 1],
+                [2, 3]],
+               [[4, 5],
+                [6, 7]]])
+
+        >>> df = dict_of_arrays_to_dataframe(data)
+
+        >>> df
+           3d_data[0,0]  3d_data[0,1]  3d_data[1,0]  3d_data[1,1]
+        0             0             1             2             3
+        1             4             5             6             7
 
     """
     # Init
@@ -686,13 +764,13 @@ class TimeSeries():
         self.events = ts.events  # Add the events to self.
         return True
 
-    def sort_events(self, make_unique=True):
+    def sort_events(self, unique=True):
         """
         Sorts the TimeSeries' events from the earliest to the latest.
 
         Parameters
         ----------
-        make_unique : bool (optional)
+        unique : bool (optional)
             True to make events unique (no two events can have both the same
             name and the same time). The default is True.
 
@@ -711,7 +789,7 @@ class TimeSeries():
             >>> ts.events
             [[2.0, 'two'], [1.0, 'one'], [3.0, 'three'], [3.0, 'three']]
 
-            >>> ts.sort_events(make_unique=False)
+            >>> ts.sort_events(unique=False)
             >>> ts.events
             [[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]
 
@@ -722,7 +800,7 @@ class TimeSeries():
         """
         self.events = sorted(self.events)
 
-        if make_unique is True:
+        if unique is True:
             for i in range(len(self.events) - 1, 0, -1):
                 if ((self.events[i].time == self.events[i - 1].time) and
                         (self.events[i].name == self.events[i - 1].name)):
@@ -798,14 +876,20 @@ class TimeSeries():
         # Add labels
         plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
 
-        ylabel = ''
+        # Make unique list of units
+        unit_set = set()
         for data in ts.data_info:
             for info in ts.data_info[data]:
                 if info == 'Unit':
-                    if len(ylabel) > 0:
-                        ylabel += ', '
-                    ylabel += ts.data_info[data][info]
-        plt.ylabel(ylabel)
+                    unit_set.add(ts.data_info[data][info])
+        # Plot this list
+        unit_str = ''
+        for unit in unit_set:
+            if len(unit_str) > 0:
+                unit_str += ', '
+            unit_str += unit
+
+        plt.ylabel(unit_str)
 
         # Plot the events
         n_events = len(ts.events)
