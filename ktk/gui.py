@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-Module that provides simple GUI functions.
+Provides simple GUI functions.
 """
 
 import ktk.config

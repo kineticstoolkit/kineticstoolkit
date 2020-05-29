@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-3d geometry and linear algebra related to biomechanics.
+Provides 3d geometry and linear algebra functions related to biomechanics.
 
 This module contains functions related to 3D geometry and linear algebra
 related to biomechanics.
@@ -38,7 +38,7 @@ def matmul(op1, op2):
     -------
     result : array
         The product, as a series of Nx4 or Nx4xM matrices.
-        
+
     """
     def perform_mul(op1, op2):
         if isinstance(op1, np.ndarray) and isinstance(op2, np.ndarray):
@@ -77,7 +77,7 @@ def create_rotation_matrices(axis, angles):
     -------
     T : array
         A Nx4x4 series of rotation matrices.
-        
+
     """
     angles = np.array(angles)
 
@@ -354,7 +354,7 @@ def isnan(input):
     output : array
         Array of bool that is the same size of input's first dimension, with True
         for the samples that contain at least one NaN.
-        
+
     """
     temp = np.isnan(input)
     while len(temp.shape) > 1:
@@ -414,7 +414,7 @@ def register_points(global_points, local_points):
     T : array
         Array of shape Nx4x4, expressing a series of 4x4 rigid transformation
         matrices.
-        
+
     """
     n_samples = global_points.shape[0]
 

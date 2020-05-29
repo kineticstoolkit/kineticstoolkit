@@ -16,8 +16,10 @@
 # limitations under the License.
 
 """
-Module that provides the TimeSeries and TimeSeriesEvent classes. The classes
-defined in this module are loaded into the toplevel ktk namespace.
+Provides the TimeSeries and TimeSeriesEvent classes.
+
+The classes defined in this module are accessible directly from the toplevel
+ktk namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)
 
 """
 
@@ -883,11 +885,12 @@ class TimeSeries():
                 if info == 'Unit':
                     unit_set.add(ts.data_info[data][info])
         # Plot this list
-        unit_str = ''
+        unit_str = '('
         for unit in unit_set:
-            if len(unit_str) > 0:
+            if len(unit_str) > 1:
                 unit_str += ', '
             unit_str += unit
+        unit_str += ')'
 
         plt.ylabel(unit_str)
 

@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-Calculate inverse dynamics.
+Provides functions to calculate inverse dynamics.
 """
 
 import ktk.filters

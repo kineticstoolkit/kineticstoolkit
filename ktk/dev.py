@@ -21,9 +21,7 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 """
-KTK development functions
--------------------------
-This module contains fonctions related to development, tests and release.
+Contains fonctions related to development, tests and release of ktk.
 
 """
 
@@ -64,7 +62,7 @@ def run_doc_tests():
 
 
 def generate_tutorials():
-    """Generate the tutorials in html."""
+    """Generate the html tutorials."""
     cwd = os.getcwd()
     os.chdir(ktk.config.root_folder + '/tutorials')
     subprocess.call(['pwd'])

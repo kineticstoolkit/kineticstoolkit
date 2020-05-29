@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-Module that provides user and auto-generated configuration for ktk.
+Provides user and auto-generated configuration for ktk.
 
 Please edit this file to configure ktk.
 

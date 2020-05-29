@@ -25,16 +25,17 @@
 <p>Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by
 Professor Félix Chénier at Université du Québec à Montréal, Canada. It does not
 attempt to provide user-friendly graphical user interfaces (apart from the
-Player class to visualize 3d kinematics) or other magical blackboxes that
-process everything automatically. It is rather a framework that aims to
-integrate flexible classes and functions to facilitate research in
-biomechanics. Although most ktk modules express data using the custom
-ktk.TimeSeries class, it is still easy to integrate ktk with other environments
-using pandas Dataframes as intermediary containers, using the TimeSeries'
-from_dataframe and to_dataframe methods.</p>
+Player class to visualize 3d kinematics) or magical blackboxes that process
+everything automatically. It is rather a framework that aims to integrate
+flexible classes and functions to facilitate research in biomechanics.</p>
+<p>Although most ktk modules express data using the custom ktk.TimeSeries class,
+it is still easy to integrate ktk with other environments using pandas
+Dataframes as intermediate containers, using the TimeSeries' from_dataframe
+and to_dataframe methods.</p>
 <p>Kinetics Toolkit is addressed mainly to researchers and students in
-biomechanics, who want to understand and control their data. This is why a
-particular effort is made on API documentation, with examples and tutorials.</p>
+biomechanics with a little background in programming, who want to understand
+and control their data. This is why special attention is made to API
+documentation and tutorials.</p>
 <p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
 <p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
 <h2 id="public-version">Public version</h2>
@@ -53,6 +54,9 @@ TimeSeries data.</p>
 <p><a title="ktk.player.Player" href="player.html#ktk.player.Player"><code>Player</code></a> : a class that allows visualizing 3d markers using a simple
 graphical user interface.</p>
 </li>
+<li>
+<p>and some helper functions.</p>
+</li>
 </ul>
 <p>Please be warned that this is mostly experimental software. If you are using
 ktk or are planning to be, you are warmly invited to contact me, first to say
@@ -66,9 +70,8 @@ and if I can answer, I'll do.</p>
 <h2 id="private-development-version">Private development version</h2>
 <p>The development version is exclusively used in my lab and is developed in
 parallel with my research projects, following the needs of the moment. I
-usually wait several months before releasing code to the public, mostly to
-ensure the modules are stable and the API is mature and global enough to be
-shared.</p>
+usually wait several months before releasing new code to the public, mostly to
+ensure the modules are stable, well tested, documented, and the API is mature and global enough to be shared.</p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/api">API documentation</a></p>
 <h2 id="credits">Credits</h2>
@@ -85,8 +88,8 @@ Python implementation of m-dimensional Iterative Closest Point method</li>
 Easy to use C3D reader/writer for C++, Python and Matlab</p>
 </li>
 <li>
-<p>The dedicated people behind major software and packages like python, numpy,
-matplotlib, pandas, pytest, etc.</p>
+<p>The dedicated people behind major software and packages used by ktk such as
+python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p>
 </li>
 </ul>
 <hr>
@@ -137,7 +140,7 @@ content is shown, more like the representation of a Matlab struct.</p>
 the following modifications are made to default matplotlib figures:</p>
 <ul>
 <li>
-<p>The standard dpi is changed to 75, which allows for more work space by
+<p>The standard dpi is changed to 75, which allows for more space to work by
 reducing the font size on screen.</p>
 </li>
 <li>
@@ -157,15 +160,15 @@ consistent with Matlab's legacy color order.</p>
 <dl>
 <dt><code class="name"><a title="ktk.config" href="config.html">ktk.config</a></code></dt>
 <dd>
-<section class="desc"><p>Module that provides user and auto-generated configuration for ktk …</p></section>
+<section class="desc"><p>Provides user and auto-generated configuration for ktk …</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.cycles" href="cycles.html">ktk.cycles</a></code></dt>
 <dd>
-<section class="desc"><p>Identify cycles and time-normalize data …</p></section>
+<section class="desc"><p>Identifes cycles and time-normalize data …</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.dbinterface" href="dbinterface.html">ktk.dbinterface</a></code></dt>
 <dd>
-<section class="desc"><p>Module that manages the DBInterface class …</p></section>
+<section class="desc"><p>Provides the DBInterface class …</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.external" href="external/index.html">ktk.external</a></code></dt>
 <dd>
@@ -173,23 +176,23 @@ consistent with Matlab's legacy color order.</p>
 </dd>
 <dt><code class="name"><a title="ktk.filters" href="filters.html">ktk.filters</a></code></dt>
 <dd>
-<section class="desc"><p>Standard filters for TimeSeries.</p></section>
+<section class="desc"><p>Provides standard filters for TimeSeries.</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.geometry" href="geometry.html">ktk.geometry</a></code></dt>
 <dd>
-<section class="desc"><p>3d geometry and linear algebra related to biomechanics …</p></section>
+<section class="desc"><p>Provides 3d geometry and linear algebra functions related to biomechanics …</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.gui" href="gui.html">ktk.gui</a></code></dt>
 <dd>
-<section class="desc"><p>Module that provides simple GUI functions.</p></section>
+<section class="desc"><p>Provides simple GUI functions.</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.inversedynamics" href="inversedynamics.html">ktk.inversedynamics</a></code></dt>
 <dd>
-<section class="desc"><p>Calculate inverse dynamics.</p></section>
+<section class="desc"><p>Provides functions to calculate inverse dynamics.</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.kinematics" href="kinematics.html">ktk.kinematics</a></code></dt>
 <dd>
-<section class="desc"><p>Kinematics analysis.</p></section>
+<section class="desc"><p>Provides functions related to kinematics analysis.</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.loadsave" href="loadsave.html">ktk.loadsave</a></code></dt>
 <dd>
@@ -201,21 +204,19 @@ consistent with Matlab's legacy color order.</p>
 </dd>
 <dt><code class="name"><a title="ktk.player" href="player.html">ktk.player</a></code></dt>
 <dd>
-<section class="desc"><p>Module that provides the class Player to visualize markers and rigid bodies
-in three dimensions.</p></section>
+<section class="desc"><p>Provides the Player class to visualize markers and rigid bodies in 3d …</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.pushrimkinetics" href="pushrimkinetics.html">ktk.pushrimkinetics</a></code></dt>
 <dd>
-<section class="desc"><p>Processing of kinetic data measured using instrumented wheelchair wheels.</p></section>
+<section class="desc"><p>Provides functions to process kinetic data from instrumented wheelchair wheels.</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.timeseries" href="timeseries.html">ktk.timeseries</a></code></dt>
 <dd>
-<section class="desc"><p>Module that provides the TimeSeries and TimeSeriesEvent classes. The classes
-defined in this module are loaded into the toplevel ktk namespace.</p></section>
+<section class="desc"><p>Provides the TimeSeries and TimeSeriesEvent classes …</p></section>
 </dd>
 <dt><code class="name"><a title="ktk.tools" href="tools.html">ktk.tools</a></code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Provides miscelleanous helper functions to the user …</p></section>
 </dd>
 </dl>
 </section>

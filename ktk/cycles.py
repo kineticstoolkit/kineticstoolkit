@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-Identify cycles and time-normalize data.
+Identifes cycles and time-normalize data.
 
 This module in early development provides functions to identify cycles and
 time-normalize data.

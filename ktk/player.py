@@ -16,9 +16,10 @@
 # limitations under the License.
 
 """
-Module that provides the class Player to visualize markers and rigid bodies
-in three dimensions.
+Provides the Player class to visualize markers and rigid bodies in 3d.
 
+The Player class is accessible directly from the toplevel ktk namespace
+(i.e., ktk.Player).
 """
 
 from ktk.timeseries import TimeSeries

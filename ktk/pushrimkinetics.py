@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-Processing of kinetic data measured using instrumented wheelchair wheels.
+Provides functions to process kinetic data from instrumented wheelchair wheels.
 """
 
 import ktk.filters

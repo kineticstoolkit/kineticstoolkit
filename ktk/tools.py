@@ -15,17 +15,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Provides miscelleanous helper functions to the user.
+
+These functions are accessible from ktk's toplevel namespace
+(i.e., ktk.explore).
+"""
+
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-"""
-ktk._tools
-----------
-This module provides various tools to the user.
-
-"""
 import ktk.config
 
 import os
@@ -98,10 +100,12 @@ def terminal(folder_name=''):
 
 def update():
     """
-    Update KTK to the last available version.
+    Update ktk to the last available version - Not for the public version.
 
-    KTK needs to be installed as a git repository. This is the case with the
-    default installation method using install.py.
+    If ktk was installed using pip (default when using the public open-source
+    version), then update ktk using pip instead:
+
+        pip upgrade ktk
 
     Parameters
     ----------

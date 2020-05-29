@@ -1,5 +1,5 @@
 """
-Module that manages the DBInterface class.
+Provides the DBInterface class.
 
 Author: Felix Chenier
 Date: April 2020

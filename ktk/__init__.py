@@ -22,17 +22,19 @@ Kinetics Toolkit
 Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by
 Professor Félix Chénier at Université du Québec à Montréal, Canada. It does not
 attempt to provide user-friendly graphical user interfaces (apart from the
-Player class to visualize 3d kinematics) or other magical blackboxes that
-process everything automatically. It is rather a framework that aims to
-integrate flexible classes and functions to facilitate research in
-biomechanics. Although most ktk modules express data using the custom
-ktk.TimeSeries class, it is still easy to integrate ktk with other environments
-using pandas Dataframes as intermediary containers, using the TimeSeries'
-from_dataframe and to_dataframe methods.
+Player class to visualize 3d kinematics) or magical blackboxes that process
+everything automatically. It is rather a framework that aims to integrate
+flexible classes and functions to facilitate research in biomechanics.
+
+Although most ktk modules express data using the custom ktk.TimeSeries class,
+it is still easy to integrate ktk with other environments using pandas
+Dataframes as intermediate containers, using the TimeSeries' from_dataframe
+and to_dataframe methods.
 
 Kinetics Toolkit is addressed mainly to researchers and students in
-biomechanics, who want to understand and control their data. This is why a
-particular effort is made on API documentation, with examples and tutorials.
+biomechanics with a little background in programming, who want to understand
+and control their data. This is why special attention is made to API
+documentation and tutorials.
 
 [Laboratory website](https://felixchenier.uqam.ca)
 
@@ -53,6 +55,8 @@ The public open-source version API is mostly stable and currently includes:
 - `player.Player` : a class that allows visualizing 3d markers using a simple
   graphical user interface.
 
+- and some helper functions.
+
 Please be warned that this is mostly experimental software. If you are using
 ktk or are planning to be, you are warmly invited to contact me, first to say
 Hello :-), and so that I can warn you before doing major, possibly breaking
@@ -71,9 +75,8 @@ Private development version
 
 The development version is exclusively used in my lab and is developed in
 parallel with my research projects, following the needs of the moment. I
-usually wait several months before releasing code to the public, mostly to
-ensure the modules are stable and the API is mature and global enough to be
-shared.
+usually wait several months before releasing new code to the public, mostly to
+ensure the modules are stable, well tested, documented, and the API is mature and global enough to be shared.
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_lab/tutorials)
 
@@ -94,8 +97,8 @@ I also want to credit the people involved in ktk's dependencies:
 - Pariterre and contributors : [ezc3d](https://github.com/pyomeca/ezc3d) -
   Easy to use C3D reader/writer for C++, Python and Matlab
 
-- The dedicated people behind major software and packages like python, numpy,
-  matplotlib, pandas, pytest, etc.
+- The dedicated people behind major software and packages used by ktk such as
+  python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.
 
 -------------------------------------------------------------------------------
 
@@ -156,7 +159,7 @@ Numpy is set to display floats with floating point precision.
 We assume that most work with figure is interactive, on screen. In that view,
 the following modifications are made to default matplotlib figures:
 
-- The standard dpi is changed to 75, which allows for more work space by
+- The standard dpi is changed to 75, which allows for more space to work by
   reducing the font size on screen.
 
 - The standard figure size is changed to [10, 5], which is a little bigger

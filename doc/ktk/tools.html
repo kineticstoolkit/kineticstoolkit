@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
 <title>ktk.tools API documentation</title>
-<meta name="description" content="" />
+<meta name="description" content="Provides miscelleanous helper functions to the user …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,6 +20,9 @@
 <h1 class="title">Module <code>ktk.tools</code></h1>
 </header>
 <section id="section-intro">
+<p>Provides miscelleanous helper functions to the user.</p>
+<p>These functions are accessible from ktk's toplevel namespace
+(i.e., ktk.explore).</p>
 </section>
 <section>
 </section>
@@ -67,9 +70,11 @@ current folder.</dd>
 <span>def <span class="ident">update</span></span>(<span>)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Update KTK to the last available version.</p>
-<p>KTK needs to be installed as a git repository. This is the case with the
-default installation method using install.py.</p>
+<section class="desc"><p>Update ktk to the last available version - Not for the public version.</p>
+<p>If ktk was installed using pip (default when using the public open-source
+version), then update ktk using pip instead:</p>
+<pre><code>pip upgrade ktk
+</code></pre>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>None</code></strong></dt>

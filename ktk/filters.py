@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-Standard filters for TimeSeries.
+Provides standard filters for TimeSeries.
 """
 
 import numpy as np

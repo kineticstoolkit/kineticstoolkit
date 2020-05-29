@@ -5,7 +5,7 @@
 #
 # This file is not for redistribution.
 """
-Kinematics analysis.
+Provides functions related to kinematics analysis.
 """
 
 import ktk.geometry
