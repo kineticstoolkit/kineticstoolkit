@@ -137,6 +137,7 @@ def read_n3d_file(filename, labels=[]):
             ts.data[label] = np.block([[
                     ndi_array[:, 3*i_marker:3*i_marker+3],
                     np.ones((n_frames, 1))]])
+            ts.add_data_info(label, 'Unit', 'm')
 
     return ts
 
