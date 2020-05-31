@@ -60,6 +60,7 @@ def test_read_c3d_file():
                   0.1625) < 0.0001)
     assert(np.abs(np.nanmean(markers.data['Foot_Marker4'][:, 0:3]) -
                   0.1622) < 0.0001)
+    assert(markers.data['Foot_Marker1'][0, 3] == 1)
 
     assert(markers.time_info['Unit'] == 's')
     assert(markers.data_info['Foot_Marker1']['Unit'] == 'm')
