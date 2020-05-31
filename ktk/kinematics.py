@@ -26,6 +26,14 @@ def read_c3d_file(filename):
     """
     Read markers from a C3D file.
 
+    The markers positions are returned in a TimeSeries where each marker
+    corresponds to a data key. Each marker position is expressed in this form:
+
+            array([[x0, y0, z0, 1.],
+                   [x1, y1, z1, 1.],
+                   [x2, y2, z2, 1.],
+                   [...           ]])
+
     Parameters
     ----------
     filename : str
@@ -33,9 +41,21 @@ def read_c3d_file(filename):
 
     Returns
     -------
-    markers : TimeSeries
-        A TimeSeries where each point in the C3D correspond to a data key in
-        the TimeSeries.
+    TimeSeries
+
+    Notes
+    -----
+    - This function relies on pariterre's `ezc3d`, which is available on
+      conda-forge and on git-hub. Please install ezc3d before using
+      read_c3d_file. https://github.com/pyomeca/ezc3d
+
+    - The point unit must be either mm or m. In both cases, the final unit
+      returned in the output TimeSeries is m.
+
+    - As for any instrument, please check that your data loads correctly on
+      your first use (e.g., sampling frequency, position unit). It is highly
+      possible that read_c3d_file misses some corner cases.
+
     """
     # Create the reader
     reader = ezc3d(filename)
@@ -77,7 +97,15 @@ def read_c3d_file(filename):
 
 def read_n3d_file(filename, labels=[]):
     """
-    Read markers from an Optitrak N3D file.
+    Read markers from an NDI N3D file.
+
+    The markers positions are returned in a TimeSeries where each marker
+    corresponds to a data key. Each marker position is expressed in this form:
+
+            array([[x0, y0, z0, 1.],
+                   [x1, y1, z1, 1.],
+                   [x2, y2, z2, 1.],
+                   [...           ]])
 
     Parameters
     ----------
@@ -88,9 +116,8 @@ def read_n3d_file(filename, labels=[]):
 
     Returns
     -------
-    markers : TimeSeries
-        A TimeSeries where each point in the N3D correspond to a data key in
-        the TimeSeries.
+    TimeSeries
+
     """
     with open(filename, 'rb') as fid:
         _ = fid.read(1)  # 32
