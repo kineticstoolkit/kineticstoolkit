@@ -20,6 +20,7 @@ Kinetics Toolkit
 ================
 
 >>> markers = ktk.kinematics.read_c3d_file('my_file.c3d')
+
 >>> ktk.Player(markers)
 
 Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by

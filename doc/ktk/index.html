@@ -22,23 +22,24 @@
 </header>
 <section id="section-intro">
 <h1 id="kinetics-toolkit">Kinetics Toolkit</h1>
+<pre><code>&gt;&gt;&gt; markers = ktk.kinematics.read_c3d_file('my_file.c3d')
+
+&gt;&gt;&gt; ktk.Player(markers)
+</code></pre>
 <p>Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by
-Professor Félix Chénier at Université du Québec à Montréal, Canada. It does not
-attempt to provide user-friendly graphical user interfaces (apart from the
-Player class to visualize 3d kinematics) or magical blackboxes that process
-everything automatically. It is rather a framework that aims to integrate
-flexible classes and functions to facilitate research in biomechanics.</p>
-<p>Although most ktk modules express data using the custom ktk.TimeSeries class,
-it is still easy to integrate ktk with other environments using pandas
-Dataframes as intermediate containers, using the TimeSeries' from_dataframe
-and to_dataframe methods.</p>
-<p>Kinetics Toolkit is addressed mainly to researchers and students in
-biomechanics with a little background in programming, who want to understand
-and control their data. This is why special attention is made to API
-documentation and tutorials.</p>
-<p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
-<p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
-<h2 id="public-version">Public version</h2>
+Professor Félix Chénier at Université du Québec à Montréal, Canada. It is a
+package of integrated classes and functions that aims to facilitate research in
+biomechanics using python. It does not attempt to provide a complete workflow
+from raw files to final analysis (although it may in a far future), or a main
+graphical user interface, or magical blackboxes that process everything
+automatically.</p>
+<p>Kinetics Toolkit is mainly addressed to researchers and students in
+biomechanics with a little background in programming, who may or may not
+already have a working workflow and who want to understand and control their
+data. This is why special attention is made to API documentation and tutorials,
+and to ensure the interoperability of ktk with other environments (using pandas
+Dataframes as intermediate data containers).</p>
+<h2 id="public-open-source-version">Public open-source version</h2>
 <p>The public open-source version API is mostly stable and currently includes:</p>
 <ul>
 <li>
@@ -65,13 +66,16 @@ changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however
 <a href="mailto:chenier.felix@uqam.ca">ask your questions</a>
 and if I can answer, I'll do.</p>
+<p><a href="https://felixchenier.uqam.ca">Laboratory website</a></p>
+<p><a href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk) website</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_dist/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_dist/api">API documentation</a></p>
 <h2 id="private-development-version">Private development version</h2>
 <p>The development version is exclusively used in my lab and is developed in
 parallel with my research projects, following the needs of the moment. I
 usually wait several months before releasing new code to the public, mostly to
-ensure the modules are stable, well tested, documented, and the API is mature and global enough to be shared.</p>
+ensure the modules are stable, well tested, documented, and the API is mature
+and global enough to be shared.</p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/tutorials">Tutorials</a></p>
 <p><a href="https://felixchenier.uqam.ca/ktk_lab/api">API documentation</a></p>
 <h2 id="credits">Credits</h2>
@@ -232,7 +236,7 @@ consistent with Matlab's legacy color order.</p>
 <div class="toc">
 <ul>
 <li><a href="#kinetics-toolkit">Kinetics Toolkit</a><ul>
-<li><a href="#public-version">Public version</a></li>
+<li><a href="#public-open-source-version">Public open-source version</a></li>
 <li><a href="#private-development-version">Private development version</a></li>
 <li><a href="#credits">Credits</a></li>
 <li><a href="#customization">Customization</a><ul>

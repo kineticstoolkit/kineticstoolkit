@@ -84,8 +84,9 @@ def read_c3d_file(filename):
 
         label_name = labels[i_label]
 
-        output.data[label_name] = (point_factor *
-                                   reader['data']['points'][:, i_label, :].T)
+        output.data[label_name] = (
+            [point_factor, point_factor, point_factor, 1] *
+            reader['data']['points'][:, i_label, :].T)
 
         output.add_data_info(label_name, 'Unit', 'm')
 
