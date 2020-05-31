@@ -34,6 +34,13 @@
 </code></dt>
 <dd>
 <section class="desc"><p>Read markers from a C3D file.</p>
+<p>The markers positions are returned in a TimeSeries where each marker
+corresponds to a data key. Each marker position is expressed in this form:</p>
+<pre><code>    array([[x0, y0, z0, 1.],
+           [x1, y1, z1, 1.],
+           [x2, y2, z2, 1.],
+           [...           ]])
+</code></pre>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
@@ -41,16 +48,39 @@
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>A TimeSeries where each point in the C3D correspond to a data key in
-the TimeSeries.</dd>
-</dl></section>
+<dt><code>TimeSeries</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<ul>
+<li>
+<p>This function relies on pariterre's ezc3d, which is available on
+conda-forge and on git-hub. Please install ezc3d before using
+read_c3d_file. <a href="https://github.com/pyomeca/ezc3d">https://github.com/pyomeca/ezc3d</a></p>
+</li>
+<li>
+<p>The point unit must be either mm or m. In both cases, the final unit
+returned in the output TimeSeries is m.</p>
+</li>
+<li>
+<p>As for any instrument, please check that your data loads correctly on
+your first use (e.g., sampling frequency, position unit). It is highly
+possible that read_c3d_file misses some corner cases.</p>
+</li>
+</ul></section>
 </dd>
 <dt id="ktk.kinematics.read_n3d_file"><code class="name flex">
 <span>def <span class="ident">read_n3d_file</span></span>(<span>filename, labels=[])</span>
 </code></dt>
 <dd>
 <section class="desc"><p>Read markers from an Optitrak N3D file.</p>
+<p>The markers positions are returned in a TimeSeries where each marker
+corresponds to a data key. Each marker position is expressed in this form:</p>
+<pre><code>    array([[x0, y0, z0, 1.],
+           [x1, y1, z1, 1.],
+           [x2, y2, z2, 1.],
+           [...           ]])
+</code></pre>
 <h2 id="parameters">Parameters</h2>
 <dl>
 <dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
@@ -60,9 +90,8 @@ the TimeSeries.</dd>
 </dl>
 <h2 id="returns">Returns</h2>
 <dl>
-<dt><strong><code>markers</code></strong> :&ensp;<code>TimeSeries</code></dt>
-<dd>A TimeSeries where each point in the N3D correspond to a data key in
-the TimeSeries.</dd>
+<dt><code>TimeSeries</code></dt>
+<dd>&nbsp;</dd>
 </dl></section>
 </dd>
 </dl>
