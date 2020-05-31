@@ -37,11 +37,16 @@ data. This is why special attention is made to API documentation and tutorials,
 and to ensure the interoperability of ktk with other environments (using pandas
 Dataframes as intermediate data containers).
 
+[Laboratory website](https://felixchenier.uqam.ca)
+
+[Kinetics Toolkit (ktk) website](https://felixchenier.uqam.ca/kineticstoolkit)
+
 
 Public open-source version
 --------------------------
 
-The public open-source version API is mostly stable and currently includes:
+Version 0.1 is the first open-source release and is still limited. It currently
+includes:
 
 - `timeseries.TimeSeries` : a generic class to represent time-varying
   n-dimensional data and events, with many methods to extract, merge and subset
@@ -62,10 +67,6 @@ changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however
 [ask your questions](mailto:chenier.felix@uqam.ca)
 and if I can answer, I'll do.
-
-[Laboratory website](https://felixchenier.uqam.ca)
-
-[Kinetics Toolkit (ktk) website](https://felixchenier.uqam.ca/kineticstoolkit)
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_dist/tutorials)
 

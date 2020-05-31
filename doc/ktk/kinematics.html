@@ -54,7 +54,7 @@ corresponds to a data key. Each marker position is expressed in this form:</p>
 <h2 id="notes">Notes</h2>
 <ul>
 <li>
-<p>This function relies on pariterre's ezc3d, which is available on
+<p>This function relies on pariterre's <code>ezc3d</code>, which is available on
 conda-forge and on git-hub. Please install ezc3d before using
 read_c3d_file. <a href="https://github.com/pyomeca/ezc3d">https://github.com/pyomeca/ezc3d</a></p>
 </li>
@@ -73,7 +73,7 @@ possible that read_c3d_file misses some corner cases.</p>
 <span>def <span class="ident">read_n3d_file</span></span>(<span>filename, labels=[])</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Read markers from an Optitrak N3D file.</p>
+<section class="desc"><p>Read markers from an NDI N3D file.</p>
 <p>The markers positions are returned in a TimeSeries where each marker
 corresponds to a data key. Each marker position is expressed in this form:</p>
 <pre><code>    array([[x0, y0, z0, 1.],

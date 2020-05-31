@@ -2,31 +2,34 @@
 Kinetics Toolkit
 ================
 
+>>> markers = ktk.kinematics.read_c3d_file('my_file.c3d')
+>>> ktk.Player(markers)
+
 Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by
-Professor Félix Chénier at Université du Québec à Montréal, Canada. It does not
-attempt to provide user-friendly graphical user interfaces (apart from the
-Player class to visualize 3d kinematics) or magical blackboxes that process
-everything automatically. It is rather a framework that aims to integrate
-flexible classes and functions to facilitate research in biomechanics.
+Professor Félix Chénier at Université du Québec à Montréal, Canada. It is a
+package of integrated classes and functions that aims to facilitate research in
+biomechanics using python. It does not attempt to provide a complete workflow
+from raw files to final analysis (although it may in a far future), or a main
+graphical user interface, or magical blackboxes that process everything
+automatically.
 
-Although most ktk modules express data using the custom ktk.TimeSeries class,
-it is still easy to integrate ktk with other environments using pandas
-Dataframes as intermediate containers, using the TimeSeries' from_dataframe
-and to_dataframe methods.
-
-Kinetics Toolkit is addressed mainly to researchers and students in
-biomechanics with a little background in programming, who want to understand
-and control their data. This is why special attention is made to API
-documentation and tutorials.
+Kinetics Toolkit is mainly addressed to researchers and students in
+biomechanics with a little background in programming, who may or may not
+already have a working workflow and who want to understand and control their
+data. This is why special attention is made to API documentation and tutorials,
+and to ensure the interoperability of ktk with other environments (using pandas
+Dataframes as intermediate data containers).
 
 [Laboratory website](https://felixchenier.uqam.ca)
 
 [Kinetics Toolkit (ktk) website](https://felixchenier.uqam.ca/kineticstoolkit)
 
-Public version
---------------
 
-The public open-source version API is mostly stable and currently includes:
+Public open-source version
+--------------------------
+
+Version 0.1 is the first open-source release and is still limited. It currently
+includes:
 
 - `timeseries.TimeSeries` : a generic class to represent time-varying
   n-dimensional data and events, with many methods to extract, merge and subset
@@ -59,7 +62,8 @@ Private development version
 The development version is exclusively used in my lab and is developed in
 parallel with my research projects, following the needs of the moment. I
 usually wait several months before releasing new code to the public, mostly to
-ensure the modules are stable, well tested, documented, and the API is mature and global enough to be shared.
+ensure the modules are stable, well tested, documented, and the API is mature
+and global enough to be shared.
 
 [Tutorials](https://felixchenier.uqam.ca/ktk_lab/tutorials)
 
