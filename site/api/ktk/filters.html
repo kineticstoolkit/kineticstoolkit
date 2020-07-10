@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.7.2" />
+<title>ktk.filters API documentation</title>
+<meta name="description" content="Provides standard filters for TimeSeries." />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{font-weight:bold}#index h4 + ul{margin-bottom:.6em}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ktk.filters</code></h1>
+</header>
+<section id="section-intro">
+<p>Provides standard filters for TimeSeries.</p>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="ktk.filters.butter"><code class="name flex">
+<span>def <span class="ident">butter</span></span>(<span>tsin, fc, order=2, btype='lowpass', filtfilt=True)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Apply a Butterworth filter to a TimeSeries.</p>
+<p>The sampling rate must be constant.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>tsin</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input TimeSeries.</dd>
+<dt><strong><code>fc</code></strong> :&ensp;<code>float</code></dt>
+<dd>Cut-off frequency.</dd>
+<dt><strong><code>order</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>Order of the filter. The default is 2.</dd>
+<dt><strong><code>btype</code></strong> :&ensp;{‘<code>lowpass</code>’, ‘<code>highpass</code>’, ‘<code>bandpass</code>’, ‘<code>bandstop</code>’}, optional</dt>
+<dd>The default is 'lowpass'.</dd>
+<dt><strong><code>filtfilt</code></strong> :&ensp;<code>bool</code> (optional)</dt>
+<dd>If True, the filter is applied two times in reverse direction to
+eliminate time lag. If False, the filter is applied only in forward
+direction. The default is True.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>tsout</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>The filtered TimeSeries</dd>
+</dl></section>
+</dd>
+<dt id="ktk.filters.deriv"><code class="name flex">
+<span>def <span class="ident">deriv</span></span>(<span>ts, n=1)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate the nth numerical derivative.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input timeseries</dd>
+<dt><strong><code>n</code></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>Order of the derivative. The default is 1.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>A copy of the TimeSeries where each data key has been derivated n
+times.</dd>
+</dl>
+<h2 id="notes">Notes</h2>
+<p>The sample rate must be constant.</p>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk, numpy as np
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+&gt;&gt;&gt; ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+
+&gt;&gt;&gt; # Source data
+&gt;&gt;&gt; ts.time
+array([0. , 0.1, 0.2, 0.3, 0.4])
+&gt;&gt;&gt; ts.data['data']
+array([0., 0., 1., 1., 0.])
+
+&gt;&gt;&gt; # First derivative
+&gt;&gt;&gt; ts1 = ktk.filters.deriv(ts)
+
+&gt;&gt;&gt; ts1.time
+array([0.05, 0.15, 0.25, 0.35])
+&gt;&gt;&gt; ts1.data['data']
+array([  0.,  10.,   0., -10.])
+
+&gt;&gt;&gt; # Second derivative
+&gt;&gt;&gt; ts2 = ktk.filters.deriv(ts, n=2)
+
+&gt;&gt;&gt; ts2.time
+array([0.1, 0.2, 0.3])
+&gt;&gt;&gt; ts2.data['data']
+array([ 100., -100., -100.])
+</code></pre></section>
+</dd>
+<dt id="ktk.filters.median"><code class="name flex">
+<span>def <span class="ident">median</span></span>(<span>ts, window_length=3)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Calculate a moving median.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input TimeSeries</dd>
+<dt><strong><code>window_length</code></strong> :&ensp;<code>int</code> (<code>optinal</code>)</dt>
+<dd>Kernel size, must be odd. The default is 3.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>ts</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>A copy of the input TimeSeries with filtered data.</dd>
+</dl>
+<h2 id="example">Example</h2>
+<pre><code>&gt;&gt;&gt; import ktk, numpy as np
+&gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+
+&gt;&gt;&gt; # Works on 1-dimension data
+&gt;&gt;&gt; ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
+
+&gt;&gt;&gt; # and also on n-dimension data
+&gt;&gt;&gt; ts.data['data2'] = np.array(                 [[0., 10.],                  [0., 11.],                  [1., 11.],                  [1., 20.],                  [2., 14.],                  [2., 15.]])
+
+&gt;&gt;&gt; # Filter
+&gt;&gt;&gt; ts = ktk.filters.median(ts)
+
+&gt;&gt;&gt; ts.data['data1']
+array([10., 11., 11., 14., 15., 15.])
+
+&gt;&gt;&gt; ts.data['data2']
+array([[ 0., 10.],
+       [ 0., 11.],
+       [ 1., 11.],
+       [ 1., 14.],
+       [ 2., 15.],
+       [ 2., 15.]])
+</code></pre></section>
+</dd>
+<dt id="ktk.filters.savgol"><code class="name flex">
+<span>def <span class="ident">savgol</span></span>(<span>tsin, window_length, poly_order, deriv=0)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Apply a Savitzky-Golay filter on a TimeSeries.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>tsin</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input TimeSeries</dd>
+<dt><strong><code>window_length</code></strong> :&ensp;<code>int</code></dt>
+<dd>The length of the filter window. window_length must be a positive
+odd integer less or equal than the length of the TimeSeries.</dd>
+<dt><strong><code>poly_order</code></strong> :&ensp;<code>int</code></dt>
+<dd>The order of the polynomial used to fit the samples. polyorder must be
+less than window_length.</dd>
+<dt><strong><a title="ktk.filters.deriv" href="#ktk.filters.deriv"><code>deriv()</code></a></strong> :&ensp;<code>int</code> (optional)</dt>
+<dd>The order of the derivative to compute. This must be a nonnegative
+integer. The default is 0, which means to filter the data without
+differentiating.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>tsout</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>The filtered TimeSeries</dd>
+<dt><code>If</code> <code>the</code> <code>TimeSeries</code> <code>contains</code> <code>missing</code> <code>samples</code>, <code>a</code> <code>warning</code> <code>is</code> <code>issued</code>, <code>missing</code></dt>
+<dd>&nbsp;</dd>
+<dt><code>samples</code> <code>are</code> <code>interpolated</code> <code>using</code> <code>a</code> <code>first</code>-<code>order</code> <code>interpolation</code> <code>before</code></dt>
+<dd>&nbsp;</dd>
+</dl>
+<p>filtering, and then replaced by NaNs in the filtered signal.</p></section>
+</dd>
+<dt id="ktk.filters.smooth"><code class="name flex">
+<span>def <span class="ident">smooth</span></span>(<span>tsin, window_length)</span>
+</code></dt>
+<dd>
+<section class="desc"><p>Apply a smoothing (moving average) filter on a TimeSeries.</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>tsin</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>Input TimeSeries.</dd>
+<dt><strong><code>window_length</code></strong> :&ensp;<code>int</code></dt>
+<dd>The length of the filter window. window_length must be a positive
+odd integer less or equal than the length of the TimeSeries.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><strong><code>tsout</code></strong> :&ensp;<code>TimeSeries</code></dt>
+<dd>The filtered TimeSeries</dd>
+</dl></section>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ktk" href="index.html">ktk</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="ktk.filters.butter" href="#ktk.filters.butter">butter</a></code></li>
+<li><code><a title="ktk.filters.deriv" href="#ktk.filters.deriv">deriv</a></code></li>
+<li><code><a title="ktk.filters.median" href="#ktk.filters.median">median</a></code></li>
+<li><code><a title="ktk.filters.savgol" href="#ktk.filters.savgol">savgol</a></code></li>
+<li><code><a title="ktk.filters.smooth" href="#ktk.filters.smooth">smooth</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.7.2</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>

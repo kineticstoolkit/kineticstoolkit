@@ -1,0 +1,37 @@
+site_name: Kinetics Toolkit - Development version
+site_url: 'https://felixchenier.uqam.ca/ktk_develop/'
+docs_dir: doc
+use_directory_urls: false
+extra_css: ['custom.css']
+
+theme:
+    name: material
+    logo: logo.png
+    palette:
+        primary: orange
+        accent: orange
+    features:
+        - tabs
+
+markdown_extensions:
+    - admonition
+    - codehilite
+    
+nav:
+    - Home: index.md
+    - Installing: install.md
+    - Customizing: customize.md
+    - TimeSeries: timeseries.md
+    - Geometry: geometry.md
+    - Filters: filters.md
+    - Kinematics: kinematics.md
+    - Pushrim Kinetics: pushrimkinetics.md
+    - Inverse dynamics: inversedynamics.md
+    - Cycles: cycles.md
+    - DBInterface: dbinterface.md
+    - Lab website:
+        - Visit website: https://felixchenier.uqam.ca
+    - Public version:
+        - Switch to public version: https://felixchenier.uqam.ca/kineticstoolkit
+    - API reference:
+        - Switch to API reference: api/ktk/index.html

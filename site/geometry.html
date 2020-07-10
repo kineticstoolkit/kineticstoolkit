@@ -1,0 +1,997 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <link rel="canonical" href="https://felixchenier.uqam.ca/ktk_develop/geometry.html">
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.1.7">
+    
+    
+      
+        <title>Geometry - Kinetics Toolkit - Development version</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.4c7052ca.min.css">
+      
+        <link rel="stylesheet" href="assets/stylesheets/palette.b79bcd20.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#ffa726">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#geometry" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://felixchenier.uqam.ca/ktk_develop/" title="Kinetics Toolkit - Development version" class="md-header-nav__button md-logo" aria-label="Kinetics Toolkit - Development version">
+      
+  <img src="logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kinetics Toolkit - Development version
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Geometry
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+          
+
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="index.html" class="md-tabs__link md-tabs__link--active">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="https://felixchenier.uqam.ca" class="md-tabs__link">
+          Lab website
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-tabs__link">
+          Public version
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="api/ktk/index.html" class="md-tabs__link">
+          API reference
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://felixchenier.uqam.ca/ktk_develop/" title="Kinetics Toolkit - Development version" class="md-nav__button md-logo" aria-label="Kinetics Toolkit - Development version">
+      
+  <img src="logo.png" alt="logo">
+
+    </a>
+    Kinetics Toolkit - Development version
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="index.html" title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="install.html" title="Installing" class="md-nav__link">
+      Installing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="customize.html" title="Customizing" class="md-nav__link">
+      Customizing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="timeseries.html" title="TimeSeries" class="md-nav__link">
+      TimeSeries
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Geometry
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="geometry.html" title="Geometry" class="md-nav__link md-nav__link--active">
+      Geometry
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#array-convention" class="md-nav__link">
+    Array convention
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matrix-multiplication" class="md-nav__link">
+    Matrix multiplication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-series-of-rotation-matrices" class="md-nav__link">
+    Creating series of rotation matrices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-series-of-reference-frames" class="md-nav__link">
+    Creating series of reference frames
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculating-local-coordinates" class="md-nav__link">
+    Calculating local coordinates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculating-global-coordinates" class="md-nav__link">
+    Calculating global coordinates
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="filters.html" title="Filters" class="md-nav__link">
+      Filters
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="kinematics.html" title="Kinematics" class="md-nav__link">
+      Kinematics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="pushrimkinetics.html" title="Pushrim Kinetics" class="md-nav__link">
+      Pushrim Kinetics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="inversedynamics.html" title="Inverse dynamics" class="md-nav__link">
+      Inverse dynamics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="cycles.html" title="Cycles" class="md-nav__link">
+      Cycles
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="dbinterface.html" title="DBInterface" class="md-nav__link">
+      DBInterface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-12" type="checkbox" id="nav-12">
+    
+    <label class="md-nav__link" for="nav-12">
+      Lab website
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Lab website" data-md-level="1">
+      <label class="md-nav__title" for="nav-12">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Lab website
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://felixchenier.uqam.ca" title="Visit website" class="md-nav__link">
+      Visit website
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-13" type="checkbox" id="nav-13">
+    
+    <label class="md-nav__link" for="nav-13">
+      Public version
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Public version" data-md-level="1">
+      <label class="md-nav__title" for="nav-13">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Public version
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://felixchenier.uqam.ca/kineticstoolkit" title="Switch to public version" class="md-nav__link">
+      Switch to public version
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-14" type="checkbox" id="nav-14">
+    
+    <label class="md-nav__link" for="nav-14">
+      API reference
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="API reference" data-md-level="1">
+      <label class="md-nav__title" for="nav-14">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        API reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="api/ktk/index.html" title="Switch to API reference" class="md-nav__link">
+      Switch to API reference
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#array-convention" class="md-nav__link">
+    Array convention
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#matrix-multiplication" class="md-nav__link">
+    Matrix multiplication
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-series-of-rotation-matrices" class="md-nav__link">
+    Creating series of rotation matrices
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#creating-series-of-reference-frames" class="md-nav__link">
+    Creating series of reference frames
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculating-local-coordinates" class="md-nav__link">
+    Calculating local coordinates
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculating-global-coordinates" class="md-nav__link">
+    Calculating global coordinates
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="geometry">Geometry</h1>
+<p>The <code>ktk.geometry</code> module simplifies the calculation of linear algebric operations on
+series of points, vectors and transformation matrices.</p>
+<h2 id="array-convention">Array convention</h2>
+<p>Every point, vector or matrix is considered as a series, where the dimensions
+of the array are:</p>
+<ul>
+<li>
+<p>First dimension (N) : time. Constants are also reprented as series: they have only one data on the first dimension.</p>
+</li>
+<li>
+<p>Second dimension (4) : point/vector coordinates, or matrix line.</p>
+</li>
+<li>
+<p>Third dimension (M, optional) : point index (for sets of point), or matrix column.</p>
+</li>
+</ul>
+<p>For example, floats, points, vectors, sets and matrices are expressed as following:</p>
+<p><strong>Single float</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[a]</span>
+
+<span class="na">value</span> <span class="o">=</span> <span class="s">array[0]</span>
+</code></pre></div>
+
+
+<p><strong>Series of floats</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="k">[a(t0), a(t1), a(t2), ...]</span>
+
+<span class="na">value</span> <span class="o">=</span> <span class="s">array[i_time]</span>
+</code></pre></div>
+
+
+<p><strong>Series of points</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="p">[[</span><span class="n">x</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span>  <span class="mi">1</span><span class="p">.],</span>
+ <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span>  <span class="mi">1</span><span class="p">.],</span>
+ <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span>  <span class="mi">1</span><span class="p">.],</span>
+ <span class="p">[</span> <span class="p">...</span> <span class="p">,</span>  <span class="p">...</span> <span class="p">,</span>  <span class="p">...</span> <span class="p">,</span> <span class="p">...]]</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="nb">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_coordinate</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p><strong>Series of vectors</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="p">[[</span><span class="n">x</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span>  <span class="mi">0</span><span class="p">.],</span>
+ <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span>  <span class="mi">0</span><span class="p">.],</span>
+ <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span>  <span class="mi">0</span><span class="p">.],</span>
+ <span class="p">[</span> <span class="p">...</span> <span class="p">,</span>  <span class="p">...</span> <span class="p">,</span>  <span class="p">...</span> <span class="p">,</span> <span class="p">...]]</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="nb">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_coordinate</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p><strong>Series of sets of point</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="p">[[[</span><span class="n">x1</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">x2</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">x3</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">x4</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">y1</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y2</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y3</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y4</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">z1</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z2</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z3</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z4</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
+  <span class="p">[</span>  <span class="mi">1</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.,</span>      <span class="mi">1</span><span class="p">.</span> <span class="p">]],</span>
+
+ <span class="p">[[</span><span class="n">x1</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">x2</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">x3</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">x4</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">y1</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y2</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y3</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y4</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">z1</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z2</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z3</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z4</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
+  <span class="p">[</span>  <span class="mi">1</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.</span>  <span class="p">]],</span>
+
+  <span class="p">...</span>
+ <span class="p">]</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="nb">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_coordinate</span><span class="p">,</span> <span class="n">i_point</span><span class="p">]</span>
+</code></pre></div>
+
+
+<p><strong>Series of matrices</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="p">[[[</span><span class="n">R11</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R12</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R13</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">Tx</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">R21</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R22</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R23</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">Ty</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">R31</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R32</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R33</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">Tz</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
+  <span class="p">[</span>   <span class="mi">0</span><span class="p">.,</span>      <span class="mi">0</span><span class="p">.,</span>      <span class="mi">0</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.</span>  <span class="p">]],</span>
+
+ <span class="p">[[</span><span class="n">R11</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R12</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R13</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">Tx</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">R21</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R22</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R23</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">Ty</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
+  <span class="p">[</span><span class="n">R31</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R32</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R33</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">Tz</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
+  <span class="p">[</span>   <span class="mi">0</span><span class="p">.,</span>      <span class="mi">0</span><span class="p">.,</span>      <span class="mi">0</span><span class="p">.,</span>     <span class="mi">1</span><span class="p">.</span>  <span class="p">]],</span>
+
+  <span class="p">...</span>
+ <span class="p">]</span>
+
+<span class="n">value</span> <span class="o">=</span> <span class="nb">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_row</span><span class="p">,</span> <span class="n">i_column</span><span class="p">]</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</code></pre></div>
+
+
+<h2 id="matrix-multiplication">Matrix multiplication</h2>
+<p>To facilitate the multiplication of series, ktk.geometry provides a <code>matmul</code> function that matches both matrices' time dimensions before applying the numpy's @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use ktk.geometry's <code>matmul</code> instead of the @ operator, which will garranty to follow ktk's array convention. For example:</p>
+<p><strong>Matrix multiplication between a matrix and a series of points</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Single rigid transformation matrix</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]])</span>
+
+<span class="c1"># Series of 3 points</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([[0., 1., 0., 1.],</span>
+<span class="err">       [1., 1., 0., 1.],</span>
+<span class="err">       [2., 1., 0., 1.]])</span>
+</code></pre></div>
+
+
+<p><strong>Multiplication between a series of floats and a series of vectors</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Series of 3 floats</span>
+<span class="n">floats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+
+<span class="c1"># Series of 3 vectors</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">floats</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([[0. , 0. , 0. , 0. ],</span>
+<span class="err">       [1. , 0.5, 0. , 0. ],</span>
+<span class="err">       [3. , 1. , 0. , 0. ],</span>
+<span class="err">       [6. , 1.5, 0. , 0. ]])</span>
+</code></pre></div>
+
+
+<p><strong>Dot product between a series of points and a single point</strong></p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Series of 3 points</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="c1"># Single point</span>
+<span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([4., 6., 8.])</span>
+</code></pre></div>
+
+
+<h2 id="creating-series-of-rotation-matrices">Creating series of rotation matrices</h2>
+<p>The function <code>ktk.geometry.create_rotation_matrices</code> allows creating series of Nx4x4 matrices around a given axis. For example, this command creates a rotation matrix of 90 degrees around the x axis. Note that the angle argument is a list or an array, to comply with the <code>ktk.geometry</code>'s convention above.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([[[ 1.,  0.,  0.,  0.],</span>
+<span class="err">        [ 0.,  0., -1.,  0.],</span>
+<span class="err">        [ 0.,  1.,  0.,  0.],</span>
+<span class="err">        [ 0.,  0.,  0.,  1.]]])</span>
+</code></pre></div>
+
+
+<p>As another example, this will create a series of 100 rotation matrices around the z axis, from 0 to
+360 degrees:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">&#39;z&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="nb">array</span><span class="p">([[[</span> <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span> <span class="o">-</span><span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">]],</span>
+
+       <span class="p">[[</span> <span class="mi">0</span><span class="p">.</span><span class="mi">99798668</span><span class="p">,</span> <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">06342392</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span><span class="mi">06342392</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">99798668</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">]],</span>
+
+       <span class="p">[[</span> <span class="mi">0</span><span class="p">.</span><span class="mi">99195481</span><span class="p">,</span> <span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">12659245</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span><span class="mi">12659245</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">99195481</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">]],</span>
+
+       <span class="p">...,</span>
+
+       <span class="p">[[</span> <span class="mi">0</span><span class="p">.</span><span class="mi">99195481</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">12659245</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">12659245</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">99195481</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">]],</span>
+
+       <span class="p">[[</span> <span class="mi">0</span><span class="p">.</span><span class="mi">99798668</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">06342392</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span><span class="mi">06342392</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span><span class="mi">99798668</span><span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">]],</span>
+
+       <span class="p">[[</span> <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span><span class="o">-</span><span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">],</span>
+        <span class="p">[</span> <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">0</span><span class="p">.</span>        <span class="p">,</span>  <span class="mi">1</span><span class="p">.</span>        <span class="p">]]])</span>
+</code></pre></div>
+
+
+<h2 id="creating-series-of-reference-frames">Creating series of reference frames</h2>
+<p>Let's say we have the position of three markers, and we want to create a reference frame based on these markers. This is the aim of the <code>create_reference_frames</code> function.</p>
+<p>If the markers are at these positions (0, 0, 0), (1, 0, 0) and (0, 1, 0):</p>
+<div class="codehilite"><pre><span></span><code><span class="n">global_markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+    <span class="p">[[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+      <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]])</span>
+</code></pre></div>
+
+
+<p>Now we can create a reference frame based on these three markers. Please consult the <a href="api/ktk/geometry.html">API reference</a> for the different marker configurations available for the creation of reference frames.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span><span class="n">global_markers</span><span class="p">)</span>
+
+<span class="n">T</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([[[-0.70710678,  0.70710678,  0.        ,  0.33333333],</span>
+<span class="err">        [-0.70710678, -0.70710678,  0.        ,  0.33333333],</span>
+<span class="err">        [ 0.        ,  0.        ,  1.        ,  0.        ],</span>
+<span class="err">        [ 0.        ,  0.        ,  0.        ,  1.        ]]])</span>
+</code></pre></div>
+
+
+<h2 id="calculating-local-coordinates">Calculating local coordinates</h2>
+<p>We now have a reference frame defined from three markers. If we are interested to know the local position of these markers in the new-created frame, we can use the function <code>get_local_coordinates</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">local_markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span><span class="n">global_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+
+<span class="n">local_markers</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([[[ 0.47140452, -0.23570226, -0.23570226],</span>
+<span class="err">        [ 0.        ,  0.70710678, -0.70710678],</span>
+<span class="err">        [ 0.        ,  0.        ,  0.        ],</span>
+<span class="err">        [ 1.        ,  1.        ,  1.        ]]])</span>
+</code></pre></div>
+
+
+<h2 id="calculating-global-coordinates">Calculating global coordinates</h2>
+<p>In the case we have the markers' local coordinates and we would like to express these markers in the global reference frame, we would use the mirror function <code>get_global_coordinates</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span><span class="n">local_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([[[0., 1., 0.],</span>
+<span class="err">        [0., 0., 1.],</span>
+<span class="err">        [0., 0., 0.],</span>
+<span class="err">        [1., 1., 1.]]])</span>
+</code></pre></div>
+
+
+<p>in which case the results is effectively the global points as we defined them at the beginning.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="timeseries.html" title="TimeSeries" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                TimeSeries
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="filters.html" title="Filters" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Filters
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.22b62ea4.min.js"></script>
+      <script src="assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: ["tabs"],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.f6ebf1dc.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

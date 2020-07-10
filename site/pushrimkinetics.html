@@ -1,0 +1,912 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <link rel="canonical" href="https://felixchenier.uqam.ca/ktk_develop/pushrimkinetics.html">
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.1.7">
+    
+    
+      
+        <title>Pushrim Kinetics - Kinetics Toolkit - Development version</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.4c7052ca.min.css">
+      
+        <link rel="stylesheet" href="assets/stylesheets/palette.b79bcd20.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#ffa726">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#pushrim-kinetics" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://felixchenier.uqam.ca/ktk_develop/" title="Kinetics Toolkit - Development version" class="md-header-nav__button md-logo" aria-label="Kinetics Toolkit - Development version">
+      
+  <img src="logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kinetics Toolkit - Development version
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              Pushrim Kinetics
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+          
+
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="index.html" class="md-tabs__link md-tabs__link--active">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="https://felixchenier.uqam.ca" class="md-tabs__link">
+          Lab website
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-tabs__link">
+          Public version
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="api/ktk/index.html" class="md-tabs__link">
+          API reference
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://felixchenier.uqam.ca/ktk_develop/" title="Kinetics Toolkit - Development version" class="md-nav__button md-logo" aria-label="Kinetics Toolkit - Development version">
+      
+  <img src="logo.png" alt="logo">
+
+    </a>
+    Kinetics Toolkit - Development version
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="index.html" title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="install.html" title="Installing" class="md-nav__link">
+      Installing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="customize.html" title="Customizing" class="md-nav__link">
+      Customizing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="timeseries.html" title="TimeSeries" class="md-nav__link">
+      TimeSeries
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="geometry.html" title="Geometry" class="md-nav__link">
+      Geometry
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="filters.html" title="Filters" class="md-nav__link">
+      Filters
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="kinematics.html" title="Kinematics" class="md-nav__link">
+      Kinematics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Pushrim Kinetics
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="pushrimkinetics.html" title="Pushrim Kinetics" class="md-nav__link md-nav__link--active">
+      Pushrim Kinetics
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#read-data-from-file" class="md-nav__link">
+    Read data from file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculate-forces-and-moments" class="md-nav__link">
+    Calculate forces and moments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-sinusoids-in-forces-and-moments" class="md-nav__link">
+    Removing sinusoids in forces and moments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculate-velocity-and-power" class="md-nav__link">
+    Calculate velocity and power
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detecting-pushes" class="md-nav__link">
+    Detecting pushes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-normalizing-data" class="md-nav__link">
+    Time-normalizing data
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="inversedynamics.html" title="Inverse dynamics" class="md-nav__link">
+      Inverse dynamics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="cycles.html" title="Cycles" class="md-nav__link">
+      Cycles
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="dbinterface.html" title="DBInterface" class="md-nav__link">
+      DBInterface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-12" type="checkbox" id="nav-12">
+    
+    <label class="md-nav__link" for="nav-12">
+      Lab website
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Lab website" data-md-level="1">
+      <label class="md-nav__title" for="nav-12">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Lab website
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://felixchenier.uqam.ca" title="Visit website" class="md-nav__link">
+      Visit website
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-13" type="checkbox" id="nav-13">
+    
+    <label class="md-nav__link" for="nav-13">
+      Public version
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Public version" data-md-level="1">
+      <label class="md-nav__title" for="nav-13">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Public version
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://felixchenier.uqam.ca/kineticstoolkit" title="Switch to public version" class="md-nav__link">
+      Switch to public version
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-14" type="checkbox" id="nav-14">
+    
+    <label class="md-nav__link" for="nav-14">
+      API reference
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="API reference" data-md-level="1">
+      <label class="md-nav__title" for="nav-14">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        API reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="api/ktk/index.html" title="Switch to API reference" class="md-nav__link">
+      Switch to API reference
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#read-data-from-file" class="md-nav__link">
+    Read data from file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculate-forces-and-moments" class="md-nav__link">
+    Calculate forces and moments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#removing-sinusoids-in-forces-and-moments" class="md-nav__link">
+    Removing sinusoids in forces and moments
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#calculate-velocity-and-power" class="md-nav__link">
+    Calculate velocity and power
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detecting-pushes" class="md-nav__link">
+    Detecting pushes
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#time-normalizing-data" class="md-nav__link">
+    Time-normalizing data
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="pushrim-kinetics">Pushrim Kinetics</h1>
+<p>The <code>pushrimkinetics</code> module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+</code></pre></div>
+
+
+<h2 id="read-data-from-file">Read data from file</h2>
+<p>The first step is to load data from a file, using the <code>read_file</code> function.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">filename</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;data/pushrimkinetics/&#39;</span>
+            <span class="s1">&#39;sample_swl_overground_propulsion_withrubber.csv&#39;</span><span class="p">)</span>
+
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Let see what we loaded:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">TimeSeries with attributes:</span>
+<span class="err">             data: &lt;dict with 5 entries&gt;,</span>
+<span class="err">        data_info: &lt;dict with 4 entries&gt;,</span>
+<span class="err">           events: &lt;list of 0 items&gt;,</span>
+<span class="err">             time: &lt;array of shape (7682,)&gt;,</span>
+<span class="err">        time_info: &lt;dict with 1 entries&gt;</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">         &#39;Angle&#39;: &lt;array of shape (7682,)&gt;,</span>
+<span class="err">      &#39;Channels&#39;: &lt;array of shape (7682, 6)&gt;,</span>
+<span class="err">        &#39;Forces&#39;: &lt;array of shape (7682, 4)&gt;,</span>
+<span class="err">         &#39;Index&#39;: &lt;array of shape (7682,)&gt;,</span>
+<span class="err">       &#39;Moments&#39;: &lt;array of shape (7682, 4)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_7_0.png" /></p>
+<h2 id="calculate-forces-and-moments">Calculate forces and moments</h2>
+<p>If the data is not in a CSV form but instead in a TXT file from the SmartWheel's SD card, we can also read this file, by specifying the <code>smartwheeltxt</code> format in <code>read_file</code>. However, in this case, the file contains only the raw channels, index and angle. In this case, we must calculate the forces and moments based on a calibration matrix. The function <code>calculate_forces_and_moments</code> does this calculation and already includes calibration matrices based on SmartWheels' serial numbers. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">new_kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_forces_and_moments</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="p">,</span> <span class="s1">&#39;LIO-123&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">new_kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">new_kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_9_0.png" /></p>
+<p>When the forces and moments are reconstructed from raw data, no modification
+has been applied on the signals by the SmartWheel software to account for
+wheel side. Therefore some signals may be inverted, as observed here.</p>
+<h2 id="removing-sinusoids-in-forces-and-moments">Removing sinusoids in forces and moments</h2>
+<p>We observe in the last graphs that sinusoidal offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <code>remove_sinusoids</code>.</p>
+<p>Let's apply this function on the data we just loaded.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_sinusoids</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_12_0.png" /></p>
+<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external
+force appart from gravity is applied on the instrumented wheel. For example:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+        <span class="s1">&#39;data/pushrimkinetics/sample_swl_overground_propulsion_withrubber.csv&#39;</span><span class="p">)</span>
+
+<span class="n">baseline</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+        <span class="s1">&#39;data/pushrimkinetics/sample_swl_overground_baseline_withrubber.csv&#39;</span><span class="p">)</span>
+
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_sinusoids</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="n">baseline</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_14_0.png" /></p>
+<h2 id="calculate-velocity-and-power">Calculate velocity and power</h2>
+<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <code>calculate_velocity</code> function. Once the velocity has been calculated, the output power can also be calculated by
+multiplying the velocity by the propulsion moment, using the <code>calculate_power</code> function.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_velocity</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_power</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;Velocity&#39;</span><span class="p">,</span> <span class="s1">&#39;Power&#39;</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_16_0.png" /></p>
+<h2 id="detecting-pushes">Detecting pushes</h2>
+<p>The function <code>detect_pushes</code> allows detecting pushes and recoveries
+automatically based on a double-threshold.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">detect_pushes</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+
+<span class="n">kinetics</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">TimeSeries with attributes:</span>
+<span class="err">             data: &lt;dict with 7 entries&gt;,</span>
+<span class="err">        data_info: &lt;dict with 6 entries&gt;,</span>
+<span class="err">           events: &lt;list of 50 items&gt;,</span>
+<span class="err">             time: &lt;array of shape (7682,)&gt;,</span>
+<span class="err">        time_info: &lt;dict with 1 entries&gt;</span>
+</code></pre></div>
+
+
+<p>We see that the TimeSeries now has 52 events. Let's see these events on a plot.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_20_0.png" /></p>
+<h2 id="time-normalizing-data">Time-normalizing data</h2>
+<p>Now, we may be intested in time-normalizing our pushes. For example, if we are interested to find the average progression of the push force. Time-normalizing is not specific to the ktk.pushrimkinetics module, it is in the ktk.cycles module.</p>
+<p>To analyze the push phase, we want to time-normalize each push from the <code>push</code> event to the <code>recovery</code> event.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_22_0.png" /></p>
+<p>It is now possible to extract each push in a i_cycle x i_percent x i_component
+form, using the <code>ktk.cycles.get_reshaped_time_normalized_data</code> method.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">get_reshaped_time_normalized_data</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+
+<span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">         &#39;Angle&#39;: &lt;array of shape (25, 100)&gt;,</span>
+<span class="err">      &#39;Channels&#39;: &lt;array of shape (25, 100, 6)&gt;,</span>
+<span class="err">        &#39;Forces&#39;: &lt;array of shape (25, 100, 4)&gt;,</span>
+<span class="err">         &#39;Index&#39;: &lt;array of shape (25, 100)&gt;,</span>
+<span class="err">       &#39;Moments&#39;: &lt;array of shape (25, 100, 4)&gt;,</span>
+<span class="err">         &#39;Power&#39;: &lt;array of shape (25, 100)&gt;,</span>
+<span class="err">      &#39;Velocity&#39;: &lt;array of shape (25, 100)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Plot the normalized force curves one on top of each other:</p>
+<div class="codehilite"><pre><span></span><code><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="pushrimkinetics_files/pushrimkinetics_26_0.png" /></p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="kinematics.html" title="Kinematics" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Kinematics
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="inversedynamics.html" title="Inverse dynamics" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Inverse dynamics
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.22b62ea4.min.js"></script>
+      <script src="assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: ["tabs"],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.f6ebf1dc.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>

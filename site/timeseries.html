@@ -1,0 +1,1251 @@
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <link rel="canonical" href="https://felixchenier.uqam.ca/ktk_develop/timeseries.html">
+      
+      
+      <link rel="shortcut icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.1.2, mkdocs-material-5.1.7">
+    
+    
+      
+        <title>TimeSeries - Kinetics Toolkit - Development version</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.4c7052ca.min.css">
+      
+        <link rel="stylesheet" href="assets/stylesheets/palette.b79bcd20.min.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="#ffa726">
+      
+    
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,400i,700%7CRoboto+Mono&display=fallback">
+        <style>body,input{font-family:"Roboto",-apple-system,BlinkMacSystemFont,Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Roboto Mono",SFMono-Regular,Consolas,Menlo,monospace}</style>
+      
+    
+    
+    
+      <link rel="stylesheet" href="custom.css">
+    
+    
+      
+    
+    
+  </head>
+  
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="orange" data-md-color-accent="orange">
+  
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ktks-main-data-structure-timeseries" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid" aria-label="Header">
+    <a href="https://felixchenier.uqam.ca/ktk_develop/" title="Kinetics Toolkit - Development version" class="md-header-nav__button md-logo" aria-label="Kinetics Toolkit - Development version">
+      
+  <img src="logo.png" alt="logo">
+
+    </a>
+    <label class="md-header-nav__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header-nav__title" data-md-component="header-title">
+      
+        <div class="md-header-nav__ellipsis">
+          <span class="md-header-nav__topic md-ellipsis">
+            Kinetics Toolkit - Development version
+          </span>
+          <span class="md-header-nav__topic md-ellipsis">
+            
+              TimeSeries
+            
+          </span>
+        </div>
+      
+    </div>
+    
+      <label class="md-header-nav__button md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+      </label>
+      
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" data-md-state="active">
+      <label class="md-search__icon md-icon" for="__search">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0116 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.516 6.516 0 019.5 16 6.5 6.5 0 013 9.5 6.5 6.5 0 019.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5z"/></svg>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </label>
+      <button type="reset" class="md-search__icon md-icon" aria-label="Clear" data-md-component="search-reset" tabindex="-1">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12 19 6.41z"/></svg>
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+  </nav>
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+        
+      
+      
+        
+          
+
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-tabs__inner md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  <li class="md-tabs__item">
+    
+      <a href="index.html" class="md-tabs__link md-tabs__link--active">
+        Home
+      </a>
+    
+  </li>
+
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="https://felixchenier.uqam.ca" class="md-tabs__link">
+          Lab website
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-tabs__link">
+          Public version
+        </a>
+      
+    </li>
+  
+
+      
+        
+  
+  
+    <li class="md-tabs__item">
+      
+        <a href="api/ktk/index.html" class="md-tabs__link">
+          API reference
+        </a>
+      
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="https://felixchenier.uqam.ca/ktk_develop/" title="Kinetics Toolkit - Development version" class="md-nav__button md-logo" aria-label="Kinetics Toolkit - Development version">
+      
+  <img src="logo.png" alt="logo">
+
+    </a>
+    Kinetics Toolkit - Development version
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="index.html" title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="install.html" title="Installing" class="md-nav__link">
+      Installing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="customize.html" title="Customizing" class="md-nav__link">
+      Customizing
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        TimeSeries
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="timeseries.html" title="TimeSeries" class="md-nav__link md-nav__link--active">
+      TimeSeries
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-and-data" class="md-nav__link">
+    time and data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time_info-and-data_info" class="md-nav__link">
+    time_info and data_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    events
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-events-to-synchronize-timeseries" class="md-nav__link">
+    Using events to synchronize TimeSeries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-events-to-extract-sub-timeseries" class="md-nav__link">
+    Using events to extract sub-TimeSeries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subsetting-and-merging-timeseries" class="md-nav__link">
+    Subsetting and merging timeseries
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="geometry.html" title="Geometry" class="md-nav__link">
+      Geometry
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="filters.html" title="Filters" class="md-nav__link">
+      Filters
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="kinematics.html" title="Kinematics" class="md-nav__link">
+      Kinematics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="pushrimkinetics.html" title="Pushrim Kinetics" class="md-nav__link">
+      Pushrim Kinetics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="inversedynamics.html" title="Inverse dynamics" class="md-nav__link">
+      Inverse dynamics
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="cycles.html" title="Cycles" class="md-nav__link">
+      Cycles
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="dbinterface.html" title="DBInterface" class="md-nav__link">
+      DBInterface
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-12" type="checkbox" id="nav-12">
+    
+    <label class="md-nav__link" for="nav-12">
+      Lab website
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Lab website" data-md-level="1">
+      <label class="md-nav__title" for="nav-12">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Lab website
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://felixchenier.uqam.ca" title="Visit website" class="md-nav__link">
+      Visit website
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-13" type="checkbox" id="nav-13">
+    
+    <label class="md-nav__link" for="nav-13">
+      Public version
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="Public version" data-md-level="1">
+      <label class="md-nav__title" for="nav-13">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        Public version
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="https://felixchenier.uqam.ca/kineticstoolkit" title="Switch to public version" class="md-nav__link">
+      Switch to public version
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item md-nav__item--nested">
+    
+      <input class="md-nav__toggle md-toggle" data-md-toggle="nav-14" type="checkbox" id="nav-14">
+    
+    <label class="md-nav__link" for="nav-14">
+      API reference
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
+      </span>
+    </label>
+    <nav class="md-nav" aria-label="API reference" data-md-level="1">
+      <label class="md-nav__title" for="nav-14">
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+        </span>
+        API reference
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="api/ktk/index.html" title="Switch to API reference" class="md-nav__link">
+      Switch to API reference
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#properties" class="md-nav__link">
+    Properties
+  </a>
+  
+    <nav class="md-nav" aria-label="Properties">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#time-and-data" class="md-nav__link">
+    time and data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#time_info-and-data_info" class="md-nav__link">
+    time_info and data_info
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#events" class="md-nav__link">
+    events
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-events-to-synchronize-timeseries" class="md-nav__link">
+    Using events to synchronize TimeSeries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#using-events-to-extract-sub-timeseries" class="md-nav__link">
+    Using events to extract sub-TimeSeries
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#subsetting-and-merging-timeseries" class="md-nav__link">
+    Subsetting and merging timeseries
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                  
+                
+                
+                <h1 id="ktks-main-data-structure-timeseries">KTK's main data structure: TimeSeries</h1>
+<p>The TimeSeries class is the basis of most ktk modules and is the only "new" class ktk users have to learn.</p>
+<hr />
+<p><strong><em>The three roles of the TimeSeries class are to:</em></strong></p>
+<ol>
+<li><em>organize multidimensional data in time;</em></li>
+<li><em>deal with events;</em></li>
+<li><em>associate metadata to data.</em></li>
+</ol>
+<hr />
+<p>This class is largely inspired by Matlab's <code>timeseries</code> and <code>tscollection</code>. To better understand the role and capabilities of the TimeSeries class, we will begin by opening some columns of a csv file as a Pandas DataFrame. This file contains forces and moments applied on an instrumented wheelchair wheel during the propulsion of a manual wheelchair.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="c1"># Read some columns</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/timeseries/smartwheel.csv&#39;</span><span class="p">,</span>
+                 <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
+                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Fx&#39;</span><span class="p">,</span> <span class="s1">&#39;Fy&#39;</span><span class="p">,</span> <span class="s1">&#39;Fz&#39;</span><span class="p">,</span> <span class="s1">&#39;Mx&#39;</span><span class="p">,</span> <span class="s1">&#39;My&#39;</span><span class="p">,</span> <span class="s1">&#39;Mz&#39;</span><span class="p">],</span>
+                 <span class="n">nrows</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+
+<span class="c1"># Assign time to the DataFrame&#39;s index, where the sampling rate is 240 Hz.</span>
+<span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">240</span>
+<span class="n">df</span>
+</code></pre></div>
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Fx</th>
+      <th>Fy</th>
+      <th>Fz</th>
+      <th>Mx</th>
+      <th>My</th>
+      <th>Mz</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.000000</th>
+      <td>1.27</td>
+      <td>-0.89</td>
+      <td>-0.20</td>
+      <td>-0.03</td>
+      <td>0.05</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>0.004167</th>
+      <td>0.49</td>
+      <td>-0.83</td>
+      <td>-0.51</td>
+      <td>0.02</td>
+      <td>-0.01</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>0.008333</th>
+      <td>0.00</td>
+      <td>-0.78</td>
+      <td>-0.51</td>
+      <td>0.04</td>
+      <td>-0.07</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.012500</th>
+      <td>-0.13</td>
+      <td>-0.93</td>
+      <td>-0.41</td>
+      <td>0.03</td>
+      <td>-0.16</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.016667</th>
+      <td>-0.02</td>
+      <td>-0.89</td>
+      <td>0.00</td>
+      <td>0.01</td>
+      <td>-0.21</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>20.812500</th>
+      <td>0.87</td>
+      <td>-1.73</td>
+      <td>0.00</td>
+      <td>0.08</td>
+      <td>-0.07</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>20.816667</th>
+      <td>0.68</td>
+      <td>-2.38</td>
+      <td>0.20</td>
+      <td>0.07</td>
+      <td>-0.05</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>20.820833</th>
+      <td>0.39</td>
+      <td>-2.72</td>
+      <td>0.20</td>
+      <td>0.02</td>
+      <td>0.00</td>
+      <td>0.10</td>
+    </tr>
+    <tr>
+      <th>20.825000</th>
+      <td>0.32</td>
+      <td>-2.51</td>
+      <td>0.41</td>
+      <td>0.04</td>
+      <td>0.05</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>20.829167</th>
+      <td>0.39</td>
+      <td>-1.54</td>
+      <td>0.82</td>
+      <td>0.08</td>
+      <td>0.06</td>
+      <td>-0.10</td>
+    </tr>
+  </tbody>
+</table>
+<p>5000 rows × 6 columns</p>
+</div>
+
+<p>Now, we can convert this DataFrame to a TimeSeries:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">ts</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">TimeSeries with attributes:</span>
+<span class="err">             data: &lt;dict with 6 entries&gt;,</span>
+<span class="err">        data_info: &lt;dict with 0 entries&gt;,</span>
+<span class="err">           events: &lt;list of 0 items&gt;,</span>
+<span class="err">             time: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">        time_info: &lt;dict with 1 entries&gt;</span>
+</code></pre></div>
+
+
+<h2 id="properties">Properties</h2>
+<h3 id="time-and-data">time and data</h3>
+<p>The <code>time</code> property is the time vector, which tells at which time correspond each of the samples.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,</span>
+<span class="err">       20.825     , 20.82916667])</span>
+</code></pre></div>
+
+
+<p>The <code>data</code> property contains the TimeSeries' data in a dictionary. Each of the 6 DataFrame's columns now corresponds to a data key.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">      &#39;Fx&#39;: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">      &#39;Fy&#39;: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">      &#39;Fz&#39;: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">      &#39;Mx&#39;: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">      &#39;My&#39;: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">      &#39;Mz&#39;: &lt;array of shape (5000,)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>In reality, Fx, Fy and Fz are components of a single entity which is a force vector. Similarly, Mx, My and Mz are components of a single entity which is a moment vector. Let's see what happens if we name the DataFrames' columns differently.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Forces[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[2]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[2]&#39;</span><span class="p">]</span>
+<span class="n">df</span>
+</code></pre></div>
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Forces[0]</th>
+      <th>Forces[1]</th>
+      <th>Forces[2]</th>
+      <th>Moments[0]</th>
+      <th>Moments[1]</th>
+      <th>Moments[2]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.000000</th>
+      <td>1.27</td>
+      <td>-0.89</td>
+      <td>-0.20</td>
+      <td>-0.03</td>
+      <td>0.05</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>0.004167</th>
+      <td>0.49</td>
+      <td>-0.83</td>
+      <td>-0.51</td>
+      <td>0.02</td>
+      <td>-0.01</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>0.008333</th>
+      <td>0.00</td>
+      <td>-0.78</td>
+      <td>-0.51</td>
+      <td>0.04</td>
+      <td>-0.07</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.012500</th>
+      <td>-0.13</td>
+      <td>-0.93</td>
+      <td>-0.41</td>
+      <td>0.03</td>
+      <td>-0.16</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.016667</th>
+      <td>-0.02</td>
+      <td>-0.89</td>
+      <td>0.00</td>
+      <td>0.01</td>
+      <td>-0.21</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>20.812500</th>
+      <td>0.87</td>
+      <td>-1.73</td>
+      <td>0.00</td>
+      <td>0.08</td>
+      <td>-0.07</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>20.816667</th>
+      <td>0.68</td>
+      <td>-2.38</td>
+      <td>0.20</td>
+      <td>0.07</td>
+      <td>-0.05</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>20.820833</th>
+      <td>0.39</td>
+      <td>-2.72</td>
+      <td>0.20</td>
+      <td>0.02</td>
+      <td>0.00</td>
+      <td>0.10</td>
+    </tr>
+    <tr>
+      <th>20.825000</th>
+      <td>0.32</td>
+      <td>-2.51</td>
+      <td>0.41</td>
+      <td>0.04</td>
+      <td>0.05</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>20.829167</th>
+      <td>0.39</td>
+      <td>-1.54</td>
+      <td>0.82</td>
+      <td>0.08</td>
+      <td>0.06</td>
+      <td>-0.10</td>
+    </tr>
+  </tbody>
+</table>
+<p>5000 rows × 6 columns</p>
+</div>
+
+<p>Now we convert this DataFrame to a TimeSeries:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">       &#39;Forces&#39;: &lt;array of shape (5000, 3)&gt;,</span>
+<span class="err">      &#39;Moments&#39;: &lt;array of shape (5000, 3)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Instead of being separated into 6 separate components, the three components of both the forces and moments are now grouped in two Nx3 arrays. This may greatly simplify subsequent data processing. For example, if we are interested in calculating the vectorial sum of the forces, then one could add this new data to the TimeSeries with this line:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Ftot&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">       &#39;Forces&#39;: &lt;array of shape (5000, 3)&gt;,</span>
+<span class="err">         &#39;Ftot&#39;: &lt;array of shape (5000,)&gt;,</span>
+<span class="err">      &#39;Moments&#39;: &lt;array of shape (5000, 3)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<h3 id="time_info-and-data_info">time_info and data_info</h3>
+<p>The <code>time_info</code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code>time_info</code> includes the <code>Unit</code> metadata, which corresponds to <code>s</code>. Any other metadata can be added by adding new keys in <code>time_info</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">time_info</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">      &#39;Unit&#39;: &#39;s&#39;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>Similarly, the <code>data_info</code> property associates metadata to data. This property is a dictionary of dictionaries, where the first key corresponds to the data key, and the second key is the metadata.</p>
+<p>The <code>add_data_info</code> method eases the management of <code>data_info</code>.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Nm&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Ftot&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>Unless explicitly mentioned, metadata is not used for calculation. It is rather a way to clarify the data by adding information to it. Some ktk functions however read those metadata: for example, the <code>TimeSeries.plot</code> method looks for <code>Unit</code> information and print it on the y axis.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="timeseries_files/timeseries_21_0.png" /></p>
+<h3 id="events">events</h3>
+<p>In the figure above, we see that the TimeSeries has cyclic information that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Then, we see a series of pushes and recoveries. For now, we will add these events in the TimeSeries by hand.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">4.35</span><span class="p">,</span> <span class="s1">&#39;sync&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">8.56</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">9.93</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">10.50</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.12</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.78</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">12.33</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.39</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.88</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">14.86</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">15.30</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+
+<p>These events are now added to the TimeSeries' list of events:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">[[4.35, &#39;sync&#39;],</span>
+<span class="err"> [8.56, &#39;push&#39;],</span>
+<span class="err"> [9.93, &#39;recovery&#39;],</span>
+<span class="err"> [10.5, &#39;push&#39;],</span>
+<span class="err"> [11.12, &#39;recovery&#39;],</span>
+<span class="err"> [11.78, &#39;push&#39;],</span>
+<span class="err"> [12.33, &#39;recovery&#39;],</span>
+<span class="err"> [13.39, &#39;push&#39;],</span>
+<span class="err"> [13.88, &#39;recovery&#39;],</span>
+<span class="err"> [14.86, &#39;push&#39;],</span>
+<span class="err"> [15.3, &#39;recovery&#39;]]</span>
+</code></pre></div>
+
+
+<p>If we plot again the TimeSeries, we can see the added events.</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="timeseries_files/timeseries_27_0.png" /></p>
+<h2 id="using-events-to-synchronize-timeseries">Using events to synchronize TimeSeries</h2>
+<p>Let's see how we can make use of these events. First, the <code>sync</code> event can be used to set the zero-time, in the case where, for example, this wheel must be synchronized with another wheel, or with another instrument that also has a synchronization event. The method <code>sync_event</code> shifts the TimeSeries' time and events time so that the sync event becomes the new "zero-time".</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts</span><span class="o">.</span><span class="n">sync_event</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="timeseries_files/timeseries_29_0.png" /></p>
+<h2 id="using-events-to-extract-sub-timeseries">Using events to extract sub-TimeSeries</h2>
+<p>The <code>TimeSeries</code> class comes with a myriad of methods such as <code>get_ts_after_event</code>, <code>get_ts_between_events</code>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
+<div class="codehilite"><pre><span></span><code><span class="c1"># Extract data push event 0 up to push event 4.</span>
+<span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Remove the events that are not contained into the new time range.</span>
+<span class="n">ts2</span><span class="o">.</span><span class="n">trim_events</span><span class="p">()</span>
+
+<span class="n">ts2</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="timeseries_files/timeseries_31_0.png" /></p>
+<h2 id="subsetting-and-merging-timeseries">Subsetting and merging timeseries</h2>
+<p>We can use the <code>get_subset</code> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">])</span>
+
+<span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">      &#39;Forces&#39;: &lt;array of shape (1514, 3)&gt;,</span>
+<span class="err">        &#39;Ftot&#39;: &lt;array of shape (1514,)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="n">ts3</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+</code></pre></div>
+
+
+<p><img alt="png" src="timeseries_files/timeseries_34_0.png" /></p>
+<p>Using python's list comprehension is a nice way to extract a TimeSeries subset based on a selection criterion. For example, we could have obtained <code>ts3</code> by selecting every data key that begins with the letter 'F':</p>
+<div class="codehilite"><pre><span></span><code><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts2</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;F&#39;</span><span class="p">)])</span>
+
+<span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">      &#39;Forces&#39;: &lt;array of shape (1514, 3)&gt;,</span>
+<span class="err">        &#39;Ftot&#39;: &lt;array of shape (1514,)&gt;</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<p>For more information on the TimeSeries class, please refer to the <a href="api/ktk/timeseries.html">API reference</a>.</p>
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
+        
+          <a href="customize.html" title="Customizing" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+            </div>
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Customizing
+              </div>
+            </div>
+          </a>
+        
+        
+          <a href="geometry.html" title="Geometry" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-footer-nav__title">
+              <div class="md-ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                Geometry
+              </div>
+            </div>
+            <div class="md-footer-nav__button md-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        Made with
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs
+        </a>
+      </div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="assets/javascripts/vendor.22b62ea4.min.js"></script>
+      <script src="assets/javascripts/bundle.5f27aba8.min.js"></script><script id="__lang" type="application/json">{"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents"}</script>
+      
+      <script>
+        app = initialize({
+          base: ".",
+          features: ["tabs"],
+          search: Object.assign({
+            worker: "assets/javascripts/worker/search.f6ebf1dc.min.js"
+          }, typeof search !== "undefined" && search)
+        })
+      </script>
+      
+    
+  </body>
+</html>
