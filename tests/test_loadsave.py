@@ -41,7 +41,7 @@ def test_save_load():
     a['TestArray'] = random_variable
     a['TestList'] = [0, 'test', True]
     a['TestTuple'] = (1, 'test2', False)
-    a['TestBigList'] = list(np.arange(-1, 1, 1E-4))
+    a['TestBigList'] = list(np.arange(-1, 1, 1E-2))
 
     ktk.save('test.ktk.zip', a)
     b = ktk.load('test.ktk.zip')

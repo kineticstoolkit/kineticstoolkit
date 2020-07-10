@@ -32,6 +32,27 @@ def _save_to_current_folder(variable, variable_name):
             _save_to_current_folder(dict_variable, dict_key)
         os.chdir('..')
 
+    elif type(variable) == list:
+        os.mkdir(variable_name + '.list')
+        os.chdir(variable_name + '.list')
+        for i_item, item in enumerate(variable):
+            _save_to_current_folder(item, str(i_item))
+        os.chdir('..')
+
+    elif type(variable) == set:
+        os.mkdir(variable_name + '.set')
+        os.chdir(variable_name + '.set')
+        for i_item, item in enumerate(variable):
+            _save_to_current_folder(item, str(i_item))
+        os.chdir('..')
+
+    elif type(variable) == tuple:
+        os.mkdir(variable_name + '.tuple')
+        os.chdir(variable_name + '.tuple')
+        for i_item, item in enumerate(variable):
+            _save_to_current_folder(item, str(i_item))
+        os.chdir('..')
+
     elif type(variable) == str:
         file = open(variable_name + '.str.txt', 'w')
         file.write(str(variable))
@@ -89,6 +110,8 @@ def _save_to_current_folder(variable, variable_name):
         # If the variable's string form is sufficient to load it back, then
         # save it.
         string = str(variable)
+        print(type(variable))
+
         try:
             test_variable = literal_eval(string)
             assert test_variable == variable
@@ -98,8 +121,9 @@ def _save_to_current_folder(variable, variable_name):
             file.close()
 
         except Exception:
-            warnings.warn(f'The variable {variable_name} could not be saved '
-                          'because its type or contents is not supported.')
+            raise ValueError(f'The variable {variable_name} could not be '
+                             f'saved because its type or contents is not '
+                             'supported.')
 
 
 def save(filename, variable):
@@ -177,6 +201,8 @@ def save(filename, variable):
     # Save the file hierarchy
     os.chdir(temp_folder_name)
     _save_to_current_folder(variable, filename)
+    with open('file_format_version.txt', 'w') as fid:
+        fid.write('1.0\n')
     os.chdir(original_folder)
 
     # Zip it
@@ -189,27 +215,57 @@ def save(filename, variable):
                 save_folder + '/' + filename + '.zip')
 
 
-def _load_current_folder():
-    variable = dict()
+def _add_to_current_variable(variable, key, value):
+    """Used by _load_current_folder"""
+    if type(variable) == dict:
+        variable[key] = value
+    else:
+        variable.append(value)
+
+
+def _load_current_folder(load_as='dict'):
+    if load_as == 'dict':
+        variable = dict()
+    else:
+        variable = list()
+
     list_of_files = os.listdir('.')
-    for file_name in list_of_files:
+    for file_name in sorted(list_of_files):
 
         if file_name.endswith('.dict'):
             key = file_name[0:-len('.dict')]
             os.chdir(file_name)
-            variable[key] = _load_current_folder()
+            _add_to_current_variable(variable, key, _load_current_folder())
+            os.chdir('..')
+
+        elif file_name.endswith('.list'):
+            key = file_name[0:-len('.list')]
+            os.chdir(file_name)
+            _add_to_current_variable(variable, key, _load_current_folder(load_as='list'))
+            os.chdir('..')
+
+        elif file_name.endswith('.tuple'):
+            key = file_name[0:-len('.tuple')]
+            os.chdir(file_name)
+            _add_to_current_variable(variable, key, _load_current_folder(load_as='tuple'))
+            os.chdir('..')
+
+        elif file_name.endswith('.set'):
+            key = file_name[0:-len('.set')]
+            os.chdir(file_name)
+            _add_to_current_variable(variable, key, _load_current_folder(load_as='set'))
             os.chdir('..')
 
         elif file_name.endswith('.str.txt'):
             key = file_name[0:-len('.str.txt')]
             file = open(file_name, 'r')
-            variable[key] = file.read()
+            _add_to_current_variable(variable, key, file.read())
             file.close()
 
         elif file_name.endswith('.eval.txt'):
             key = file_name[0:-len('.eval.txt')]
             file = open(file_name, 'r')
-            variable[key] = literal_eval(file.read())
+            _add_to_current_variable(variable, key, literal_eval(file.read()))
             file.close()
 
         elif file_name.endswith('.ndarray.txt'):
@@ -217,7 +273,7 @@ def _load_current_folder():
             dataframe = pd.read_csv(file_name, sep='\t',
                                     quoting=csv.QUOTE_NONNUMERIC)
             dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
-            variable[key] = dict_of_arrays['Data']
+            _add_to_current_variable(variable, key, dict_of_arrays['Data'])
 
         elif file_name.endswith('.TimeSeries'):
             key = file_name[0:-len('.TimeSeries')]
@@ -259,8 +315,13 @@ def _load_current_folder():
                             out.add_data_info(column_name, row_names[i_row],
                                               one_info)
 
-            variable[key] = out
+            _add_to_current_variable(variable, key, out)
             os.chdir('..')
+
+    if load_as == 'tuple':
+        variable = tuple(variable)
+    elif load_as == 'set':
+        variable = set(variable)
 
     return variable
 
