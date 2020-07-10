@@ -189,7 +189,7 @@
     <li class="md-tabs__item">
       
         <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-tabs__link">
-          Public version
+          Stable version
         </a>
       
     </li>
@@ -272,13 +272,6 @@
       Table of contents
     </label>
     <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#users-requirements" class="md-nav__link">
-    User's requirements
-  </a>
-  
-</li>
       
         <li class="md-nav__item">
   <a href="#credits" class="md-nav__link">
@@ -466,17 +459,17 @@
       <input class="md-nav__toggle md-toggle" data-md-toggle="nav-13" type="checkbox" id="nav-13">
     
     <label class="md-nav__link" for="nav-13">
-      Public version
+      Stable version
       <span class="md-nav__icon md-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M8.59 16.58L13.17 12 8.59 7.41 10 6l6 6-6 6-1.41-1.42z"/></svg>
       </span>
     </label>
-    <nav class="md-nav" aria-label="Public version" data-md-level="1">
+    <nav class="md-nav" aria-label="Stable version" data-md-level="1">
       <label class="md-nav__title" for="nav-13">
         <span class="md-nav__icon md-icon">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
         </span>
-        Public version
+        Stable version
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -487,8 +480,8 @@
 
 
   <li class="md-nav__item">
-    <a href="https://felixchenier.uqam.ca/kineticstoolkit" title="Switch to public version" class="md-nav__link">
-      Switch to public version
+    <a href="https://felixchenier.uqam.ca/kineticstoolkit" title="Switch to stable version" class="md-nav__link">
+      Switch to stable version
     </a>
   </li>
 
@@ -566,13 +559,6 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#users-requirements" class="md-nav__link">
-    User's requirements
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
   <a href="#credits" class="md-nav__link">
     Credits
   </a>
@@ -596,28 +582,30 @@
                 
                 
                 <h1 id="kinetics-toolkit-ktk">Kinetics Toolkit (ktk)</h1>
-<p>Kinetics Toolkit (ktk) is a pure-python biomechanical library developed by
-Professor Félix Chénier at Université du Québec à Montréal, Canada. It is a
-package of integrated classes and functions that aims to facilitate research in
-biomechanics using python. It does not attempt to provide a complete workflow
-from raw files to final analysis (although it may in a far future), or a main
-graphical user interface, or magical blackboxes that process everything
-automatically.</p>
+<p>Kinetics Toolkit (ktk) is an open-source, pure-python biomechanical library
+developed by Professor Félix Chénier at Université du Québec à Montréal,
+Canada. It is a package of integrated classes and functions that aims to
+facilitate research in biomechanics using python. It does not attempt to
+provide a complete workflow from raw files to final analysis (although it may
+in a far future), or a main graphical user interface, or magical blackboxes
+that process everything automatically.</p>
 <p>Kinetics Toolkit is mainly addressed to researchers and students in
 biomechanics with a little background in programming, who may or may not
 already have a working workflow and who want to understand and control their
 data. This is why special attention is made to API documentation and tutorials,
-and to maximize the interoperability of ktk with other environments (using
-Pandas Dataframes as intermediate data containers).</p>
+and to ensure the interoperability of ktk with other environments (using pandas
+Dataframes as intermediate data containers).</p>
 <div class="admonition example">
 <p class="admonition-title">Example</p>
 <p>markers = ktk.kinematics.read_c3d_file('my_file.c3d')</p>
 <p>ktk.Player(markers)</p>
 </div>
-<p>The public open-source version API is mostly stable and currently includes:</p>
+<p>This library is a work in progress and is still very incomplete.
+The stable version API is however mostly settled and generally well tested
+using a comprehensive set of unit tests and doc tests, and currently includes:</p>
 <ul>
 <li>
-<p><code>TimeSeries</code> : a generic class to represent time-varying
+<p><code>timeseries.TimeSeries</code> : a generic class to represent time-varying
   n-dimensional data and events, with many methods to extract, merge and subset
   TimeSeries data.</p>
 </li>
@@ -626,39 +614,24 @@ Pandas Dataframes as intermediate data containers).</p>
   3d marker positions.</p>
 </li>
 <li>
-<p><code>Player</code> : a class that allows visualizing 3d markers using a simple
+<p><code>player.Player</code> : a class that allows visualizing 3d markers using a simple
   graphical user interface.</p>
 </li>
 <li>
 <p>and some helper functions.</p>
 </li>
 </ul>
-<p>Please be warned that this is mostly experimental software. If you are using
-ktk or are planning to be, you are warmly invited to contact me, first to say
-Hello :-), and so that I can warn you before doing major, possibly breaking
+<p>Please be warned that this is still mostly experimental software. If you are
+using ktk or are planning to be, you are warmly invited to contact me, first to
+say Hello :-), and so that I can warn you before doing major, possibly breaking
 changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however
 <a href="mailto:chenier.felix@uqam.ca">ask your questions</a>
 and if I can answer, I'll do.</p>
-<p><img alt="Player sample" src="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" /></p>
-<h2 id="users-requirements">User's requirements</h2>
-<p>The ktk library is a Python API that aims to ease the processing of biomechanical data. Since this is an API and not a GUI, some experience in programming is required. Here is a probably non-exhaustive list of prerequesites :</p>
-<ul>
-<li>Basic python skills :<ul>
-<li>Variable types : bool, int, float, str, dict, list, tuple</li>
-<li>Function definitions : def</li>
-</ul>
-</li>
-<li>Numpy :<ul>
-<li>array, indexing an array, operations on arrays, etc.</li>
-</ul>
-</li>
-<li>Matplotlib :<ul>
-<li>basic plotting functions (figure, plot)</li>
-</ul>
-</li>
-</ul>
-<p>Although there are some references to object-oriented programming (classes) and Pandas DataFrames, using ktk does not require mastering those concepts and tools.</p>
+<p>While the development version is also accessible freely, it is aimed for my
+laboratory and is developed in parallel with my research projects following
+the needs of the moment. This version is not tested as much as the stable
+version and the API and implementations may change at any time.</p>
 <h2 id="credits">Credits</h2>
 <p>Some external code has been directly included into ktk's source code. Here are
 the credits for these nice people.</p>
@@ -669,7 +642,7 @@ the credits for these nice people.</p>
 <p>I also want to credit the people involved in ktk's dependencies:</p>
 <ul>
 <li>
-<p>Pariterre and contributors : <a href="https://github.com/pyomeca/ezc3d">ezc3d</a> -
+<p>Benjamin Michaud : <a href="https://github.com/pyomeca/ezc3d">ezc3d</a> -
   Easy to use C3D reader/writer for C++, Python and Matlab</p>
 </li>
 <li>

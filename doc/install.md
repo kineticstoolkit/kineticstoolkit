@@ -25,12 +25,12 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
 Additional dependencies for the private development version:
 
     conda install -c conda-forge git pytest jupyter spyder pdoc3 mkdocs mkdocs-material mkdocs-material-extensions
-    
+
 
 Installing ktk
 --------------
 
-### Public version ###
+### Stable version ###
 
 The public, open-source version of ktk is distributed va `pip`. Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
 
@@ -38,13 +38,9 @@ The public, open-source version of ktk is distributed va `pip`. Open an Anaconda
 
 ### Development version ###
 
-1. Obtain access: Please [email me](mailto:chenier.felix@uqam.ca) if you are interested to collaborate on research and/or ktk development.
+Clone ktk from bitbucket: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
 
-2. Clone ktk from bitbucket: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run these lines one by one, replacing USERNAME with your bitbucket username. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
-
-        git clone https://USERNAME@bitbucket.org/felixchenier/kineticstoolkit.git')
-        cd kineticstoolkit
-        git pull origin
+    git clone https://bitbucket.org/felixchenier/kineticstoolkit.git')
 
 
 Configuring Spyder
@@ -71,11 +67,11 @@ Restart Spyder. Writing `import ktk` should now find and import ktk without erro
 Keeping ktk up to date
 ----------------------
 
-For the public version, open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
+For the stable version, open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
 
     pip upgrade ktk
-    
+
 For the development version, in an IPython console, type:
 
     import ktk
-    ktk.update()    
+    ktk.update()

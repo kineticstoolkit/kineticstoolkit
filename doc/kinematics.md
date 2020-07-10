@@ -130,7 +130,7 @@ ktk.Player(markers)
 
 
 
-    <ktk.player.Player at 0x7fcfba1a9250>
+    <ktk.player.Player at 0x7fbde5169210>
 
 
 
@@ -164,7 +164,7 @@ ktk.Player(markers, zoom=2, azimuth=0.8, elevation=0.16,
 
 
 
-    <ktk.player.Player at 0x7fcfba1a9b10>
+    <ktk.player.Player at 0x7fbde51840d0>
 
 
 
@@ -295,7 +295,7 @@ ktk.Player(markers, zoom=2, azimuth=0.8, elevation=0.16,
 
 
 
-    <ktk.player.Player at 0x7fcfba5099d0>
+    <ktk.player.Player at 0x7fbde5c56f10>
 
 
 
@@ -316,7 +316,7 @@ ktk.Player(markers, rigid_bodies,
 
 
 
-    <ktk.player.Player at 0x7fcfbab5d250>
+    <ktk.player.Player at 0x7fbde6b4c7d0>
 
 
 
@@ -347,7 +347,7 @@ ktk.Player(markers, rigid_bodies,
 
 
 
-    <ktk.player.Player at 0x7fcfbca696d0>
+    <ktk.player.Player at 0x7fbde5c566d0>
 
 
 
@@ -366,7 +366,7 @@ ktk.Player(markers,
 
 
 
-    <ktk.player.Player at 0x7fcfbda2ddd0>
+    <ktk.player.Player at 0x7fbde93faad0>
 
 
 

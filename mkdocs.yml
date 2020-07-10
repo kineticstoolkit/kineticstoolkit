@@ -16,7 +16,7 @@ theme:
 markdown_extensions:
     - admonition
     - codehilite
-    
+
 nav:
     - Home: index.md
     - Installing: install.md
@@ -31,7 +31,7 @@ nav:
     - DBInterface: dbinterface.md
     - Lab website:
         - Visit website: https://felixchenier.uqam.ca
-    - Public version:
-        - Switch to public version: https://felixchenier.uqam.ca/kineticstoolkit
+    - Stable version:
+        - Switch to stable version: https://felixchenier.uqam.ca/kineticstoolkit
     - API reference:
         - Switch to API reference: api/ktk/index.html
