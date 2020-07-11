@@ -41,7 +41,22 @@ def test_save_load():
     a['TestArray'] = random_variable
     a['TestList'] = [0, 'test', True]
     a['TestTuple'] = (1, 'test2', False)
-    a['TestBigList'] = list(np.arange(-1, 1, 1E-2))
+    a['TestBigList'] = list(np.arange(-1, 1, 1E-4))
+    a['TestDict'] = {'key1': 'value1',
+                     'key2': 10,
+                     'key3': True}
+    a['TestComplexDict'] = {'key1': 'value1',
+                            'key2': 10,
+                            'key3': ts.copy()}
+    a['TestComplexList'] = ['value1', 10, ts.copy(),
+                            'value2', 12, None,
+                            True, np.pi, (34.05+2j),
+                            [1, 2, 3, 4], (1, 2, 3, 4),
+                            {'key1': 'value1',
+                             'key2': 10,
+                             'key3': ts.copy()}
+                            ]
+    a['TestComplexTuple'] = tuple(a['TestComplexList'])
 
     ktk.save('test.ktk.zip', a)
     b = ktk.load('test.ktk.zip')
@@ -57,6 +72,16 @@ def test_save_load():
     assert a['TestList'] == b['TestList']
     assert a['TestTuple'] == b['TestTuple']
     assert a['TestBigList'] == b['TestBigList']
+    assert a['TestDict'] == b['TestDict']
+    assert a['TestComplexDict']['key1'] == b['TestComplexDict']['key1']
+    assert a['TestComplexDict']['key2'] == b['TestComplexDict']['key2']
+    assert a['TestComplexDict']['key3'] == b['TestComplexDict']['key3']
+    for i in range(10):
+        assert a['TestComplexList'][i] == b['TestComplexList'][i]
+    assert a['TestComplexList'][10] == b['TestComplexList'][10]
+    for i in range(10):
+        assert a['TestComplexTuple'][i] == b['TestComplexTuple'][i]
+    assert a['TestComplexTuple'][10] == b['TestComplexTuple'][10]
 
 
 if __name__ == "__main__":

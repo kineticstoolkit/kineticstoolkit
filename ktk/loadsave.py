@@ -23,46 +23,47 @@ import warnings
 import shutil
 
 
-def _save_to_current_folder(variable, variable_name):
+def _save(folder_name, variable_name, variable):
+    """Save a variable in a folder. This function is called by save."""
 
+    # Try the easiest way: save the string representation of the variable.
+    try:
+        string = str(variable)
+        test_variable = literal_eval(string)
+        assert test_variable == variable
+
+        with open(folder_name + '/' + variable_name + '.eval.txt', 'w') as fid:
+            fid.write(string)
+        return
+    except Exception:
+        pass
+
+    # It didn't work, we will have some work to do.
     if type(variable) == dict:
-        os.mkdir(variable_name + '.dict')
-        os.chdir(variable_name + '.dict')
+        this_folder_name = folder_name + '/' + variable_name + '.dict'
+        os.mkdir(this_folder_name)
         for dict_key, dict_variable in variable.items():
-            _save_to_current_folder(dict_variable, dict_key)
-        os.chdir('..')
+            _save(folder_name=this_folder_name,
+                  variable_name=dict_key,
+                  variable=dict_variable)
 
-    elif type(variable) == list:
-        os.mkdir(variable_name + '.list')
-        os.chdir(variable_name + '.list')
+    elif type(variable) == list or type(variable) == tuple:
+        this_folder_name = folder_name + '/' + variable_name + '.list'
+        os.mkdir(this_folder_name)
         for i_item, item in enumerate(variable):
-            _save_to_current_folder(item, str(i_item))
-        os.chdir('..')
-
-    elif type(variable) == set:
-        os.mkdir(variable_name + '.set')
-        os.chdir(variable_name + '.set')
-        for i_item, item in enumerate(variable):
-            _save_to_current_folder(item, str(i_item))
-        os.chdir('..')
-
-    elif type(variable) == tuple:
-        os.mkdir(variable_name + '.tuple')
-        os.chdir(variable_name + '.tuple')
-        for i_item, item in enumerate(variable):
-            _save_to_current_folder(item, str(i_item))
-        os.chdir('..')
-
-    elif type(variable) == str:
-        file = open(variable_name + '.str.txt', 'w')
-        file.write(str(variable))
-        file.close()
+            _save(folder_name=this_folder_name,
+                  variable_name=str(i_item),
+                  variable=item)
 
     elif type(variable) == np.ndarray:
         dataframe = dict_of_arrays_to_dataframe({'Data': variable})
-        dataframe.to_csv(variable_name + '.ndarray.txt',
+        dataframe.to_csv(folder_name + '/' + variable_name + '.ndarray.txt',
                          sep='\t', quoting=csv.QUOTE_NONNUMERIC,
                          header=True)
+
+    elif type(variable) == str:
+        with open(folder_name + '/' + variable_name + '.str.txt', 'w') as fid:
+            fid.write(variable)
 
     elif str(type(variable)) == "<class 'ktk.timeseries.TimeSeries'>":
         # This string comparison instead of a type check is because ktk is
@@ -72,15 +73,15 @@ def _save_to_current_folder(variable, variable_name):
         # class definition. To work around this, I compare the string
         # representation of type(variable), which does not change between
         # class redefinitions.
-        os.mkdir(variable_name + '.TimeSeries')
-        os.chdir(variable_name + '.TimeSeries')
+        this_folder_name = folder_name + '/' + variable_name + '.TimeSeries'
+        os.mkdir(this_folder_name)
 
         # data and time
         variable = variable.copy()
         np_data = variable.data
         np_data['time'] = variable.time
         dataframe = dict_of_arrays_to_dataframe(np_data)
-        dataframe.to_csv('data.txt',
+        dataframe.to_csv(this_folder_name + '/data.txt',
                          sep='\t', quoting=csv.QUOTE_NONNUMERIC,
                          index=False)
 
@@ -91,7 +92,7 @@ def _save_to_current_folder(variable, variable_name):
         else:
             df_events = pd.DataFrame(columns=['time', 'name'])
 
-        df_events.to_csv('events.txt',
+        df_events.to_csv(this_folder_name + '/events.txt',
                          sep='\t', quoting=csv.QUOTE_NONNUMERIC,
                          index=False)
 
@@ -101,29 +102,13 @@ def _save_to_current_folder(variable, variable_name):
         df_info = pd.concat([df_time_info, df_data_info],
                             axis=1, sort=False)
 
-        df_info.to_csv('info.txt',
+        df_info.to_csv(this_folder_name + '/info.txt',
                        sep='\t', quoting=csv.QUOTE_NONNUMERIC)
 
-        os.chdir('..')
-
     else:
-        # If the variable's string form is sufficient to load it back, then
-        # save it.
-        string = str(variable)
-        print(type(variable))
-
-        try:
-            test_variable = literal_eval(string)
-            assert test_variable == variable
-
-            file = open(variable_name + '.eval.txt', 'w')
-            file.write(string)
-            file.close()
-
-        except Exception:
-            raise ValueError(f'The variable {variable_name} could not be '
-                             f'saved because its type or contents is not '
-                             'supported.')
+        warnings.warn(f'The variable {variable_name} could not be '
+                      f'saved because its type or contents is not '
+                      'supported.')
 
 
 def save(filename, variable):
@@ -172,26 +157,20 @@ def save(filename, variable):
     -------
     None.
     """
-    # Get current directory to come back here after saving
-    original_folder = os.getcwd()
-
     save_folder = os.path.dirname(filename)
     if save_folder == '':
         save_folder = '.'
 
     filename = os.path.basename(filename)
 
-    # Switch to temporary folder
-    os.chdir(ktk.config.temp_folder)
-
-    # Remove .zip extension if present (to obtain only the base name)
+    # Convert 'filename' and 'filename.ktk.zip' to 'filename.ktk'
     if filename.lower().endswith('.zip'):
         filename = filename[0:-len('.zip')]
-    elif not filename.lower().endswith('.ktk.zip'):
+    if not filename.lower().endswith('.ktk'):
         filename = filename + '.ktk'
 
-    temp_folder_name = '~temp.' + filename
-
+    # Create and empty temp folder
+    temp_folder_name = ktk.config.temp_folder + '/' + filename
     try:
         shutil.rmtree(temp_folder_name)
     except Exception:
@@ -199,20 +178,22 @@ def save(filename, variable):
     os.mkdir(temp_folder_name)
 
     # Save the file hierarchy
-    os.chdir(temp_folder_name)
-    _save_to_current_folder(variable, filename)
-    with open('file_format_version.txt', 'w') as fid:
+    _save(folder_name=temp_folder_name,
+          variable_name=filename,
+          variable=variable)
+
+    os.mkdir(temp_folder_name + '/metadata.dict')
+    with open(temp_folder_name +
+              '/metadata.dict/file_version.str.txt', 'w') as fid:
         fid.write('1.0\n')
-    os.chdir(original_folder)
 
-    # Zip it
-    shutil.make_archive(ktk.config.temp_folder + '/' + filename, 'zip',
-                        ktk.config.temp_folder + '/' + temp_folder_name)
-    shutil.rmtree(ktk.config.temp_folder + '/' + temp_folder_name)
+    # Zip it into its final destination
+    shutil.make_archive(save_folder + '/' + filename,
+                        'zip',
+                        temp_folder_name)
 
-    # Move it to its final destination
-    shutil.move(ktk.config.temp_folder + '/' + filename + '.zip',
-                save_folder + '/' + filename + '.zip')
+    # Clear the temporary folder
+    shutil.rmtree(temp_folder_name)
 
 
 def _add_to_current_variable(variable, key, value):
@@ -223,107 +204,154 @@ def _add_to_current_variable(variable, key, value):
         variable.append(value)
 
 
-def _load_current_folder(load_as='dict'):
-    if load_as == 'dict':
+def _load(filename):
+    """
+    Load the contents of a folder or filename.
+
+    Returns a tuple where the first element is the suffix
+    (.eval.txt, .dict, etc) and the second element is the contents.
+    """
+
+    # Easiest case:
+    if filename.endswith('.str.txt'):
+        with open(filename, 'r') as fid:
+            return ('.str.txt', fid.read())
+
+    # Next easiest:
+    elif filename.endswith('.eval.txt'):
+        with open(filename, 'r') as fid:
+            return ('.eval.txt', literal_eval(fid.read()))
+
+    elif filename.endswith('.dict'):
         variable = dict()
-    else:
+        list_of_files = os.listdir(filename)
+        for subfilename in list_of_files:
+            contents = _load(filename + '/' + subfilename)
+            key = subfilename[0:-len(contents[0])]
+            variable[key] = contents[1]
+        return ('.dict', variable)
+
+    elif filename.endswith('.list'):
         variable = list()
+        file_list = os.listdir(filename)
+        indexes = [int(file.split('.')[0]) for file in file_list]
+        sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
 
-    list_of_files = os.listdir('.')
-    for file_name in sorted(list_of_files):
+        for file in sorted_file_list:
+            contents = _load(filename + '/' + file)
+            variable.append(contents[1])
+        return ('.list', variable)
 
-        if file_name.endswith('.dict'):
-            key = file_name[0:-len('.dict')]
-            os.chdir(file_name)
-            _add_to_current_variable(variable, key, _load_current_folder())
-            os.chdir('..')
+    elif filename.endswith('.tuple'):
+        variable = list()
+        file_list = os.listdir(filename)
+        indexes = [int(file.split('.')[0]) for file in file_list]
+        sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
 
-        elif file_name.endswith('.list'):
-            key = file_name[0:-len('.list')]
-            os.chdir(file_name)
-            _add_to_current_variable(variable, key, _load_current_folder(load_as='list'))
-            os.chdir('..')
+        for file in sorted_file_list:
+            contents = _load(filename + '/' + file)
+            variable.append(contents[1])
+        return ('.tuple', tuple(variable))
 
-        elif file_name.endswith('.tuple'):
-            key = file_name[0:-len('.tuple')]
-            os.chdir(file_name)
-            _add_to_current_variable(variable, key, _load_current_folder(load_as='tuple'))
-            os.chdir('..')
+    elif filename.endswith('.ndarray.txt'):
+        dataframe = pd.read_csv(filename, sep='\t',
+                                quoting=csv.QUOTE_NONNUMERIC)
+        dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
+        return ('.ndarray.txt', dict_of_arrays['Data'])
 
-        elif file_name.endswith('.set'):
-            key = file_name[0:-len('.set')]
-            os.chdir(file_name)
-            _add_to_current_variable(variable, key, _load_current_folder(load_as='set'))
-            os.chdir('..')
+    elif filename.endswith('.TimeSeries'):
 
-        elif file_name.endswith('.str.txt'):
-            key = file_name[0:-len('.str.txt')]
-            file = open(file_name, 'r')
-            _add_to_current_variable(variable, key, file.read())
-            file.close()
+        data = pd.read_csv(filename + '/data.txt',
+                            sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+        events = pd.read_csv(filename + '/events.txt',
+                              sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+        info = pd.read_csv(filename + '/info.txt',
+                            sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                            index_col=0)
 
-        elif file_name.endswith('.eval.txt'):
-            key = file_name[0:-len('.eval.txt')]
-            file = open(file_name, 'r')
-            _add_to_current_variable(variable, key, literal_eval(file.read()))
-            file.close()
+        out = TimeSeries()
 
-        elif file_name.endswith('.ndarray.txt'):
-            key = file_name[0:-len('.ndarray.txt')]
-            dataframe = pd.read_csv(file_name, sep='\t',
-                                    quoting=csv.QUOTE_NONNUMERIC)
-            dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
-            _add_to_current_variable(variable, key, dict_of_arrays['Data'])
+        # DATA AND TIME
+        # -------------
+        out.data = dataframe_to_dict_of_arrays(data)
+        out.time = out.data['time']
+        out.data.pop('time', None)
 
-        elif file_name.endswith('.TimeSeries'):
-            key = file_name[0:-len('.TimeSeries')]
+        # EVENTS
+        # ------
+        for i_event in range(0, len(events)):
+            out.add_event(events.time[i_event], events.name[i_event])
 
-            os.chdir(file_name)
+        # INFO
+        # ----
+        n_rows = len(info)
+        row_names = list(info.index)
+        for column_name in info.columns:
+            for i_row in range(0, n_rows):
+                one_info = info[column_name][i_row]
+                if str(one_info).lower() != 'nan':
+                    if column_name == 'time':
+                        out.time_info[row_names[i_row]] = one_info
+                    else:
+                        out.add_data_info(column_name, row_names[i_row],
+                                          one_info)
 
-            data = pd.read_csv('data.txt',
-                               sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-            events = pd.read_csv('events.txt',
-                                 sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-            info = pd.read_csv('info.txt',
-                               sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                               index_col=0)
+        return ('.TimeSeries', out)
 
-            out = TimeSeries()
+    else:
+        warnings.warn(f'Could not load contents in {filename}')
+        return ('', None)
 
-            # DATA AND TIME
-            # -------------
-            out.data = dataframe_to_dict_of_arrays(data)
-            out.time = out.data['time']
-            out.data.pop('time', None)
 
-            # EVENTS
-            # ------
-            for i_event in range(0, len(events)):
-                out.add_event(events.time[i_event], events.name[i_event])
 
-            # INFO
-            # ----
-            n_rows = len(info)
-            row_names = list(info.index)
-            for column_name in info.columns:
-                for i_row in range(0, n_rows):
-                    one_info = info[column_name][i_row]
-                    if str(one_info).lower() != 'nan':
-                        if column_name == 'time':
-                            out.time_info[row_names[i_row]] = one_info
-                        else:
-                            out.add_data_info(column_name, row_names[i_row],
-                                              one_info)
+    # list_of_files = os.listdir(folder)
+    # for filename in sorted(list_of_files):
 
-            _add_to_current_variable(variable, key, out)
-            os.chdir('..')
+    #     elif filename.endswith('.list'):
+    #         key = filename[0:-len('.list')]
+    #         os.chdir(filename)
+    #         _add_to_current_variable(variable, key, _load_current_folder(load_as='list'))
+    #         os.chdir('..')
 
-    if load_as == 'tuple':
-        variable = tuple(variable)
-    elif load_as == 'set':
-        variable = set(variable)
+    #     elif filename.endswith('.tuple'):
+    #         key = filename[0:-len('.tuple')]
+    #         os.chdir(filename)
+    #         _add_to_current_variable(variable, key, _load_current_folder(load_as='tuple'))
+    #         os.chdir('..')
 
-    return variable
+    #     elif filename.endswith('.set'):
+    #         key = filename[0:-len('.set')]
+    #         os.chdir(filename)
+    #         _add_to_current_variable(variable, key, _load_current_folder(load_as='set'))
+    #         os.chdir('..')
+
+    #     elif filename.endswith('.str.txt'):
+    #         key = filename[0:-len('.str.txt')]
+    #         file = open(filename, 'r')
+    #         _add_to_current_variable(variable, key, file.read())
+    #         file.close()
+
+    #     elif filename.endswith('.eval.txt'):
+    #         key = filename[0:-len('.eval.txt')]
+    #         file = open(filename, 'r')
+    #         _add_to_current_variable(variable, key, literal_eval(file.read()))
+    #         file.close()
+
+    #     elif filename.endswith('.ndarray.txt'):
+    #         key = filename[0:-len('.ndarray.txt')]
+    #         dataframe = pd.read_csv(filename, sep='\t',
+    #                                 quoting=csv.QUOTE_NONNUMERIC)
+    #         dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
+    #         _add_to_current_variable(variable, key, dict_of_arrays['Data'])
+
+    #         os.chdir('..')
+
+    # if load_as == 'tuple':
+    #     variable = tuple(variable)
+    # elif load_as == 'set':
+    #     variable = set(variable)
+
+    # return variable
 
 
 def load(filename):
@@ -347,27 +375,38 @@ def load(filename):
         raise ValueError('filename must be a string.')
 
     basename = os.path.basename(filename)
-    temp_folder_name = ktk.config.temp_folder + '/~temp.' + basename
 
-    original_folder = os.getcwd()
+    temp_folder_name = ktk.config.temp_folder + '/' + basename
+
+    # We will rename the folder to .dict to uniformize loading using _load
+    new_temp_folder_name = (
+        temp_folder_name[0:-len('.ktk.zip')] + '.dict')
 
     try:
         shutil.rmtree(temp_folder_name)
     except Exception:
         pass
+    try:
+        shutil.rmtree(new_temp_folder_name)
+    except Exception:
+        pass
 
     os.mkdir(temp_folder_name)
     shutil.unpack_archive(filename, extract_dir=temp_folder_name)
-    os.chdir(temp_folder_name)
-    variable = _load_current_folder()
-    os.chdir(original_folder)
 
-    shutil.rmtree(temp_folder_name)
-    # Extract the first element (and only one) of this variable, to mirror
-    # save function.
-    for key, value in variable.items():
-        return value
+    new_temp_folder_name = (
+        temp_folder_name[0:-len('.ktk.zip')] + '.dict')
 
+    os.rename(temp_folder_name, new_temp_folder_name)
+
+    variable = _load(new_temp_folder_name)[1]
+
+    shutil.rmtree(new_temp_folder_name)
+
+    # Return the entry that corresponds to the contents
+    for key in variable:
+        if key != 'metadata':
+            return variable[key]
 
 def loadmat(filename):
     """
