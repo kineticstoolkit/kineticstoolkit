@@ -101,63 +101,64 @@ def dataframe_to_dict_of_arrays(dataframe):
         array([ 9, 10, 11])
 
     """
-    # Init output
+    # Search for the column names and their dimensions
+    # At the end, we end with something like:
+    #    dimensions['Data1'] = []
+    #    dimensions['Data2'] = [[0], [1], [2]]
+    #    dimensions['Data3'] = [[0,0],[0,1],[1,0],[1,1]]
+    dimensions = dict()
+    for column in dataframe.columns:
+        splitted = column.split('[')
+        if len(splitted) == 1:  # No brackets
+            dimensions[column] = []
+        else:  # With brackets
+            key = splitted[0]
+            index = literal_eval('[' + splitted[1])
+
+            if key in dimensions:
+                dimensions[key].append(index)
+            else:
+                dimensions[key] = [index]
+
+    n_samples = len(dataframe)
+
+    # Assign the columns to the output
     out = dict()
-
-    # Search for the column names and highest dimensions
-    all_column_names = dataframe.columns
-    all_data_names = []
-    all_data_highest_indices = []
-    length = len(dataframe)
-
-    for one_column_name in all_column_names:
-        opening_bracket_position = one_column_name.find('[')
-        if opening_bracket_position == -1:
-            # No dimension for this data
-            all_data_names.append(one_column_name)
-            all_data_highest_indices.append([length - 1])
+    for key in dimensions:
+        if len(dimensions[key]) == 0:
+            out[key] = dataframe[key].to_numpy()
         else:
-            # Extract name and dimension
-            data_name = one_column_name[0:opening_bracket_position]
-            data_dimension = literal_eval(
-                '[' + str(length - 1) + ',' +
-                one_column_name[opening_bracket_position + 1:])
+            columns = [key + str(dim) for dim in sorted(dimensions[key])]
+            out[key] = dataframe[columns].to_numpy()
 
-            all_data_names.append(data_name)
-            all_data_highest_indices.append(data_dimension)
 
-    # Create a set of unique_data_names
-    unique_data_names = []
-    for data_name in all_data_names:
-        if data_name not in unique_data_names:
-            unique_data_names.append(data_name)
 
-    for unique_data_name in unique_data_names:
+    # for unique_data_name in unique_data_names:
 
-        # Create a Pandas DataFrame with only the columns that match
-        # this unique data name. In the same time, check the final
-        # dimension of the data to know to which dimension we will
-        # reshape the DataFrame's data.
-        sub_dataframe = pd.DataFrame()
-        unique_data_highest_index = []
-        for i in range(0, len(all_data_names)):
-            if all_data_names[i] == unique_data_name:
-                sub_dataframe[all_column_names[i]] = (
-                        dataframe[all_column_names[i]])
-                unique_data_highest_index.append(
-                        all_data_highest_indices[i])
+    #     # Create a Pandas DataFrame with only the columns that match
+    #     # this unique data name. In the same time, check the final
+    #     # dimension of the data to know to which dimension we will
+    #     # reshape the DataFrame's data.
+    #     sub_dataframe = pd.DataFrame()
+    #     unique_data_highest_index = []
+    #     for i in range(0, len(all_data_names)):
+    #         if all_data_names[i] == unique_data_name:
+    #             sub_dataframe[all_column_names[i]] = (
+    #                     dataframe[all_column_names[i]])
+    #             unique_data_highest_index.append(
+    #                     all_data_highest_indices[i])
 
-        # Sort the sub-dataframe's columns
-        sub_dataframe.reindex(sorted(sub_dataframe.columns), axis=1)
+    #     # Sort the sub-dataframe's columns
+    #     sub_dataframe.reindex(sorted(sub_dataframe.columns), axis=1)
 
-        # Calculate the data dimension we must reshape to
-        unique_data_dimension = np.max(
-                np.array(unique_data_highest_index)+1, axis=0)
+    #     # Calculate the data dimension we must reshape to
+    #     unique_data_dimension = np.max(
+    #             np.array(unique_data_highest_index)+1, axis=0)
 
-        # Convert the dataframe to a np.array, then reshape.
-        new_data = sub_dataframe.to_numpy()
-        new_data = np.reshape(new_data, unique_data_dimension)
-        out[unique_data_name] = new_data
+    #     # Convert the dataframe to a np.array, then reshape.
+    #     new_data = sub_dataframe.to_numpy()
+    #     new_data = np.reshape(new_data, unique_data_dimension)
+    #     out[unique_data_name] = new_data
 
     return out
 
