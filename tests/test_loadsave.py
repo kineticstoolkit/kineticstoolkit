@@ -17,7 +17,7 @@ import os
 def test_save_load():
     """Test the save and load functions."""
     # Create a test variable with all possible supported combinations
-    random_variable = np.random.rand(30, 3, 3)
+    random_variable = np.random.rand(5, 2, 2)
     ts = ktk.TimeSeries()
     ts.time = np.linspace(0, 9, 10)
     ts.data['signal1'] = np.random.rand(10)
@@ -43,8 +43,8 @@ def test_save_load():
     a['TestTuple'] = (1, 'test2', False)
     a['TestBigList'] = list(np.arange(-1, 1, 1E-4))
     a['TestDict'] = {'key1': 'value1',
-                     'key2': 10,
-                     'key3': True}
+                      'key2': 10,
+                      'key3': True}
     a['TestComplexDict'] = {'key1': 'value1',
                             'key2': 10,
                             'key3': ts.copy()}
@@ -53,8 +53,8 @@ def test_save_load():
                             True, np.pi, (34.05+2j),
                             [1, 2, 3, 4], (1, 2, 3, 4),
                             {'key1': 'value1',
-                             'key2': 10,
-                             'key3': ts.copy()}
+                              'key2': 10,
+                              'key3': ts.copy()}
                             ]
     a['TestComplexTuple'] = tuple(a['TestComplexList'])
 

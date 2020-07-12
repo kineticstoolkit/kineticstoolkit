@@ -101,6 +101,19 @@ def dataframe_to_dict_of_arrays(dataframe):
         array([ 9, 10, 11])
 
     """
+
+    # Remove spaces in indexes between brackets
+    columns = dataframe.columns
+    new_columns = []
+    for i_column, column in enumerate(columns):
+        splitted = column.split('[')
+        if len(splitted) > 1:  # There are brackets
+            new_columns.append(
+                splitted[0] + '[' + splitted[1].replace(' ', ''))
+        else:
+            new_columns.append(column)
+    dataframe.columns = columns
+
     # Search for the column names and their dimensions
     # At the end, we end with something like:
     #    dimensions['Data1'] = []
@@ -128,8 +141,14 @@ def dataframe_to_dict_of_arrays(dataframe):
         if len(dimensions[key]) == 0:
             out[key] = dataframe[key].to_numpy()
         else:
-            columns = [key + str(dim) for dim in sorted(dimensions[key])]
+            highest_dims = np.max(np.array(dimensions[key]), axis=0)
+
+            columns = [key + str(dim).replace(' ', '')
+                       for dim in sorted(dimensions[key])]
             out[key] = dataframe[columns].to_numpy()
+            out[key] = np.reshape(out[key],
+                                  [n_samples] + (highest_dims + 1).tolist())
+
 
 
 
