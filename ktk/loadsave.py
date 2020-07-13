@@ -21,128 +21,15 @@ from ast import literal_eval
 import csv
 import warnings
 import shutil
-
-
-def _save(folder_name, variable_name, variable):
-    """Save a variable in a folder. This function is called by save."""
-
-    # Try the easiest way: save the string representation of the variable.
-    try:
-        string = str(variable)
-        test_variable = literal_eval(string)
-        assert test_variable == variable
-
-        with open(folder_name + '/' + variable_name + '.eval.txt', 'w') as fid:
-            fid.write(string)
-        return
-    except Exception:
-        pass
-
-    # It didn't work, we will have some work to do.
-    if type(variable) == dict:
-        this_folder_name = folder_name + '/' + variable_name + '.dict'
-        os.mkdir(this_folder_name)
-        for dict_key, dict_variable in variable.items():
-            _save(folder_name=this_folder_name,
-                  variable_name=dict_key,
-                  variable=dict_variable)
-
-    elif type(variable) == list or type(variable) == tuple:
-        this_folder_name = folder_name + '/' + variable_name + '.list'
-        os.mkdir(this_folder_name)
-        for i_item, item in enumerate(variable):
-            _save(folder_name=this_folder_name,
-                  variable_name=str(i_item),
-                  variable=item)
-
-    elif type(variable) == np.ndarray:
-        dataframe = dict_of_arrays_to_dataframe({'Data': variable})
-        dataframe.to_csv(folder_name + '/' + variable_name + '.ndarray.txt',
-                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                         header=True)
-
-    elif type(variable) == str:
-        with open(folder_name + '/' + variable_name + '.str.txt', 'w') as fid:
-            fid.write(variable)
-
-    elif str(type(variable)) == "<class 'ktk.timeseries.TimeSeries'>":
-        # This string comparison instead of a type check is because ktk is
-        # often reloading in iPython with %autoreload activated. This causes
-        # new class definitions to be declared and old instances of
-        # TimeSeries are then not recognized as the same class than the new
-        # class definition. To work around this, I compare the string
-        # representation of type(variable), which does not change between
-        # class redefinitions.
-        this_folder_name = folder_name + '/' + variable_name + '.TimeSeries'
-        os.mkdir(this_folder_name)
-
-        # data and time
-        variable = variable.copy()
-        np_data = variable.data
-        np_data['time'] = variable.time
-        dataframe = dict_of_arrays_to_dataframe(np_data)
-        dataframe.to_csv(this_folder_name + '/data.txt',
-                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                         index=False)
-
-        # events
-        if len(variable.events) > 0:
-            df_events = pd.DataFrame(variable.events)
-            df_events.columns = ['time', 'name']
-        else:
-            df_events = pd.DataFrame(columns=['time', 'name'])
-
-        df_events.to_csv(this_folder_name + '/events.txt',
-                         sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                         index=False)
-
-        # info
-        df_time_info = pd.DataFrame({'time': variable.time_info})
-        df_data_info = pd.DataFrame(variable.data_info)
-        df_info = pd.concat([df_time_info, df_data_info],
-                            axis=1, sort=False)
-
-        df_info.to_csv(this_folder_name + '/info.txt',
-                       sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-
-    else:
-        warnings.warn(f'The variable {variable_name} could not be '
-                      f'saved because its type or contents is not '
-                      'supported.')
+import hdf5storage as h5
 
 
 def save(filename, variable):
     """
-    Save a variable in a zip file.
+    Save a variable as a mat file.
 
-    The supported variable types are:
-
-        - Any basic builtin type that can be reconstructed using its string
-          representation. For example, if str(the_variable) evaluates to the
-          variable, then this variable can be saved.
-          This includes str, int, float, complex and bool.
-          This also includes lists and tuples if they contain such variables
-          (if they can also be reconstructed completely by evaluating their
-          string representation).
-        - Multidimensional NumPy Arrays. They are saved as txt files, where
-          each line correspond to the first dimension of the array, and where
-          all other dimensions are reshaped as columns. The column headers
-          include brackets so that it is clear what column corresponds to
-          what dimension of the original multidimensional array.
-        - ktkTimeSeries. They are saved as a folder that contains:
-            - data.txt : The time and data as a table. Multidimensional arrays
-              are reshaped as for the NumPy arrays.
-            - events.txt : A list of events as a table, with a column of time
-              and a column of event names.
-            - info.txt : A list of time and data info as a table.
-        - Dictionaries. They are saved as folders, where the content of the
-          folder corresponds to the keys of the dict. Thus, nested dicts
-          are saved as nested folders, and Dictionaries of NumPy arrays or
-          ktk.TimeSeries are saved as txt files inside a structure file
-          hierarchy.
-
-    The function generates a warning if a variable type is unsupported, and
-    the corresponding variable is not saved.
+    All types that are supported by hdf5storage are supported, in addition
+    to ktk's TimeSeries.
 
     Parameters
     ----------
@@ -157,43 +44,54 @@ def save(filename, variable):
     -------
     None.
     """
-    save_folder = os.path.dirname(filename)
-    if save_folder == '':
-        save_folder = '.'
 
-    filename = os.path.basename(filename)
+    def recurse_export_timeseries(variable):
+        if type(variable) == list or type(variable) == tuple:
 
-    # Convert 'filename' and 'filename.ktk.zip' to 'filename.ktk'
-    if filename.lower().endswith('.zip'):
-        filename = filename[0:-len('.zip')]
-    if not filename.lower().endswith('.ktk'):
-        filename = filename + '.ktk'
+            non_flat_list = any((isinstance(x, list) or
+                                 isinstance(x, dict) or
+                                 isinstance(x, tuple) for x in variable))
+            if non_flat_list:
+                # There is a chance that this list can contain a TimeSeries.
+                # Recurse it.
+                new_variable = []
+                for item in variable:
+                    new_variable.append(recurse_export_timeseries(item))
 
-    # Create and empty temp folder
-    temp_folder_name = ktk.config.temp_folder + '/' + filename
-    try:
-        shutil.rmtree(temp_folder_name)
-    except Exception:
-        pass
-    os.mkdir(temp_folder_name)
+                if type(variable) == tuple:
+                    return tuple(new_variable)
+                else:
+                    return new_variable
 
-    # Save the file hierarchy
-    _save(folder_name=temp_folder_name,
-          variable_name=filename,
-          variable=variable)
+            else:
+                # This list is flat. Return it.
+                return variable
 
-    os.mkdir(temp_folder_name + '/metadata.dict')
-    with open(temp_folder_name +
-              '/metadata.dict/file_version.str.txt', 'w') as fid:
-        fid.write('1.0\n')
+        elif type(variable) == dict:
+            new_variable = {}
+            for key in variable:
+                new_variable[key] = recurse_export_timeseries(variable[key])
+            return new_variable
 
-    # Zip it into its final destination
-    shutil.make_archive(save_folder + '/' + filename,
-                        'zip',
-                        temp_folder_name)
+        elif str(type(variable)) == "<class 'ktk.timeseries.TimeSeries'>":
+            new_variable = {}
+            new_variable['type'] = 'ktk.TimeSeries'
+            new_variable['time'] = variable.time
+            new_variable['data'] = variable.data
+            new_variable['time_info'] = variable.time_info
+            new_variable['data_info'] = variable.data_info
+            new_variable['events'] = []
+            for event in variable.events:
+                new_variable['events'].append({
+                    'time': event.time,
+                    'name': event.name})
+            return new_variable
+        else:
+            return variable
 
-    # Clear the temporary folder
-    shutil.rmtree(temp_folder_name)
+    mdict = {}
+    mdict['contents'] = variable
+    h5.savemat(filename, recurse_export_timeseries(mdict))
 
 
 def _add_to_current_variable(variable, key, value):
@@ -303,60 +201,54 @@ def _load(filename):
         return ('', None)
 
 
+def _load_ktk_h5(filename):
 
-    # list_of_files = os.listdir(folder)
-    # for filename in sorted(list_of_files):
+    def recurse_import_timeseries(variable):
+        if type(variable) == list or type(variable) == tuple:
+            non_flat_list = any((isinstance(x, list) or
+                                 isinstance(x, dict) or
+                                 isinstance(x, tuple) for x in variable))
+            if non_flat_list:
+                new_variable = []
+                for item in variable:
+                    new_variable.append(recurse_import_timeseries(item))
 
-    #     elif filename.endswith('.list'):
-    #         key = filename[0:-len('.list')]
-    #         os.chdir(filename)
-    #         _add_to_current_variable(variable, key, _load_current_folder(load_as='list'))
-    #         os.chdir('..')
+                if type(variable) == tuple:
+                    return tuple(new_variable)
+                else:
+                    return new_variable
+            else:
+                return variable
 
-    #     elif filename.endswith('.tuple'):
-    #         key = filename[0:-len('.tuple')]
-    #         os.chdir(filename)
-    #         _add_to_current_variable(variable, key, _load_current_folder(load_as='tuple'))
-    #         os.chdir('..')
+        elif type(variable) == dict:
+            if 'type' in variable and variable['type'] == 'ktk.TimeSeries':
+                new_variable = ktk.TimeSeries(
+                    time=variable['time'],
+                    data=variable['data'],
+                    time_info=variable['time_info'],
+                    data_info=variable['data_info'])
+                for event in variable['events']:
+                    new_variable.add_event(event['time'], event['name'])
+            else:  # Just a standard dict.
+                new_variable = {}
+                for key in variable:
+                    new_variable[key] = recurse_import_timeseries(
+                        variable[key])
+            return new_variable
+        else:
+            return variable
 
-    #     elif filename.endswith('.set'):
-    #         key = filename[0:-len('.set')]
-    #         os.chdir(filename)
-    #         _add_to_current_variable(variable, key, _load_current_folder(load_as='set'))
-    #         os.chdir('..')
+    mdict = recurse_import_timeseries(h5.loadmat(filename))
 
-    #     elif filename.endswith('.str.txt'):
-    #         key = filename[0:-len('.str.txt')]
-    #         file = open(filename, 'r')
-    #         _add_to_current_variable(variable, key, file.read())
-    #         file.close()
+    return mdict['contents']
 
-    #     elif filename.endswith('.eval.txt'):
-    #         key = filename[0:-len('.eval.txt')]
-    #         file = open(filename, 'r')
-    #         _add_to_current_variable(variable, key, literal_eval(file.read()))
-    #         file.close()
 
-    #     elif filename.endswith('.ndarray.txt'):
-    #         key = filename[0:-len('.ndarray.txt')]
-    #         dataframe = pd.read_csv(filename, sep='\t',
-    #                                 quoting=csv.QUOTE_NONNUMERIC)
-    #         dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
-    #         _add_to_current_variable(variable, key, dict_of_arrays['Data'])
 
-    #         os.chdir('..')
-
-    # if load_as == 'tuple':
-    #     variable = tuple(variable)
-    # elif load_as == 'set':
-    #     variable = set(variable)
-
-    # return variable
 
 
 def load(filename):
     """
-    Load a KTK zip data file.
+    Load a KTK zip data file or KTK h5 file.
 
     Load a data file as saved using the ktk.save function.
 
@@ -373,6 +265,9 @@ def load(filename):
         raise ValueError('filename is empty.')
     if not isinstance(filename, str):
         raise ValueError('filename must be a string.')
+
+    if filename.endswith('.mat'):
+        return _load_ktk_h5(filename)
 
     basename = os.path.basename(filename)
 
