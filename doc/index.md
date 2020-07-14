@@ -18,8 +18,8 @@ Dataframes as intermediate data containers).
 
 !!! example
     markers = ktk.kinematics.read_c3d_file('my_file.c3d')
-
-	ktk.Player(markers)
+    
+    ktk.Player(markers)
 
 This library is a work in progress and is still very incomplete.
 The stable version API is however mostly settled and generally well tested

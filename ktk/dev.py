@@ -109,6 +109,47 @@ def generate_site():
     os.chdir(cwd)
 
 
+def clean():
+    """Delete temporary files that were used by the release process."""
+    cwd = os.getcwd()
+
+    # Clean /doc folder
+    os.chdir(ktk.config.root_folder + '/doc')
+
+    files = os.listdir()
+    for file in files:
+
+        # Remove all .md files that have a corresponding .ipynb file (since
+        # they were generated from the .ipynb).
+        if (file.endswith('.md') and
+            (file[0:-len('.md')] + '.ipynb') in files):
+            print(f'Removing doc/{file}.')
+            os.remove(file)
+
+        # Remove _files folder, since they are required by the site's html
+        # files but not by the source md and ipynb
+        elif file.endswith('_files') or file == 'api':
+            print(f'Removing doc/{file}.')
+            shutil.rmtree(file)
+
+    # Clean /site folder
+    os.chdir(ktk.config.root_folder + '/site')
+
+    files = os.listdir()
+    for file in files:
+
+        # Remove all source files
+        if file.endswith('.md') or file.endswith('.ipynb'):
+            print(f'Removing site/{file}.')
+            os.remove(file)
+
+        if file == '__pycache__':
+            print(f'Removing doc/{file}.')
+            shutil.rmtree(file)
+
+    os.chdir(cwd)
+
+
 def compile_for_pypi():
     """Compile for PyPi."""
     shutil.rmtree(ktk.config.root_folder + '/dist', ignore_errors=True)
@@ -134,3 +175,4 @@ def release():
     generate_api()
     generate_tutorials()
     generate_site()
+    clean()

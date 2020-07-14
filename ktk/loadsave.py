@@ -29,6 +29,8 @@ import csv
 import warnings
 import shutil
 import json
+from datetime import datetime
+import getpass
 
 
 def save(filename, variable):
@@ -36,18 +38,18 @@ def save(filename, variable):
     class CustomEncoder(json.JSONEncoder):
         def default(self, obj):
             if isinstance(obj, np.ndarray):
-                return {'__np.array__': True,
+                return {'OriginalClass': 'numpy.array',
                         'value': obj.tolist()}
 
             elif isinstance(obj, complex):
-                return {'__complex__': True,
+                return {'OriginalClass': 'complex',
                         'real': obj.real,
                         'imag': obj.imag,
                         }
 
             elif str(type(obj)) == "<class 'ktk.timeseries.TimeSeries'>":
                 out = {}
-                out['__ktk.TimeSeries__'] = True
+                out['OriginalClass'] = 'ktk.TimeSeries'
                 out['time'] = obj.time.tolist()
                 out['time_info'] = obj.time_info
                 out['data_info'] = obj.data_info
@@ -65,8 +67,28 @@ def save(filename, variable):
             else:
                 return super().default(obj)
 
+    now = datetime.now()
+    if ktk.config.is_pc:
+        computer = 'PC'
+    elif ktk.config.is_mac:
+        computer = 'Mac'
+    elif ktk.config.is_linux:
+        computer = 'Linux'
+    else:
+        computer = 'Unknown'
+
+    metadata = {
+        'Software': 'Kinetics Toolkit (ktk)',
+        'Version': ktk.config.version,
+        'Computer': computer,
+        'FileFormat': 1.0,
+        'SaveDate': now.strftime('%Y-%m-%d'),
+        'SaveTime': now.strftime('%H:%M:%S'),
+        'User': getpass.getuser()
+    }
+
     with open(filename, "w") as fid:
-        json.dump(variable, fid,
+        json.dump([metadata, variable], fid,
                   cls=CustomEncoder,
                   indent='\t')
 
@@ -75,22 +97,26 @@ def _load_json(filename):
     """Main function to load ktk's JSON file format."""
 
     def object_hook(obj):
-        if '__np.array__' in obj:
-            return np.array(obj['value'])
+        if 'OriginalClass' in obj:
+            if obj['OriginalClass'] == 'numpy.array':
+                return np.array(obj['value'])
 
-        elif '__complex__' in obj:
-            return obj['real'] + obj['imag'] * 1j
+            elif obj['OriginalClass'] == 'complex':
+                return obj['real'] + obj['imag'] * 1j
 
-        elif '__ktk.TimeSeries__' in obj:
-            out = ktk.TimeSeries()
-            out.time = obj['time']
-            out.time_info = obj['time_info']
-            out.data_info = obj['data_info']
-            for key in obj['data']:
-                out.data[key] = np.array(obj['data'][key])
-            for event in obj['events']:
-                out.add_event(event['time'], event['name'])
-            return out
+            elif obj['OriginalClass'] == 'ktk.TimeSeries':
+                out = ktk.TimeSeries()
+                out.time = obj['time']
+                out.time_info = obj['time_info']
+                out.data_info = obj['data_info']
+                for key in obj['data']:
+                    out.data[key] = np.array(obj['data'][key])
+                for event in obj['events']:
+                    out.add_event(event['time'], event['name'])
+                return out
+
+            else:
+                return obj
 
         else:
             return obj
@@ -98,7 +124,7 @@ def _load_json(filename):
     with open(filename, 'r') as fid:
         obj = json.load(fid, object_hook=object_hook)
 
-    return obj
+    return obj[1]
 
 
 def _load_ktk_zip(filename):

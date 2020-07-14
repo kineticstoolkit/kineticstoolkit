@@ -48,6 +48,9 @@ change_numpy_print_options = True  # Default is True
 
 # --- Automatic configuration
 
+# KTK version
+version = 'master'
+
 # Root folder (ktk installation)
 root_folder = os.path.dirname(os.path.dirname(__file__))
 
