@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
 <title>ktk.loadsave API documentation</title>
-<meta name="description" content="Provides functions to load .mat and .ktk.zip files, and to save .ktk.zip files." />
+<meta name="description" content="Provides functions to save and load data …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,7 +20,13 @@
 <h1 class="title">Module <code>ktk.loadsave</code></h1>
 </header>
 <section id="section-intro">
-<p>Provides functions to load .mat and .ktk.zip files, and to save .ktk.zip files.</p>
+<p>Provides functions to save and load data.</p>
+<p>Most of the functions in this module are temporary and only helpers for
+my transition from Matlab code to Python code. For example, the _loadmat
+function is very specific for my laboratory. When this module will have
+settled and all my lab's data will be converted to JSON, only the save and
+load functions will remain, and these functions will save and load using the
+JSON format.</p>
 </section>
 <section>
 </section>
@@ -58,7 +64,7 @@ converted to KTK Timeseries.</p>
 <span>def <span class="ident">load</span></span>(<span>filename)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Load a KTK zip data file.</p>
+<section class="desc"><p>Load a KTK json, zip or mat file.</p>
 <p>Load a data file as saved using the ktk.save function.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -68,62 +74,11 @@ converted to KTK Timeseries.</p>
 <h2 id="returns">Returns</h2>
 <p>The loaded variable.</p></section>
 </dd>
-<dt id="ktk.loadsave.loadmat"><code class="name flex">
-<span>def <span class="ident">loadmat</span></span>(<span>filename)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Load a Matlab's MAT file.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
-<dd>Path of the MAT file to load.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>The saved variable.</p></section>
-</dd>
 <dt id="ktk.loadsave.save"><code class="name flex">
 <span>def <span class="ident">save</span></span>(<span>filename, variable)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Save a variable in a zip file.</p>
-<p>The supported variable types are:</p>
-<pre><code>- Any basic builtin type that can be reconstructed using its string
-  representation. For example, if str(the_variable) evaluates to the
-  variable, then this variable can be saved.
-  This includes str, int, float, complex and bool.
-  This also includes lists and tuples if they contain such variables
-  (if they can also be reconstructed completely by evaluating their
-  string representation).
-- Multidimensional NumPy Arrays. They are saved as txt files, where
-  each line correspond to the first dimension of the array, and where
-  all other dimensions are reshaped as columns. The column headers
-  include brackets so that it is clear what column corresponds to
-  what dimension of the original multidimensional array.
-- ktkTimeSeries. They are saved as a folder that contains:
-    - data.txt : The time and data as a table. Multidimensional arrays
-      are reshaped as for the NumPy arrays.
-    - events.txt : A list of events as a table, with a column of time
-      and a column of event names.
-    - info.txt : A list of time and data info as a table.
-- Dictionaries. They are saved as folders, where the content of the
-  folder corresponds to the keys of the dict. Thus, nested dicts
-  are saved as nested folders, and Dictionaries of NumPy arrays or
-  ktk.TimeSeries are saved as txt files inside a structure file
-  hierarchy.
-</code></pre>
-<p>The function generates a warning if a variable type is unsupported, and
-the corresponding variable is not saved.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>filename</code></strong> :&ensp;<code>str</code></dt>
-<dd>The name of the output file. The '.ktk.zip' extension is optional, it
-is added automatically.</dd>
-<dt><strong><code>variable</code></strong> :&ensp;&lt;<code>any</code> <code>supported</code> <code>type</code>&gt;</dt>
-<dd>The variable to be saved. To save multiple variables at once, consider
-saving a dict.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>None.</p></section>
+<section class="desc"></section>
 </dd>
 </dl>
 </section>
@@ -146,7 +101,6 @@ saving a dict.</dd>
 <li><code><a title="ktk.loadsave.convert_cell_arrays_to_lists" href="#ktk.loadsave.convert_cell_arrays_to_lists">convert_cell_arrays_to_lists</a></code></li>
 <li><code><a title="ktk.loadsave.convert_to_timeseries" href="#ktk.loadsave.convert_to_timeseries">convert_to_timeseries</a></code></li>
 <li><code><a title="ktk.loadsave.load" href="#ktk.loadsave.load">load</a></code></li>
-<li><code><a title="ktk.loadsave.loadmat" href="#ktk.loadsave.loadmat">loadmat</a></code></li>
 <li><code><a title="ktk.loadsave.save" href="#ktk.loadsave.save">save</a></code></li>
 </ul>
 </li>

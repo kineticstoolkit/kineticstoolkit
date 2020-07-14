@@ -852,13 +852,9 @@ a dict with the fields corresponding to the request. For example:</p>
 
 
 <h2 id="saving-data-to-a-biomec-referenced-file">Saving data to a BIOMEC referenced file</h2>
-<p>The ktk library provides the function ktk.save to save a variable to a
-.ktk.zip file. The ktk.save function is helpful to save temporary results.</p>
-<p>However, sometimes we need to save results to BIOMEC so that these results
-become new inputs for subsequent work. In these case, we use the
-ktk.DBInterface's <code>save</code> method.</p>
-<p>For example, let's say we just synchronized the kinematics for Run1 of
-participant 1:</p>
+<p>The ktk library provides the function ktk.save to save a variable to a JSON file. The ktk.save function is helpful to save temporary results.</p>
+<p>However, sometimes we need to save results to BIOMEC so that these results become new inputs for subsequent work. In these case, we use the ktk.DBInterface's <code>save</code> method.</p>
+<p>For example, let's say we just synchronized the kinematics for Run1 of participant 1:</p>
 <div class="codehilite"><pre><span></span><code><span class="n">synced_kinematics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dummy_data&#39;</span><span class="p">:</span>
                      <span class="s1">&#39;Normally we would save something more useful&#39;</span><span class="p">}</span>
 </code></pre></div>
@@ -869,7 +865,7 @@ participant 1:</p>
 </code></pre></div>
 
 
-<div class="codehilite"><pre><span></span><code><span class="err">&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="err">&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.json&#39;</span>
 </code></pre></div>
 
 
@@ -880,7 +876,7 @@ a relevant name into the project folder.</p>
 </code></pre></div>
 
 
-<div class="codehilite"><pre><span></span><code><span class="err">&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip&#39;</span>
+<div class="codehilite"><pre><span></span><code><span class="err">&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.json&#39;</span>
 </code></pre></div>
 
 

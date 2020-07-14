@@ -647,7 +647,7 @@ tests were made and were successful:</p>
 <span class="n">total_mass</span> <span class="o">=</span> <span class="mi">75</span>
 
 <span class="c1"># Load kinetics</span>
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinetics.mat&#39;</span><span class="p">)</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinetics.mat&#39;</span><span class="p">)</span>
 <span class="n">kinetics</span> <span class="o">=</span> <span class="n">kinetics</span><span class="p">[</span><span class="s1">&#39;kineticsSWR&#39;</span><span class="p">]</span>
 
 <span class="c1"># Correct the signs so that the moments are in a correct coordinate system</span>
@@ -655,7 +655,7 @@ tests were made and were successful:</p>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span>
 
 <span class="c1"># Load kinematics</span>
-<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinematics.mat&#39;</span><span class="p">)</span>
+<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinematics.mat&#39;</span><span class="p">)</span>
 <span class="n">kinematics</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;kinematics&#39;</span><span class="p">]</span>
 <span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;Markers&#39;</span><span class="p">]</span>
 

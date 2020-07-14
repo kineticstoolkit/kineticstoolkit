@@ -12,7 +12,7 @@ def test_instanciate():
     """Test that instanciating a Player does not crash."""
 
     # Load markers
-    kinematics = ktk.loadmat(
+    kinematics = ktk.load(
         ktk.config.root_folder +
         '/doc/data/inversedynamics/basketball_kinematics.mat')
 

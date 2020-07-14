@@ -52,9 +52,8 @@ directory.append('DBInterface')
 from ktk.player import Player
 directory.append('Player')
 
-from ktk.loadsave import load, loadmat, save
+from ktk.loadsave import load, save
 directory.append('load')
-directory.append('loadmat')
 directory.append('save')
 
 from ktk import config

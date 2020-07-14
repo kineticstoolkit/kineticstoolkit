@@ -117,6 +117,11 @@ def test_batch_fix_file_type():
     # Let say we synchronized these files using an external software, and then we
     # exported the synchronized files into a separate folder.
     # (Here we will simply copy those files into a separate folder).
+    try:
+        shutil.rmtree(root_folder + '/synchronized_files')
+    except Exception:
+        pass
+
     os.mkdir(root_folder + '/synchronized_files')
 
     for file in file_list:

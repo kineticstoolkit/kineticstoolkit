@@ -170,7 +170,7 @@ File type label.</p>
 </code></dt>
 <dd>
 <section class="desc"><p>Load a variable from a BIOMEC referenced file.</p>
-<p>This method load the .ktk.zip file associated to a participant,
+<p>This method load the JSON data file associated to a participant,
 session, trial and file type.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -224,7 +224,7 @@ B) If the participant, session, trial and file labels are
 associated to a file entry but no file exists on disk:
 The file is created and saved in:
 root_folder/file_label/participant/session/
-dbfidxxxxn_{trial}.ktk.zip
+dbfidxxxxn_{trial}.json
 C) If the participant, session, trial and file labels do not
 correspond to a file entry in the database:
 - A file entry is created in the database;

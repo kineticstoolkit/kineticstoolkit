@@ -5,7 +5,14 @@
 #
 # This file is not for redistribution.
 """
-Provides functions to load .mat and .ktk.zip files, and to save .ktk.zip files.
+Provides functions to save and load data.
+
+Most of the functions in this module are temporary and only helpers for
+my transition from Matlab code to Python code. For example, the _loadmat
+function is very specific for my laboratory. When this module will have
+settled and all my lab's data will be converted to JSON, only the save and
+load functions will remain, and these functions will save and load using the
+JSON format.
 """
 
 from ktk.timeseries import TimeSeries
@@ -21,256 +28,189 @@ from ast import literal_eval
 import csv
 import warnings
 import shutil
-import hdf5storage as h5
+import json
 
 
 def save(filename, variable):
-    """
-    Save a variable as a mat file.
 
-    All types that are supported by hdf5storage are supported, in addition
-    to ktk's TimeSeries.
+    class CustomEncoder(json.JSONEncoder):
+        def default(self, obj):
+            if isinstance(obj, np.ndarray):
+                return {'__np.array__': True,
+                        'value': obj.tolist()}
 
-    Parameters
-    ----------
-    filename : str
-        The name of the output file. The '.ktk.zip' extension is optional, it
-        is added automatically.
-    variable : <any supported type>
-        The variable to be saved. To save multiple variables at once, consider
-        saving a dict.
+            elif isinstance(obj, complex):
+                return {'__complex__': True,
+                        'real': obj.real,
+                        'imag': obj.imag,
+                        }
 
-    Returns
-    -------
-    None.
-    """
-
-    def recurse_export_timeseries(variable):
-        if type(variable) == list or type(variable) == tuple:
-
-            non_flat_list = any((isinstance(x, list) or
-                                 isinstance(x, dict) or
-                                 isinstance(x, tuple) for x in variable))
-            if non_flat_list:
-                # There is a chance that this list can contain a TimeSeries.
-                # Recurse it.
-                new_variable = []
-                for item in variable:
-                    new_variable.append(recurse_export_timeseries(item))
-
-                if type(variable) == tuple:
-                    return tuple(new_variable)
-                else:
-                    return new_variable
+            elif str(type(obj)) == "<class 'ktk.timeseries.TimeSeries'>":
+                out = {}
+                out['__ktk.TimeSeries__'] = True
+                out['time'] = obj.time.tolist()
+                out['time_info'] = obj.time_info
+                out['data_info'] = obj.data_info
+                out['data'] = {}
+                for key in obj.data:
+                    out['data'][key] = obj.data[key].tolist()
+                out['events'] = []
+                for event in obj.events:
+                    out['events'].append({
+                        'time': event.time,
+                        'name': event.name,
+                    })
+                return out
 
             else:
-                # This list is flat. Return it.
-                return variable
+                return super().default(obj)
 
-        elif type(variable) == dict:
-            new_variable = {}
-            for key in variable:
-                new_variable[key] = recurse_export_timeseries(variable[key])
-            return new_variable
+    with open(filename, "w") as fid:
+        json.dump(variable, fid,
+                  cls=CustomEncoder,
+                  indent='\t')
 
-        elif str(type(variable)) == "<class 'ktk.timeseries.TimeSeries'>":
-            new_variable = {}
-            new_variable['type'] = 'ktk.TimeSeries'
-            new_variable['time'] = variable.time
-            new_variable['data'] = variable.data
-            new_variable['time_info'] = variable.time_info
-            new_variable['data_info'] = variable.data_info
-            new_variable['events'] = []
-            for event in variable.events:
-                new_variable['events'].append({
-                    'time': event.time,
-                    'name': event.name})
-            return new_variable
+
+def _load_json(filename):
+    """Main function to load ktk's JSON file format."""
+
+    def object_hook(obj):
+        if '__np.array__' in obj:
+            return np.array(obj['value'])
+
+        elif '__complex__' in obj:
+            return obj['real'] + obj['imag'] * 1j
+
+        elif '__ktk.TimeSeries__' in obj:
+            out = ktk.TimeSeries()
+            out.time = obj['time']
+            out.time_info = obj['time_info']
+            out.data_info = obj['data_info']
+            for key in obj['data']:
+                out.data[key] = np.array(obj['data'][key])
+            for event in obj['events']:
+                out.add_event(event['time'], event['name'])
+            return out
+
         else:
-            return variable
+            return obj
 
-    mdict = {}
-    mdict['contents'] = variable
-    h5.savemat(filename, recurse_export_timeseries(mdict))
+    with open(filename, 'r') as fid:
+        obj = json.load(fid, object_hook=object_hook)
 
-
-def _add_to_current_variable(variable, key, value):
-    """Used by _load_current_folder"""
-    if type(variable) == dict:
-        variable[key] = value
-    else:
-        variable.append(value)
+    return obj
 
 
-def _load(filename):
+def _load_ktk_zip(filename):
     """
-    Load the contents of a folder or filename.
+    Read the older ktk.zip file format.
 
-    Returns a tuple where the first element is the suffix
-    (.eval.txt, .dict, etc) and the second element is the contents.
+    This is a deprecated function as ktk.zip is to be removed soon.
     """
+    warnings.warn('This is a deprecated function. ktk.zip support is to be '
+                  'removed soon.')
 
-    # Easiest case:
-    if filename.endswith('.str.txt'):
-        with open(filename, 'r') as fid:
-            return ('.str.txt', fid.read())
+    def _load(filename):
+        """
+        Load the contents of a folder or filename.
 
-    # Next easiest:
-    elif filename.endswith('.eval.txt'):
-        with open(filename, 'r') as fid:
-            return ('.eval.txt', literal_eval(fid.read()))
+        Returns a tuple where the first element is the suffix
+        (.eval.txt, .dict, etc) and the second element is the contents.
+        """
 
-    elif filename.endswith('.dict'):
-        variable = dict()
-        list_of_files = os.listdir(filename)
-        for subfilename in list_of_files:
-            contents = _load(filename + '/' + subfilename)
-            key = subfilename[0:-len(contents[0])]
-            variable[key] = contents[1]
-        return ('.dict', variable)
+        # Easiest case:
+        if filename.endswith('.str.txt'):
+            with open(filename, 'r') as fid:
+                return ('.str.txt', fid.read())
 
-    elif filename.endswith('.list'):
-        variable = list()
-        file_list = os.listdir(filename)
-        indexes = [int(file.split('.')[0]) for file in file_list]
-        sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
+        # Next easiest:
+        elif filename.endswith('.eval.txt'):
+            with open(filename, 'r') as fid:
+                return ('.eval.txt', literal_eval(fid.read()))
 
-        for file in sorted_file_list:
-            contents = _load(filename + '/' + file)
-            variable.append(contents[1])
-        return ('.list', variable)
+        elif filename.endswith('.dict'):
+            variable = dict()
+            list_of_files = os.listdir(filename)
+            for subfilename in list_of_files:
+                contents = _load(filename + '/' + subfilename)
+                key = subfilename[0:-len(contents[0])]
+                variable[key] = contents[1]
+            return ('.dict', variable)
 
-    elif filename.endswith('.tuple'):
-        variable = list()
-        file_list = os.listdir(filename)
-        indexes = [int(file.split('.')[0]) for file in file_list]
-        sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
+        elif filename.endswith('.list'):
+            variable = list()
+            file_list = os.listdir(filename)
+            indexes = [int(file.split('.')[0]) for file in file_list]
+            sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
 
-        for file in sorted_file_list:
-            contents = _load(filename + '/' + file)
-            variable.append(contents[1])
-        return ('.tuple', tuple(variable))
+            for file in sorted_file_list:
+                contents = _load(filename + '/' + file)
+                variable.append(contents[1])
+            return ('.list', variable)
 
-    elif filename.endswith('.ndarray.txt'):
-        dataframe = pd.read_csv(filename, sep='\t',
-                                quoting=csv.QUOTE_NONNUMERIC)
-        dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
-        return ('.ndarray.txt', dict_of_arrays['Data'])
+        elif filename.endswith('.tuple'):
+            variable = list()
+            file_list = os.listdir(filename)
+            indexes = [int(file.split('.')[0]) for file in file_list]
+            sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
 
-    elif filename.endswith('.TimeSeries'):
+            for file in sorted_file_list:
+                contents = _load(filename + '/' + file)
+                variable.append(contents[1])
+            return ('.tuple', tuple(variable))
 
-        data = pd.read_csv(filename + '/data.txt',
-                            sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-        events = pd.read_csv(filename + '/events.txt',
-                              sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-        info = pd.read_csv(filename + '/info.txt',
-                            sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                            index_col=0)
+        elif filename.endswith('.ndarray.txt'):
+            dataframe = pd.read_csv(filename, sep='\t',
+                                    quoting=csv.QUOTE_NONNUMERIC)
+            dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
+            return ('.ndarray.txt', dict_of_arrays['Data'])
 
-        out = TimeSeries()
+        elif filename.endswith('.TimeSeries'):
 
-        # DATA AND TIME
-        # -------------
-        out.data = dataframe_to_dict_of_arrays(data)
-        out.time = out.data['time']
-        out.data.pop('time', None)
+            data = pd.read_csv(filename + '/data.txt',
+                                sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+            events = pd.read_csv(filename + '/events.txt',
+                                  sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+            info = pd.read_csv(filename + '/info.txt',
+                                sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                                index_col=0)
 
-        # EVENTS
-        # ------
-        for i_event in range(0, len(events)):
-            out.add_event(events.time[i_event], events.name[i_event])
+            out = TimeSeries()
 
-        # INFO
-        # ----
-        n_rows = len(info)
-        row_names = list(info.index)
-        for column_name in info.columns:
-            for i_row in range(0, n_rows):
-                one_info = info[column_name][i_row]
-                if str(one_info).lower() != 'nan':
-                    if column_name == 'time':
-                        out.time_info[row_names[i_row]] = one_info
-                    else:
-                        out.add_data_info(column_name, row_names[i_row],
-                                          one_info)
+            # DATA AND TIME
+            # -------------
+            out.data = dataframe_to_dict_of_arrays(data)
+            out.time = out.data['time']
+            out.data.pop('time', None)
 
-        return ('.TimeSeries', out)
+            # EVENTS
+            # ------
+            for i_event in range(0, len(events)):
+                out.add_event(events.time[i_event], events.name[i_event])
 
-    else:
-        warnings.warn(f'Could not load contents in {filename}')
-        return ('', None)
+            # INFO
+            # ----
+            n_rows = len(info)
+            row_names = list(info.index)
+            for column_name in info.columns:
+                for i_row in range(0, n_rows):
+                    one_info = info[column_name][i_row]
+                    if str(one_info).lower() != 'nan':
+                        if column_name == 'time':
+                            out.time_info[row_names[i_row]] = one_info
+                        else:
+                            out.add_data_info(column_name, row_names[i_row],
+                                              one_info)
 
+            return ('.TimeSeries', out)
 
-def _load_ktk_h5(filename):
-
-    def recurse_import_timeseries(variable):
-        if type(variable) == list or type(variable) == tuple:
-            non_flat_list = any((isinstance(x, list) or
-                                 isinstance(x, dict) or
-                                 isinstance(x, tuple) for x in variable))
-            if non_flat_list:
-                new_variable = []
-                for item in variable:
-                    new_variable.append(recurse_import_timeseries(item))
-
-                if type(variable) == tuple:
-                    return tuple(new_variable)
-                else:
-                    return new_variable
-            else:
-                return variable
-
-        elif type(variable) == dict:
-            if 'type' in variable and variable['type'] == 'ktk.TimeSeries':
-                new_variable = ktk.TimeSeries(
-                    time=variable['time'],
-                    data=variable['data'],
-                    time_info=variable['time_info'],
-                    data_info=variable['data_info'])
-                for event in variable['events']:
-                    new_variable.add_event(event['time'], event['name'])
-            else:  # Just a standard dict.
-                new_variable = {}
-                for key in variable:
-                    new_variable[key] = recurse_import_timeseries(
-                        variable[key])
-            return new_variable
         else:
-            return variable
+            warnings.warn(f'Could not load contents in {filename}')
+            return ('', None)
 
-    mdict = recurse_import_timeseries(h5.loadmat(filename))
-
-    return mdict['contents']
-
-
-
-
-
-def load(filename):
-    """
-    Load a KTK zip data file or KTK h5 file.
-
-    Load a data file as saved using the ktk.save function.
-
-    Parameters
-    ----------
-    filename : str
-        The path of the zip file to load.
-
-    Returns
-    -------
-    The loaded variable.
-    """
-    if filename is None:
-        raise ValueError('filename is empty.')
-    if not isinstance(filename, str):
-        raise ValueError('filename must be a string.')
-
-    if filename.endswith('.mat'):
-        return _load_ktk_h5(filename)
+    # Function begins here.
 
     basename = os.path.basename(filename)
-
     temp_folder_name = ktk.config.temp_folder + '/' + basename
 
     # We will rename the folder to .dict to uniformize loading using _load
@@ -303,7 +243,41 @@ def load(filename):
         if key != 'metadata':
             return variable[key]
 
-def loadmat(filename):
+
+def load(filename):
+    """
+    Load a KTK json, zip or mat file.
+
+    Load a data file as saved using the ktk.save function.
+
+    Parameters
+    ----------
+    filename : str
+        The path of the zip file to load.
+
+    Returns
+    -------
+    The loaded variable.
+    """
+    if filename is None:
+        raise ValueError('filename is empty.')
+    if not isinstance(filename, str):
+        raise ValueError('filename must be a string.')
+
+    if filename.lower().endswith('.json'):
+        return _load_json(filename)
+
+    elif filename.lower().endswith('.ktk.zip'):
+        return _load_ktk_zip(filename)
+
+    elif filename.lower().endswith('.mat'):
+        return _loadmat(filename)
+
+    else:
+        raise ValueError('The file must be either JSON, ktk.zip or MAT.')
+
+
+def _loadmat(filename):
     """
     Load a Matlab's MAT file.
 
@@ -422,9 +396,9 @@ def convert_to_timeseries(the_input):
         is_a_timeseries = True
 
         for the_key in the_input:
-            if (isinstance(the_input[the_key], dict) and
-                    ('OriginalClass' in the_input[the_key]) and
-                    (the_input[the_key]['OriginalClass'] == 'timeseries')):
+            if (isinstance(the_input[the_key], dict)
+                    and ('OriginalClass' in the_input[the_key])
+                    and (the_input[the_key]['OriginalClass'] == 'timeseries')):
                 pass
             else:
                 is_a_timeseries = False
@@ -452,10 +426,10 @@ def convert_to_timeseries(the_input):
                         the_shape = the_data.shape
                         if len(the_shape) == 2:
                             the_output.data[the_key] = \
-                                    the_data.transpose((1, 0))
+                                the_data.transpose((1, 0))
                         elif len(the_shape) == 3:
                             the_output.data[the_key] = \
-                                    the_data.transpose((2, 0, 1))
+                                the_data.transpose((2, 0, 1))
                         else:
                             the_output.data[the_key] = the_data
 
@@ -501,5 +475,3 @@ def _todict(variable):
         elem = variable.__dict__[strg]
         dict[strg] = elem
     return dict
-
-
