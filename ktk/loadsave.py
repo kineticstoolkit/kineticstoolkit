@@ -84,7 +84,7 @@ def save(filename, variable):
         'FileFormat': 1.0,
         'SaveDate': now.strftime('%Y-%m-%d'),
         'SaveTime': now.strftime('%H:%M:%S'),
-        'User': getpass.getuser()
+        'User': getpass.getuser(),
     }
 
     with open(filename, "w") as fid:

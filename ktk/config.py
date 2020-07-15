@@ -48,14 +48,15 @@ change_numpy_print_options = True  # Default is True
 
 # --- Automatic configuration
 
-# KTK version
-version = 'master'
-
 # Root folder (ktk installation)
 root_folder = os.path.dirname(os.path.dirname(__file__))
 
 # Home folder
 home_folder = os.path.expanduser("~")
+
+# KTK version
+with open(root_folder + '/VERSION', 'r') as fid:
+    version = fid.read()
 
 # Operating system
 is_pc = True if platform.system() == 'Windows' else False

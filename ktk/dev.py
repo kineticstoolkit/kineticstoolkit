@@ -32,6 +32,8 @@ import subprocess
 import shutil
 import webbrowser
 import doctest
+import multiprocessing
+import time
 
 
 def run_unit_tests():
@@ -60,18 +62,24 @@ def run_doc_tests():
                 pass
     os.chdir(cwd)
 
+def _generate_tutorial(file):
+    subprocess.call(['jupyter-nbconvert', '--execute',
+                     '--to', 'markdown', file])
 
 def generate_tutorials():
     """Generate the markdown from notebooks tutorials."""
+    print('Generating tutorials...')
+    now = time.time()
     cwd = os.getcwd()
 
     # Run notebooks to generate the tutorials
     os.chdir(ktk.config.root_folder + '/doc')
-    for file in os.listdir():
-        if file.endswith('.ipynb'):
-            subprocess.call(['jupyter-nbconvert', '--execute',
-                             '--to', 'markdown', file])
+    files = [file for file in os.listdir() if file.endswith('.ipynb')]
+    with multiprocessing.Pool() as pool:
+        pool.map(_generate_tutorial, files)
+
     os.chdir(cwd)
+    print(f'Done in {time.time() - now} seconds.')
 
 
 def generate_api():
