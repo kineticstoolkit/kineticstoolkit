@@ -7,6 +7,7 @@ Created on Fri Jul 19 14:57:41 2019
 """
 import ktk
 import numpy as np
+import pandas as pd
 import os
 
 
@@ -57,9 +58,11 @@ def test_save_load():
                               'key3': ts.copy()}
                             ]
     a['TestComplexTuple'] = tuple(a['TestComplexList'])
+    a['TestDataFrame'] = ts.to_dataframe()
+    a['TestSeries'] = a['TestDataFrame']['signal1']
 
-    ktk.save('test.json', a)
-    b = ktk.load('test.json')
+    ktk.save('test.ktk.zip', a)
+    b = ktk.load('test.ktk.zip')
     #os.remove('test.mat')
 
     assert a['TestTimeSeries'] == b['TestTimeSeries']
@@ -82,6 +85,8 @@ def test_save_load():
     for i in range(10):
         assert a['TestComplexTuple'][i] == b['TestComplexTuple'][i]
     assert a['TestComplexTuple'][10] == b['TestComplexTuple'][10]
+    pd.testing.assert_frame_equal(a['TestDataFrame'], b['TestDataFrame'])
+    pd.testing.assert_series_equal(a['TestSeries'], b['TestSeries'])
 
 
 if __name__ == "__main__":

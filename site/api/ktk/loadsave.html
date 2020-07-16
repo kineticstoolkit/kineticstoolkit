@@ -25,8 +25,8 @@
 my transition from Matlab code to Python code. For example, the _loadmat
 function is very specific for my laboratory. When this module will have
 settled and all my lab's data will be converted to JSON, only the save and
-load functions will remain, and these functions will save and load using the
-JSON format.</p>
+load functions will remain, and these functions will save and load using json
+files zipped into a .ktk.zip file.</p>
 </section>
 <section>
 </section>
@@ -64,7 +64,7 @@ converted to KTK Timeseries.</p>
 <span>def <span class="ident">load</span></span>(<span>filename)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Load a KTK json, zip or mat file.</p>
+<section class="desc"><p>Load a ktk.zip or mat file.</p>
 <p>Load a data file as saved using the ktk.save function.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -78,7 +78,25 @@ converted to KTK Timeseries.</p>
 <span>def <span class="ident">save</span></span>(<span>filename, variable)</span>
 </code></dt>
 <dd>
-<section class="desc"></section>
+<section class="desc"><p>Save a variable to a ktk.zip file.</p>
+<p>A ktk.zip file is a zipped folder containing two files:
+- metadata.json, which includes save date, user, etc.
+- data.json, which includes the data.</p>
+<p>The following classes are supported:
+- dict containing any supported class
+- list containing any supported class
+- str
+- int
+- float
+- True
+- False
+- None
+- numpy.array
+- pandas.DataFrame
+- pandas.Series
+- ktk.TimeSeries</p>
+<p>Tuples are also supported but will be loaded back as lists, without
+warning.</p></section>
 </dd>
 </dl>
 </section>

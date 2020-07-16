@@ -387,7 +387,7 @@ class DBInterface():
                associated to a file entry but no file exists on disk:
                    The file is created and saved in:
                    root_folder/file_label/participant/session/
-                   dbfidxxxxn_{trial}.json
+                   dbfidxxxxn_{trial}.ktk.zip
             C) If the participant, session, trial and file labels do not
                correspond to a file entry in the database:
                    - A file entry is created in the database;
@@ -419,7 +419,7 @@ class DBInterface():
 
         if 'FileName' in file_record and file_record['FileName'] is not None:
             file_name = file_record['FileName']
-            if not file_name.lower().endswith('.json'):
+            if not file_name.lower().endswith('.ktk.zip'):
                 raise ValueError('This would overwrite a non-ktk file.')
 
         else:
@@ -440,7 +440,7 @@ class DBInterface():
 
             file_name = os.path.join(self.root_folder, file, participant,
                                      session, dbfid + '_{' + trial + '}' +
-                                     '.json')
+                                     '.ktk.zip')
 
         # Save
         save(file_name, variable)
@@ -454,7 +454,7 @@ class DBInterface():
         """
         Load a variable from a BIOMEC referenced file.
 
-        This method load the JSON data file associated to a participant,
+        This method load the ktk.zip file associated to a participant,
         session, trial and file type.
 
         Parameters
