@@ -9,7 +9,7 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
       
-        <link rel="canonical" href="https://felixchenier.uqam.ca/ktk_develop/filters.html">
+        <link rel="canonical" href="https://felixchenier.uqam.ca/ktk_develop/loadsave.html">
       
       
       <link rel="shortcut icon" href="assets/images/favicon.png">
@@ -17,7 +17,7 @@
     
     
       
-        <title>Filters - Kinetics Toolkit - Development version</title>
+        <title>Saving and loading - Kinetics Toolkit - Development version</title>
       
     
     
@@ -60,7 +60,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#filters" class="md-skip">
+        <a href="#saving-and-loading" class="md-skip">
           Skip to content
         </a>
       
@@ -87,7 +87,7 @@
           </span>
           <span class="md-header-nav__topic md-ellipsis">
             
-              Filters
+              Saving and loading
             
           </span>
         </div>
@@ -287,11 +287,81 @@
       
       
 
+  
 
-  <li class="md-nav__item">
-    <a href="loadsave.html" title="Saving and loading" class="md-nav__link">
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Saving and loading
+        <span class="md-nav__icon md-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
+        </span>
+      </label>
+    
+    <a href="loadsave.html" title="Saving and loading" class="md-nav__link md-nav__link--active">
       Saving and loading
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+      </span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#saving-a-variable" class="md-nav__link">
+    Saving a variable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-a-variable" class="md-nav__link">
+    Loading a variable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-types" class="md-nav__link">
+    Supported types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ktkzip-format" class="md-nav__link">
+    The .ktk.zip format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-a-ktkzip-in-matlab" class="md-nav__link">
+    Loading a .ktk.zip in Matlab
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+    
   </li>
 
     
@@ -311,60 +381,11 @@
       
       
 
-  
 
-
-  <li class="md-nav__item md-nav__item--active">
-    
-    <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    
-      
-    
-    
-      <label class="md-nav__link md-nav__link--active" for="__toc">
-        Filters
-        <span class="md-nav__icon md-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 9h14V7H3v2m0 4h14v-2H3v2m0 4h14v-2H3v2m16 0h2v-2h-2v2m0-10v2h2V7h-2m0 6h2v-2h-2v2z"/></svg>
-        </span>
-      </label>
-    
-    <a href="filters.html" title="Filters" class="md-nav__link md-nav__link--active">
+  <li class="md-nav__item">
+    <a href="filters.html" title="Filters" class="md-nav__link">
       Filters
     </a>
-    
-      
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
-      </span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#smoothing-and-derivating-a-timeseries-with-a-savitzky-golay-filter" class="md-nav__link">
-    Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#butterworth-filter" class="md-nav__link">
-    Butterworth filter
-  </a>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-    
   </li>
 
     
@@ -580,15 +601,36 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#smoothing-and-derivating-a-timeseries-with-a-savitzky-golay-filter" class="md-nav__link">
-    Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter
+  <a href="#saving-a-variable" class="md-nav__link">
+    Saving a variable
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#butterworth-filter" class="md-nav__link">
-    Butterworth filter
+  <a href="#loading-a-variable" class="md-nav__link">
+    Loading a variable
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-types" class="md-nav__link">
+    Supported types
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-ktkzip-format" class="md-nav__link">
+    The .ktk.zip format
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#loading-a-ktkzip-in-matlab" class="md-nav__link">
+    Loading a .ktk.zip in Matlab
   </a>
   
 </li>
@@ -609,100 +651,202 @@
                   
                 
                 
-                <h1 id="filters">Filters</h1>
-<p>The <code>filters</code> module wraps some filters to use directly with ktk's TimeSeries objects. These filters are convenience wrappers for scipy's filters.</p>
-<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">ktk</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+                <h1 id="saving-and-loading">Saving and loading</h1>
+<p>Contrarily to Matlab with its .mat file, python does not come with a single standard way to save data. To ease saving and sharing data, Kinetics Toolkit provides two functions that load and save its own <code>.ktk.zip</code> format.</p>
+<p>Let's create a dummy variable with some stuff in it.</p>
+<div class="codehilite"><pre><span></span><code><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">json</span>
+
+<span class="n">variable1</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;some_array&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+             <span class="s1">&#39;some_timeseries&#39;</span><span class="p">:</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span>
+                 <span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+                 <span class="n">data</span><span class="o">=</span><span class="p">{</span>
+                     <span class="s1">&#39;data1&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">),</span>
+                     <span class="s1">&#39;data2&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span>
+                 <span class="p">})</span>
+            <span class="p">}</span>
 </code></pre></div>
 
 
-<h2 id="smoothing-and-derivating-a-timeseries-with-a-savitzky-golay-filter">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter</h2>
-<p>This filter applies the <code>scipy.signal.savgol_filter</code> filter to a TimeSeries. To see it in effect, let's define a TimeSeries with some dummy data.</p>
-<div class="codehilite"><pre><span></span><code><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
-
-<span class="n">tsin</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
-<span class="n">tsin</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-<span class="n">tsin</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data2&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">**</span><span class="mi">2</span>
+<h2 id="saving-a-variable">Saving a variable</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">ktk</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;filename.ktk.zip&#39;</span><span class="p">,</span> <span class="n">variable1</span><span class="p">)</span>
 </code></pre></div>
 
 
-<p>To smooth the TimeSeries' data:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">tsin</span><span class="p">,</span>
-                       <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                       <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                       <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">y</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<h2 id="loading-a-variable">Loading a variable</h2>
+<div class="codehilite"><pre><span></span><code><span class="n">variable2</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;filename.ktk.zip&#39;</span><span class="p">)</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_5_0.png" /></p>
-<p>To calculate the first derivative of the TimeSeries' data:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">doty</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">tsin</span><span class="p">,</span>
-                          <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                          <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                          <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">doty</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<p>As expected, <code>variable2</code> is equal to <code>variable1</code>:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">variable1</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_7_0.png" /></p>
-<p>To calculate the second derivative of the TimeSeries' data:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">ddoty</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">tsin</span><span class="p">,</span>
-                           <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                           <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                           <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ddoty</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">           &#39;some_array&#39;: &lt;array of shape (10,)&gt;,</span>
+<span class="err">      &#39;some_timeseries&#39;: TimeSeries with attributes: data: &lt;dict with 2 entries&gt;, ...</span>
+<span class="err">}</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_9_0.png" /></p>
-<p>And so on.</p>
-<p>We can also smooth a signal with the smoothing filter <code>smooth</code>, which is a convenience function that smooths a TimeSeries using a moving average of N samples. It calls the Savitzky-Golay filter with a polynom order of 0. For example, let's define a TimeSeries with some random data inside:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="mf">0.7060</span><span class="p">,</span> <span class="mf">0.0318</span><span class="p">,</span> <span class="mf">0.2769</span><span class="p">,</span> <span class="mf">0.0462</span><span class="p">,</span> <span class="mf">0.0971</span><span class="p">,</span> <span class="mf">0.8235</span><span class="p">,</span> <span class="mf">0.6948</span><span class="p">,</span>
-         <span class="mf">0.3171</span><span class="p">,</span> <span class="mf">0.9502</span><span class="p">,</span> <span class="mf">0.0344</span><span class="p">,</span> <span class="mf">0.4387</span><span class="p">,</span> <span class="mf">0.3816</span><span class="p">,</span> <span class="mf">0.7655</span><span class="p">,</span> <span class="mf">0.7952</span><span class="p">,</span>
-         <span class="mf">0.1869</span><span class="p">,</span> <span class="mf">0.4898</span><span class="p">,</span> <span class="mf">0.4456</span><span class="p">,</span> <span class="mf">0.6463</span><span class="p">,</span> <span class="mf">0.7094</span><span class="p">,</span> <span class="mf">0.7547</span><span class="p">,</span> <span class="mf">0.2760</span><span class="p">,</span>
-         <span class="mf">0.6797</span><span class="p">,</span> <span class="mf">0.6551</span><span class="p">,</span> <span class="mf">0.1626</span><span class="p">,</span> <span class="mf">0.1190</span><span class="p">,</span> <span class="mf">0.4984</span><span class="p">,</span> <span class="mf">0.9597</span><span class="p">,</span> <span class="mf">0.3404</span><span class="p">,</span>
-         <span class="mf">0.5853</span><span class="p">,</span> <span class="mf">0.2238</span><span class="p">])</span>
-
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
-<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="n">variable2</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_11_0.png" /></p>
-<p>To smooth this function using a moving average on 5 samples:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">y</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
-
-<span class="n">y</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">           &#39;some_array&#39;: &lt;array of shape (10,)&gt;,</span>
+<span class="err">      &#39;some_timeseries&#39;: TimeSeries with attributes: data: &lt;dict with 2 entries&gt;, ...</span>
+<span class="err">}</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_13_0.png" /></p>
-<h2 id="butterworth-filter">Butterworth filter</h2>
-<p>The <code>butter</code> method applies a butterworth filter on a TimeSeries, using <code>scipy.signal</code>'s functions.</p>
-<p>Let's define a TimeSeries with a sinusoidal signal at 1 Hz, with an amplitude of 1:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-
-<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<h2 id="supported-types">Supported types</h2>
+<p><code>ktk.save</code> supports any combination of the following types:</p>
+<ul>
+<li>dict containing any supported class</li>
+<li>list containing any supported class</li>
+<li>str</li>
+<li>int</li>
+<li>float</li>
+<li>True</li>
+<li>False</li>
+<li>None</li>
+<li>numpy.array</li>
+<li>pandas.DataFrame</li>
+<li>pandas.Series</li>
+<li>ktk.TimeSeries</li>
+</ul>
+<h2 id="the-ktkzip-format">The .ktk.zip format</h2>
+<p>The <code>.ktk.zip</code> format is built to be as portable and simple as possible. It is a standard zip file that contains two JSON files:</p>
+<ul>
+<li>metadata.json: The file metadata such as the save date, the computer's operating system, etc.</li>
+<li>data.json: The data saved as a standard json file. The data types that are not supported natively by the JSON file format (e.g., numpy, pandas and ktk objects) are converted to supported objects so that they are fully readable in other environments such as Matlab.</li>
+</ul>
+<p>For example, let's examine the file we just saved:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s1">&#39;filename.ktk.zip&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;metadata.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_15_0.png" /></p>
-<p>To filter at 1 Hz, with an order 1:</p>
-<div class="codehilite"><pre><span></span><code><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">&#39;low&#39;</span><span class="p">)</span>
-
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">    &quot;Software&quot;: &quot;Kinetics Toolkit (ktk)&quot;,</span>
+<span class="err">    &quot;Version&quot;: &quot;master&quot;,</span>
+<span class="err">    &quot;Computer&quot;: &quot;Mac&quot;,</span>
+<span class="err">    &quot;FileFormat&quot;: 1.0,</span>
+<span class="err">    &quot;SaveDate&quot;: &quot;2020-07-16&quot;,</span>
+<span class="err">    &quot;SaveTime&quot;: &quot;15:20:02&quot;,</span>
+<span class="err">    &quot;User&quot;: &quot;felix&quot;</span>
+<span class="err">}</span>
 </code></pre></div>
 
 
-<p><img alt="png" src="filters_files/filters_17_0.png" /></p>
-<p>For more information on filters, please check the <a href="api/ktk/filters.html">API Reference</a>.</p>
+<div class="codehilite"><pre><span></span><code><span class="nb">print</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">&#39;data.json&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+</code></pre></div>
+
+
+<div class="codehilite"><pre><span></span><code><span class="err">{</span>
+<span class="err">    &quot;some_array&quot;: {</span>
+<span class="err">        &quot;class__&quot;: &quot;numpy.array&quot;,</span>
+<span class="err">        &quot;value&quot;: [</span>
+<span class="err">            0.0,</span>
+<span class="err">            0.5,</span>
+<span class="err">            1.0,</span>
+<span class="err">            1.5,</span>
+<span class="err">            2.0,</span>
+<span class="err">            2.5,</span>
+<span class="err">            3.0,</span>
+<span class="err">            3.5,</span>
+<span class="err">            4.0,</span>
+<span class="err">            4.5</span>
+<span class="err">        ]</span>
+<span class="err">    },</span>
+<span class="err">    &quot;some_timeseries&quot;: {</span>
+<span class="err">        &quot;class__&quot;: &quot;ktk.TimeSeries&quot;,</span>
+<span class="err">        &quot;time&quot;: [</span>
+<span class="err">            0,</span>
+<span class="err">            1,</span>
+<span class="err">            2,</span>
+<span class="err">            3,</span>
+<span class="err">            4,</span>
+<span class="err">            5,</span>
+<span class="err">            6,</span>
+<span class="err">            7,</span>
+<span class="err">            8,</span>
+<span class="err">            9</span>
+<span class="err">        ],</span>
+<span class="err">        &quot;time_info&quot;: {</span>
+<span class="err">            &quot;Unit&quot;: &quot;s&quot;</span>
+<span class="err">        },</span>
+<span class="err">        &quot;data_info&quot;: {},</span>
+<span class="err">        &quot;data&quot;: {</span>
+<span class="err">            &quot;data1&quot;: [</span>
+<span class="err">                0,</span>
+<span class="err">                1,</span>
+<span class="err">                2,</span>
+<span class="err">                3,</span>
+<span class="err">                4,</span>
+<span class="err">                5,</span>
+<span class="err">                6,</span>
+<span class="err">                7,</span>
+<span class="err">                8,</span>
+<span class="err">                9</span>
+<span class="err">            ],</span>
+<span class="err">            &quot;data2&quot;: [</span>
+<span class="err">                0,</span>
+<span class="err">                1,</span>
+<span class="err">                4,</span>
+<span class="err">                9,</span>
+<span class="err">                16,</span>
+<span class="err">                25,</span>
+<span class="err">                36,</span>
+<span class="err">                49,</span>
+<span class="err">                64,</span>
+<span class="err">                81</span>
+<span class="err">            ]</span>
+<span class="err">        },</span>
+<span class="err">        &quot;events&quot;: []</span>
+<span class="err">    }</span>
+<span class="err">}</span>
+</code></pre></div>
+
+
+<h2 id="loading-a-ktkzip-in-matlab">Loading a .ktk.zip in Matlab</h2>
+<div class="codehilite"><pre><span></span><code><span class="c">% Create a temporary folder to unzip to</span>
+<span class="n">mkdir</span><span class="p">(</span><span class="s">&#39;temp&#39;</span><span class="p">);</span>
+<span class="n">unzip</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&#39;temp&#39;</span><span class="p">);</span>
+
+<span class="c">% Load the file contents</span>
+<span class="n">data</span> <span class="p">=</span> <span class="n">jsondecode</span><span class="p">(</span><span class="n">fileread</span><span class="p">(</span><span class="s">&#39;temp/data.json&#39;</span><span class="p">));</span>
+<span class="n">metadata</span> <span class="p">=</span> <span class="n">jsondecode</span><span class="p">(</span><span class="n">fileread</span><span class="p">(</span><span class="s">&#39;temp/metadata.json&#39;</span><span class="p">));</span>
+</code></pre></div>
+
+
+<p>Since the types are not the same between python, JSON and Matlab, here is how Matlab will reconstruct the following python types:</p>
+<div class="codehilite"><pre><span></span><code><span class="n">Python</span>                            <span class="n">Matlab</span>
+<span class="c1">-------------------------------------------------</span>
+<span class="k">None</span>                              <span class="n">NaN</span>
+<span class="k">True</span><span class="p">,</span> <span class="k">False</span>                       <span class="k">true</span><span class="p">,</span> <span class="k">false</span>
+<span class="nb">int</span><span class="p">,</span> <span class="nb">float</span>                        <span class="n">double</span>
+<span class="n">str</span>                               <span class="nb">char</span>
+<span class="n">dict</span>                              <span class="n">struct</span>
+<span class="n">list</span> <span class="k">of</span> <span class="n">different</span> <span class="k">data</span> <span class="n">types</span>      <span class="n">cell</span> <span class="nb">array</span>
+<span class="n">list</span> <span class="k">of</span> <span class="nb">boolean</span>                   <span class="nb">array</span> <span class="k">of</span> <span class="n">logical</span>
+<span class="n">list</span> <span class="k">of</span> <span class="nb">int</span> <span class="k">or</span> <span class="nb">float</span>              <span class="nb">array</span> <span class="k">of</span> <span class="n">double</span>
+<span class="n">list</span> <span class="k">of</span> <span class="n">str</span>                       <span class="n">cell</span> <span class="nb">array</span> <span class="k">of</span> <span class="nb">char</span>
+<span class="n">list</span> <span class="k">of</span> <span class="n">dict</span><span class="p">,</span> <span class="n">same</span> <span class="n">field</span> <span class="k">names</span>    <span class="k">structure</span> <span class="nb">array</span>
+<span class="n">list</span> <span class="k">of</span> <span class="n">dict</span><span class="p">,</span> <span class="n">diff</span> <span class="n">field</span> <span class="k">names</span>    <span class="n">cell</span> <span class="nb">array</span> <span class="k">of</span> <span class="n">struct</span>
+<span class="n">numpy</span><span class="p">.</span><span class="nb">array</span>                       <span class="nb">array</span> <span class="k">of</span> <span class="n">double</span>
+<span class="n">ktk</span><span class="p">.</span><span class="n">TimeSeries</span>                    <span class="n">struct</span>
+<span class="n">complex</span>                           <span class="n">struct</span> <span class="k">with</span> <span class="nb">real</span> <span class="k">and</span> <span class="n">imag</span>
+
+<span class="o">*</span><span class="n">tuples</span> <span class="k">are</span> <span class="n">saved</span> <span class="k">as</span> <span class="n">lists</span> <span class="k">in</span> <span class="n">JSON</span><span class="p">.</span>
+</code></pre></div>
+
+
+<p>For more information on filters, please check the <a href="api/ktk/loadsave.html">API Reference</a>.</p>
                 
               
               
@@ -721,7 +865,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid" aria-label="Footer">
         
-          <a href="geometry.html" title="Geometry" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="timeseries.html" title="TimeSeries" class="md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-footer-nav__button md-icon">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
             </div>
@@ -730,19 +874,19 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Geometry
+                TimeSeries
               </div>
             </div>
           </a>
         
         
-          <a href="kinematics.html" title="Kinematics" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="geometry.html" title="Geometry" class="md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-footer-nav__title">
               <div class="md-ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Kinematics
+                Geometry
               </div>
             </div>
             <div class="md-footer-nav__button md-icon">

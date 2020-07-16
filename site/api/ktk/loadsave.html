@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <meta name="generator" content="pdoc 0.7.2" />
 <title>ktk.loadsave API documentation</title>
-<meta name="description" content="Provides functions to save and load data …" />
+<meta name="description" content="Provide functions to load and save data …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
 <link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
 <link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
@@ -20,13 +20,9 @@
 <h1 class="title">Module <code>ktk.loadsave</code></h1>
 </header>
 <section id="section-intro">
-<p>Provides functions to save and load data.</p>
-<p>Most of the functions in this module are temporary and only helpers for
-my transition from Matlab code to Python code. For example, the _loadmat
-function is very specific for my laboratory. When this module will have
-settled and all my lab's data will be converted to JSON, only the save and
-load functions will remain, and these functions will save and load using json
-files zipped into a .ktk.zip file.</p>
+<p>Provide functions to load and save data.</p>
+<p>The classes defined in this module are accessible directly from the toplevel
+ktk namespace (i.e. ktk.load, ktk.save).</p>
 </section>
 <section>
 </section>
@@ -35,36 +31,11 @@ files zipped into a .ktk.zip file.</p>
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
-<dt id="ktk.loadsave.convert_cell_arrays_to_lists"><code class="name flex">
-<span>def <span class="ident">convert_cell_arrays_to_lists</span></span>(<span>the_input)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Convert cell arrays to lists.</p>
-<p>This function recursively goes into the_input and checks for dicts that
-contains a 'OriginalClass' == 'cell' field. These dicts are then converted
-to lists.</p></section>
-</dd>
-<dt id="ktk.loadsave.convert_to_timeseries"><code class="name flex">
-<span>def <span class="ident">convert_to_timeseries</span></span>(<span>the_input)</span>
-</code></dt>
-<dd>
-<section class="desc"><p>Convert dicts of Matlab timeseries to KTK TimeSeries.</p>
-<p>This function recursively goes into the_input and checks for dicts that
-result from obvious Matlab's structures of timeseries. These structures are
-converted to KTK Timeseries.</p>
-<h2 id="parameters">Parameters</h2>
-<dl>
-<dt><strong><code>the_input</code></strong> :&ensp;<code>any</code> <code>variable</code></dt>
-<dd>The input to be checked, usually a dict.</dd>
-</dl>
-<h2 id="returns">Returns</h2>
-<p>A copy of the input, with the converted timeseries.</p></section>
-</dd>
 <dt id="ktk.loadsave.load"><code class="name flex">
 <span>def <span class="ident">load</span></span>(<span>filename)</span>
 </code></dt>
 <dd>
-<section class="desc"><p>Load a ktk.zip or mat file.</p>
+<section class="desc"><p>Load a ktk.zip file.</p>
 <p>Load a data file as saved using the ktk.save function.</p>
 <h2 id="parameters">Parameters</h2>
 <dl>
@@ -79,11 +50,12 @@ converted to KTK Timeseries.</p>
 </code></dt>
 <dd>
 <section class="desc"><p>Save a variable to a ktk.zip file.</p>
-<p>A ktk.zip file is a zipped folder containing two files:
-- metadata.json, which includes save date, user, etc.
-- data.json, which includes the data.</p>
-<p>The following classes are supported:
-- dict containing any supported class
+<p>A ktk.zip file is a zipped folder containing two files:</p>
+<pre><code>- metadata.json, which includes save date, user, etc.
+- data.json, which includes the data.
+</code></pre>
+<p>The following classes are supported:</p>
+<pre><code>- dict containing any supported class
 - list containing any supported class
 - str
 - int
@@ -94,7 +66,8 @@ converted to KTK Timeseries.</p>
 - numpy.array
 - pandas.DataFrame
 - pandas.Series
-- ktk.TimeSeries</p>
+- ktk.TimeSeries
+</code></pre>
 <p>Tuples are also supported but will be loaded back as lists, without
 warning.</p></section>
 </dd>
@@ -116,8 +89,6 @@ warning.</p></section>
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
-<li><code><a title="ktk.loadsave.convert_cell_arrays_to_lists" href="#ktk.loadsave.convert_cell_arrays_to_lists">convert_cell_arrays_to_lists</a></code></li>
-<li><code><a title="ktk.loadsave.convert_to_timeseries" href="#ktk.loadsave.convert_to_timeseries">convert_to_timeseries</a></code></li>
 <li><code><a title="ktk.loadsave.load" href="#ktk.loadsave.load">load</a></code></li>
 <li><code><a title="ktk.loadsave.save" href="#ktk.loadsave.save">save</a></code></li>
 </ul>

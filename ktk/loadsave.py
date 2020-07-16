@@ -2,22 +2,34 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
-"""
-Provides functions to save and load data.
 
-Most of the functions in this module are temporary and only helpers for
-my transition from Matlab code to Python code. For example, the _loadmat
-function is very specific for my laboratory. When this module will have
-settled and all my lab's data will be converted to JSON, only the save and
-load functions will remain, and these functions will save and load using json
-files zipped into a .ktk.zip file.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
+Provide functions to load and save data.
+
+The classes defined in this module are accessible directly from the toplevel
+ktk namespace (i.e. ktk.load, ktk.save).
+
+"""
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
 
 from ktk.timeseries import TimeSeries
 from ktk.timeseries import dataframe_to_dict_of_arrays
-from ktk.timeseries import dict_of_arrays_to_dataframe
 import ktk.config
 
 import scipy.io as spio
@@ -40,10 +52,12 @@ def save(filename, variable):
     Save a variable to a ktk.zip file.
 
     A ktk.zip file is a zipped folder containing two files:
+
         - metadata.json, which includes save date, user, etc.
         - data.json, which includes the data.
 
     The following classes are supported:
+
         - dict containing any supported class
         - list containing any supported class
         - str
@@ -212,12 +226,12 @@ def _load(filename):
     elif filename.endswith('.TimeSeries'):
 
         data = pd.read_csv(filename + '/data.txt',
-                            sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+                           sep='\t', quoting=csv.QUOTE_NONNUMERIC)
         events = pd.read_csv(filename + '/events.txt',
-                              sep='\t', quoting=csv.QUOTE_NONNUMERIC)
+                             sep='\t', quoting=csv.QUOTE_NONNUMERIC)
         info = pd.read_csv(filename + '/info.txt',
-                            sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                            index_col=0)
+                           sep='\t', quoting=csv.QUOTE_NONNUMERIC,
+                           index_col=0)
 
         out = TimeSeries()
 
@@ -296,9 +310,7 @@ def _load_object_hook(obj):
 
 
 def _load_ktk_zip(filename, include_metadata=False):
-    """
-    Read the ktk.zip file format.
-    """
+    """Read the ktk.zip file format."""
 
     archive = zipfile.ZipFile(filename, 'r')
     try:
@@ -354,7 +366,7 @@ def _load_ktk_zip(filename, include_metadata=False):
 
 def load(filename):
     """
-    Load a ktk.zip or mat file.
+    Load a ktk.zip file.
 
     Load a data file as saved using the ktk.save function.
 
@@ -367,6 +379,11 @@ def load(filename):
     -------
     The loaded variable.
     """
+
+    # NOTE: THIS FUNCTION CAN ALSO LOAD MAT FILES, BUT THIS IS A TRANSITIONAL
+    # FEATURE FOR MY LAB'S MIGRATION FROM MATLAB TO PYTHON. PLEASE DO NOT
+    # RELY ON THIS FEATURE AS IT COULD BE REMOVED SOON.
+    # Check hdf5storage for a nice alternative.
     if filename is None:
         raise ValueError('filename is empty.')
     if not isinstance(filename, str):
@@ -379,7 +396,7 @@ def load(filename):
         return _loadmat(filename)
 
     else:
-        raise ValueError('The file must be either JSON, ktk.zip or MAT.')
+        raise ValueError('The file must be either zip or mat.')
 
 
 def _loadmat(filename):
@@ -409,14 +426,14 @@ def _loadmat(filename):
         # timeseries to ktk.TimeSeries.
         contents = data['contents']
         # metadata = data['metadata']  # Not sure what to do with it yet.
-        contents = convert_to_timeseries(contents)
-        contents = convert_cell_arrays_to_lists(contents)
+        contents = _convert_to_timeseries(contents)
+        contents = _convert_cell_arrays_to_lists(contents)
         return contents
     else:
         return data
 
 
-def convert_cell_arrays_to_lists(the_input):
+def _convert_cell_arrays_to_lists(the_input):
     """
     Convert cell arrays to lists.
 
@@ -434,7 +451,7 @@ def convert_cell_arrays_to_lists(the_input):
                 length = len(the_input.keys()) - 1
                 the_list = []
                 for i_cell in range(length):
-                    the_list.append(convert_cell_arrays_to_lists(
+                    the_list.append(_convert_cell_arrays_to_lists(
                             the_input[f'cell{i_cell+1}']))
                 the_input = the_list
 
@@ -464,21 +481,21 @@ def convert_cell_arrays_to_lists(the_input):
                     address = extract_address(cell)
                     if address is not None:
                         the_list[int(address[0])-1][int(address[1])-1] = \
-                                convert_cell_arrays_to_lists(the_input[cell])
+                                _convert_cell_arrays_to_lists(the_input[cell])
 
                 the_input = the_list
 
         else:
             for key in the_input.keys():
-                the_input[key] = convert_cell_arrays_to_lists(the_input[key])
+                the_input[key] = _convert_cell_arrays_to_lists(the_input[key])
     elif isinstance(the_input, list):
         for i in range(len(the_input)):
-            the_input[key] = convert_cell_arrays_to_lists(the_input[key])
+            the_input[key] = _convert_cell_arrays_to_lists(the_input[key])
 
     return the_input
 
 
-def convert_to_timeseries(the_input):
+def _convert_to_timeseries(the_input):
     """
     Convert dicts of Matlab timeseries to KTK TimeSeries.
 
@@ -547,12 +564,12 @@ def convert_to_timeseries(the_input):
         else:
             # It is only a dict, not a dict of matlab timeseries.
             for the_key in the_input:
-                the_input[the_key] = convert_to_timeseries(the_input[the_key])
+                the_input[the_key] = _convert_to_timeseries(the_input[the_key])
             return the_input
 
     elif isinstance(the_input, list):
         for i in range(len(the_input)):
-            the_input[i] = convert_to_timeseries(the_input[i])
+            the_input[i] = _convert_to_timeseries(the_input[i])
         return the_input
 
     else:

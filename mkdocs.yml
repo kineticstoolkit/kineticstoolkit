@@ -22,6 +22,7 @@ nav:
     - Installing: install.md
     - Customizing: customize.md
     - TimeSeries: timeseries.md
+    - Saving and loading: loadsave.md
     - Geometry: geometry.md
     - Filters: filters.md
     - Kinematics: kinematics.md
