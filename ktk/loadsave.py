@@ -46,30 +46,31 @@ import time
 import getpass
 import zipfile
 
+from typing import Any
 
-def save(filename, variable):
+def save(filename: str, variable: Any) -> None:
     """
     Save a variable to a ktk.zip file.
 
     A ktk.zip file is a zipped folder containing two files:
 
-        - metadata.json, which includes save date, user, etc.
-        - data.json, which includes the data.
+    - metadata.json, which includes save date, user, etc.
+    - data.json, which includes the data.
 
     The following classes are supported:
 
-        - dict containing any supported class
-        - list containing any supported class
-        - str
-        - int
-        - float
-        - True
-        - False
-        - None
-        - numpy.array
-        - pandas.DataFrame
-        - pandas.Series
-        - ktk.TimeSeries
+    - dict containing any supported class
+    - list containing any supported class
+    - str
+    - int
+    - float
+    - True
+    - False
+    - None
+    - numpy.array
+    - pandas.DataFrame
+    - pandas.Series
+    - ktk.TimeSeries
 
     Tuples are also supported but will be loaded back as lists, without
     warning.
@@ -364,7 +365,7 @@ def _load_ktk_zip(filename, include_metadata=False):
                 return variable[key]
 
 
-def load(filename):
+def load(filename: str) -> Any:
     """
     Load a ktk.zip file.
 
@@ -377,7 +378,8 @@ def load(filename):
 
     Returns
     -------
-    The loaded variable.
+    Any
+        The loaded variable.
     """
 
     # NOTE: THIS FUNCTION CAN ALSO LOAD MAT FILES, BUT THIS IS A TRANSITIONAL

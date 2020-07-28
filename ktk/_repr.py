@@ -15,11 +15,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
-__email__ = "chenier.felix@uqam.ca"
-__license__ = "Apache 2.0"
-
 """
 ktk._repr.py
 ------------
@@ -35,6 +30,12 @@ and becomes unmanagable when the dict becomes larger.
 It also provides helper functions to nicely format the repr() of data classes.
 
 """
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 
 import numpy as np
 

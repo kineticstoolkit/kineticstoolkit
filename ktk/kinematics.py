@@ -2,14 +2,32 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
-Provides functions related to kinematics analysis.
+Provide functions related to kinematics analysis.
 """
 
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
+
 import ktk.geometry
-from ktk.timeseries import TimeSeries
+from ktk import TimeSeries
+from typing import *
 
 import numpy as np
 import warnings
@@ -22,26 +40,22 @@ except ModuleNotFoundError:
                   'will not work.')
 
 
-def read_c3d_file(filename):
+def read_c3d_file(filename: str) -> TimeSeries:
     """
     Read markers from a C3D file.
 
     The markers positions are returned in a TimeSeries where each marker
     corresponds to a data key. Each marker position is expressed in this form:
 
-            array([[x0, y0, z0, 1.],
-                   [x1, y1, z1, 1.],
-                   [x2, y2, z2, 1.],
-                   [...           ]])
+        array([[x0, y0, z0, 1.],
+               [x1, y1, z1, 1.],
+               [x2, y2, z2, 1.],
+               [...           ]])
 
     Parameters
     ----------
-    filename : str
+    filename
         Path of the C3D file
-
-    Returns
-    -------
-    TimeSeries
 
     Notes
     -----
@@ -53,7 +67,7 @@ def read_c3d_file(filename):
       returned in the output TimeSeries is m.
 
     - As for any instrument, please check that your data loads correctly on
-      your first use (e.g., sampling frequency, position unit). It is highly
+      your first use (e.g., sampling frequency, position unit). It is
       possible that read_c3d_file misses some corner cases.
 
     """
@@ -96,7 +110,7 @@ def read_c3d_file(filename):
     return output
 
 
-def read_n3d_file(filename, labels=[]):
+def read_n3d_file(filename: str, labels: Sequence[str] = []):
     """
     Read markers from an NDI N3D file.
 
@@ -283,24 +297,29 @@ def read_n3d_file(filename, labels=[]):
 #            return(the_timeseries)
 
 
-def create_rigid_body_config(markers, marker_names):
+def create_rigid_body_config(
+        markers: TimeSeries,
+        marker_names: Sequence[str]
+        ) -> Dict[str, Any]:
     """
     Create a rigid body configuration based on a static acquisition.
 
     Parameters
     ----------
-    markers : TimeSeries
+    markers
         Markers trajectories during the static acquisition.
-    marker_names : list of str
+    marker_names
         The markers that define the rigid body.
 
     Returns
     -------
-    rigid_body_config : dict
+    Dict[str, Any]
         Dictionary with the following keys:
-            - MarkerNames : the same as marker_names
-            - LocalPoints : a 1x4xM array that indicates the local position of
-                            each M marker in the created rigid body config.
+
+        - MarkerNames : the same as marker_names
+        - LocalPoints : a 1x4xM array that indicates the local position of
+          each M marker in the created rigid body config.
+
     """
     n_samples = len(markers.time)
     n_markers = len(marker_names)
@@ -329,7 +348,11 @@ def create_rigid_body_config(markers, marker_names):
             }
 
 
-def register_markers(markers, rigid_body_configs, verbose=False):
+def register_markers(
+        markers: TimeSeries,
+        rigid_body_configs: Dict[str, Dict[str, Any]],
+        verbose: bool = False
+        ) -> TimeSeries:
     """
     Calculates the trajectory of rigid bodies.
 
@@ -338,18 +361,18 @@ def register_markers(markers, rigid_body_configs, verbose=False):
 
     Parameters
     ----------
-    markers : TimeSeries
+    markers
         Markers trajectories to calculate the rigid body trajectories on.
-    rigid_body_configs : dict of dict
+    rigid_body_configs
         A dict where each key is a rigid body configuration, and where
         each rigid body configuration is a dict with the following
         keys: 'MarkerNames' and 'LocalPoints'.
-    verbose : bool (optional)
-        True to print the rigid body being computed. Default is False.
+    verbose
+        Optional. Set to True to print the rigid body being computed.
 
     Returns
     -------
-    rigid_bodies : TimeSeries
+    TimeSeries
         TimeSeries where each data key is a Nx4x4 series of rigid
         transformations.
     """
@@ -384,32 +407,37 @@ def register_markers(markers, rigid_body_configs, verbose=False):
     return rigid_bodies
 
 
-def create_virtual_marker_config(markers, rigid_bodies,
-                                 marker_name, rigid_body_name):
+def create_virtual_marker_config(
+        markers: TimeSeries,
+        rigid_bodies: TimeSeries,
+        marker_name: str,
+        rigid_body_name: str
+        ) -> Dict[str, Any]:
     """
     Create a virtual marker configuration based on a probing acquisition.
 
     Parameters
     ----------
-    markers : TimeSeries
+    markers
         Markers trajectories during the probing acquisition. This
         TimeSeries must have at least marker_name in its data keys.
-    rigid_bodies : TimeSeries
+    rigid_bodies
         Rigid body trajectories during this probing acquisition. This
         TimeSeries must have at least rigid_body_name in its data keys.
-    marker_name : str
+    marker_name
         Name of the marker to express in local coordinates.
-    rigid_body_name : str
+    rigid_body_name
         Name of the rigid body to express marker_name in relation to.
 
     Returns
     -------
-    virtual_marker_config : dict
+    Dict[str, Any]
         Dictionary with the following keys:
-            - RigidBodyName : Name of the virtual marker's rigid body
-            - LocalPoint : Local position of this marker in the reference frame
-                           defined by the rigid body RigidBodyName. LocalPoint
-                           is expressed as a 1x4 array.
+
+        - RigidBodyName : Name of the virtual marker's rigid body
+        - LocalPoint : Local position of this marker in the reference frame
+          defined by the rigid body RigidBodyName. LocalPoint is expressed as
+          a 1x4 array.
 
     """
     marker = markers.data[marker_name]
@@ -429,7 +457,7 @@ def create_virtual_marker_config(markers, rigid_bodies,
             'LocalPoint': local_points}
 
 
-def write_trc_file(markers, filename):
+def write_trc_file(markers: TimeSeries, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
 
@@ -440,10 +468,6 @@ def write_trc_file(markers, filename):
 
     filename : str
         Name of the trc file to create.
-
-    Returns
-    -------
-    None.
 
     """
     markers = markers.copy()

@@ -20,11 +20,11 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
 
     conda activate ktk
 
-    conda install -c conda-forge python=3.7 matplotlib scipy pandas scikit-learn ezc3d
+    conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn ezc3d
 
-Additional dependencies for the private development version:
+Additional dependencies for the development version:
 
-    conda install -c conda-forge git pytest jupyter spyder pdoc3 mkdocs mkdocs-material mkdocs-material-extensions
+    conda install -c conda-forge git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm
 
 
 Installing ktk

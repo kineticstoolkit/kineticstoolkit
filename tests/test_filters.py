@@ -21,11 +21,11 @@ def test_savgol():
 
     # Using `ktk.filters.savgol`, we can smooth or derivate these data.
     # Smooth:
-    y = ktk.filters.savgol(tsin, 3, 2, 0)
+    y = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=0)
     # 1st derivative:
-    doty = ktk.filters.savgol(tsin, 3, 2, 1)
+    doty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=1)
     # 2nd derivative:
-    ddoty = ktk.filters.savgol(tsin, 3, 2, 2)
+    ddoty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=2)
 
     # TODO Check why I need such a poor tolerance
     tol = 5E-3  # Numerical tolerance
@@ -44,9 +44,9 @@ def test_savgol():
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        y = ktk.filters.savgol(tsin, 3, 2, 0)
-        doty = ktk.filters.savgol(tsin, 3, 2, 1)
-        ddoty = ktk.filters.savgol(tsin, 3, 2, 2)
+        y = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=0)
+        doty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=1)
+        ddoty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=2)
 
     y.data['data2'][0] = np.nan
     y.data['data2'][-1] = np.nan

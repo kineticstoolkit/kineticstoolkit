@@ -1,0 +1,40 @@
+/* Main style for API */
+
+dl.py.method {
+	margin-top: 100px; 
+	border-top-style: solid;
+}
+
+dl.py.function {
+	margin-top: 100px; 
+	border-top-style: solid;
+}
+
+dl.py.class {
+	margin-top: 100px; 
+	border-top-style: solid;
+}
+
+code.sig-name {
+	font-size: 110%;
+	font-weight: bold;
+	background: none;
+}
+
+code.sig-prename {
+	background: none;
+}
+
+em.sig-param {
+	font-family: monospace;
+	font-style: normal;
+}
+
+/* Autosummary in API */
+table.docutils {
+	font-size: 90%;
+}
+
+a.reference {
+	font-size: 110%;
+}

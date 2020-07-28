@@ -2,13 +2,25 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
-"""
-Identifes cycles and time-normalize data.
 
-This module in early development provides functions to identify cycles and
-time-normalize data.
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""
+Identify cycles and time-normalize data.
+
+Warning
+-------
+This module is in early development and may change in the future.
 
 """
 
@@ -17,24 +29,32 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
+
 import numpy as np
-from ktk.timeseries import TimeSeriesEvent
+import ktk  # for doctests
+from ktk.timeseries import TimeSeries, TimeSeriesEvent
+from typing import *
 
 
-def find_cycles(ts, data_key, event_names, thresholds,
-                minimum_length=0, minimum_height=0):
+def find_cycles(ts: TimeSeries,
+                data_key: str, /,
+                event_names: Sequence[str],
+                thresholds: Sequence[float],
+                minimum_length: float = 0,
+                minimum_height: float = 0) -> TimeSeries:
     """
     Find cycles in a TimeSeries based on a dual threshold approach.
 
-    WARNING:
+    Warning
+    -------
     This function is currently experimental and may change signature and
     behaviour in the future.
 
     Parameters
     ----------
-    ts : TimeSeries
+    ts
         TimeSeries to analyze.
-    data_key : str
+    data_key
         Name of the data key to analyze in the TimeSeries.
     event_names : tuple of 2 strings
         Name of the events that correspond to the start and end of the
@@ -43,16 +63,16 @@ def find_cycles(ts, data_key, event_names, thresholds,
         Thresholds that define the start and end of first phase. The first
         threshold is crossed while rising, and the second threshold is crossed
         while falling.
-    minimum_length : float (optional)
-        Minimal time of first phase. Cycles with first phase lasting less
-        than minimum_length are rejected. The default is 0.
-    minimum_height: float (optional)
-        Minimum value the signal must reach in first phase. Cycles with first
-        phase not reaching minimum_height are rejected. The default is 0.
+    minimum_length
+        Optional. Minimal time of first phase. Cycles with first phase lasting
+        less than minimum_length are rejected.
+    minimum_height
+        Optional. Minimum value the signal must reach in first phase. Cycles
+        with first phase not reaching minimum_height are rejected.
 
     Returns
     -------
-    ts_copy : TimeSeries
+    TimeSeries
         A copy of ts with the added events.
 
     """
@@ -105,11 +125,13 @@ def find_cycles(ts, data_key, event_names, thresholds,
     return tsout
 
 
-def time_normalize(ts, event_name1, event_name2, n_points=100):
+def time_normalize(ts: TimeSeries, event_name1: str, event_name2: str,
+                   n_points: int = 100) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
 
-    WARNING:
+    Warning
+    -------
     This function is currently experimental and may change signature and
     behaviour in the future.
 
@@ -121,17 +143,17 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
 
     Parameters
     ----------
-    ts : TimeSeries
+    ts
         The TimeSeries to analyze.
-    event_name1, event_name2 : str
+    event_name1, event_name2
         The events that correspond to the begin and end of a cycle.
-    n_points : int (optional)
-        The number of points of the output TimeSeries (default is 100).
+    n_points
+        Optional. The number of points of the output TimeSeries.
 
     Returns
     -------
-    ts_copy : TimeSeries
-        A new TimeSeries where each cycles has been time-normalized.
+    TimeSeries
+        A new TimeSeries where each cycle has been time-normalized.
     """
     # Find the final number of cycles
     if len(ts.events) < 2:
@@ -196,11 +218,13 @@ def time_normalize(ts, event_name1, event_name2, n_points=100):
     return dest_ts
 
 
-def get_reshaped_time_normalized_data(ts, n_points=100):
+def get_reshaped_time_normalized_data(ts: TimeSeries,
+                                      n_points: int = 100) -> np.ndarray:
     """
     Get reshaped data from a time-normalized TimeSeries.
 
-    WARNING:
+    Warning
+    -------
     This function is currently experimental and may change signature and
     behaviour in the future.
 
@@ -235,7 +259,7 @@ def get_reshaped_time_normalized_data(ts, n_points=100):
     return data
 
 
-def most_repeatable_cycles(data, n_cycles):
+def most_repeatable_cycles(data: np.ndarray, n_cycles: int) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
 
@@ -247,32 +271,33 @@ def most_repeatable_cycles(data, n_cycles):
 
     Parameters
     ----------
-    data : array
+    data
         Data to analyze, in the form of an array of shape (MxN). M corresponds
         to cycles, and N corresponds to normalized time.
 
-    n_cycles : int
+    n_cycles
         Number of cycles to keep
 
     Returns
     -------
-    cycles : list of int
+    List[int]
+        List of indexes corresponding to the most repeatable cycles.
 
     Example
     -------
-        >>> import ktk, numpy as np
+    We create 8 cycles with:
 
-        >>> # We create 8 cycles with:
-        >>> # - cycle 2 that is different from the others,
-        >>> # - cycles 5 and 6 that contain NaNs.
-        >>> data = np.array( \
-                [[0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
-                 [0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9], \
-                 [3. ,    3.1,    3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9], \
-                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
-                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
-                 [np.nan, np.nan, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
-                 [np.nan, 0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ], \
+    - cycle 2 that is different from the others,
+    - cycles 5 and 6 that contain NaNs.
+
+        >>> data = np.array(
+                [[0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                 [0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+                 [3. ,    3.1,    3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9],
+                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
+                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
+                 [np.nan, np.nan, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
+                 [np.nan, 0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
                  [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
 
         >>> ktk.cycles.most_repeatable_cycles(data, 5)

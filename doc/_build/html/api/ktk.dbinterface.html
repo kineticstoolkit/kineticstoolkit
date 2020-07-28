@@ -1,0 +1,714 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>ktk.dbinterface module &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ktk.dev module" href="ktk.dev.html" />
+    <link rel="prev" title="ktk.cycles module" href="ktk.cycles.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=white data-md-color-accent=orange>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="352" height="448" viewBox="0 0 352 448" id="__bitbucket"><path fill="currentColor" d="M203.75 214.75q2 15.75-12.625 25.25t-27.875 1.5q-9.75-4.25-13.375-14.5t-.125-20.5 13-14.5q9-4.5 18.125-3t16 8.875 6.875 16.875zm27.75-5.25q-3.5-26.75-28.25-41T154 165.25q-15.75 7-25.125 22.125t-8.625 32.375q1 22.75 19.375 38.75t41.375 14q22.75-2 38-21t12.5-42zM291.25 74q-5-6.75-14-11.125t-14.5-5.5T245 54.25q-72.75-11.75-141.5.5-10.75 1.75-16.5 3t-13.75 5.5T60.75 74q7.5 7 19 11.375t18.375 5.5T120 93.75Q177 101 232 94q15.75-2 22.375-3t18.125-5.375T291.25 74zm14.25 258.75q-2 6.5-3.875 19.125t-3.5 21-7.125 17.5-14.5 14.125q-21.5 12-47.375 17.875t-50.5 5.5-50.375-4.625q-11.5-2-20.375-4.5T88.75 412 70.5 401.125t-13-15.375q-6.25-24-14.25-73l1.5-4 4.5-2.25q55.75 37 126.625 37t126.875-37q5.25 1.5 6 5.75t-1.25 11.25-2 9.25zM350.75 92.5q-6.5 41.75-27.75 163.75-1.25 7.5-6.75 14t-10.875 10T291.75 288q-63 31.5-152.5 22-62-6.75-98.5-34.75-3.75-3-6.375-6.625t-4.25-8.75-2.25-8.5-1.5-9.875T25 232.75q-2.25-12.5-6.625-37.5t-7-40.375T5.5 118 0 78.5Q.75 72 4.375 66.375T12.25 57t11.25-7.5T35 43.875t12-4.625q31.25-11.5 78.25-16 94.75-9.25 169 12.5Q333 47.25 348 66.25q4 5 4.125 12.75t-1.375 13.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#api/ktk.dbinterface" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Kinetics Toolkit (ktk) master documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Kinetics Toolkit (ktk) master documentation logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
+          <span class="md-header-nav__topic"> ktk.dbinterface module </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="GET" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://bitbucket.org/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__bitbucket" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    KineticsToolkit
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
+          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
+          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://bitbucket.org/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__bitbucket" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    KineticsToolkit
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="../install.html" class="md-nav__link">Installing</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../customize.html" class="md-nav__link">Customizing</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../geometry.html" class="md-nav__link">Geometry</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../filters.html" class="md-nav__link">Filters</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../kinematics.html" class="md-nav__link">Kinematics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../cycles.html" class="md-nav__link">Cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../api_reference.html" class="md-nav__link">API Reference</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<span id="ktk-dbinterface-module"></span><h1 id="api-ktk-dbinterface--page-root">ktk.dbinterface module<a class="headerlink" href="#api-ktk-dbinterface--page-root" title="Permalink to this headline">¶</a></h1>
+<p>Provide the DBInterface class.</p>
+<p><strong>Classes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface" title="ktk.dbinterface.DBInterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DBInterface</span></code></a>(project_label[, user, password, …])</p></td>
+<td><p>Interface for Felix Chenier’s BIOMEC database.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py class">
+<dt id="ktk.dbinterface.DBInterface">
+<em class="property">class </em><code class="sig-prename descclassname">ktk.dbinterface.</code><code class="sig-name descname">DBInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_label</span></em>, <em class="sig-param"><span class="n">user</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">password</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">root_folder</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">url</span><span class="o">=</span><span class="default_value">'https://felixchenier.uqam.ca/biomec'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Interface for Felix Chenier’s BIOMEC database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>project_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Project label, for example ‘FC_XX16E’.</p></li>
+<li><p><strong>user</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Username on BIOMEC. If none is supplied, a dialog box asks
+the user for his/her credentials.</p></li>
+<li><p><strong>password</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Password on BIOMEC.</p></li>
+<li><p><strong>root_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Project’s root folder, where all data files are stored. If
+none is given, a dialog box asks the user to point to this folder.</p></li>
+<li><p><strong>url</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. BIOMEC’s url.</p></li>
+</ul>
+</dd>
+</dl>
+<p><strong>Methods</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.batch_fix_file_type" title="ktk.dbinterface.DBInterface.batch_fix_file_type"><code class="xref py py-obj docutils literal notranslate"><span class="pre">batch_fix_file_type</span></code></a>(folder, new_file_type_label)</p></td>
+<td><p>Batch-rename files in a folder to their new corresponding dbfid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.create_file_entry" title="ktk.dbinterface.DBInterface.create_file_entry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_file_entry</span></code></a>(trial_id, file_type_label)</p></td>
+<td><p>Create a file entry in the database.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.get" title="ktk.dbinterface.DBInterface.get"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get</span></code></a>([participant, session, trial, file])</p></td>
+<td><p>Extract information from a project.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.load" title="ktk.dbinterface.DBInterface.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(participant, session, trial, file)</p></td>
+<td><p>Load a variable from a BIOMEC referenced file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.refresh" title="ktk.dbinterface.DBInterface.refresh"><code class="xref py py-obj docutils literal notranslate"><span class="pre">refresh</span></code></a>()</p></td>
+<td><p>Update from database and reindex files.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.rename" title="ktk.dbinterface.DBInterface.rename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename</span></code></a>(filename, dbfid)</p></td>
+<td><p>Rename a file to include or modify a dbfid code in its filename.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.save" title="ktk.dbinterface.DBInterface.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(participant, session, trial, file, variable)</p></td>
+<td><p>Save a variable to a BIOMEC referenced file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.tag_files" title="ktk.dbinterface.DBInterface.tag_files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag_files</span></code></a>([include_trial_name, dry_run])</p></td>
+<td><p>Rename all files to include tags in file names.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Attributes</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.files" title="ktk.dbinterface.DBInterface.files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">files</span></code></a></p></td>
+<td><p>Return a list of all file labels in the project.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.participants" title="ktk.dbinterface.DBInterface.participants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">participants</span></code></a></p></td>
+<td><p>Return a list of all participant labels in the project.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.sessions" title="ktk.dbinterface.DBInterface.sessions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sessions</span></code></a></p></td>
+<td><p>Return a list of all session labels in the project.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dbinterface.DBInterface.trials" title="ktk.dbinterface.DBInterface.trials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trials</span></code></a></p></td>
+<td><p>Return a list of all trial labels in the project.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.batch_fix_file_type">
+<code class="sig-name descname">batch_fix_file_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em>, <em class="sig-param"><span class="n">new_file_type_label</span></em>, <em class="sig-param"><span class="n">create_file_entries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.batch_fix_file_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Batch-rename files in a folder to their new corresponding dbfid.</p>
+<p>This function is helpful to quickly assign new dbfids to a batch
+of processed file based on files that are already referenced in the
+database.</p>
+<p>As a practical example, let’s say we have a folder full of raw
+kinematics take files, and we batch-export those files to a new
+folder of c3d files. Both the raw take files and the c3d files share
+the same name, apart from the extension.</p>
+<p>Now, let say a project contains these filetypes:</p>
+<ul class="simple">
+<li><p>‘RawKinematics’: raw kinematic take files;</p></li>
+<li><p>‘LabelledKinematics’: c3d files with labelled markers.</p></li>
+</ul>
+<p>If the raw kinematics files were correctly assigned to database entries
+before batch-exporting, then the exported c3d files contain the
+original (incorrect) dbfid entry in their file names.</p>
+<p>This function changes the file names of the exported files so that
+they match their correct entry in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Folder that contains the set of files to rename. These files must
+have the original dbfid in their name, to identify the trial they
+belong to.</p></li>
+<li><p><strong>new_file_type_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – FileTypeLabel as set in the database. For example:
+‘LabelledKinematics’.</p></li>
+<li><p><strong>create_file_entries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. When True and if a file entry for the specified file type
+ID does not exist in the found trial, create the file entry in the
+database, then rename the file accordingly.</p></li>
+<li><p><strong>dry_run</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. When True, the list of file renames is returned, but no
+action is actually taken.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A dictionary with the following keys:</p>
+<ul class="simple">
+<li><p>’Rename’ : list of tuples (old_file_name, new_file_name).</p></li>
+<li><p>’Ignore’ : list of files without a dbfid.</p></li>
+<li><p>’NoFileTypeLabel’ : list of files which associated trial does not
+contain the specified FileTypeLabel</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict[str, List[Any]]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.create_file_entry">
+<code class="sig-name descname">create_file_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trial_id</span></em>, <em class="sig-param"><span class="n">file_type_label</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.create_file_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a file entry in the database.</p>
+<p>The project’s tables are updated after adding the file entry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>trial_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Trial identifier in the database. Can be obtained using
+get(participant, session, trial)[‘TrialID’].</p></li>
+<li><p><strong>file_type_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – File type label.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.files">
+<em class="property">property </em><code class="sig-name descname">files</code><a class="headerlink" href="#ktk.dbinterface.DBInterface.files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all file labels in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.get">
+<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">session</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">trial</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract information from a project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>participant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Participant label (for example, ‘P01’).</p></li>
+<li><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Session label (for example, ‘SB4320’).</p></li>
+<li><p><strong>trial</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Trial label (for example, ‘Static’).</p></li>
+<li><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. File label (for example, ‘Kinematics’).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A former parameter could not be empty while a latter parameters is not.
+For example, <cite>participant</cite> could not be ‘’ if <cite>session</cite> is ‘SB4320’.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A record of the specified information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dict[str, Any]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.load">
+<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span></em>, <em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">trial</span></em>, <em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a variable from a BIOMEC referenced file.</p>
+<p>This method load the ktk.zip file associated to a participant,
+session, trial and file type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>participant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Participant label. For example, ‘P01’</p></li>
+<li><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Session label. For example, ‘SB4320’</p></li>
+<li><p><strong>trial</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Trial label. For example, ‘StaticR1’</p></li>
+<li><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – File type label. For example, ‘SyncedMarkers’</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The file’s content.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Any</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.participants">
+<em class="property">property </em><code class="sig-name descname">participants</code><a class="headerlink" href="#ktk.dbinterface.DBInterface.participants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all participant labels in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.refresh">
+<code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.refresh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Update from database and reindex files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.rename">
+<code class="sig-name descname">rename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">dbfid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.rename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename a file to include or modify a dbfid code in its filename.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the file to rename</p></li>
+<li><p><strong>dbfid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – FileID in database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span></em>, <em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">trial</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save a variable to a BIOMEC referenced file.</p>
+<p>This method saves the specified variable following either of these
+cases:</p>
+<ul class="simple">
+<li><p>If the participant, session, trial and file labels are already
+associated to a file on disk, the file is overwritten.</p></li>
+<li><p>If the participant, session, trial and file labels are associated to
+a file entry but no file exists on disk, the file is created and
+saved in <cite>root_folder/file_label/participant/session</cite> as
+<cite>dbfidxxxxn_{trial}.ktk.zip</cite>.</p></li>
+<li><p>If the participant, session, trial and file labels do not correspond
+to a file entry in the database, a file entry is created in the
+database, then the file is saved as in 2nd case.</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>participant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Participant label. For example, ‘P01’</p></li>
+<li><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Session label. For example, ‘SB4320’</p></li>
+<li><p><strong>trial</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Trial label. For example, ‘StaticR1’</p></li>
+<li><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – File type label. For example, ‘SyncedMarkers’</p></li>
+<li><p><strong>variable</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – Any variable that is supported by ktk.save</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The file path</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.sessions">
+<em class="property">property </em><code class="sig-name descname">sessions</code><a class="headerlink" href="#ktk.dbinterface.DBInterface.sessions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all session labels in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.tag_files">
+<code class="sig-name descname">tag_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">include_trial_name</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.tag_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Rename all files to include tags in file names.</p>
+<p>This method renames all the files referenced by the project following
+the given specifications. The resulting file can be either:</p>
+<ul class="simple">
+<li><p>ORIGINALNAME_dbfidXXXXn.EXT</p></li>
+<li><p>ORIGINALNAME_dbfidXXXXn_{TRIALNAME}.EXT</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>include_trial_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to include the trial name from the file name.</p></li>
+<li><p><strong>dry_run</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. Set to False to actually perform the rename.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="ktk.dbinterface.DBInterface.trials">
+<em class="property">property </em><code class="sig-name descname">trials</code><a class="headerlink" href="#ktk.dbinterface.DBInterface.trials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return a list of all trial labels in the project.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+</dd></dl>
+
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="ktk.cycles.html" title="ktk.cycles module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> ktk.cycles module </span>
+              </div>
+            </a>
+          
+          
+            <a href="ktk.dev.html" title="ktk.dev module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> ktk.dev module </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2020, Félix Chénier.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

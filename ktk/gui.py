@@ -14,10 +14,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Provides simple GUI functions.
 
-Warning: This module is currently experimental and its API could be modified in
+"""
+Provide simple GUI functions.
+
+Warning
+-------
+This module is currently experimental and its API could be modified in
 the future without warnings. It should be considered only as helper functions
 for ktk's own use.
 """
@@ -35,6 +38,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
 import os
+from typing import *
 
 
 CMDGUI = ktk.config.root_folder + "/ktk/cmdgui.py"
@@ -50,18 +54,14 @@ def __dir__():
             'message')
 
 
-def message(message=None):
+def message(message: str = '') -> None:
     """
     Show a message window.
 
     Parameters
     ----------
-    message : str
-        The message to show. Use '' or None to close every message window.
-
-    Returns
-    -------
-    None.
+    message
+        The message to show. Use '' to close every message window.
     """
 
     # Begins by deleting the current message
@@ -95,29 +95,29 @@ def message(message=None):
     plt.pause(0.1)
 
 
-def button_dialog(message='Please select an option.',
-                  choices=['Cancel', 'OK']):
+def button_dialog(message: str = 'Please select an option.',
+                  choices: Sequence[str] = ['Cancel', 'OK']) -> int:
     """
     Create a blocking dialog message window with a selection of buttons.
 
     Parameters
     ----------
-    message : str
+    message
         Message that is presented to the user.
-        Default is 'Please select an option'.
-    choices : list of str
-        List of button text. Default is ['Cancel', 'OK'].
+    choices
+        List of button text.
 
     Returns
     -------
-    int : the button number (0 = First button, 1 = Second button, etc. If the
-    user closes the window instead of clicking a button, a value of -1 is
-    returned.
+    int
+        The button number (0 = First button, 1 = Second button, etc.) If the
+        user closes the window instead of clicking a button, a value of -1 is
+        returned.
     """
     # Run the button dialog in a separate thread to allow updating matplotlib
     button = [None]
     command_call = [sys.executable, CMDGUI, 'button_dialog',
-                    'Kinetics Toolkit', message] + choices
+                    'Kinetics Toolkit', message] + list(choices)
 
     def threaded_function():
         button[0] = int(subprocess.check_output(command_call,
@@ -132,26 +132,24 @@ def button_dialog(message='Please select an option.',
     return button[0]
 
 
-def set_color_order(setting):
+def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     """
     Define the standard color order for matplotlib.
 
     Parameters
     ----------
-    setting : str or list
+    setting
         Either a string or a list of colors.
+
         - If a string, it can be either:
-            - 'default' : Default v2.0 matplotlib colors.
-            - 'classic' : Default classic Matlab colors (bgrcmyk).
-            - 'xyz' :     Same as classic but begins with rgb instead of bgr to
-                          be consistent with most 3d visualization softwares.
+            - 'default': Default v2.0 matplotlib colors.
+            - 'classic': Default classic Matlab colors (bgrcmyk).
+            - 'xyz': Same as classic but begins with rgb instead of bgr to
+               be consistent with most 3d visualization softwares.
+
         - If a list, it can be either a list of chars from [bgrcmyk], a list of
           hexadecimal color values, or any list supported by matplotlib's
           axes.prop_cycle rcParam.
-
-    Returns
-    -------
-    None.
 
     """
     if isinstance(setting, str):
@@ -172,69 +170,68 @@ def set_color_order(setting):
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=thelist)
 
 
-def get_credentials():
+def get_credentials() -> Tuple[str, str]:
     """
     Ask the user's username and password.
 
     Returns
     -------
-    credentials : tuple
+    Tuple[str]
         A tuple of two strings containing the username and password,
         respectively, or an empty tuple if the user closed the window.
 
     """
     str_call = ['get_credentials', 'KTK',
                 'Please enter your login information.']
-    result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
-                                     stderr=subprocess.DEVNULL)
+    temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
+                                   stderr=subprocess.DEVNULL)
 
-    result = result.decode(sys.getdefaultencoding())
-    result = str.split(result)
-    return tuple(result)
+    result = temp.decode(sys.getdefaultencoding())
+    return tuple(str.split(result))  # type: ignore
 
 
-def get_folder(initial_folder='.'):
+def get_folder(initial_folder: str = '.') -> str:
     """
     Get folder interactively using a file dialog window.
 
     Parameters
     ----------
-    initial_folder : str (optional)
-        The initial folder of the file dialog. Default is the current folder.
+    initial_folder
+        Optional. The initial folder of the file dialog.
 
     Returns
     -------
-    folder : str
-        A string with the full path of the selected folder. An empty string
-        is returned if the user cancelled.
+    str
+        The full path of the selected folder. An empty string is returned if
+        the user cancelled.
 
     """
     str_call = ['get_folder', 'ktk.gui.get_folder', initial_folder]
-    result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
-                                     stderr=subprocess.DEVNULL)
-    result = result.decode(sys.getdefaultencoding())
+    temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
+                                    stderr=subprocess.DEVNULL)
+    result = temp.decode(sys.getdefaultencoding())
     result = result.replace('\n', '').replace('\r', '')
     return result
 
 
-def get_filename(initial_folder='.'):
+def get_filename(initial_folder: str = '.') -> str:
     """
     Get file name interactively using a file dialog window.
 
     Parameters
     ----------
-    initial_folder : str (optional)
-        The initial folder of the file dialog. Default is the current folder.
+    initial_folder
+        Optional. The initial folder of the file dialog.
 
     Returns
     -------
-    file : str
-        A string with the full path of the selected file. An empty string
-        is returned if the user cancelled.
+    str
+        The full path of the selected file. An empty string is returned if the
+        user cancelled.
     """
     str_call = ['get_filename', 'ktk.gui.get_filename', initial_folder]
-    result = subprocess.check_output([sys.executable, CMDGUI] + str_call,
-                                     stderr=subprocess.DEVNULL)
-    result = result.decode(sys.getdefaultencoding())
+    temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
+                                    stderr=subprocess.DEVNULL)
+    result = temp.decode(sys.getdefaultencoding())
     result = result.replace('\n', '').replace('\r', '')
     return result

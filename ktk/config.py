@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-Provides user and auto-generated configuration for ktk.
+Provide user and auto-generated configuration for ktk.
 
 Please edit this file to configure ktk.
 

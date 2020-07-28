@@ -2,21 +2,51 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
-Provides functions to calculate inverse dynamics.
+Provide functions to calculate inverse dynamics.
+
+Warning
+-------
+This module is currently experimental and its API and behaviour could be
+modified in the future.
+
 """
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
 
 import ktk.filters
 
 import numpy as np
-import warnings
+from typing import Dict
+from ktk import TimeSeries
 
 
-def get_anthropometrics(segment_name, total_mass):
+def get_anthropometrics(segment_name: str,
+                        total_mass: float) -> Dict[str, float]:
     """
     Get anthropometric values for a given segment name.
+
+    Warning
+    -------
+    This method is experimental and its signature and behaviour could change
+    in the future.
+
 
     For the moment, only this table is available:
 
@@ -24,44 +54,46 @@ def get_anthropometrics(segment_name, total_mass):
     4th ed. University of Waterloo, Waterloo, Ontario, Canada,
     John Wiley & Sons, 2009.
 
-    Other tables may become available in the future.
-
     Parameters
     ----------
-    segment_name : str
-        The name of the segment:
-            - 'Hand' (wrist axis to knuckle II of middle finger)
-            - 'Forearm' (elbow axis to ulnar styloid)
-            - 'UpperArm' (glenohumeral axis to elbow axis)
-            - 'ForearmHand' (elbow axis to ulnar styloid)
-            - 'TotalArm' (glenohumeral joint to ulnar styloid)
-            - 'Foot' (lateral malleolus to head metatarsal II)
-            - 'Leg' (femoral condyles to medial malleolus)
-            - 'Thigh' (greater trochanter to femoral condyles)
-            - 'FootLeg' (fomeral condyles to medial malleolus)
-            - 'TotalLeg' (greater trochanter to medial malleolus)
-            - 'TrunkHeadNeck' (greater trochanter to glenohumeral joint)
-            - 'HeadArmsTrunk' (greater trochanter to glenohumeral joint)
-    total_mass : float
+    segment_name
+        The name of the segment, either:
+
+        - 'Hand' (wrist axis to knuckle II of middle finger)
+        - 'Forearm' (elbow axis to ulnar styloid)
+        - 'UpperArm' (glenohumeral axis to elbow axis)
+        - 'ForearmHand' (elbow axis to ulnar styloid)
+        - 'TotalArm' (glenohumeral joint to ulnar styloid)
+        - 'Foot' (lateral malleolus to head metatarsal II)
+        - 'Leg' (femoral condyles to medial malleolus)
+        - 'Thigh' (greater trochanter to femoral condyles)
+        - 'FootLeg' (fomeral condyles to medial malleolus)
+        - 'TotalLeg' (greater trochanter to medial malleolus)
+        - 'TrunkHeadNeck' (greater trochanter to glenohumeral joint)
+        - 'HeadArmsTrunk' (greater trochanter to glenohumeral joint)
+
+    total_mass
         The total mass of the person, in kg.
 
     Returns
     -------
-    values : dict
+    Dict[str, float]
         A dict with the following keys:
-            - 'Mass' : Mass of the segment, in kg.
-            - 'COMProximalRatio' : Distance between the segment's center of
-               mass and the proximal joint, as a ratio of the distance between
-               both joints.
-            - 'COMDistalRatio' : Distance between the segment's center of mass
-               and the distal joint, as a ratio of the distance between
-               both joints.
-            - 'GyrationCOMRatio': Radius of gyration around the segment's center
-               of mass, as a ratio of the distance between both joints.
-            - 'GyrationProximalRatio': Radius of gyration around the segment's
-               proximal joint, as a ratio of the distance between both joints.
-            - 'GyrationDistalRatio': Radius of gyration around the segment's
-               distal joint, as a ratio of the distance between both joints.
+
+        - 'Mass' : Mass of the segment, in kg.
+        - 'COMProximalRatio' : Distance between the segment's center of
+          mass and the proximal joint, as a ratio of the distance between
+          both joints.
+        - 'COMDistalRatio' : Distance between the segment's center of mass
+          and the distal joint, as a ratio of the distance between
+          both joints.
+        - 'GyrationCOMRatio': Radius of gyration around the segment's center
+          of mass, as a ratio of the distance between both joints.
+        - 'GyrationProximalRatio': Radius of gyration around the segment's
+           proximal joint, as a ratio of the distance between both joints.
+        - 'GyrationDistalRatio': Radius of gyration around the segment's
+           distal joint, as a ratio of the distance between both joints.
+
     """
     table = dict()
     table['Hand'] = [0.006, 0.506, 0.494, 0.297, 0.587, 0.577]
@@ -90,9 +122,15 @@ def get_anthropometrics(segment_name, total_mass):
         raise ValueError(f'The segment "{segment_name}" is not available.')
 
 
-def calculate_proximal_wrench(ts, inertial_constants):
+def calculate_proximal_wrench(
+        ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
     """
     Calculate the proximal wrench based on a TimeSeries.
+
+    Warning
+    -------
+    This method is experimental and has not been strongly validated yet.
+
 
     This function is based on R. Dumas, R. Aissaoui, and J. A. De Guise,
     "A 3D generic inverse dynamic method using wrench notation and quaternion
@@ -100,30 +138,35 @@ def calculate_proximal_wrench(ts, inertial_constants):
 
     Parameters
     ----------
-    ts : TimeSeries
+    ts
         A TimeSeries with the following data keys:
-            - ProximalJointPosition (Nx4)
-            - DistalJointPosition (Nx4)
-            - ForceApplicationPosition (Nx4)
-            - DistalForces (Nx4)
-            - DistalMoments (Nx4)
-    inertial_constants : dict
+
+        - ProximalJointPosition (Nx4)
+        - DistalJointPosition (Nx4)
+        - ForceApplicationPosition (Nx4)
+        - DistalForces (Nx4)
+        - DistalMoments (Nx4)
+
+    inertial_constants
         A dict that contains the following keys:
-            - 'Mass' : Mass of the segment, in kg.
-            - 'COMProximalRatio' : Distance between the segment's center
-                of mass and the proximal joint, as a ratio of the
-                distance between both joints.
-            - 'GyrationCOMRatio': Radius of gyration around the segment's
-                center of mass, as a ratio of the distance between
-                both joints.
-            This dict may be generated using the get_anthropometrics function.
+
+        - Mass': Mass of the segment, in kg.
+        - COMProximalRatio': Distance between the segment's center
+          of mass and the proximal joint, as a ratio of the
+          distance between both joints.
+        - 'GyrationCOMRatio': Radius of gyration around the segment's
+          center of mass, as a ratio of the distance between
+          both joints.
+
+        This dict may be generated using the get_anthropometrics function.
 
     Returns
     -------
-    out : TimeSeries
+    TimeSeries
         A copy of the input timeseries plus these extra data keys:
-            - ProximalForces (Nx4)
-            - ProximalMoments (Nx4)
+
+        - 'ProximalForces' (Nx4)
+        - 'ProximalMoments' (Nx4)
     """
     ts = ts.copy()
 

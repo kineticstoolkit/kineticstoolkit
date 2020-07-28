@@ -15,15 +15,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+"""
+Provide fonctions related to development, tests and release of ktk.
+
+Note
+----
+This module is addressed to ktk developers only.
+
+"""
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-"""
-Contains fonctions related to development, tests and release of ktk.
-
-"""
 
 import ktk.config
 
@@ -36,7 +41,7 @@ import multiprocessing
 import time
 
 
-def run_unit_tests():
+def run_unit_tests() -> None:
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
@@ -47,7 +52,18 @@ def run_unit_tests():
     os.chdir(cwd)
 
 
-def run_doc_tests():
+def run_static_type_checker() -> None:
+    """Run static typing checker (mypy)."""
+    # Run pytest in another process to ensure that the workspace is and stays
+    # clean, and all Matplotlib windows are closed correctly after the tests.
+    print('Running mypy...')
+    cwd = os.getcwd()
+    os.chdir(ktk.config.root_folder)
+    subprocess.call(['mypy', '--ignore-missing-imports', '-p', 'ktk'])
+    os.chdir(cwd)
+
+
+def run_doc_tests() -> None:
     """Run all doc tests."""
     print('Running doc tests...')
     cwd = os.getcwd()
@@ -62,11 +78,14 @@ def run_doc_tests():
                 pass
     os.chdir(cwd)
 
-def _generate_tutorial(file):
+def _generate_tutorial(file: str) -> None:
+    """Generate one tutorial."""
+    print(file)
     subprocess.call(['jupyter-nbconvert', '--execute',
+                     '--log-level', 'WARN',
                      '--to', 'markdown', file])
 
-def generate_tutorials():
+def generate_tutorials() -> None:
     """Generate the markdown from notebooks tutorials."""
     print('Generating tutorials...')
     now = time.time()
@@ -81,43 +100,35 @@ def generate_tutorials():
     os.chdir(cwd)
     print(f'Done in {time.time() - now} seconds.')
 
+def generate_site(clean: bool = False) -> None:
+    """
+    Build the website using sphinx.
 
-def generate_api():
-    """Generate ktk's reference api using pdoc."""
+    Set clean to True to `make clean` beforehand.
+
+    """
     cwd = os.getcwd()
+    os.chdir(ktk.config.root_folder + '/doc')
 
-    # Run pdoc to generate the API documentation
-    try:
-        os.mkdir(ktk.config.root_folder + '/doc/api')
-    except Exception:
-        pass
+    if clean:
+        subprocess.call(['make', 'clean'])
 
-    try:
-        shutil.rmtree(ktk.config.root_folder + '/doc/api/ktk')
-    except Exception:
-        pass
+    # Generate API
+    print('Generating API...')
+    subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
+                     '-o', 'api', '../ktk', 'external'])
 
-    os.chdir(ktk.config.root_folder + '/ktk')
-    subprocess.call(['pdoc', '--html', '--config', 'show_source_code=False',
-                     '--output-dir',
-                     ktk.config.root_folder + '/doc/api', 'ktk'])
+    # Generate site
+    print('Generating site...')
+    subprocess.call(['make', 'html'])
 
-    # Cleanup
-    os.chdir(cwd)
-
-
-def generate_site():
-    """Build the website using mkdocs."""
-    cwd = os.getcwd()
-    os.chdir(ktk.config.root_folder)
-    subprocess.call(['mkdocs', 'build'])
-    # Open doc
+    # Open site
     webbrowser.open_new_tab(
-        'file://' + ktk.config.root_folder + '/site/index.html')
+        'file://' + ktk.config.root_folder + '/doc/_build/html/index.html')
     os.chdir(cwd)
 
 
-def clean():
+def clean() -> None:
     """Delete temporary files that were used by the release process."""
     cwd = os.getcwd()
 
@@ -140,25 +151,10 @@ def clean():
             print(f'Removing doc/{file}.')
             shutil.rmtree(file)
 
-    # Clean /site folder
-    os.chdir(ktk.config.root_folder + '/site')
-
-    files = os.listdir()
-    for file in files:
-
-        # Remove all source files
-        if file.endswith('.md') or file.endswith('.ipynb'):
-            print(f'Removing site/{file}.')
-            os.remove(file)
-
-        if file == '__pycache__':
-            print(f'Removing doc/{file}.')
-            shutil.rmtree(file)
-
     os.chdir(cwd)
 
 
-def compile_for_pypi():
+def compile_for_pypi() -> None:
     """Compile for PyPi."""
     shutil.rmtree(ktk.config.root_folder + '/dist', ignore_errors=True)
     shutil.rmtree(ktk.config.root_folder + '/build', ignore_errors=True)
@@ -166,8 +162,8 @@ def compile_for_pypi():
     subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
 
 
-def upload_to_pypi():
-    """Upload to PyPi."""
+def upload_to_pypi() -> None:
+    """Upload to PyPi. Only works on macOS for now."""
     root_folder = ktk.config.root_folder
     subprocess.call([
         'osascript',
@@ -176,11 +172,10 @@ def upload_to_pypi():
         f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'])
 
 
-def release():
+def release() -> None:
     """Run all functions for release, without packaging and uploading."""
     run_doc_tests()
+    run_static_type_checker()
     run_unit_tests()
-    generate_api()
     generate_tutorials()
-    generate_site()
-    clean()
+    generate_site(True)

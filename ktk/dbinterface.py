@@ -1,9 +1,27 @@
-"""
-Provides the DBInterface class.
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+#
+# Copyright 2020 Félix Chénier
 
-Author: Felix Chenier
-Date: April 2020
-"""
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+"""Provide the DBInterface class."""
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 
 import ktk.gui
 from ktk.loadsave import save, load
@@ -13,6 +31,7 @@ import os
 from io import StringIO
 import pandas as pd
 import warnings
+from typing import *
 
 
 class DBInterface():
@@ -20,51 +39,51 @@ class DBInterface():
 
     Parameters
     ----------
-    project_label : str
+    project_label
         Project label, for example 'FC_XX16E'.
-    user : str, optional
-        Username on BIOMEC. If none is supplied, a dialog box asks the user
-        for his/her credentials.
-    password : str, optional
-        Password on BIOMEC. The default is ''.
-    root_folder : str, optional
-        Project's root folder, where all data files are stored. If none is
-        given, a dialog box asks the user to point to this folder.
-    url : str, optional
-        BIOMEC's url. The default is 'https://felixchenier.uqam.ca/biomec'.
-
-    Returns
-    -------
-    A DBInterface class instance.
+    user
+        Optional. Username on BIOMEC. If none is supplied, a dialog box asks
+        the user for his/her credentials.
+    password
+        Optional. Password on BIOMEC.
+    root_folder
+        Optional. Project's root folder, where all data files are stored. If
+        none is given, a dialog box asks the user to point to this folder.
+    url
+        Optional. BIOMEC's url.
 
     """
 
     @property
-    def participants(self):
+    def participants(self) -> List[str]:
         """Return a list of all participant labels in the project."""
         table = self.tables['Participants']['ParticipantLabel']
         return table.drop_duplicates().to_list()
 
     @property
-    def sessions(self):
+    def sessions(self) -> List[str]:
         """Return a list of all session labels in the project."""
         table = self.tables['Sessions']['SessionLabel']
         return table.drop_duplicates().to_list()
 
     @property
-    def trials(self):
+    def trials(self) -> List[str]:
         """Return a list of all trial labels in the project."""
         table = self.tables['Trials']['TrialLabel']
         return table.drop_duplicates().to_list()
 
     @property
-    def files(self):
+    def files(self) -> List[str]:
         """Return a list of all file labels in the project."""
         table = self.tables['Files']['FileLabel']
         return table.drop_duplicates().to_list()
 
-    def __init__(self, project_label, user='', password='', root_folder='',
-                 url='https://felixchenier.uqam.ca/biomec'):
+    def __init__(self,
+                 project_label: str,
+                 user: str = '',
+                 password: str = '',
+                 root_folder: str = '',
+                 url: str = 'https://felixchenier.uqam.ca/biomec'):
         """Init."""
         # Simple assignations
         self.project_label = project_label
@@ -87,10 +106,10 @@ class DBInterface():
             self.root_folder = root_folder
 
         # Assign tables
-        self.tables = dict()
+        self.tables = dict()  # type: Dict[str, pd.DataFrame]
         self.refresh()
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         """Generate the instance's developer representation."""
         s = f'--------------------------------------------------\n'
         s += 'DBInterface\n'
@@ -114,7 +133,7 @@ class DBInterface():
         s += f'--------------------------------------------------\n'
         return s
 
-    def _fetch_table(self, table_name):
+    def _fetch_table(self, table_name: str) -> pd.DataFrame:
         global _module_user, _module_password
         url = self.url + '/kineticstoolkit/dbinterface.php'
         result = requests.post(url, data={
@@ -140,7 +159,9 @@ class DBInterface():
     def _scan_files(self):
 
         # Scan all files in root folder
-        dict_files = {'FileID': [], 'FileName': []}
+        dict_files = {}
+        dict_files['FileID'] = []
+        dict_files['FileName'] = []
         self.duplicates = []
 
         warned_once = False
@@ -173,31 +194,39 @@ class DBInterface():
         return pd.DataFrame(dict_files)
 
 
-    def _filter_table(self, table, filters):
+    def _filter_table(self,
+                      table: pd.DataFrame,
+                      filters: Dict[str, str]) -> pd.DataFrame:
         """Apply filters on a DataFrame, return the filtered DataFrame."""
         for column in filters:
             if column in table.columns:
                 table = table[table[column] == filters[column]]
         return table
 
-    def get(self, participant='', session='', trial='', file=''):
+    def get(self, participant: str = '', session: str = '',
+            trial : str = '', file: str = '') -> Dict[str, Any]:
         """
         Extract information from a project.
 
         Parameters
         ----------
-        participant : str, optional
-            Participant label (for example, 'P01'). The default is ''.
-        session : str, optional
-            Session label (for example, 'SB4320'). The default is ''.
-        trial : str, optional
-            Trial label (for example, 'StaticAnatomic'). The default is ''.
-        file : str, optional
-            File label (for example, 'Kinematics'). The default is ''.
+        participant
+            Optional. Participant label (for example, 'P01').
+        session :
+            Optional. Session label (for example, 'SB4320').
+        trial :
+            Optional. Trial label (for example, 'Static').
+        file :
+            Optional. File label (for example, 'Kinematics').
+
+        Note
+        ----
+        A former parameter could not be empty while a latter parameters is not.
+        For example, `participant` could not be '' if `session` is 'SB4320'.
 
         Returns
         -------
-        dict
+        Dict[str, Any]
             A record of the specified information.
 
         """
@@ -273,10 +302,10 @@ class DBInterface():
 
         return dict_out
 
-    def _refresh_tables(self):
+    def _refresh_tables(self) -> None:
         """Fetch tables on BIOMEC and merge them in the class instance."""
 
-        def repetition_to_str(repetition):
+        def repetition_to_str(repetition: Union[str, int]) -> str:
             try:
                 repetition = str(int(repetition))
             except Exception:
@@ -328,14 +357,14 @@ class DBInterface():
             self.tables['Files']['FileTypeLabel']
 
 
-    def refresh(self):
+    def refresh(self) -> None:
         """Update from database and reindex files."""
 
         self.tables['FileAssociations'] = self._scan_files()
         self._refresh_tables()
 
 
-    def create_file_entry(self, trial_id, file_type_label):
+    def create_file_entry(self, trial_id: int, file_type_label: str) -> None:
         """
         Create a file entry in the database.
 
@@ -343,15 +372,12 @@ class DBInterface():
 
         Parameters
         ----------
-        trial_id : int
+        trial_id
             Trial identifier in the database. Can be obtained using
             get(participant, session, trial)['TrialID'].
-        file_type_label str
+        file_type_label
             File type label.
 
-        Returns
-        -------
-        None.
         """
         # Find the file type ID
         file_type_table = self.tables['FileTypes']
@@ -374,40 +400,43 @@ class DBInterface():
         return
 
 
-    def save(self, participant, session, trial, file, variable):
+    def save(self, participant: str, session: str, trial: str,
+             file: str, variable: Any) -> str:
         """
         Save a variable to a BIOMEC referenced file.
 
         This method saves the specified variable following either of these
         cases:
-            A) If the participant, session, trial and file labels are already
-               associated to a file on disk:
-                   The file is overwritten.
-            B) If the participant, session, trial and file labels are
-               associated to a file entry but no file exists on disk:
-                   The file is created and saved in:
-                   root_folder/file_label/participant/session/
-                   dbfidxxxxn_{trial}.ktk.zip
-            C) If the participant, session, trial and file labels do not
-               correspond to a file entry in the database:
-                   - A file entry is created in the database;
-                   - Then the file is saved as in case B.
+
+        - If the participant, session, trial and file labels are already
+          associated to a file on disk, the file is overwritten.
+
+        - If the participant, session, trial and file labels are associated to
+          a file entry but no file exists on disk, the file is created and
+          saved in `root_folder/file_label/participant/session` as
+          `dbfidxxxxn_{trial}.ktk.zip`.
+
+        - If the participant, session, trial and file labels do not correspond
+          to a file entry in the database, a file entry is created in the
+          database, then the file is saved as in 2nd case.
 
         Parameters
         ----------
-        participant : str
+        participant
             Participant label. For example, 'P01'
-        session : str
+        session
             Session label. For example, 'SB4320'
-        trial : str
+        trial
             Trial label. For example, 'StaticR1'
-        file : str
-            File type label. For example, 'SyncMarkers'
-        variable : any variable supported by ktk.save
+        file
+            File type label. For example, 'SyncedMarkers'
+        variable
+            Any variable that is supported by ktk.save
 
         Returns
         -------
-        str : the file path
+        str
+            The file path
         """
         # Create the file entry if not already in database
         if file not in self.get(participant, session, trial)['Files']:
@@ -450,7 +479,8 @@ class DBInterface():
 
         return file_name
 
-    def load(self, participant, session, trial, file):
+    def load(self, participant: str, session: str, trial: str,
+             file: str) -> Any:
         """
         Load a variable from a BIOMEC referenced file.
 
@@ -459,36 +489,34 @@ class DBInterface():
 
         Parameters
         ----------
-        participant : str
+        participant
             Participant label. For example, 'P01'
-        session : str
+        session
             Session label. For example, 'SB4320'
-        trial : str
+        trial
             Trial label. For example, 'StaticR1'
-        file : str
-            File type label. For example, 'SyncMarkers'
+        file
+            File type label. For example, 'SyncedMarkers'
 
         Returns
         -------
-        The file's content
+        Any
+            The file's content.
         """
         return load(self.get(
             participant, session, trial, file)['FileName'])
 
-    def rename(self, filename, dbfid):
+    def rename(self, filename: str, dbfid: int) -> None:
         """
         Rename a file to include or modify a dbfid code in its filename.
 
         Parameters
         ----------
-        file : str
+        filename
             Name of the file to rename
-        dbfid : int
+        dbfid
             FileID in database
 
-        Returns
-        -------
-        None.
         """
         base, ext = os.path.splitext(filename)
 
@@ -504,26 +532,24 @@ class DBInterface():
 
         os.rename(filename, new_filename)
 
-    def tag_files(self, include_trial_name=True, dry_run=True):
+    def tag_files(self,
+                  include_trial_name: bool = True,
+                  dry_run: bool = True) -> None:
         """
         Rename all files to include tags in file names.
 
         This method renames all the files referenced by the project following
         the given specifications. The resulting file can be either:
-            - ORIGINALNAME_dbfidXXXXn.EXT
-            - ORIGINALNAME_dbfidXXXXn_{TRIALNAME}.EXT
+
+        - ORIGINALNAME_dbfidXXXXn.EXT
+        - ORIGINALNAME_dbfidXXXXn_{TRIALNAME}.EXT
 
         Parameters
         ----------
-        include_trial_name : bool, optional
-            Include or exclude the trial name from the file name. The default
-            is True (include).
-        dry_run : bool, optional
-            False to perform the rename. The default is True.
-
-        Returns
-        -------
-        None.
+        include_trial_name
+            Optional. True to include the trial name from the file name.
+        dry_run
+            Optional. Set to False to actually perform the rename.
 
         """
         # Check that the project has no duplicate files.
@@ -568,8 +594,11 @@ class DBInterface():
         print('Refreshing project...')
         self.refresh()
 
-    def batch_fix_file_type(self, folder, new_file_type_label,
-                            create_file_entries=False, dry_run=True):
+    def batch_fix_file_type(self,
+                            folder: str,
+                            new_file_type_label: str,
+                            create_file_entries: bool = False,
+                            dry_run: bool = True) -> Dict[str, List[Any]]:
         """
         Batch-rename files in a folder to their new corresponding dbfid.
 
@@ -583,8 +612,9 @@ class DBInterface():
         the same name, apart from the extension.
 
         Now, let say a project contains these filetypes:
-            - 'RawKinematics': raw kinematic take files;
-            - 'LabelledKinematics': c3d files with labelled markers.
+
+        - 'RawKinematics': raw kinematic take files;
+        - 'LabelledKinematics': c3d files with labelled markers.
 
         If the raw kinematics files were correctly assigned to database entries
         before batch-exporting, then the exported c3d files contain the
@@ -595,30 +625,32 @@ class DBInterface():
 
         Parameters
         ----------
-        folder : str
+        folder
             Folder that contains the set of files to rename. These files must
             have the original dbfid in their name, to identify the trial they
             belong to.
-        new_file_type_label : str
+        new_file_type_label
             FileTypeLabel as set in the database. For example:
             'LabelledKinematics'.
-        create_file_entries : bool (optional)
-            If a file entry for the specified file type ID does not exist in
-            the found trial, create the file entry in the database, then
-            rename the file accordingly. Default is False.
-        dry_run : bool (optional)
-            When True, the list of file renames is returned, but no action is
-            actually taken. Default is True.
+        create_file_entries
+            Optional. When True and if a file entry for the specified file type
+            ID does not exist in the found trial, create the file entry in the
+            database, then rename the file accordingly.
+        dry_run
+            Optional. When True, the list of file renames is returned, but no
+            action is actually taken.
 
         Returns
         -------
-        dict with these keys:
-            'Rename' :  list of tuples (old_file_name, new_file_name).
-            'Ignore' :  list of files without a dbfid.
-            'NoFileTypeLabel' : list of files which associated trial does not
-                                contain the specified FileTypeLabel
+        Dict[str, List[Any]]
+            A dictionary with the following keys:
+
+            - 'Rename' : list of tuples (old_file_name, new_file_name).
+            - 'Ignore' : list of files without a dbfid.
+            - 'NoFileTypeLabel' : list of files which associated trial does not
+              contain the specified FileTypeLabel
         """
-        out = dict()
+        out = dict()  # type: Dict[str, List[Any]]
         out['Rename'] = []
         out['Ignore'] = []
         out['NoFileTypeLabel'] = []
@@ -633,9 +665,9 @@ class DBInterface():
 
             # Extract incorrect FileID
             filename_left_part, rest = filename.split('dbfid', maxsplit=1)
-            old_file_id, filename_right_part = rest.split('n', maxsplit=1)
+            s_old_file_id, filename_right_part = rest.split('n', maxsplit=1)
 
-            old_file_id = int(old_file_id)
+            old_file_id = int(s_old_file_id)
 
             # Find corresponding trial
             trial_id = self.tables['Files']['TrialID'][

@@ -22,6 +22,12 @@ The Player class is accessible directly from the toplevel ktk namespace
 (i.e., ktk.Player).
 """
 
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
+
 from ktk.timeseries import TimeSeries
 
 import matplotlib.pyplot as plt
@@ -30,6 +36,7 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
+from typing import *
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
@@ -44,71 +51,74 @@ class Player:
 
     Parameters
     ----------
-    *ts : TimeSeries
+    *ts
         Contains the markers and rigid bodies to visualize, where each data
         key is either a marker position expressed as Nx4 array (N=time),
         or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
         can be provided, e.g., ktk.Player(markers, rigid_bodies)
 
-    segments : dict
-        Used to draw lines between markers. Each key corresponds to a
+    segments
+        Optional. Used to draw lines between markers. Each key corresponds to a
         segment, where a segment is another dict with the following keys:
 
         - Links: list of list of 2 str, where each str is a marker
-                 name. For example, to link Marker1 to Marker2 and
-                 Marker1 to Marker3, Links would be:
-
-                 [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+          name. For example, to link Marker1 to Marker2 and
+          Marker1 to Marker3, Links would be:
+          [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
 
         - Color: character or tuple that represents the color of the
-                 link. Color must be a valid value for matplotlib's
-                 plots.
-    current_frame : int (optional)
-        Sets the inital frame number to show. Default is 0.
+          link. Color must be a valid value for matplotlib's
+          plots.
 
-    marker_radius : float (optional)
-        Sets the marker radius as defined by matplotlib. Default is 0.008.
+    current_frame
+        Optional. Sets the inital frame number to show.
 
-    rigid_body_length : float (optional)
-        Sets the rigid body size in meters. Default is 0.1.
+    marker_radius
+        Optional. Sets the marker radius as defined by matplotlib.
 
-    zoom : float (optional)
-        Sets the initial camera zoom. Default is 0.2.
+    axis_length
+        Optional. Sets the rigid body size in meters.
 
-    azimuth : float (optional)
-        Sets the initial camera azimuth in radians. Default is 0.0.
+    zoom
+        Optional. Sets the initial camera zoom.
 
-    elevation : float (optional)
-        Sets the initial camera elevation in radians. Default is 1.0.
+    azimuth
+        Optional. Sets the initial camera azimuth in radians.
 
-    translation : tuple of floats (optional)
-        Sets the initial camera translation (panning). Default is (0.0, 0.0)
+    elevation
+        Optional. Sets the initial camera elevation in radians.
 
-    target : tuple of floats or 'centroid' (optional)
-        Sets the camera target in meters. Default is (0.0, 0.0, 0.0)
-        If set to 'centroid', then the target is continuously updated to
-        the centroid of the markers, which allows following moving
-        objects more easily.
+    translation
+        Optional. Sets the initial camera translation (panning).
 
-    track : bool (optional)
-        Set to True to track the last selected marker when changing frame,
-        or False to keep the scene static. Default is False.
+    target
+        Optional. Sets the camera target in meters.
 
-    perspective : bool (optional)
-        Sets if the scene must be drawn using perspective (True) or
-        orthogonal (False). Default is True.
+    track
+        Optional. False to keep the scene static, True to track the last
+        selected marker when changing frame.
 
-    Returns
-    -------
-    Player
+    perspective
+        Optional. True to draw the scene using perspective, False to draw the
+        scene orthogonally.
+
     """
 
-    def __init__(self, *ts, segments=None,
-                 current_frame=0, marker_radius=0.008, rigid_body_length=0.1,
-                 rigid_body_width=3, segment_width=1.5,
-                 zoom=1.0, azimuth=0.0, elevation=0.2,
-                 translation=(0.0, 0.0), target=(0.0, 0.0, 0.0),
-                 track=False, perspective=True):
+    def __init__(self,
+                 *ts: TimeSeries,
+                 segments: Dict[str, Dict[str, Any]] = {},
+                 current_frame: int = 0,
+                 marker_radius: float = 0.008,
+                 axis_length: float = 0.1,
+                 axis_width: float = 3.0,
+                 segment_width: float = 1.5,
+                 zoom: float = 1.0,
+                 azimuth: float = 0.0,
+                 elevation: float = 0.2,
+                 translation: Union[Sequence[float], np.ndarray] = (0.0, 0.0),
+                 target: Union[Sequence[float], np.ndarray] = (0.0, 0.0, 0.0),
+                 track: bool = False,
+                 perspective: bool = True):
 
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
@@ -138,7 +148,7 @@ class Player:
                     raise ValueError('TimeSeries data must be of shape Nx4 '
                                      '(markers) or Nx4x4 (rigid bodies)')
         self._select_none()
-        self.last_selected_marker = None
+        self.last_selected_marker = ''
 
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(
@@ -152,8 +162,8 @@ class Player:
         # Other initalizations
         self.current_frame = current_frame
         self.marker_radius = marker_radius
-        self.rigid_body_length = rigid_body_length
-        self.rigid_body_width = rigid_body_width
+        self.axis_length = axis_length
+        self.axis_width = axis_width
         self.segment_width = segment_width
         self.zoom = zoom
         self.azimuth = azimuth
@@ -163,9 +173,9 @@ class Player:
         self.translation = translation
         self.perspective = perspective
         self.playback_speed = 1.0
-        self.anim = None
+        #  self.anim = None  # Will initialize in _create_figure
 
-        self.objects = dict()
+        self.objects = dict()  # type: Dict[str, Any]
         self._colors = ['r', 'g', 'b', 'y', 'c', 'm', 'w']
         self.objects['PlotMarkers'] = dict()
         for color in self._colors:
@@ -181,7 +191,7 @@ class Player:
         self.objects['Axes'] = None
         self.objects['Help'] = None
 
-        self.state = dict()
+        self.state = dict()  # type: Dict[str, Any]
         self.state['ShiftPressed'] = False
         self.state['MouseLeftPressed'] = False
         self.state['MouseMiddlePressed'] = False
@@ -223,7 +233,7 @@ class Player:
         self._create_ground_plane()
         self._first_refresh()
 
-    def _create_figure(self):
+    def _create_figure(self) -> None:
         """Create the player's figure."""
         # Create the figure and axes
         self.objects['Figure'], self.objects['Axes'] = plt.subplots(
@@ -269,7 +279,7 @@ class Player:
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
 
-    def _create_segments(self):
+    def _create_segments(self) -> None:
         """Create the segments plots in the player's figure."""
         if self.segments is not None:
             for segment in self.segments:
@@ -279,7 +289,7 @@ class Player:
                         c=self.segments[segment]['Color'],
                         linewidth=self.segment_width)[0]
 
-    def _create_markers(self):
+    def _create_markers(self) -> None:
         """Create the markers plots in the player's figure."""
         colors = {
             'r': [1, 0, 0],
@@ -293,14 +303,14 @@ class Player:
         for color in self._colors:
             self.objects['PlotMarkers'][color] = self.objects['Axes'].plot(
                 np.nan, np.nan, '.',
-                c=colors[color], markersize=4, picker=5)[0]
+                c=colors[color], markersize=4, pickradius=5, picker=True)[0]
         for color in self._colors:
             self.objects['PlotMarkers'][color + 's'] = \
                 self.objects['Axes'].plot(
                     np.nan, np.nan, '.',
                     c=colors[color], markersize=12)[0]
 
-    def _create_ground_plane(self):
+    def _create_ground_plane(self) -> None:
         # Create the ground plane matrix
         gp_size = 30  # blocks
         gp_div = 4  # blocks per meter
@@ -319,12 +329,12 @@ class Player:
                                         gp_z[:, np.newaxis],
                                         gp_1[:, np.newaxis]])
 
-    def _first_refresh(self):
+    def _first_refresh(self) -> None:
         """Draw the stuff and set the axis size."""
         self._update_plots()
         plt.axis([-1.5, 1.5, -1, 1])
 
-    def _get_projection(self, points_3d):
+    def _get_projection(self, points_3d: np.ndarray) -> np.ndarray:
         """
         Get a 3d --> 2d projection of a list of points.
 
@@ -333,13 +343,12 @@ class Player:
 
         Parameters
         ----------
-        points_3d : array
+        points_3d
             Nx4 array, where the first dimension is the number of points
             and  the second dimension is (x, y, z, 1).
 
         Returns
         -------
-        points_2d : array
             Nx2 array, where the first dimension is the number of points and
             the second dimension is (x, y) to be ploted on a 2d graphic.
 
@@ -394,7 +403,7 @@ class Player:
         # Return only x and y
         return rotated_points_3d[:, 0:2]
 
-    def _update_markers_and_segments(self):
+    def _update_markers_and_segments(self) -> None:
         # Get a Nx4 matrices of every marker at the current frame
         markers = self.markers
         if markers is None:
@@ -466,7 +475,7 @@ class Player:
                 self.objects['PlotSegments'][segment].set_data(
                     coordinates[:, 0], coordinates[:, 1])
 
-    def _update_plots(self):
+    def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
         self._update_markers_and_segments()
 
@@ -489,13 +498,13 @@ class Player:
             # Direction
             rbx_data[i_rigid_body * 3 + 1] = (
                 rigid_bodies.data[rigid_body][self.current_frame] @
-                np.array([self.rigid_body_length, 0, 0, 1]))
+                np.array([self.axis_length, 0, 0, 1]))
             rby_data[i_rigid_body * 3 + 1] = (
                 rigid_bodies.data[rigid_body][self.current_frame] @
-                np.array([0, self.rigid_body_length, 0, 1]))
+                np.array([0, self.axis_length, 0, 1]))
             rbz_data[i_rigid_body * 3 + 1] = (
                 rigid_bodies.data[rigid_body][self.current_frame] @
-                np.array([0, 0, self.rigid_body_length, 1]))
+                np.array([0, 0, self.axis_length, 1]))
             # NaN to cut the line between the different rigid bodies
             rbx_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
             rby_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
@@ -516,13 +525,13 @@ class Player:
         if self.objects['PlotRigidBodiesX'] is None:  # Create the plot
             self.objects['PlotRigidBodiesX'] = self.objects['Axes'].plot(
                 rbx_data[:, 0], rbx_data[:, 1], c='r',
-                linewidth=self.rigid_body_width)[0]
+                linewidth=self.axis_width)[0]
             self.objects['PlotRigidBodiesY'] = self.objects['Axes'].plot(
                 rby_data[:, 0], rby_data[:, 1], c='g',
-                linewidth=self.rigid_body_width)[0]
+                linewidth=self.axis_width)[0]
             self.objects['PlotRigidBodiesZ'] = self.objects['Axes'].plot(
                 rbz_data[:, 0], rbz_data[:, 1], c='b',
-                linewidth=self.rigid_body_width)[0]
+                linewidth=self.axis_width)[0]
         else:  # Update the plot
             self.objects['PlotRigidBodiesX'].set_data(
                 rbx_data[:, 0], rbx_data[:, 1])
@@ -538,7 +547,8 @@ class Player:
 
         self.objects['Figure'].canvas.draw()
 
-    def _set_new_target(self, target):
+    def _set_new_target(self,
+                        target: Union[Sequence[float], np.ndarray]) -> None:
         """Set new target and adapts translation and zoom consequently."""
         if np.sum(np.isnan(target)) > 0:
             return
@@ -580,7 +590,7 @@ class Player:
 
     # ------------------------------------
     # Helper functions
-    def _set_frame(self, frame):
+    def _set_frame(self, frame: int) -> None:
         """Set current frame to a given frame and update plots."""
         if frame >= self.n_frames:
             self.current_frame = self.n_frames - 1
@@ -596,12 +606,12 @@ class Player:
             if not np.isnan(np.sum(new_target)):
                 self.target = new_target
 
-    def _set_time(self, time):
+    def _set_time(self, time: float) -> None:
         """Set current frame to a given time and update plots."""
         index = np.argmin(np.abs(self.time - time))
         self._set_frame(index)
 
-    def _select_none(self):
+    def _select_none(self) -> None:
         """Deselect every markers."""
         if self.markers is not None:
             for marker in self.markers.data:
@@ -612,20 +622,20 @@ class Player:
                 except KeyError:
                     self.markers.add_data_info(marker, 'Color', 'w')
 
-    def close(self):
+    def close(self) -> None:
         """Close the Player and its associated window."""
         plt.close(self.objects['Figure'])
-        self.objects = None
+        self.objects = {}
 
     # ------------------------------------
     # Callbacks
-    def _on_close(self, _):
+    def _on_close(self, _) -> None:
         # Release all references to objects
         self.close()
 
-    def _on_timer(self, _):
+    def _on_timer(self, _) -> None:
         if self.running is True:
-            # We check self.anim because the garbage collector may take time
+            # We check self.running because the garbage collector may take time
             # before deleting the animation timer, and unreferencing the
             # animation timer is the recommended way to deactivate a timer.
             """Callback for the animation timer object."""
@@ -744,7 +754,7 @@ class Player:
 
     def _on_mouse_press(self, event):
 
-        if self.last_selected_marker is not None:
+        if len(self.last_selected_marker) > 0:
             self._set_new_target(
                 self.markers.data[
                     self.last_selected_marker][self.current_frame])

@@ -2,46 +2,64 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
-Provides standard filters for TimeSeries.
+Provide standard filters for TimeSeries.
 """
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 
 import numpy as np
 import scipy as sp
 import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
+from ktk import TimeSeries
+from typing import *
+
+import ktk  # for doctests
 
 
-def savgol(tsin, window_length, poly_order, deriv=0):
+def savgol(tsin: TimeSeries, /, *, window_length: int, poly_order: int,
+           deriv: int = 0) -> TimeSeries:
     """
     Apply a Savitzky-Golay filter on a TimeSeries.
 
-    Parameters
-    ----------
-    tsin : TimeSeries
-        Input TimeSeries
-    window_length : int
-        The length of the filter window. window_length must be a positive
-        odd integer less or equal than the length of the TimeSeries.
-    poly_order : int
-        The order of the polynomial used to fit the samples. polyorder must be
-        less than window_length.
-    deriv : int (optional)
-        The order of the derivative to compute. This must be a nonnegative
-        integer. The default is 0, which means to filter the data without
-        differentiating.
-
-    Returns
-    -------
-    tsout : TimeSeries
-        The filtered TimeSeries
-
+    Note
+    ----
     If the TimeSeries contains missing samples, a warning is issued, missing
     samples are interpolated using a first-order interpolation before
     filtering, and then replaced by NaNs in the filtered signal.
+
+    Parameters
+    ----------
+    tsin
+        Input TimeSeries
+    window_length
+        The length of the filter window. window_length must be a positive
+        odd integer less or equal than the length of the TimeSeries.
+    poly_order
+        The order of the polynomial used to fit the samples. polyorder must be
+        less than window_length.
+    deriv
+        Optional. The order of the derivative to compute. The default is 0,
+        which means to filter the data without differentiating.
 
     """
     tsout = tsin.copy()
@@ -94,53 +112,46 @@ def savgol(tsin, window_length, poly_order, deriv=0):
     return tsout
 
 
-def smooth(tsin, window_length):
+def smooth(tsin: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
 
     Parameters
     ----------
-    tsin : TimeSeries
+    tsin
         Input TimeSeries.
-    window_length : int
+    window_length
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
 
-    Returns
-    -------
-    tsout : TimeSeries
-        The filtered TimeSeries
-
     """
-    tsout = savgol(tsin, window_length, 0)
+    tsout = savgol(tsin, window_length=window_length, poly_order=0)
     return tsout
 
 
-def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
+def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
+           btype: str = 'lowpass', filtfilt: bool = True) -> TimeSeries:
     """
     Apply a Butterworth filter to a TimeSeries.
 
+    Note
+    ----
     The sampling rate must be constant.
 
     Parameters
     ----------
-    tsin : TimeSeries
+    tsin
         Input TimeSeries.
-    fc : float
-        Cut-off frequency.
-    order : int (optional)
-        Order of the filter. The default is 2.
-    btype : {‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’}, optional
-        The default is 'lowpass'.
-    filtfilt : bool (optional)
-        If True, the filter is applied two times in reverse direction to
-        eliminate time lag. If False, the filter is applied only in forward
-        direction. The default is True.
-
-    Returns
-    -------
-    tsout : TimeSeries
-        The filtered TimeSeries
+    fc
+        Cut-off frequency in Hz.
+    order
+        Optional. Order of the filter.
+    btype
+        Optional. {'lowpass', 'highpass', 'bandpass', 'bandstop'}.
+    filtfilt
+        Optional. If True, the filter is applied two times in reverse direction
+        to eliminate time lag. If False, the filter is applied only in forward
+        direction.
 
     """
     ts = tsin.copy()
@@ -179,55 +190,48 @@ def butter(tsin, fc, order=2, btype='lowpass', filtfilt=True):
     return ts
 
 
-def deriv(ts, n=1):
+def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
 
+    Note
+    ----
+    The sample rate must be constant.
+
     Parameters
     ----------
-    ts : TimeSeries
+    ts
         Input timeseries
 
-    n : int (optional)
-        Order of the derivative. The default is 1.
-
-    Returns
-    -------
-    ts : TimeSeries
-        A copy of the TimeSeries where each data key has been derivated n
-        times.
-
-    Notes
-    -----
-    The sample rate must be constant.
+    n
+        Order of the derivative.
 
     Example
     -------
-        >>> import ktk, numpy as np
-        >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
-        >>> ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+    >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+    >>> ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
 
-        >>> # Source data
-        >>> ts.time
-        array([0. , 0.1, 0.2, 0.3, 0.4])
-        >>> ts.data['data']
-        array([0., 0., 1., 1., 0.])
+    >>> # Source data
+    >>> ts.time
+    array([0. , 0.1, 0.2, 0.3, 0.4])
+    >>> ts.data['data']
+    array([0., 0., 1., 1., 0.])
 
-        >>> # First derivative
-        >>> ts1 = ktk.filters.deriv(ts)
+    >>> # First derivative
+    >>> ts1 = ktk.filters.deriv(ts)
 
-        >>> ts1.time
-        array([0.05, 0.15, 0.25, 0.35])
-        >>> ts1.data['data']
-        array([  0.,  10.,   0., -10.])
+    >>> ts1.time
+    array([0.05, 0.15, 0.25, 0.35])
+    >>> ts1.data['data']
+    array([  0.,  10.,   0., -10.])
 
-        >>> # Second derivative
-        >>> ts2 = ktk.filters.deriv(ts, n=2)
+    >>> # Second derivative
+    >>> ts2 = ktk.filters.deriv(ts, n=2)
 
-        >>> ts2.time
-        array([0.1, 0.2, 0.3])
-        >>> ts2.data['data']
-        array([ 100., -100., -100.])
+    >>> ts2.time
+    array([0.1, 0.2, 0.3])
+    >>> ts2.data['data']
+    array([ 100., -100., -100.])
 
     """
     out_ts = ts.copy()
@@ -242,53 +246,47 @@ def deriv(ts, n=1):
     return out_ts
 
 
-def median(ts, window_length=3):
+def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.
 
     Parameters
     ----------
-    ts : TimeSeries
+    ts
         Input TimeSeries
 
-    window_length : int (optinal)
-        Kernel size, must be odd. The default is 3.
-
-    Returns
-    -------
-    ts : TimeSeries
-        A copy of the input TimeSeries with filtered data.
+    window_length
+        Optional. Kernel size, must be odd. The default is 3.
 
     Example
     -------
-        >>> import ktk, numpy as np
-        >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+    >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
 
-        >>> # Works on 1-dimension data
-        >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
+    >>> # Works on 1-dimension data
+    >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
 
-        >>> # and also on n-dimension data
-        >>> ts.data['data2'] = np.array( \
-                [[0., 10.], \
-                 [0., 11.], \
-                 [1., 11.], \
-                 [1., 20.], \
-                 [2., 14.], \
-                 [2., 15.]])
+    >>> # and also on n-dimension data
+    >>> ts.data['data2'] = np.array(
+            [[0., 10.],
+             [0., 11.],
+             [1., 11.],
+             [1., 20.],
+             [2., 14.],
+             [2., 15.]])
 
-        >>> # Filter
-        >>> ts = ktk.filters.median(ts)
+    >>> # Filter
+    >>> ts = ktk.filters.median(ts)
 
-        >>> ts.data['data1']
-        array([10., 11., 11., 14., 15., 15.])
+    >>> ts.data['data1']
+    array([10., 11., 11., 14., 15., 15.])
 
-        >>> ts.data['data2']
-        array([[ 0., 10.],
-               [ 0., 11.],
-               [ 1., 11.],
-               [ 1., 14.],
-               [ 2., 15.],
-               [ 2., 15.]])
+    >>> ts.data['data2']
+    array([[ 0., 10.],
+           [ 0., 11.],
+           [ 1., 11.],
+           [ 1., 14.],
+           [ 2., 15.],
+           [ 2., 15.]])
 
     """
     out_ts = ts.copy()

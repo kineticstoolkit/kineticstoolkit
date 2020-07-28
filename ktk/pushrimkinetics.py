@@ -2,40 +2,54 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
-Provides functions to process kinetic data from instrumented wheelchair wheels.
+Provide functions to process kinetic data from instrumented wheelchair wheels.
 """
 
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
+
 import ktk.filters
-from ktk.timeseries import TimeSeries, TimeSeriesEvent
+from ktk import TimeSeries, TimeSeriesEvent
 
 import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
 import warnings
 import struct  # to unpack binary data from SmartWheels' txt files
+from typing import *
 
-
-def read_file(filename, format='smartwheel'):
+def read_file(filename: str, format: str = 'smartwheel', /) -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
 
     Parameters
     ----------
-    filename : str
+    filename
         Name of the file to open
-    format : str (optional)
-        Format of the file. Can be either:
-            - 'smartwheel' (default)
-            - 'racingwheel'
-            - 'smartwheeltxt'
+    format
+        Optiona. Format of the file. Can be either:
 
-    Returns
-    -------
-    kinetics : TimeSeries
-	    TimeSeries with the file contents.
+        - 'smartwheel' (default - SmartWheel CSV file)
+        - 'smartwheeltxt' (SmartWheel SD-Card TXT file)
+        - 'racingwheel' (will change)
+
     """
     if format == 'smartwheel':
 
@@ -144,7 +158,7 @@ def read_file(filename, format='smartwheel'):
     return ts
 
 
-def find_recovery_indices(Mz):
+def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     """
     Find recovery indices based on a vector of propulsion moments.
 
@@ -154,17 +168,17 @@ def find_recovery_indices(Mz):
     index returned by this function is almost certain to correspond to a
     recovery. This function is used by `pushrimkinetics.remove_sinusoids`
     to identify the instants with no hand contact. It should not be used to
-    isolate the push and recovery phases (use pushrimkinetics.detectpushes
+    isolate the push and recovery phases (use `pushrimkinetics.detectpushes`
     instead).
 
     Parameters
     ----------
-    Mz : array
+    Mz
         Array that contains the propulsion moments in Nm.
 
     Returns
     -------
-    index : array
+    np.ndarray
         Array of bools where each True represents recovery.
 
     """
@@ -193,22 +207,20 @@ def find_recovery_indices(Mz):
     return index
 
 
-def remove_sinusoids(kinetics, baseline_kinetics=None):
+def remove_sinusoids(
+        kinetics: TimeSeries,
+        baseline_kinetics: Optional[TimeSeries] = None
+        ) -> TimeSeries:
     """
     Remove sinusoids in forces and moments.
 
-    Reference: F. Chénier, R. Aissaoui, C. Gauthier, and D. H. Gagnon,
-    "Wheelchair pushrim kinetics measurement: A method to cancel
-    inaccuracies due to pushrim weight and wheel camber," Medical
-    Engineering and Physics, vol. 40, pp. 75--86, 2017.
-
     Parameters
     ----------
-    kinetics : TimeSeries
+    kinetics
         TimeSeries that contains at least Forces, Moments and Angle data.
-    baseline_kinetics : TimeSeries, optional
-        TimeSeries that contains at least Forces and Moments data. This
-        TimeSeries contains a baseline trial, where the wheelchair must be
+    baseline_kinetics
+        Optional. TimeSeries that contains at least Forces and Moments data.
+        This TimeSeries contains a baseline trial, where the wheelchair must be
         pushed by an operator and where no external force must be applied on
         the pushrims. If no baseline is provided, the baseline is calculated
         based on a detection of recoveries in the supplied kinetics
@@ -216,9 +228,16 @@ def remove_sinusoids(kinetics, baseline_kinetics=None):
 
     Returns
     -------
-    kinetics : TimeSeries
+    TimeSeries
         A copy of the input TimeSeries, where sinusoids are removed from
         Forces and Moments data.
+
+    References
+    ----------
+    F. Chénier, R. Aissaoui, C. Gauthier, and D. H. Gagnon,
+    "Wheelchair pushrim kinetics measurement: A method to cancel
+    inaccuracies due to pushrim weight and wheel camber," Medical
+    Engineering and Physics, vol. 40, pp. 75--86, 2017.
 
     """
     kinetics = kinetics.copy()
@@ -268,33 +287,35 @@ def remove_sinusoids(kinetics, baseline_kinetics=None):
     return kinetics
 
 
-def calculate_forces_and_moments(kinetics, calibration_id):
+def calculate_forces_and_moments(
+        kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
     """
     Calculate pushrim forces and moments based on raw channel values.
 
     Parameters
     ----------
-    kinetics : TimeSeries
+    kinetics
         Input TimeSeries that must contain a 'Channels' key in its data dict.
-    calibration_id : str
+    calibration_id
         Calibration identifier, resulting from factory or custom calibration.
         Available values are:
-            - 'PATHOKIN-93':  PATHOKIN 24" SmartWheel, Serial #93
-            - 'PATHOKIN-94':  PATHOKIN 24" SmartWheel, Serial #94
-            - 'LIO-123':      LIO 24" SmartWheel, Serial #123
-            - 'LIO-124':      LIO 24" SmartWheel, Serial #124
-            - 'LIO-125':      LIO 24" SmartWheel, Serial #125
-            - 'LIO-126':      LIO 26" SmartWheel, Serial #126
-            - 'S18-126':      PATHOKIN Summer 2018, Serial 126  - 26"
-            - 'S18-179':      PATHOKIN Summer 2018, Serial 179  - 25"
-            - 'S18-180':      PATHOKIN Summer 2018, Serial 180  - 25"
-            - 'S18-181':      PATHOKIN Summer 2018, Serial 181  - 26"
-            - 'S18-Racing-Prototype1': Racing wheel prototype
-            - 'W20-Racing-Prototype1': Racing wh proto with calibration matrix
+
+        - 'PATHOKIN-93':  PATHOKIN 24" SmartWheel, Serial #93
+        - 'PATHOKIN-94':  PATHOKIN 24" SmartWheel, Serial #94
+        - 'LIO-123':      LIO 24" SmartWheel, Serial #123
+        - 'LIO-124':      LIO 24" SmartWheel, Serial #124
+        - 'LIO-125':      LIO 24" SmartWheel, Serial #125
+        - 'LIO-126':      LIO 26" SmartWheel, Serial #126
+        - 'S18-126':      PATHOKIN Summer 2018, Serial 126 - 26"
+        - 'S18-179':      PATHOKIN Summer 2018, Serial 179 - 25"
+        - 'S18-180':      PATHOKIN Summer 2018, Serial 180 - 25"
+        - 'S18-181':      PATHOKIN Summer 2018, Serial 181 - 26"
+        - 'S18-Racing-Prototype1': Racing wheel prototype
+        - 'W20-Racing-Prototype1': Racing wheel proto with calibration matrix
 
     Returns
     -------
-    kinetics : TimeSeries
+    TimeSeries
 		A copy of the input TimeSeries, with the added 'Forces'
 		and 'Moments' data keys.
 
@@ -304,52 +325,52 @@ def calculate_forces_and_moments(kinetics, calibration_id):
     if calibration_id == 'PATHOKIN-93':
         forcecell = 'smartwheel'
         gains = [-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'PATHOKIN-94':
         forcecell = 'smartwheel'
         gains = [-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'LIO-123':
         forcecell = 'smartwheel'
         gains = [-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'LIO-124':
         forcecell = 'smartwheel'
         gains = [-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'LIO-125':
         forcecell = 'smartwheel'
         gains = [-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'LIO-126':
         forcecell = 'smartwheel'
         gains = [-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'S18-126':
         forcecell = 'smartwheel'
         gains = [-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'S18-179':
         forcecell = 'smartwheel'
         gains = [-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'S18-180':
         forcecell = 'smartwheel'
         gains = [-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'S18-181':
         forcecell = 'smartwheel'
         gains = [-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]
-        offsets = [0, 10, 0, 0, 0, 0]
+        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
 
     elif calibration_id == 'S18-Racing-Prototype1':
         forcecell = 'forcecell'
@@ -446,19 +467,19 @@ def calculate_forces_and_moments(kinetics, calibration_id):
     return(kinetics)
 
 
-def calculate_velocity(tsin):
+def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate velocity based on wheel angle.
 
     Parameters
     ----------
-    tsin : TimeSeries
+    tsin
         TimeSeries that contains at least the data key 'Angle'.
 
     Returns
     -------
-    tsout : TimeSeries
-    	A new TimeSeries with the added data key 'Velocity'.
+    TimeSeries
+        	A copy of the TimeSeries with the added data key 'Velocity'.
     """
     tsangle = TimeSeries()
     tsangle.time = tsin.time
@@ -472,20 +493,20 @@ def calculate_velocity(tsin):
     return tsout
 
 
-def calculate_power(tsin):
+def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate power based on wheel velocity and moment.
 
     Parameters
     ----------
-    tsin : TimeSeries
+    tsin
         TimeSeries that contains at least the data keys 'Velocity' and
         'Moments'. The units must be consistent (e.g., rad/s and Nm)
 
     Returns
     -------
-    tsout : TimeSeries
-    	A new TimeSeries with the added data key 'Power'.
+    TimeSeries
+        A copy of the TimeSeries with the added data key 'Power'.
 
     """
     tsout = tsin.copy()
@@ -495,42 +516,45 @@ def calculate_power(tsin):
     return tsout
 
 
-def detect_pushes(tsin, *, push_threshold=5, recovery_threshold=2,
-                  minimum_push_time=0.1, minimum_push_force=30):
+def detect_pushes(
+        tsin: TimeSeries, /, *,
+        push_threshold: float = 5.0,
+        recovery_threshold: float = 2.0,
+        minimum_push_time: float = 0.1,
+        minimum_push_force: float = 30.0) -> TimeSeries:
     """
     Detect pushes and recoveries automatically.
 
     Parameters
     ----------
-    tsin : TimeSeries
+    tsin
         Input TimeSeries that must contain a 'Forces' key in its data dict.
-    push_threshold : float, optional
-        The total force over which a push phase is triggered, in newton.
-        The default is 5.
-    recovery_threshold : float, optional
-        The total force under which a recovery phase is triggered, in newton.
-    minimum_push_time : float, optional
-        The minimum time required for a push time, in seconds. Detected pushes
-        that last less than this minimum time are removed from the push
-        analysis. The default is 0.1.
-    minimum_recovery_time : float, optional
-        The minimum time required for a recovery time, in seconds. Detected
-        recoveries that last less than this minimum time are removed from the
-        push analysis. The default is 0.2.
-    minimum_push_force : float, optional
-        The minimum total push force in N under which the detected push is
-        discarded. For example, if the user puts their hands on the pushrim
-        before starting propelling, this may be detected as a push. Using a
-        minimum push force removes these misdetected pushes. The default is
-        30.
+    push_threshold
+        Optional. The total force over which a push phase is triggered, in
+        newton.
+    recovery_threshold
+        Optional. The total force under which a recovery phase is triggered,
+        in newton.
+    minimum_push_time
+        Optional. The minimum time required for a push time, in seconds.
+        Detected pushes that last less than this minimum time are removed from
+        the push analysis.
+    minimum_recovery_time
+        Optional. The minimum time required for a recovery time, in seconds.
+        Detected recoveries that last less than this minimum time are removed
+        from the push analysis.
+    minimum_push_force
+        Optional. The minimum total push force in N under which the detected
+        push is discarded. For example, if the user puts their hands on the
+        pushrim before starting propelling, this may be detected as a push.
+        Using a minimum push force removes these misdetected pushes.
 
     Returns
     -------
-    tsout : TimeSeries
-        The output timeseries, which is identical to tsin but with the
-        following added events:
-            - 'push'
-            - 'recovery'
+    TimeSeries
+        A copy of tsin with the following added events:
+        - 'push'
+        - 'recovery'
 
     """
     # Calculate the total force

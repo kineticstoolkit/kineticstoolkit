@@ -2,17 +2,61 @@
 # -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
-#
-# This file is not for redistribution.
+
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 """
-EMG analysis.
+Provide some tools to analyze EMG.
+
+Warning
+-------
+This module is in very early development (almost empty) and will change in the
+future.
+
 """
 
-import ktk
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
+
+from ktk import TimeSeries
 import pandas as pd
+from typing import Dict
 
-def read_delsys_csv(filename):
-    """Read a CSV file exported from Delsys Trigno converter."""
+def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
+    """
+    Read a CSV file exported from Delsys Trigno converter.
+
+    Warning
+    -------
+    This function is currently experimental and may change signature and
+    behaviour in the future.
+
+    Parameters
+    ----------
+    filename
+        Name of the CSV file to read.
+
+    Returns
+    -------
+    Dict[str, Dict[str, TimeSeries]]
+        A dict with the following keys: 'emg', 'acc', gyro', 'mag', each
+        one containing another dict whose keys correspond to a different
+        sensor.
+
+    """
     # Check the number of rows to skip
     n_rows = 0
     with open(filename, 'r') as fid:
@@ -42,19 +86,19 @@ def read_delsys_csv(filename):
 
         if ': Acc' in name:
             short_name = name
-            ts = ktk.TimeSeries(time=time, data={short_name: data})
+            ts = TimeSeries(time=time, data={short_name: data})
             acc[short_name] = ts
         elif ': Mag' in name:
             short_name = name
-            ts = ktk.TimeSeries(time=time, data={short_name: data})
+            ts = TimeSeries(time=time, data={short_name: data})
             mag[short_name] = ts
         elif ': Gyro' in name:
             short_name = name
-            ts = ktk.TimeSeries(time=time, data={short_name: data})
+            ts = TimeSeries(time=time, data={short_name: data})
             gyro[short_name] = ts
         elif ': EMG' in name:
             short_name = name.split(':')[0]
-            ts = ktk.TimeSeries(time=time, data={short_name: data})
+            ts = TimeSeries(time=time, data={short_name: data})
             emg[short_name] = ts
 
     return {'emg': emg, 'acc': acc, 'gyro': gyro, 'mag': mag}

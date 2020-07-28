@@ -1,0 +1,805 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>DBInterface &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <link rel="stylesheet" href="_static/material.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api_reference.html" />
+    <link rel="prev" title="Cycles" href="cycles.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=white data-md-color-accent=orange>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="352" height="448" viewBox="0 0 352 448" id="__bitbucket"><path fill="currentColor" d="M203.75 214.75q2 15.75-12.625 25.25t-27.875 1.5q-9.75-4.25-13.375-14.5t-.125-20.5 13-14.5q9-4.5 18.125-3t16 8.875 6.875 16.875zm27.75-5.25q-3.5-26.75-28.25-41T154 165.25q-15.75 7-25.125 22.125t-8.625 32.375q1 22.75 19.375 38.75t41.375 14q22.75-2 38-21t12.5-42zM291.25 74q-5-6.75-14-11.125t-14.5-5.5T245 54.25q-72.75-11.75-141.5.5-10.75 1.75-16.5 3t-13.75 5.5T60.75 74q7.5 7 19 11.375t18.375 5.5T120 93.75Q177 101 232 94q15.75-2 22.375-3t18.125-5.375T291.25 74zm14.25 258.75q-2 6.5-3.875 19.125t-3.5 21-7.125 17.5-14.5 14.125q-21.5 12-47.375 17.875t-50.5 5.5-50.375-4.625q-11.5-2-20.375-4.5T88.75 412 70.5 401.125t-13-15.375q-6.25-24-14.25-73l1.5-4 4.5-2.25q55.75 37 126.625 37t126.875-37q5.25 1.5 6 5.75t-1.25 11.25-2 9.25zM350.75 92.5q-6.5 41.75-27.75 163.75-1.25 7.5-6.75 14t-10.875 10T291.75 288q-63 31.5-152.5 22-62-6.75-98.5-34.75-3.75-3-6.375-6.625t-4.25-8.75-2.25-8.5-1.5-9.875T25 232.75q-2.25-12.5-6.625-37.5t-7-40.375T5.5 118 0 78.5Q.75 72 4.375 66.375T12.25 57t11.25-7.5T35 43.875t12-4.625q31.25-11.5 78.25-16 94.75-9.25 169 12.5Q333 47.25 348 66.25q4 5 4.125 12.75t-1.375 13.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#dbinterface" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="_static/logo.png" height="26"
+                   alt="Kinetics Toolkit (ktk) master documentation logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
+          <span class="md-header-nav__topic"> DBInterface </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="search.html" method="GET" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://bitbucket.org/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__bitbucket" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    KineticsToolkit
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+  
+  <script src="_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = ""versions.json"",
+        target_loc = "../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+      
+        <img src="_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="index.html"
+       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://bitbucket.org/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__bitbucket" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    KineticsToolkit
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="install.html" class="md-nav__link">Installing</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="customize.html" class="md-nav__link">Customizing</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="geometry.html" class="md-nav__link">Geometry</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="filters.html" class="md-nav__link">Filters</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="kinematics.html" class="md-nav__link">Kinematics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="cycles.html" class="md-nav__link">Cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> DBInterface </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">DBInterface</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#dbinterface--page-root" class="md-nav__link">DBInterface</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#connecting-to-a-biomec-project" class="md-nav__link">Connecting to a BIOMEC project</a>
+        </li>
+        <li class="md-nav__item"><a href="#navigating-in-the-project" class="md-nav__link">Navigating in the project</a>
+        </li>
+        <li class="md-nav__item"><a href="#saving-data-to-a-biomec-referenced-file" class="md-nav__link">Saving data to a BIOMEC referenced file</a>
+        </li>
+        <li class="md-nav__item"><a href="#loading-data-from-a-biomec-referenced-file" class="md-nav__link">Loading data from a BIOMEC referenced file</a>
+        </li>
+        <li class="md-nav__item"><a href="#dealing-with-external-software" class="md-nav__link">Dealing with external software</a>
+        </li>
+        <li class="md-nav__item"><a href="#including-information-in-file-names" class="md-nav__link">Including information in file names</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#dbinterface--page-root" class="md-nav__link">DBInterface</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#connecting-to-a-biomec-project" class="md-nav__link">Connecting to a BIOMEC project</a>
+        </li>
+        <li class="md-nav__item"><a href="#navigating-in-the-project" class="md-nav__link">Navigating in the project</a>
+        </li>
+        <li class="md-nav__item"><a href="#saving-data-to-a-biomec-referenced-file" class="md-nav__link">Saving data to a BIOMEC referenced file</a>
+        </li>
+        <li class="md-nav__item"><a href="#loading-data-from-a-biomec-referenced-file" class="md-nav__link">Loading data from a BIOMEC referenced file</a>
+        </li>
+        <li class="md-nav__item"><a href="#dealing-with-external-software" class="md-nav__link">Dealing with external software</a>
+        </li>
+        <li class="md-nav__item"><a href="#including-information-in-file-names" class="md-nav__link">Including information in file names</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<h1 id="dbinterface--page-root">DBInterface<a class="headerlink" href="#dbinterface--page-root" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="api/ktk.dbinterface.html"><span class="doc">DBInterface</span></a> class is used exclusively at Félix Chénier’s lab and may be removed from ktk someday. Its aim is to interface with the BIOMEC database (https://felixchenier.uqam.ca/biomec) to fetch all non-personal information about a specified ongoing project.</p>
+<p>It is necessary to understand how data files are stored in BIOMEC before reading this tutorial.</p>
+<p>Please note that the user/password combination used in this tutorial is not
+valid, and that you should have propel access to BIOMEC to use ktk.dbinterface.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+</pre></div>
+</div>
+
+<h2 id="connecting-to-a-biomec-project">Connecting to a BIOMEC project<a class="headerlink" href="#connecting-to-a-biomec-project" title="Permalink to this headline">¶</a></h2>
+<p>The class constructor connects to the project and asks the user’s credentials
+and the folder where the data files are stored.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="s1">'FC_XX18A'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The constructor can also be run non-interactively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project_label</span> <span class="o">=</span> <span class="s1">'dummyProject'</span>
+<span class="n">user</span> <span class="o">=</span> <span class="s1">'dummyUser'</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s1">'dummyPassword'</span>
+<span class="n">root_folder</span> <span class="o">=</span> <span class="s1">'data/dbinterface/FC_XX18A'</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">''</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">'http://localhost/biomec'</span>  <span class="c1"># This line is only for this tutorial,</span>
+                                 <span class="c1"># please don't execute it.</span>
+
+<span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">,</span>
+                          <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
+                          <span class="n">password</span><span class="o">=</span><span class="n">password</span><span class="p">,</span>
+                          <span class="n">root_folder</span><span class="o">=</span><span class="n">root_folder</span><span class="p">,</span>
+                          <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
+</pre></div>
+</div>
+
+
+<h2 id="navigating-in-the-project">Navigating in the project<a class="headerlink" href="#navigating-in-the-project" title="Permalink to this headline">¶</a></h2>
+<p>Just typing <code class="docutils literal notranslate"><span class="pre">project</span></code> gives an overview of the project’s content.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">--------------------------------------------------</span>
+<span class="n">DBInterface</span>
+<span class="o">--------------------------------------------------</span>
+          <span class="n">url</span><span class="p">:</span> <span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="o">/</span><span class="n">biomec</span>
+         <span class="n">user</span><span class="p">:</span> <span class="n">dummyUser</span>
+<span class="n">project_label</span><span class="p">:</span> <span class="n">dummyProject</span>
+  <span class="n">root_folder</span><span class="p">:</span> <span class="n">data</span><span class="o">/</span><span class="n">dbinterface</span><span class="o">/</span><span class="n">FC_XX18A</span>
+<span class="o">--------------------------------------------------</span>
+<span class="n">participants</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">'P1'</span><span class="p">]</span>
+<span class="o">--------------------------------------------------</span>
+<span class="n">sessions</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'ArenaCESR1'</span><span class="p">]</span>
+<span class="o">--------------------------------------------------</span>
+<span class="n">trials</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Run2'</span><span class="p">,</span> <span class="s1">'Walk1'</span><span class="p">,</span> <span class="s1">'Walk2'</span><span class="p">]</span>
+<span class="o">--------------------------------------------------</span>
+<span class="n">files</span><span class="p">:</span>
+<span class="p">[</span><span class="s1">'Kinematics'</span><span class="p">,</span> <span class="s1">'Kinetics'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">]</span>
+<span class="o">--------------------------------------------------</span>
+</pre></div>
+</div>
+<p>The method <code class="docutils literal notranslate"><span class="pre">get</span></code> is used to extract the project’s contents. It always returns
+a dict with the fields corresponding to the request. For example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+          <span class="s1">'Participants'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">1</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
+        <span class="s1">'ProjectEndDate'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="s1">'ProjectID'</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+          <span class="s1">'ProjectLabel'</span><span class="p">:</span> <span class="s1">'dummyProject'</span><span class="p">,</span>
+      <span class="s1">'ProjectStartDate'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">'ProjectTitle'</span><span class="p">:</span> <span class="s1">'Dummy Project for the ktkDBInterface tutorial'</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+                   <span class="s1">'AIS'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="s1">'DateOfBirth'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">'DateOfInjury'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">'DominantSide'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+         <span class="s1">'ParticipantID'</span><span class="p">:</span> <span class="mi">127</span><span class="p">,</span>
+      <span class="s1">'ParticipantLabel'</span><span class="p">:</span> <span class="s1">'P1'</span><span class="p">,</span>
+             <span class="s1">'Pathology'</span><span class="p">:</span> <span class="s1">'Pathologie inconnue'</span><span class="p">,</span>
+             <span class="s1">'ProjectID'</span><span class="p">:</span> <span class="mi">11</span><span class="p">,</span>
+          <span class="s1">'ProjectLabel'</span><span class="p">:</span> <span class="s1">'dummyProject'</span><span class="p">,</span>
+              <span class="s1">'Sessions'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">2</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
+                   <span class="s1">'Sex'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+             <span class="s1">'Traumatic'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+                   <span class="s1">'UID'</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">)[</span><span class="s1">'Sessions'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'ArenaCESR1'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+          <span class="s1">'ParticipantID'</span><span class="p">:</span> <span class="mi">127</span><span class="p">,</span>
+       <span class="s1">'ParticipantLabel'</span><span class="p">:</span> <span class="s1">'P1'</span><span class="p">,</span>
+             <span class="s1">'PlaceLabel'</span><span class="p">:</span> <span class="s1">'GymnaseN'</span><span class="p">,</span>
+            <span class="s1">'SessionDate'</span><span class="p">:</span> <span class="s1">'2018-10-17'</span><span class="p">,</span>
+              <span class="s1">'SessionID'</span><span class="p">:</span> <span class="mi">127</span><span class="p">,</span>
+           <span class="s1">'SessionLabel'</span><span class="p">:</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span>
+           <span class="s1">'SessionNotes'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+      <span class="s1">'SessionRepetition'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+                 <span class="s1">'Trials'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">4</span> <span class="n">items</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">)[</span><span class="s1">'Trials'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Run2'</span><span class="p">,</span> <span class="s1">'Walk1'</span><span class="p">,</span> <span class="s1">'Walk2'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+                     <span class="s1">'Files'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">3</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
+          <span class="s1">'ParticipantLabel'</span><span class="p">:</span> <span class="s1">'P1'</span><span class="p">,</span>
+                 <span class="s1">'SessionID'</span><span class="p">:</span> <span class="mi">127</span><span class="p">,</span>
+              <span class="s1">'SessionLabel'</span><span class="p">:</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span>
+                   <span class="s1">'TrialID'</span><span class="p">:</span> <span class="mi">3150</span><span class="p">,</span>
+                <span class="s1">'TrialLabel'</span><span class="p">:</span> <span class="s1">'Run1'</span><span class="p">,</span>
+                <span class="s1">'TrialNotes'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+           <span class="s1">'TrialRepetition'</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="s1">'TrialTypeDescription'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="s1">'TrialTypeID'</span><span class="p">:</span> <span class="mi">204</span><span class="p">,</span>
+            <span class="s1">'TrialTypeLabel'</span><span class="p">:</span> <span class="s1">'Run'</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">)[</span><span class="s1">'Files'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'Kinematics'</span><span class="p">,</span> <span class="s1">'Kinetics'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Kinematics'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+      <span class="s1">'FileFormatExtension'</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+          <span class="s1">'FileFormatLabel'</span><span class="p">:</span> <span class="s1">'C3D'</span><span class="p">,</span>
+                   <span class="s1">'FileID'</span><span class="p">:</span> <span class="mi">6681</span><span class="p">,</span>
+                <span class="s1">'FileLabel'</span><span class="p">:</span> <span class="s1">'Kinematics'</span><span class="p">,</span>
+                 <span class="s1">'FileName'</span><span class="p">:</span> <span class="s1">'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d'</span><span class="p">,</span>
+      <span class="s1">'FileTypeDescription'</span><span class="p">:</span> <span class="s1">'Kinematics recorded using a Vicon system'</span><span class="p">,</span>
+               <span class="s1">'FileTypeID'</span><span class="p">:</span> <span class="mi">29</span><span class="p">,</span>
+            <span class="s1">'FileTypeLabel'</span><span class="p">:</span> <span class="s1">'Kinematics'</span><span class="p">,</span>
+         <span class="s1">'ParticipantLabel'</span><span class="p">:</span> <span class="s1">'P1'</span><span class="p">,</span>
+             <span class="s1">'SessionLabel'</span><span class="p">:</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span>
+                  <span class="s1">'TrialID'</span><span class="p">:</span> <span class="mi">3150</span><span class="p">,</span>
+               <span class="s1">'TrialLabel'</span><span class="p">:</span> <span class="s1">'Run1'</span><span class="p">,</span>
+                    <span class="s1">'dbfid'</span><span class="p">:</span> <span class="s1">'dbfid6681n'</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Kinematics'</span><span class="p">)[</span><span class="s1">'FileName'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d'</span>
+</pre></div>
+</div>
+
+
+<h2 id="saving-data-to-a-biomec-referenced-file">Saving data to a BIOMEC referenced file<a class="headerlink" href="#saving-data-to-a-biomec-referenced-file" title="Permalink to this headline">¶</a></h2>
+<p>The ktk library provides the function ktk.save to save a variable to a JSON file. The ktk.save function is helpful to save temporary results.</p>
+<p>However, sometimes we need to save results to BIOMEC so that these results become new inputs for subsequent work. In these case, we use the ktk.DBInterface’s <code class="docutils literal notranslate"><span class="pre">save</span></code> method.</p>
+<p>For example, let’s say we just synchronized the kinematics for Run1 of participant 1:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">synced_kinematics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'dummy_data'</span><span class="p">:</span>
+                     <span class="s1">'Normally we would save something more useful'</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>We can save these kinematics as a file that is referenced in BIOMEC, using:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">,</span> <span class="n">synced_kinematics</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">'data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_</span><span class="si">{Run1}</span><span class="s1">.ktk.zip'</span>
+</pre></div>
+</div>
+<p>This creates the file entry in BIOMEC if needed, then save the file with
+a relevant name into the project folder.</p>
+<p>We can now obtain the file name using the <code class="docutils literal notranslate"><span class="pre">get</span></code> method introduced precedently.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">)[</span><span class="s1">'FileName'</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s1">'data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_</span><span class="si">{Run1}</span><span class="s1">.ktk.zip'</span>
+</pre></div>
+</div>
+
+
+<h2 id="loading-data-from-a-biomec-referenced-file">Loading data from a BIOMEC referenced file<a class="headerlink" href="#loading-data-from-a-biomec-referenced-file" title="Permalink to this headline">¶</a></h2>
+<p>To load back data saved to BIOMEC, we use the ktk.DBInterface’s <code class="docutils literal notranslate"><span class="pre">load</span></code>
+method.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">test</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">)</span>
+
+<span class="n">test</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+      <span class="s1">'dummy_data'</span><span class="p">:</span> <span class="s1">'Normally we would save something more useful'</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Let’s do a little clean up before going on.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/SyncedKinematics'</span><span class="p">)</span>
+</pre></div>
+</div>
+
+
+<h2 id="dealing-with-external-software">Dealing with external software<a class="headerlink" href="#dealing-with-external-software" title="Permalink to this headline">¶</a></h2>
+<p>The DBInterface’s <code class="docutils literal notranslate"><span class="pre">save</span></code> and <code class="docutils literal notranslate"><span class="pre">load</span></code> methods work very well for data that were processed in Python using ktk. However, things may get complicated when using external software to process data.</p>
+<p>In this example, we will synchronize the kinematics using an external synchronizing tool, then enter the resulting files into BIOMEC. We will work with these files:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">file_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Walk1'</span><span class="p">,</span> <span class="s1">'Walk2'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Run2'</span><span class="p">]:</span>
+    <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+        <span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="s1">'Kinematics'</span><span class="p">)[</span><span class="s1">'FileName'</span><span class="p">])</span>
+
+<span class="n">file_list</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d'</span><span class="p">,</span>
+ <span class="s1">'data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d'</span><span class="p">,</span>
+ <span class="s1">'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d'</span><span class="p">,</span>
+ <span class="s1">'data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Let say we synchronized these files using an external software, and then we
+exported the synchronized files into a separate folder.</p>
+<p>(Here we will simply copy those files into a separate folder).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+
+<span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
+    <span class="n">dest_file</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'kinematics3_dbfid6685n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics2_dbfid6683n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics4_dbfid6687n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics1_dbfid6681n.c3d'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>All is good, but the dbfids in the new <code class="docutils literal notranslate"><span class="pre">synchronized_files</span></code> folder refer to
+the original <code class="docutils literal notranslate"><span class="pre">Kinematics</span></code> file type, not to the <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> file
+type. Moreover, there are now duplicate dbfids in the project:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">/</span><span class="n">Users</span><span class="o">/</span><span class="n">felix</span><span class="o">/</span><span class="n">Documents</span><span class="o">/</span><span class="n">Recherche</span><span class="o">/</span><span class="n">kineticstoolkit</span><span class="o">/</span><span class="n">ktk</span><span class="o">/</span><span class="n">dbinterface</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">177</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Duplicate</span> <span class="n">file</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="n">found</span><span class="o">.</span> <span class="n">See</span> <span class="n">duplicates</span> <span class="nb">property</span><span class="o">.</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">'Duplicate file(s) found. See duplicates property.'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">duplicates</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="s1">'data/dbinterface/FC_XX18A/synchronized_files/kinematics3_dbfid6685n.c3d'</span><span class="p">,</span>
+  <span class="s1">'data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d'</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">'data/dbinterface/FC_XX18A/synchronized_files/kinematics2_dbfid6683n.c3d'</span><span class="p">,</span>
+  <span class="s1">'data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d'</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">'data/dbinterface/FC_XX18A/synchronized_files/kinematics4_dbfid6687n.c3d'</span><span class="p">,</span>
+  <span class="s1">'data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d'</span><span class="p">),</span>
+ <span class="p">(</span><span class="s1">'data/dbinterface/FC_XX18A/synchronized_files/kinematics1_dbfid6681n.c3d'</span><span class="p">,</span>
+  <span class="s1">'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d'</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p>Therefore we need to assign new dbfids to the files we just synchronized, so that they refer to <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> entries in BIOMEC. The method <code class="docutils literal notranslate"><span class="pre">batch_fix_file_type</span></code> will help.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">batch_fix_file_type</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">,</span>
+                            <span class="s1">'SyncedKinematics'</span><span class="p">,</span>
+                            <span class="n">create_file_entries</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                            <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+               <span class="s1">'Ignore'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">0</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
+      <span class="s1">'NoFileTypeLabel'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">0</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
+               <span class="s1">'Rename'</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">4</span> <span class="n">items</span><span class="o">&gt;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Now let see what happened in the <code class="docutils literal notranslate"><span class="pre">synchronized_files</span></code> folder:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'kinematics4_dbfid11526n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics1_dbfid11524n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics3_dbfid8491n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics2_dbfid11525n.c3d'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The files’ dbfid have been updated so they now refer to <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> and not to <code class="docutils literal notranslate"><span class="pre">Kinematics</span></code> anymore. Moreover, the project does not have duplicate dbfids anymore:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Let’s do a little clean up before going on.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+<span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
+</pre></div>
+</div>
+
+
+<h2 id="including-information-in-file-names">Including information in file names<a class="headerlink" href="#including-information-in-file-names" title="Permalink to this headline">¶</a></h2>
+<p>It can be difficult to deal with a bunch of numbered files without knowing their signification without looking in BIOMEC. The <code class="docutils literal notranslate"><span class="pre">tag_files</span></code> method allows adding the trial name to the file names, so that their context is a bit clearer and less error-prone.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="s1">'kinetics_dbfid6688n.csv'</span><span class="p">,</span>
+ <span class="s1">'kinematics3_dbfid6685n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6684n.csv'</span><span class="p">,</span>
+ <span class="s1">'.DS_Store'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6682n.csv'</span><span class="p">,</span>
+ <span class="s1">'kinematics2_dbfid6683n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics4_dbfid6687n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6686n.csv'</span><span class="p">,</span>
+ <span class="s1">'kinematics1_dbfid6681n.c3d'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Include the trial name in the file names:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">tag_files</span><span class="p">(</span><span class="n">include_trial_name</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Checking</span> <span class="n">that</span> <span class="n">the</span> <span class="n">project</span> <span class="ow">is</span> <span class="n">clean</span><span class="p">,</span> <span class="n">without</span> <span class="n">duplicates</span><span class="o">...</span>
+<span class="n">Renaming</span> <span class="n">the</span> <span class="n">files</span><span class="o">...</span>
+<span class="n">Refreshing</span> <span class="n">project</span><span class="o">...</span>
+
+
+
+
+
+<span class="p">[</span><span class="s1">'kinematics1_dbfid6681n_</span><span class="si">{Run1}</span><span class="s1">.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6682n_</span><span class="si">{Run1}</span><span class="s1">.csv'</span><span class="p">,</span>
+ <span class="s1">'.DS_Store'</span><span class="p">,</span>
+ <span class="s1">'kinematics4_dbfid6687n_</span><span class="si">{Walk2}</span><span class="s1">.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics3_dbfid6685n_</span><span class="si">{Walk1}</span><span class="s1">.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics2_dbfid6683n_</span><span class="si">{Run2}</span><span class="s1">.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6688n_</span><span class="si">{Walk2}</span><span class="s1">.csv'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6684n_</span><span class="si">{Run2}</span><span class="s1">.csv'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6686n_</span><span class="si">{Walk1}</span><span class="s1">.csv'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Remove the trial name from the file names:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">project</span><span class="o">.</span><span class="n">tag_files</span><span class="p">(</span><span class="n">include_trial_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Checking</span> <span class="n">that</span> <span class="n">the</span> <span class="n">project</span> <span class="ow">is</span> <span class="n">clean</span><span class="p">,</span> <span class="n">without</span> <span class="n">duplicates</span><span class="o">...</span>
+<span class="n">Renaming</span> <span class="n">the</span> <span class="n">files</span><span class="o">...</span>
+<span class="n">Refreshing</span> <span class="n">project</span><span class="o">...</span>
+
+
+
+
+
+<span class="p">[</span><span class="s1">'kinetics_dbfid6688n.csv'</span><span class="p">,</span>
+ <span class="s1">'kinematics3_dbfid6685n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6684n.csv'</span><span class="p">,</span>
+ <span class="s1">'.DS_Store'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6682n.csv'</span><span class="p">,</span>
+ <span class="s1">'kinematics2_dbfid6683n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinematics4_dbfid6687n.c3d'</span><span class="p">,</span>
+ <span class="s1">'kinetics_dbfid6686n.csv'</span><span class="p">,</span>
+ <span class="s1">'kinematics1_dbfid6681n.c3d'</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For more information on DBInterface, please check the <a class="reference internal" href="api/ktk.dbinterface.html"><span class="doc">API Reference</span></a>.</p>
+
+
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="cycles.html" title="Cycles"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Cycles </span>
+              </div>
+            </a>
+          
+          
+            <a href="api_reference.html" title="API Reference"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> API Reference </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2020, Félix Chénier.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.1.2.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

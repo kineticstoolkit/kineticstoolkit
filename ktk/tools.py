@@ -16,17 +16,17 @@
 # limitations under the License.
 
 """
-Provides miscelleanous helper functions to the user.
+Provide miscelleanous helper functions to the user.
 
 These functions are accessible from ktk's toplevel namespace
 (i.e., ktk.explore).
 """
 
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
+
 
 import ktk.config
 
@@ -36,19 +36,16 @@ import subprocess
 import webbrowser as _webbrowser
 
 
-def explore(folder_name=''):
+def explore(folder_name: str = '') -> None:
     """
     Open an Explorer window (on Windows) or a Finder window (on macOS)
 
     Parameters
     ----------
-    folder_name : str (optional)
-        The name of the folder to open the window in. Default is the current
-        folder.
+    folder_name
+        Optional. The name of the folder to open the window in. Default is the
+        current folder.
 
-    Returns
-    -------
-    None.
     """
     if not folder_name:
         folder_name = os.getcwd()
@@ -64,13 +61,13 @@ def explore(folder_name=''):
                                   'Windows and macOS.')
 
 
-def terminal(folder_name=''):
+def terminal(folder_name: str = '') -> None:
     """
     Open a terminal window.
 
     Parameters
     ----------
-    folder_name : str (optional)
+    folder_name
         The name of the folder to open the terminal window in. Default is the
         current folder.
 
@@ -99,7 +96,7 @@ def terminal(folder_name=''):
                                   'Windows and macOS.')
 
 
-def update():
+def update() -> None:
     """
     Update ktk to the last available version - Not for the public version.
 
@@ -136,7 +133,7 @@ def update():
              '\'; git pull origin master"')])
 
 
-def tutorials():
+def tutorials() -> None:
     """
     Open the KTK tutorials in a web browser.
 
