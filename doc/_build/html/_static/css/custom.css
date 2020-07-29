@@ -15,26 +15,17 @@ dl.py.class {
 	border-top-style: solid;
 }
 
-code.sig-name {
-	font-size: 110%;
-	font-weight: bold;
-	background: none;
-}
-
 code.sig-prename {
 	background: none;
 }
 
-em.sig-param {
-	font-family: monospace;
-	font-style: normal;
-}
 
 /* Autosummary in API */
 table.docutils {
 	font-size: 90%;
 }
 
-a.reference {
-	font-size: 110%;
+/* Workaround for overflowing secondary toc */
+nav.md-nav--secondary {
+	margin-right: 2em;
 }
