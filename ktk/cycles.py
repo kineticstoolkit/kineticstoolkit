@@ -33,7 +33,7 @@ __license__ = "Apache 2.0"
 import numpy as np
 import ktk  # for doctests
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
-from typing import *
+from typing import Sequence, Optional, List, Dict
 
 
 def find_cycles(ts: TimeSeries,
@@ -125,15 +125,16 @@ def find_cycles(ts: TimeSeries,
     return tsout
 
 
-def time_normalize(ts: TimeSeries, event_name1: str, event_name2: str,
-                   n_points: int = 100) -> TimeSeries:
+def time_normalize(
+        ts: TimeSeries,
+        event_name1: str,
+        event_name2: str,
+        n_points: int = 100, *,
+        out_event_name1: Optional[str] = None,
+        out_event_name2: Optional[str] = '_',
+        ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
-
-    Warning
-    -------
-    This function is currently experimental and may change signature and
-    behaviour in the future.
 
     This method time-normalizes the TimeSeries at each cycle defined by
     event_name1 and event_name2 on n_points. The time-normalized cycles are
@@ -141,14 +142,27 @@ def time_normalize(ts: TimeSeries, event_name1: str, event_name2: str,
     cycles, a time normalization with 100 points will give a TimeSeries
     of length 300. The TimeSeries' events are also time-normalized.
 
+    By default, event_name1 and event_name2 are also present in the resulting
+    TimeSeries, but event_name2 is renamed to '_'. This is to ensure that the
+    event names are not duplicated (which would be the case, for example if
+    we normalize from event 'heel_strike' to next event 'heel_strike').
+
     Parameters
     ----------
     ts
         The TimeSeries to analyze.
-    event_name1, event_name2
-        The events that correspond to the begin and end of a cycle.
+    event_name1
+        The event name that correspond to the begin of a cycle.
+    event_name2
+        The event name that correspond to the end of a cycle.
     n_points
         Optional. The number of points of the output TimeSeries.
+    out_event_name1
+        Optional. The renamed event1 in the returned TimeSeries.
+        Use None to use event_name1. Default is None.
+    out_event_name2
+        Optional. The renamed event2 in the returned TimeSeries.
+        Use None to use event_name2. Default is '_'.
 
     Returns
     -------
@@ -186,40 +200,55 @@ def time_normalize(ts: TimeSeries, event_name1: str, event_name2: str,
     for i_cycle in range(n_cycles):
         # Get the TimeSeries for this cycle
         subts = ts.get_ts_between_events(event_name1, event_name2,
-                                         i_cycle, i_cycle + event_offset)
+                                         i_cycle, i_cycle + event_offset,
+                                         inclusive=True)
+        subts.trim_events()
+        subts.sort_events()
 
-        original_start = subts.time[0]
-        original_stop = subts.time[-1]
+        # Separate start/end events from the other
+        start_end_events = []
+        other_events = []
+        for event in subts.events:
+            if event.name == event_name1 or event.name == event_name2:
+                start_end_events.append(event)
+            else:
+                other_events.append(event)
+
+        # Rename the start and end events if required
+        if out_event_name1 is not None:
+            start_end_events[0].name = out_event_name1
+        if out_event_name2 is not None:
+            start_end_events[1].name = out_event_name2
+
+        original_start = start_end_events[0].time
+        original_stop = start_end_events[1].time
 
         # Resample this TimeSeries on n_points
-        subts.resample(np.linspace(subts.time[0], subts.time[-1],
-                                   n_points), fill_value='extrapolate')
+        subts.resample(
+            np.linspace(subts.time[0], subts.time[-1], n_points))
 
-        # Resample the events and add the relevant ones to the
+        # Resample the events and add them to the
         # destination TimeSeries
-        for i_event, event in enumerate(subts.events):
+        for i_event, event in enumerate(start_end_events + other_events):
 
-            tol = (subts.time[1] - subts.time[0]) / 2
-
-            if ((event.time >= original_start - tol) and
-                    (event.time < original_stop)):
-                # Resample
-                new_time = ((event.time - original_start) /
-                              (original_stop - original_start) *
-                              (n_points - 1)) + i_cycle * n_points
-                dest_ts.add_event(new_time, event.name)
+            # Resample
+            new_time = ((event.time - original_start) /
+                        (original_stop - original_start) *
+                        (n_points - 1)) + i_cycle * n_points
+            dest_ts.add_event(new_time, event.name)
 
         # Add this cycle to the destination TimeSeries
         for key in subts.data.keys():
             dest_ts.data[key][n_points * i_cycle:n_points * (i_cycle+1)] = \
                     subts.data[key]
 
-    # Assign the dest_ts data to ts and return.
+    dest_ts.sort_events()
     return dest_ts
 
 
-def get_reshaped_time_normalized_data(ts: TimeSeries,
-                                      n_points: int = 100) -> np.ndarray:
+def get_reshaped_data(
+        ts: TimeSeries,
+        n_points: int = 100) -> Dict[str, np.ndarray]:
     """
     Get reshaped data from a time-normalized TimeSeries.
 

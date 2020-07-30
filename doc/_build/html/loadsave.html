@@ -56,6 +56,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Geometry" href="geometry.html" />
@@ -240,15 +241,15 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#loadsave--page-root" class="md-nav__link">Saving and loading</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#saving-a-variable" class="md-nav__link">Saving a variable</a>
+        <li class="md-nav__item"><a href="#Saving-a-variable" class="md-nav__link">Saving a variable</a>
         </li>
-        <li class="md-nav__item"><a href="#loading-a-variable" class="md-nav__link">Loading a variable</a>
+        <li class="md-nav__item"><a href="#Loading-a-variable" class="md-nav__link">Loading a variable</a>
         </li>
-        <li class="md-nav__item"><a href="#supported-types" class="md-nav__link">Supported types</a>
+        <li class="md-nav__item"><a href="#Supported-types" class="md-nav__link">Supported types</a>
         </li>
-        <li class="md-nav__item"><a href="#the-ktk-zip-format" class="md-nav__link">The .ktk.zip format</a>
+        <li class="md-nav__item"><a href="#The-.ktk.zip-format" class="md-nav__link">The .ktk.zip format</a>
         </li>
-        <li class="md-nav__item"><a href="#loading-a-ktk-zip-in-matlab" class="md-nav__link">Loading a .ktk.zip in Matlab</a>
+        <li class="md-nav__item"><a href="#Loading-a-.ktk.zip-in-Matlab" class="md-nav__link">Loading a .ktk.zip in Matlab</a>
         </li></ul>
             </nav>
         </li>
@@ -329,15 +330,15 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#loadsave--page-root" class="md-nav__link">Saving and loading</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#saving-a-variable" class="md-nav__link">Saving a variable</a>
+        <li class="md-nav__item"><a href="#Saving-a-variable" class="md-nav__link">Saving a variable</a>
         </li>
-        <li class="md-nav__item"><a href="#loading-a-variable" class="md-nav__link">Loading a variable</a>
+        <li class="md-nav__item"><a href="#Loading-a-variable" class="md-nav__link">Loading a variable</a>
         </li>
-        <li class="md-nav__item"><a href="#supported-types" class="md-nav__link">Supported types</a>
+        <li class="md-nav__item"><a href="#Supported-types" class="md-nav__link">Supported types</a>
         </li>
-        <li class="md-nav__item"><a href="#the-ktk-zip-format" class="md-nav__link">The .ktk.zip format</a>
+        <li class="md-nav__item"><a href="#The-.ktk.zip-format" class="md-nav__link">The .ktk.zip format</a>
         </li>
-        <li class="md-nav__item"><a href="#loading-a-ktk-zip-in-matlab" class="md-nav__link">Loading a .ktk.zip in Matlab</a>
+        <li class="md-nav__item"><a href="#Loading-a-.ktk.zip-in-Matlab" class="md-nav__link">Loading a .ktk.zip in Matlab</a>
         </li></ul>
             </nav>
         </li>
@@ -351,10 +352,248 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+
 <h1 id="loadsave--page-root">Saving and loading<a class="headerlink" href="#loadsave--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Contrarily to Matlab with its <code class="docutils literal notranslate"><span class="pre">.mat</span></code> file, python does not come with a single standard way to save data. To ease saving and sharing data, Kinetics Toolkit provides <a class="reference internal" href="api/ktk.loadsave.html"><span class="doc">two functions</span></a> that load and save its own <code class="docutils literal notranslate"><span class="pre">.ktk.zip</span></code> format.</p>
 <p>Let’s create a dummy variable with some stuff in it.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">zipfile</span>
 <span class="kn">import</span> <span class="nn">json</span>
@@ -369,39 +608,76 @@
             <span class="p">}</span>
 </pre></div>
 </div>
+</div>
 
-<h2 id="saving-a-variable">Saving a variable<a class="headerlink" href="#saving-a-variable" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'filename.ktk.zip'</span><span class="p">,</span> <span class="n">variable1</span><span class="p">)</span>
+<h2 id="Saving-a-variable">Saving a variable<a class="headerlink" href="#Saving-a-variable" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ktk</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'filename.ktk.zip'</span><span class="p">,</span> <span class="n">variable1</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 
 
-<h2 id="loading-a-variable">Loading a variable<a class="headerlink" href="#loading-a-variable" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">variable2</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'filename.ktk.zip'</span><span class="p">)</span>
+<h2 id="Loading-a-variable">Loading a variable<a class="headerlink" href="#Loading-a-variable" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">variable2</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'filename.ktk.zip'</span><span class="p">)</span>
+</pre></div>
+</div>
 </div>
 <p>As expected, <code class="docutils literal notranslate"><span class="pre">variable2</span></code> is equal to <code class="docutils literal notranslate"><span class="pre">variable1</span></code>:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">variable1</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-           <span class="s1">'some_array'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">10</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'some_timeseries'</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="k">with</span> <span class="n">attributes</span><span class="p">:</span> <span class="n">data</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span>
-<span class="p">}</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">variable1</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">variable2</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-           <span class="s1">'some_array'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">10</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'some_timeseries'</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="k">with</span> <span class="n">attributes</span><span class="p">:</span> <span class="n">data</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">2</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">...</span>
-<span class="p">}</span>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+           'some_array': &lt;array of shape (10,)&gt;,
+      'some_timeseries': TimeSeries with attributes: data: &lt;dict with 2 entries&gt;, ...
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">variable2</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+           'some_array': &lt;array of shape (10,)&gt;,
+      'some_timeseries': TimeSeries with attributes: data: &lt;dict with 2 entries&gt;, ...
+}
+</pre></div></div>
 </div>
 
 
-<h2 id="supported-types">Supported types<a class="headerlink" href="#supported-types" title="Permalink to this headline">¶</a></h2>
+<h2 id="Supported-types">Supported types<a class="headerlink" href="#Supported-types" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">ktk.save</span></code> supports any combination of the following types:</p>
 <ul class="simple">
 <li><p>dict containing any supported class</p></li>
@@ -419,99 +695,121 @@
 </ul>
 
 
-<h2 id="the-ktk-zip-format">The .ktk.zip format<a class="headerlink" href="#the-ktk-zip-format" title="Permalink to this headline">¶</a></h2>
+<h2 id="The-.ktk.zip-format">The .ktk.zip format<a class="headerlink" href="#The-.ktk.zip-format" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">.ktk.zip</span></code> format is built to be as portable and simple as possible. It is a standard zip file that contains two JSON files:</p>
 <ul class="simple">
 <li><p>metadata.json: The file metadata such as the save date, the computer’s operating system, etc.</p></li>
 <li><p>data.json: The data saved as a standard json file. The data types that are not supported natively by the JSON file format (e.g., numpy, pandas and ktk objects) are converted to supported objects so that they are fully readable in other environments such as Matlab.</p></li>
 </ul>
 <p>For example, let’s examine the file we just saved:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s1">'filename.ktk.zip'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="s1">'filename.ktk.zip'</span><span class="p">,</span> <span class="s1">'r'</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">'metadata.json'</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-	<span class="s2">"Software"</span><span class="p">:</span> <span class="s2">"Kinetics Toolkit (ktk)"</span><span class="p">,</span>
-	<span class="s2">"Version"</span><span class="p">:</span> <span class="s2">"master"</span><span class="p">,</span>
-	<span class="s2">"Computer"</span><span class="p">:</span> <span class="s2">"Mac"</span><span class="p">,</span>
-	<span class="s2">"FileFormat"</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
-	<span class="s2">"SaveDate"</span><span class="p">:</span> <span class="s2">"2020-07-28"</span><span class="p">,</span>
-	<span class="s2">"SaveTime"</span><span class="p">:</span> <span class="s2">"15:32:59"</span><span class="p">,</span>
-	<span class="s2">"User"</span><span class="p">:</span> <span class="s2">"felix"</span>
-<span class="p">}</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+        "Software": "Kinetics Toolkit (ktk)",
+        "Version": "master",
+        "Computer": "Mac",
+        "FileFormat": 1.0,
+        "SaveDate": "2020-07-30",
+        "SaveTime": "09:25:50",
+        "User": "felix"
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">'data.json'</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s1">'data.json'</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-	<span class="s2">"some_array"</span><span class="p">:</span> <span class="p">{</span>
-		<span class="s2">"class__"</span><span class="p">:</span> <span class="s2">"numpy.array"</span><span class="p">,</span>
-		<span class="s2">"value"</span><span class="p">:</span> <span class="p">[</span>
-			<span class="mf">0.0</span><span class="p">,</span>
-			<span class="mf">0.5</span><span class="p">,</span>
-			<span class="mf">1.0</span><span class="p">,</span>
-			<span class="mf">1.5</span><span class="p">,</span>
-			<span class="mf">2.0</span><span class="p">,</span>
-			<span class="mf">2.5</span><span class="p">,</span>
-			<span class="mf">3.0</span><span class="p">,</span>
-			<span class="mf">3.5</span><span class="p">,</span>
-			<span class="mf">4.0</span><span class="p">,</span>
-			<span class="mf">4.5</span>
-		<span class="p">]</span>
-	<span class="p">},</span>
-	<span class="s2">"some_timeseries"</span><span class="p">:</span> <span class="p">{</span>
-		<span class="s2">"class__"</span><span class="p">:</span> <span class="s2">"ktk.TimeSeries"</span><span class="p">,</span>
-		<span class="s2">"time"</span><span class="p">:</span> <span class="p">[</span>
-			<span class="mi">0</span><span class="p">,</span>
-			<span class="mi">1</span><span class="p">,</span>
-			<span class="mi">2</span><span class="p">,</span>
-			<span class="mi">3</span><span class="p">,</span>
-			<span class="mi">4</span><span class="p">,</span>
-			<span class="mi">5</span><span class="p">,</span>
-			<span class="mi">6</span><span class="p">,</span>
-			<span class="mi">7</span><span class="p">,</span>
-			<span class="mi">8</span><span class="p">,</span>
-			<span class="mi">9</span>
-		<span class="p">],</span>
-		<span class="s2">"time_info"</span><span class="p">:</span> <span class="p">{</span>
-			<span class="s2">"Unit"</span><span class="p">:</span> <span class="s2">"s"</span>
-		<span class="p">},</span>
-		<span class="s2">"data_info"</span><span class="p">:</span> <span class="p">{},</span>
-		<span class="s2">"data"</span><span class="p">:</span> <span class="p">{</span>
-			<span class="s2">"data1"</span><span class="p">:</span> <span class="p">[</span>
-				<span class="mi">0</span><span class="p">,</span>
-				<span class="mi">1</span><span class="p">,</span>
-				<span class="mi">2</span><span class="p">,</span>
-				<span class="mi">3</span><span class="p">,</span>
-				<span class="mi">4</span><span class="p">,</span>
-				<span class="mi">5</span><span class="p">,</span>
-				<span class="mi">6</span><span class="p">,</span>
-				<span class="mi">7</span><span class="p">,</span>
-				<span class="mi">8</span><span class="p">,</span>
-				<span class="mi">9</span>
-			<span class="p">],</span>
-			<span class="s2">"data2"</span><span class="p">:</span> <span class="p">[</span>
-				<span class="mi">0</span><span class="p">,</span>
-				<span class="mi">1</span><span class="p">,</span>
-				<span class="mi">4</span><span class="p">,</span>
-				<span class="mi">9</span><span class="p">,</span>
-				<span class="mi">16</span><span class="p">,</span>
-				<span class="mi">25</span><span class="p">,</span>
-				<span class="mi">36</span><span class="p">,</span>
-				<span class="mi">49</span><span class="p">,</span>
-				<span class="mi">64</span><span class="p">,</span>
-				<span class="mi">81</span>
-			<span class="p">]</span>
-		<span class="p">},</span>
-		<span class="s2">"events"</span><span class="p">:</span> <span class="p">[]</span>
-	<span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+        "some_array": {
+                "class__": "numpy.array",
+                "value": [
+                        0.0,
+                        0.5,
+                        1.0,
+                        1.5,
+                        2.0,
+                        2.5,
+                        3.0,
+                        3.5,
+                        4.0,
+                        4.5
+                ]
+        },
+        "some_timeseries": {
+                "class__": "ktk.TimeSeries",
+                "time": [
+                        0,
+                        1,
+                        2,
+                        3,
+                        4,
+                        5,
+                        6,
+                        7,
+                        8,
+                        9
+                ],
+                "time_info": {
+                        "Unit": "s"
+                },
+                "data_info": {},
+                "data": {
+                        "data1": [
+                                0,
+                                1,
+                                2,
+                                3,
+                                4,
+                                5,
+                                6,
+                                7,
+                                8,
+                                9
+                        ],
+                        "data2": [
+                                0,
+                                1,
+                                4,
+                                9,
+                                16,
+                                25,
+                                36,
+                                49,
+                                64,
+                                81
+                        ]
+                },
+                "events": []
+        }
+}
+</pre></div></div>
 </div>
 
 
-<h2 id="loading-a-ktk-zip-in-matlab">Loading a .ktk.zip in Matlab<a class="headerlink" href="#loading-a-ktk-zip-in-matlab" title="Permalink to this headline">¶</a></h2>
+<h2 id="Loading-a-.ktk.zip-in-Matlab">Loading a .ktk.zip in Matlab<a class="headerlink" href="#Loading-a-.ktk.zip-in-Matlab" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">temporary</span> <span class="n">folder</span> <span class="n">to</span> <span class="n">unzip</span> <span class="n">to</span>
 <span class="n">mkdir</span><span class="p">(</span><span class="s1">'temp'</span><span class="p">);</span>
 <span class="n">unzip</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">'temp'</span><span class="p">);</span>
@@ -522,28 +820,62 @@
 </pre></div>
 </div>
 <p>Since the types are not the same between python, JSON and Matlab, here is how Matlab will reconstruct the following python types:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">+----------------------------------+------------------------------+</span>
-<span class="o">|</span> <span class="n">Python</span>                           <span class="o">|</span> <span class="n">Matlab</span>                       <span class="o">|</span>
-<span class="o">+----------------------------------+------------------------------+</span>
-<span class="o">|</span> <span class="kc">None</span>                             <span class="o">|</span> <span class="n">NaN</span>                          <span class="o">|</span>
-<span class="o">|</span> <span class="kc">True</span><span class="p">,</span> <span class="kc">False</span>                      <span class="o">|</span> <span class="n">true</span><span class="p">,</span> <span class="n">false</span>                  <span class="o">|</span>
-<span class="o">|</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">float</span>                       <span class="o">|</span> <span class="n">double</span>                       <span class="o">|</span>
-<span class="o">|</span> <span class="nb">str</span>                              <span class="o">|</span> <span class="n">char</span>                         <span class="o">|</span>
-<span class="o">|</span> <span class="nb">dict</span>                             <span class="o">|</span> <span class="n">struct</span>                       <span class="o">|</span>
-<span class="o">|</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">different</span> <span class="n">data</span> <span class="n">types</span>     <span class="o">|</span> <span class="n">cell</span> <span class="n">array</span>                   <span class="o">|</span>
-<span class="o">|</span> <span class="nb">list</span> <span class="n">of</span> <span class="n">boolean</span>                  <span class="o">|</span> <span class="n">array</span> <span class="n">of</span> <span class="n">logical</span>             <span class="o">|</span>
-<span class="o">|</span> <span class="nb">list</span> <span class="n">of</span> <span class="nb">int</span> <span class="ow">or</span> <span class="nb">float</span>             <span class="o">|</span> <span class="n">array</span> <span class="n">of</span> <span class="n">double</span>              <span class="o">|</span>
-<span class="o">|</span> <span class="nb">list</span> <span class="n">of</span> <span class="nb">str</span>                      <span class="o">|</span> <span class="n">cell</span> <span class="n">array</span> <span class="n">of</span> <span class="n">char</span>           <span class="o">|</span>
-<span class="o">|</span> <span class="nb">list</span> <span class="n">of</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">same</span> <span class="n">field</span> <span class="n">names</span>   <span class="o">|</span> <span class="n">structure</span> <span class="n">array</span>              <span class="o">|</span>
-<span class="o">|</span> <span class="nb">list</span> <span class="n">of</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">diff</span> <span class="n">field</span> <span class="n">names</span>   <span class="o">|</span> <span class="n">cell</span> <span class="n">array</span> <span class="n">of</span> <span class="n">struct</span>         <span class="o">|</span>
-<span class="o">|</span> <span class="n">numpy</span><span class="o">.</span><span class="n">array</span>                      <span class="o">|</span> <span class="n">array</span> <span class="n">of</span> <span class="n">double</span>              <span class="o">|</span>
-<span class="o">|</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span>                   <span class="o">|</span> <span class="n">struct</span>                       <span class="o">|</span>
-<span class="o">|</span> <span class="nb">complex</span>                          <span class="o">|</span> <span class="n">struct</span> <span class="k">with</span> <span class="n">real</span> <span class="ow">and</span> <span class="n">imag</span>    <span class="o">|</span>
-<span class="o">+----------------------------------+------------------------------+</span>
-
-<span class="o">*</span><span class="n">tuples</span> <span class="n">are</span> <span class="n">saved</span> <span class="k">as</span> <span class="n">lists</span> <span class="ow">in</span> <span class="n">JSON</span><span class="o">.</span>
-</pre></div>
-</div>
+<table>
+<colgroup>
+<col style="width: 55%"/>
+<col style="width: 45%"/>
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Python</p></th>
+<th class="head"><p>Matlab</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>None</p></td>
+<td><p>NaN</p></td>
+</tr>
+<tr class="row-odd"><td><p>True, False</p></td>
+<td><p>true, false</p></td>
+</tr>
+<tr class="row-even"><td><p>int, float</p></td>
+<td><p>double</p></td>
+</tr>
+<tr class="row-odd"><td><p>str</p></td>
+<td><p>char</p></td>
+</tr>
+<tr class="row-even"><td><p>dict</p></td>
+<td><p>struct</p></td>
+</tr>
+<tr class="row-odd"><td><p>list of different data types</p></td>
+<td><p>cell array</p></td>
+</tr>
+<tr class="row-even"><td><p>list of boolean</p></td>
+<td><p>array of logical</p></td>
+</tr>
+<tr class="row-odd"><td><p>list of int or float</p></td>
+<td><p>array of double</p></td>
+</tr>
+<tr class="row-even"><td><p>list of str</p></td>
+<td><p>cell array of char</p></td>
+</tr>
+<tr class="row-odd"><td><p>list of dict, same field names</p></td>
+<td><p>structure array</p></td>
+</tr>
+<tr class="row-even"><td><p>list of dict, diff field names</p></td>
+<td><p>cell array of struct</p></td>
+</tr>
+<tr class="row-odd"><td><p>numpy.array</p></td>
+<td><p>array of double</p></td>
+</tr>
+<tr class="row-even"><td><p>ktk.TimeSeries</p></td>
+<td><p>struct</p></td>
+</tr>
+<tr class="row-odd"><td><p>complex</p></td>
+<td><p>struct with real and imag</p></td>
+</tr>
+</tbody>
+</table>
+<p>*tuples are saved as lists in JSON.</p>
 <p>For more information on saving and loading, please check the <a class="reference internal" href="api/ktk.loadsave.html"><span class="doc">API Reference</span></a>.</p>
 
 

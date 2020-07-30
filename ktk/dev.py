@@ -82,11 +82,11 @@ def _generate_tutorial(file: str) -> None:
     """Generate one tutorial."""
     print(file)
     subprocess.call(['jupyter-nbconvert', '--execute',
-                     '--log-level', 'WARN',
-                     '--to', 'markdown', file])
+                     '--log-level', 'WARN', '--inplace',
+                     '--to', 'notebook', file])
 
-def generate_tutorials() -> None:
-    """Generate the markdown from notebooks tutorials."""
+def build_tutorials() -> None:
+    """Build the markdown from notebooks tutorials."""
     print('Generating tutorials...')
     now = time.time()
     cwd = os.getcwd()
@@ -100,7 +100,7 @@ def generate_tutorials() -> None:
     os.chdir(cwd)
     print(f'Done in {time.time() - now} seconds.')
 
-def generate_site(clean: bool = False) -> None:
+def build_site(clean: bool = False) -> None:
     """
     Build the website using sphinx.
 
@@ -177,5 +177,5 @@ def release() -> None:
     run_doc_tests()
     run_static_type_checker()
     run_unit_tests()
-    generate_tutorials()
-    generate_site(True)
+    build_tutorials()
+    build_site(True)

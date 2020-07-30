@@ -56,6 +56,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Pushrim Kinetics" href="pushrimkinetics.html" />
@@ -261,23 +262,23 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#kinematics--page-root" class="md-nav__link">Kinematics</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#loading-a-c3d-or-n3d-file" class="md-nav__link">Loading a c3d or n3d file</a>
+        <li class="md-nav__item"><a href="#Loading-a-c3d-or-n3d-file" class="md-nav__link">Loading a c3d or n3d file</a>
         </li>
-        <li class="md-nav__item"><a href="#visualizing-the-markers" class="md-nav__link">Visualizing the markers</a>
+        <li class="md-nav__item"><a href="#Visualizing-the-markers" class="md-nav__link">Visualizing the markers</a>
         </li>
-        <li class="md-nav__item"><a href="#reconstructing-kinematics" class="md-nav__link">Reconstructing kinematics</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#Reconstructing-kinematics" class="md-nav__link">Reconstructing kinematics</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#defining-rigid-body-configurations-using-a-static-acquisition" class="md-nav__link">Defining rigid body configurations using a static acquisition</a>
+        <li class="md-nav__item"><a href="#Defining-rigid-body-configurations-using-a-static-acquisition" class="md-nav__link">Defining rigid body configurations using a static acquisition</a>
         </li>
-        <li class="md-nav__item"><a href="#defining-the-virtual-marker-configurations-based-on-probing-acquisitions" class="md-nav__link">Defining the virtual marker configurations based on probing acquisitions</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" class="md-nav__link">Defining the virtual marker configurations based on probing acquisitions</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#defining-segment-configurations" class="md-nav__link">Defining segment configurations</a>
+        <li class="md-nav__item"><a href="#Defining-segment-configurations" class="md-nav__link">Defining segment configurations</a>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#processing-an-experimental-trial" class="md-nav__link">Processing an experimental trial</a>
+        <li class="md-nav__item"><a href="#Processing-an-experimental-trial" class="md-nav__link">Processing an experimental trial</a>
         </li></ul>
             </nav>
         </li>
@@ -337,23 +338,23 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#kinematics--page-root" class="md-nav__link">Kinematics</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#loading-a-c3d-or-n3d-file" class="md-nav__link">Loading a c3d or n3d file</a>
+        <li class="md-nav__item"><a href="#Loading-a-c3d-or-n3d-file" class="md-nav__link">Loading a c3d or n3d file</a>
         </li>
-        <li class="md-nav__item"><a href="#visualizing-the-markers" class="md-nav__link">Visualizing the markers</a>
+        <li class="md-nav__item"><a href="#Visualizing-the-markers" class="md-nav__link">Visualizing the markers</a>
         </li>
-        <li class="md-nav__item"><a href="#reconstructing-kinematics" class="md-nav__link">Reconstructing kinematics</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#Reconstructing-kinematics" class="md-nav__link">Reconstructing kinematics</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#defining-rigid-body-configurations-using-a-static-acquisition" class="md-nav__link">Defining rigid body configurations using a static acquisition</a>
+        <li class="md-nav__item"><a href="#Defining-rigid-body-configurations-using-a-static-acquisition" class="md-nav__link">Defining rigid body configurations using a static acquisition</a>
         </li>
-        <li class="md-nav__item"><a href="#defining-the-virtual-marker-configurations-based-on-probing-acquisitions" class="md-nav__link">Defining the virtual marker configurations based on probing acquisitions</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" class="md-nav__link">Defining the virtual marker configurations based on probing acquisitions</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#defining-segment-configurations" class="md-nav__link">Defining segment configurations</a>
+        <li class="md-nav__item"><a href="#Defining-segment-configurations" class="md-nav__link">Defining segment configurations</a>
         </li></ul>
             </nav>
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#processing-an-experimental-trial" class="md-nav__link">Processing an experimental trial</a>
+        <li class="md-nav__item"><a href="#Processing-an-experimental-trial" class="md-nav__link">Processing an experimental trial</a>
         </li></ul>
             </nav>
         </li>
@@ -367,9 +368,241 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+
 <h1 id="kinematics--page-root">Kinematics<a class="headerlink" href="#kinematics--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.kinematics.html"><span class="doc">kinematics</span></a> module allows opening trajectories of markers from c3d or n3d
-files, and process those trajectory to:</p>
+<p>The <a class="reference internal" href="api/ktk.kinematics.html"><span class="doc">kinematics</span></a> module allows opening trajectories of markers from c3d or n3d files, and process those trajectory to:</p>
 <ul class="simple">
 <li><p>create rigid body configurations based on a static acquisitions;</p></li>
 <li><p>register the markers trajectories to rigid body trajectories;</p></li>
@@ -378,15 +611,26 @@ files, and process those trajectory to:</p>
 <li><p>and other operations that will be implemented in the future.</p></li>
 </ul>
 <p>Here is a quick example of how to reconstruct complete kinematics during a task, based on a static acquisition and probing acquisitions.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ktk</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
+</div>
 
-<h2 id="loading-a-c3d-or-n3d-file">Loading a c3d or n3d file<a class="headerlink" href="#loading-a-c3d-or-n3d-file" title="Permalink to this headline">¶</a></h2>
+<h2 id="Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file<a class="headerlink" href="#Loading-a-c3d-or-n3d-file" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">kinematics</span></code> module provide the methods <code class="docutils literal notranslate"><span class="pre">read_c3d_file</span></code> and <code class="docutils literal notranslate"><span class="pre">read_n3d_file</span></code> to read files generated by common motion capture devices. Reading c3d files is provided by the external <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> module; see the <em>Installing</em> section for information on how to install <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code>.</p>
 <p>In this tutorial, we will read a n3d file generated by an Optotrak system.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Names of the markers</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Names of the markers</span>
 <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
     <span class="s1">'Probe1'</span><span class="p">,</span> <span class="s1">'Probe2'</span><span class="p">,</span> <span class="s1">'Probe3'</span><span class="p">,</span> <span class="s1">'Probe4'</span><span class="p">,</span> <span class="s1">'Probe5'</span><span class="p">,</span> <span class="s1">'Probe6'</span><span class="p">,</span>
     <span class="s1">'WheelchairRearR'</span><span class="p">,</span> <span class="s1">'WheelchairRearL'</span><span class="p">,</span> <span class="s1">'WheelchairFront'</span><span class="p">,</span>
@@ -409,82 +653,124 @@ files, and process those trajectory to:</p>
 <span class="n">markers</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TimeSeries</span> <span class="k">with</span> <span class="n">attributes</span><span class="p">:</span>
-             <span class="n">data</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">41</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="n">data_info</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">41</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span>
-           <span class="n">events</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">0</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
-             <span class="n">time</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="n">time_info</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">1</span> <span class="n">entries</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+TimeSeries with attributes:
+             data: &lt;dict with 41 entries&gt;,
+        data_info: &lt;dict with 41 entries&gt;,
+           events: &lt;list of 0 items&gt;,
+             time: &lt;array of shape (700,)&gt;,
+        time_info: &lt;dict with 1 entries&gt;
+</pre></div></div>
 </div>
 <p>Each data key corresponds to the trajectory of one marker:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">markers</span><span class="o">.</span><span class="n">data</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-                   <span class="s1">'ArmL1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'ArmL2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'ArmL3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'ArmR1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'ArmR2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'ArmR3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ForearmL1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ForearmL2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ForearmL3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ForearmR1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ForearmR2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ForearmR3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'GloveL1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'GloveL2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'GloveL3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'GloveR1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'GloveR2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'GloveR3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'Head1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'Head2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                   <span class="s1">'Head3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'LateralEpicondyleL'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'LateralEpicondyleR'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                     <span class="s1">'NAG'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                     <span class="s1">'NAR'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s1">'Probe1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s1">'Probe2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s1">'Probe3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s1">'Probe4'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s1">'Probe5'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                  <span class="s1">'Probe6'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ScapulaL1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ScapulaL2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ScapulaL3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ScapulaR1'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ScapulaR2'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-               <span class="s1">'ScapulaR3'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-                 <span class="s1">'Sternum'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-         <span class="s1">'WheelchairFront'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-         <span class="s1">'WheelchairRearL'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-         <span class="s1">'WheelchairRearR'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">700</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span>
-<span class="p">}</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">markers</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+                   'ArmL1': &lt;array of shape (700, 4)&gt;,
+                   'ArmL2': &lt;array of shape (700, 4)&gt;,
+                   'ArmL3': &lt;array of shape (700, 4)&gt;,
+                   'ArmR1': &lt;array of shape (700, 4)&gt;,
+                   'ArmR2': &lt;array of shape (700, 4)&gt;,
+                   'ArmR3': &lt;array of shape (700, 4)&gt;,
+               'ForearmL1': &lt;array of shape (700, 4)&gt;,
+               'ForearmL2': &lt;array of shape (700, 4)&gt;,
+               'ForearmL3': &lt;array of shape (700, 4)&gt;,
+               'ForearmR1': &lt;array of shape (700, 4)&gt;,
+               'ForearmR2': &lt;array of shape (700, 4)&gt;,
+               'ForearmR3': &lt;array of shape (700, 4)&gt;,
+                 'GloveL1': &lt;array of shape (700, 4)&gt;,
+                 'GloveL2': &lt;array of shape (700, 4)&gt;,
+                 'GloveL3': &lt;array of shape (700, 4)&gt;,
+                 'GloveR1': &lt;array of shape (700, 4)&gt;,
+                 'GloveR2': &lt;array of shape (700, 4)&gt;,
+                 'GloveR3': &lt;array of shape (700, 4)&gt;,
+                   'Head1': &lt;array of shape (700, 4)&gt;,
+                   'Head2': &lt;array of shape (700, 4)&gt;,
+                   'Head3': &lt;array of shape (700, 4)&gt;,
+      'LateralEpicondyleL': &lt;array of shape (700, 4)&gt;,
+      'LateralEpicondyleR': &lt;array of shape (700, 4)&gt;,
+                     'NAG': &lt;array of shape (700, 4)&gt;,
+                     'NAR': &lt;array of shape (700, 4)&gt;,
+                  'Probe1': &lt;array of shape (700, 4)&gt;,
+                  'Probe2': &lt;array of shape (700, 4)&gt;,
+                  'Probe3': &lt;array of shape (700, 4)&gt;,
+                  'Probe4': &lt;array of shape (700, 4)&gt;,
+                  'Probe5': &lt;array of shape (700, 4)&gt;,
+                  'Probe6': &lt;array of shape (700, 4)&gt;,
+               'ScapulaL1': &lt;array of shape (700, 4)&gt;,
+               'ScapulaL2': &lt;array of shape (700, 4)&gt;,
+               'ScapulaL3': &lt;array of shape (700, 4)&gt;,
+               'ScapulaR1': &lt;array of shape (700, 4)&gt;,
+               'ScapulaR2': &lt;array of shape (700, 4)&gt;,
+               'ScapulaR3': &lt;array of shape (700, 4)&gt;,
+                 'Sternum': &lt;array of shape (700, 4)&gt;,
+         'WheelchairFront': &lt;array of shape (700, 4)&gt;,
+         'WheelchairRearL': &lt;array of shape (700, 4)&gt;,
+         'WheelchairRearR': &lt;array of shape (700, 4)&gt;
+}
+</pre></div></div>
 </div>
 
 
-<h2 id="visualizing-the-markers">Visualizing the markers<a class="headerlink" href="#visualizing-the-markers" title="Permalink to this headline">¶</a></h2>
+<h2 id="Visualizing-the-markers">Visualizing the markers<a class="headerlink" href="#Visualizing-the-markers" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">Player</span></code> class is a matplotlib based user interface to visualize markers, rigid bodies and segments in three dimensions. It is important to select an interactive IPython’s GUI front-end, or the Player’s figure will simply print out without being interactive. See the <em>Installing</em> section for more information.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ktk</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span> <span class="n">at</span> <span class="mh">0x7fe87a106f70</span><span class="o">&gt;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/kinematics_7_1.png"/></p>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ktk.player.Player at 0x7fd918905bb0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/kinematics_7_1.png" src="_images/kinematics_7_1.png"/>
+</div>
+</div>
 
 
-<h2 id="reconstructing-kinematics">Reconstructing kinematics<a class="headerlink" href="#reconstructing-kinematics" title="Permalink to this headline">¶</a></h2>
+<h2 id="Reconstructing-kinematics">Reconstructing kinematics<a class="headerlink" href="#Reconstructing-kinematics" title="Permalink to this headline">¶</a></h2>
 
-<h3 id="defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition<a class="headerlink" href="#defining-rigid-body-configurations-using-a-static-acquisition" title="Permalink to this headline">¶</a></h3>
+<h3 id="Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition<a class="headerlink" href="#Defining-rigid-body-configurations-using-a-static-acquisition" title="Permalink to this headline">¶</a></h3>
 <p>One of the aims of the static trial is to have a sample where every marker is visible. We use this trial to define the rigid body configuration. A rigid body configuration is a list of markers that form a rigid body, along with their local position in the rigid body’s reference frame.</p>
 <p>For this example, we will create rigid bodies for the markers triads ‘ArmR’ and ‘ForearmR’.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>                 <span class="c1"># Will contain all configuration data.</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>                 <span class="c1"># Will contain all configuration data.</span>
 <span class="n">config</span><span class="p">[</span><span class="s1">'RigidBodies'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all rigid body configurations.</span>
 
 <span class="c1"># Read the static trial</span>
@@ -496,11 +782,29 @@ files, and process those trajectory to:</p>
            <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ktk</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span> <span class="n">at</span> <span class="mh">0x7fe879fdd520</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<p><img alt="png" src="_images/kinematics_9_1.png"/></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create the rigid body configurations</span>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ktk.player.Player at 0x7fd918c49be0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/kinematics_9_1.png" src="_images/kinematics_9_1.png"/>
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Create the rigid body configurations</span>
 <span class="n">config</span><span class="p">[</span><span class="s1">'RigidBodies'</span><span class="p">][</span><span class="s1">'ArmR'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_rigid_body_config</span><span class="p">(</span>
         <span class="n">markers</span><span class="p">,</span> <span class="p">[</span><span class="s1">'ArmR1'</span><span class="p">,</span> <span class="s1">'ArmR2'</span><span class="p">,</span> <span class="s1">'ArmR3'</span><span class="p">])</span>
 
@@ -508,8 +812,14 @@ files, and process those trajectory to:</p>
         <span class="n">markers</span><span class="p">,</span> <span class="p">[</span><span class="s1">'ForearmR1'</span><span class="p">,</span> <span class="s1">'ForearmR2'</span><span class="p">,</span> <span class="s1">'ForearmR3'</span><span class="p">])</span>
 </pre></div>
 </div>
+</div>
 <p>The probe’s rigid body configuration is created manually from its specifications. Each local point is expressed relative to a reference frame that is centered at the probe’s tip.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">'RigidBodies'</span><span class="p">][</span><span class="s1">'Probe'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config</span><span class="p">[</span><span class="s1">'RigidBodies'</span><span class="p">][</span><span class="s1">'Probe'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">'MarkerNames'</span><span class="p">:</span> <span class="p">[</span><span class="s1">'Probe1'</span><span class="p">,</span> <span class="s1">'Probe2'</span><span class="p">,</span> <span class="s1">'Probe3'</span><span class="p">,</span>
                         <span class="s1">'Probe4'</span><span class="p">,</span> <span class="s1">'Probe5'</span><span class="p">,</span> <span class="s1">'Probe6'</span><span class="p">],</span>
         <span class="s1">'LocalPoints'</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>
@@ -521,14 +831,26 @@ files, and process those trajectory to:</p>
         <span class="p">}</span>
 </pre></div>
 </div>
+</div>
 
 
-<h3 id="defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions<a class="headerlink" href="#defining-the-virtual-marker-configurations-based-on-probing-acquisitions" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all virtual marker configurations</span>
+<h3 id="Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions<a class="headerlink" href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all virtual marker configurations</span>
+</pre></div>
+</div>
+</div>
 <p>Since this is a repetitive operation, we will create a new function that will be called for each virtual marker:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">process_probing_acquisition</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">):</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">def</span> <span class="nf">process_probing_acquisition</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">):</span>
 
     <span class="c1"># Load the markers</span>
     <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
@@ -547,8 +869,14 @@ files, and process those trajectory to:</p>
             <span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span> <span class="s1">'ProbeTip'</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
 <p>Now, we can process every probing acquisition.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">][</span><span class="s1">'AcromionR'</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">][</span><span class="s1">'AcromionR'</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
         <span class="s1">'data/kinematics/sample_probing_acromion_R.n3d'</span><span class="p">,</span> <span class="s1">'ArmR'</span><span class="p">)</span>
 
 <span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">][</span><span class="s1">'MedialEpicondyleR'</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
@@ -564,11 +892,16 @@ files, and process those trajectory to:</p>
         <span class="s1">'data/kinematics/sample_probing_ulnar_styloid_R.n3d'</span><span class="p">,</span> <span class="s1">'ForearmR'</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
 
-<h4 id="defining-segment-configurations">Defining segment configurations<a class="headerlink" href="#defining-segment-configurations" title="Permalink to this headline">¶</a></h4>
-<p>This step is purely for visualization. Here, we define different segments
-that will be shown in the Player.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">config</span><span class="p">[</span><span class="s1">'Segments'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all segment definitions</span>
+<h4 id="Defining-segment-configurations">Defining segment configurations<a class="headerlink" href="#Defining-segment-configurations" title="Permalink to this headline">¶</a></h4>
+<p>This step is purely for visualization. Here, we define different segments that will be shown in the Player.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">config</span><span class="p">[</span><span class="s1">'Segments'</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all segment definitions</span>
 
 <span class="n">config</span><span class="p">[</span><span class="s1">'Segments'</span><span class="p">][</span><span class="s1">'ArmR'</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s1">'Color'</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -589,13 +922,19 @@ that will be shown in the Player.</p>
         <span class="p">}</span>
 </pre></div>
 </div>
+</div>
 
 
 
 
-<h2 id="processing-an-experimental-trial">Processing an experimental trial<a class="headerlink" href="#processing-an-experimental-trial" title="Permalink to this headline">¶</a></h2>
+<h2 id="Processing-an-experimental-trial">Processing an experimental trial<a class="headerlink" href="#Processing-an-experimental-trial" title="Permalink to this headline">¶</a></h2>
 <p>Now that we configured the rigid bodies and the virtual markers, we are ready to load an experimental trial, calculate the rigid body trajectories and recreate the virtual markers using these rigid bodies.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the markers of the experimental trial</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Load the markers of the experimental trial</span>
 <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span>
         <span class="s1">'data/kinematics/sample_propulsion.n3d'</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
 
@@ -604,11 +943,29 @@ that will be shown in the Player.</p>
            <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ktk</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span> <span class="n">at</span> <span class="mh">0x7fe87a44a8e0</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<p><img alt="png" src="_images/kinematics_22_1.png"/></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Compute the rigid body trajectories</span>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ktk.player.Player at 0x7fd918ccd100&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/kinematics_22_1.png" src="_images/kinematics_22_1.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Compute the rigid body trajectories</span>
 <span class="n">rigid_bodies</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">register_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">'RigidBodies'</span><span class="p">])</span>
 
 <span class="c1"># Show those rigid bodies and markers in a player</span>
@@ -616,11 +973,29 @@ that will be shown in the Player.</p>
            <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ktk</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span> <span class="n">at</span> <span class="mh">0x7fe87bc12f70</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<p><img alt="png" src="_images/kinematics_23_1.png"/></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the virtual markers</span>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ktk.player.Player at 0x7fd91a417c70&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/kinematics_23_1.png" src="_images/kinematics_23_1.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Add the virtual markers</span>
 
 <span class="k">for</span> <span class="n">virtual_marker</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">]:</span>
     <span class="n">local_coordinates</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">'VirtualMarkers'</span><span class="p">][</span><span class="n">virtual_marker</span><span class="p">][</span><span class="s1">'LocalPoint'</span><span class="p">]</span>
@@ -638,20 +1013,51 @@ that will be shown in the Player.</p>
            <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ktk</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span> <span class="n">at</span> <span class="mh">0x7fe87d917a00</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<p><img alt="png" src="_images/kinematics_24_1.png"/></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add the segments</span>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ktk.player.Player at 0x7fd9155a7df0&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/kinematics_24_1.png" src="_images/kinematics_24_1.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Add the segments</span>
 <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span>
            <span class="n">segments</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">'Segments'</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
            <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">&lt;</span><span class="n">ktk</span><span class="o">.</span><span class="n">player</span><span class="o">.</span><span class="n">Player</span> <span class="n">at</span> <span class="mh">0x7fe87e6ab700</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
-<p><img alt="png" src="_images/kinematics_25_1.png"/></p>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+&lt;ktk.player.Player at 0x7fd91c2b8520&gt;
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/kinematics_25_1.png" src="_images/kinematics_25_1.png"/>
+</div>
+</div>
 <p>For more information on kinematics, please check the <a class="reference internal" href="api/ktk.kinematics.html"><span class="doc">API Reference</span></a>.</p>
 
 

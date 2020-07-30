@@ -24,7 +24,7 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
 
 Additional dependencies for the development version:
 
-    conda install -c conda-forge git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm
+    conda install -c conda-forge git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm nbsphinx
 
 
 Installing ktk

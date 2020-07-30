@@ -56,6 +56,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Inverse Dynamics" href="inversedynamics.html" />
@@ -268,17 +269,17 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#pushrimkinetics--page-root" class="md-nav__link">Pushrim Kinetics</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#read-data-from-file" class="md-nav__link">Read data from file</a>
+        <li class="md-nav__item"><a href="#Read-data-from-file" class="md-nav__link">Read data from file</a>
         </li>
-        <li class="md-nav__item"><a href="#calculate-forces-and-moments" class="md-nav__link">Calculate forces and moments</a>
+        <li class="md-nav__item"><a href="#Calculate-forces-and-moments" class="md-nav__link">Calculate forces and moments</a>
         </li>
-        <li class="md-nav__item"><a href="#removing-sinusoids-in-forces-and-moments" class="md-nav__link">Removing sinusoids in forces and moments</a>
+        <li class="md-nav__item"><a href="#Removing-sinusoids-in-forces-and-moments" class="md-nav__link">Removing sinusoids in forces and moments</a>
         </li>
-        <li class="md-nav__item"><a href="#calculate-velocity-and-power" class="md-nav__link">Calculate velocity and power</a>
+        <li class="md-nav__item"><a href="#Calculate-velocity-and-power" class="md-nav__link">Calculate velocity and power</a>
         </li>
-        <li class="md-nav__item"><a href="#detecting-pushes" class="md-nav__link">Detecting pushes</a>
+        <li class="md-nav__item"><a href="#Detecting-pushes" class="md-nav__link">Detecting pushes</a>
         </li>
-        <li class="md-nav__item"><a href="#time-normalizing-data" class="md-nav__link">Time-normalizing data</a>
+        <li class="md-nav__item"><a href="#Time-normalizing-data" class="md-nav__link">Time-normalizing data</a>
         </li></ul>
             </nav>
         </li>
@@ -331,17 +332,17 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#pushrimkinetics--page-root" class="md-nav__link">Pushrim Kinetics</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#read-data-from-file" class="md-nav__link">Read data from file</a>
+        <li class="md-nav__item"><a href="#Read-data-from-file" class="md-nav__link">Read data from file</a>
         </li>
-        <li class="md-nav__item"><a href="#calculate-forces-and-moments" class="md-nav__link">Calculate forces and moments</a>
+        <li class="md-nav__item"><a href="#Calculate-forces-and-moments" class="md-nav__link">Calculate forces and moments</a>
         </li>
-        <li class="md-nav__item"><a href="#removing-sinusoids-in-forces-and-moments" class="md-nav__link">Removing sinusoids in forces and moments</a>
+        <li class="md-nav__item"><a href="#Removing-sinusoids-in-forces-and-moments" class="md-nav__link">Removing sinusoids in forces and moments</a>
         </li>
-        <li class="md-nav__item"><a href="#calculate-velocity-and-power" class="md-nav__link">Calculate velocity and power</a>
+        <li class="md-nav__item"><a href="#Calculate-velocity-and-power" class="md-nav__link">Calculate velocity and power</a>
         </li>
-        <li class="md-nav__item"><a href="#detecting-pushes" class="md-nav__link">Detecting pushes</a>
+        <li class="md-nav__item"><a href="#Detecting-pushes" class="md-nav__link">Detecting pushes</a>
         </li>
-        <li class="md-nav__item"><a href="#time-normalizing-data" class="md-nav__link">Time-normalizing data</a>
+        <li class="md-nav__item"><a href="#Time-normalizing-data" class="md-nav__link">Time-normalizing data</a>
         </li></ul>
             </nav>
         </li>
@@ -355,57 +356,344 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container,
+div.nbinput.container div.prompt,
+div.nbinput.container div.input_area,
+div.nbinput.container div[class*=highlight],
+div.nbinput.container div[class*=highlight] pre,
+div.nboutput.container,
+div.nboutput.container div.prompt,
+div.nboutput.container div.output_area,
+div.nboutput.container div[class*=highlight],
+div.nboutput.container div[class*=highlight] pre {
+    background: none;
+    border: none;
+    padding: 0 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    background: #f5f5f5;
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+</style>
+
 <h1 id="pushrimkinetics--page-root">Pushrim Kinetics<a class="headerlink" href="#pushrimkinetics--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/ktk.pushrimkinetics.html"><span class="doc">pushrimkinetics</span></a> module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ktk</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
+</div>
 
-<h2 id="read-data-from-file">Read data from file<a class="headerlink" href="#read-data-from-file" title="Permalink to this headline">¶</a></h2>
+<h2 id="Read-data-from-file">Read data from file<a class="headerlink" href="#Read-data-from-file" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to load data from a file, using the <code class="docutils literal notranslate"><span class="pre">read_file</span></code> function.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'data/pushrimkinetics/'</span>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">filename</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'data/pushrimkinetics/'</span>
             <span class="s1">'sample_swl_overground_propulsion_withrubber.csv'</span><span class="p">)</span>
 
 <span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
 <p>Let see what we loaded:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TimeSeries</span> <span class="k">with</span> <span class="n">attributes</span><span class="p">:</span>
-             <span class="n">data</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">5</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="n">data_info</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">4</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span>
-           <span class="n">events</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">0</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
-             <span class="n">time</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="n">time_info</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">1</span> <span class="n">entries</span><span class="o">&gt;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span>
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-         <span class="s1">'Angle'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'Channels'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="s1">'Forces'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-         <span class="s1">'Index'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-       <span class="s1">'Moments'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span>
-<span class="p">}</span>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+TimeSeries with attributes:
+             data: &lt;dict with 5 entries&gt;,
+        data_info: &lt;dict with 4 entries&gt;,
+           events: &lt;list of 0 items&gt;,
+             time: &lt;array of shape (7682,)&gt;,
+        time_info: &lt;dict with 1 entries&gt;
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+         'Angle': &lt;array of shape (7682,)&gt;,
+      'Channels': &lt;array of shape (7682, 6)&gt;,
+        'Forces': &lt;array of shape (7682, 4)&gt;,
+         'Index': &lt;array of shape (7682,)&gt;,
+       'Moments': &lt;array of shape (7682, 4)&gt;
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_7_0.png"/></p>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_7_0.png" src="_images/pushrimkinetics_7_0.png"/>
+</div>
+</div>
 
 
-<h2 id="calculate-forces-and-moments">Calculate forces and moments<a class="headerlink" href="#calculate-forces-and-moments" title="Permalink to this headline">¶</a></h2>
-<p>If the data is not in a CSV form but instead in a TXT file from the SmartWheel’s SD card, we can also read this file, by specifying the <code class="docutils literal notranslate"><span class="pre">smartwheeltxt</span></code> format in <code class="docutils literal notranslate"><span class="pre">read_file</span></code>. However, in this case, the file contains only the raw channels, index and angle. In this case, we must calculate the forces and moments based on a calibration matrix. The function <code class="docutils literal notranslate"><span class="pre">calculate_forces_and_moments</span></code> does this calculation and already includes calibration matrices based on SmartWheels’ serial numbers. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">new_kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_forces_and_moments</span><span class="p">(</span>
+<h2 id="Calculate-forces-and-moments">Calculate forces and moments<a class="headerlink" href="#Calculate-forces-and-moments" title="Permalink to this headline">¶</a></h2>
+<p>If the data is not in a CSV form but instead in a TXT file from the SmartWheel’s SD card, we can also read this file, by specifying the <code class="docutils literal notranslate"><span class="pre">smartwheeltxt</span></code> format in <code class="docutils literal notranslate"><span class="pre">read_file</span></code>. However, in this case, the file contains only the raw channels, index and angle. In this case, we must calculate the forces and moments based on a calibration matrix. The function <code class="docutils literal notranslate"><span class="pre">calculate_forces_and_moments</span></code> does this calculation and already includes calibration matrices based on SmartWheels’ serial numbers. For
+example:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">new_kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_forces_and_moments</span><span class="p">(</span>
     <span class="n">kinetics</span><span class="p">,</span> <span class="s1">'LIO-123'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
@@ -414,16 +702,26 @@
 <span class="n">new_kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_9_0.png"/></p>
-<p>When the forces and moments are reconstructed from raw data, no modification
-has been applied on the signals by the SmartWheel software to account for
-wheel side. Therefore some signals may be inverted, as observed here.</p>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_9_0.png" src="_images/pushrimkinetics_9_0.png"/>
+</div>
+</div>
+<p>When the forces and moments are reconstructed from raw data, no modification has been applied on the signals by the SmartWheel software to account for wheel side. Therefore some signals may be inverted, as observed here.</p>
 
 
-<h2 id="removing-sinusoids-in-forces-and-moments">Removing sinusoids in forces and moments<a class="headerlink" href="#removing-sinusoids-in-forces-and-moments" title="Permalink to this headline">¶</a></h2>
+<h2 id="Removing-sinusoids-in-forces-and-moments">Removing sinusoids in forces and moments<a class="headerlink" href="#Removing-sinusoids-in-forces-and-moments" title="Permalink to this headline">¶</a></h2>
 <p>We observe in the last graphs that sinusoidal offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <code class="docutils literal notranslate"><span class="pre">remove_sinusoids</span></code>.</p>
 <p>Let’s apply this function on the data we just loaded.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_sinusoids</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_sinusoids</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
@@ -431,10 +729,21 @@ wheel side. Therefore some signals may be inverted, as observed here.</p>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_12_0.png"/></p>
-<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external
-force appart from gravity is applied on the instrumented wheel. For example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_12_0.png" src="_images/pushrimkinetics_12_0.png"/>
+</div>
+</div>
+<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. For example:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
         <span class="s1">'data/pushrimkinetics/sample_swl_overground_propulsion_withrubber.csv'</span><span class="p">)</span>
 
 <span class="n">baseline</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
@@ -448,51 +757,97 @@ force appart from gravity is applied on the instrumented wheel. For example:</p>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_14_0.png"/></p>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_14_0.png" src="_images/pushrimkinetics_14_0.png"/>
+</div>
+</div>
 
 
-<h2 id="calculate-velocity-and-power">Calculate velocity and power<a class="headerlink" href="#calculate-velocity-and-power" title="Permalink to this headline">¶</a></h2>
-<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <code class="docutils literal notranslate"><span class="pre">calculate_velocity</span></code> function. Once the velocity has been calculated, the output power can also be calculated by
-multiplying the velocity by the propulsion moment, using the <code class="docutils literal notranslate"><span class="pre">calculate_power</span></code> function.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_velocity</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+<h2 id="Calculate-velocity-and-power">Calculate velocity and power<a class="headerlink" href="#Calculate-velocity-and-power" title="Permalink to this headline">¶</a></h2>
+<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <code class="docutils literal notranslate"><span class="pre">calculate_velocity</span></code> function. Once the velocity has been calculated, the output power can also be calculated by multiplying the velocity by the propulsion moment, using the <code class="docutils literal notranslate"><span class="pre">calculate_power</span></code> function.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_velocity</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 <span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_power</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Velocity'</span><span class="p">,</span> <span class="s1">'Power'</span><span class="p">])</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_16_0.png"/></p>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_16_0.png" src="_images/pushrimkinetics_16_0.png"/>
+</div>
+</div>
 
 
-<h2 id="detecting-pushes">Detecting pushes<a class="headerlink" href="#detecting-pushes" title="Permalink to this headline">¶</a></h2>
-<p>The function <code class="docutils literal notranslate"><span class="pre">detect_pushes</span></code> allows detecting pushes and recoveries
-automatically based on a double-threshold.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">detect_pushes</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+<h2 id="Detecting-pushes">Detecting pushes<a class="headerlink" href="#Detecting-pushes" title="Permalink to this headline">¶</a></h2>
+<p>The function <code class="docutils literal notranslate"><span class="pre">detect_pushes</span></code> allows detecting pushes and recoveries automatically based on a double-threshold.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">detect_pushes</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
 <span class="n">kinetics</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">TimeSeries</span> <span class="k">with</span> <span class="n">attributes</span><span class="p">:</span>
-             <span class="n">data</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">7</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="n">data_info</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">6</span> <span class="n">entries</span><span class="o">&gt;</span><span class="p">,</span>
-           <span class="n">events</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">list</span> <span class="n">of</span> <span class="mi">50</span> <span class="n">items</span><span class="o">&gt;</span><span class="p">,</span>
-             <span class="n">time</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">7682</span><span class="p">,)</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="n">time_info</span><span class="p">:</span> <span class="o">&lt;</span><span class="nb">dict</span> <span class="k">with</span> <span class="mi">1</span> <span class="n">entries</span><span class="o">&gt;</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+TimeSeries with attributes:
+             data: &lt;dict with 7 entries&gt;,
+        data_info: &lt;dict with 6 entries&gt;,
+           events: &lt;list of 50 items&gt;,
+             time: &lt;array of shape (7682,)&gt;,
+        time_info: &lt;dict with 1 entries&gt;
+</pre></div></div>
+</div>
 <p>We see that the TimeSeries now has 52 events. Let’s see these events on a plot.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_20_0.png"/></p>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_20_0.png" src="_images/pushrimkinetics_20_0.png"/>
+</div>
+</div>
 
 
-<h2 id="time-normalizing-data">Time-normalizing data<a class="headerlink" href="#time-normalizing-data" title="Permalink to this headline">¶</a></h2>
+<h2 id="Time-normalizing-data">Time-normalizing data<a class="headerlink" href="#Time-normalizing-data" title="Permalink to this headline">¶</a></h2>
 <p>Now, we may be intested in time-normalizing our pushes. For example, if we are interested to find the average progression of the push force. Time-normalizing is not specific to the ktk.pushrimkinetics module, it is in the ktk.cycles module.</p>
 <p>To analyze the push phase, we want to time-normalize each push from the <code class="docutils literal notranslate"><span class="pre">push</span></code> event to the <code class="docutils literal notranslate"><span class="pre">recovery</span></code> event.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
@@ -500,31 +855,61 @@ automatically based on a double-threshold.</p>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_22_0.png"/></p>
-<p>It is now possible to extract each push in a i_cycle x i_percent x i_component
-form, using the <code class="docutils literal notranslate"><span class="pre">ktk.cycles.get_reshaped_time_normalized_data</span></code> method.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">get_reshaped_time_normalized_data</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_22_0.png" src="_images/pushrimkinetics_22_0.png"/>
+</div>
+</div>
+<p>It is now possible to extract each push in a [cycle, percent, component] shape, using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.get_reshaped_data"><span class="std std-ref">ktk.cycles.get_reshaped_data</span></a> method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">get_reshaped_data</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
 <span class="n">data</span>
 </pre></div>
 </div>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-         <span class="s1">'Angle'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'Channels'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-        <span class="s1">'Forces'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-         <span class="s1">'Index'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-       <span class="s1">'Moments'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-         <span class="s1">'Power'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">&gt;</span><span class="p">,</span>
-      <span class="s1">'Velocity'</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">array</span> <span class="n">of</span> <span class="n">shape</span> <span class="p">(</span><span class="mi">25</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span><span class="o">&gt;</span>
-<span class="p">}</span>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+         'Angle': &lt;array of shape (25, 100)&gt;,
+      'Channels': &lt;array of shape (25, 100, 6)&gt;,
+        'Forces': &lt;array of shape (25, 100, 4)&gt;,
+         'Index': &lt;array of shape (25, 100)&gt;,
+       'Moments': &lt;array of shape (25, 100, 4)&gt;,
+         'Power': &lt;array of shape (25, 100)&gt;,
+      'Velocity': &lt;array of shape (25, 100)&gt;
+}
+</pre></div></div>
+</div>
 <p>Plot the normalized force curves one on top of each other:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][</span><span class="n">i</span><span class="p">])</span>
 </pre></div>
 </div>
-<p><img alt="png" src="_images/pushrimkinetics_26_0.png"/></p>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_26_0.png" src="_images/pushrimkinetics_26_0.png"/>
+</div>
+</div>
 <p>For more information on pushrimkinetics, please check the <a class="reference internal" href="api/ktk.pushrimkinetics.html"><span class="doc">API Reference</span></a>.</p>
 
 

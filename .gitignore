@@ -28,3 +28,6 @@ doc/.ipynb_checkpoints
 .ipynb_checkpoints
 filename.ktk.zip
 test.ktk.zip
+doc/_build/doctrees
+html/*.ipynb
+doc/_build/html/*.ipynb

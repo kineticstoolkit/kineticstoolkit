@@ -56,6 +56,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ktk.emg module" href="ktk.emg.html" />
@@ -334,17 +335,17 @@
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.build_site" title="ktk.dev.build_site"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_site</span></code></a>([clean])</p></td>
+<td><p>Build the website using sphinx.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dev.build_tutorials" title="ktk.dev.build_tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_tutorials</span></code></a>()</p></td>
+<td><p>Build the markdown from notebooks tutorials.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.clean" title="ktk.dev.clean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean</span></code></a>()</p></td>
 <td><p>Delete temporary files that were used by the release process.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ktk.dev.compile_for_pypi" title="ktk.dev.compile_for_pypi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">compile_for_pypi</span></code></a>()</p></td>
 <td><p>Compile for PyPi.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.generate_site" title="ktk.dev.generate_site"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_site</span></code></a>([clean])</p></td>
-<td><p>Build the website using sphinx.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dev.generate_tutorials" title="ktk.dev.generate_tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">generate_tutorials</span></code></a>()</p></td>
-<td><p>Generate the markdown from notebooks tutorials.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.release" title="ktk.dev.release"><code class="xref py py-obj docutils literal notranslate"><span class="pre">release</span></code></a>()</p></td>
 <td><p>Run all functions for release, without packaging and uploading.</p></td>
@@ -364,6 +365,27 @@
 </tbody>
 </table>
 <dl class="py function">
+<dt id="ktk.dev.build_site">
+<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">build_site</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clean</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.build_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the website using sphinx.</p>
+<p>Set clean to True to <cite>make clean</cite> beforehand.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="ktk.dev.build_tutorials">
+<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">build_tutorials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.build_tutorials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the markdown from notebooks tutorials.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
 <dt id="ktk.dev.clean">
 <code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">clean</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.clean" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete temporary files that were used by the release process.</p>
@@ -377,27 +399,6 @@
 <dt id="ktk.dev.compile_for_pypi">
 <code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">compile_for_pypi</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.compile_for_pypi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Compile for PyPi.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.dev.generate_site">
-<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">generate_site</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clean</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.generate_site" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build the website using sphinx.</p>
-<p>Set clean to True to <cite>make clean</cite> beforehand.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.dev.generate_tutorials">
-<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">generate_tutorials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.generate_tutorials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate the markdown from notebooks tutorials.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>

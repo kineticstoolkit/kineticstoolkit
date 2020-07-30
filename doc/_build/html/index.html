@@ -56,6 +56,7 @@
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Installing" href="install.html" />
@@ -417,77 +418,74 @@ python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">Getting started with TimeSeries</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#properties">Properties</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Properties">Properties</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="timeseries.html#time-and-data">time and data</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries.html#time-info-and-data-info">time_info and data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries.html#time_info-and-data_info">time_info and data_info</a></li>
 <li class="toctree-l3"><a class="reference internal" href="timeseries.html#events">events</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#using-events-to-synchronize-timeseries">Using events to synchronize TimeSeries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#using-events-to-extract-sub-timeseries">Using events to extract sub-TimeSeries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#subsetting-and-merging-timeseries">Subsetting and merging timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Using-events-to-synchronize-TimeSeries">Using events to synchronize TimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Using-events-to-extract-sub-TimeSeries">Using events to extract sub-TimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Subsetting-and-merging-timeseries">Subsetting and merging timeseries</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#saving-a-variable">Saving a variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#loading-a-variable">Loading a variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#supported-types">Supported types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#the-ktk-zip-format">The .ktk.zip format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#loading-a-ktk-zip-in-matlab">Loading a .ktk.zip in Matlab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Saving-a-variable">Saving a variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-variable">Loading a variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Supported-types">Supported types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#The-.ktk.zip-format">The .ktk.zip format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-.ktk.zip-in-Matlab">Loading a .ktk.zip in Matlab</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#array-convention">Array convention</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#matrix-multiplication">Matrix multiplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#creating-series-of-rotation-matrices">Creating series of rotation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#creating-series-of-reference-frames">Creating series of reference frames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#calculating-local-coordinates">Calculating local coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#calculating-global-coordinates">Calculating global coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Array-convention">Array convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-rotation-matrices">Creating series of rotation matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-reference-frames">Creating series of reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-coordinates">Calculating local coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-global-coordinates">Calculating global coordinates</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#smoothing-and-derivating-a-timeseries-with-a-savitzky-golay-filter">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#butterworth-filter">Butterworth filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Butterworth-filter">Butterworth filter</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#visualizing-the-markers">Visualizing the markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#reconstructing-kinematics">Reconstructing kinematics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kinematics.html#defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kinematics.html#defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Visualizing-the-markers">Visualizing the markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Reconstructing-kinematics">Reconstructing kinematics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="kinematics.html#Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kinematics.html#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#processing-an-experimental-trial">Processing an experimental trial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Processing-an-experimental-trial">Processing an experimental trial</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Pushrim Kinetics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#read-data-from-file">Read data from file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#calculate-forces-and-moments">Calculate forces and moments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#removing-sinusoids-in-forces-and-moments">Removing sinusoids in forces and moments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#calculate-velocity-and-power">Calculate velocity and power</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#detecting-pushes">Detecting pushes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#time-normalizing-data">Time-normalizing data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Read-data-from-file">Read data from file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Calculate-forces-and-moments">Calculate forces and moments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Removing-sinusoids-in-forces-and-moments">Removing sinusoids in forces and moments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Calculate-velocity-and-power">Calculate velocity and power</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Detecting-pushes">Detecting pushes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Time-normalizing-data">Time-normalizing data</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#loading-sample-data">Loading sample data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#calculate-the-force-and-moments-at-the-hand">Calculate the force and moments at the hand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Loading-sample-data">Loading sample data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-hand">Calculate the force and moments at the hand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cycles.html">Cycles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#warning">Warning</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="cycles.html">Cycles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#connecting-to-a-biomec-project">Connecting to a BIOMEC project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#navigating-in-the-project">Navigating in the project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#saving-data-to-a-biomec-referenced-file">Saving data to a BIOMEC referenced file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#loading-data-from-a-biomec-referenced-file">Loading data from a BIOMEC referenced file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#dealing-with-external-software">Dealing with external software</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#including-information-in-file-names">Including information in file names</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Connecting-to-a-BIOMEC-project">Connecting to a BIOMEC project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Navigating-in-the-project">Navigating in the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Saving-data-to-a-BIOMEC-referenced-file">Saving data to a BIOMEC referenced file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Loading-data-from-a-BIOMEC-referenced-file">Loading data from a BIOMEC referenced file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Dealing-with-external-software">Dealing with external software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Including-information-in-file-names">Including information in file names</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>

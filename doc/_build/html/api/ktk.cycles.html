@@ -56,6 +56,7 @@
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
     <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="ktk.dbinterface module" href="ktk.dbinterface.html" />
@@ -337,7 +338,7 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.find_cycles" title="ktk.cycles.find_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_cycles</span></code></a>(ts, data_key, /, event_names, …)</p></td>
 <td><p>Find cycles in a TimeSeries based on a dual threshold approach.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.get_reshaped_time_normalized_data" title="ktk.cycles.get_reshaped_time_normalized_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reshaped_time_normalized_data</span></code></a>(ts[, n_points])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.get_reshaped_data" title="ktk.cycles.get_reshaped_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_reshaped_data</span></code></a>(ts[, n_points])</p></td>
 <td><p>Get reshaped data from a time-normalized TimeSeries.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.most_repeatable_cycles" title="ktk.cycles.most_repeatable_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">most_repeatable_cycles</span></code></a>(data, n_cycles)</p></td>
@@ -382,8 +383,8 @@ with first phase not reaching minimum_height are rejected.</p></li>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="ktk.cycles.get_reshaped_time_normalized_data">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">get_reshaped_time_normalized_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.get_reshaped_time_normalized_data" title="Permalink to this definition">¶</a></dt>
+<dt id="ktk.cycles.get_reshaped_data">
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">get_reshaped_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.get_reshaped_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get reshaped data from a time-normalized TimeSeries.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -455,24 +456,28 @@ to cycles, and N corresponds to normalized time.</p></li>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.cycles.time_normalize">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">out_event_name1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_event_name2</span><span class="o">=</span><span class="default_value">'_'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time-normalize cycles in a TimeSeries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is currently experimental and may change signature and
-behaviour in the future.</p>
 <p>This method time-normalizes the TimeSeries at each cycle defined by
 event_name1 and event_name2 on n_points. The time-normalized cycles are
 put end to end. For example, for a TimeSeries that contains three
 cycles, a time normalization with 100 points will give a TimeSeries
 of length 300. The TimeSeries’ events are also time-normalized.</p>
-</div>
+<p>By default, event_name1 and event_name2 are also present in the resulting
+TimeSeries, but event_name2 is renamed to ‘_’. This is to ensure that the
+event names are not duplicated (which would be the case, for example if
+we normalize from event ‘heel_strike’ to next event ‘heel_strike’).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ts</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The TimeSeries to analyze.</p></li>
-<li><p><strong>event_name2</strong> (<em>event_name1</em><em>,</em>) – The events that correspond to the begin and end of a cycle.</p></li>
+<li><p><strong>event_name1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the begin of a cycle.</p></li>
+<li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the end of a cycle.</p></li>
 <li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points of the output TimeSeries.</p></li>
+<li><p><strong>out_event_name1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional. The renamed event1 in the returned TimeSeries.
+Use None to use event_name1. Default is None.</p></li>
+<li><p><strong>out_event_name2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional. The renamed event2 in the returned TimeSeries.
+Use None to use event_name2. Default is ‘_’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>

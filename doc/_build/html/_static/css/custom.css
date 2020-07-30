@@ -1,17 +1,17 @@
 /* Main style for API */
 
 dl.py.method {
-	margin-top: 100px; 
+	margin-top: 100px;
 	border-top-style: solid;
 }
 
 dl.py.function {
-	margin-top: 100px; 
+	margin-top: 100px;
 	border-top-style: solid;
 }
 
 dl.py.class {
-	margin-top: 100px; 
+	margin-top: 100px;
 	border-top-style: solid;
 }
 
@@ -19,6 +19,11 @@ code.sig-prename {
 	background: none;
 }
 
+code.sig-name {
+	font-size: 110%;
+	font-weight: bold;
+	background: none;
+}
 
 /* Autosummary in API */
 table.docutils {

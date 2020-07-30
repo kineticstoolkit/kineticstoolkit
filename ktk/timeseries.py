@@ -57,7 +57,7 @@ def dataframe_to_dict_of_arrays(
 
     Returns
     -------
-    dict of ndarrays.
+    Dict[str, np.ndarray]
 
 
     Examples

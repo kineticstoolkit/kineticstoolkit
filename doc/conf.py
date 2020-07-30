@@ -37,11 +37,14 @@ extensions = [
 	'sphinx.ext.napoleon',
 	'sphinx_autodoc_typehints',
 	'autodocsumm',
+    'nbsphinx',
 ]
 
 autodoc_default_options = {
     'autosummary': True,
 }
+
+nbsphinx_execute = 'never'
 
 
 # Napoleon settings
