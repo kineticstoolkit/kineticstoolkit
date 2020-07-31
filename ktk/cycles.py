@@ -31,51 +31,83 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-import ktk  # for doctests
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
-from typing import Sequence, Optional, List, Dict
+import warnings
+from typing import Sequence, Optional, List, Dict, Tuple
 
 
-def find_cycles(ts: TimeSeries,
-                data_key: str, /,
-                event_names: Sequence[str],
-                thresholds: Sequence[float],
-                minimum_length: float = 0,
-                minimum_height: float = 0) -> TimeSeries:
+def detect_cycles(ts: TimeSeries,
+                  data_key: str, /,
+                  event_name1: str,
+                  event_name2: str,
+                  raising_threshold: float,
+                  falling_threshold: float, *,
+                  min_length1: float = 0,
+                  min_length2: float = 0,
+                  target_height1: Optional[float] = None,
+                  target_height2: Optional[float] = None,
+                  ) -> TimeSeries:
     """
-    Find cycles in a TimeSeries based on a dual threshold approach.
+    Detect cycles in a TimeSeries based on a dual threshold approach.
 
     Warning
     -------
     This function is currently experimental and may change signature and
     behaviour in the future.
 
+
+    This function detects biphasic cycles and identifies the transitions as
+    new events in the output TimeSeries. These new events are named:
+
+        - `event_name1`: corresponds to the start of phase 1
+        - `event_name2`: corresponds to the start of phase 2
+        - '_': corresponds to the end of the cycle. Apart from the last cycle,
+          this always coincides with the start of the next phase 1.
+
     Parameters
     ----------
     ts
         TimeSeries to analyze.
     data_key
-        Name of the data key to analyze in the TimeSeries.
-    event_names : tuple of 2 strings
-        Name of the events that correspond to the start and end of the
-        first phase.
-    thresholds : tuple of 2 floats
-        Thresholds that define the start and end of first phase. The first
-        threshold is crossed while rising, and the second threshold is crossed
-        while falling.
-    minimum_length
-        Optional. Minimal time of first phase. Cycles with first phase lasting
-        less than minimum_length are rejected.
-    minimum_height
-        Optional. Minimum value the signal must reach in first phase. Cycles
-        with first phase not reaching minimum_height are rejected.
+        Name of the data key to analyze in the TimeSeries. This signal must be
+        high during phase 1, and low during phase 2. For example, one could
+        use the absolute ground reaction force to detect stance (phase 1) and
+        swing (phase 2).
+    event_name1
+        Name of the events in the output TimeSeries that corresponds to the
+        start of phase 1.
+    event_name2
+        Name of the events in the output TimeSeries that corresponds to the
+        start of phase 2.
+    raising_threshold:
+        Value to cross upward to register the start of phase 1.
+    falling_threshold:
+        Value to cross downward to register the start of phase 2.
+    min_length1
+        Optional. Minimal time of phase 1 in seconds.
+    min_length2
+        Optional. Minimal time of phase 2 in seconds.
+    target_height1
+        Optional. A value that the signal must cross in phase 1. Use None for
+        no target height.
+    target_height2
+        Optional. A value that the signal must cross in phase 2. Use None for
+        no target height.
 
     Returns
     -------
     TimeSeries
-        A copy of ts with the added events.
+        A copy of ts with the events added.
 
     """
+    # Convert optional Nones to floats
+    if target_height1 is None:
+        target_height1 = -np.Inf
+    if target_height2 is None:
+        target_height2 = np.Inf
+
+
+
     # Find the pushes
     time = ts.time
     data = ts.data[data_key]
@@ -88,15 +120,17 @@ def find_cycles(ts: TimeSeries,
 
     for i in range(time.shape[0]):
 
-        if (is_first_part_of_cycle is True) and (data[i] < thresholds[1]):
+        if (is_first_part_of_cycle is True and
+                data[i] < falling_threshold):
 
             is_first_part_of_cycle = False
-            events.append(TimeSeriesEvent(time[i], event_names[1]))
+            events.append(TimeSeriesEvent(time[i], event_name2))
 
-        elif (is_first_part_of_cycle is False) and (data[i] > thresholds[0]):
+        elif (is_first_part_of_cycle is False and
+              data[i] > raising_threshold):
 
             is_first_part_of_cycle = True
-            events.append(TimeSeriesEvent(time[i], event_names[0]))
+            events.append(TimeSeriesEvent(time[i], event_name1))
 
     # The first event in list was only to initiate the list. We must remove it.
     events = events[1:]
@@ -107,14 +141,23 @@ def find_cycles(ts: TimeSeries,
     for i_event in range(0, len(events) - 1, 2):
         time1 = events[i_event].time
         time2 = events[i_event + 1].time
-        sub_ts = ts.get_ts_between_times(time1, time2)
+        try:
+            time3 = events[i_event + 2].time
+        except IndexError:
+            time3 = np.Inf
 
-        if (np.max(sub_ts.data[data_key]) >= minimum_height and
-                time2 - time1 >= minimum_length):
+        sub_ts1 = ts.get_ts_between_times(time1, time2)
+        sub_ts2 = ts.get_ts_between_times(time1, time3)
 
+        if (time2 - time1 >= min_length1 and
+                time3 - time2 >= min_length2 and
+                np.max(sub_ts1.data[data_key]) >= target_height1 and
+                np.min(sub_ts2.data[data_key]) <= target_height2):
             # Save it.
             valid_events.append(events[i_event])
             valid_events.append(events[i_event + 1])
+            if not np.isinf(time3):
+                valid_events.append(TimeSeriesEvent(time3, '_'))
 
     # Form the output timeseries
     tsout = ts.copy()
@@ -126,12 +169,10 @@ def find_cycles(ts: TimeSeries,
 
 
 def time_normalize(
-        ts: TimeSeries,
+        ts: TimeSeries, /,
         event_name1: str,
-        event_name2: str,
-        n_points: int = 100, *,
-        out_event_name1: Optional[str] = None,
-        out_event_name2: Optional[str] = '_',
+        event_name2: str, *,
+        n_points: int = 100,
         ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -142,10 +183,11 @@ def time_normalize(
     cycles, a time normalization with 100 points will give a TimeSeries
     of length 300. The TimeSeries' events are also time-normalized.
 
-    By default, event_name1 and event_name2 are also present in the resulting
-    TimeSeries, but event_name2 is renamed to '_'. This is to ensure that the
-    event names are not duplicated (which would be the case, for example if
-    we normalize from event 'heel_strike' to next event 'heel_strike').
+    To time-normalize a cycle between two events of the same name, use '_' for
+    event_name2. For example, to time-normalize a TimeSeries between each
+    heel strike and the next heel strike:
+
+        ktk.cycles.time_normalize(ts, 'heelstrike', '_')
 
     Parameters
     ----------
@@ -157,12 +199,6 @@ def time_normalize(
         The event name that correspond to the end of a cycle.
     n_points
         Optional. The number of points of the output TimeSeries.
-    out_event_name1
-        Optional. The renamed event1 in the returned TimeSeries.
-        Use None to use event_name1. Default is None.
-    out_event_name2
-        Optional. The renamed event2 in the returned TimeSeries.
-        Use None to use event_name2. Default is '_'.
 
     Returns
     -------
@@ -173,35 +209,36 @@ def time_normalize(
     if len(ts.events) < 2:
         raise(ValueError('No cycle can be defined from these event names.'))
 
-    n_cycles = np.min([
-            np.sum(np.array(ts.events)[:, 1] == event_name1),
-            np.sum(np.array(ts.events)[:, 1] == event_name2)])
     if event_name1 == event_name2:
-        n_cycles -= 1
-        event_offset = 1
-    else:
-        event_offset = 0
+        warnings.warn("It is better practice to use '_' as the second event "
+                      "name instead of repeating the same name twice.")
+        event_name2 = '_'
 
-    if n_cycles <= 0:
-        raise(ValueError('No cycle can be defined from these event names.'))
+    i_cycle = 0
 
     # Initialize the destination TimeSeries
     dest_ts = ts.copy()
     dest_ts.events = []
-
-    dest_ts.time = np.arange(n_points * n_cycles)
     dest_ts.time_info['Unit'] = '%'
 
-    for key in ts.data.keys():
-        new_shape = list(ts.data[key].shape)
-        new_shape[0] = n_points * n_cycles
-        dest_ts.data[key] = np.empty(new_shape)
+    dest_data = {}  # type: Dict[str, List[np.ndarray]]
+    dest_data_shape = {}  #type: Dict[str, Tuple[int]]
+    dest_time = []  # type: List[np.ndarray]
 
-    for i_cycle in range(n_cycles):
+    while True:
         # Get the TimeSeries for this cycle
         subts = ts.get_ts_between_events(event_name1, event_name2,
-                                         i_cycle, i_cycle + event_offset,
+                                         i_cycle, i_cycle,
                                          inclusive=True)
+
+        if subts.time.shape[0] == 0:  # Empty TimeSeries, retry
+            subts = ts.get_ts_between_events(event_name1, event_name1,
+                                             i_cycle, i_cycle + 1,
+                                             inclusive=True)
+
+        if subts.time.shape[0] == 0:  # We are done. Quit the loop.
+            break
+
         subts.trim_events()
         subts.sort_events()
 
@@ -214,22 +251,24 @@ def time_normalize(
             else:
                 other_events.append(event)
 
-        # Rename the start and end events if required
-        if out_event_name1 is not None:
-            start_end_events[0].name = out_event_name1
-        if out_event_name2 is not None:
-            start_end_events[1].name = out_event_name2
-
-        original_start = start_end_events[0].time
-        original_stop = start_end_events[1].time
+        original_start = subts.events[0].time
+        original_stop = subts.events[-1].time
 
         # Resample this TimeSeries on n_points
-        subts.resample(
-            np.linspace(subts.time[0], subts.time[-1], n_points))
+        try:
+            subts.resample(
+                np.linspace(subts.time[0], subts.time[-1], n_points))
+        except ValueError:
+            subts.resample(
+                np.linspace(subts.time[0], subts.time[-1], n_points),
+                fill_value='extrapolate')
+            warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
         # Resample the events and add them to the
         # destination TimeSeries
-        for i_event, event in enumerate(start_end_events + other_events):
+        dest_ts.add_event(i_cycle * n_points, event_name1)
+        dest_ts.add_event((i_cycle + 1) * n_points - 1, '_')
+        for i_event, event in enumerate(other_events):
 
             # Resample
             new_time = ((event.time - original_start) /
@@ -237,20 +276,36 @@ def time_normalize(
                         (n_points - 1)) + i_cycle * n_points
             dest_ts.add_event(new_time, event.name)
 
-        # Add this cycle to the destination TimeSeries
-        for key in subts.data.keys():
-            dest_ts.data[key][n_points * i_cycle:n_points * (i_cycle+1)] = \
-                    subts.data[key]
+        # Add this cycle to dest_time and dest_data
+        for key in subts.data:
+            if key not in dest_data:
+                dest_data[key] = []
+                dest_data_shape[key] = ts.data[key].shape
+            dest_data[key].append(subts.data[key])
+
+        i_cycle += 1
+
+    n_cycles = i_cycle
+
+    # Put back dest_time and dest_data in dest_ts
+    dest_ts.time = np.arange(n_cycles * n_points)
+    for key in ts.data:
+        # Stack the data into a [cycle, percent, values] shape
+        temp = np.array(dest_data[key])
+        # Reshape to put all cycles end to end
+        new_shape = list(dest_data_shape[key])
+        new_shape[0] = n_cycles * n_points
+        dest_ts.data[key] = np.reshape(temp, new_shape)
 
     dest_ts.sort_events()
     return dest_ts
 
 
-def get_reshaped_data(
-        ts: TimeSeries,
+def stack_normalized_data(
+        ts: TimeSeries, /,
         n_points: int = 100) -> Dict[str, np.ndarray]:
     """
-    Get reshaped data from a time-normalized TimeSeries.
+    Stack time-normalized TimeSeries's data into a dict of arrays.
 
     Warning
     -------
@@ -258,21 +313,20 @@ def get_reshaped_data(
     behaviour in the future.
 
     This methods returns the data of a time-normalized TimeSeries, reshaped
-    into this form:
-
-    n_cycles x n_points x data_shape
+    to (n_cycles, n_points, ...).
 
     Parameters
     ----------
-    n_points : int
-        The number of points the TimeSeries has been time-normalized on.
-        Default is 100.
+    ts
+        The time-normalized TimeSeries.
+    n_points
+        Optional. The number of points the TimeSeries has been time-normalized
+        on.
 
     Returns
     -------
-    data : dict
-        A dictionary that contains every TimeSeries data keys, expressed into
-        the form n_points x n_cycles x data_shape.
+    Dict[str, np.ndarray]
+
     """
     if np.mod(len(ts.time), n_points) != 0:
         raise(ValueError(
@@ -288,79 +342,95 @@ def get_reshaped_data(
     return data
 
 
-def most_repeatable_cycles(data: np.ndarray, n_cycles: int) -> List[int]:
+def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
 
-    Cycles that include at least one NaN are excluded.
-
-    WARNING:
+    WARNING
+    -------
     This function is currently experimental and may change signature and
     behaviour in the future.
+
+    This function returns an ordered list of the most repeatable to the least
+    repeatable cycles.
+
+    Its algorithm is to recursively discards the cycle than maximizes the
+    root-mean-square error between the cycle and the average of every
+    remaining cycle, until there are only two cycles remaining. The function
+    returns a list that is the reverse order of cycle removal: first the two
+    last cycles, then the last-removed cycle, and so on. If two cycles are as
+    equivalently repeatable, they are returned in order of appearance.
+
+    Note
+    ----
+    Cycles that include at least one NaN are excluded.
+
 
     Parameters
     ----------
     data
-        Data to analyze, in the form of an array of shape (MxN). M corresponds
-        to cycles, and N corresponds to normalized time.
-
-    n_cycles
-        Number of cycles to keep
+        Stacked time-normalized data to analyze, in the shape
+        (n_cycles, n_points).
 
     Returns
     -------
     List[int]
-        List of indexes corresponding to the most repeatable cycles.
+        List of indexes corresponding to the cycles in most to least
+        repeatable order.
 
     Example
     -------
-    We create 8 cycles with:
+    >>> import ktk, numpy as np
+    >>> # Create a data sample with four different cycles, the most different
+    >>> # begin cycle 2 (cos instead of sin), then cycle 0.
+    >>> x = np.arange(0, 10, 0.1)
+    >>> data = np.array([ \
+        [np.sin(x)], \
+        [np.sin(x) + 0.14], \
+        [np.cos(x) + 0.14], \
+        [np.sin(x) + 0.15]])
 
-    - cycle 2 that is different from the others,
-    - cycles 5 and 6 that contain NaNs.
-
-        >>> data = np.array(
-                [[0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-                 [0. ,    0.1,    0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-                 [3. ,    3.1,    3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8, 3.9],
-                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
-                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
-                 [np.nan, np.nan, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
-                 [np.nan, 0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ],
-                 [0.1,    0.2,    0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. ]])
-
-        >>> ktk.cycles.most_repeatable_cycles(data, 5)
-        [0, 1, 3, 4, 7]
+    >>> ktk.cycles.most_repeatable_cycles(data)
+    [1, 3, 0, 2]
 
     """
-
     data = data.copy()
-    cycles = list(range(data.shape[0]))
+    n_cycles = data.shape[0]
+    out_cycles = []  # type: List[int]
 
-    # --- Exclude cycles with nans
-    new_cycles = []
-    for cycle in cycles:
-        if ~np.isnan(np.sum(data[cycle])):
-            new_cycles.append(cycle)
-    cycles = new_cycles
+    # Exclude cycles with nans: put nans for all data of this cycle
+    for i_cycle in range(n_cycles-1, -1, -1):
+        if np.isnan(np.sum(data[i_cycle])):
+            data[i_cycle] = np.nan
+            out_cycles.append(i_cycle)
 
     # --- Iteratively remove the cycle that is the most different from the
     #     mean of the remaining cycles.
-    while len(cycles) > n_cycles:
+    while len(out_cycles) < n_cycles - 2:
 
-        current_mean_cycle = np.mean(data[cycles], axis=0)
+        current_mean_cycle = np.nanmean(data, axis=0)
 
-        rms = np.zeros(len(cycles))
+        rms = np.zeros(n_cycles)
 
-        for i_curve in range(len(cycles)):
+        for i_curve in range(n_cycles-1, -1, -1):
             rms[i_curve] = np.sqrt(np.mean(np.sum(
-                (data[cycles[i_curve]] - current_mean_cycle) ** 2)))
+                (data[i_curve] - current_mean_cycle) ** 2)))
 
-        cycles.pop(np.argmax(rms))
 
-    return cycles
+        i_cycle = np.nanargmax(rms)
+        out_cycles.append(i_cycle)
+        data[i_cycle] = np.nan
+
+    # Find the two remaining cycles
+    set_all = set(range(n_cycles))
+    set_out = set(out_cycles)
+    remain = sorted(list(set_all - set_out))
+    out_cycles.append(remain[1])
+    out_cycles.append(remain[0])
+
+    return out_cycles[-1::-1]
 
 
 if __name__ == "__main__":
     import doctest
-    doctest.testmod()
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

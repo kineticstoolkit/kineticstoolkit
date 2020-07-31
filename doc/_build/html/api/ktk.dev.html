@@ -335,11 +335,11 @@
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.build_site" title="ktk.dev.build_site"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_site</span></code></a>([clean])</p></td>
-<td><p>Build the website using sphinx.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dev.build_tutorials" title="ktk.dev.build_tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_tutorials</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.build_tutorials" title="ktk.dev.build_tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_tutorials</span></code></a>()</p></td>
 <td><p>Build the markdown from notebooks tutorials.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.dev.build_website" title="ktk.dev.build_website"><code class="xref py py-obj docutils literal notranslate"><span class="pre">build_website</span></code></a>([clean])</p></td>
+<td><p>Build the website using sphinx.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.dev.clean" title="ktk.dev.clean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clean</span></code></a>()</p></td>
 <td><p>Delete temporary files that were used by the release process.</p></td>
@@ -365,10 +365,9 @@
 </tbody>
 </table>
 <dl class="py function">
-<dt id="ktk.dev.build_site">
-<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">build_site</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clean</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.build_site" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build the website using sphinx.</p>
-<p>Set clean to True to <cite>make clean</cite> beforehand.</p>
+<dt id="ktk.dev.build_tutorials">
+<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">build_tutorials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.build_tutorials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the markdown from notebooks tutorials.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -376,9 +375,10 @@
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="ktk.dev.build_tutorials">
-<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">build_tutorials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.build_tutorials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Build the markdown from notebooks tutorials.</p>
+<dt id="ktk.dev.build_website">
+<code class="sig-prename descclassname">ktk.dev.</code><code class="sig-name descname">build_website</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">clean</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dev.build_website" title="Permalink to this definition">¶</a></dt>
+<dd><p>Build the website using sphinx.</p>
+<p>Set clean to True to <cite>make clean</cite> beforehand.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>

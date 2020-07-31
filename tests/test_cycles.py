@@ -53,7 +53,7 @@ def test_normalize():
     assert ts1 == ts2
 
     # Samething but with push to next push
-    ts1 = ktk.cycles.time_normalize(ts, 'push', 'push')
+    ts1 = ktk.cycles.time_normalize(ts, 'push', '_')
     assert len(ts1.events) == 12  # No missing events
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
@@ -62,6 +62,23 @@ def test_normalize():
 
     # There should be no nan in ts2
     assert ~ts2.isnan('test').all()
+
+
+def test_most_repeatable_cycles():
+    # Create a TimeSeries with 5 cycles, one of those is different from
+    # the others
+    data = np.array([
+        np.sin(np.arange(0, 10, 0.1)) + 0.00,  # 0 - most diff. 3rd removed
+        np.sin(np.arange(0, 10, 0.1)) + 0.10,  # 1 - 1st of remain. 5th removed
+        np.cos(np.arange(0, 10, 0.1)) + 0.15,  # 2 - cos. 2nd removed
+        np.sin(np.arange(0, 10, 0.1)) + 0.15,  # 3 - with nans. 1st removed
+        np.sin(np.arange(0, 10, 0.1)) + 0.12])  # 4 - 2nd of remn. 4th removed
+    # Put some nans in the fourth cycle
+    data[3, 30] = np.nan
+
+    test = ktk.cycles.most_repeatable_cycles(data)
+
+    assert test == [1, 4, 0, 2, 3]
 
 
 if __name__ == "__main__":

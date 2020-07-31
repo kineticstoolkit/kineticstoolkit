@@ -425,7 +425,7 @@ and ‘Moments’ data keys.</p>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.pushrimkinetics.detect_pushes">
-<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">detect_pushes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">push_threshold</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">recovery_threshold</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">minimum_push_time</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">minimum_push_force</span><span class="o">=</span><span class="default_value">30.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.detect_pushes" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">detect_pushes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">push_threshold</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">recovery_threshold</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">min_push_time</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_push_force</span><span class="o">=</span><span class="default_value">30.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.detect_pushes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect pushes and recoveries automatically.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -435,13 +435,13 @@ and ‘Moments’ data keys.</p>
 newton.</p></li>
 <li><p><strong>recovery_threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The total force under which a recovery phase is triggered,
 in newton.</p></li>
-<li><p><strong>minimum_push_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The minimum time required for a push time, in seconds.
+<li><p><strong>min_push_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The minimum time required for a push time, in seconds.
 Detected pushes that last less than this minimum time are removed from
 the push analysis.</p></li>
-<li><p><strong>minimum_recovery_time</strong> – Optional. The minimum time required for a recovery time, in seconds.
+<li><p><strong>min_recovery_time</strong> – Optional. The minimum time required for a recovery time, in seconds.
 Detected recoveries that last less than this minimum time are removed
 from the push analysis.</p></li>
-<li><p><strong>minimum_push_force</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The minimum total push force in N under which the detected
+<li><p><strong>min_push_force</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The minimum total push force in N under which the detected
 push is discarded. For example, if the user puts their hands on the
 pushrim before starting propelling, this may be detected as a push.
 Using a minimum push force removes these misdetected pushes.</p></li>

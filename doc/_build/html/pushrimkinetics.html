@@ -812,21 +812,24 @@ example:</p>
 TimeSeries with attributes:
              data: &lt;dict with 7 entries&gt;,
         data_info: &lt;dict with 6 entries&gt;,
-           events: &lt;list of 50 items&gt;,
+           events: &lt;list of 75 items&gt;,
              time: &lt;array of shape (7682,)&gt;,
         time_info: &lt;dict with 1 entries&gt;
 </pre></div></div>
 </div>
-<p>We see that the TimeSeries now has 52 events. Let’s see these events on a plot.</p>
+<p>We see that the TimeSeries now has 75 events, which are:</p>
+<ul class="simple">
+<li><p>25 push starts named ‘push’</p></li>
+<li><p>25 recovery starts named ‘recovery’</p></li>
+<li><p>25 cycle ends named ’_’: By convention, this special event always refer to the end of a given cycle.</p></li>
+</ul>
+<p>Let’s see these events on a plot.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span></span><span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -840,19 +843,16 @@ TimeSeries with attributes:
 
 
 <h2 id="Time-normalizing-data">Time-normalizing data<a class="headerlink" href="#Time-normalizing-data" title="Permalink to this headline">¶</a></h2>
-<p>Now, we may be intested in time-normalizing our pushes. For example, if we are interested to find the average progression of the push force. Time-normalizing is not specific to the ktk.pushrimkinetics module, it is in the ktk.cycles module.</p>
-<p>To analyze the push phase, we want to time-normalize each push from the <code class="docutils literal notranslate"><span class="pre">push</span></code> event to the <code class="docutils literal notranslate"><span class="pre">recovery</span></code> event.</p>
+<p>Now, we may be intested in time-normalizing our pushes. For example, if we are interested to find the average progression of the push force.</p>
+<p>Time-normalizing is not specific to the ktk.pushrimkinetics module, it is in the <a class="reference internal" href="api/ktk.cycles.html"><span class="doc">ktk.cycles module</span></a>. See this <a class="reference internal" href="cycles.html"><span class="doc">ktk.cycle’s module tutorial</span></a> for more details.</p>
+<p>To analyze complete cycles, we may time-normalize each cycle from the <code class="docutils literal notranslate"><span class="pre">push</span></code> event to the next <code class="docutils literal notranslate"><span class="pre">push</span></code> event.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span></span><span class="n">normalized_kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'_'</span><span class="p">)</span>
+<span class="n">normalized_kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -863,20 +863,38 @@ TimeSeries with attributes:
 <img alt="_images/pushrimkinetics_22_0.png" src="_images/pushrimkinetics_22_0.png"/>
 </div>
 </div>
-<p>It is now possible to extract each push in a [cycle, percent, component] shape, using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.get_reshaped_data"><span class="std std-ref">ktk.cycles.get_reshaped_data</span></a> method.</p>
+<p>To analyze the push phase, we instead want to time-normalize each push from the <code class="docutils literal notranslate"><span class="pre">push</span></code> event to the <code class="docutils literal notranslate"><span class="pre">recovery</span></code> event.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">get_reshaped_data</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
+<span></span><span class="n">normalized_kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
+<span class="n">normalized_kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pushrimkinetics_24_0.png" src="_images/pushrimkinetics_24_0.png"/>
+</div>
+</div>
+<p>It is now possible to extract each push in a [cycle, percent, component] shape, using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.stack_normalized_data"><span class="std std-ref">ktk.cycles.stack_normalized_data</span></a> method.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">stack_normalized_data</span><span class="p">(</span><span class="n">normalized_kinetics</span><span class="p">)</span>
 
 <span class="n">data</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -894,7 +912,7 @@ TimeSeries with attributes:
 </div>
 <p>Plot the normalized force curves one on top of each other:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -907,7 +925,7 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_26_0.png" src="_images/pushrimkinetics_26_0.png"/>
+<img alt="_images/pushrimkinetics_28_0.png" src="_images/pushrimkinetics_28_0.png"/>
 </div>
 </div>
 <p>For more information on pushrimkinetics, please check the <a class="reference internal" href="api/ktk.pushrimkinetics.html"><span class="doc">API Reference</span></a>.</p>

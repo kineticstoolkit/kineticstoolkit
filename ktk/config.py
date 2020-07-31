@@ -22,8 +22,8 @@ Please edit this file to configure ktk.
 
 In IPython or Spyder:
 
-        >>> import ktk.config
-        >>> edit ktk.config
+    import ktk.config
+    edit ktk.config
 
 Then restart the IPython kernel to apply these changes.
 

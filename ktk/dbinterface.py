@@ -724,3 +724,9 @@ class DBInterface():
             self.refresh()
 
         return out
+
+
+if __name__ == "__main__":
+    import doctest
+    import ktk
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

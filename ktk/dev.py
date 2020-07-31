@@ -67,15 +67,16 @@ def run_doc_tests() -> None:
     """Run all doc tests."""
     print('Running doc tests...')
     cwd = os.getcwd()
-    os.chdir(ktk.config.root_folder + '/tests')
+    os.chdir(ktk.config.root_folder + '/ktk')
     for file in os.listdir():
         if file.endswith('.py'):
-            print(file)
             try:
                 module = eval('ktk.' + file.split('.py')[0])
-                doctest.testmod(module)
+                doctest.testmod(module,
+                                optionflags=doctest.NORMALIZE_WHITESPACE)
+                print(f"Doctests passed in file {file}.")
             except Exception:
-                pass
+                print(f'Could not run the doctest in file {file}.')
     os.chdir(cwd)
 
 def _generate_tutorial(file: str) -> None:
@@ -100,7 +101,7 @@ def build_tutorials() -> None:
     os.chdir(cwd)
     print(f'Done in {time.time() - now} seconds.')
 
-def build_site(clean: bool = False) -> None:
+def build_website(clean: bool = False) -> None:
     """
     Build the website using sphinx.
 
@@ -178,4 +179,4 @@ def release() -> None:
     run_static_type_checker()
     run_unit_tests()
     build_tutorials()
-    build_site(True)
+    build_website(True)

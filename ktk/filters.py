@@ -266,12 +266,12 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
 
     >>> # and also on n-dimension data
-    >>> ts.data['data2'] = np.array(
-            [[0., 10.],
-             [0., 11.],
-             [1., 11.],
-             [1., 20.],
-             [2., 14.],
+    >>> ts.data['data2'] = np.array( \
+            [[0., 10.], \
+             [0., 11.], \
+             [1., 11.], \
+             [1., 20.], \
+             [2., 14.], \
              [2., 15.]])
 
     >>> # Filter

@@ -691,7 +691,7 @@ class TimeSeries():
         >>> ts.events
         [[10.8, 'event2'], [2.3, 'event2']]
 
-        >>> ts.remove_event('event2', event_occurrence=1)
+        >>> ts.remove_event('event2', 1)
         >>> ts.events
         [[2.3, 'event2']]
 
@@ -788,7 +788,7 @@ class TimeSeries():
         self.events = ts.events  # Add the events to self.
         return True
 
-    def sort_events(self, unique: bool = True, /) -> None:
+    def sort_events(self, *, unique: bool = True) -> None:
         """
         Sorts the TimeSeries' events from the earliest to the latest.
 
@@ -930,8 +930,8 @@ class TimeSeries():
             if event_names:
                 for event in ts.events:
                     plt.text(event.time, max_y, event.name,
-                            rotation='vertical',
-                            horizontalalignment='center')
+                             rotation='vertical',
+                             horizontalalignment='center')
 
     def get_index_at_time(self, time: float, /) -> int:
         """
@@ -2064,4 +2064,6 @@ class TimeSeries():
 
 if __name__ == "__main__":
     import doctest
+    import ktk
+    import numpy as np
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

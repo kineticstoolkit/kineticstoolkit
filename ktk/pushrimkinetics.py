@@ -520,8 +520,8 @@ def detect_pushes(
         tsin: TimeSeries, /, *,
         push_threshold: float = 5.0,
         recovery_threshold: float = 2.0,
-        minimum_push_time: float = 0.1,
-        minimum_push_force: float = 30.0) -> TimeSeries:
+        min_push_time: float = 0.1,
+        min_push_force: float = 30.0) -> TimeSeries:
     """
     Detect pushes and recoveries automatically.
 
@@ -535,15 +535,15 @@ def detect_pushes(
     recovery_threshold
         Optional. The total force under which a recovery phase is triggered,
         in newton.
-    minimum_push_time
+    min_push_time
         Optional. The minimum time required for a push time, in seconds.
         Detected pushes that last less than this minimum time are removed from
         the push analysis.
-    minimum_recovery_time
+    min_recovery_time
         Optional. The minimum time required for a recovery time, in seconds.
         Detected recoveries that last less than this minimum time are removed
         from the push analysis.
-    minimum_push_force
+    min_push_force
         Optional. The minimum total push force in N under which the detected
         push is discarded. For example, if the user puts their hands on the
         pushrim before starting propelling, this may be detected as a push.
@@ -570,12 +570,14 @@ def detect_pushes(
             ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
 
     # Find the pushes
-    ts_force = ktk.cycles.find_cycles(
+    ts_force = ktk.cycles.detect_cycles(
         ts_force, 'Ftot',
-        event_names=('push', 'recovery'),
-        thresholds=(push_threshold, recovery_threshold),
-        minimum_length=minimum_push_time,
-        minimum_height=minimum_push_force)
+        event_name1='push',
+        event_name2='recovery',
+        raising_threshold=push_threshold,
+        falling_threshold=recovery_threshold,
+        min_length1=min_push_time,
+        target_height1=min_push_force)
 
     # Form the output timeseries
     tsout = tsin.copy()
