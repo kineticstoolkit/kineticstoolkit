@@ -1,0 +1,9 @@
+This product was developped by Félix Chénier (https://felixchenier.uqam.ca).
+
+It includes external code developped by other authors:
+
+    ktk/external/icp.py
+    Python implementation of m-dimensional Iterative Closest Point method.
+    Author: Clay Flannigan
+    Website: https://github.com/ClayFlannigan/icp
+    License: Apache 2.0
