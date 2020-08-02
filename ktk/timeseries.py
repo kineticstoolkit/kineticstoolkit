@@ -1991,10 +1991,6 @@ class TimeSeries():
         """
         Merge another TimeSeries into the current TimeSeries.
 
-        Warning
-        -------
-        This function is experimental and may change signature.
-
         This method merges a TimeSeries into the current TimeSeries, copying
         the data, data_info and events.
 
@@ -2008,11 +2004,11 @@ class TimeSeries():
         resample
             Optional. Set to True to resample the source TimeSeries, in case
             the time vectors are not matched. If the time vectors are not
-            atched and resample is False, an exception is raised.
+            matched and resample is False, an exception is raised.
         overwrite
             Optional. If duplicates are found and overwrite is True, then the
             source (ts) overwrites the destination. Otherwise (overwrite is
-            False), the duplicated data is ignored.
+            False), the duplicate data in ts is ignored.
 
         """
         ts = ts.copy()

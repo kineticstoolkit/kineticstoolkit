@@ -35,6 +35,7 @@ extensions = [
 	'sphinx.ext.autosummary',
 	'sphinx.ext.autodoc',
 	'sphinx.ext.napoleon',
+    'matplotlib.sphinxext.plot_directive',
 	'sphinx_autodoc_typehints',
 	'autodocsumm',
     'nbsphinx',
@@ -59,6 +60,10 @@ napoleon_use_admonition_for_references = True
 napoleon_use_ivar = False
 napoleon_use_param = True
 napoleon_use_rtype = True
+
+# Matplotlib settings
+plot_html_show_source_link = False
+plot_html_show_formats = False
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

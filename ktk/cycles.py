@@ -34,6 +34,7 @@ import numpy as np
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
 import warnings
 from typing import Sequence, Optional, List, Dict, Tuple
+import matplotlib.pyplot as plt  # For doc
 
 
 def detect_cycles(ts: TimeSeries,
@@ -59,9 +60,12 @@ def detect_cycles(ts: TimeSeries,
     This function detects biphasic cycles and identifies the transitions as
     new events in the output TimeSeries. These new events are named:
 
-        - `event_name1`: corresponds to the start of phase 1
-        - `event_name2`: corresponds to the start of phase 2
-        - '_': corresponds to the end of the cycle. Apart from the last cycle,
+        - `event_name1`:
+          corresponds to the start of phase 1
+        - `event_name2`:
+          corresponds to the start of phase 2
+        - '_':
+          corresponds to the end of the cycle. Apart from the last cycle,
           this always coincides with the start of the next phase 1.
 
     Parameters
@@ -305,15 +309,17 @@ def stack_normalized_data(
         ts: TimeSeries, /,
         n_points: int = 100) -> Dict[str, np.ndarray]:
     """
-    Stack time-normalized TimeSeries's data into a dict of arrays.
+    Stack time-normalized TimeSeries' data into a dict of arrays.
 
     Warning
     -------
     This function is currently experimental and may change signature and
     behaviour in the future.
 
-    This methods returns the data of a time-normalized TimeSeries, reshaped
-    to (n_cycles, n_points, ...).
+    This methods returns the data of a time-normalized TimeSeries as a dict
+    where each key corresponds to a TimeSeries' data, and contains a numpy
+    array where the first dimension if the cycle, the second dimension is the
+    percentage of cycle, and the other dimensions are the data itself.
 
     Parameters
     ----------
@@ -326,6 +332,10 @@ def stack_normalized_data(
     Returns
     -------
     Dict[str, np.ndarray]
+
+    Example
+    -------
+    >>> # Create a time-normalized TimeSeries
 
     """
     if np.mod(len(ts.time), n_points) != 0:
@@ -342,6 +352,95 @@ def stack_normalized_data(
     return data
 
 
+def stack_normalized_events(
+        ts: TimeSeries, /,
+        n_points: int = 100) -> Dict[str, np.ndarray]:
+    """
+    Stack time-normalized TimeSeries' events into a dict of arrays.
+
+    Warning
+    -------
+    This function is currently experimental and may change signature and
+    behaviour in the future.
+
+
+    This methods returns the a dictionary where each key corresponds to an
+    event name, and contains a 2d numpy array that contains the event's
+    normalized time, with the first dimension being the cycle and the second
+    dimension being the occurrence of this event during this cycle.
+
+    Parameters
+    ----------
+    ts
+        The time-normalized TimeSeries.
+    n_points
+        Optional. The number of points the TimeSeries has been time-normalized
+        on.
+
+    Returns
+    -------
+    Dict[str, np.ndarray]
+
+    Example
+    -------
+    >>> # Create a TimeSeries with different time-normalized events
+    >>> ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
+    >>> ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
+    >>> ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
+    >>> ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
+    >>> ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
+
+    >>> # Stack these events
+    >>> events = ktk.cycles.stack_normalized_events(ts)
+    >>> events['event1']
+    array([[ 9., nan],
+           [10., nan],
+           [nan, nan],
+           [12., 82.]])
+
+    See also
+    --------
+    ktk.cycles.stack_normalized_data(),
+    ktk.cycles.unstack_normalized_data()
+
+    """
+    ts = ts.copy()
+    ts.sort_events()
+
+    n_cycles = int(ts.time.shape[0] / n_points)
+    out = {}  # type: Dict[str, np.ndarray]
+
+    # Count the number of occurence of every event in every cycle
+    n_occurrences = {}  # type: Dict[str, np.ndarray]
+    for event in ts.events:
+        if event.name not in n_occurrences:
+            n_occurrences[event.name] = np.zeros(n_cycles)
+        event_cycle = int(event.time / n_points)
+        n_occurrences[event.name][event_cycle] += 1
+
+    # Initialize the output
+    for event_name in n_occurrences:
+        out[event_name] = (np.nan *
+                           np.ones(
+                               (n_cycles,
+                                int(n_occurrences[event_name][event_cycle]))))
+
+    # Fill the output
+    for event in ts.events:
+        event_cycle = int(event.time / n_points)
+
+        # Find the occurrence
+        occurrence = 0
+        while not np.isnan(out[event.name][event_cycle, occurrence]):
+            occurrence += 1
+
+        # Fill this occurrence
+        out[event.name][event_cycle, occurrence] = np.mod(
+            event.time, n_points)
+
+    return out
+
+
 def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
@@ -350,6 +449,7 @@ def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     -------
     This function is currently experimental and may change signature and
     behaviour in the future.
+
 
     This function returns an ordered list of the most repeatable to the least
     repeatable cycles.
@@ -384,11 +484,19 @@ def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     >>> # Create a data sample with four different cycles, the most different
     >>> # begin cycle 2 (cos instead of sin), then cycle 0.
     >>> x = np.arange(0, 10, 0.1)
-    >>> data = np.array([ \
-        [np.sin(x)], \
+    >>> data = np.array([[np.sin(x)],
         [np.sin(x) + 0.14], \
         [np.cos(x) + 0.14], \
         [np.sin(x) + 0.15]])
+
+    .. plot::
+        :format: doctest
+
+        >>> # Plot these data
+        for cycle in range(4):
+            plt.plot(data, label=f"Cycle {cycle}")
+        plt.legend()
+        plt.show()
 
     >>> ktk.cycles.most_repeatable_cycles(data)
     [1, 3, 0, 2]
