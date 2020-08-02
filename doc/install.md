@@ -20,7 +20,7 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
 
     conda activate ktk
 
-    conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn ezc3d
+    conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn pyqt ezc3d
 
 Additional dependencies for the development version:
 
