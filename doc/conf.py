@@ -82,7 +82,7 @@ html_theme = 'sphinx_material'
 html_theme_options = {
 
     # Set the name of the project to appear in the navigation.
-    'nav_title': 'Kinetics Toolkit',
+    'nav_title': 'Kinetics Toolkit - Development version',
 
     # Specify a base_url used to generate sitemap.xml. If not
     # specified, then no sitemap will be built.

@@ -43,8 +43,12 @@ using a comprehensive set of unit tests and doc tests, and currently includes:
 
 - `player.Player` : a class that allows visualizing 3d markers using a simple
   graphical user interface.
+  
+- `filters` : a module that wraps some filters from scipy to be applied directly on TimeSeries.
 
-- and some helper functions.
+- `save` and `load` : two functions to save and load results to/from JSON-based `ktk.zip` files.
+
+- and other helper functions.
 
 Please be warned that this is still mostly experimental software. If you are
 using ktk or are planning to be, you are warmly invited to contact me, first to
@@ -52,6 +56,10 @@ say Hello :-), and so that I can warn you before doing major, possibly breaking
 changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however ask your questions_ and if I
 can answer, I'll do.
+
+
+Development version
+-------------------
 
 While the development version is also open source, it is developed in parallel
 with my research projects following the needs of the moment, and is therefore
@@ -99,6 +107,6 @@ Site map
     cycles
     dbinterface
     release_notes
+    Stable version <https://felixchenier.uqam.ca/kineticstoolkit>
     api_reference
-
 
