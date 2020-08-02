@@ -384,7 +384,7 @@ def load(filename: str) -> Any:
 
     # NOTE: THIS FUNCTION CAN ALSO LOAD MAT FILES, BUT THIS IS A TRANSITIONAL
     # FEATURE FOR MY LAB'S MIGRATION FROM MATLAB TO PYTHON. PLEASE DO NOT
-    # RELY ON THIS FEATURE AS IT COULD BE REMOVED SOON.
+    # RELY ON THIS UNDOCUMENTED FEATURE BECAUSE IT WILL BE REMOVED SOON.
     # Check hdf5storage for a nice alternative.
     if filename is None:
         raise ValueError('filename is empty.')
@@ -403,7 +403,7 @@ def load(filename: str) -> Any:
 
 def _loadmat(filename):
     """
-    Load a Matlab's MAT file.
+    Deprecated. Load a Matlab's MAT file.
 
     Parameters
     ----------
@@ -437,7 +437,7 @@ def _loadmat(filename):
 
 def _convert_cell_arrays_to_lists(the_input):
     """
-    Convert cell arrays to lists.
+    Deprecated. Convert cell arrays to lists.
 
     This function recursively goes into the_input and checks for dicts that
     contains a 'OriginalClass' == 'cell' field. These dicts are then converted
@@ -499,7 +499,7 @@ def _convert_cell_arrays_to_lists(the_input):
 
 def _convert_to_timeseries(the_input):
     """
-    Convert dicts of Matlab timeseries to KTK TimeSeries.
+    Deprecated. Convert dicts of Matlab timeseries to KTK TimeSeries.
 
     This function recursively goes into the_input and checks for dicts that
     result from obvious Matlab's structures of timeseries. These structures are
@@ -579,7 +579,7 @@ def _convert_to_timeseries(the_input):
 
 
 def _recursive_matstruct_to_dict(variable):
-    """Recursively converts Mat-objects in dicts or arrays to nested dicts."""
+    """Deprecated. Recursively converts Mat-objects in dicts or arrays to nested dicts."""
     if isinstance(variable, spio.matlab.mio5_params.mat_struct):
         variable = _todict(variable)
         variable = _recursive_matstruct_to_dict(variable)
@@ -593,7 +593,7 @@ def _recursive_matstruct_to_dict(variable):
 
 
 def _todict(variable):
-    """Construct dicts from Mat-objects."""
+    """Deprecated. Construct dicts from Mat-objects."""
     dict = {}
     for strg in variable._fieldnames:
         elem = variable.__dict__[strg]

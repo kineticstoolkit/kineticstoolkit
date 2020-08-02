@@ -236,13 +236,6 @@
     <li class="md-nav__item">
     
     
-      <a href="geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="filters.html" class="md-nav__link">Filters</a>
       
     
@@ -257,35 +250,14 @@
     <li class="md-nav__item">
     
     
-      <a href="pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="cycles.html" class="md-nav__link">Cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="http://felixchenier.uqam.ca/ktk_develop" class="md-nav__link">Development version</a>
       
     
     </li>
@@ -307,6 +279,8 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#example" class="md-nav__link">Example</a>
         </li>
+        <li class="md-nav__item"><a href="#development-version" class="md-nav__link">Development version</a>
+        </li>
         <li class="md-nav__item"><a href="#credits" class="md-nav__link">Credits</a>
         </li>
         <li class="md-nav__item"><a href="#site-map" class="md-nav__link">Site map</a>
@@ -324,11 +298,6 @@
             
   
 <h1 id="index--page-root">Kinetics Toolkit<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is the website for the development version. Switch to the <a class="reference external" href="http://felixchenier.uqam.ca/kineticstoolkit">stable</a>
-version.</p>
-</div>
 <p>Kinetics Toolkit (ktk) is an open-source, pure-python biomechanical library
 developed by Professor Félix Chénier at Université du Québec à Montréal,
 Canada. It is a package of integrated classes and functions that aims to
@@ -368,9 +337,13 @@ say Hello :-), and so that I can warn you before doing major, possibly breaking
 changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however ask your <a class="reference external" href="mailto:chenier.felix%40uqam.ca">questions</a> and if I
 can answer, I’ll do.</p>
-<p>While the development version is also open source, it is developed in parallel
-with my research projects following the needs of the moment, and is therefore
-well less settled, tested and stable.</p>
+
+
+<h2 id="development-version">Development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
+<p>You can also switch to the <a class="reference internal" href="#development-version">development version</a>. This version is also open source,
+and is much more featured than the stable version. However, it is developed in parallel
+with my research projects following the needs of the moment and is therefore
+well less settled, less tested and less stable.</p>
 
 
 <h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
@@ -437,15 +410,6 @@ python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-.ktk.zip-in-Matlab">Loading a .ktk.zip in Matlab</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Array-convention">Array convention</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-rotation-matrices">Creating series of rotation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-reference-frames">Creating series of reference frames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-coordinates">Calculating local coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-global-coordinates">Calculating global coordinates</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html#Butterworth-filter">Butterworth filter</a></li>
@@ -454,44 +418,6 @@ python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Visualizing-the-markers">Visualizing the markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Reconstructing-kinematics">Reconstructing kinematics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="kinematics.html#Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="kinematics.html#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Processing-an-experimental-trial">Processing an experimental trial</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Pushrim Kinetics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Read-data-from-file">Read data from file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Calculate-forces-and-moments">Calculate forces and moments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Removing-sinusoids-in-forces-and-moments">Removing sinusoids in forces and moments</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Calculate-velocity-and-power">Calculate velocity and power</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Detecting-pushes">Detecting pushes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Time-normalizing-data">Time-normalizing data</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Loading-sample-data">Loading sample data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-hand">Calculate the force and moments at the hand</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="cycles.html">Cycles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Detecting-cycles">Detecting cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Time-normalizing-cycles">Time-normalizing cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Combining-the-cycles">Combining the cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Finding-the-most-repeatable-cycles">Finding the most repeatable cycles</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Connecting-to-a-BIOMEC-project">Connecting to a BIOMEC project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Navigating-in-the-project">Navigating in the project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Saving-data-to-a-BIOMEC-referenced-file">Saving data to a BIOMEC referenced file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Loading-data-from-a-BIOMEC-referenced-file">Loading data from a BIOMEC referenced file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Dealing-with-external-software">Dealing with external software</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Including-information-in-file-names">Including information in file names</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
@@ -499,6 +425,7 @@ python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#modules">Modules</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="http://felixchenier.uqam.ca/ktk_develop">Development version</a></li>
 </ul>
 </div>
 

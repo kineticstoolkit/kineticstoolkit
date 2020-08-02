@@ -46,9 +46,6 @@ directory.append('terminal')
 directory.append('update')
 directory.append('tutorials')
 
-from ktk.dbinterface import DBInterface
-directory.append('DBInterface')
-
 from ktk.player import Player
 directory.append('Player')
 
@@ -62,23 +59,8 @@ directory.append('config')
 from ktk import filters
 directory.append('filters')
 
-from ktk import geometry
-directory.append('geometry')
-
 from ktk import kinematics
 directory.append('kinematics')
-
-from ktk import pushrimkinetics
-directory.append('pushrimkinetics')
-
-from ktk import inversedynamics
-directory.append('inversedynamics')
-
-from ktk import cycles
-directory.append('cycles')
-
-from ktk import emg
-directory.append('emg')
 
 from ktk import _repr
 from ktk import gui

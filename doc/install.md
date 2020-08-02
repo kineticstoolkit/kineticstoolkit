@@ -10,7 +10,7 @@ Although ktk is distributed via `pip`, I strongly recommend using a conda enviro
 
 I suggest Miniconda as it is way smaller than the whole Anaconda suite.
 
-[Miniconda website](https://docs.conda.io/en/latest/miniconda.html) - Select the Python 3.7 version that corresponds to your system.
+[Miniconda website](https://docs.conda.io/en/latest/miniconda.html) - Select the Python 3.8 version that corresponds to your system.
 
 ### Create a virtual environment and install the external dependencies ###
 

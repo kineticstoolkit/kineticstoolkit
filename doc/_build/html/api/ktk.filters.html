@@ -59,8 +59,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.geometry module" href="ktk.geometry.html" />
-    <link rel="prev" title="ktk.emg module" href="ktk.emg.html" />
+    <link rel="next" title="ktk.gui module" href="ktk.gui.html" />
+    <link rel="prev" title="ktk.dev module" href="ktk.dev.html" />
 
 
 
@@ -246,13 +246,6 @@
     <li class="md-nav__item">
     
     
-      <a href="../geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../filters.html" class="md-nav__link">Filters</a>
       
     
@@ -267,35 +260,14 @@
     <li class="md-nav__item">
     
     
-      <a href="../pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../cycles.html" class="md-nav__link">Cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../api_reference.html" class="md-nav__link">API Reference</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="http://felixchenier.uqam.ca/ktk_develop" class="md-nav__link">Development version</a>
       
     
     </li>
@@ -334,12 +306,6 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.filters.butter" title="ktk.filters.butter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">butter</span></code></a>(tsin, /, fc, *[, order, btype, filtfilt])</p></td>
 <td><p>Apply a Butterworth filter to a TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.filters.deriv" title="ktk.filters.deriv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deriv</span></code></a>(ts, /[, n])</p></td>
-<td><p>Calculate the nth numerical derivative.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.filters.median" title="ktk.filters.median"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median</span></code></a>(ts, /[, window_length])</p></td>
-<td><p>Calculate a moving median.</p></td>
-</tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ktk.filters.savgol" title="ktk.filters.savgol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savgol</span></code></a>(tsin, /, *, window_length, poly_order)</p></td>
 <td><p>Apply a Savitzky-Golay filter on a TimeSeries.</p></td>
 </tr>
@@ -370,107 +336,6 @@ direction.</p></li>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.filters.deriv">
-<code class="sig-prename descclassname">ktk.filters.</code><code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.filters.deriv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the nth numerical derivative.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The sample rate must be constant.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input timeseries</p></li>
-<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Order of the derivative.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Source data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
-<span class="go">array([0. , 0.1, 0.2, 0.3, 0.4])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
-<span class="go">array([0., 0., 1., 1., 0.])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># First derivative</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span><span class="o">.</span><span class="n">time</span>
-<span class="go">array([0.05, 0.15, 0.25, 0.35])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
-<span class="go">array([  0.,  10.,   0., -10.])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Second derivative</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span><span class="o">.</span><span class="n">time</span>
-<span class="go">array([0.1, 0.2, 0.3])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
-<span class="go">array([ 100., -100., -100.])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.filters.median">
-<code class="sig-prename descclassname">ktk.filters.</code><code class="sig-name descname">median</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">window_length</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.filters.median" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate a moving median.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries</p></li>
-<li><p><strong>window_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. Kernel size, must be odd. The default is 3.</p></li>
-</ul>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Works on 1-dimension data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># and also on n-dimension data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data2'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>             <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">]])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Filter</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span>
-<span class="go">array([10., 11., 11., 14., 15., 15.])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data2'</span><span class="p">]</span>
-<span class="go">array([[ 0., 10.],</span>
-<span class="go">       [ 0., 11.],</span>
-<span class="go">       [ 1., 11.],</span>
-<span class="go">       [ 1., 14.],</span>
-<span class="go">       [ 2., 15.],</span>
-<span class="go">       [ 2., 15.]])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -530,7 +395,7 @@ odd integer less or equal than the length of the TimeSeries.</p></li>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ktk.emg.html" title="ktk.emg module"
+            <a href="ktk.dev.html" title="ktk.dev module"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -539,17 +404,17 @@ odd integer less or equal than the length of the TimeSeries.</p></li>
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.emg module </span>
+                      class="md-footer-nav__direction"> Previous </span> ktk.dev module </span>
               </div>
             </a>
           
           
-            <a href="ktk.geometry.html" title="ktk.geometry module"
+            <a href="ktk.gui.html" title="ktk.gui module"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.geometry module </span>
+                class="md-footer-nav__direction"> Next </span> ktk.gui module </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

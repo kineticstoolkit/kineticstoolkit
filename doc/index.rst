@@ -1,12 +1,6 @@
 Kinetics Toolkit
 ================
 
-.. note::
-   This is the website for the development version. Switch to the stable_
-   version.
-
-.. _stable: http://felixchenier.uqam.ca/kineticstoolkit
-
 Kinetics Toolkit (ktk) is an open-source, pure-python biomechanical library
 developed by Professor Félix Chénier at Université du Québec à Montréal,
 Canada. It is a package of integrated classes and functions that aims to
@@ -53,11 +47,16 @@ changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however ask your questions_ and if I
 can answer, I'll do.
 
-While the development version is also open source, it is developed in parallel
-with my research projects following the needs of the moment, and is therefore
-well less settled, tested and stable.
-
 .. _questions: mailto:chenier.felix@uqam.ca
+
+
+Development version
+-------------------
+
+You can also switch to the `development version`_. This version is also open source,
+and is much more featured than the stable version. However, it is developed in parallel
+with my research projects following the needs of the moment and is therefore
+well less settled, less tested and less stable.
 
 
 Credits
@@ -91,13 +90,9 @@ Site map
     customize
     timeseries
     loadsave
-    geometry
     filters
     kinematics
-    pushrimkinetics
-    inversedynamics
-    cycles
-    dbinterface
     api_reference
+    Development version <http://felixchenier.uqam.ca/ktk_develop>
 
-
+.. `_development version`: http://felixchenier.uqam.ca/ktk_develop
