@@ -75,7 +75,7 @@ I also want to credit the people involved in ktk's dependencies:
   and Matlab
 
 - The dedicated people behind major software and packages used by ktk such as
-  python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.
+  python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.
 
 .. _icp: https://github.com/ClayFlannigan/icp
 .. _ezc3d: https://github.com/pyomeca/ezc3d
@@ -98,6 +98,7 @@ Site map
     inversedynamics
     cycles
     dbinterface
+    release_notes
     api_reference
 
 
