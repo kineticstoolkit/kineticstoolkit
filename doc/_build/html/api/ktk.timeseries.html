@@ -1283,12 +1283,8 @@ one nan value).</p>
 <dt id="ktk.timeseries.TimeSeries.merge">
 <code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_keys</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resample</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.timeseries.TimeSeries.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge another TimeSeries into the current TimeSeries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is experimental and may change signature.</p>
 <p>This method merges a TimeSeries into the current TimeSeries, copying
 the data, data_info and events.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1297,10 +1293,10 @@ the data, data_info and events.</p>
 data keys are merged.</p></li>
 <li><p><strong>resample</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. Set to True to resample the source TimeSeries, in case
 the time vectors are not matched. If the time vectors are not
-atched and resample is False, an exception is raised.</p></li>
+matched and resample is False, an exception is raised.</p></li>
 <li><p><strong>overwrite</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. If duplicates are found and overwrite is True, then the
 source (ts) overwrites the destination. Otherwise (overwrite is
-False), the duplicated data is ignored.</p></li>
+False), the duplicate data in ts is ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>

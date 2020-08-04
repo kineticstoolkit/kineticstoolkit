@@ -53,12 +53,6 @@ def detect_cycles(ts: TimeSeries,
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
 
-    Warning
-    -------
-    This function is currently experimental and may change signature and
-    behaviour in the future.
-
-
     This function detects biphasic cycles and identifies the transitions as
     new events in the output TimeSeries. These new events are named:
 
@@ -69,6 +63,11 @@ def detect_cycles(ts: TimeSeries,
         - '_':
           corresponds to the end of the cycle. Apart from the last cycle,
           this always coincides with the start of the next phase 1.
+
+    Warning
+    -------
+    This function is currently experimental and may change signature and
+    behaviour in the future.
 
     Parameters
     ----------
@@ -317,15 +316,15 @@ def stack_normalized_data(
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
 
-    Warning
-    -------
-    This function is currently experimental and may change signature and
-    behaviour in the future.
-
     This methods returns the data of a time-normalized TimeSeries as a dict
     where each key corresponds to a TimeSeries' data, and contains a numpy
     array where the first dimension if the cycle, the second dimension is the
     percentage of cycle, and the other dimensions are the data itself.
+
+    Warning
+    -------
+    This function is currently experimental and may change signature and
+    behaviour in the future.
 
     Parameters
     ----------
@@ -338,10 +337,6 @@ def stack_normalized_data(
     Returns
     -------
     Dict[str, np.ndarray]
-
-    Example
-    -------
-    >>> # Create a time-normalized TimeSeries
 
     """
     if np.mod(len(ts.time), n_points) != 0:
@@ -364,16 +359,15 @@ def stack_normalized_events(
     """
     Stack time-normalized TimeSeries' events into a dict of arrays.
 
-    Warning
-    -------
-    This function is currently experimental and may change signature and
-    behaviour in the future.
-
-
     This methods returns the a dictionary where each key corresponds to an
     event name, and contains a 2d numpy array that contains the event's
     normalized time, with the first dimension being the cycle and the second
     dimension being the occurrence of this event during this cycle.
+
+    Warning
+    -------
+    This function is currently experimental and may change signature and
+    behaviour in the future.
 
     Parameters
     ----------
@@ -389,6 +383,7 @@ def stack_normalized_events(
 
     Example
     -------
+    >>> import ktk
     >>> # Create a TimeSeries with different time-normalized events
     >>> ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
     >>> ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
@@ -451,12 +446,6 @@ def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
 
-    WARNING
-    -------
-    This function is currently experimental and may change signature and
-    behaviour in the future.
-
-
     This function returns an ordered list of the most repeatable to the least
     repeatable cycles.
 
@@ -466,6 +455,11 @@ def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     returns a list that is the reverse order of cycle removal: first the two
     last cycles, then the last-removed cycle, and so on. If two cycles are as
     equivalently repeatable, they are returned in order of appearance.
+
+    Warning
+    -------
+    This function is currently experimental and may change signature and
+    behaviour in the future.
 
     Note
     ----
@@ -490,19 +484,10 @@ def most_repeatable_cycles(data: np.ndarray) -> List[int]:
     >>> # Create a data sample with four different cycles, the most different
     >>> # begin cycle 2 (cos instead of sin), then cycle 0.
     >>> x = np.arange(0, 10, 0.1)
-    >>> data = np.array([[np.sin(x)],
+    >>> data = np.array([[np.sin(x)], \
         [np.sin(x) + 0.14], \
         [np.cos(x) + 0.14], \
         [np.sin(x) + 0.15]])
-
-    .. plot::
-        :format: doctest
-
-        >>> # Plot these data
-        for cycle in range(4):
-            plt.plot(data, label=f"Cycle {cycle}")
-        plt.legend()
-        plt.show()
 
     >>> ktk.cycles.most_repeatable_cycles(data)
     [1, 3, 0, 2]

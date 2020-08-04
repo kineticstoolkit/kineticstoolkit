@@ -602,8 +602,8 @@ div.rendered_html tbody tr:hover {
 <p>This module is experimental. Function names, signatures and implementations may change anytime.</p>
 </div>
 <p>In this tutorial, we will load kinetics data from wheelchair propulsion using a csv file, and then manipulate propulsion cycles.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -612,24 +612,32 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 
-<span class="c1"># Load the csv file</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/timeseries/smartwheel.csv'</span><span class="p">,</span>
-                 <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
-                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">'Forces[0]'</span><span class="p">,</span> <span class="s1">'Forces[1]'</span><span class="p">,</span> <span class="s1">'Forces[2]'</span><span class="p">,</span>
-                        <span class="s1">'Moments[0]'</span><span class="p">,</span> <span class="s1">'Moments[1]'</span><span class="p">,</span> <span class="s1">'Moments[2]'</span><span class="p">],</span>
-                 <span class="n">nrows</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
+<span class="c1"># Load the instrumented wheel's csv file</span>
+<span class="n">filename</span> <span class="o">=</span> <span class="s1">'data/pushrimkinetics/sample_sw_csvtxt.csv'</span>
 
-<span class="c1"># Assign time to the DataFrame's index, where the sampling rate is 240 Hz.</span>
-<span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">240</span>
-
-<span class="c1"># Convert this DataFrame to a TimeSeries</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
-<p>At this point, we have a TimeSeries that contains forces and moments.</p>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+         'Angle': &lt;array of shape (7777,)&gt;,
+      'Channels': &lt;array of shape (7777, 6)&gt;,
+        'Forces': &lt;array of shape (7777, 4)&gt;,
+         'Index': &lt;array of shape (7777,)&gt;,
+       'Moments': &lt;array of shape (7777, 4)&gt;
+}
+</pre></div></div>
+</div>
+<p>At this point, we have a TimeSeries that contains several signals, including forces and moments.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -652,7 +660,7 @@ div.rendered_html tbody tr:hover {
 <p>The <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles</span></a> allows detecting cycles in a TimeSeries, using a signal from this TimeSeries.</p>
 <p>Here, to detect the cycles in these data, we will add a third data, the total force (Ftot) as the basis for cycle detection.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -670,7 +678,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Now let see how detecting cycles works. We will define the threshold values visually based on the figure above.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -690,9 +698,9 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/cycles_7_0.png" src="_images/cycles_7_0.png"/>
 </div>
 </div>
-<p>We observe that several (short) cycles were wrongly detected, for example during the first spike, which is not a push but a synchronization spike and not a push. We can reject those cycles by specifying minimal lengths for both phases.</p>
+<p>We observe that a short cycle was wrongly during the first spike, which is not a push but a synchronization spike. We can reject those too short cycles by specifying minimal lengths for both phases.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -714,9 +722,9 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/cycles_9_0.png" src="_images/cycles_9_0.png"/>
 </div>
 </div>
-<p>We also see that the detected cycles at the end are erratic and include invalid pushes that should be excluded. We can exclude these pushes by specifying a target values for both phases (values that should be reached during the phase)</p>
+<p>We also see that the detected cycles at the end are different: the force components are not similar because those pushes are braking pushes instead of propulsion pushes. While the last one will be difficult to remove automatically, we could remove the first braking push by using a target value for the push phase (a value that should be reached during the phase).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -727,7 +735,7 @@ div.rendered_html tbody tr:hover {
                                           <span class="n">falling_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                                           <span class="n">min_length1</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
                                           <span class="n">min_length2</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-                                          <span class="n">target_height1</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
+                                          <span class="n">target_height1</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
 <span class="n">ts_with_events</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -739,17 +747,21 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/cycles_11_0.png" src="_images/cycles_11_0.png"/>
 </div>
 </div>
+<p>We observe in this example the existence of the <code class="docutils literal notranslate"><span class="pre">_</span></code> events, which significate the end of a cycle. Each detected cycle starts with <code class="docutils literal notranslate"><span class="pre">event_name1</span></code>, transitions with <code class="docutils literal notranslate"><span class="pre">event_name2</span></code> and ends with <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p>
 
 
 <h2 id="Time-normalizing-cycles">Time-normalizing cycles<a class="headerlink" href="#Time-normalizing-cycles" title="Permalink to this headline">¶</a></h2>
-<p>Once the cycles have been detected, we can time-normalize these cycles using <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.time_normalize"><span class="std std-ref">time_normalize</span></a> to get them on the same time scale (a percentage of the cycle).</p>
+<p>Once the cycles have been detected, we can time-normalize these cycles using <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.time_normalize"><span class="std std-ref">ktk.cycles.time_normalize()</span></a> to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">ts_normalized_on_cycle</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">ts_with_events</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'_'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">ts_normalized_on_cycle</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ts_normalized_on_cycle</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -757,17 +769,20 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/cycles_13_0.png" src="_images/cycles_13_0.png"/>
+<img alt="_images/cycles_14_0.png" src="_images/cycles_14_0.png"/>
 </div>
 </div>
-<p>To time-normalize only during the push phase:</p>
+<p>To time-normalize only during the push phase, we define the cycle end as <code class="docutils literal notranslate"><span class="pre">recovery</span></code> instead of <code class="docutils literal notranslate"><span class="pre">_</span></code>. Each of the <strong>13</strong> complete pushes is then normalized from 0 to 100% of the push.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">ts_normalized_on_push</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">ts_with_events</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">ts_normalized_on_push</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ts_normalized_on_push</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -775,16 +790,16 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/cycles_15_0.png" src="_images/cycles_15_0.png"/>
+<img alt="_images/cycles_16_0.png" src="_images/cycles_16_0.png"/>
 </div>
 </div>
 
 
 <h2 id="Combining-the-cycles">Combining the cycles<a class="headerlink" href="#Combining-the-cycles" title="Permalink to this headline">¶</a></h2>
-<p>Time-normalizing cycles is often performed in order to perform further operations (e.g., computing and visualizing the average cycle). Therefore, the next logical step is often to group the cycles into indexable arrays. This is the aim of the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.stack_normalized_data"><span class="std std-ref">ktk.cycles.stack_normalized_data</span></a> function.</p>
+<p>Time-normalizing cycles is often performed in the aim of performing further operations (e.g., computing and visualizing the average cycle). Therefore, the next logical step is often to group the cycles into indexable arrays. This is done using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.stack_normalized_data"><span class="std std-ref">ktk.cycles.stack_normalized_data</span></a> function.</p>
 <p>In this example, we will stack the data from the last computed TimeSeries.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -794,36 +809,49 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-       'Forces': &lt;array of shape (6, 100, 3)&gt;,
-         'Ftot': &lt;array of shape (6, 100)&gt;,
-      'Moments': &lt;array of shape (6, 100, 3)&gt;
+         'Angle': &lt;array of shape (13, 100)&gt;,
+      'Channels': &lt;array of shape (13, 100, 6)&gt;,
+        'Forces': &lt;array of shape (13, 100, 4)&gt;,
+          'Ftot': &lt;array of shape (13, 100)&gt;,
+         'Index': &lt;array of shape (13, 100)&gt;,
+       'Moments': &lt;array of shape (13, 100, 4)&gt;
 }
 </pre></div></div>
 </div>
 <p>The first dimension of each dictionary’s entry corresponds to the cycles. It becomes easier to perform operations on cycles. For example, we could want to plot the propulsive moment <code class="docutils literal notranslate"><span class="pre">Mz</span></code> (Moments[2]) in each cycle one of top of the other:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Plot every cycles</span>
-<span class="k">for</span> <span class="n">i_cycle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">6</span><span class="p">):</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<span></span><span class="n">ax_Ftot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax_Mz</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Plot every cycles</span>
+<span class="k">for</span> <span class="n">i_cycle</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">13</span><span class="p">):</span>
+    <span class="n">ax_Ftot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">][</span><span class="n">i_cycle</span><span class="p">])</span>
+    <span class="n">ax_Mz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][</span><span class="n">i_cycle</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span>
         <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Cycle </span><span class="si">{</span><span class="n">i_cycle</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Plot the average cycle</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<span class="n">ax_Ftot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s1">'k:'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ax_Mz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
     <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="s1">'k:'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Average"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax_Ftot</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Ftot (N)'</span><span class="p">)</span>
+<span class="n">ax_Mz</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Mz (Nm)'</span><span class="p">)</span>
+<span class="n">ax_Mz</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -832,15 +860,15 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/cycles_19_0.png" src="_images/cycles_19_0.png"/>
+<img alt="_images/cycles_20_0.png" src="_images/cycles_20_0.png"/>
 </div>
 </div>
 
 
 <h2 id="Finding-the-most-repeatable-cycles">Finding the most repeatable cycles<a class="headerlink" href="#Finding-the-most-repeatable-cycles" title="Permalink to this headline">¶</a></h2>
-<p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were somewhat different. We can use the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.most_repeatable_cycles"><span class="std std-ref">ktk.cycles.most_repeatable_cycles</span></a> to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
+<p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different. We can use the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.most_repeatable_cycles"><span class="std std-ref">ktk.cycles.most_repeatable_cycles()</span></a> function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -850,32 +878,42 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[1, 2, 0, 3, 4, 5]
+[9, 10, 2, 3, 5, 11, 4, 6, 7, 1, 8, 12, 0]
 </pre></div></div>
 </div>
-<p>Now let’s make the same plot of <code class="docutils literal notranslate"><span class="pre">Mz</span></code>, but based only on the three most repeatable cycles.</p>
+<p>We see that cycles 12 (last) and 0 (first) were expectedly found as the least repeatable pushes. Now let’s make the same plot of <code class="docutils literal notranslate"><span class="pre">Mz</span></code>, but based only on the five most repeatable cycles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Plot the three cycles</span>
-<span class="k">for</span> <span class="n">i_cycle</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]:</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+<span></span><span class="n">ax_Ftot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ax_Mz</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Plot the five cycles cycles</span>
+<span class="k">for</span> <span class="n">i_cycle</span> <span class="ow">in</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="n">ax_Ftot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+        <span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">][</span><span class="n">i_cycle</span><span class="p">])</span>
+    <span class="n">ax_Mz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
         <span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][</span><span class="n">i_cycle</span><span class="p">,</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span>
         <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="s2">"Cycle </span><span class="si">{</span><span class="n">i_cycle</span><span class="si">}</span><span class="s2">"</span><span class="p">)</span>
 
 <span class="c1"># Plot the average cycle</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-    <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">],</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+<span class="n">ax_Ftot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">][</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">]],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+    <span class="s1">'k:'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">ax_Mz</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+    <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">5</span><span class="p">],</span> <span class="p">:,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
     <span class="s1">'k:'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">"Average"</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">ax_Ftot</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Ftot (N)'</span><span class="p">)</span>
+<span class="n">ax_Mz</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">'Mz (Nm)'</span><span class="p">)</span>
+<span class="n">ax_Mz</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -884,7 +922,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/cycles_23_0.png" src="_images/cycles_23_0.png"/>
+<img alt="_images/cycles_24_0.png" src="_images/cycles_24_0.png"/>
 </div>
 </div>
 <p>For more information on cycles, please check the <a class="reference internal" href="api/ktk.cycles.html"><span class="doc">API Reference</span></a>.</p>

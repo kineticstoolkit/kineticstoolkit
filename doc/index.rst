@@ -7,13 +7,11 @@ Kinetics Toolkit
 
 .. _stable: http://felixchenier.uqam.ca/kineticstoolkit
 
-Kinetics Toolkit (ktk) is an open-source, pure-python biomechanical library
-developed by Professor Félix Chénier at Université du Québec à Montréal,
-Canada. It is a package of integrated classes and functions that aims to
-facilitate research in biomechanics using python. It does not attempt to
-provide a complete workflow from raw files to final analysis (although it may
-in a far future), or a main graphical user interface, or magical blackboxes
-that process everything automatically.
+Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
+classes and functions that aims to facilitate research in biomechanics using
+python. It does not attempt to provide a complete workflow from raw files to
+final analysis (although it may in a far future), or a main graphical user
+interface, or magical blackboxes that process everything automatically.
 
 Kinetics Toolkit is mainly addressed to researchers and students in
 biomechanics with a little background in programming, who may or may not
@@ -43,7 +41,7 @@ using a comprehensive set of unit tests and doc tests, and currently includes:
 
 - `player.Player` : a class that allows visualizing 3d markers using a simple
   graphical user interface.
-  
+
 - `filters` : a module that wraps some filters from scipy to be applied directly on TimeSeries.
 
 - `save` and `load` : two functions to save and load results to/from JSON-based `ktk.zip` files.
@@ -70,6 +68,8 @@ well less settled, tested and stable.
 
 Credits
 -------
+Kinetics Toolkit is developed by Professor `Félix Chénier`_ at Université du
+Québec à Montréal, Canada.
 
 Some external code has been directly included into ktk's source code. Here are
 the credits for these nice people.
@@ -85,6 +85,7 @@ I also want to credit the people involved in ktk's dependencies:
 - The dedicated people behind major software and packages used by ktk such as
   python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.
 
+.. _`Félix Chénier`: https://felixchenier.uqam.ca
 .. _icp: https://github.com/ClayFlannigan/icp
 .. _ezc3d: https://github.com/pyomeca/ezc3d
 
