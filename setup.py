@@ -5,19 +5,21 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='ktk',
-    version='0.0.4',
-    description='What will become a great library to analyze biomechanics',
+    version='0.2',
+    description='A pure-python library to facilitate research in biomechanics.',
     long_description=long_description,
     long_description_content_type="text/markdown",
     url='https://felixchenier.uqam.ca',
     author='Félix Chénier',
     author_email='chenier.felix@uqam.ca',
     license='Apache',
+	license_files=['LICENSE.txt', 'NOTICE.txt'],    
     packages=setuptools.find_packages(),
     install_requires=['pandas',
-                      'numpy',
+                      'pyqt5',
                       'scipy',
                       'matplotlib',
+                      'scikit-learn',
                       ],
     classifiers=[
         'Development Status :: 3 - Alpha',
@@ -29,5 +31,5 @@ setuptools.setup(
         'Operating System :: POSIX',
         'Programming Language :: Python :: 3',
     ],
-    python_requires='>=3.7',
+    python_requires='>=3.8',
 )

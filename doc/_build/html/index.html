@@ -99,7 +99,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
           <span class="md-header-nav__topic"> Kinetics Toolkit </span>
         </div>
       </div>
@@ -184,7 +184,7 @@
       
     </a>
     <a href="#"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit</a>
+       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
   </label>
     <div class="md-nav__source">
       <a href="https://bitbucket.org/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -285,6 +285,20 @@
     <li class="md-nav__item">
     
     
+      <a href="release_notes.html" class="md-nav__link">Release notes</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="api_reference.html" class="md-nav__link">API Reference</a>
       
     
@@ -306,6 +320,8 @@
         <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Kinetics Toolkit</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#example" class="md-nav__link">Example</a>
+        </li>
+        <li class="md-nav__item"><a href="#development-version" class="md-nav__link">Development version</a>
         </li>
         <li class="md-nav__item"><a href="#credits" class="md-nav__link">Credits</a>
         </li>
@@ -360,7 +376,9 @@ TimeSeries data.</p></li>
 3d marker positions.</p></li>
 <li><p><cite>player.Player</cite> : a class that allows visualizing 3d markers using a simple
 graphical user interface.</p></li>
-<li><p>and some helper functions.</p></li>
+<li><p><cite>filters</cite> : a module that wraps some filters from scipy to be applied directly on TimeSeries.</p></li>
+<li><p><cite>save</cite> and <cite>load</cite> : two functions to save and load results to/from JSON-based <cite>ktk.zip</cite> files.</p></li>
+<li><p>and other helper functions.</p></li>
 </ul>
 <p>Please be warned that this is still mostly experimental software. If you are
 using ktk or are planning to be, you are warmly invited to contact me, first to
@@ -368,6 +386,9 @@ say Hello :-), and so that I can warn you before doing major, possibly breaking
 changes. Also remind that I develop ktk mainly for my lab and I have limited
 resources for troubleshooting. You can however ask your <a class="reference external" href="mailto:chenier.felix%40uqam.ca">questions</a> and if I
 can answer, I’ll do.</p>
+
+
+<h2 id="development-version">Development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
 <p>While the development version is also open source, it is developed in parallel
 with my research projects following the needs of the moment, and is therefore
 well less settled, tested and stable.</p>
@@ -385,7 +406,7 @@ Closest Point method</p></li>
 <li><p>Benjamin Michaud : <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> - Easy to use C3D reader/writer for C++, Python
 and Matlab</p></li>
 <li><p>The dedicated people behind major software and packages used by ktk such as
-python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p></li>
+python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 </ul>
 
 
@@ -494,6 +515,20 @@ python, numpy, matplotlib, pandas, jupyter, pytest, pdoc3, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Including-information-in-file-names">Including information in file names</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.2">Version 0.2</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#New-features">New features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#Improvements">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#Breaking-changes">Breaking changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.1">Version 0.1</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-1">New features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Stable version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#classes">Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#modules">Modules</a></li>

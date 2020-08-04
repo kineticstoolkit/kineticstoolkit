@@ -20,11 +20,11 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
 
     conda activate ktk
 
-    conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn ezc3d
+    conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn pyqt ezc3d
 
 Additional dependencies for the development version:
 
-    conda install -c conda-forge git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm nbsphinx
+    conda install -c conda-forge git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm nbsphinx twine
 
 
 Installing ktk
@@ -40,7 +40,7 @@ The public, open-source version of ktk is distributed va `pip`. Open an Anaconda
 
 Clone ktk from bitbucket: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
 
-    git clone https://bitbucket.org/felixchenier/kineticstoolkit.git')
+    git clone https://bitbucket.org/felixchenier/kineticstoolkit.git
 
 
 Configuring Spyder
