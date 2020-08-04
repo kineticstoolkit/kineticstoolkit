@@ -28,6 +28,110 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
+def test_detect_cycles():
+    # Test min and max lenghts
+    # Create a timeseries with one frame per seconds.
+    t = np.arange(40)
+    d = np.array([0, 0,
+                 1, 1, 1, 1,
+                 0, 0, 0, 0,
+                 1, 1, 1,
+                 0, 0, 0, 0, 0,
+                 1,
+                 0, 0, 0,
+                 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                 0, 0, 0, 0, 0, 0, 0, 0,
+                 1])
+    ts = ktk.TimeSeries(time=t, data={'data': d})
+
+    # Detect all cycles
+    ts2 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
+                                   0.5, 0.5)
+    assert ts2.events[0].name == 'start'
+    assert ts2.events[0].time == 2
+    assert ts2.events[1].name == 'stop'
+    assert ts2.events[1].time == 6
+    assert ts2.events[3].name == 'start'
+    assert ts2.events[3].time == 10
+    assert ts2.events[4].name == 'stop'
+    assert ts2.events[4].time == 13
+    assert ts2.events[6].name == 'start'
+    assert ts2.events[6].time == 18
+    assert ts2.events[7].name == 'stop'
+    assert ts2.events[7].time == 19
+    assert ts2.events[9].name == 'start'
+    assert ts2.events[9].time == 22
+    assert ts2.events[10].name == 'stop'
+    assert ts2.events[10].time == 31
+    assert ts2.events[11].name == '_'
+    assert ts2.events[11].time == 39
+
+    # With minimal cycles
+    ts3 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
+                                   0.5, 0.5,
+                                   min_length1=2,
+                                   min_length2=4)
+    assert ts3.events[0].name == 'start'
+    assert ts3.events[0].time == 2
+    assert ts3.events[1].name == 'stop'
+    assert ts3.events[1].time == 6
+    assert ts3.events[2].name == '_'
+    assert ts3.events[2].time == 10
+    assert ts3.events[3].name == 'start'
+    assert ts3.events[3].time == 10
+    assert ts3.events[4].name == 'stop'
+    assert ts3.events[4].time == 13
+    assert ts3.events[5].name == '_'
+    assert ts3.events[5].time == 18
+    assert ts3.events[6].name == 'start'
+    assert ts3.events[6].time == 22
+    assert ts3.events[7].name == 'stop'
+    assert ts3.events[7].time == 31
+    assert ts3.events[8].name == '_'
+    assert ts3.events[8].time == 39
+
+    # With both minimal and maximal cycles
+    ts4 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
+                                   0.5, 0.5,
+                                   min_length1=4,
+                                   max_length1=8,
+                                   min_length2=3,
+                                   max_length2=7)
+    assert ts4.events[0].name == 'start'
+    assert ts4.events[0].time == 2
+    assert ts4.events[1].name == 'stop'
+    assert ts4.events[1].time == 6
+    assert ts4.events[2].name == '_'
+    assert ts4.events[2].time == 10
+    assert len(ts4.events) == 3
+
+    # With target heights
+    t = np.arange(40)
+    d = np.array([0, 0,
+                 1, 1, 2, 1,
+                 0, 0, -1, 0,
+                 1, 1, 1,
+                 0, 0, 0, 0, 0,
+                 1,
+                 0, 0, 0,
+                 1, 1, 1, 1, 1, 1, 1, 1, 1,
+                 0, 0, 0, 0, 0, 0, 0, 0,
+                 1])
+    ts = ktk.TimeSeries(time=t, data={'data': d})
+
+    ts5 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
+                                   0.5, 0.5,
+                                   target_height1=2,
+                                   target_height2=-1)
+    assert ts5.events[0].name == 'start'
+    assert ts5.events[0].time == 2
+    assert ts5.events[1].name == 'stop'
+    assert ts5.events[1].time == 6
+    assert ts5.events[2].name == '_'
+    assert ts5.events[2].time == 10
+    assert len(ts5.events) == 3
+
+
 def test_normalize():
     # Create a TimeSeries with some events directly synced with the data and
     # some other that aren't.

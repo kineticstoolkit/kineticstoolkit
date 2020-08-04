@@ -45,6 +45,8 @@ def detect_cycles(ts: TimeSeries,
                   falling_threshold: float, *,
                   min_length1: float = 0,
                   min_length2: float = 0,
+                  max_length1: float = np.Inf,
+                  max_length2: float = np.Inf,
                   target_height1: Optional[float] = None,
                   target_height2: Optional[float] = None,
                   ) -> TimeSeries:
@@ -91,6 +93,10 @@ def detect_cycles(ts: TimeSeries,
         Optional. Minimal time of phase 1 in seconds.
     min_length2
         Optional. Minimal time of phase 2 in seconds.
+    max_length1
+        Optional. Maximal time of phase 1 in seconds.
+    max_length2
+        Optional. Maximal time of phase 2 in seconds.
     target_height1
         Optional. A value that the signal must cross in phase 1. Use None for
         no target height.
@@ -109,8 +115,6 @@ def detect_cycles(ts: TimeSeries,
         target_height1 = -np.Inf
     if target_height2 is None:
         target_height2 = np.Inf
-
-
 
     # Find the pushes
     time = ts.time
@@ -150,11 +154,13 @@ def detect_cycles(ts: TimeSeries,
         except IndexError:
             time3 = np.Inf
 
-        sub_ts1 = ts.get_ts_between_times(time1, time2)
-        sub_ts2 = ts.get_ts_between_times(time1, time3)
+        sub_ts1 = ts.get_ts_between_times(time1, time2, inclusive=True)
+        sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
 
         if (time2 - time1 >= min_length1 and
+                time2 - time1 <= max_length1 and
                 time3 - time2 >= min_length2 and
+                time3 - time2 <= max_length2 and
                 np.max(sub_ts1.data[data_key]) >= target_height1 and
                 np.min(sub_ts2.data[data_key]) <= target_height2):
             # Save it.
