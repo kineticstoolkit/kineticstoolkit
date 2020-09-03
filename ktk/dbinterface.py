@@ -284,7 +284,7 @@ class DBInterface():
         table = table.where(pd.notnull(table), None)
 
         # Convert to dict
-        dict_out = table.to_dict('record')
+        dict_out = table.to_dict('records')
 
         if len(dict_out) < 1:
             raise ValueError(f'No data was found for {filters}.')
