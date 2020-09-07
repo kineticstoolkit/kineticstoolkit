@@ -49,6 +49,9 @@ def create_window(title='KTK'):
     # Ensure the window is not created as a tab on macOS
     root.resizable(width=False, height=False)
     root.title(title)
+    path_to_ico = (os.path.abspath(os.path.dirname(__file__)) +
+                   '/logo_hires.png')
+    root.iconphoto(False, tk.PhotoImage(file=path_to_ico))
 
     # Make it transparent while we modify it.
     root.wm_attributes("-alpha", 0)
