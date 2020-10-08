@@ -12,8 +12,6 @@ timeseries.md
 doc/api
 doc/kinematics_files
 doc/timeseries_files
-site/data
-site/*.py
 *-checkpoint.ipynb
 site/*.ipynb
 dbinterface.md
