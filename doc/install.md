@@ -38,9 +38,9 @@ The public, open-source version of ktk is distributed va `pip`. Open an Anaconda
 
 ### Development version ###
 
-Clone ktk from bitbucket: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
+Clone ktk from github: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
 
-    git clone https://bitbucket.org/felixchenier/kineticstoolkit.git
+    git clone https://github.com/felixchenier/kineticstoolkit.git
 
 
 Configuring Spyder

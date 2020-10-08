@@ -98,9 +98,9 @@ html_theme_options = {
     'color_accent': 'orange',
 
     # Set the repo location to get a badge with stats
-    'repo_url': 'https://bitbucket.org/felixchenier/kineticstoolkit/',
-    'repo_name': 'KineticsToolkit',
-    'repo_type': 'bitbucket',
+    'repo_url': 'https://github.com/felixchenier/kineticstoolkit/',
+    'repo_name': 'kineticstoolkit',
+    'repo_type': 'github',
 
     # Visible levels of the global TOC; -1 means unlimited
     'globaltoc_depth': 1,
