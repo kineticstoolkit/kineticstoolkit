@@ -97,7 +97,7 @@ Site map
     :maxdepth: 3
 
     install
-    customize
+    labmode
     timeseries
     loadsave
     geometry

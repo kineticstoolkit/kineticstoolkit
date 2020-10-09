@@ -16,16 +16,7 @@
 # limitations under the License.
 
 """
-Provide user and auto-generated configuration for ktk.
-
-Please edit this file to configure ktk.
-
-In IPython or Spyder:
-
-    import ktk.config
-    edit ktk.config
-
-Then restart the IPython kernel to apply these changes.
+Provide configuration values for ktk's inner working.
 
 """
 
@@ -38,15 +29,6 @@ __license__ = "Apache 2.0"
 import os
 import warnings
 import platform
-
-
-# --- User-configurable options
-change_ipython_dict_repr = True  # Default is True
-change_matplotlib_defaults = True  # Default is True
-change_numpy_print_options = True  # Default is True
-
-
-# --- Automatic configuration
 
 # Root folder (ktk installation)
 root_folder = os.path.dirname(os.path.dirname(__file__))

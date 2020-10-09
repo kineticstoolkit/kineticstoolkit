@@ -1,16 +1,32 @@
-Customizing
-===========
+Lab mode
+========
 
-By default, importing ktk changes some defaults in IPython and matplotlib to
-get a more 'research' and less 'programming' experience. Please note that this
-does not affect anything besides visual representations. This behaviour can be
-changed by modifying ktk's configuration (ktk/config.py). In Spyder/IPython:
+KTK includes a lab mode that changes some defaults so that doing scientific
+work in IPython-based environments is more enjoyable (at least for me).
+This mode does not affect anything besides visual representations and is
+completely facultative.
 
-    >>> import ktk.config
-    >>> edit ktk.config
+We normally launch lab mode just after imports:
 
-Modification to repr of dictionaries
-------------------------------------
+    >>> import ktk
+    >>> ktk.lab()
+
+
+When to use lab mode
+--------------------
+
+__Use it__ if you want to run ktk as an integrated work environment using
+IPython based environments (Spyder, Jupyter) in a biomechanics research labs.
+
+__Do not use it__ if you already have a working environment and you simply want
+to use some ktk classes or functions within your own setup, and you don't
+want ktk to mess with your defaults.
+
+
+What lab mode does
+------------------
+
+### Modification to repr of dictionaries ###
 
 In ktk, data are often stored as dictionaries, which can lead to very large
 printouts when we simply want to see the dictionary's contents. Importing ktk
@@ -25,7 +41,7 @@ For example, let's create a dummy dictionary:
     >>> data['data2'] = np.arange(30) ** 2
     >>> data['data3'] = np.arange(30) ** 3
 
-Before importing ktk:
+Default dict representation:
 
     >>> data
     {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
@@ -38,9 +54,10 @@ Before importing ktk:
              5832,  6859,  8000,  9261, 10648, 12167, 13824, 15625, 17576,
             19683, 21952, 24389])}
 
-After importing ktk:
+Modified dict representation in lab mode:
 
     >>> import ktk
+    >>> ktk.lab()
     >>> data
     {
         'data1': <array of shape (30,)>,
@@ -49,14 +66,12 @@ After importing ktk:
     }
 
 
-Modification to repr of numpy's floats
---------------------------------------
+### Modification to repr of numpy's floats ###
 
 Numpy is set to display floats with floating point precision.
 
 
-Alternative defaults for matplotlib
------------------------------------
+### Alternative defaults for matplotlib ###
 
 We assume that most work with figure is interactive, on screen. In that view,
 the following modifications are made to default matplotlib figures:

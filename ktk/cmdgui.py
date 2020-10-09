@@ -237,9 +237,10 @@ def button_dialog(title='', message='Please select an option.',
 
     Returns
     -------
-    The button number (0 = First button, 1 = Second button, etc. If the
+    The button number (0 = First button, 1 = Second button, etc). If the
     user closes the window instead of clicking a button, a value of -1 is
     returned.
+
     """
     # We use a list of length 1 to pass selected_choice by reference.
     selected_choice = [-1]  # Default if we click close.

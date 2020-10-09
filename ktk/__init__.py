@@ -40,9 +40,10 @@ from ktk.timeseries import TimeSeries, TimeSeriesEvent
 directory.append('TimeSeries')
 directory.append('TimeSeriesEvent')
 
-from ktk.tools import explore, terminal, update, tutorials
+from ktk.tools import explore, terminal, lab, update, tutorials
 directory.append('explore')
 directory.append('terminal')
+directory.append('lab')
 directory.append('update')
 directory.append('tutorials')
 
@@ -55,9 +56,6 @@ directory.append('Player')
 from ktk.loadsave import load, save
 directory.append('load')
 directory.append('save')
-
-from ktk import config
-directory.append('config')
 
 from ktk import filters
 directory.append('filters')
@@ -92,29 +90,3 @@ except Exception:
 
 def __dir__():
     return directory
-
-# --- Customizations
-
-if config.change_ipython_dict_repr is True:
-    # Modify the repr function for dicts in IPython
-    try:
-        import IPython as _IPython
-        _ip = _IPython.get_ipython()
-        formatter = _ip.display_formatter.formatters['text/plain']
-        formatter.for_type(dict, lambda n, p, cycle:
-                           _repr._ktk_format_dict(n, p, cycle))
-    except Exception:
-        pass
-
-if config.change_matplotlib_defaults is True:
-    # Set alternative defaults to matplotlib
-    import matplotlib as _mpl
-    _mpl.rcParams['figure.figsize'] = [10, 5]
-    _mpl.rcParams['figure.dpi'] = 75
-    _mpl.rcParams['lines.linewidth'] = 1
-    gui.set_color_order('xyz')
-
-if config.change_numpy_print_options is True:
-    import numpy as _np
-    # Select default mode for numpy
-    _np.set_printoptions(suppress=True)

@@ -29,11 +29,14 @@ __license__ = "Apache 2.0"
 
 
 import ktk.config
+import ktk._repr as _repr
+import ktk.gui
 
 import os
 import sys
 import subprocess
 import webbrowser as _webbrowser
+from typing import Dict
 
 
 def explore(folder_name: str = '') -> None:
@@ -94,6 +97,61 @@ def terminal(folder_name: str = '') -> None:
     else:
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
+
+
+def lab(*, config: Dict[str, bool] = {
+        'change_ipython_dict_repr': True,
+        'change_matplotlib_defaults': True,
+        'change_numpy_print_options': True}) -> None:
+    """
+    Set ktk to lab mode.
+
+    This function does not affect ktk's inner working. It exists mostly
+    for cosmetic reasons, so that working with ktk in an IPython console
+    (e.g., Spyder, Jupyter) is more enjoyable, at least to the developer's
+    taste. It changes defaults and is not reversible in a given session. The
+    usual way to call it is right after importing ktk.
+
+    Parameters
+    ----------
+    config:
+        'change_ipython_dict_repr' :
+            True to summarize defaults dict printouts in IPython.
+        'change_matplotlib_defaults' :
+            True to change default figure size, dpi, line width and color
+            order in Matplotlib.
+        'change_numpy_print_options' :
+            True to change default print options in numpy to use fixed point
+            notation in printouts.
+
+    Returns
+    -------
+    None
+
+    """
+    if config['change_ipython_dict_repr']:
+        # Modify the repr function for dicts in IPython
+        try:
+            import IPython as _IPython
+            _ip = _IPython.get_ipython()
+            formatter = _ip.display_formatter.formatters['text/plain']
+            formatter.for_type(dict, lambda n, p, cycle:
+                               _repr._ktk_format_dict(n, p, cycle))
+        except Exception:
+            pass
+
+    if config['change_matplotlib_defaults']:
+        # Set alternative defaults to matplotlib
+        import matplotlib as _mpl
+        _mpl.rcParams['figure.figsize'] = [10, 5]
+        _mpl.rcParams['figure.dpi'] = 75
+        _mpl.rcParams['lines.linewidth'] = 1
+        ktk.gui.set_color_order('xyz')
+
+    if config['change_numpy_print_options']:
+        import numpy as _np
+        # Select default mode for numpy
+        _np.set_printoptions(suppress=True)
 
 
 def update() -> None:

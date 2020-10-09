@@ -216,7 +216,7 @@
     <li class="md-nav__item">
     
     
-      <a href="customize.html" class="md-nav__link">Customizing</a>
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -604,7 +604,7 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="dbinterface--page-root">DBInterface<a class="headerlink" href="#dbinterface--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.dbinterface.html"><span class="doc">DBInterface</span></a> class is used exclusively at Félix Chénier’s lab and may be removed from ktk someday. Its aim is to interface with the BIOMEC database (<a class="reference external" href="https://felixchenier.uqam.ca/biomec">https://felixchenier.uqam.ca/biomec</a>) to fetch all non-personal information about a specified ongoing project.</p>
+<p>The <a class="reference internal" href="api/ktk.dbinterface.html"><span class="doc">DBInterface</span></a> class is used exclusively at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> and may be removed from ktk someday. Its aim is to interface with the BIOMEC database (<a class="reference external" href="https://felixchenier.uqam.ca/biomec">https://felixchenier.uqam.ca/biomec</a>) to fetch all non-personal information about a specified ongoing project.</p>
 <p>It is necessary to understand how data files are stored in BIOMEC before reading this tutorial.</p>
 <p>Please note that the user/password combination used in this tutorial is not valid, and that you should get access to BIOMEC to use ktk.dbinterface.</p>
 <div class="nbinput nblast docutils container">
@@ -615,6 +615,8 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="kn">import</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
+
+<span class="n">ktk</span><span class="o">.</span><span class="n">lab</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>

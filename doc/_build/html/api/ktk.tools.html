@@ -224,7 +224,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../customize.html" class="md-nav__link">Customizing</a>
+      <a href="../labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -349,13 +349,16 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.explore" title="ktk.tools.explore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">explore</span></code></a>([folder_name])</p></td>
 <td><p>Open an Explorer window (on Windows) or a Finder window (on macOS)</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.tools.terminal" title="ktk.tools.terminal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">terminal</span></code></a>([folder_name])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.tools.lab" title="ktk.tools.lab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">lab</span></code></a>(*[, config])</p></td>
+<td><p>Set ktk to lab mode.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.terminal" title="ktk.tools.terminal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">terminal</span></code></a>([folder_name])</p></td>
 <td><p>Open a terminal window.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.tutorials" title="ktk.tools.tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tutorials</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.tools.tutorials" title="ktk.tools.tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tutorials</span></code></a>()</p></td>
 <td><p>Open the KTK tutorials in a web browser.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.tools.update" title="ktk.tools.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.update" title="ktk.tools.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>()</p></td>
 <td><p>Update ktk to the last available version - Not for the public version.</p></td>
 </tr>
 </tbody>
@@ -371,6 +374,37 @@ current folder.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="ktk.tools.lab">
+<code class="sig-prename descclassname">ktk.tools.</code><code class="sig-name descname">lab</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">{'change_ipython_dict_repr': True, 'change_matplotlib_defaults': True, 'change_numpy_print_options': True}</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.tools.lab" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set ktk to lab mode.</p>
+<p>This function does not affect ktk’s inner working. It exists mostly
+for cosmetic reasons, so that working with ktk in an IPython console
+(e.g., Spyder, Jupyter) is more enjoyable, at least to the developer’s
+taste. It changes defaults and is not reversible in a given session. The
+usual way to call it is right after importing ktk.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – <dl class="simple">
+<dt>‘change_ipython_dict_repr’ :</dt><dd><p>True to summarize defaults dict printouts in IPython.</p>
+</dd>
+<dt>’change_matplotlib_defaults’ :</dt><dd><p>True to change default figure size, dpi, line width and color
+order in Matplotlib.</p>
+</dd>
+<dt>’change_numpy_print_options’ :</dt><dd><p>True to change default print options in numpy to use fixed point
+notation in printouts.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>None</p>
 </dd>
 </dl>
 </dd></dl>

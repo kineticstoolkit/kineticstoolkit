@@ -216,7 +216,7 @@
     <li class="md-nav__item">
     
     
-      <a href="customize.html" class="md-nav__link">Customizing</a>
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -603,7 +603,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>In this tutorial, we will load kinetics data from wheelchair propulsion using a csv file, and then manipulate propulsion cycles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -611,6 +611,8 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+<span class="n">ktk</span><span class="o">.</span><span class="n">lab</span><span class="p">()</span>
 
 <span class="c1"># Load the instrumented wheel's csv file</span>
 <span class="n">filename</span> <span class="o">=</span> <span class="s1">'data/pushrimkinetics/sample_sw_csvtxt.csv'</span>
@@ -621,7 +623,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -637,7 +639,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>At this point, we have a TimeSeries that contains several signals, including forces and moments.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -660,7 +662,7 @@ div.rendered_html tbody tr:hover {
 <p>The <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles</span></a> allows detecting cycles in a TimeSeries, using a signal from this TimeSeries.</p>
 <p>Here, to detect the cycles in these data, we will add a third data, the total force (Ftot) as the basis for cycle detection.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -678,7 +680,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>Now let see how detecting cycles works. We will define the threshold values visually based on the figure above.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -700,7 +702,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We observe that a short cycle was wrongly during the first spike, which is not a push but a synchronization spike. We can reject those too short cycles by specifying minimal lengths for both phases.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -724,7 +726,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We also see that the detected cycles at the end are different: the force components are not similar because those pushes are braking pushes instead of propulsion pushes. While the last one will be difficult to remove automatically, we could remove the first braking push by using a target value for the push phase (a value that should be reached during the phase).</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -753,7 +755,7 @@ div.rendered_html tbody tr:hover {
 <h2 id="Time-normalizing-cycles">Time-normalizing cycles<a class="headerlink" href="#Time-normalizing-cycles" title="Permalink to this headline">¶</a></h2>
 <p>Once the cycles have been detected, we can time-normalize these cycles using <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.time_normalize"><span class="std std-ref">ktk.cycles.time_normalize()</span></a> to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -774,7 +776,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>To time-normalize only during the push phase, we define the cycle end as <code class="docutils literal notranslate"><span class="pre">recovery</span></code> instead of <code class="docutils literal notranslate"><span class="pre">_</span></code>. Each of the <strong>13</strong> complete pushes is then normalized from 0 to 100% of the push.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -799,7 +801,7 @@ div.rendered_html tbody tr:hover {
 <p>Time-normalizing cycles is often performed in the aim of performing further operations (e.g., computing and visualizing the average cycle). Therefore, the next logical step is often to group the cycles into indexable arrays. This is done using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.stack_normalized_data"><span class="std std-ref">ktk.cycles.stack_normalized_data</span></a> function.</p>
 <p>In this example, we will stack the data from the last computed TimeSeries.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -809,7 +811,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -826,7 +828,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>The first dimension of each dictionary’s entry corresponds to the cycles. It becomes easier to perform operations on cycles. For example, we could want to plot the propulsive moment <code class="docutils literal notranslate"><span class="pre">Mz</span></code> (Moments[2]) in each cycle one of top of the other:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -868,7 +870,7 @@ div.rendered_html tbody tr:hover {
 <h2 id="Finding-the-most-repeatable-cycles">Finding the most repeatable cycles<a class="headerlink" href="#Finding-the-most-repeatable-cycles" title="Permalink to this headline">¶</a></h2>
 <p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different. We can use the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.most_repeatable_cycles"><span class="std std-ref">ktk.cycles.most_repeatable_cycles()</span></a> function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -878,7 +880,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -888,7 +890,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We see that cycles 12 (last) and 0 (first) were expectedly found as the least repeatable pushes. Now let’s make the same plot of <code class="docutils literal notranslate"><span class="pre">Mz</span></code>, but based only on the five most repeatable cycles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>

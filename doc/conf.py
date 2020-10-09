@@ -32,17 +32,19 @@ release = 'master'
 # ones.
 extensions = [
 #	'recommonmark',   # See workaround down there.
-	'sphinx.ext.autosummary',
-	'sphinx.ext.autodoc',
-	'sphinx.ext.napoleon',
+	'sphinx.ext.autodoc',  # Document objects using docstrings in API
+	'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
+	'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
+	'sphinx_autodoc_typehints',  # Type hints in doc instead of signature (for autodoc)
     'matplotlib.sphinxext.plot_directive',
-	'sphinx_autodoc_typehints',
-	'autodocsumm',
+	'autodocsumm',  # Add a summary table at the top of each API page
     'nbsphinx',
 ]
 
 autodoc_default_options = {
-    'autosummary': True,
+#    'autosummary': True,
+    'autodoc_typehints': 'description',
+    'autosummary-imported-members': False,
 }
 
 nbsphinx_execute = 'never'
@@ -72,7 +74,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints',
-                    'api/external.*', 'api/ktk.external.*']
+                    'api/external.*', 'api/ktk.external.*', 'api/ktk.cmdgui.*']
 
 
 # -- Options for HTML output -------------------------------------------------
