@@ -798,14 +798,14 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Combining-the-cycles">Combining the cycles<a class="headerlink" href="#Combining-the-cycles" title="Permalink to this headline">¶</a></h2>
-<p>Time-normalizing cycles is often performed in the aim of performing further operations (e.g., computing and visualizing the average cycle). Therefore, the next logical step is often to group the cycles into indexable arrays. This is done using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.stack_normalized_data"><span class="std std-ref">ktk.cycles.stack_normalized_data</span></a> function.</p>
+<p>Time-normalizing cycles is often performed in the aim of performing further operations (e.g., computing and visualizing the average cycle). Therefore, the next logical step is often to group the cycles into indexable arrays. This is done using the <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.stack"><span class="std std-ref">ktk.cycles.stack</span></a> function.</p>
 <p>In this example, we will stack the data from the last computed TimeSeries.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">stack_normalized_data</span><span class="p">(</span><span class="n">ts_normalized_on_push</span><span class="p">)</span>
+<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">ts_normalized_on_push</span><span class="p">)</span>
 <span class="n">data</span>
 </pre></div>
 </div>

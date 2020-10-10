@@ -355,10 +355,10 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.most_repeatable_cycles" title="ktk.cycles.most_repeatable_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">most_repeatable_cycles</span></code></a>(data)</p></td>
 <td><p>Get the indexes of the most repeatable cycles in TimeSeries or array.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.stack_normalized_data" title="ktk.cycles.stack_normalized_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack_normalized_data</span></code></a>(ts, /[, n_points])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.stack" title="ktk.cycles.stack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack</span></code></a>(ts, /[, n_points])</p></td>
 <td><p>Stack time-normalized TimeSeries’ data into a dict of arrays.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.stack_normalized_events" title="ktk.cycles.stack_normalized_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack_normalized_events</span></code></a>(ts, /[, n_points])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.stack_events" title="ktk.cycles.stack_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack_events</span></code></a>(ts, /[, n_points])</p></td>
 <td><p>Stack time-normalized TimeSeries’ events into a dict of arrays.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.time_normalize" title="ktk.cycles.time_normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_normalize</span></code></a>(ts, /, event_name1, …[, …])</p></td>
@@ -468,8 +468,8 @@ repeatable order.</p>
 </div>
 </dd></dl>
 <dl class="py function">
-<dt id="ktk.cycles.stack_normalized_data">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">stack_normalized_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.stack_normalized_data" title="Permalink to this definition">¶</a></dt>
+<dt id="ktk.cycles.stack">
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stack time-normalized TimeSeries’ data into a dict of arrays.</p>
 <p>This methods returns the data of a time-normalized TimeSeries as a dict
 where each key corresponds to a TimeSeries’ data, and contains a numpy
@@ -497,8 +497,8 @@ on.</p></li>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="ktk.cycles.stack_normalized_events">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">stack_normalized_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.stack_normalized_events" title="Permalink to this definition">¶</a></dt>
+<dt id="ktk.cycles.stack_events">
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">stack_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.stack_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stack time-normalized TimeSeries’ events into a dict of arrays.</p>
 <p>This methods returns the a dictionary where each key corresponds to an
 event name, and contains a 2d numpy array that contains the event’s
@@ -535,17 +535,10 @@ on.</p></li>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Stack these events</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">stack_normalized_events</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">stack_events</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">[</span><span class="s1">'event1'</span><span class="p">]</span>
-<span class="go">array([[ 9., nan],</span>
-<span class="go">       [10., nan],</span>
-<span class="go">       [nan, nan],</span>
-<span class="go">       [12., 82.]])</span>
+<span class="go">[[9.0], [10.0], [], [12.0, 82.0]]</span>
 </pre></div>
-</div>
-<div class="admonition seealso">
-<p class="admonition-title">See also</p>
-<p><a class="reference internal" href="#ktk.cycles.stack_normalized_data" title="ktk.cycles.stack_normalized_data"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.stack_normalized_data()</span></code></a>, <code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.unstack_normalized_data()</span></code></p>
 </div>
 </dd></dl>
 <dl class="py function">

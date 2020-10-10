@@ -310,7 +310,7 @@ def time_normalize(
     return dest_ts
 
 
-def stack_normalized_data(
+def stack(
         ts: TimeSeries, /,
         n_points: int = 100) -> Dict[str, np.ndarray]:
     """
@@ -353,7 +353,7 @@ def stack_normalized_data(
     return data
 
 
-def stack_normalized_events(
+def stack_events(
         ts: TimeSeries, /,
         n_points: int = 100) -> Dict[str, np.ndarray]:
     """
@@ -392,17 +392,9 @@ def stack_normalized_events(
     >>> ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
 
     >>> # Stack these events
-    >>> events = ktk.cycles.stack_normalized_events(ts)
+    >>> events = ktk.cycles.stack_events(ts)
     >>> events['event1']
-    array([[ 9., nan],
-           [10., nan],
-           [nan, nan],
-           [12., 82.]])
-
-    See also
-    --------
-    ktk.cycles.stack_normalized_data(),
-    ktk.cycles.unstack_normalized_data()
+    [[9.0], [10.0], [], [12.0, 82.0]]
 
     """
     ts = ts.copy()
@@ -411,33 +403,15 @@ def stack_normalized_events(
     n_cycles = int(ts.time.shape[0] / n_points)
     out = {}  # type: Dict[str, np.ndarray]
 
-    # Count the number of occurence of every event in every cycle
-    n_occurrences = {}  # type: Dict[str, np.ndarray]
+    # Init
     for event in ts.events:
-        if event.name not in n_occurrences:
-            n_occurrences[event.name] = np.zeros(n_cycles)
-        event_cycle = int(event.time / n_points)
-        n_occurrences[event.name][event_cycle] += 1
+        if event.name not in out:
+            out[event.name] = [[] for i in range(n_cycles)]
 
-    # Initialize the output
-    for event_name in n_occurrences:
-        out[event_name] = (np.nan *
-                           np.ones(
-                               (n_cycles,
-                                int(n_occurrences[event_name][event_cycle]))))
-
-    # Fill the output
     for event in ts.events:
         event_cycle = int(event.time / n_points)
 
-        # Find the occurrence
-        occurrence = 0
-        while not np.isnan(out[event.name][event_cycle, occurrence]):
-            occurrence += 1
-
-        # Fill this occurrence
-        out[event.name][event_cycle, occurrence] = np.mod(
-            event.time, n_points)
+        out[event.name][event_cycle].append(np.mod(event.time, n_points))
 
     return out
 

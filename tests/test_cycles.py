@@ -185,6 +185,39 @@ def test_most_repeatable_cycles():
     assert test == [1, 4, 0, 2, 3]
 
 
+def test_stack():
+    # Create a periodic TimeSeries, time-normalize and stack
+    ts = ktk.TimeSeries()
+    ts.time = np.arange(1000) / 100 * 2 * np.pi
+    ts.data['sin'] = np.sin(ts.time)
+    ts.data['cos'] = np.cos(ts.time)
+    data = ktk.cycles.stack(ts)
+
+    for i_cycle in range(10):
+
+        assert np.all(data['sin'][i_cycle] - np.sin(
+            np.arange(100) / 100 * 2 * np.pi) < 1E-10)
+
+        assert np.all(data['cos'][i_cycle] - np.cos(
+            np.arange(100) / 100 * 2 * np.pi) < 1E-10)
+
+
+def test_stack_events():
+    # Create a TimeSeries with different time-normalized events
+    ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
+    ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
+    ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
+    ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
+    ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
+    ts.add_event(1, 'event2')  # event2 at 1% of cycle 0
+    ts.add_event(5, 'event2')  # event2 at 5% of cycle 0
+
+    # Stack these events
+    events = ktk.cycles.stack_events(ts)
+    assert events['event1'] == [[9.0], [10.0], [], [12.0, 82.0]]
+    assert events['event2'] == [[1.0, 5.0], [], [], []]
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__])
