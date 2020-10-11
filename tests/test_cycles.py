@@ -25,7 +25,6 @@ Unit tests for the cycles module.
 """
 import ktk
 import numpy as np
-import matplotlib.pyplot as plt
 
 
 def test_detect_cycles():
@@ -65,6 +64,27 @@ def test_detect_cycles():
     assert ts2.events[10].time == 31
     assert ts2.events[11].name == '_'
     assert ts2.events[11].time == 39
+
+    # With falling direction
+    ts2 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
+                                   0.5, 0.5, direction1='falling')
+    assert ts2.events[0].name == 'start'
+    assert ts2.events[0].time == 6
+    assert ts2.events[1].name == 'stop'
+    assert ts2.events[1].time == 10
+    assert ts2.events[3].name == 'start'
+    assert ts2.events[3].time == 13
+    assert ts2.events[4].name == 'stop'
+    assert ts2.events[4].time == 18
+    assert ts2.events[6].name == 'start'
+    assert ts2.events[6].time == 19
+    assert ts2.events[7].name == 'stop'
+    assert ts2.events[7].time == 22
+    assert ts2.events[9].name == 'start'
+    assert ts2.events[9].time == 31
+    assert ts2.events[10].name == 'stop'
+    assert ts2.events[10].time == 39
+
 
     # With minimal cycles
     ts3 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
@@ -177,45 +197,55 @@ def test_most_repeatable_cycles():
         np.cos(np.arange(0, 10, 0.1)) + 0.15,  # 2 - cos. 2nd removed
         np.sin(np.arange(0, 10, 0.1)) + 0.15,  # 3 - with nans. 1st removed
         np.sin(np.arange(0, 10, 0.1)) + 0.12])  # 4 - 2nd of remn. 4th removed
-    # Put some nans in the fourth cycle
+    # Put some nans in the fourth cycle (which should be discarted entirely)
     data[3, 30] = np.nan
 
     test = ktk.cycles.most_repeatable_cycles(data)
 
-    assert test == [1, 4, 0, 2, 3]
+    assert test == [1, 4, 0, 2]
 
 
-def test_stack():
+def test_stack_unstack():
     # Create a periodic TimeSeries, time-normalize and stack
     ts = ktk.TimeSeries()
-    ts.time = np.arange(1000) / 100 * 2 * np.pi
-    ts.data['sin'] = np.sin(ts.time)
-    ts.data['cos'] = np.cos(ts.time)
+    ts.time = np.arange(1000)
+    ts.data['sin'] = np.sin(ts.time / 100 * 2 * np.pi)
+    ts.data['cos'] = np.cos(ts.time / 100 * 2 * np.pi)
+
     data = ktk.cycles.stack(ts)
 
     for i_cycle in range(10):
 
-        assert np.all(data['sin'][i_cycle] - np.sin(
-            np.arange(100) / 100 * 2 * np.pi) < 1E-10)
+        assert np.all(np.abs(data['sin'][i_cycle] - np.sin(
+            np.arange(100) / 100 * 2 * np.pi)) < 1E-10)
 
-        assert np.all(data['cos'][i_cycle] - np.cos(
-            np.arange(100) / 100 * 2 * np.pi) < 1E-10)
+        assert np.all(np.abs(data['cos'][i_cycle] - np.cos(
+            np.arange(100) / 100 * 2 * np.pi)) < 1E-10)
+
+    # Test unstack
+    ts2 = ktk.cycles.unstack(data)
+    assert np.all(np.abs(ts2.data['sin'] - ts.data['sin']) < 1E-10)
+    assert np.all(np.abs(ts2.data['cos'] - ts.data['cos']) < 1E-10)
+    assert np.all(np.abs(ts2.time - ts.time) < 1E-10)
 
 
-def test_stack_events():
-    # Create a TimeSeries with different time-normalized events
-    ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
-    ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
-    ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
-    ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
-    ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
-    ts.add_event(1, 'event2')  # event2 at 1% of cycle 0
-    ts.add_event(5, 'event2')  # event2 at 5% of cycle 0
 
-    # Stack these events
-    events = ktk.cycles.stack_events(ts)
-    assert events['event1'] == [[9.0], [10.0], [], [12.0, 82.0]]
-    assert events['event2'] == [[1.0, 5.0], [], [], []]
+# Commented since stack_events is also commented for now.
+#
+# def test_stack_events():
+#     # Create a TimeSeries with different time-normalized events
+#     ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
+#     ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
+#     ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
+#     ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
+#     ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
+#     ts.add_event(1, 'event2')  # event2 at 1% of cycle 0
+#     ts.add_event(5, 'event2')  # event2 at 5% of cycle 0
+
+#     # Stack these events
+#     events = ktk.cycles.stack_events(ts)
+#     assert events['event1'] == [[9.0], [10.0], [], [12.0, 82.0]]
+#     assert events['event2'] == [[1.0, 5.0], [], [], []]
 
 
 if __name__ == "__main__":

@@ -352,23 +352,23 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.detect_cycles" title="ktk.cycles.detect_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_cycles</span></code></a>(ts, data_key, /, event_name1, …)</p></td>
 <td><p>Detect cycles in a TimeSeries based on a dual threshold approach.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.most_repeatable_cycles" title="ktk.cycles.most_repeatable_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">most_repeatable_cycles</span></code></a>(data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.most_repeatable_cycles" title="ktk.cycles.most_repeatable_cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">most_repeatable_cycles</span></code></a>(data, /)</p></td>
 <td><p>Get the indexes of the most repeatable cycles in TimeSeries or array.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.stack" title="ktk.cycles.stack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack</span></code></a>(ts, /[, n_points])</p></td>
 <td><p>Stack time-normalized TimeSeries’ data into a dict of arrays.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.stack_events" title="ktk.cycles.stack_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stack_events</span></code></a>(ts, /[, n_points])</p></td>
-<td><p>Stack time-normalized TimeSeries’ events into a dict of arrays.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.time_normalize" title="ktk.cycles.time_normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_normalize</span></code></a>(ts, /, event_name1, …[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.cycles.time_normalize" title="ktk.cycles.time_normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time_normalize</span></code></a>(ts, /, event_name1, …[, …])</p></td>
 <td><p>Time-normalize cycles in a TimeSeries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.cycles.unstack" title="ktk.cycles.unstack"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstack</span></code></a>(data, /)</p></td>
+<td><p>Unstack time-normalized data from a dict of arrays to a TimeSeries.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt id="ktk.cycles.detect_cycles">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">detect_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_key</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">raising_threshold</span></em>, <em class="sig-param"><span class="n">falling_threshold</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">min_length1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">min_length2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_length1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_length2</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">target_height1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">target_height2</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">detect_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_key</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">threshold1</span></em>, <em class="sig-param"><span class="n">threshold2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">direction1</span><span class="o">=</span><span class="default_value">'rising'</span></em>, <em class="sig-param"><span class="n">min_length1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">min_length2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_length1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_length2</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">target_height1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">target_height2</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect cycles in a TimeSeries based on a dual threshold approach.</p>
 <p>This function detects biphasic cycles and identifies the transitions as
 new events in the output TimeSeries. These new events are named:</p>
@@ -383,11 +383,6 @@ corresponds to the end of the cycle. Apart from the last cycle,
 this always coincides with the start of the next phase 1.</p></li>
 </ul>
 </div></blockquote>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is currently experimental and may change signature and
-behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -400,8 +395,10 @@ swing (phase 2).</p></li>
 start of phase 1.</p></li>
 <li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the events in the output TimeSeries that corresponds to the
 start of phase 2.</p></li>
-<li><p><strong>raising_threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross upward to register the start of phase 1.</p></li>
-<li><p><strong>falling_threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross downward to register the start of phase 2.</p></li>
+<li><p><strong>threshold1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1.</p></li>
+<li><p><strong>threshold2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 2.</p></li>
+<li><p><strong>direction1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘rising’ to cross threshold1 upward, ‘falling’ to cross
+threshold1 downward.</p></li>
 <li><p><strong>min_length1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal time of phase 1 in seconds.</p></li>
 <li><p><strong>min_length2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal time of phase 2 in seconds.</p></li>
 <li><p><strong>max_length1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal time of phase 1 in seconds.</p></li>
@@ -422,21 +419,16 @@ no target height.</p></li>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.cycles.most_repeatable_cycles">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">most_repeatable_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.most_repeatable_cycles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">most_repeatable_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.most_repeatable_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the indexes of the most repeatable cycles in TimeSeries or array.</p>
 <p>This function returns an ordered list of the most repeatable to the least
 repeatable cycles.</p>
-<p>Its algorithm is to recursively discards the cycle than maximizes the
+<p>It works by recursively discarding the cycle than maximizes the
 root-mean-square error between the cycle and the average of every
 remaining cycle, until there are only two cycles remaining. The function
 returns a list that is the reverse order of cycle removal: first the two
 last cycles, then the last-removed cycle, and so on. If two cycles are as
 equivalently repeatable, they are returned in order of appearance.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is currently experimental and may change signature and
-behaviour in the future.</p>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>Cycles that include at least one NaN are excluded.</p>
@@ -473,13 +465,8 @@ repeatable order.</p>
 <dd><p>Stack time-normalized TimeSeries’ data into a dict of arrays.</p>
 <p>This methods returns the data of a time-normalized TimeSeries as a dict
 where each key corresponds to a TimeSeries’ data, and contains a numpy
-array where the first dimension if the cycle, the second dimension is the
+array where the first dimension is the cycle, the second dimension is the
 percentage of cycle, and the other dimensions are the data itself.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is currently experimental and may change signature and
-behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -495,50 +482,9 @@ on.</p></li>
 <dd class="field-odd"><p>Dict[str, np.ndarray]</p>
 </dd>
 </dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.cycles.stack_events">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">stack_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.stack_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Stack time-normalized TimeSeries’ events into a dict of arrays.</p>
-<p>This methods returns the a dictionary where each key corresponds to an
-event name, and contains a 2d numpy array that contains the event’s
-normalized time, with the first dimension being the cycle and the second
-dimension being the occurrence of this event during this cycle.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is currently experimental and may change signature and
-behaviour in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The time-normalized TimeSeries.</p></li>
-<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points the TimeSeries has been time-normalized
-on.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, np.ndarray]</p>
-</dd>
-</dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a TimeSeries with different time-normalized events</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">400</span><span class="p">))</span>  <span class="c1"># 4 cycles of 100%</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="s1">'event1'</span><span class="p">)</span>    <span class="c1"># event1 at 9% of cycle 0</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mi">110</span><span class="p">,</span> <span class="s1">'event1'</span><span class="p">)</span>  <span class="c1"># event1 at 10% of cycle 1</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mi">312</span><span class="p">,</span> <span class="s1">'event1'</span><span class="p">)</span>  <span class="c1"># event1 at 12% of cycle 3</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mi">382</span><span class="p">,</span> <span class="s1">'event1'</span><span class="p">)</span>  <span class="c1"># 2nd occurr. event1 at 82% of cycle 3</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Stack these events</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">stack_events</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">events</span><span class="p">[</span><span class="s1">'event1'</span><span class="p">]</span>
-<span class="go">[[9.0], [10.0], [], [12.0, 82.0]]</span>
-</pre></div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#ktk.cycles.unstack" title="ktk.cycles.unstack"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.unstack()</span></code></a></p>
 </div>
 </dd></dl>
 <dl class="py function">
@@ -572,6 +518,30 @@ heel strike and the next heel strike:</p>
 <dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
+</dd></dl>
+<dl class="py function">
+<dt id="ktk.cycles.unstack">
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.unstack" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unstack time-normalized data from a dict of arrays to a TimeSeries.</p>
+<p>This methods creates a time-normalized TimeSeries by putting each cycle
+from the provided data dictionary end to end.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A dict where each key contains a numpy array where the first dimension
+is the cycle, the second dimension is the percentage of cycle, and
+the other dimensions are the data itself.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#ktk.cycles.stack" title="ktk.cycles.stack"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.stack()</span></code></a></p>
+</div>
 </dd></dl>
 
 

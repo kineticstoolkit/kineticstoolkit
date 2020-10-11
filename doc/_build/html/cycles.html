@@ -597,10 +597,6 @@ div.rendered_html tbody tr:hover {
 
 <h1 id="cycles--page-root">Cycles<a class="headerlink" href="#cycles--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/ktk.cycles.html"><span class="doc">cycles</span></a> module allows detecting cycles in TimeSeries, time-normalize these cycles and select the most repeatable ones.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This module is experimental. Function names, signatures and implementations may change anytime.</p>
-</div>
 <p>In this tutorial, we will load kinetics data from wheelchair propulsion using a csv file, and then manipulate propulsion cycles.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -687,8 +683,8 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="n">test</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">,</span>
                                 <span class="n">event_name1</span><span class="o">=</span><span class="s1">'push'</span><span class="p">,</span>
                                 <span class="n">event_name2</span><span class="o">=</span><span class="s1">'recovery'</span><span class="p">,</span>
-                                <span class="n">raising_threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                <span class="n">falling_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+                                <span class="n">threshold1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                <span class="n">threshold2</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
 <span class="n">test</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -709,8 +705,8 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="n">test</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">,</span>
                                 <span class="n">event_name1</span><span class="o">=</span><span class="s1">'push'</span><span class="p">,</span>
                                 <span class="n">event_name2</span><span class="o">=</span><span class="s1">'recovery'</span><span class="p">,</span>
-                                <span class="n">raising_threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                <span class="n">falling_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                <span class="n">threshold1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                <span class="n">threshold2</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                                 <span class="n">min_length1</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
                                 <span class="n">min_length2</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 <span class="n">test</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
@@ -733,8 +729,8 @@ div.rendered_html tbody tr:hover {
 <span></span><span class="n">ts_with_events</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">,</span>
                                           <span class="n">event_name1</span><span class="o">=</span><span class="s1">'push'</span><span class="p">,</span>
                                           <span class="n">event_name2</span><span class="o">=</span><span class="s1">'recovery'</span><span class="p">,</span>
-                                          <span class="n">raising_threshold</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                          <span class="n">falling_threshold</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
+                                          <span class="n">threshold1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                                          <span class="n">threshold2</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
                                           <span class="n">min_length1</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
                                           <span class="n">min_length2</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
                                           <span class="n">target_height1</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>

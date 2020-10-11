@@ -574,8 +574,8 @@ def detect_pushes(
         ts_force, 'Ftot',
         event_name1='push',
         event_name2='recovery',
-        raising_threshold=push_threshold,
-        falling_threshold=recovery_threshold,
+        threshold1=push_threshold,
+        threshold2=recovery_threshold,
         min_length1=min_push_time,
         target_height1=min_push_force)
 
