@@ -342,20 +342,19 @@
 <h1 id="index--page-root">Kinetics Toolkit<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This is the website for the development version. Switch to the <a class="reference external" href="http://felixchenier.uqam.ca/kineticstoolkit">stable</a>
+<p>This is the website for the development version. Switch to the <a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">stable</a>
 version.</p>
 </div>
 <p>Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
 classes and functions that aims to facilitate research in biomechanics using
-python. It does not attempt to provide a complete workflow from raw files to
-final analysis (although it may in a far future), or a main graphical user
-interface, or magical blackboxes that process everything automatically.</p>
+python. It is developed at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> in
+Montreal.</p>
 <p>Kinetics Toolkit is mainly addressed to researchers and students in
 biomechanics with a little background in programming, who may or may not
 already have a working workflow and who want to understand and control their
-data. This is why special attention is made to API documentation and tutorials,
-and to ensure the interoperability of ktk with other environments (using pandas
-Dataframes as intermediate data containers).</p>
+data. This is why special attention is made to build rich API documentation and
+tutorials, and to ensure the interoperability of ktk with other environments
+(using pandas Dataframes and JSON files as intermediate data containers).</p>
 
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span><span class="s1">'my_file.c3d'</span><span class="p">)</span>
@@ -382,8 +381,8 @@ graphical user interface.</p></li>
 using ktk or are planning to be, you are warmly invited to contact me, first to
 say Hello :-), and so that I can warn you before doing major, possibly breaking
 changes. Also remind that I develop ktk mainly for my lab and I have limited
-resources for troubleshooting. You can however ask your <a class="reference external" href="mailto:chenier.felix%40uqam.ca">questions</a> and if I
-can answer, I’ll do.</p>
+resources for troubleshooting. You can however ask your questions and submit bugs
+or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>. If I can answer, I’ll do.</p>
 
 
 <h2 id="development-version">Development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
@@ -429,7 +428,11 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l3"><a class="reference internal" href="install.html#python-path-development-version-only">Python path (development version only)</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#keeping-ktk-up-to-date">Keeping ktk up to date</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#keeping-ktk-up-to-date">Keeping ktk up to date</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install.html#id1">Stable version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install.html#id2">Development version</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>

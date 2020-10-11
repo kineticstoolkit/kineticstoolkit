@@ -10,7 +10,7 @@ Although ktk is distributed via `pip`, I strongly recommend using a conda enviro
 
 I suggest Miniconda as it is way smaller than the whole Anaconda suite.
 
-[Miniconda website](https://docs.conda.io/en/latest/miniconda.html) - Select the Python 3.7 version that corresponds to your system.
+[Miniconda website](https://docs.conda.io/en/latest/miniconda.html) - Select the most recent version that corresponds to your system.
 
 ### Create a virtual environment and install the external dependencies ###
 
@@ -48,8 +48,8 @@ Configuring Spyder
 
 On Windows, open Spyder by selecting 'Spyder (ktk)' from the Anaconda3 menu. On macOS and Linux, open a terminal and write:
 
-	conda activate ktk
-	spyder
+    conda activate ktk
+    spyder
 
 ### Qt5 backend ###
 
@@ -67,11 +67,15 @@ Restart Spyder. Writing `import ktk` should now find and import ktk without erro
 Keeping ktk up to date
 ----------------------
 
-For the stable version, open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
+### Stable version ###
+
+Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
 
     pip upgrade ktk
 
-For the development version, in an IPython console, type:
+### Development version ###
 
-    import ktk
-    ktk.update()
+Open Git bash (on Windows) or a terminal (on macOS and Linux), navigate to the kineticstoolkit folder
+and type:
+
+    git pull origin master

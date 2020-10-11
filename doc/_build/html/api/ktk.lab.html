@@ -47,7 +47,7 @@
   
   
   
-    <title>ktk package &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>ktk.lab module &#8212; Kinetics Toolkit (ktk) master documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
@@ -59,8 +59,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.config module" href="ktk.config.html" />
-    <link rel="prev" title="ktk" href="modules.html" />
+    <link rel="next" title="ktk.loadsave module" href="ktk.loadsave.html" />
+    <link rel="prev" title="ktk.kinematics module" href="ktk.kinematics.html" />
 
 
 
@@ -82,7 +82,7 @@
   <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
   <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
   <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#api/ktk" tabindex="1" class="md-skip"> Skip to content </a>
+  <a href="#api/ktk.lab" tabindex="1" class="md-skip"> Skip to content </a>
   <header class="md-header" data-md-component="header">
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
@@ -101,7 +101,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
-          <span class="md-header-nav__topic"> ktk package </span>
+          <span class="md-header-nav__topic"> ktk.lab module </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -176,6 +176,7 @@
       <ul class="md-tabs__list">
           <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
           <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
+          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
       </ul>
     </div>
   </nav>
@@ -326,15 +327,9 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#api-ktk--page-root" class="md-nav__link">ktk package</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#api-ktk-lab--page-root" class="md-nav__link">ktk.lab module</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#submodules" class="md-nav__link">Submodules</a>
-        </li>
-        <li class="md-nav__item"><a href="#module-ktk" class="md-nav__link">Module contents</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#kinetics-toolkit-development-version" class="md-nav__link">Kinetics Toolkit - Development version</a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#kinetics-toolkit-lab-mode" class="md-nav__link">Kinetics Toolkit - Lab mode</a>
         </li></ul>
             </nav>
         </li>
@@ -348,41 +343,15 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="api-ktk--page-root">ktk package<a class="headerlink" href="#api-ktk--page-root" title="Permalink to this headline">¶</a></h1>
+<span id="ktk-lab-module"></span><h1 id="api-ktk-lab--page-root">ktk.lab module<a class="headerlink" href="#api-ktk-lab--page-root" title="Permalink to this headline">¶</a></h1>
 
-<h2 id="submodules">Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="ktk.config.html">ktk.config module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.cycles.html">ktk.cycles module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.dbinterface.html">ktk.dbinterface module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.dev.html">ktk.dev module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.emg.html">ktk.emg module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.filters.html">ktk.filters module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.geometry.html">ktk.geometry module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.gui.html">ktk.gui module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.inversedynamics.html">ktk.inversedynamics module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.kinematics.html">ktk.kinematics module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.lab.html">ktk.lab module</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="ktk.lab.html#kinetics-toolkit-lab-mode">Kinetics Toolkit - Lab mode</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.loadsave.html">ktk.loadsave module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.mplhelper.html">ktk.mplhelper module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.player.html">ktk.player module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.pushrimkinetics.html">ktk.pushrimkinetics module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.timeseries.html">ktk.timeseries module</a></li>
-<li class="toctree-l1"><a class="reference internal" href="ktk.tools.html">ktk.tools module</a></li>
-</ul>
-</div>
-
-
-<span id="module-contents"></span><h2 id="module-ktk">Module contents<a class="headerlink" href="#module-ktk" title="Permalink to this headline">¶</a></h2>
-
-<h3 id="kinetics-toolkit-development-version">Kinetics Toolkit - Development version<a class="headerlink" href="#kinetics-toolkit-development-version" title="Permalink to this headline">¶</a></h3>
+<h2 id="kinetics-toolkit-lab-mode">Kinetics Toolkit - Lab mode<a class="headerlink" href="#kinetics-toolkit-lab-mode" title="Permalink to this headline">¶</a></h2>
+<dl class="simple">
+<dt>This module loads ktk in lab mode. The standard way to use this module is:</dt><dd><p>import ktk.lab as ktk</p>
+</dd>
+</dl>
 <p>To get started, please consult ktk’s
-[website](<a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">https://felixchenier.uqam.ca/ktk_develop</a>)</p>
-
+[website](<a class="reference external" href="https://felixchenier.uqam.ca/ktk">https://felixchenier.uqam.ca/ktk</a>)</p>
 
 
 
@@ -396,7 +365,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="modules.html" title="ktk"
+            <a href="ktk.kinematics.html" title="ktk.kinematics module"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -405,17 +374,17 @@
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> ktk </span>
+                      class="md-footer-nav__direction"> Previous </span> ktk.kinematics module </span>
               </div>
             </a>
           
           
-            <a href="ktk.config.html" title="ktk.config module"
+            <a href="ktk.loadsave.html" title="ktk.loadsave module"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.config module </span>
+                class="md-footer-nav__direction"> Next </span> ktk.loadsave module </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

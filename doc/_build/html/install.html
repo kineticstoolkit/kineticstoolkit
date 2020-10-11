@@ -244,7 +244,13 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#keeping-ktk-up-to-date" class="md-nav__link">Keeping ktk up to date</a>
+        <li class="md-nav__item"><a href="#keeping-ktk-up-to-date" class="md-nav__link">Keeping ktk up to date</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id1" class="md-nav__link">Stable version</a>
+        </li>
+        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Development version</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -384,7 +390,13 @@
         </li></ul>
             </nav>
         </li>
-        <li class="md-nav__item"><a href="#keeping-ktk-up-to-date" class="md-nav__link">Keeping ktk up to date</a>
+        <li class="md-nav__item"><a href="#keeping-ktk-up-to-date" class="md-nav__link">Keeping ktk up to date</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#id1" class="md-nav__link">Stable version</a>
+        </li>
+        <li class="md-nav__item"><a href="#id2" class="md-nav__link">Development version</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -405,7 +417,7 @@
 
 <h3 id="download-and-install-anaconda-or-miniconda">Download and install Anaconda or Miniconda<a class="headerlink" href="#download-and-install-anaconda-or-miniconda" title="Permalink to this headline">¶</a></h3>
 <p>I suggest Miniconda as it is way smaller than the whole Anaconda suite.</p>
-<p><a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda website</a> - Select the Python 3.7 version that corresponds to your system.</p>
+<p><a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda website</a> - Select the most recent version that corresponds to your system.</p>
 
 
 <h3 id="create-a-virtual-environment-and-install-the-external-dependencies">Create a virtual environment and install the external dependencies<a class="headerlink" href="#create-a-virtual-environment-and-install-the-external-dependencies" title="Permalink to this headline">¶</a></h3>
@@ -461,15 +473,21 @@
 
 
 <h2 id="keeping-ktk-up-to-date">Keeping ktk up to date<a class="headerlink" href="#keeping-ktk-up-to-date" title="Permalink to this headline">¶</a></h2>
-<p>For the stable version, open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:</p>
+
+<h3 id="id1">Stable version<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">upgrade</span> <span class="n">ktk</span>
 </pre></div>
 </div>
-<p>For the development version, in an IPython console, type:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">ktk</span>
-<span class="n">ktk</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+
+
+<h3 id="id2">Development version<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Open Git bash (on Windows) or a terminal (on macOS and Linux), navigate to the kineticstoolkit folder
+and type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
 </pre></div>
 </div>
+
 
 
 

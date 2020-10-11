@@ -6,11 +6,6 @@ work in IPython-based environments is more enjoyable (at least for me).
 This mode does not affect anything besides visual representations and is
 completely facultative.
 
-We normally launch lab mode just after imports:
-
-    >>> import ktk
-    >>> ktk.lab()
-
 
 When to use lab mode
 --------------------
@@ -18,9 +13,13 @@ When to use lab mode
 __Use it__ if you want to run ktk as an integrated work environment using
 IPython based environments (Spyder, Jupyter) in a biomechanics research labs.
 
+    >>> import ktk.lab as ktk
+
 __Do not use it__ if you already have a working environment and you simply want
 to use some ktk classes or functions within your own setup, and you don't
 want ktk to mess with your defaults.
+
+    >>> import ktk
 
 
 What lab mode does
@@ -56,8 +55,7 @@ Default dict representation:
 
 Modified dict representation in lab mode:
 
-    >>> import ktk
-    >>> ktk.lab()
+    >>> import ktk.lab as ktk
     >>> data
     {
         'data1': <array of shape (30,)>,

@@ -375,18 +375,19 @@
 work in IPython-based environments is more enjoyable (at least for me).
 This mode does not affect anything besides visual representations and is
 completely facultative.</p>
-<p>We normally launch lab mode just after imports:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">lab</span><span class="p">()</span>
-</pre></div>
-</div>
 
 <h2 id="when-to-use-lab-mode">When to use lab mode<a class="headerlink" href="#when-to-use-lab-mode" title="Permalink to this headline">¶</a></h2>
 <p><strong>Use it</strong> if you want to run ktk as an integrated work environment using
 IPython based environments (Spyder, Jupyter) in a biomechanics research labs.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+</pre></div>
+</div>
 <p><strong>Do not use it</strong> if you already have a working environment and you simply want
 to use some ktk classes or functions within your own setup, and you don’t
 want ktk to mess with your defaults.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk</span>
+</pre></div>
+</div>
 
 
 <h2 id="what-lab-mode-does">What lab mode does<a class="headerlink" href="#what-lab-mode-does" title="Permalink to this headline">¶</a></h2>
@@ -418,8 +419,7 @@ content is shown, more like the representation of a Matlab struct.</p>
 </pre></div>
 </div>
 <p>Modified dict representation in lab mode:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">lab</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>
 <span class="go">{</span>
 <span class="go">    'data1': &lt;array of shape (30,)&gt;,</span>

@@ -5,20 +5,21 @@ Kinetics Toolkit
    This is the website for the development version. Switch to the stable_
    version.
 
-.. _stable: http://felixchenier.uqam.ca/kineticstoolkit
+.. _stable: https://felixchenier.uqam.ca/kineticstoolkit
 
 Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
 classes and functions that aims to facilitate research in biomechanics using
-python. It does not attempt to provide a complete workflow from raw files to
-final analysis (although it may in a far future), or a main graphical user
-interface, or magical blackboxes that process everything automatically.
+python. It is developed at the `Mobility and Adaptive Sports Research Lab`_ in
+Montreal.
 
 Kinetics Toolkit is mainly addressed to researchers and students in
 biomechanics with a little background in programming, who may or may not
 already have a working workflow and who want to understand and control their
-data. This is why special attention is made to API documentation and tutorials,
-and to ensure the interoperability of ktk with other environments (using pandas
-Dataframes as intermediate data containers).
+data. This is why special attention is made to build rich API documentation and
+tutorials, and to ensure the interoperability of ktk with other environments
+(using pandas Dataframes and JSON files as intermediate data containers).
+
+.. _`Mobility and Adaptive Sports Research Lab`: https://felixchenier.uqam.ca
 
 
 Example
@@ -52,8 +53,10 @@ Please be warned that this is still mostly experimental software. If you are
 using ktk or are planning to be, you are warmly invited to contact me, first to
 say Hello :-), and so that I can warn you before doing major, possibly breaking
 changes. Also remind that I develop ktk mainly for my lab and I have limited
-resources for troubleshooting. You can however ask your questions_ and if I
-can answer, I'll do.
+resources for troubleshooting. You can however ask your questions and submit bugs
+or feature requests on `ktk's github issue tracker`_. If I can answer, I'll do.
+
+.. _`ktk's github issue tracker`: https://github.com/felixchenier/kineticstoolkit/issues
 
 
 Development version

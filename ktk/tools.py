@@ -99,7 +99,7 @@ def terminal(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
-def lab(*, config: Dict[str, bool] = {
+def start_lab_mode(*, config: Dict[str, bool] = {
         'change_ipython_dict_repr': True,
         'change_matplotlib_defaults': True,
         'change_numpy_print_options': True}) -> None:

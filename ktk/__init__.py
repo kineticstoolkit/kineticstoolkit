@@ -30,9 +30,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-__pdoc__ = {'dev': False, 'cmdgui': False, 'gui': False, 'external': False,
-            'mplhelper': False}
-
 # --- Imports
 directory = []
 
@@ -40,10 +37,9 @@ from ktk.timeseries import TimeSeries, TimeSeriesEvent
 directory.append('TimeSeries')
 directory.append('TimeSeriesEvent')
 
-from ktk.tools import explore, terminal, lab, update, tutorials
+from ktk.tools import explore, terminal, update, tutorials
 directory.append('explore')
 directory.append('terminal')
-directory.append('lab')
 directory.append('update')
 directory.append('tutorials')
 
