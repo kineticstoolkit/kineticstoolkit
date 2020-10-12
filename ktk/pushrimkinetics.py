@@ -26,16 +26,17 @@ __license__ = "Apache 2.0"
 
 
 import ktk.filters
-from ktk import TimeSeries, TimeSeriesEvent
+from ktk import TimeSeries
 
 import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
 import warnings
 import struct  # to unpack binary data from SmartWheels' txt files
-from typing import *
+from typing import Union, Optional
 
-def read_file(filename: str, format: str = 'smartwheel', /) -> TimeSeries:
+
+def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
 
@@ -43,15 +44,21 @@ def read_file(filename: str, format: str = 'smartwheel', /) -> TimeSeries:
     ----------
     filename
         Name of the file to open
-    format
-        Optiona. Format of the file. Can be either:
+    file_format
+        Format of the file. Can be either:
 
-        - 'smartwheel' (default - SmartWheel CSV file)
+        - 'smartwheel' (SmartWheel CSV file)
         - 'smartwheeltxt' (SmartWheel SD-Card TXT file)
         - 'racingwheel' (will change)
 
     """
-    if format == 'smartwheel':
+    if file_format == '':
+        warnings.warn("file_format will need to be explicitely specified in "
+                      "future versions. Now using 'smartwheel'.",
+                      FutureWarning)
+        file_format = 'smartwheel'
+
+    if file_format == 'smartwheel':
 
         dataframe = pd.read_csv(filename, delimiter=None, header=None)
         if dataframe.shape[1] == 1:  # Retry with ; as separator
@@ -79,7 +86,7 @@ def read_file(filename: str, format: str = 'smartwheel', /) -> TimeSeries:
         ts.add_data_info('Moments', 'Unit', 'Nm')
         ts.add_data_info('Angle', 'Unit', 'rad')
 
-    elif format == 'racingwheel':
+    elif file_format == 'racingwheel':
 
         dataframe = pd.read_csv(filename, delimiter=',')
         data = dataframe.to_numpy()
@@ -95,7 +102,7 @@ def read_file(filename: str, format: str = 'smartwheel', /) -> TimeSeries:
         ts.data['Battery'] = battery
         ts.add_data_info('Battery', 'Unit', 'raw')
 
-    elif format == 'smartwheeltxt':
+    elif file_format == 'smartwheeltxt':
 
         data = {'ch1': [], 'ch2': [], 'ch3': [],
                 'ch4': [], 'ch5': [], 'ch6': [], 'angle_ticks': []}
@@ -212,7 +219,19 @@ def remove_sinusoids(
         baseline_kinetics: Optional[TimeSeries] = None
         ) -> TimeSeries:
     """
-    Remove sinusoids in forces and moments.
+    Deprecated. Please use remove_offsets instead.
+    """
+    warnings.warn("remove_sinusoids is deprecated. Please use remove_offsets "
+                  "instead.", FutureWarning)
+    return remove_offsets(kinetics, baseline_kinetics)
+
+
+def remove_offsets(
+        kinetics: TimeSeries,
+        baseline_kinetics: Optional[TimeSeries] = None
+        ) -> TimeSeries:
+    """
+    Remove dynamic offsets in forces and moments.
 
     Parameters
     ----------
@@ -288,6 +307,283 @@ def remove_sinusoids(
 
 
 def calculate_forces_and_moments(
+        kinetics: TimeSeries, /,
+        gains: Union[np.ndarray, str],
+        offsets: np.ndarray = np.zeros((6)), *,
+        transducer: str = 'force_cell',
+        reference_frame: str = 'wheel') -> TimeSeries:
+    """
+    Calculate pushrim forces and moments based on raw channel values.
+
+    For standard force cells (with each channel being a raw value
+    corresponding to Fx, Fy, Fz, Mx, My, Mz, respectively), calculates
+    the forces and moments using a sensitivity matrix (gains) and an
+    offset vector (offsets):
+
+    ``[Fx, Fy, Fz, Mx, My, Mz] = gains @ channels + offsets``
+
+    For SmartWheel, calculates the forces and moments using a gain
+    vector (gains) and an offset vector (offsets).
+
+    Parameters
+    ----------
+    kinetics
+        Input TimeSeries that must contain a 'Channels' key in its data dict.
+    gains
+        6x6 gain matrix (force_cell) or gain vector of length 6 (smartwheel).
+    offsets
+        Optional. Offset vector of length 6.
+    transducer
+        Optional. 'force_cell' or 'smartwheel'.
+    reference_frame
+        Optional:
+            - 'wheel' to report the forces and moments into the local
+               wheel's reference frame.
+            - 'hub' to compensate for the wheel rotation and match the
+               reference frame used by the SmartWheel: x anteroposterior,
+               y in the wheel plane, upward for non-camberred wheels, and
+               z perpendicular to the wheel plane, outward.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the input TimeSeries, with the added 'Forces'
+        and 'Moments' data keys.
+
+    Note
+    ----
+    Some calibration matrices are provided in the
+    ``pushrimkinetics.CALIBRATION_MATRICES`` dictionary. This dictionary can
+    be used directly using dict unpacking. For example:
+
+        ktk.pushrimkinetics.calculate_force_and_moments(
+            kinetics,
+            **ktk.pushrimkinetics.CALIBRATION_MATRICES['SmartWheel_123'],
+            reference_frame='level'
+        )
+
+    """
+    # Check if this is the old form and call this deprecated form.
+    if isinstance(gains, str):
+        warnings.warn("This old signature won't be supported in future.",
+                      FutureWarning)
+        return _old_calculate_forces_and_moments(kinetics, gains)
+
+    # Calculate the forces and moments and add to the output
+    if transducer == 'smartwheel':
+
+        # Calculate the rotation angle to apply to the calculated kinetics
+        if reference_frame == 'wheel':
+            theta = 0
+        elif reference_frame == 'hub':
+            theta = kinetics.data['Angle']
+        else:
+            raise ValueError("reference_frame must be 'wheel' or 'hub'")
+
+        # Extract channels and angle
+        ch = kinetics.data['Channels'] - 2048
+
+        # Calculate the forces and moments
+        Fx = gains[0] * (
+            ch[:, 0] * sin(theta) +
+            ch[:, 2] * sin(theta + 2 * pi / 3) +
+            ch[:, 4] * sin(theta + 4 * pi / 3)) + offsets[0]
+
+        Fy = gains[1] * (
+            ch[:, 0] * cos(theta) +
+            ch[:, 2] * cos(theta + 2 * pi / 3) +
+            ch[:, 4] * cos(theta + 4 * pi / 3)) + offsets[1]
+
+        Fz = gains[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
+
+        Mx = gains[3] * (
+            ch[:, 1] * sin(theta) +
+            ch[:, 3] * sin(theta + 2 * pi / 3) +
+            ch[:, 5] * sin(theta + 4 * pi / 3)) + offsets[3]
+
+        My = gains[4] * (
+            ch[:, 1] * cos(theta) +
+            ch[:, 3] * cos(theta + 2 * pi / 3) +
+            ch[:, 5] * cos(theta + 4 * pi / 3)) + offsets[4]
+
+        Mz = gains[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
+        forces_moments = np.block([Fx[:, np.newaxis],
+                                   Fy[:, np.newaxis],
+                                   Fz[:, np.newaxis],
+                                   Mx[:, np.newaxis],
+                                   My[:, np.newaxis],
+                                   Mz[:, np.newaxis]])
+
+    elif transducer == 'force_cell':
+
+        # Calculate the rotation angle to apply to the calculated kinetics
+        if reference_frame == 'wheel':
+            theta = 0
+        elif reference_frame == 'hub':
+            raise NotImplementedError("hub reference_frame not implemented yet"
+                                      "for force_cell transducers.")
+        else:
+            raise ValueError("reference_frame must be 'wheel' or 'hub'")
+
+        n_frames = kinetics.data['Channels'].shape[0]
+
+        forces_moments = np.empty((n_frames, 6))
+        for i_frame in range(n_frames):
+            forces_moments[i_frame] = (gains @
+                                       kinetics.data['Channels'][i_frame] +
+                                       offsets)
+
+    # Format these data in the output timeseries
+    kinetics = kinetics.copy()
+
+    kinetics.data['Forces'] = np.concatenate(
+        [forces_moments[:, 0:3], np.zeros((forces_moments.shape[0], 1))],
+        axis=1)
+    kinetics.add_data_info('Forces', 'Unit', 'N')
+
+    kinetics.data['Moments'] = np.concatenate(
+        [forces_moments[:, 3:6], np.zeros((forces_moments.shape[0], 1))],
+        axis=1)
+    kinetics.add_data_info('Moments', 'Unit', 'Nm')
+
+    return(kinetics)
+
+
+def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
+    """
+    Calculate velocity based on wheel angle.
+
+    The velocity is calculated by deriving the angle using a 2nd order
+    Savitzky-Golay filter of length 21. This filter has been experimentally
+    validated to maximize the signal-to-noise ratio for a SmartWheel recording
+    at 240 Hz. This function may change signature in the future to include
+    other filtering options. To manually get the velocity using a custom
+    filter, please see the ``ktk.filters`` module.
+
+    Parameters
+    ----------
+    tsin
+        TimeSeries that contains at least the data key 'Angle'.
+
+    Returns
+    -------
+    TimeSeries
+        	A copy of the TimeSeries with the added data key 'Velocity'.
+
+    See Also
+    --------
+    ktk.filters.butter : Butterworth filter for TimeSeries
+    ktk.filters.savgol : Savitsky-golay filter for TimeSeries
+    ktk.filters.deriv : Derivative filter for TimeSeries
+
+    """
+    tsangle = TimeSeries()
+    tsangle.time = tsin.time
+    tsangle.data['Angle'] = tsin.data['Angle']
+    tsvelocity = ktk.filters.savgol(tsangle, window_length=21,
+                                    poly_order=2, deriv=1)
+    tsout = tsin.copy()
+    tsout.data['Velocity'] = tsvelocity.data['Angle']
+    tsout.add_data_info('Velocity', 'Unit',
+                        tsout.data_info['Angle']['Unit'] + '/s')
+    return tsout
+
+
+def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
+    """
+    Calculate power based on wheel velocity and moment.
+
+    Parameters
+    ----------
+    tsin
+        TimeSeries that contains at least the data keys 'Velocity' and
+        'Moments'. The units must be consistent (e.g., rad/s and Nm)
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the TimeSeries with the added data key 'Power'.
+
+    """
+    tsout = tsin.copy()
+    tsout.data['Power'] = (tsout.data['Velocity'] *
+              tsout.data['Moments'][:,2])
+    tsout.add_data_info('Power', 'Unit', 'W')
+    return tsout
+
+
+def detect_pushes(
+        tsin: TimeSeries, /, *,
+        push_threshold: float = 5.0,
+        recovery_threshold: float = 2.0,
+        min_push_time: float = 0.1,
+        min_push_force: float = 30.0) -> TimeSeries:
+    """
+    Detect pushes and recoveries automatically.
+
+    Parameters
+    ----------
+    tsin
+        Input TimeSeries that must contain a 'Forces' key in its data dict.
+    push_threshold
+        Optional. The total force over which a push phase is triggered, in
+        newton.
+    recovery_threshold
+        Optional. The total force under which a recovery phase is triggered,
+        in newton.
+    min_push_time
+        Optional. The minimum time required for a push time, in seconds.
+        Detected pushes that last less than this minimum time are removed from
+        the push analysis.
+    min_recovery_time
+        Optional. The minimum time required for a recovery time, in seconds.
+        Detected recoveries that last less than this minimum time are removed
+        from the push analysis.
+    min_push_force
+        Optional. The minimum total push force in N under which the detected
+        push is discarded. For example, if the user puts their hands on the
+        pushrim before starting propelling, this may be detected as a push.
+        Using a minimum push force removes these misdetected pushes.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of tsin with the following added events:
+        - 'push'
+        - 'recovery'
+
+    """
+    # Calculate the total force
+    f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
+    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
+    ts_force.events = tsin.events
+
+    # Smooth the total force to avoid detecting pushes on glitches
+    ts_force = ktk.filters.smooth(ts_force, 11)
+
+    # Remove the median if it existed
+    ts_force.data['Ftot'] = \
+            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
+
+    # Find the pushes
+    ts_force = ktk.cycles.detect_cycles(
+        ts_force, 'Ftot',
+        event_name1='push',
+        event_name2='recovery',
+        threshold1=push_threshold,
+        threshold2=recovery_threshold,
+        min_length1=min_push_time,
+        target_height1=min_push_force)
+
+    # Form the output timeseries
+    tsout = tsin.copy()
+    tsout.events = ts_force.events
+
+    return tsout
+
+
+#--- Deprecated functions ---#
+def _old_calculate_forces_and_moments(
         kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
     """
     Calculate pushrim forces and moments based on raw channel values.
@@ -467,120 +763,74 @@ def calculate_forces_and_moments(
     return(kinetics)
 
 
-def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
-    """
-    Calculate velocity based on wheel angle.
 
-    Parameters
-    ----------
-    tsin
-        TimeSeries that contains at least the data key 'Angle'.
+#--- Some calibration matrices ---#
+CALIBRATION_MATRICES = {}
+CALIBRATION_MATRICES['SmartWheel_93'] = {
+    'gains': np.array([-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_94'] = {
+    'gains': np.array([-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_123'] = {
+    'gains': np.array([-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_124'] = {
+    'gains': np.array([-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_125'] = {
+    'gains': np.array([-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_126'] = {
+    'gains': np.array([-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_126_S18'] = {
+    'gains': np.array([-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_179_S18'] = {
+    'gains': np.array([-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_180_S18'] = {
+    'gains': np.array([-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
+    'gains': np.array([-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]),
+    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    'transducer': 'smartwheel',
+    }
+CALIBRATION_MATRICES['MSA_Racing_1'] = {
+    'gains': (np.array([
+        [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
+        [-0.840, 201.396, 2.119, 0.083, -6.877, 4.482],
+        [-1.935, -1.643, 402.286, 1.687, 0.897, -23.616],
+        [0.213, 0.122, 0.120, 25.190, -0.013, 0.147],
+        [-0.072, 0.286, 0.076, 0.012, 25.430, 0.146],
+        [0.016, -0.015, 0.046, -0.099, -0.076, 25.206]])  # Cell calibration
+        / (2.**15) / 10  # ADC gains
+        / np.array([-2., -2., -2., -2., -4., -4.])  # Board gains
+        ),
+    'offsets': [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869],
+    'transducer': 'force_cell',
+    }
 
-    Returns
-    -------
-    TimeSeries
-        	A copy of the TimeSeries with the added data key 'Velocity'.
-    """
-    tsangle = TimeSeries()
-    tsangle.time = tsin.time
-    tsangle.data['Angle'] = tsin.data['Angle']
-    tsvelocity = ktk.filters.savgol(tsangle, window_length=21,
-                                    poly_order=2, deriv=1)
-    tsout = tsin.copy()
-    tsout.data['Velocity'] = tsvelocity.data['Angle']
-    tsout.add_data_info('Velocity', 'Unit',
-                        tsout.data_info['Angle']['Unit'] + '/s')
-    return tsout
-
-
-def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
-    """
-    Calculate power based on wheel velocity and moment.
-
-    Parameters
-    ----------
-    tsin
-        TimeSeries that contains at least the data keys 'Velocity' and
-        'Moments'. The units must be consistent (e.g., rad/s and Nm)
-
-    Returns
-    -------
-    TimeSeries
-        A copy of the TimeSeries with the added data key 'Power'.
-
-    """
-    tsout = tsin.copy()
-    tsout.data['Power'] = (tsout.data['Velocity'] *
-              tsout.data['Moments'][:,2])
-    tsout.add_data_info('Power', 'Unit', 'W')
-    return tsout
-
-
-def detect_pushes(
-        tsin: TimeSeries, /, *,
-        push_threshold: float = 5.0,
-        recovery_threshold: float = 2.0,
-        min_push_time: float = 0.1,
-        min_push_force: float = 30.0) -> TimeSeries:
-    """
-    Detect pushes and recoveries automatically.
-
-    Parameters
-    ----------
-    tsin
-        Input TimeSeries that must contain a 'Forces' key in its data dict.
-    push_threshold
-        Optional. The total force over which a push phase is triggered, in
-        newton.
-    recovery_threshold
-        Optional. The total force under which a recovery phase is triggered,
-        in newton.
-    min_push_time
-        Optional. The minimum time required for a push time, in seconds.
-        Detected pushes that last less than this minimum time are removed from
-        the push analysis.
-    min_recovery_time
-        Optional. The minimum time required for a recovery time, in seconds.
-        Detected recoveries that last less than this minimum time are removed
-        from the push analysis.
-    min_push_force
-        Optional. The minimum total push force in N under which the detected
-        push is discarded. For example, if the user puts their hands on the
-        pushrim before starting propelling, this may be detected as a push.
-        Using a minimum push force removes these misdetected pushes.
-
-    Returns
-    -------
-    TimeSeries
-        A copy of tsin with the following added events:
-        - 'push'
-        - 'recovery'
-
-    """
-    # Calculate the total force
-    f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
-    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
-    ts_force.events = tsin.events
-
-    # Smooth the total force to avoid detecting pushes on glitches
-    ts_force = ktk.filters.smooth(ts_force, 11)
-
-    # Remove the median if it existed
-    ts_force.data['Ftot'] = \
-            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
-
-    # Find the pushes
-    ts_force = ktk.cycles.detect_cycles(
-        ts_force, 'Ftot',
-        event_name1='push',
-        event_name2='recovery',
-        threshold1=push_threshold,
-        threshold2=recovery_threshold,
-        min_length1=min_push_time,
-        target_height1=min_push_force)
-
-    # Form the output timeseries
-    tsout = tsin.copy()
-    tsout.events = ts_force.events
-
-    return tsout
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

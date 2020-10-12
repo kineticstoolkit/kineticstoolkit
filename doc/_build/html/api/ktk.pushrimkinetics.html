@@ -345,7 +345,7 @@
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.calculate_forces_and_moments" title="ktk.pushrimkinetics.calculate_forces_and_moments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_forces_and_moments</span></code></a>(kinetics, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.calculate_forces_and_moments" title="ktk.pushrimkinetics.calculate_forces_and_moments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_forces_and_moments</span></code></a>(kinetics, /, gains)</p></td>
 <td><p>Calculate pushrim forces and moments based on raw channel values.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.calculate_power" title="ktk.pushrimkinetics.calculate_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_power</span></code></a>(tsin, /)</p></td>
@@ -360,38 +360,52 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.find_recovery_indices" title="ktk.pushrimkinetics.find_recovery_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_recovery_indices</span></code></a>(Mz, /)</p></td>
 <td><p>Find recovery indices based on a vector of propulsion moments.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.read_file" title="ktk.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename[, format])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.read_file" title="ktk.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename, /[, file_format])</p></td>
 <td><p>Read a file containing pushrim kinetics data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.remove_sinusoids" title="ktk.pushrimkinetics.remove_sinusoids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_sinusoids</span></code></a>(kinetics[, baseline_kinetics])</p></td>
-<td><p>Remove sinusoids in forces and moments.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.remove_offsets" title="ktk.pushrimkinetics.remove_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_offsets</span></code></a>(kinetics[, baseline_kinetics])</p></td>
+<td><p>Remove dynamic offsets in forces and moments.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.remove_sinusoids" title="ktk.pushrimkinetics.remove_sinusoids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_sinusoids</span></code></a>(kinetics[, baseline_kinetics])</p></td>
+<td><p>Deprecated.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
 <dt id="ktk.pushrimkinetics.calculate_forces_and_moments">
-<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">calculate_forces_and_moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">calibration_id</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">calculate_forces_and_moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">gains</span></em>, <em class="sig-param"><span class="n">offsets</span><span class="o">=</span><span class="default_value">array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transducer</span><span class="o">=</span><span class="default_value">'force_cell'</span></em>, <em class="sig-param"><span class="n">reference_frame</span><span class="o">=</span><span class="default_value">'wheel'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate pushrim forces and moments based on raw channel values.</p>
+<p>For standard force cells (with each channel being a raw value
+corresponding to Fx, Fy, Fz, Mx, My, Mz, respectively), calculates
+the forces and moments using a sensitivity matrix (gains) and an
+offset vector (offsets):</p>
+<p><code class="docutils literal notranslate"><span class="pre">[Fx,</span> <span class="pre">Fy,</span> <span class="pre">Fz,</span> <span class="pre">Mx,</span> <span class="pre">My,</span> <span class="pre">Mz]</span> <span class="pre">=</span> <span class="pre">gains</span> <span class="pre">@</span> <span class="pre">channels</span> <span class="pre">+</span> <span class="pre">offsets</span></code></p>
+<p>For SmartWheel, calculates the forces and moments using a gain
+vector (gains) and an offset vector (offsets).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kinetics</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries that must contain a ‘Channels’ key in its data dict.</p></li>
-<li><p><strong>calibration_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Calibration identifier, resulting from factory or custom calibration.
-Available values are:</p>
-<ul>
-<li><p>’PATHOKIN-93’:  PATHOKIN 24” SmartWheel, Serial #93</p></li>
-<li><p>’PATHOKIN-94’:  PATHOKIN 24” SmartWheel, Serial #94</p></li>
-<li><p>’LIO-123’:      LIO 24” SmartWheel, Serial #123</p></li>
-<li><p>’LIO-124’:      LIO 24” SmartWheel, Serial #124</p></li>
-<li><p>’LIO-125’:      LIO 24” SmartWheel, Serial #125</p></li>
-<li><p>’LIO-126’:      LIO 26” SmartWheel, Serial #126</p></li>
-<li><p>’S18-126’:      PATHOKIN Summer 2018, Serial 126 - 26”</p></li>
-<li><p>’S18-179’:      PATHOKIN Summer 2018, Serial 179 - 25”</p></li>
-<li><p>’S18-180’:      PATHOKIN Summer 2018, Serial 180 - 25”</p></li>
-<li><p>’S18-181’:      PATHOKIN Summer 2018, Serial 181 - 26”</p></li>
-<li><p>’S18-Racing-Prototype1’: Racing wheel prototype</p></li>
-<li><p>’W20-Racing-Prototype1’: Racing wheel proto with calibration matrix</p></li>
+<li><p><strong>gains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – 6x6 gain matrix (force_cell) or gain vector of length 6 (smartwheel).</p></li>
+<li><p><strong>offsets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Optional. Offset vector of length 6.</p></li>
+<li><p><strong>transducer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘force_cell’ or ‘smartwheel’.</p></li>
+<li><p><strong>reference_frame</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <dl class="simple">
+<dt>Optional:</dt><dd><ul>
+<li><dl class="simple">
+<dt>’wheel’ to report the forces and moments into the local</dt><dd><p>wheel’s reference frame.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>’hub’ to compensate for the wheel rotation and match the</dt><dd><p>reference frame used by the SmartWheel: x anteroposterior,
+y in the wheel plane, upward for non-camberred wheels, and
+z perpendicular to the wheel plane, outward.</p>
+</dd>
+</dl>
+</li>
 </ul>
+</dd>
+</dl>
 </p></li>
 </ul>
 </dd>
@@ -403,6 +417,21 @@ and ‘Moments’ data keys.</p>
 <dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some calibration matrices are provided in the
+<code class="docutils literal notranslate"><span class="pre">pushrimkinetics.CALIBRATION_MATRICES</span></code> dictionary. This dictionary can
+be used directly using dict unpacking. For example:</p>
+<blockquote>
+<div><dl class="simple">
+<dt>ktk.pushrimkinetics.calculate_force_and_moments(</dt><dd><p>kinetics,
+<a href="#id1"><span class="problematic" id="id2">**</span></a>ktk.pushrimkinetics.CALIBRATION_MATRICES[‘SmartWheel_123’],
+reference_frame=’level’</p>
+</dd>
+</dl>
+<p>)</p>
+</div></blockquote>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.pushrimkinetics.calculate_power">
@@ -425,6 +454,12 @@ and ‘Moments’ data keys.</p>
 <dt id="ktk.pushrimkinetics.calculate_velocity">
 <code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">calculate_velocity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.calculate_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate velocity based on wheel angle.</p>
+<p>The velocity is calculated by deriving the angle using a 2nd order
+Savitzky-Golay filter of length 21. This filter has been experimentally
+validated to maximize the signal-to-noise ratio for a SmartWheel recording
+at 240 Hz. This function may change signature in the future to include
+other filtering options. To manually get the velocity using a custom
+filter, please see the <code class="docutils literal notranslate"><span class="pre">ktk.filters</span></code> module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>tsin</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the data key ‘Angle’.</p>
@@ -436,6 +471,17 @@ and ‘Moments’ data keys.</p>
 <dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="ktk.filters.html#ktk.filters.butter" title="ktk.filters.butter"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.filters.butter()</span></code></a></dt><dd><p>Butterworth filter for TimeSeries</p>
+</dd>
+<dt><a class="reference internal" href="ktk.filters.html#ktk.filters.savgol" title="ktk.filters.savgol"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.filters.savgol()</span></code></a></dt><dd><p>Savitsky-golay filter for TimeSeries</p>
+</dd>
+<dt><a class="reference internal" href="ktk.filters.html#ktk.filters.deriv" title="ktk.filters.deriv"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.filters.deriv()</span></code></a></dt><dd><p>Derivative filter for TimeSeries</p>
+</dd>
+</dl>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.pushrimkinetics.detect_pushes">
@@ -497,15 +543,15 @@ instead).</p>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.pushrimkinetics.read_file">
-<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">read_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'smartwheel'</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.read_file" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">read_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">file_format</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.read_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read a file containing pushrim kinetics data.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the file to open</p></li>
-<li><p><strong>format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Optiona. Format of the file. Can be either:</p>
+<li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Format of the file. Can be either:</p>
 <ul>
-<li><p>’smartwheel’ (default - SmartWheel CSV file)</p></li>
+<li><p>’smartwheel’ (SmartWheel CSV file)</p></li>
 <li><p>’smartwheeltxt’ (SmartWheel SD-Card TXT file)</p></li>
 <li><p>’racingwheel’ (will change)</p></li>
 </ul>
@@ -518,9 +564,9 @@ instead).</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="ktk.pushrimkinetics.remove_sinusoids">
-<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">remove_sinusoids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">baseline_kinetics</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.remove_sinusoids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove sinusoids in forces and moments.</p>
+<dt id="ktk.pushrimkinetics.remove_offsets">
+<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">remove_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">baseline_kinetics</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.remove_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove dynamic offsets in forces and moments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -548,6 +594,16 @@ Forces and Moments data.</p>
 inaccuracies due to pushrim weight and wheel camber,” Medical
 Engineering and Physics, vol. 40, pp. 75–86, 2017.</p>
 </div>
+</dd></dl>
+<dl class="py function">
+<dt id="ktk.pushrimkinetics.remove_sinusoids">
+<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">remove_sinusoids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">baseline_kinetics</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.remove_sinusoids" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deprecated. Please use remove_offsets instead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 
