@@ -764,12 +764,10 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_offsets</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before removing offsets'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -780,24 +778,17 @@ TimeSeries with attributes:
 <img alt="_images/pushrimkinetics_13_0.png" src="_images/pushrimkinetics_13_0.png"/>
 </div>
 </div>
-<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. For example:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
-        <span class="s1">'data/pushrimkinetics/sample_swl_overground_propulsion_withrubber.csv'</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">'smartwheel'</span><span class="p">)</span>
+<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_offsets</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
-<span class="n">baseline</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">read_file</span><span class="p">(</span>
-        <span class="s1">'data/pushrimkinetics/sample_swl_overground_baseline_withrubber.csv'</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">'smartwheel'</span><span class="p">)</span>
-
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">remove_offsets</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="n">baseline</span><span class="p">)</span>
-
-<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'After removing offsets'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -805,9 +796,10 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_15_0.png" src="_images/pushrimkinetics_15_0.png"/>
+<img alt="_images/pushrimkinetics_14_0.png" src="_images/pushrimkinetics_14_0.png"/>
 </div>
 </div>
+<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets</span></a> help for more information.</p>
 
 
 <h2 id="Calculate-velocity-and-power">Calculate velocity and power<a class="headerlink" href="#Calculate-velocity-and-power" title="Permalink to this headline">¶</a></h2>
@@ -820,7 +812,11 @@ TimeSeries with attributes:
 <span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_velocity</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 <span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_power</span><span class="p">(</span><span class="n">kinetics</span><span class="p">)</span>
 
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Velocity'</span><span class="p">,</span> <span class="s1">'Power'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Velocity'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Power'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -834,19 +830,24 @@ TimeSeries with attributes:
 
 
 <h2 id="Detecting-the-pushes">Detecting the pushes<a class="headerlink" href="#Detecting-the-pushes" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="cycles.html"><span class="doc">ktk.cycles</span></a> module provides powerful tools to detect and fine-tune push detections. As a convenience function, the <code class="docutils literal notranslate"><span class="pre">pushrimkinetics</span></code> module provides the <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.detect_pushes"><span class="std std-ref">ktk.pushrimkinetics.detect_pushes</span></a> function which finds and adds the ‘push’ and ‘recovery’ events to the TimeSeries. This function is a wrapper for the more versatile ktk.cycles.detect_cycles
-function.</p>
+<p>The <a class="reference internal" href="cycles.html"><span class="doc">ktk.cycles</span></a> module provides powerful tools to detect and manage cycles. Here we use <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles</span></a> to detect the pushes using these specifications: - a push starts when the total force crosses 5 N upward; - a push ends when the total force crosses 2 N downward; - for a push to be valid, it must last at least 100 ms; - to be valid, the total force must reach 25 N.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">detect_pushes</span><span class="p">(</span>
-    <span class="n">kinetics</span><span class="p">,</span>
-    <span class="n">push_threshold</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-    <span class="n">recovery_threshold</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-    <span class="n">min_push_time</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">min_push_force</span><span class="o">=</span><span class="mf">30.0</span><span class="p">)</span>
+<span></span><span class="c1"># Create the total force data</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">,</span>
+    <span class="n">event_name1</span><span class="o">=</span><span class="s1">'push'</span><span class="p">,</span>
+    <span class="n">event_name2</span><span class="o">=</span><span class="s1">'recovery'</span><span class="p">,</span>
+    <span class="n">threshold1</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
+    <span class="n">threshold2</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
+    <span class="n">min_duration1</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">cross_height1</span><span class="o">=</span><span class="mf">25.0</span>
+<span class="p">)</span>
 
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
 </pre></div>
@@ -954,168 +955,168 @@ function.</p>
 <tbody>
 <tr>
 <th>0</th>
-<td>1.391667</td>
-<td>0.404167</td>
-<td>1.795833</td>
-<td>73.39</td>
-<td>9.231340</td>
-<td>12.753896</td>
-<td>257.068577</td>
-<td>586.891135</td>
+<td>1.404167</td>
+<td>0.358333</td>
+<td>1.762500</td>
+<td>75.85</td>
+<td>9.106452</td>
+<td>12.716142</td>
+<td>247.615781</td>
+<td>573.241399</td>
 </tr>
 <tr>
 <th>1</th>
-<td>0.620833</td>
+<td>0.654167</td>
 <td>0.579167</td>
-<td>1.200000</td>
-<td>83.94</td>
-<td>7.416520</td>
-<td>11.042479</td>
-<td>166.271459</td>
-<td>336.099638</td>
+<td>1.233333</td>
+<td>88.33</td>
+<td>6.992656</td>
+<td>11.005038</td>
+<td>163.686433</td>
+<td>332.486535</td>
 </tr>
 <tr>
 <th>2</th>
-<td>0.541667</td>
-<td>0.616667</td>
-<td>1.158333</td>
-<td>86.13</td>
-<td>6.400933</td>
-<td>9.360754</td>
-<td>130.521702</td>
-<td>270.217841</td>
+<td>0.554167</td>
+<td>0.583333</td>
+<td>1.137500</td>
+<td>88.51</td>
+<td>6.244814</td>
+<td>9.327931</td>
+<td>125.207490</td>
+<td>262.775237</td>
 </tr>
 <tr>
 <th>3</th>
-<td>0.450000</td>
-<td>0.679167</td>
+<td>0.495833</td>
+<td>0.633333</td>
 <td>1.129167</td>
-<td>72.16</td>
-<td>4.767602</td>
-<td>7.886531</td>
-<td>117.471949</td>
-<td>228.542524</td>
+<td>79.80</td>
+<td>4.328190</td>
+<td>7.851847</td>
+<td>115.665575</td>
+<td>226.092903</td>
 </tr>
 <tr>
 <th>4</th>
-<td>0.504167</td>
-<td>0.654167</td>
-<td>1.158333</td>
-<td>85.78</td>
-<td>5.612000</td>
-<td>8.867218</td>
-<td>111.715941</td>
-<td>243.829722</td>
+<td>0.533333</td>
+<td>0.629167</td>
+<td>1.162500</td>
+<td>90.70</td>
+<td>5.271423</td>
+<td>8.831854</td>
+<td>106.729053</td>
+<td>235.999115</td>
 </tr>
 <tr>
 <th>5</th>
-<td>0.562500</td>
-<td>0.683333</td>
-<td>1.245833</td>
-<td>92.90</td>
-<td>5.880479</td>
-<td>8.566090</td>
-<td>130.777027</td>
-<td>267.971075</td>
+<td>0.587500</td>
+<td>0.675000</td>
+<td>1.262500</td>
+<td>97.12</td>
+<td>5.611598</td>
+<td>8.544609</td>
+<td>128.801165</td>
+<td>265.724018</td>
 </tr>
 <tr>
 <th>6</th>
-<td>0.541667</td>
-<td>0.608333</td>
-<td>1.150000</td>
-<td>92.11</td>
-<td>5.033091</td>
-<td>7.689169</td>
-<td>116.458921</td>
-<td>239.538500</td>
+<td>0.550000</td>
+<td>0.570833</td>
+<td>1.120833</td>
+<td>93.60</td>
+<td>4.906104</td>
+<td>7.642254</td>
+<td>111.536052</td>
+<td>231.972469</td>
 </tr>
 <tr>
 <th>7</th>
-<td>0.500000</td>
-<td>0.645833</td>
-<td>1.145833</td>
-<td>83.76</td>
-<td>5.648255</td>
-<td>7.821200</td>
-<td>114.181275</td>
-<td>230.456456</td>
+<td>0.537500</td>
+<td>0.637500</td>
+<td>1.175000</td>
+<td>90.00</td>
+<td>5.233192</td>
+<td>7.801526</td>
+<td>111.687530</td>
+<td>226.772163</td>
 </tr>
 <tr>
 <th>8</th>
-<td>0.491667</td>
-<td>0.670833</td>
-<td>1.162500</td>
-<td>86.66</td>
-<td>4.672118</td>
-<td>6.603380</td>
-<td>117.306032</td>
-<td>235.443029</td>
+<td>0.487500</td>
+<td>0.654167</td>
+<td>1.141667</td>
+<td>86.13</td>
+<td>4.663521</td>
+<td>6.557192</td>
+<td>113.793957</td>
+<td>230.329009</td>
 </tr>
 <tr>
 <th>9</th>
-<td>0.462500</td>
-<td>0.654167</td>
-<td>1.116667</td>
-<td>84.20</td>
-<td>3.662786</td>
-<td>5.428388</td>
-<td>105.378074</td>
-<td>199.336089</td>
-</tr>
-<tr>
-<th>10</th>
-<td>0.483333</td>
-<td>0.616667</td>
-<td>1.100000</td>
-<td>86.14</td>
-<td>4.408593</td>
-<td>6.897695</td>
-<td>100.372428</td>
-<td>201.857549</td>
-</tr>
-<tr>
-<th>11</th>
-<td>0.500000</td>
-<td>0.670833</td>
-<td>1.170833</td>
-<td>89.12</td>
-<td>5.197646</td>
-<td>8.129226</td>
-<td>116.291031</td>
-<td>231.033731</td>
-</tr>
-<tr>
-<th>12</th>
-<td>0.466667</td>
-<td>0.645833</td>
-<td>1.112500</td>
-<td>81.12</td>
-<td>4.050339</td>
-<td>6.306330</td>
-<td>102.006034</td>
-<td>192.283559</td>
-</tr>
-<tr>
-<th>13</th>
-<td>0.537500</td>
-<td>0.641667</td>
-<td>1.179167</td>
-<td>93.08</td>
-<td>5.140880</td>
-<td>7.971078</td>
-<td>119.409177</td>
-<td>255.378144</td>
-</tr>
-<tr>
-<th>14</th>
 <td>0.479167</td>
 <td>0.658333</td>
 <td>1.137500</td>
-<td>84.99</td>
-<td>4.533773</td>
-<td>6.971031</td>
-<td>107.171633</td>
-<td>214.648936</td>
+<td>87.18</td>
+<td>3.506395</td>
+<td>5.401392</td>
+<td>101.048132</td>
+<td>192.844248</td>
+</tr>
+<tr>
+<th>10</th>
+<td>0.491667</td>
+<td>0.591667</td>
+<td>1.083333</td>
+<td>87.63</td>
+<td>4.315006</td>
+<td>6.866585</td>
+<td>98.524811</td>
+<td>199.607568</td>
+</tr>
+<tr>
+<th>11</th>
+<td>0.525000</td>
+<td>0.637500</td>
+<td>1.162500</td>
+<td>93.87</td>
+<td>4.903095</td>
+<td>8.089712</td>
+<td>111.162606</td>
+<td>223.157478</td>
+</tr>
+<tr>
+<th>12</th>
+<td>0.491667</td>
+<td>0.650000</td>
+<td>1.141667</td>
+<td>85.43</td>
+<td>3.821445</td>
+<td>6.286805</td>
+<td>99.937887</td>
+<td>189.716469</td>
+</tr>
+<tr>
+<th>13</th>
+<td>0.550000</td>
+<td>0.608333</td>
+<td>1.158333</td>
+<td>95.36</td>
+<td>4.967660</td>
+<td>7.923602</td>
+<td>114.929073</td>
+<td>248.574445</td>
+</tr>
+<tr>
+<th>14</th>
+<td>0.508333</td>
+<td>0.641667</td>
+<td>1.150000</td>
+<td>90.18</td>
+<td>4.261794</td>
+<td>6.951129</td>
+<td>104.019981</td>
+<td>209.902786</td>
 </tr>
 </tbody>
 </table>

@@ -214,18 +214,6 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     return index
 
 
-def remove_sinusoids(
-        kinetics: TimeSeries,
-        baseline_kinetics: Optional[TimeSeries] = None
-        ) -> TimeSeries:
-    """
-    Deprecated. Please use remove_offsets instead.
-    """
-    warnings.warn("remove_sinusoids is deprecated. Please use remove_offsets "
-                  "instead.", FutureWarning)
-    return remove_offsets(kinetics, baseline_kinetics)
-
-
 def remove_offsets(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -336,13 +324,11 @@ def calculate_forces_and_moments(
     transducer
         Optional. 'force_cell' or 'smartwheel'.
     reference_frame
-        Optional:
-            - 'wheel' to report the forces and moments into the local
-               wheel's reference frame.
-            - 'hub' to compensate for the wheel rotation and match the
-               reference frame used by the SmartWheel: x anteroposterior,
-               y in the wheel plane, upward for non-camberred wheels, and
-               z perpendicular to the wheel plane, outward.
+        Optional. 'wheel' or 'hub'. 'wheel' to report the forces and moments
+        into the local wheel's reference frame; 'hub' to compensate for the
+        wheel rotation and match the reference frame used by the SmartWheel:
+        x anteroposterior, y in the wheel plane, upward for non-camberred
+        wheels, and z perpendicular to the wheel plane, outward.
 
     Returns
     -------
@@ -352,9 +338,9 @@ def calculate_forces_and_moments(
 
     Note
     ----
-    Some calibration matrices are provided in the
+    Some calibration matrices are provided as examples in the
     ``pushrimkinetics.CALIBRATION_MATRICES`` dictionary. This dictionary can
-    be used directly using dict unpacking. For example:
+    be used directly using dict unpacking. For example::
 
         ktk.pushrimkinetics.calculate_force_and_moments(
             kinetics,
@@ -512,81 +498,13 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     return tsout
 
 
-def detect_pushes(
-        tsin: TimeSeries, /, *,
-        push_threshold: float = 5.0,
-        recovery_threshold: float = 2.0,
-        min_push_time: float = 0.1,
-        min_push_force: float = 30.0) -> TimeSeries:
-    """
-    Detect pushes and recoveries automatically.
-
-    Parameters
-    ----------
-    tsin
-        Input TimeSeries that must contain a 'Forces' key in its data dict.
-    push_threshold
-        Optional. The total force over which a push phase is triggered, in
-        newton.
-    recovery_threshold
-        Optional. The total force under which a recovery phase is triggered,
-        in newton.
-    min_push_time
-        Optional. The minimum time required for a push time, in seconds.
-        Detected pushes that last less than this minimum time are removed from
-        the push analysis.
-    min_recovery_time
-        Optional. The minimum time required for a recovery time, in seconds.
-        Detected recoveries that last less than this minimum time are removed
-        from the push analysis.
-    min_push_force
-        Optional. The minimum total push force in N under which the detected
-        push is discarded. For example, if the user puts their hands on the
-        pushrim before starting propelling, this may be detected as a push.
-        Using a minimum push force removes these misdetected pushes.
-
-    Returns
-    -------
-    TimeSeries
-        A copy of tsin with the following added events:
-        - 'push'
-        - 'recovery'
-
-    """
-    # Calculate the total force
-    f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
-    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
-    ts_force.events = tsin.events
-
-    # Smooth the total force to avoid detecting pushes on glitches
-    ts_force = ktk.filters.smooth(ts_force, 11)
-
-    # Remove the median if it existed
-    ts_force.data['Ftot'] = \
-            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
-
-    # Find the pushes
-    ts_force = ktk.cycles.detect_cycles(
-        ts_force, 'Ftot',
-        event_name1='push',
-        event_name2='recovery',
-        threshold1=push_threshold,
-        threshold2=recovery_threshold,
-        min_length1=min_push_time,
-        target_height1=min_push_force)
-
-    # Form the output timeseries
-    tsout = tsin.copy()
-    tsout.events = ts_force.events
-
-    return tsout
-
-
 #--- Deprecated functions ---#
 def _old_calculate_forces_and_moments(
         kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
     """
     Calculate pushrim forces and moments based on raw channel values.
+
+    Deprecated since October 2020.
 
     Parameters
     ----------
@@ -762,6 +680,93 @@ def _old_calculate_forces_and_moments(
 
     return(kinetics)
 
+
+def detect_pushes(
+        tsin: TimeSeries, /, *,
+        push_threshold: float = 5.0,
+        recovery_threshold: float = 2.0,
+        min_push_time: float = 0.1,
+        min_push_force: float = 30.0) -> TimeSeries:
+    """
+    Deprecated since October 2020. Detect pushes and recoveries automatically.
+
+    Please use ktk.cycles.detect_cycles instead.
+
+    Parameters
+    ----------
+    tsin
+        Input TimeSeries that must contain a 'Forces' key in its data dict.
+    push_threshold
+        Optional. The total force over which a push phase is triggered, in
+        newton.
+    recovery_threshold
+        Optional. The total force under which a recovery phase is triggered,
+        in newton.
+    min_push_time
+        Optional. The minimum time required for a push time, in seconds.
+        Detected pushes that last less than this minimum time are removed from
+        the push analysis.
+    min_recovery_time
+        Optional. The minimum time required for a recovery time, in seconds.
+        Detected recoveries that last less than this minimum time are removed
+        from the push analysis.
+    min_push_force
+        Optional. The minimum total push force in N under which the detected
+        push is discarded. For example, if the user puts their hands on the
+        pushrim before starting propelling, this may be detected as a push.
+        Using a minimum push force removes these misdetected pushes.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of tsin with the following added events:
+        - 'push'
+        - 'recovery'
+
+    """
+    warnings.warn("detect_pushes is deprecated. Please use "
+                  "ktk.cycles.detect_cycles instead.", FutureWarning)
+
+    # Calculate the total force
+    f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
+    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
+    ts_force.events = tsin.events
+
+    # Smooth the total force to avoid detecting pushes on glitches
+    ts_force = ktk.filters.smooth(ts_force, 11)
+
+    # Remove the median if it existed
+    ts_force.data['Ftot'] = \
+            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
+
+    # Find the pushes
+    ts_force = ktk.cycles.detect_cycles(
+        ts_force, 'Ftot',
+        event_name1='push',
+        event_name2='recovery',
+        threshold1=push_threshold,
+        threshold2=recovery_threshold,
+        min_duration1=min_push_time,
+        cross_height1=min_push_force)
+
+    # Form the output timeseries
+    tsout = tsin.copy()
+    tsout.events = ts_force.events
+
+    return tsout
+
+
+def remove_sinusoids(
+        kinetics: TimeSeries,
+        baseline_kinetics: Optional[TimeSeries] = None
+        ) -> TimeSeries:
+    """
+    Deprecated since October 2020. Please use
+    ktk.pushrimkinetics.remove_offsets instead.
+    """
+    warnings.warn("remove_sinusoids is deprecated. Please use "
+                  "ktk.pushrimkinetics.remove_offsets instead.", FutureWarning)
+    return remove_offsets(kinetics, baseline_kinetics)
 
 
 #--- Some calibration matrices ---#

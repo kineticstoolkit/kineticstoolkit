@@ -43,12 +43,12 @@ def detect_cycles(ts: TimeSeries,
                   threshold1: float,
                   threshold2: float, *,
                   direction1: str = 'rising',
-                  min_length1: float = 0,
-                  min_length2: float = 0,
-                  max_length1: float = np.Inf,
-                  max_length2: float = np.Inf,
-                  target_height1: Optional[float] = None,
-                  target_height2: Optional[float] = None,
+                  min_duration1: float = 0,
+                  min_duration2: float = 0,
+                  max_duration1: float = np.Inf,
+                  max_duration2: float = np.Inf,
+                  cross_height1: Optional[float] = None,
+                  cross_height2: Optional[float] = None,
                   ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -86,18 +86,18 @@ def detect_cycles(ts: TimeSeries,
     direction1:
         Optional. 'rising' to cross threshold1 upward, 'falling' to cross
         threshold1 downward.
-    min_length1
-        Optional. Minimal time of phase 1 in seconds.
-    min_length2
-        Optional. Minimal time of phase 2 in seconds.
-    max_length1
-        Optional. Maximal time of phase 1 in seconds.
-    max_length2
-        Optional. Maximal time of phase 2 in seconds.
-    target_height1
+    min_duration1
+        Optional. Minimal duration of phase 1 in seconds.
+    min_duration2
+        Optional. Minimal duration of phase 2 in seconds.
+    max_duration1
+        Optional. Maximal duration of phase 1 in seconds.
+    max_duration2
+        Optional. Maximal duration of phase 2 in seconds.
+    cross_height1
         Optional. A value that the signal must cross in phase 1. Use None for
         no target height.
-    target_height2
+    cross_height2
         Optional. A value that the signal must cross in phase 2. Use None for
         no target height.
 
@@ -113,17 +113,17 @@ def detect_cycles(ts: TimeSeries,
         raise ValueError("direction1 must be 'rising' or 'falling'")
 
     # Convert optional Nones to floats
-    if target_height1 is None:
+    if cross_height1 is None:
         if direction1 == 'rising':
-            target_height1 = -np.Inf
+            cross_height1 = -np.Inf
         else:
-            target_height1 = np.Inf
+            cross_height1 = np.Inf
 
-    if target_height2 is None:
+    if cross_height2 is None:
         if direction1 == 'rising':
-            target_height2 = np.Inf
+            cross_height2 = np.Inf
         else:
-            target_height2 = -np.Inf
+            cross_height2 = -np.Inf
 
     # Find the pushes
     time = ts.time
@@ -171,22 +171,22 @@ def detect_cycles(ts: TimeSeries,
         sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
 
         if direction1 == 'rising':
-            target_height1_reached = \
-                np.max(sub_ts1.data[data_key]) >= target_height1
-            target_height2_reached = \
-                np.min(sub_ts2.data[data_key]) <= target_height2
+            cross_height1_reached = \
+                np.max(sub_ts1.data[data_key]) >= cross_height1
+            cross_height2_reached = \
+                np.min(sub_ts2.data[data_key]) <= cross_height2
         else:
-            target_height1_reached = \
-                np.min(sub_ts1.data[data_key]) <= target_height1
-            target_height2_reached = \
-                np.max(sub_ts2.data[data_key]) >= target_height2
+            cross_height1_reached = \
+                np.min(sub_ts1.data[data_key]) <= cross_height1
+            cross_height2_reached = \
+                np.max(sub_ts2.data[data_key]) >= cross_height2
 
-        if (time2 - time1 >= min_length1 and
-                time2 - time1 <= max_length1 and
-                time3 - time2 >= min_length2 and
-                time3 - time2 <= max_length2 and
-                target_height1_reached and
-                target_height2_reached):
+        if (time2 - time1 >= min_duration1 and
+                time2 - time1 <= max_duration1 and
+                time3 - time2 >= min_duration2 and
+                time3 - time2 <= max_duration2 and
+                cross_height1_reached and
+                cross_height2_reached):
             # Save it.
             valid_events.append(events[i_event])
             valid_events.append(events[i_event + 1])
