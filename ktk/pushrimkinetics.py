@@ -747,7 +747,7 @@ def detect_pushes(
         threshold1=push_threshold,
         threshold2=recovery_threshold,
         min_duration1=min_push_time,
-        cross_height1=min_push_force)
+        min_peak_height1=min_push_force)
 
     # Form the output timeseries
     tsout = tsin.copy()

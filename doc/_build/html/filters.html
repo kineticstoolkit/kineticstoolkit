@@ -588,7 +588,7 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="filters--page-root">Filters<a class="headerlink" href="#filters--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.filters.html"><span class="doc">filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for scipy’s filters.</p>
+<p>The <a class="reference internal" href="api/ktk.filters.html"><span class="doc">ktk.filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for scipy’s filters.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -602,7 +602,7 @@ div.rendered_html tbody tr:hover {
 </div>
 
 <h2 id="Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter<a class="headerlink" href="#Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter" title="Permalink to this headline">¶</a></h2>
-<p>This filter applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. To see it in effect, let’s define a TimeSeries with some dummy data.</p>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. To see it in effect, let’s define a TimeSeries with some dummy data.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -680,7 +680,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>And so on.</p>
-<p>We can also smooth a signal with the smoothing filter <code class="docutils literal notranslate"><span class="pre">smooth</span></code>, which is a convenience function that smooths a TimeSeries using a moving average of N samples. It calls the Savitzky-Golay filter with a polynom order of 0. For example, let’s define a TimeSeries with some random data inside:</p>
+<p>We can also smooth a signal with the smoothing filter using <a class="reference internal" href="api/ktk.filters.html#ktk.filters.smooth"><span class="std std-ref">ktk.filters.smooth()</span></a>, which is a convenience function that smooths a TimeSeries using a moving average of N samples. It calls the Savitzky-Golay filter with a polynom order of 0. For example, let’s define a TimeSeries with some random data inside:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -730,7 +730,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Butterworth-filter">Butterworth filter<a class="headerlink" href="#Butterworth-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">butter</span></code> method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.butter"><span class="std std-ref">ktk.filters.butter()</span></a> function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
 <p>Let’s define a TimeSeries with a sinusoidal signal at 1 Hz, with an amplitude of 1:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:

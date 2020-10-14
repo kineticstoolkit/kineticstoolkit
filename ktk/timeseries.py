@@ -862,9 +862,12 @@ class TimeSeries():
         """
         if data_keys is None or len(data_keys) == 0:
             # Plot all
-            ts = self
+            ts = self.copy()
         else:
             ts = self.get_subset(data_keys)
+
+        # Sort events to help finding each event's occurrence
+        ts.sort_events(unique=False)
 
         df = ts.to_dataframe()
         labels = df.columns.to_list()
@@ -879,10 +882,6 @@ class TimeSeries():
         for i_label, label in enumerate(labels):
             axes.plot(df.index.to_numpy(),
                      df[label].to_numpy(), label=label, **kwargs)
-
-        if legend:
-            axes.legend(loc='upper right',
-                       ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
         # Add labels
         plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
@@ -928,10 +927,31 @@ class TimeSeries():
             plt.plot(event_line_x, event_line_y, ':k')
 
             if event_names:
+                occurrences = {}  # type:Dict[str, int]
+
                 for event in ts.events:
-                    plt.text(event.time, max_y, event.name,
+                    if event.name == '_':
+                        name = '_'
+                    elif event.name in occurrences:
+                        occurrences[event.name] += 1
+                        name = f"{event.name} {occurrences[event.name]}"
+                    else:
+                        occurrences[event.name] = 0
+                        name = f"{event.name} 0"
+
+                    plt.text(event.time, max_y, name,
                              rotation='vertical',
-                             horizontalalignment='center')
+                             horizontalalignment='center',
+                             fontsize='small')
+
+        if legend:
+            if len(labels) < 20:
+                legend_location = 'best'
+            else:
+                legend_location = 'upper right'
+
+            axes.legend(loc=legend_location,
+                       ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
     def get_index_at_time(self, time: float, /) -> int:
         """

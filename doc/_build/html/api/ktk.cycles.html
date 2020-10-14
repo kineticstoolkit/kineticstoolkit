@@ -338,10 +338,6 @@
   
 <span id="ktk-cycles-module"></span><h1 id="api-ktk-cycles--page-root">ktk.cycles module<a class="headerlink" href="#api-ktk-cycles--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Identify cycles and time-normalize data.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This module is in early development and may change in the future.</p>
-</div>
 <p><strong>Functions</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -368,21 +364,18 @@
 </table>
 <dl class="py function">
 <dt id="ktk.cycles.detect_cycles">
-<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">detect_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_key</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">threshold1</span></em>, <em class="sig-param"><span class="n">threshold2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">direction1</span><span class="o">=</span><span class="default_value">'rising'</span></em>, <em class="sig-param"><span class="n">min_duration1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">min_duration2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_duration1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_duration2</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">cross_height1</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">cross_height2</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">ktk.cycles.</code><code class="sig-name descname">detect_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_key</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">threshold1</span></em>, <em class="sig-param"><span class="n">threshold2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">direction1</span><span class="o">=</span><span class="default_value">'rising'</span></em>, <em class="sig-param"><span class="n">min_duration1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">min_duration2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_duration1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_duration2</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">min_peak_height1</span><span class="o">=</span><span class="default_value">- inf</span></em>, <em class="sig-param"><span class="n">min_peak_height2</span><span class="o">=</span><span class="default_value">- inf</span></em>, <em class="sig-param"><span class="n">max_peak_height1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_peak_height2</span><span class="o">=</span><span class="default_value">inf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect cycles in a TimeSeries based on a dual threshold approach.</p>
 <p>This function detects biphasic cycles and identifies the transitions as
 new events in the output TimeSeries. These new events are named:</p>
-<blockquote>
-<div><ul class="simple">
+<ul class="simple">
 <li><p><cite>event_name1</cite>:
 corresponds to the start of phase 1</p></li>
 <li><p><cite>event_name2</cite>:
 corresponds to the start of phase 2</p></li>
 <li><p>‘_’:
-corresponds to the end of the cycle. Apart from the last cycle,
-this always coincides with the start of the next phase 1.</p></li>
+corresponds to the end of the cycle.</p></li>
 </ul>
-</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -395,18 +388,18 @@ swing (phase 2).</p></li>
 start of phase 1.</p></li>
 <li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the events in the output TimeSeries that corresponds to the
 start of phase 2.</p></li>
-<li><p><strong>threshold1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1.</p></li>
-<li><p><strong>threshold2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 2.</p></li>
+<li><p><strong>threshold1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1 and phase 2.</p></li>
+<li><p><strong>threshold2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1 and phase 2.</p></li>
 <li><p><strong>direction1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘rising’ to cross threshold1 upward, ‘falling’ to cross
 threshold1 downward.</p></li>
-<li><p><strong>min_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 in seconds.</p></li>
-<li><p><strong>min_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 2 in seconds.</p></li>
-<li><p><strong>max_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 in seconds.</p></li>
-<li><p><strong>max_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 2 in seconds.</p></li>
-<li><p><strong>cross_height1</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. A value that the signal must cross in phase 1. Use None for
-no target height.</p></li>
-<li><p><strong>cross_height2</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. A value that the signal must cross in phase 2. Use None for
-no target height.</p></li>
+<li><p><strong>min_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 and phase 2 in seconds.</p></li>
+<li><p><strong>min_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 and phase 2 in seconds.</p></li>
+<li><p><strong>max_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 and phase 2 in seconds.</p></li>
+<li><p><strong>max_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 and phase 2 in seconds.</p></li>
+<li><p><strong>min_peak_height1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimum peak value for phase 1 and phase 2.</p></li>
+<li><p><strong>min_peak_height2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimum peak value for phase 1 and phase 2.</p></li>
+<li><p><strong>max_peak_height1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal peak value for phase 1 and phase 2.</p></li>
+<li><p><strong>max_peak_height2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal peak value for phase 1 and phase 2.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -416,6 +409,17 @@ no target height.</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When using min_peak_height1, min_peak_height1, max_peak_height1 and
+max_peak_height2:</p>
+<ul class="simple">
+<li><p>If direction1 is ‘rising’, then the peak value is the maximum during
+phase 1 and the minimum during phase 2.</p></li>
+<li><p>If direction1 is ‘falling’, then the peak value is the minimum
+during phase 1 and the maximum during phase 2.</p></li>
+</ul>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.cycles.most_repeatable_cycles">

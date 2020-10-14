@@ -141,8 +141,8 @@ def test_detect_cycles():
 
     ts5 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
                                    0.5, 0.5,
-                                   cross_height1=2,
-                                   cross_height2=-1)
+                                   min_peak_height1=2,
+                                   max_peak_height2=-1)
     assert ts5.events[0].name == 'start'
     assert ts5.events[0].time == 2
     assert ts5.events[1].name == 'stop'
