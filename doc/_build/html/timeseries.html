@@ -236,7 +236,11 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Properties" class="md-nav__link">Properties</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#time-and-data" class="md-nav__link">time and data</a>
+        <li class="md-nav__item"><a href="#time-and-data" class="md-nav__link">time and data</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Multidimensional-data" class="md-nav__link">Multidimensional data</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#time_info-and-data_info" class="md-nav__link">time_info and data_info</a>
         </li>
@@ -352,7 +356,11 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Properties" class="md-nav__link">Properties</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#time-and-data" class="md-nav__link">time and data</a>
+        <li class="md-nav__item"><a href="#time-and-data" class="md-nav__link">time and data</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Multidimensional-data" class="md-nav__link">Multidimensional data</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#time_info-and-data_info" class="md-nav__link">time_info and data_info</a>
         </li>
@@ -612,7 +620,7 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="timeseries--page-root">Getting started with TimeSeries<a class="headerlink" href="#timeseries--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.timeseries.html"><span class="doc">TimeSeries</span></a> class is the basis of most ktk modules and is the only “new” class ktk users have to learn.</p>
+<p>The <a class="reference internal" href="api/ktk.timeseries.html"><span class="doc">ktk.TimeSeries</span></a> class is the basis of most ktk modules and is the only “new” class ktk users have to learn.</p>
 <hr class="docutils"/>
 <p><strong>The three roles of the TimeSeries class are to:</strong></p>
 <ol class="arabic simple">
@@ -861,14 +869,18 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 }
 </pre></div></div>
 </div>
-<p>In reality, Fx, Fy and Fz are components of a single entity which is a force vector. Similarly, Mx, My and Mz are components of a single entity which is a moment vector. Let’s see what happens if we name the DataFrames’ columns differently.</p>
+
+<h4 id="Multidimensional-data">Multidimensional data<a class="headerlink" href="#Multidimensional-data" title="Permalink to this headline">¶</a></h4>
+<p>In reality, Fx, Fy and Fz are components of a single entity which is a force vector. Similarly, Mx, My and Mz are components of a single entity which is a moment vector. As such, a TimeSeries could easily hold two 5000x3 arrays instead of six different vectors. Its convention is that time corresponds to the first dimension.</p>
+<p>It is possible to transfer multidimensional data back and forth between TimeSeries and pandas DataFrames, by using indices in square brackets in the DataFrames’ column titles. For example, if, instead of naming the columns as <code class="docutils literal notranslate"><span class="pre">['Fx',</span> <span class="pre">'Fy',</span> <span class="pre">'Fz',</span> <span class="pre">'Mx',</span> <span class="pre">'My',</span> <span class="pre">'Mz']</span></code>, we name those as <code class="docutils literal notranslate"><span class="pre">['Forces[0]',</span> <span class="pre">'Forces[1]',</span> <span class="pre">'Forces[2]',</span> <span class="pre">'Moments[0]',</span> <span class="pre">'Moments[1]',</span> <span class="pre">'Moments[2]']</span></code>, then converting this DataFrame to a TimeSeries gives:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'Forces[0]'</span><span class="p">,</span> <span class="s1">'Forces[1]'</span><span class="p">,</span> <span class="s1">'Forces[2]'</span><span class="p">,</span> <span class="s1">'Moments[0]'</span><span class="p">,</span> <span class="s1">'Moments[1]'</span><span class="p">,</span> <span class="s1">'Moments[2]'</span><span class="p">]</span>
-<span class="n">df</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
@@ -876,153 +888,6 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped="">
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>Forces[0]</th>
-<th>Forces[1]</th>
-<th>Forces[2]</th>
-<th>Moments[0]</th>
-<th>Moments[1]</th>
-<th>Moments[2]</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>0.000000</th>
-<td>1.27</td>
-<td>-0.89</td>
-<td>-0.20</td>
-<td>-0.03</td>
-<td>0.05</td>
-<td>-0.03</td>
-</tr>
-<tr>
-<th>0.004167</th>
-<td>0.49</td>
-<td>-0.83</td>
-<td>-0.51</td>
-<td>0.02</td>
-<td>-0.01</td>
-<td>-0.13</td>
-</tr>
-<tr>
-<th>0.008333</th>
-<td>0.00</td>
-<td>-0.78</td>
-<td>-0.51</td>
-<td>0.04</td>
-<td>-0.07</td>
-<td>-0.18</td>
-</tr>
-<tr>
-<th>0.012500</th>
-<td>-0.13</td>
-<td>-0.93</td>
-<td>-0.41</td>
-<td>0.03</td>
-<td>-0.16</td>
-<td>-0.18</td>
-</tr>
-<tr>
-<th>0.016667</th>
-<td>-0.02</td>
-<td>-0.89</td>
-<td>0.00</td>
-<td>0.01</td>
-<td>-0.21</td>
-<td>-0.13</td>
-</tr>
-<tr>
-<th>...</th>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr>
-<th>20.812500</th>
-<td>0.87</td>
-<td>-1.73</td>
-<td>0.00</td>
-<td>0.08</td>
-<td>-0.07</td>
-<td>-0.03</td>
-</tr>
-<tr>
-<th>20.816667</th>
-<td>0.68</td>
-<td>-2.38</td>
-<td>0.20</td>
-<td>0.07</td>
-<td>-0.05</td>
-<td>0.08</td>
-</tr>
-<tr>
-<th>20.820833</th>
-<td>0.39</td>
-<td>-2.72</td>
-<td>0.20</td>
-<td>0.02</td>
-<td>0.00</td>
-<td>0.10</td>
-</tr>
-<tr>
-<th>20.825000</th>
-<td>0.32</td>
-<td>-2.51</td>
-<td>0.41</td>
-<td>0.04</td>
-<td>0.05</td>
-<td>0.08</td>
-</tr>
-<tr>
-<th>20.829167</th>
-<td>0.39</td>
-<td>-1.54</td>
-<td>0.82</td>
-<td>0.08</td>
-<td>0.06</td>
-<td>-0.10</td>
-</tr>
-</tbody>
-</table>
-<p>5000 rows × 6 columns</p>
-</div></div>
-</div>
-<p>Now we convert this DataFrame to a TimeSeries:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="o">.</span><span class="n">from_dataframe</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
@@ -1031,36 +896,14 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 }
 </pre></div></div>
 </div>
-<p>Instead of being separated into 6 separate components, the three components of both the forces and moments are now grouped in two Nx3 arrays. This may greatly simplify subsequent data processing. For example, if we are interested in calculating the vectorial sum of the forces, then one could add this new data to the TimeSeries with this line:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{
-       'Forces': &lt;array of shape (5000, 3)&gt;,
-         'Ftot': &lt;array of shape (5000,)&gt;,
-      'Moments': &lt;array of shape (5000, 3)&gt;
-}
-</pre></div></div>
-</div>
+<p>Instead of being separated into 6 separate components, the three components of both the forces and moments are now grouped in two Nx3 arrays, which may simplify subsequent data processing. For example, dealing with series of rigid transformation matrices is not harder than simple vectors.</p>
+
 
 
 <h3 id="time_info-and-data_info">time_info and data_info<a class="headerlink" href="#time_info-and-data_info" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">time_info</span></code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code class="docutils literal notranslate"><span class="pre">time_info</span></code> includes the <code class="docutils literal notranslate"><span class="pre">Unit</span></code> metadata, which corresponds to <code class="docutils literal notranslate"><span class="pre">s</span></code>. Any other metadata can be added by adding new keys in <code class="docutils literal notranslate"><span class="pre">time_info</span></code>.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1069,7 +912,7 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1082,19 +925,18 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 <p>Similarly, the <code class="docutils literal notranslate"><span class="pre">data_info</span></code> property associates metadata to data. This property is a dictionary of dictionaries, where the first key corresponds to the data key, and the second key is the metadata.</p>
 <p>The <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.add_data_info"><span class="std std-ref">TimeSeries.add_data_info()</span></a> method eases the management of <code class="docutils literal notranslate"><span class="pre">data_info</span></code>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Unit'</span><span class="p">,</span> <span class="s1">'N'</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">,</span> <span class="s1">'Unit'</span><span class="p">,</span> <span class="s1">'Nm'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">'Ftot'</span><span class="p">,</span> <span class="s1">'Unit'</span><span class="p">,</span> <span class="s1">'N'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <p>Unless explicitly mentioned, metadata is not used for calculation. It is rather a way to clarify the data by adding information to it. Some ktk functions however read those metadata: for example, the <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.plot"><span class="std std-ref">TimeSeries.plot()</span></a> method looks for <code class="docutils literal notranslate"><span class="pre">Unit</span></code> information and print it on the y axis.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1106,7 +948,7 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_21_0.png" src="_images/timeseries_21_0.png"/>
+<img alt="_images/timeseries_18_0.png" src="_images/timeseries_18_0.png"/>
 </div>
 </div>
 
@@ -1115,7 +957,7 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 <p>In the figure above, we see that the TimeSeries has cyclic information that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Then, we see a series of pushes and recoveries. For now, we will add these events in the TimeSeries by hand using <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.add_event"><span class="std std-ref">TimeSeries.add_event()</span></a>. It is also possible to
 add events interactively using <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.ui_add_event"><span class="std std-ref">TimeSeries.ui_add_event()</span></a>.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1135,7 +977,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 </div>
 <p>These events are now added to the TimeSeries’ list of events:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1144,7 +986,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -1164,7 +1006,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 </div>
 <p>If we plot again the TimeSeries, we can see the added events.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1176,7 +1018,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_27_0.png" src="_images/timeseries_27_0.png"/>
+<img alt="_images/timeseries_24_0.png" src="_images/timeseries_24_0.png"/>
 </div>
 </div>
 
@@ -1185,7 +1027,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <h2 id="Using-events-to-synchronize-TimeSeries">Using events to synchronize TimeSeries<a class="headerlink" href="#Using-events-to-synchronize-TimeSeries" title="Permalink to this headline">¶</a></h2>
 <p>Let’s see how we can make use of these events. First, the <code class="docutils literal notranslate"><span class="pre">sync</span></code> event can be used to set the zero-time, in the case where, for example, this wheel must be synchronized with another wheel, or with another instrument that also has a synchronization event. The <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.sync_event"><span class="std std-ref">TimeSeries.sync_event()</span></a> shifts the TimeSeries’ time and events time so that the sync event becomes the new “zero-time”.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1198,7 +1040,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_29_0.png" src="_images/timeseries_29_0.png"/>
+<img alt="_images/timeseries_26_0.png" src="_images/timeseries_26_0.png"/>
 </div>
 </div>
 
@@ -1206,7 +1048,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <h2 id="Using-events-to-extract-sub-TimeSeries">Using events to extract sub-TimeSeries<a class="headerlink" href="#Using-events-to-extract-sub-TimeSeries" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class comes with a myriad of methods such as <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.get_ts_after_event"><span class="std std-ref">TimeSeries.get_ts_after_event()</span></a>, <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.get_ts_between_events"><span class="std std-ref">TimeSeries.get_ts_between_events()</span></a>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1224,7 +1066,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_31_0.png" src="_images/timeseries_31_0.png"/>
+<img alt="_images/timeseries_28_0.png" src="_images/timeseries_28_0.png"/>
 </div>
 </div>
 
@@ -1232,30 +1074,29 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <h2 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="headerlink" href="#Subsetting-and-merging-timeseries" title="Permalink to this headline">¶</a></h2>
 <p>We can use the <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.get_subset"><span class="std std-ref">TimeSeries.get_subset()</span></a> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
+<span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">])</span>
 
 <span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'Forces': &lt;array of shape (1514, 3)&gt;,
-        'Ftot': &lt;array of shape (1514,)&gt;
+      'Forces': &lt;array of shape (1514, 3)&gt;
 }
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1267,34 +1108,10 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_34_0.png" src="_images/timeseries_34_0.png"/>
+<img alt="_images/timeseries_31_0.png" src="_images/timeseries_31_0.png"/>
 </div>
 </div>
-<p>Using python’s list comprehension is a nice way to extract a TimeSeries subset based on a selection criterion. For example, we could have obtained <code class="docutils literal notranslate"><span class="pre">ts3</span></code> by selecting every data key that begins with the letter ‘F’:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="n">key</span> <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts2</span><span class="o">.</span><span class="n">data</span> <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">'F'</span><span class="p">)])</span>
-
-<span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{
-      'Forces': &lt;array of shape (1514, 3)&gt;,
-        'Ftot': &lt;array of shape (1514,)&gt;
-}
-</pre></div></div>
-</div>
-<p>For more information on the TimeSeries class, please refer to the <a class="reference internal" href="api/ktk.timeseries.html"><span class="doc">API reference</span></a>.</p>
+<p>For more information, please refer to the <a class="reference internal" href="api/ktk.timeseries.html"><span class="doc">API reference for the TimeSeries class</span></a>.</p>
 
 
 

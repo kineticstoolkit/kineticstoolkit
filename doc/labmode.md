@@ -12,12 +12,14 @@ When to use lab mode
 
 __Use it__ if you want to run ktk as an integrated work environment using
 IPython based environments (Spyder, Jupyter) in a biomechanics research labs.
+If you're not sure, use lab mode.
 
     >>> import ktk.lab as ktk
 
 __Do not use it__ if you already have a working environment and you simply want
 to use some ktk classes or functions within your own setup, and you don't
-want ktk to mess with your defaults.
+want ktk to mess with your defaults. The appearance of the results may differ
+from the tutorials, which all use lab mode.
 
     >>> import ktk
 

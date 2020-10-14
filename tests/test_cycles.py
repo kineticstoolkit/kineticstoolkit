@@ -89,8 +89,8 @@ def test_detect_cycles():
     # With minimal cycles
     ts3 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
                                    0.5, 0.5,
-                                   min_length1=2,
-                                   min_length2=4)
+                                   min_duration1=2,
+                                   min_duration2=4)
     assert ts3.events[0].name == 'start'
     assert ts3.events[0].time == 2
     assert ts3.events[1].name == 'stop'
@@ -113,10 +113,10 @@ def test_detect_cycles():
     # With both minimal and maximal cycles
     ts4 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
                                    0.5, 0.5,
-                                   min_length1=4,
-                                   max_length1=8,
-                                   min_length2=3,
-                                   max_length2=7)
+                                   min_duration1=4,
+                                   max_duration1=8,
+                                   min_duration2=3,
+                                   max_duration2=7)
     assert ts4.events[0].name == 'start'
     assert ts4.events[0].time == 2
     assert ts4.events[1].name == 'stop'
@@ -141,8 +141,8 @@ def test_detect_cycles():
 
     ts5 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
                                    0.5, 0.5,
-                                   target_height1=2,
-                                   target_height2=-1)
+                                   min_peak_height1=2,
+                                   max_peak_height2=-1)
     assert ts5.events[0].name == 'start'
     assert ts5.events[0].time == 2
     assert ts5.events[1].name == 'stop'
