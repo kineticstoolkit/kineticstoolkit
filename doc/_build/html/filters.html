@@ -255,9 +255,17 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#filters--page-root" class="md-nav__link">Filters</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter" class="md-nav__link">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter</a>
+        <li class="md-nav__item"><a href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" class="md-nav__link">Filtering a TimeSeries using a Butterworth filter</a>
         </li>
-        <li class="md-nav__item"><a href="#Butterworth-filter" class="md-nav__link">Butterworth filter</a>
+        <li class="md-nav__item"><a href="#Smoothing-a-TimeSeries-with-a-moving-average" class="md-nav__link">Smoothing a TimeSeries with a moving average</a>
+        </li>
+        <li class="md-nav__item"><a href="#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter" class="md-nav__link">Smoothing a TimeSeries using a Savitzky-Golay filter</a>
+        </li>
+        <li class="md-nav__item"><a href="#Removing-artefacts-using-a-median-filter" class="md-nav__link">Removing artefacts using a median filter</a>
+        </li>
+        <li class="md-nav__item"><a href="#Derivating-using-a-differential-filter" class="md-nav__link">Derivating using a differential filter</a>
+        </li>
+        <li class="md-nav__item"><a href="#Derivating-using-a-Savitsky-Golay-filter" class="md-nav__link">Derivating using a Savitsky-Golay filter</a>
         </li></ul>
             </nav>
         </li>
@@ -338,9 +346,17 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#filters--page-root" class="md-nav__link">Filters</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter" class="md-nav__link">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter</a>
+        <li class="md-nav__item"><a href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" class="md-nav__link">Filtering a TimeSeries using a Butterworth filter</a>
         </li>
-        <li class="md-nav__item"><a href="#Butterworth-filter" class="md-nav__link">Butterworth filter</a>
+        <li class="md-nav__item"><a href="#Smoothing-a-TimeSeries-with-a-moving-average" class="md-nav__link">Smoothing a TimeSeries with a moving average</a>
+        </li>
+        <li class="md-nav__item"><a href="#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter" class="md-nav__link">Smoothing a TimeSeries using a Savitzky-Golay filter</a>
+        </li>
+        <li class="md-nav__item"><a href="#Removing-artefacts-using-a-median-filter" class="md-nav__link">Removing artefacts using a median filter</a>
+        </li>
+        <li class="md-nav__item"><a href="#Derivating-using-a-differential-filter" class="md-nav__link">Derivating using a differential filter</a>
+        </li>
+        <li class="md-nav__item"><a href="#Derivating-using-a-Savitsky-Golay-filter" class="md-nav__link">Derivating using a Savitsky-Golay filter</a>
         </li></ul>
             </nav>
         </li>
@@ -588,7 +604,7 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="filters--page-root">Filters<a class="headerlink" href="#filters--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.filters.html"><span class="doc">ktk.filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for scipy’s filters.</p>
+<p>The <a class="reference internal" href="api/ktk.filters.html"><span class="doc">ktk.filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for numpy’s and scipy’s filters.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -596,37 +612,54 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
-
-<h2 id="Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter">Smoothing and derivating a TimeSeries with a Savitzky-Golay Filter<a class="headerlink" href="#Smoothing-and-derivating-a-TimeSeries-with-a-Savitzky-Golay-Filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. To see it in effect, let’s define a TimeSeries with some dummy data.</p>
-<div class="nbinput nblast docutils container">
+<p>In this tutorial, we will see the effect of filtering on a TimeSeries that includes different forms of signal:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span></span><span class="n">ts_source</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
 
-<span class="n">tsin</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
-<span class="n">tsin</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">time</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-<span class="n">tsin</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data2'</span><span class="p">]</span> <span class="o">=</span> <span class="n">time</span><span class="o">**</span><span class="mi">2</span>
+<span class="c1"># Generate some fancy functions</span>
+<span class="n">ts_source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'square'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">ts_source</span><span class="o">.</span><span class="n">time</span><span class="p">])</span> <span class="o">+</span> <span class="mf">4.5</span>
+<span class="n">ts_source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'triangle'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">block</span><span class="p">([</span>
+    <span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">sp</span><span class="o">.</span><span class="n">integrate</span><span class="o">.</span><span class="n">cumtrapz</span><span class="p">(</span><span class="n">ts_source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'square'</span><span class="p">]</span> <span class="o">-</span> <span class="mi">5</span><span class="p">))</span> <span class="o">+</span> <span class="mi">3</span><span class="p">,</span> <span class="mf">4.</span><span class="p">])</span>
+<span class="n">ts_source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'sine'</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ts_source</span><span class="o">.</span><span class="n">time</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="n">ts_source</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'pulse'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="nb">float</span><span class="p">((</span><span class="n">i</span> <span class="o">+</span> <span class="mi">50</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1000</span><span class="p">)])</span>
+
+<span class="n">ts_source</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-<p>To smooth the TimeSeries’ data:</p>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_3_0.png" src="_images/filters_3_0.png"/>
+</div>
+</div>
+<p>Let’s add some noise in these nice functions.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">y</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">tsin</span><span class="p">,</span>
-                       <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                       <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                       <span class="n">deriv</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">y</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts_source</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'square'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'triangle'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'sine'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'pulse'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -637,17 +670,24 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/filters_5_0.png" src="_images/filters_5_0.png"/>
 </div>
 </div>
-<p>To calculate the first derivative of the TimeSeries’ data:</p>
+
+<h2 id="Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter<a class="headerlink" href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.butter"><span class="std std-ref">ktk.filters.butter()</span></a> function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
+<p>Here is how to filter using a no-lag Butterworth filter of order 2 at different cut-off frequencies:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">doty</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">tsin</span><span class="p">,</span>
-                          <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                          <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                          <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">doty</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Low-pass 2nd order Butterworth at 20 Hz'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -658,17 +698,20 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/filters_7_0.png" src="_images/filters_7_0.png"/>
 </div>
 </div>
-<p>To calculate the second derivative of the TimeSeries’ data:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ddoty</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">tsin</span><span class="p">,</span>
-                           <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-                           <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-                           <span class="n">deriv</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">ddoty</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># 4 Hz</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Low-pass 2nd order Butterworth at 4 Hz'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -676,28 +719,52 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/filters_9_0.png" src="_images/filters_9_0.png"/>
+<img alt="_images/filters_8_0.png" src="_images/filters_8_0.png"/>
 </div>
 </div>
-<p>And so on.</p>
-<p>We can also smooth a signal with the smoothing filter using <a class="reference internal" href="api/ktk.filters.html#ktk.filters.smooth"><span class="std std-ref">ktk.filters.smooth()</span></a>, which is a convenience function that smooths a TimeSeries using a moving average of N samples. It calls the Savitzky-Golay filter with a polynom order of 0. For example, let’s define a TimeSeries with some random data inside:</p>
+
+
+<h2 id="Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average<a class="headerlink" href="#Smoothing-a-TimeSeries-with-a-moving-average" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.smooth"><span class="std std-ref">ktk.filters.smooth()</span></a> function applies a moving average on TimeSeries data.</p>
+<p>Here is how to smooth a signal using a moving average filter using different window lengths.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-        <span class="p">[</span><span class="mf">0.7060</span><span class="p">,</span> <span class="mf">0.0318</span><span class="p">,</span> <span class="mf">0.2769</span><span class="p">,</span> <span class="mf">0.0462</span><span class="p">,</span> <span class="mf">0.0971</span><span class="p">,</span> <span class="mf">0.8235</span><span class="p">,</span> <span class="mf">0.6948</span><span class="p">,</span>
-         <span class="mf">0.3171</span><span class="p">,</span> <span class="mf">0.9502</span><span class="p">,</span> <span class="mf">0.0344</span><span class="p">,</span> <span class="mf">0.4387</span><span class="p">,</span> <span class="mf">0.3816</span><span class="p">,</span> <span class="mf">0.7655</span><span class="p">,</span> <span class="mf">0.7952</span><span class="p">,</span>
-         <span class="mf">0.1869</span><span class="p">,</span> <span class="mf">0.4898</span><span class="p">,</span> <span class="mf">0.4456</span><span class="p">,</span> <span class="mf">0.6463</span><span class="p">,</span> <span class="mf">0.7094</span><span class="p">,</span> <span class="mf">0.7547</span><span class="p">,</span> <span class="mf">0.2760</span><span class="p">,</span>
-         <span class="mf">0.6797</span><span class="p">,</span> <span class="mf">0.6551</span><span class="p">,</span> <span class="mf">0.1626</span><span class="p">,</span> <span class="mf">0.1190</span><span class="p">,</span> <span class="mf">0.4984</span><span class="p">,</span> <span class="mf">0.9597</span><span class="p">,</span> <span class="mf">0.3404</span><span class="p">,</span>
-         <span class="mf">0.5853</span><span class="p">,</span> <span class="mf">0.2238</span><span class="p">])</span>
-
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Moving average of length 5'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_10_0.png" src="_images/filters_10_0.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Moving average of length 21'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -708,15 +775,25 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/filters_11_0.png" src="_images/filters_11_0.png"/>
 </div>
 </div>
-<p>To smooth this function using a moving average on 5 samples:</p>
+
+
+<h2 id="Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. This is an extension of the moving average using a polynom of higher degrees than 0.</p>
+<p>Here is how to smooth a signal using a Savitsky-Golay filter of order 2 using different window lengths.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">y</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
 
-<span class="n">y</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'2nd order smoothing Savitsky Golay of length 5'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -727,39 +804,20 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/filters_13_0.png" src="_images/filters_13_0.png"/>
 </div>
 </div>
-
-
-<h2 id="Butterworth-filter">Butterworth filter<a class="headerlink" href="#Butterworth-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.butter"><span class="std std-ref">ktk.filters.butter()</span></a> function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
-<p>Let’s define a TimeSeries with a sinusoidal signal at 1 Hz, with an amplitude of 1:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">1000</span><span class="p">))</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-
-<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/filters_15_0.png" src="_images/filters_15_0.png"/>
-</div>
-</div>
-<p>To filter at 1 Hz, with an order 1:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">new_ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">btype</span><span class="o">=</span><span class="s1">'low'</span><span class="p">)</span>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
 
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'2nd order smoothing Savitsky Golay of length 51'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
@@ -767,10 +825,163 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/filters_17_0.png" src="_images/filters_17_0.png"/>
+<img alt="_images/filters_14_0.png" src="_images/filters_14_0.png"/>
 </div>
 </div>
-<p>For more information on filters, please check the <a class="reference internal" href="api/ktk.filters.html"><span class="doc">API Reference</span></a>.</p>
+
+
+<h2 id="Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter<a class="headerlink" href="#Removing-artefacts-using-a-median-filter" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.median"><span class="std std-ref">ktk.filters.median()</span></a> function filters a TimeSeries using a median filter. This type of filter is pretty powerful for removing artefacts that rarely happen twice in a row. Here is how to use this filter with a window length of 3.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Median filter with a window length of 3'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_16_0.png" src="_images/filters_16_0.png"/>
+</div>
+</div>
+
+
+<h2 id="Derivating-using-a-differential-filter">Derivating using a differential filter<a class="headerlink" href="#Derivating-using-a-differential-filter" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.deriv"><span class="std std-ref">ktk.filters.deriv()</span></a> function derivates a signal in time using the centered difference formula. Since the derivative is calculated between the original data points, the resulting TimeSeries has a modified time vector that is also between the original time points.</p>
+<p>Here is how to use this function to obtain the first derivative of a signal without preliminary filtering.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts_source</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative of the reference signal'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative without filtering'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_18_0.png" src="_images/filters_18_0.png"/>
+</div>
+</div>
+<p>Obviously there is a lot of noise in this signal, which gets it very difficult to derivate.</p>
+<p>Here is the same after filtering the data using Butterworth filters of different cut-off frequencies prior to derivating.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts_source</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative of the reference signal'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">20</span><span class="p">))</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative after filtering at 20 Hz'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_20_0.png" src="_images/filters_20_0.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts_source</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative of the reference signal'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative after filtering at 4 Hz'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_21_0.png" src="_images/filters_21_0.png"/>
+</div>
+</div>
+
+
+<h2 id="Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter<a class="headerlink" href="#Derivating-using-a-Savitsky-Golay-filter" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> can smooth but also derivate with a very good performance. Here is how to derivate a signal using this type of filter.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts_source</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative of the reference signal'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative using a Savitzky-Golay filter of length 51'</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/filters_23_0.png" src="_images/filters_23_0.png"/>
+</div>
+</div>
+<p>For more information, please check the <a class="reference internal" href="api/ktk.filters.html"><span class="doc">API Reference for the filters module</span></a>.</p>
 
 
 

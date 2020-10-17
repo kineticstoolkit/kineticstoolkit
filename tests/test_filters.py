@@ -119,6 +119,72 @@ def test_butter():
         np.sqrt(np.sum(data1 ** 2)) / 2) < 0.001)
 
 
+def test_median():
+    """Test median filter."""
+    ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+
+    # Test on 1-dimensional data (from doctstring)
+    ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
+
+    # Test on 2-dimensional data
+    ts.data['data2'] = np.array(
+        [[0., 10.],
+         [0., 11.],
+         [1., 11.],
+         [1., 20.],
+         [2., 14.],
+         [2., 15.]])
+
+    ts = ktk.filters.median(ts)
+
+    assert np.all(np.abs(ts.data['data1'] - np.array(
+        [10., 11., 11., 14., 15., 15.])) < 1E-16)
+
+    assert np.all(np.abs(ts.data['data2'] - np.array(
+        [[0., 10.],
+         [0., 11.],
+         [1., 11.],
+         [1., 14.],
+         [2., 15.],
+         [2., 15.]])) < 1E-16)
+
+
+def test_deriv():
+    """Test the deriv filter."""
+    ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
+    ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+    ts.data['data2'] = np.array([[0.0, 0.0],  # ndimensional array
+                                 [0.0, 0.0],
+                                 [1.0, 0.0],
+                                 [1.0, 0.0],
+                                 [0.0, 0.0]])
+
+    # First derivative
+    ts1 = ktk.filters.deriv(ts)
+
+    assert np.all(np.abs(ts1.time - np.array([0.05, 0.15, 0.25, 0.35]))
+                  < 1E-12)
+    assert np.all(np.abs(ts1.data['data'] - np.array([0., 10., 0., -10.]))
+                  < 1E-12)
+    assert np.all(np.abs(ts1.data['data2'] - np.array([
+        [0., 0.],
+        [10., 0.],
+        [0., 0.],
+        [-10., 0.]])) < 1E-12)
+
+    # Second derivative
+    ts2 = ktk.filters.deriv(ts, n=2)
+
+    assert np.all(np.abs(ts2.time - np.array([0.1, 0.2, 0.3]))
+                  < 1E-12)
+    assert np.all(np.abs(ts2.data['data'] - np.array([100., -100., -100.]))
+                  < 1E-12)
+    assert np.all(np.abs(ts2.data['data2'] - np.array([
+        [100., 0.],
+        [-100., 0.],
+        [-100., 0.]])) < 1E-12)
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__])

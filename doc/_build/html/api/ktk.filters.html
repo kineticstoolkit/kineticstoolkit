@@ -391,9 +391,13 @@ direction.</p></li>
 <dt id="ktk.filters.deriv">
 <code class="sig-prename descclassname">ktk.filters.</code><code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.filters.deriv" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the nth numerical derivative.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The sample rate must be constant.</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><p>The sample rate must be constant.</p></li>
+<li><p>This filter also works on n-dimensional data. Filtering occurs on the
+first axis (time).</p></li>
+</ul>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -455,32 +459,16 @@ direction.</p></li>
 </dl>
 <p class="rubric">Example</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Works on 1-dimension data</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># and also on n-dimension data</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data2'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>             <span class="p">[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">],</span>              <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">]])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Filter</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span>
 <span class="go">array([10., 11., 11., 14., 15., 15.])</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data2'</span><span class="p">]</span>
-<span class="go">array([[ 0., 10.],</span>
-<span class="go">       [ 0., 11.],</span>
-<span class="go">       [ 1., 11.],</span>
-<span class="go">       [ 1., 14.],</span>
-<span class="go">       [ 2., 15.],</span>
-<span class="go">       [ 2., 15.]])</span>
-</pre></div>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>This filter also works on n-dimensional data. Filtering occurs on the
+first axis (time).</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>

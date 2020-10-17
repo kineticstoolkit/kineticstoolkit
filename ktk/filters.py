@@ -41,11 +41,12 @@ def savgol(tsin: TimeSeries, /, *, window_length: int, poly_order: int,
     """
     Apply a Savitzky-Golay filter on a TimeSeries.
 
-    Note
-    ----
-    If the TimeSeries contains missing samples, a warning is issued, missing
-    samples are interpolated using a first-order interpolation before
-    filtering, and then replaced by NaNs in the filtered signal.
+    Notes
+    -----
+    - The sampling rate must be constant.
+    - If the TimeSeries contains missing samples, a warning is issued, missing
+      samples are interpolated using a first-order interpolation before
+      filtering, and then replaced by NaNs in the filtered signal.
 
     Parameters
     ----------
@@ -116,6 +117,13 @@ def smooth(tsin: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
 
+    Notes
+    -----
+    - The sampling rate must be constant.
+    - If the TimeSeries contains missing samples, a warning is issued, missing
+      samples are interpolated using a first-order interpolation before
+      filtering, and then replaced by NaNs in the filtered signal.
+
     Parameters
     ----------
     tsin
@@ -136,7 +144,10 @@ def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
 
     Note
     ----
-    The sampling rate must be constant.
+    - The sampling rate must be constant.
+    - If the TimeSeries contains missing samples, a warning is issued, missing
+      samples are interpolated using a first-order interpolation before
+      filtering, and then replaced by NaNs in the filtered signal.
 
     Parameters
     ----------
@@ -171,7 +182,13 @@ def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
 
         # Save nans and interpolate
         missing = subts.isnan(data)
-        subts.fill_missing_samples(0, method='pchip')
+        if np.sum(missing) > 0:
+            # There were NaNs, issue a warning.
+            warning_message = ('NaNs found in the signal. They have been ' +
+                               'interpolated before filtering, and then put ' +
+                               'back in the filtered data.')
+            warnings.warn(warning_message)
+            subts.fill_missing_samples(0)
 
         # Filter
         if filtfilt is True:
@@ -194,9 +211,11 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
 
-    Note
-    ----
-    The sample rate must be constant.
+    Notes
+    -----
+    - The sample rate must be constant.
+    - This filter also works on n-dimensional data. Filtering occurs on the
+      first axis (time).
 
     Parameters
     ----------
@@ -240,7 +259,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
         out_ts.time = (out_ts.time[1:] + out_ts.time[0:-1]) / 2
 
     for key in ts.data:
-        out_ts.data[key] = sp.diff(
+        out_ts.data[key] = np.diff(
             ts.data[key], n=n, axis=0) / (ts.time[1] - ts.time[0]) ** n
 
     return out_ts
@@ -261,32 +280,15 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
-
-    >>> # Works on 1-dimension data
     >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
-
-    >>> # and also on n-dimension data
-    >>> ts.data['data2'] = np.array( \
-            [[0., 10.], \
-             [0., 11.], \
-             [1., 11.], \
-             [1., 20.], \
-             [2., 14.], \
-             [2., 15.]])
-
-    >>> # Filter
     >>> ts = ktk.filters.median(ts)
-
     >>> ts.data['data1']
     array([10., 11., 11., 14., 15., 15.])
 
-    >>> ts.data['data2']
-    array([[ 0., 10.],
-           [ 0., 11.],
-           [ 1., 11.],
-           [ 1., 14.],
-           [ 2., 15.],
-           [ 2., 15.]])
+    Notes
+    -----
+    This filter also works on n-dimensional data. Filtering occurs on the
+    first axis (time).
 
     """
     out_ts = ts.copy()
