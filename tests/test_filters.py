@@ -17,7 +17,8 @@ def test_savgol():
 
     tsin = ktk.TimeSeries(time=time)
     tsin.data['data1'] = time**2
-    tsin.data['data2'] = time**4
+    tsin.data['data2'] = np.hstack([
+        time[:, np.newaxis]**2, time[:, np.newaxis]**4])
 
     # Using `ktk.filters.savgol`, we can smooth or derivate these data.
     # Smooth:
@@ -27,20 +28,25 @@ def test_savgol():
     # 2nd derivative:
     ddoty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=2)
 
-    # TODO Check why I need such a poor tolerance
-    tol = 5E-3  # Numerical tolerance
+    tol = 5E-3  # Numerical tolerance (large because I compare a filtered
+                # signal with a non-filtered signal).
 
     assert np.max(np.abs(y.data['data1'][1:-2] - time[1:-2] ** 2)) < tol
     assert np.max(np.abs(doty.data['data1'][1:-2] - 2 * time[1:-2])) < tol
     assert np.max(np.abs(ddoty.data['data1'][1:-2] - 2)) < tol
-    assert np.max(np.abs(y.data['data2'][1:-2] - time[1:-2]**4)) < tol
-    assert np.max(np.abs(doty.data['data2'][1:-2] -
+
+    assert np.max(np.abs(y.data['data2'][1:-2, 0] - time[1:-2] ** 2)) < tol
+    assert np.max(np.abs(doty.data['data2'][1:-2, 0] - 2 * time[1:-2])) < tol
+    assert np.max(np.abs(ddoty.data['data2'][1:-2, 0] - 2)) < tol
+
+    assert np.max(np.abs(y.data['data2'][1:-2, 1] - time[1:-2]**4)) < tol
+    assert np.max(np.abs(doty.data['data2'][1:-2, 1] -
                          4 * (time[1:-2] ** 3))) < tol
-    assert np.max(np.abs(ddoty.data['data2'][1:-2] -
+    assert np.max(np.abs(ddoty.data['data2'][1:-2, 1] -
                          12 * time[1:-2] ** 2)) < tol
 
     # Test if it still works with nans in data
-    tsin.data['data2'][0] = np.nan
+    tsin.data['data2'][10, 1] = np.nan
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
@@ -48,18 +54,27 @@ def test_savgol():
         doty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=1)
         ddoty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=2)
 
-    y.data['data2'][0] = np.nan
-    y.data['data2'][-1] = np.nan
-    tokeep = ~np.isnan(y.data['data2'])
+    # Remove points that I don't want to compare because they can't be valid
+    # (begin and end points, plus points around the original nan)
+    y.data['data2'][0:2, 1] = np.nan
+    y.data['data2'][-2:, 1] = np.nan
+    y.data['data2'][8:13, 1] = np.nan
 
-    assert np.max(np.abs(y.data['data1'][tokeep] - time[tokeep] ** 2)) < tol
-    assert np.max(np.abs(doty.data['data1'][tokeep] - 2 * time[tokeep])) < tol
-    assert np.max(np.abs(ddoty.data['data1'][tokeep] - 2)) < tol
-    assert np.max(np.abs(y.data['data2'][tokeep] - time[tokeep] ** 4)) < tol
-    assert np.max(np.abs(doty.data['data2'][tokeep] -
-                         4 * (time[tokeep] ** 3))) < tol
-    assert np.max(np.abs(ddoty.data['data2'][tokeep] -
-                         12 * time[tokeep] ** 2)) < tol
+    tokeep = ~y.isnan('data2')
+
+    assert np.all(np.abs(y.data['data1'][tokeep] - time[tokeep] ** 2) < tol)
+    assert np.all(np.abs(doty.data['data1'][tokeep] - 2 * time[tokeep]) < tol)
+    assert np.all(np.abs(ddoty.data['data1'][tokeep] - 2) < tol)
+
+    assert np.all(np.abs(y.data['data2'][tokeep, 0] - time[tokeep] ** 2) < tol)
+    assert np.all(np.abs(doty.data['data2'][tokeep, 0] - 2 * time[tokeep]) < tol)
+    assert np.all(np.abs(ddoty.data['data2'][tokeep, 0] - 2) < tol)
+
+    assert np.all(np.abs(y.data['data2'][tokeep, 1] - time[tokeep] ** 4) < tol)
+    assert np.all(np.abs(doty.data['data2'][tokeep, 1] -
+                         4 * (time[tokeep] ** 3)) < tol)
+    assert np.all(np.abs(ddoty.data['data2'][tokeep, 1] -
+                         12 * time[tokeep] ** 2) < tol)
 
 
 def test_smooth():
@@ -107,8 +122,16 @@ def test_butter():
     ts = ktk.TimeSeries(time=np.linspace(0, 30, 1000))
     ts.data['data'] = np.sin(2 * np.pi * ts.time)
 
-    # We filter at 1 Hz, with an order 1
-    new_ts = ktk.filters.butter(ts, 1, order=1)
+    # Add an ndimensional data with NaNs
+    ts.data['data2'] = np.hstack([
+        ts.data['data'][:, np.newaxis],
+        ts.time[:, np.newaxis]])
+    ts.data['data2'][400, 1] = np.nan
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        # We filter at 1 Hz, with an order 1
+        new_ts = ktk.filters.butter(ts, 1, order=1)
 
     # Verify that the new RMS value is the half ot the first
     data1 = ts.data['data'][300:700]
@@ -117,6 +140,17 @@ def test_butter():
     assert(np.abs(
         np.sqrt(np.sum(data2 ** 2)) -
         np.sqrt(np.sum(data1 ** 2)) / 2) < 0.001)
+
+    # Verify that filtering a ramp gives a ramp, that filtering
+    # an ndimensional data words, and that NaNs in data work.
+    tokeep = ~ts.isnan('data2')
+    assert np.all(
+        np.abs(new_ts.data['data2'][tokeep, 0] -
+               new_ts.data['data'][tokeep]) < 1E-3)
+    tokeep[0:100] = False
+    tokeep[-100:] = False
+    assert np.all(
+        np.abs(new_ts.data['data2'][tokeep, 1] - ts.time[tokeep]) < 1E-3)
 
 
 def test_median():

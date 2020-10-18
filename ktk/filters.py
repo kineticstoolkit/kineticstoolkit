@@ -26,20 +26,35 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-import scipy as sp
 import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from ktk import TimeSeries
-from typing import *
+from typing import Tuple
 
 import ktk  # for doctests
 
 
-def savgol(tsin: TimeSeries, /, *, window_length: int, poly_order: int,
+def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.array]:
+    """Interpolate a given data key in a TimeSeries."""
+    ts = ts.get_subset(key)
+    nan_index = ts.isnan(key)
+
+    if not np.all(~nan_index):
+        # There were NaNs, issue a warning.
+        ts.fill_missing_samples(0)
+        warnings.warn('NaNs found in the signal. They have been '
+                      'interpolated before filtering, and then put '
+                      'back in the filtered data.')
+    return (ts, nan_index)
+
+
+def savgol(ts: TimeSeries, /, *, window_length: int, poly_order: int,
            deriv: int = 0) -> TimeSeries:
     """
     Apply a Savitzky-Golay filter on a TimeSeries.
+
+    On n-dimensional data, filtering occurs on the first axis (time).
 
     Notes
     -----
@@ -50,7 +65,7 @@ def savgol(tsin: TimeSeries, /, *, window_length: int, poly_order: int,
 
     Parameters
     ----------
-    tsin
+    ts
         Input TimeSeries
     window_length
         The length of the filter window. window_length must be a positive
@@ -63,41 +78,21 @@ def savgol(tsin: TimeSeries, /, *, window_length: int, poly_order: int,
         which means to filter the data without differentiating.
 
     """
-    tsout = tsin.copy()
+    tsout = ts.copy()
 
-    delta = tsin.time[1] - tsin.time[0]
+    delta = ts.time[1] - ts.time[0]
 
     for key in tsout.data.keys():
 
-        input_signal = tsout.data[key]
-        # Resample NaNs if they exist:
-
-        # Find NaNs
-        signal_shape = np.shape(input_signal)
-
-        n_data = signal_shape[0]
-        nan_index = tsout.isnan(key)
+        (subts, nan_index) = _interpolate(tsout, key)
 
         if np.sum(~nan_index) < poly_order + 1:
             # We can't do anything without more points
-            warnings.warn('Not enough non-missing samples to filter.')
+            warnings.warn(
+                f"Not enough non-missing samples to filter {key}.")
             continue
 
-        if not np.all(~nan_index):
-            # There were NaNs, issue a warning.
-            warning_message = ('NaNs found in the signal. They have been ' +
-                               'interpolated before filtering, and then put ' +
-                               'back in the filtered data.')
-            warnings.warn(warning_message)
-
-        original_x = np.arange(n_data)[~nan_index]
-        original_y = input_signal[~nan_index]
-        new_x = np.arange(n_data)
-
-        # Resample
-        f = sp.interpolate.interp1d(original_x, original_y, axis=0,
-                                    fill_value='extrapolate')
-        input_signal = f(new_x)
+        input_signal = subts.data[key]
 
         # Filter
         filtered_data = sgl.savgol_filter(input_signal,
@@ -113,9 +108,11 @@ def savgol(tsin: TimeSeries, /, *, window_length: int, poly_order: int,
     return tsout
 
 
-def smooth(tsin: TimeSeries, /, window_length: int) -> TimeSeries:
+def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
+
+    On n-dimensional data, filtering occurs on the first axis (time).
 
     Notes
     -----
@@ -126,21 +123,23 @@ def smooth(tsin: TimeSeries, /, window_length: int) -> TimeSeries:
 
     Parameters
     ----------
-    tsin
+    ts
         Input TimeSeries.
     window_length
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
 
     """
-    tsout = savgol(tsin, window_length=window_length, poly_order=0)
+    tsout = savgol(ts, window_length=window_length, poly_order=0)
     return tsout
 
 
-def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
+def butter(ts: TimeSeries, /, fc: float, *, order: int = 2,
            btype: str = 'lowpass', filtfilt: bool = True) -> TimeSeries:
     """
     Apply a Butterworth filter to a TimeSeries.
+
+    On n-dimensional data, filtering occurs on the first axis (time).
 
     Note
     ----
@@ -151,7 +150,7 @@ def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
 
     Parameters
     ----------
-    tsin
+    ts
         Input TimeSeries.
     fc
         Cut-off frequency in Hz.
@@ -165,10 +164,10 @@ def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
         direction.
 
     """
-    ts = tsin.copy()
+    ts = ts.copy()
 
     # Create the filter
-    fs = (1 / (tsin.time[1] - tsin.time[0]))
+    fs = (1 / (ts.time[1] - ts.time[0]))
     if np.isnan(fs):
         raise ValueError("The TimeSeries' time vector must not contain NaNs.")
 
@@ -177,18 +176,7 @@ def butter(tsin: TimeSeries, /, fc: float, *, order: int = 2,
 
     for data in ts.data:
 
-        # Subset
-        subts = ts.get_subset(data)
-
-        # Save nans and interpolate
-        missing = subts.isnan(data)
-        if np.sum(missing) > 0:
-            # There were NaNs, issue a warning.
-            warning_message = ('NaNs found in the signal. They have been ' +
-                               'interpolated before filtering, and then put ' +
-                               'back in the filtered data.')
-            warnings.warn(warning_message)
-            subts.fill_missing_samples(0)
+        (subts, missing) = _interpolate(ts, data)
 
         # Filter
         if filtfilt is True:
@@ -211,11 +199,11 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
 
+    On n-dimensional data, filtering occurs on the first axis (time).
+
     Notes
     -----
     - The sample rate must be constant.
-    - This filter also works on n-dimensional data. Filtering occurs on the
-      first axis (time).
 
     Parameters
     ----------
@@ -269,6 +257,8 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.
 
+    On n-dimensional data, filtering occurs on the first axis (time).
+
     Parameters
     ----------
     ts
@@ -284,11 +274,6 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     >>> ts = ktk.filters.median(ts)
     >>> ts.data['data1']
     array([10., 11., 11., 14., 15., 15.])
-
-    Notes
-    -----
-    This filter also works on n-dimensional data. Filtering occurs on the
-    first axis (time).
 
     """
     out_ts = ts.copy()

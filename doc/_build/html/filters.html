@@ -644,19 +644,24 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/filters_3_0.png" src="_images/filters_3_0.png"/>
 </div>
 </div>
-<p>Let’s add some noise in these nice functions.</p>
+<p>Let’s add some white and quantification noise to these nice functions.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">noise</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">/</span> <span class="mi">5</span>
+<span></span><span class="c1"># White noise</span>
+<span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">noise</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1E-1</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ts_source</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'square'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'triangle'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'sine'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'pulse'</span><span class="p">]</span> <span class="o">+=</span> <span class="n">noise</span>
+
+<span class="c1"># Quantification noise: resolution of 1E-2</span>
+<span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+    <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1E2</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1E-2</span>
 
 <span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
@@ -708,9 +713,9 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># 4 Hz</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>  <span class="c1"># 4 Hz</span>
 <span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Low-pass 2nd order Butterworth at 4 Hz'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Low-pass 2nd order Butterworth at 6 Hz'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -761,9 +766,9 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">21</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">25</span><span class="p">)</span>
 <span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Moving average of length 21'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Moving average of length 25'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -814,9 +819,9 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'Before filtering'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'2nd order smoothing Savitsky Golay of length 51'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'2nd order smoothing Savitsky Golay of length 25'</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -933,10 +938,10 @@ div.rendered_html tbody tr:hover {
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 <span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span>
-    <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">4</span><span class="p">))</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">6</span><span class="p">))</span>
 <span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative after filtering at 4 Hz'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative after filtering at 6 Hz'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
@@ -965,10 +970,10 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative of the reference signal'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">51</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">25</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">temp</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative using a Savitzky-Golay filter of length 51'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">'First derivative using a Savitzky-Golay filter of length 25'</span><span class="p">)</span>
 
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
