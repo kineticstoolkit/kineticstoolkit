@@ -132,13 +132,19 @@ def test_butter():
         warnings.simplefilter("ignore")
         # We filter at 1 Hz, with an order 1
         new_ts = ktk.filters.butter(ts, 1, order=1)
+        new_ts_highpass = ktk.filters.butter(ts, 1, order=1, btype='highpass')
 
     # Verify that the new RMS value is the half ot the first
     data1 = ts.data['data'][300:700]
     data2 = new_ts.data['data'][300:700]
+    data3 = new_ts_highpass.data['data'][300:700]
 
     assert(np.abs(
         np.sqrt(np.sum(data2 ** 2)) -
+        np.sqrt(np.sum(data1 ** 2)) / 2) < 0.001)
+
+    assert(np.abs(
+        np.sqrt(np.sum(data3 ** 2)) -
         np.sqrt(np.sum(data1 ** 2)) / 2) < 0.001)
 
     # Verify that filtering a ramp gives a ramp, that filtering
@@ -151,6 +157,16 @@ def test_butter():
     tokeep[-100:] = False
     assert np.all(
         np.abs(new_ts.data['data2'][tokeep, 1] - ts.time[tokeep]) < 1E-3)
+
+    # Verify that keeping only a narrow range of requencies from a white noise
+    # resemble at sinusoidal signal of that midfrequency
+    ts = ktk.TimeSeries(time=np.linspace(0, 30, 1000))
+    np.random.seed(0)
+    ts.data['data'] = np.random.rand(1000)
+    new_ts = ktk.filters.butter(ts, fc=[3, 3.5], btype='bandpass')
+    # new_ts.plot()  # Checked visually once, ensure that it doesn't change
+    assert np.abs(np.sum(new_ts.data['data'] ** 2) -
+                  1.5161649322350133) < 1E-12
 
 
 def test_median():

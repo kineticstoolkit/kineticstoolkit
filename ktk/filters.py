@@ -30,7 +30,7 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from ktk import TimeSeries
-from typing import Tuple
+from typing import Tuple, Union, Sequence
 
 import ktk  # for doctests
 
@@ -134,7 +134,7 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     return tsout
 
 
-def butter(ts: TimeSeries, /, fc: float, *, order: int = 2,
+def butter(ts: TimeSeries, /, fc: Union[float, Sequence], *, order: int = 2,
            btype: str = 'lowpass', filtfilt: bool = True) -> TimeSeries:
     """
     Apply a Butterworth filter to a TimeSeries.
@@ -153,7 +153,9 @@ def butter(ts: TimeSeries, /, fc: float, *, order: int = 2,
     ts
         Input TimeSeries.
     fc
-        Cut-off frequency in Hz.
+        Cut-off frequency in Hz. This is a float for single-frequency filters
+        (lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
+        for two-frequency filters (bandpass, bandstop).
     order
         Optional. Order of the filter.
     btype

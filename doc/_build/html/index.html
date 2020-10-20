@@ -59,7 +59,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing" href="install.html" />
+    <link rel="next" title="Installing the stable version" href="install.html" />
 
 
 
@@ -208,7 +208,14 @@
     <li class="md-nav__item">
     
     
-      <a href="install.html" class="md-nav__link">Installing</a>
+      <a href="install.html" class="md-nav__link">Installing the stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="install_develop.html" class="md-nav__link">Installing the development version</a>
       
     
     </li>
@@ -285,7 +292,7 @@
     <li class="md-nav__item">
     
     
-      <a href="release_notes.html" class="md-nav__link">Release notes</a>
+      <a href="release_notes.html" class="md-nav__link">Release Notes</a>
       
     
     </li>
@@ -321,6 +328,14 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#example" class="md-nav__link">Example</a>
         </li>
+        <li class="md-nav__item"><a href="#stable-version" class="md-nav__link">Stable version</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#lower-level-modules-classes-and-functions" class="md-nav__link">Lower level modules, classes and functions</a>
+        </li>
+        <li class="md-nav__item"><a href="#higher-level-modules-and-classes" class="md-nav__link">Higher level modules and classes</a>
+        </li></ul>
+            </nav>
+        </li>
         <li class="md-nav__item"><a href="#development-version" class="md-nav__link">Development version</a>
         </li>
         <li class="md-nav__item"><a href="#credits" class="md-nav__link">Credits</a>
@@ -347,14 +362,15 @@ version.</p>
 </div>
 <p>Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
 classes and functions that aims to facilitate research in biomechanics using
-python. It is developed at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> in
-Montreal.</p>
+python.</p>
 <p>Kinetics Toolkit is mainly addressed to researchers and students in
 biomechanics with a little background in programming, who may or may not
 already have a working workflow and who want to understand and control their
 data. This is why special attention is made to build rich API documentation and
 tutorials, and to ensure the interoperability of ktk with other environments
 (using pandas Dataframes and JSON files as intermediate data containers).</p>
+<p>Kinetics Toolkit is developed at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> in
+Montreal.</p>
 
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span><span class="s1">'my_file.c3d'</span><span class="p">)</span>
@@ -362,33 +378,45 @@ tutorials, and to ensure the interoperability of ktk with other environments
 </pre></div>
 </div>
 <img alt="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" src="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif"/>
-<p>This library is a work in progress and is still very incomplete.
-The stable version API is however mostly settled and generally well tested
-using a comprehensive set of unit tests and doc tests, and currently includes:</p>
+
+
+<h2 id="stable-version">Stable version<a class="headerlink" href="#stable-version" title="Permalink to this headline">¶</a></h2>
+<p>The stable version API is mostly settled and well tested using a comprehensive set of unit tests and
+doc tests, and currently includes:</p>
+
+<h3 id="lower-level-modules-classes-and-functions">Lower level modules, classes and functions<a class="headerlink" href="#lower-level-modules-classes-and-functions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><cite>timeseries.TimeSeries</cite> : a generic class to represent time-varying
+<li><p><cite>TimeSeries</cite> : a generic class to represent time-varying
 n-dimensional data and events, with many methods to extract, merge and subset
 TimeSeries data.</p></li>
+<li><p><cite>filters</cite> : a module that wraps some filters from scipy to be applied directly on TimeSeries.</p></li>
+<li><p><cite>cycles</cite> : a module that detects, time-normalizes and stacks cycles (e.g., gait cycles,
+wheelchair propulsion cycles, etc.)</p></li>
+<li><p><cite>save</cite> and <cite>load</cite> : two functions to save and load results to/from JSON-based <cite>ktk.zip</cite> files.</p></li>
+<li><p>other helper functions.</p></li>
+</ul>
+
+
+<h3 id="higher-level-modules-and-classes">Higher level modules and classes<a class="headerlink" href="#higher-level-modules-and-classes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
 <li><p><cite>kinematics</cite> : a module that loads c3d and n3d files as TimeSeries of
 3d marker positions.</p></li>
 <li><p><cite>player.Player</cite> : a class that allows visualizing 3d markers using a simple
 graphical user interface.</p></li>
-<li><p><cite>filters</cite> : a module that wraps some filters from scipy to be applied directly on TimeSeries.</p></li>
-<li><p><cite>save</cite> and <cite>load</cite> : two functions to save and load results to/from JSON-based <cite>ktk.zip</cite> files.</p></li>
-<li><p>and other helper functions.</p></li>
+<li><p><cite>pushrimkinetics</cite> : a module that reads files from instrumented wheelchair wheels, reconstructs
+the pushrim kinetics, removes dynamic offsets in kinetic signals, and perform speed and power
+calculation for analysing spatiotemporal and kinetic parameters of wheelchair propulsion.</p></li>
 </ul>
-<p>Please be warned that this is still mostly experimental software. If you are
-using ktk or are planning to be, you are warmly invited to contact me, first to
-say Hello :-), and so that I can warn you before doing major, possibly breaking
-changes. Also remind that I develop ktk mainly for my lab and I have limited
-resources for troubleshooting. You can however ask your questions and submit bugs
-or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>. If I can answer, I’ll do.</p>
+<p>You can however ask your questions and submit bugs
+or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>. Please keep in mind that I
+develop ktk mainly for my lab and I have limited resources for troubleshooting, but if I can
+answer, I’ll do.</p>
+
 
 
 <h2 id="development-version">Development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
-<p>While the development version is also open source, it is developed in parallel
-with my research projects following the needs of the moment, and is therefore
-well less settled, tested and stable.</p>
+<p>The <a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop/">development</a> version is developed in parallel with my research projects following the needs
+of the moment, and is therefore well less settled, tested and stable.</p>
 
 
 <h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
@@ -412,27 +440,20 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <h2 id="site-map">Site map<a class="headerlink" href="#site-map" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install.html#requirements">Requirements</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="install.html#download-and-install-anaconda-or-miniconda">Download and install Anaconda or Miniconda</a></li>
-<li class="toctree-l3"><a class="reference internal" href="install.html#create-a-virtual-environment-and-install-the-external-dependencies">Create a virtual environment and install the external dependencies</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing the stable version</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install_develop.html">Installing the development version</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install_develop.html#requirements">Requirements</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install_develop.html#download-and-install-anaconda-or-miniconda">Download and install Anaconda or Miniconda</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_develop.html#create-a-virtual-environment-and-install-the-external-dependencies">Create a virtual environment and install the external dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#installing-ktk">Installing ktk</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="install.html#stable-version">Stable version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="install.html#development-version">Development version</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_develop.html#installing-ktk">Installing ktk</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install_develop.html#configuring-spyder">Configuring Spyder</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="install_develop.html#qt5-backend">Qt5 backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="install_develop.html#python-path">Python path</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#configuring-spyder">Configuring Spyder</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="install.html#qt5-backend">Qt5 backend</a></li>
-<li class="toctree-l3"><a class="reference internal" href="install.html#python-path-development-version-only">Python path (development version only)</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="install.html#keeping-ktk-up-to-date">Keeping ktk up to date</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="install.html#id1">Stable version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="install.html#id2">Development version</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="install_develop.html#keeping-ktk-up-to-date">Keeping ktk up to date</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
@@ -526,15 +547,21 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Including-information-in-file-names">Including information in file names</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.2">Version 0.2</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="release_notes.html#New-features">New features</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.3-(October-2020)">Version 0.3 (October 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#New-Features">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="release_notes.html#Improvements">Improvements</a></li>
-<li class="toctree-l3"><a class="reference internal" href="release_notes.html#Breaking-changes">Breaking changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#Breaking-Changes">Breaking Changes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.1">Version 0.1</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-1">New features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.2-(August-2020)">Version 0.2 (August 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-1">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#improvements-1">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#breaking-changes-1">Breaking Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.1-(May-2020)">Version 0.1 (May 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-2">New Features</a></li>
 </ul>
 </li>
 </ul>
@@ -561,12 +588,12 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="install.html" title="Installing"
+            <a href="install.html" title="Installing the stable version"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Installing </span>
+                class="md-footer-nav__direction"> Next </span> Installing the stable version </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

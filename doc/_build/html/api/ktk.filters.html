@@ -218,7 +218,14 @@
     <li class="md-nav__item">
     
     
-      <a href="../install.html" class="md-nav__link">Installing</a>
+      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
       
     
     </li>
@@ -295,7 +302,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../release_notes.html" class="md-nav__link">Release notes</a>
+      <a href="../release_notes.html" class="md-nav__link">Release Notes</a>
       
     
     </li>
@@ -380,7 +387,9 @@ filtering, and then replaced by NaNs in the filtered signal.</p></li>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ts</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries.</p></li>
-<li><p><strong>fc</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Cut-off frequency in Hz.</p></li>
+<li><p><strong>fc</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>]) – Cut-off frequency in Hz. This is a float for single-frequency filters
+(lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
+for two-frequency filters (bandpass, bandstop).</p></li>
 <li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. Order of the filter.</p></li>
 <li><p><strong>btype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. {‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’}.</p></li>
 <li><p><strong>filtfilt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. If True, the filter is applied two times in reverse direction

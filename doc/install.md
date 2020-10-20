@@ -1,81 +1,32 @@
-Installing
-==========
-
-Requirements
-------------
+Installing the stable version
+=============================
 
 Although ktk is distributed via `pip`, I strongly recommend using a conda environment, if only to install `ezc3d` which is required for opening c3d files and which is distributed via `conda-forge`.
 
-### Download and install Anaconda or Miniconda ###
+1. Download and install Anaconda or Miniconda with python 3.8 or newer.
 
-I suggest Miniconda as it is way smaller than the whole Anaconda suite.
+2. Create a new environment to install ktk (recommended): open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a `ktk` virtual environment and install the dependencies in this environment.
 
-[Miniconda website](https://docs.conda.io/en/latest/miniconda.html) - Select the most recent version that corresponds to your system.
+        conda create -n ktk
 
-### Create a virtual environment and install the external dependencies ###
+        conda activate ktk
 
-Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a `ktk` virtual environment and install the dependencies in this environment.
+        conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn pyqt ezc3d
+   
+3. Interactive functions can be tricky in Python. Ktk's interactive functions make use of IPython's integration of Matplotlib/Qt5's event loop, which is completely supported in the Spyder IDE. Therefore I recommend using Spyder, but any IDE that uses IPython should also work well.
 
-    conda create -n ktk
+        conda install -c conda-forge spyder
 
-    conda activate ktk
+4. Install Kinetics Toolkit
 
-    conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn pyqt ezc3d
+        pip install ktk
 
-Additional dependencies for the development version:
+5. Choose the Qt5 backend for IPython: if you are using the Spyder IDE, go to the Spyder's preferences, to the **IPython console** item, then to the **Graphics** pane. In the **Graphics backend** box, select **Qt5**. Restart Spyder.
 
-    conda install -c conda-forge git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm nbsphinx twine
+Verify that you are able to import ktk in the interactive IPython console. This should work without error:
 
-
-Installing ktk
---------------
-
-### Stable version ###
-
-The public, open-source version of ktk is distributed va `pip`. Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
-
-    pip install ktk
-
-### Development version ###
-
-Clone ktk from github: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
-
-    git clone https://github.com/felixchenier/kineticstoolkit.git
-
-
-Configuring Spyder
-------------------
-
-On Windows, open Spyder by selecting 'Spyder (ktk)' from the Anaconda3 menu. On macOS and Linux, open a terminal and write:
-
-    conda activate ktk
-    spyder
-
-### Qt5 backend ###
-
-KTK uses Matplotlib for user interaction. To set it permanently in Spyder, go to the Spyder's preferences, to the **IPython console** item, then to the
-**Graphics** pane. In the **Graphics backend** box, select **Qt5**.
-
-### Python path (development version only) ###
-
-In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the
-`kineticstoolkit` folder that you just cloned to the python path.
-
-Restart Spyder. Writing `import ktk` should now find and import ktk without error.
-
-
-Keeping ktk up to date
-----------------------
-
-### Stable version ###
-
-Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux), and type:
-
-    pip upgrade ktk
-
-### Development version ###
-
-Open Git bash (on Windows) or a terminal (on macOS and Linux), navigate to the kineticstoolkit folder
-and type:
-
-    git pull origin master
+    >>> import ktk
+    
+    or
+    
+    >>> import ktk.lab as ktk
