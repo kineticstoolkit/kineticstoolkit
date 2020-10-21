@@ -361,20 +361,14 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.calculate_velocity" title="ktk.pushrimkinetics.calculate_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_velocity</span></code></a>(tsin, /)</p></td>
 <td><p>Calculate velocity based on wheel angle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.detect_pushes" title="ktk.pushrimkinetics.detect_pushes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">detect_pushes</span></code></a>(tsin, /, *[, push_threshold, …])</p></td>
-<td><p>Deprecated since October 2020.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.find_recovery_indices" title="ktk.pushrimkinetics.find_recovery_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_recovery_indices</span></code></a>(Mz, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.find_recovery_indices" title="ktk.pushrimkinetics.find_recovery_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_recovery_indices</span></code></a>(Mz, /)</p></td>
 <td><p>Find recovery indices based on a vector of propulsion moments.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.read_file" title="ktk.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename, /[, file_format])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.read_file" title="ktk.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename, /[, file_format])</p></td>
 <td><p>Read a file containing pushrim kinetics data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.remove_offsets" title="ktk.pushrimkinetics.remove_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_offsets</span></code></a>(kinetics[, baseline_kinetics])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.remove_offsets" title="ktk.pushrimkinetics.remove_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_offsets</span></code></a>(kinetics[, baseline_kinetics])</p></td>
 <td><p>Remove dynamic offsets in forces and moments.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.pushrimkinetics.remove_sinusoids" title="ktk.pushrimkinetics.remove_sinusoids"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_sinusoids</span></code></a>(kinetics[, baseline_kinetics])</p></td>
-<td><p>Deprecated since October 2020.</p></td>
 </tr>
 </tbody>
 </table>
@@ -476,41 +470,6 @@ filter, please see the <code class="docutils literal notranslate"><span class="p
 </div>
 </dd></dl>
 <dl class="py function">
-<dt id="ktk.pushrimkinetics.detect_pushes">
-<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">detect_pushes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">push_threshold</span><span class="o">=</span><span class="default_value">5.0</span></em>, <em class="sig-param"><span class="n">recovery_threshold</span><span class="o">=</span><span class="default_value">2.0</span></em>, <em class="sig-param"><span class="n">min_push_time</span><span class="o">=</span><span class="default_value">0.1</span></em>, <em class="sig-param"><span class="n">min_push_force</span><span class="o">=</span><span class="default_value">30.0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.detect_pushes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deprecated since October 2020. Detect pushes and recoveries automatically.</p>
-<p>Please use ktk.cycles.detect_cycles instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>tsin</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries that must contain a ‘Forces’ key in its data dict.</p></li>
-<li><p><strong>push_threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The total force over which a push phase is triggered, in
-newton.</p></li>
-<li><p><strong>recovery_threshold</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The total force under which a recovery phase is triggered,
-in newton.</p></li>
-<li><p><strong>min_push_time</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The minimum time required for a push time, in seconds.
-Detected pushes that last less than this minimum time are removed from
-the push analysis.</p></li>
-<li><p><strong>min_recovery_time</strong> – Optional. The minimum time required for a recovery time, in seconds.
-Detected recoveries that last less than this minimum time are removed
-from the push analysis.</p></li>
-<li><p><strong>min_push_force</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. The minimum total push force in N under which the detected
-push is discarded. For example, if the user puts their hands on the
-pushrim before starting propelling, this may be detected as a push.
-Using a minimum push force removes these misdetected pushes.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of tsin with the following added events:
-- ‘push’
-- ‘recovery’</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
 <dt id="ktk.pushrimkinetics.find_recovery_indices">
 <code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">find_recovery_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Mz</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.find_recovery_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find recovery indices based on a vector of propulsion moments.</p>
@@ -520,7 +479,7 @@ conservative on what could be considered as a recovery, so that every
 index returned by this function is almost certain to correspond to a
 recovery. This function is used by <cite>pushrimkinetics.remove_sinusoids</cite>
 to identify the instants with no hand contact. It should not be used to
-isolate the push and recovery phases (use <cite>pushrimkinetics.detectpushes</cite>
+isolate the push and recovery phases (use <cite>ktk.cycles.detect_cycles()</cite>
 instead).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -533,6 +492,10 @@ instead).</p>
 <dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="ktk.cycles.html#ktk.cycles.detect_cycles" title="ktk.cycles.detect_cycles"><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles()</span></code></a></p>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt id="ktk.pushrimkinetics.read_file">
@@ -587,17 +550,6 @@ Forces and Moments data.</p>
 inaccuracies due to pushrim weight and wheel camber,” Medical
 Engineering and Physics, vol. 40, pp. 75–86, 2017.</p>
 </div>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.pushrimkinetics.remove_sinusoids">
-<code class="sig-prename descclassname">ktk.pushrimkinetics.</code><code class="sig-name descname">remove_sinusoids</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">baseline_kinetics</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.pushrimkinetics.remove_sinusoids" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deprecated since October 2020. Please use
-ktk.pushrimkinetics.remove_offsets instead.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
 </dd></dl>
 
 

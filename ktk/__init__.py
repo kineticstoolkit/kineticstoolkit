@@ -30,59 +30,63 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-# --- Imports
-directory = []
+listing = []
+import ktk.config
 
+# --- Import released modules and functions
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
-directory.append('TimeSeries')
-directory.append('TimeSeriesEvent')
+listing.append('TimeSeries')
+listing.append('TimeSeriesEvent')
 
 from ktk.tools import explore, terminal, update, tutorials
-directory.append('explore')
-directory.append('terminal')
-directory.append('update')
-directory.append('tutorials')
-
-from ktk.dbinterface import DBInterface
-directory.append('DBInterface')
+listing.append('explore')
+listing.append('terminal')
+listing.append('update')
+listing.append('tutorials')
 
 from ktk.player import Player
-directory.append('Player')
+listing.append('Player')
 
 from ktk.loadsave import load, save
-directory.append('load')
-directory.append('save')
+listing.append('load')
+listing.append('save')
 
 from ktk import filters
-directory.append('filters')
-
-from ktk import geometry
-directory.append('geometry')
+listing.append('filters')
 
 from ktk import kinematics
-directory.append('kinematics')
+listing.append('kinematics')
 
 from ktk import pushrimkinetics
-directory.append('pushrimkinetics')
-
-from ktk import inversedynamics
-directory.append('inversedynamics')
+listing.append('pushrimkinetics')
 
 from ktk import cycles
-directory.append('cycles')
-
-from ktk import emg
-directory.append('emg')
+listing.append('cycles')
 
 from ktk import _repr
 from ktk import gui
 
+# --- Import unstable modules if we are on master
+if ktk.config.version == 'master':
+
+    from ktk.dbinterface import DBInterface
+    listing.append('DBInterface')
+
+    from ktk import geometry
+    listing.append('geometry')
+
+    from ktk import inversedynamics
+    listing.append('inversedynamics')
+
+    from ktk import emg
+    listing.append('emg')
+
 try:
     from ktk import dev
-    directory.append('dev')
+    listing.append('dev')
 except Exception:
     pass
 
 
 def __dir__():
-    return directory
+    return listing

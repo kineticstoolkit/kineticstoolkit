@@ -27,15 +27,20 @@ __license__ = "Apache 2.0"
 
 import ktk.filters
 from ktk import TimeSeries
+from ktk.decorators import stable, unstable, private, dead
 
 import numpy as np
 from numpy import sin, cos, pi
 import pandas as pd
 import warnings
 import struct  # to unpack binary data from SmartWheels' txt files
-from typing import Union, Optional
+from typing import Union, Optional, List
 
 
+listing = []  # type: List[str]
+
+
+@stable(listing)
 def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
@@ -165,6 +170,7 @@ def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     return ts
 
 
+@unstable(listing)
 def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     """
     Find recovery indices based on a vector of propulsion moments.
@@ -175,7 +181,7 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     index returned by this function is almost certain to correspond to a
     recovery. This function is used by `pushrimkinetics.remove_sinusoids`
     to identify the instants with no hand contact. It should not be used to
-    isolate the push and recovery phases (use `pushrimkinetics.detectpushes`
+    isolate the push and recovery phases (use `ktk.cycles.detect_cycles()`
     instead).
 
     Parameters
@@ -187,6 +193,10 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     -------
     np.ndarray
         Array of bools where each True represents recovery.
+
+    See Also
+    --------
+    ktk.cycles.detect_cycles
 
     """
     Mz = Mz.copy()
@@ -214,6 +224,7 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     return index
 
 
+@stable(listing)
 def remove_offsets(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -294,6 +305,7 @@ def remove_offsets(
     return kinetics
 
 
+@stable(listing)
 def calculate_forces_and_moments(
         kinetics: TimeSeries, /,
         gains: Union[np.ndarray, str],
@@ -435,6 +447,7 @@ def calculate_forces_and_moments(
     return(kinetics)
 
 
+@stable(listing)
 def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate velocity based on wheel angle.
@@ -475,6 +488,7 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     return tsout
 
 
+@stable(listing)
 def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate power based on wheel velocity and moment.
@@ -499,6 +513,7 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
 
 
 #--- Deprecated functions ---#
+@private(listing)
 def _old_calculate_forces_and_moments(
         kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
     """
@@ -681,6 +696,7 @@ def _old_calculate_forces_and_moments(
     return(kinetics)
 
 
+@dead(listing)
 def detect_pushes(
         tsin: TimeSeries, /, *,
         push_threshold: float = 5.0,
@@ -756,6 +772,7 @@ def detect_pushes(
     return tsout
 
 
+@dead(listing)
 def remove_sinusoids(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -835,6 +852,10 @@ CALIBRATION_MATRICES['MSA_Racing_1'] = {
     'offsets': [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869],
     'transducer': 'force_cell',
     }
+
+
+def __dir__():
+    return listing
 
 if __name__ == "__main__":
     import doctest

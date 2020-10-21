@@ -27,7 +27,8 @@ __license__ = "Apache 2.0"
 
 import ktk.geometry
 from ktk import TimeSeries
-from typing import *
+from ktk.decorators import stable, unstable
+from typing import Sequence, Dict, Any, List
 
 import numpy as np
 import warnings
@@ -40,6 +41,10 @@ except ModuleNotFoundError:
                   'will not work.')
 
 
+listing = []  # type: List[str]
+
+
+@stable(listing)
 def read_c3d_file(filename: str) -> TimeSeries:
     """
     Read markers from a C3D file.
@@ -59,7 +64,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
     Notes
     -----
-    - This function relies on pariterre's `ezc3d`, which is available on
+    - This function relies on `ezc3d`, which is available on
       conda-forge and on git-hub. Please install ezc3d before using
       read_c3d_file. https://github.com/pyomeca/ezc3d
 
@@ -110,6 +115,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
     return output
 
 
+@stable(listing)
 def read_n3d_file(filename: str, labels: Sequence[str] = []):
     """
     Read markers from an NDI N3D file.
@@ -297,10 +303,11 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
+@unstable(listing)
 def create_rigid_body_config(
-        markers: TimeSeries,
-        marker_names: Sequence[str]
-        ) -> Dict[str, Any]:
+    markers: TimeSeries,
+    marker_names: Sequence[str]
+) -> Dict[str, Any]:
     """
     Create a rigid body configuration based on a static acquisition.
 
@@ -348,13 +355,14 @@ def create_rigid_body_config(
             }
 
 
+@unstable(listing)
 def register_markers(
         markers: TimeSeries,
         rigid_body_configs: Dict[str, Dict[str, Any]],
         verbose: bool = False
         ) -> TimeSeries:
     """
-    Calculates the trajectory of rigid bodies.
+    Calculate the trajectory of rigid bodies.
 
     Calculates the trajectory of rigid bodies using
     `ktk.geometry.register_points`.
@@ -407,6 +415,7 @@ def register_markers(
     return rigid_bodies
 
 
+@unstable(listing)
 def create_virtual_marker_config(
         markers: TimeSeries,
         rigid_bodies: TimeSeries,
@@ -457,6 +466,7 @@ def create_virtual_marker_config(
             'LocalPoint': local_points}
 
 
+@unstable(listing)
 def write_trc_file(markers: TimeSeries, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
@@ -510,3 +520,7 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
                     '\t{:.5f}'.format(markers.data[key][i_frame, 1]) +
                     '\t{:.5f}'.format(markers.data[key][i_frame, 2]))
             fid.write('\n')
+
+
+def __dir__():
+    return listing

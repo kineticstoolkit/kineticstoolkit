@@ -33,7 +33,21 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 import ktk.external.icp as icp
-from typing import Tuple
+from typing import Tuple, List
+
+
+def __dir__() -> List[str]:
+    return [
+        'matmul',
+        'create_rotation_matrices',
+        'create_reference_frames',
+        'get_local_coordinates',
+        'get_global_coordinates',
+        'isnan',
+        'match_size',
+        'register_points',
+    ]
+
 
 def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     """

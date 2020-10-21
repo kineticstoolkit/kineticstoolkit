@@ -29,6 +29,19 @@ __license__ = "Apache 2.0"
 import os
 import warnings
 import platform
+from typing import List
+
+
+def __dir__() -> List[str]:
+    return [
+        'root_folder',
+        'home_folder',
+        'is_pc',
+        'is_mac',
+        'is_linux',
+        'temp_folder',
+        'version',
+    ]
 
 # Root folder (ktk installation)
 root_folder = os.path.dirname(os.path.dirname(__file__))

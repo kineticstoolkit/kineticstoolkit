@@ -28,10 +28,15 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from ktk.timeseries import TimeSeries, TimeSeriesEvent
+from ktk.decorators import stable
 import warnings
-from typing import Optional, List, Dict, Tuple
+from typing import List, Dict, Tuple
 
 
+listing = []  # type: List[str]
+
+
+@stable(listing)
 def detect_cycles(ts: TimeSeries,
                   data_key: str, /,
                   event_name1: str,
@@ -186,6 +191,7 @@ def detect_cycles(ts: TimeSeries,
     return tsout
 
 
+@stable(listing)
 def time_normalize(
         ts: TimeSeries, /,
         event_name1: str,
@@ -318,6 +324,7 @@ def time_normalize(
     return dest_ts
 
 
+@stable(listing)
 def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
@@ -358,6 +365,7 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     return data
 
 
+@stable(listing)
 def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
@@ -460,6 +468,7 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
 #     return out
 
 
+@stable(listing)
 def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
@@ -542,6 +551,10 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     out_cycles.append(remain[0])
 
     return out_cycles[-1::-1]
+
+
+def __dir__() -> List[str]:
+    return listing
 
 
 if __name__ == "__main__":

@@ -38,22 +38,15 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
 import os
-from typing import *
-
+from typing import Sequence, Union, Tuple, Any, List
+from ktk.decorators import experimental, unstable
 
 CMDGUI = ktk.config.root_folder + "/ktk/cmdgui.py"
 _message_window_int = [0]
+listing = []  # type: List[str]
 
 
-def __dir__():
-    return ('button_dialog',
-            'get_credentials',
-            'get_folder',
-            'get_filename',
-            'set_color_order',
-            'message')
-
-
+@experimental(listing)
 def message(message: str = '') -> None:
     """
     Show a message window.
@@ -63,7 +56,6 @@ def message(message: str = '') -> None:
     message
         The message to show. Use '' to close every message window.
     """
-
     # Begins by deleting the current message
     for file in os.listdir(ktk.config.temp_folder):
         if 'gui_message_flag' in file:
@@ -95,6 +87,7 @@ def message(message: str = '') -> None:
     plt.pause(0.1)
 
 
+@experimental(listing)
 def button_dialog(message: str = 'Please select an option.',
                   choices: Sequence[str] = ['Cancel', 'OK']) -> int:
     """
@@ -132,6 +125,7 @@ def button_dialog(message: str = 'Please select an option.',
     return button[0]
 
 
+@unstable(listing)
 def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     """
     Define the standard color order for matplotlib.
@@ -170,6 +164,7 @@ def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=thelist)
 
 
+@experimental(listing)
 def get_credentials() -> Tuple[str, str]:
     """
     Ask the user's username and password.
@@ -190,6 +185,7 @@ def get_credentials() -> Tuple[str, str]:
     return tuple(str.split(result))  # type: ignore
 
 
+@experimental(listing)
 def get_folder(initial_folder: str = '.') -> str:
     """
     Get folder interactively using a file dialog window.
@@ -214,6 +210,7 @@ def get_folder(initial_folder: str = '.') -> str:
     return result
 
 
+@experimental(listing)
 def get_filename(initial_folder: str = '.') -> str:
     """
     Get file name interactively using a file dialog window.
@@ -235,3 +232,7 @@ def get_filename(initial_folder: str = '.') -> str:
     result = temp.decode(sys.getdefaultencoding())
     result = result.replace('\n', '').replace('\r', '')
     return result
+
+
+def __dir__():
+    return listing
