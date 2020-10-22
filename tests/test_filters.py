@@ -5,7 +5,7 @@
 """
 Unit tests for ktk.filters.
 """
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 import warnings
 

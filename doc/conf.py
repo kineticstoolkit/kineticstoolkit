@@ -17,13 +17,13 @@
 
 # -- Project information -----------------------------------------------------
 
-project = 'Kinetics Toolkit (ktk)'
+project = 'Kinetics Toolkit'
 copyright = '2020, Félix Chénier'
 author = 'Félix Chénier'
 
 # The full version, including alpha/beta/rc tags
-release = 'master'
-
+with open('../VERSION', 'r') as fid:
+    release = fid.read()
 
 # -- General configuration ---------------------------------------------------
 
@@ -74,7 +74,7 @@ templates_path = ['_templates']
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints',
-                    'api/external.*', 'api/ktk.external.*', 'api/ktk.cmdgui.*']
+                    'api/external.*', 'api/kineticstoolkit.external.*', 'api/kineticstoolkit.cmdgui.*']
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -89,7 +89,7 @@ html_theme = 'sphinx_material'
 html_theme_options = {
 
     # Set the name of the project to appear in the navigation.
-    'nav_title': 'Kinetics Toolkit - Development version',
+    'nav_title': 'Kinetics Toolkit',
 
     # Specify a base_url used to generate sitemap.xml. If not
     # specified, then no sitemap will be built.

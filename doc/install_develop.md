@@ -21,10 +21,10 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
     conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn pyqt ezc3d git pytest mypy jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm nbsphinx twine
 
 
-Installing ktk
---------------
+Installing Kinetics Toolkit
+---------------------------
 
-Clone ktk from github: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
+Clone Kinetics Toolkit from github: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
 
     git clone https://github.com/felixchenier/kineticstoolkit.git
 
@@ -39,21 +39,20 @@ On Windows, open Spyder by selecting 'Spyder (ktk)' from the Anaconda3 menu. On 
 
 ### Qt5 backend ###
 
-KTK uses Matplotlib for user interaction. To set it permanently in Spyder, go to the Spyder's preferences, to the **IPython console** item, then to the
+Kinetics Toolkit uses Matplotlib for user interaction. To set it permanently in Spyder, go to the Spyder's preferences, to the **IPython console** item, then to the
 **Graphics** pane. In the **Graphics backend** box, select **Qt5**.
 
 ### Python path ###
 
-In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the
-`kineticstoolkit` folder that you just cloned to the python path.
+In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the `kineticstoolkit` folder that you just cloned to the python path (the outer one, not the inner one).
 
-Restart Spyder. Writing `import ktk` should now find and import ktk without error.
+Restart Spyder. Writing `import kineticstoolkit` should now find and import Kinetics Toolkit
+without error.
 
 
-Keeping ktk up to date
-----------------------
+Keeping up to date
+------------------
 
-To update ktk to the laster master version, open Git bash (on Windows) or a terminal (on macOS and Linux), navigate to the kineticstoolkit folder
-and type:
+To update Kinetics Toolkit to the laster master version, open Git bash (on Windows) or a terminal (on macOS and Linux), navigate to the kineticstoolkit folder and type:
 
     git pull origin master

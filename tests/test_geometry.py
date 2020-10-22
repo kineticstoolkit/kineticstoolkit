@@ -6,7 +6,7 @@
 # This file is not for redistribution.
 """Unit tests for ktk.geometry."""
 
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 
 

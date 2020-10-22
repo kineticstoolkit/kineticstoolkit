@@ -47,7 +47,7 @@
   
   
   
-    <title>DBInterface &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>DBInterface &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> DBInterface </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -611,7 +611,11 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="dbinterface--page-root">DBInterface<a class="headerlink" href="#dbinterface--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.dbinterface.html"><span class="doc">DBInterface</span></a> class is used exclusively at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> and may be removed from ktk someday. Its aim is to interface with the BIOMEC database (<a class="reference external" href="https://felixchenier.uqam.ca/biomec">https://felixchenier.uqam.ca/biomec</a>) to fetch all non-personal information about a specified ongoing project.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This class is in development and has not been released.</p>
+</div>
+<p>The <a class="reference internal" href="api/kineticstoolkit.dbinterface.html"><span class="doc">DBInterface</span></a> class is used exclusively at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> and may be removed from ktk someday. Its aim is to interface with the BIOMEC database (<a class="reference external" href="https://felixchenier.uqam.ca/biomec">https://felixchenier.uqam.ca/biomec</a>) to fetch all non-personal information about a specified ongoing project.</p>
 <p>It is necessary to understand how data files are stored in BIOMEC before reading this tutorial.</p>
 <p>Please note that the user/password combination used in this tutorial is not valid, and that you should get access to BIOMEC to use ktk.dbinterface.</p>
 <div class="nbinput nblast docutils container">
@@ -619,7 +623,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 </pre></div>
@@ -1084,7 +1088,7 @@ files:
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/felix/Documents/Recherche/kineticstoolkit/ktk/dbinterface.py:177: UserWarning: Duplicate file(s) found. See duplicates property.
+/Users/felix/Documents/Recherche/kineticstoolkit/kineticstoolkit/dbinterface.py:182: UserWarning: Duplicate file(s) found. See duplicates property.
   warnings.warn('Duplicate file(s) found. See duplicates property.')
 </pre></div></div>
 </div>
@@ -1290,7 +1294,7 @@ Refreshing project...
  'kinematics1_dbfid6681n.c3d']
 </pre></div></div>
 </div>
-<p>For more information on DBInterface, please check the <a class="reference internal" href="api/ktk.dbinterface.html"><span class="doc">API Reference</span></a>.</p>
+<p>For more information on DBInterface, please check the <a class="reference internal" href="api/kineticstoolkit.dbinterface.html"><span class="doc">API Reference</span></a>.</p>
 
 
 

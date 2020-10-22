@@ -47,7 +47,7 @@
   
   
   
-    <title>Cycles &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Cycles &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Cycles </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -603,14 +603,14 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="cycles--page-root">Cycles<a class="headerlink" href="#cycles--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.cycles.html"><span class="doc">ktk.cycles</span></a> module allows detecting cycles in TimeSeries, time-normalize these cycles and find the most repeatable ones.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.cycles.html"><span class="doc">cycles</span></a> module allows detecting cycles in TimeSeries, time-normalize these cycles and find the most repeatable ones.</p>
 <p>In this tutorial, we will use kinetics data from wheelchair propulsion using a csv file.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -661,7 +661,7 @@ div.rendered_html tbody tr:hover {
 </div>
 
 <h2 id="Detecting-cycles">Detecting cycles<a class="headerlink" href="#Detecting-cycles" title="Permalink to this headline">¶</a></h2>
-<p>The ktk.cycles.detect_cycles() function allows detecting cycles in a TimeSeries, using one specified signal from this TimeSeries. Here, this signal will be the total force Ftot.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles()</span></a> function allows detecting cycles in a TimeSeries, using one specified signal from this TimeSeries. Here, this signal will be the total force Ftot.</p>
 <p>We first calculate it based on the three force components and we add it as a new data of the TimeSeries.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -759,7 +759,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Time-normalizing-cycles">Time-normalizing cycles<a class="headerlink" href="#Time-normalizing-cycles" title="Permalink to this headline">¶</a></h2>
-<p>Once the cycles have been detected, we can time-normalize these cycles using ktk.cycles.time_normalize() to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.</p>
+<p>Once the cycles have been detected, we can time-normalize these cycles using <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.time_normalize"><span class="std std-ref">ktk.cycles.time_normalize()</span></a> to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
@@ -806,7 +806,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Combining-the-cycles">Combining the cycles<a class="headerlink" href="#Combining-the-cycles" title="Permalink to this headline">¶</a></h2>
-<p>Time-normalizing cycles is often performed in the aim of performing further operations such as computing and visualizing the average cycle. Therefore, the next logical step is often to group the cycles into indexable arrays. This can be done using the ktk.cycles.stack() function.</p>
+<p>Time-normalizing cycles is often performed in the aim of performing further operations such as computing and visualizing the average cycle. Therefore, the next logical step is often to group the cycles into indexable arrays. This can be done using the <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.stack"><span class="std std-ref">ktk.cycles.stack()</span></a> function.</p>
 <p>In this example, we will stack the data from the last computed TimeSeries.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -864,7 +864,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Finding-the-most-repeatable-cycles">Finding the most repeatable cycles<a class="headerlink" href="#Finding-the-most-repeatable-cycles" title="Permalink to this headline">¶</a></h2>
-<p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different between each other. We can use the ktk.cycles.most_repeatable_cycles() function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
+<p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different between each other. We can use the <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.most_repeatable_cycles"><span class="std std-ref">ktk.cycles.most_repeatable_cycles()</span></a> function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -911,7 +911,7 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/cycles_24_0.png" src="_images/cycles_24_0.png"/>
 </div>
 </div>
-<p>For more information on cycles, please check the <a class="reference internal" href="api/ktk.cycles.html"><span class="doc">API Reference for the ktk.cycles module</span></a>.</p>
+<p>For more information on cycles, please check the <a class="reference internal" href="api/kineticstoolkit.cycles.html"><span class="doc">API Reference for the cycles module</span></a>.</p>
 
 
 

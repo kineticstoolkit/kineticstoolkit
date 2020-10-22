@@ -41,6 +41,8 @@ from ast import literal_eval
 from copy import deepcopy
 from typing import Dict, List, Tuple, Any, Union
 
+import kineticstoolkit as ktk  # For doctests
+
 
 ts_listing = []  # type: List[str]
 

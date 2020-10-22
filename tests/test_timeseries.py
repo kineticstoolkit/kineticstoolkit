@@ -23,7 +23,7 @@ __license__ = "Apache 2.0"
 """
 These are the unit tests for the TimeSeries class.
 """
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 import matplotlib.pyplot as plt
 

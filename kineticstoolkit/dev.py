@@ -119,7 +119,7 @@ def build_website(clean: bool = False) -> None:
     # Generate API
     print('Generating API...')
     os.environ['SPHINX_APIDOC_OPTIONS'] = \
-        'members,undoc-members,show-inheritance,autosummary'
+        'members,undoc-members,autosummary'
     subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
                       '-o', 'api', '../kineticstoolkit', 'external',
                       'kineticstoolkit.cmdgui'])

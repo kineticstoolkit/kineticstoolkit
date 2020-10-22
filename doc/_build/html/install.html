@@ -47,7 +47,7 @@
   
   
   
-    <title>Installing the stable version &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Installing the stable version &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Installing the stable version </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -344,10 +344,10 @@
             
   
 <h1 id="install--page-root">Installing the stable version<a class="headerlink" href="#install--page-root" title="Permalink to this headline">¶</a></h1>
-<p>Although ktk is distributed via <code class="docutils literal notranslate"><span class="pre">pip</span></code>, I strongly recommend using a conda environment, if only to install <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> which is required for opening c3d files and which is distributed via <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>.</p>
+<p>Although Kinetics Toolkit is distributed via <code class="docutils literal notranslate"><span class="pre">pip</span></code>, I strongly recommend using a conda environment, if only to install <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> which is required for opening c3d files and which is distributed via <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>.</p>
 <ol>
 <li><p>Download and install Anaconda or Miniconda with python 3.8 or newer.</p></li>
-<li><p>Create a new environment to install ktk (recommended): open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code class="docutils literal notranslate"><span class="pre">ktk</span></code> virtual environment and install the dependencies in this environment.</p>
+<li><p>Create a new environment (recommended): open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code class="docutils literal notranslate"><span class="pre">ktk</span></code> virtual environment and install the dependencies in this environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">ktk</span>
 
  <span class="n">conda</span> <span class="n">activate</span> <span class="n">ktk</span>
@@ -362,18 +362,18 @@
 </div>
 </li>
 <li><p>Install Kinetics Toolkit</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">pip</span> <span class="n">install</span> <span class="n">ktk</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">pip</span> <span class="n">install</span> <span class="n">kineticstoolkit</span>
 </pre></div>
 </div>
 </li>
 <li><p>Choose the Qt5 backend for IPython: if you are using the Spyder IDE, go to the Spyder’s preferences, to the <strong>IPython console</strong> item, then to the <strong>Graphics</strong> pane. In the <strong>Graphics backend</strong> box, select <strong>Qt5</strong>. Restart Spyder.</p></li>
 </ol>
-<p>Verify that you are able to import ktk in the interactive IPython console. This should work without error:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk</span>
+<p>Verify that you are able to import Kinetics Toolkit in the interactive IPython console. This should work without error:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit</span>
 
 <span class="go">or</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 </pre></div>
 </div>
 

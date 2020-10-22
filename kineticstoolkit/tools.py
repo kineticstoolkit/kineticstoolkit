@@ -143,7 +143,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
             _ip = _IPython.get_ipython()
             formatter = _ip.display_formatter.formatters['text/plain']
             formatter.for_type(dict, lambda n, p, cycle:
-                               _repr._kineticstoolkit_format_dict(n, p, cycle))
+                               _repr._ktk_format_dict(n, p, cycle))
         except Exception:
             pass
 
