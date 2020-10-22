@@ -16,8 +16,8 @@
 # limitations under the License.
 
 """
-ktk._repr.py
-------------
+kineticstoolkit._repr.py
+------------------------
 
 Format the console output of dictionaries and classes with attributes.
 

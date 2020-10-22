@@ -23,9 +23,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk.gui
-from ktk.loadsave import save, load
-from ktk.decorators import unstable, private
+import kineticstoolkit.gui as gui
+from kineticstoolkit.loadsave import save, load
+from kineticstoolkit.decorators import unstable, private
 
 import requests
 import os
@@ -95,17 +95,17 @@ class DBInterface():
 
         # Get username and password if not supplied
         if user == '':
-            self.user, self._password = ktk.gui.get_credentials()
+            self.user, self._password = gui.get_credentials()
         else:
             self.user = user
             self._password = password
 
         # Assign root folder
         if root_folder == '':
-            ktk.gui.message('Please select the folder that contains the '
+            gui.message('Please select the folder that contains the '
                             'project data.')
-            self.root_folder = ktk.gui.get_folder()
-            ktk.gui.message('')
+            self.root_folder = gui.get_folder()
+            gui.message('')
         else:
             self.root_folder = root_folder
 
@@ -742,5 +742,5 @@ class DBInterface():
 
 if __name__ == "__main__":
     import doctest
-    import ktk
+    import kineticstoolkit as ktk
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

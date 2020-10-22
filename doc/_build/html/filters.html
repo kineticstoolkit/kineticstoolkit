@@ -684,7 +684,7 @@ div.rendered_html tbody tr:hover {
 </div>
 
 <h2 id="Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter<a class="headerlink" href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.butter"><span class="std std-ref">ktk.filters.butter()</span></a> function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
+<p>The ktk.filters.butter() function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
 <p>Here is how to filter using a no-lag Butterworth filter of order 2 at different cut-off frequencies:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -737,7 +737,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average<a class="headerlink" href="#Smoothing-a-TimeSeries-with-a-moving-average" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.smooth"><span class="std std-ref">ktk.filters.smooth()</span></a> function applies a moving average on TimeSeries data.</p>
+<p>The ktk.filters.smooth() function applies a moving average on TimeSeries data.</p>
 <p>Here is how to smooth a signal using a moving average filter using different window lengths.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -790,7 +790,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. This is an extension of the moving average using a polynom of higher degrees than 0.</p>
+<p>The ktk.filters.savgol() function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. This is an extension of the moving average using a polynom of higher degrees than 0.</p>
 <p>Here is how to smooth a signal using a Savitsky-Golay filter of order 2 using different window lengths.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -843,7 +843,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter<a class="headerlink" href="#Removing-artefacts-using-a-median-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.median"><span class="std std-ref">ktk.filters.median()</span></a> function filters a TimeSeries using a median filter. This type of filter is pretty powerful for removing artefacts that rarely happen twice in a row. Here is how to use this filter with a window length of 3.</p>
+<p>The ktk.filters.median() function filters a TimeSeries using a median filter. This type of filter is pretty powerful for removing artefacts that rarely happen twice in a row. Here is how to use this filter with a window length of 3.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -871,7 +871,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Derivating-using-a-differential-filter">Derivating using a differential filter<a class="headerlink" href="#Derivating-using-a-differential-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.deriv"><span class="std std-ref">ktk.filters.deriv()</span></a> function derivates a signal in time using the centered difference formula. Since the derivative is calculated between the original data points, the resulting TimeSeries has a modified time vector that is also between the original time points.</p>
+<p>The ktk.filters.deriv() function derivates a signal in time using the centered difference formula. Since the derivative is calculated between the original data points, the resulting TimeSeries has a modified time vector that is also between the original time points.</p>
 <p>Here is how to use this function to obtain the first derivative of a signal without preliminary filtering.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -964,7 +964,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter<a class="headerlink" href="#Derivating-using-a-Savitsky-Golay-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> can smooth but also derivate with a very good performance. Here is how to derivate a signal using this type of filter.</p>
+<p>The ktk.filters.savgol() can smooth but also derivate with a very good performance. Here is how to derivate a signal using this type of filter.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>

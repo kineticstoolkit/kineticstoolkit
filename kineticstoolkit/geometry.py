@@ -32,8 +32,8 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-import ktk.external.icp as icp
-from ktk.decorators import unstable
+import kineticstoolkit.external.icp as icp
+from kineticstoolkit.decorators import unstable
 from typing import Tuple, List
 
 
@@ -46,8 +46,8 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     Matrix multiplication between series of matrices.
 
     This function is a wrapper for numpy's matmul function (operator @), that
-    helps numpy to understand ktk's convention that the first dimension always
-    corresponds to time.
+    helps numpy to understand Kinetics Toolkit's convention that the first
+    dimension always corresponds to time.
 
     It aligns and create additionnal dimensions if needed to avoid dimension
     mismatch errors.

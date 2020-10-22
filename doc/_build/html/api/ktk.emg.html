@@ -59,8 +59,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.filters module" href="ktk.filters.html" />
-    <link rel="prev" title="ktk.dev module" href="ktk.dev.html" />
 
 
 
@@ -171,15 +169,6 @@
     
     
     
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
-          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
-      </ul>
-    </div>
-  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -350,49 +339,6 @@
 <p>This module is in very early development (almost empty) and will change in the
 future.</p>
 </div>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.emg.read_delsys_csv" title="ktk.emg.read_delsys_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_delsys_csv</span></code></a>(filename)</p></td>
-<td><p>Read a CSV file exported from Delsys Trigno converter.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="ktk.emg.read_delsys_csv">
-<code class="sig-prename descclassname">ktk.emg.</code><code class="sig-name descname">read_delsys_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.emg.read_delsys_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a CSV file exported from Delsys Trigno converter.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function is currently experimental and may change signature and
-behaviour in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the CSV file to read.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dict with the following keys: ‘emg’, ‘acc’, gyro’, ‘mag’, each
-one containing another dict whose keys correspond to a different
-sensor.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Dict[str, <a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a>]]</p>
-</dd>
-</dl>
-</dd></dl>
 
 
 
@@ -405,30 +351,6 @@ sensor.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ktk.dev.html" title="ktk.dev module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.dev module </span>
-              </div>
-            </a>
-          
-          
-            <a href="ktk.filters.html" title="ktk.filters module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.filters module </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         

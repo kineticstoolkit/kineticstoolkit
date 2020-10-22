@@ -59,7 +59,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="ktk.timeseries module" href="ktk.timeseries.html" />
 
 
 
@@ -170,15 +169,6 @@
     
     
     
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
-          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
-      </ul>
-    </div>
-  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -344,140 +334,8 @@
   
 <span id="ktk-tools-module"></span><h1 id="api-ktk-tools--page-root">ktk.tools module<a class="headerlink" href="#api-ktk-tools--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Provide miscelleanous helper functions to the user.</p>
-<p>These functions are accessible from ktk’s toplevel namespace
+<p>These functions are accessible from Kinetics Toolkit’s toplevel namespace
 (i.e., ktk.explore).</p>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.explore" title="ktk.tools.explore"><code class="xref py py-obj docutils literal notranslate"><span class="pre">explore</span></code></a>([folder_name])</p></td>
-<td><p>Open an Explorer window (on Windows) or a Finder window (on macOS)</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.tools.start_lab_mode" title="ktk.tools.start_lab_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">start_lab_mode</span></code></a>(*[, config])</p></td>
-<td><p>Set ktk to lab mode.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.terminal" title="ktk.tools.terminal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">terminal</span></code></a>([folder_name])</p></td>
-<td><p>Open a terminal window.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.tools.tutorials" title="ktk.tools.tutorials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tutorials</span></code></a>()</p></td>
-<td><p>Open the KTK tutorials in a web browser.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.tools.update" title="ktk.tools.update"><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code></a>()</p></td>
-<td><p>Update ktk to the last available version - Not for the public version.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="ktk.tools.explore">
-<code class="sig-prename descclassname">ktk.tools.</code><code class="sig-name descname">explore</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder_name</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.tools.explore" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open an Explorer window (on Windows) or a Finder window (on macOS)</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>folder_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The name of the folder to open the window in. Default is the
-current folder.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.tools.start_lab_mode">
-<code class="sig-prename descclassname">ktk.tools.</code><code class="sig-name descname">start_lab_mode</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">config</span><span class="o">=</span><span class="default_value">{'change_ipython_dict_repr': True, 'change_matplotlib_defaults': True, 'change_numpy_print_options': True}</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.tools.start_lab_mode" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set ktk to lab mode.</p>
-<p>This function does not affect ktk’s inner working. It exists mostly
-for cosmetic reasons, so that working with ktk in an IPython console
-(e.g., Spyder, Jupyter) is more enjoyable, at least to the developer’s
-taste. It changes defaults and is not reversible in a given session. The
-usual way to call it is right after importing ktk.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>config</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>]) – <dl class="simple">
-<dt>‘change_ipython_dict_repr’ :</dt><dd><p>True to summarize defaults dict printouts in IPython.</p>
-</dd>
-<dt>’change_matplotlib_defaults’ :</dt><dd><p>True to change default figure size, dpi, line width and color
-order in Matplotlib.</p>
-</dd>
-<dt>’change_numpy_print_options’ :</dt><dd><p>True to change default print options in numpy to use fixed point
-notation in printouts.</p>
-</dd>
-</dl>
-</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.tools.terminal">
-<code class="sig-prename descclassname">ktk.tools.</code><code class="sig-name descname">terminal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder_name</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.tools.terminal" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open a terminal window.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>folder_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The name of the folder to open the terminal window in. Default is the
-current folder.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None.</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.tools.tutorials">
-<code class="sig-prename descclassname">ktk.tools.</code><code class="sig-name descname">tutorials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.tools.tutorials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Open the KTK tutorials in a web browser.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
-<p>Usage: ktk.tutorials()</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.tools.update">
-<code class="sig-prename descclassname">ktk.tools.</code><code class="sig-name descname">update</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.tools.update" title="Permalink to this definition">¶</a></dt>
-<dd><p>Update ktk to the last available version - Not for the public version.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<p>If ktk was installed using pip (default when using the public open-source
-version), then update ktk using pip instead:</p>
-<blockquote>
-<div><p>pip upgrade ktk</p>
-</div></blockquote>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>None</strong> – </p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>None</p>
-</dd>
-</dl>
-</dd></dl>
 
 
 
@@ -489,19 +347,6 @@ version), then update ktk using pip instead:</p>
   <footer class="md-footer">
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
-          
-            <a href="ktk.timeseries.html" title="ktk.timeseries module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.timeseries module </span>
-              </div>
-            </a>
           
           
         </a>

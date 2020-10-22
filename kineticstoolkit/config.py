@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-Provide configuration values for ktk's inner working.
+Provide configuration values for Kinetics Toolkit's inner working.
 
 """
 
@@ -43,13 +43,13 @@ def __dir__() -> List[str]:
         'version',
     ]
 
-# Root folder (ktk installation)
+# Root folder (kineticstoolkit installation)
 root_folder = os.path.dirname(os.path.dirname(__file__))
 
 # Home folder
 home_folder = os.path.expanduser("~")
 
-# KTK version
+# Kinetics Toolkit version
 with open(root_folder + '/VERSION', 'r') as fid:
     version = fid.read()
 
@@ -65,7 +65,7 @@ elif is_mac or is_linux:
     _base_temp_folder = os.environ['TMPDIR']
 
 try:
-    temp_folder = _base_temp_folder + '/ktk'
+    temp_folder = _base_temp_folder + '/kineticstoolkit'
     try:
         os.mkdir(temp_folder)
     except FileExistsError:

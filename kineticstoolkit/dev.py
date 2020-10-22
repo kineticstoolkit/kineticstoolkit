@@ -16,11 +16,12 @@
 # limitations under the License.
 
 """
-Provide fonctions related to development, tests and release of ktk.
+Provide fonctions related to development, tests and release of Kinetics
+Toolkit.
 
 Note
 ----
-This module is addressed to ktk developers only.
+This module is addressed to Kinetics Toolkit's developers only.
 
 """
 
@@ -30,7 +31,7 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk.config
+import kineticstoolkit.config
 
 import os
 import subprocess
@@ -47,7 +48,7 @@ def run_unit_tests() -> None:
     # clean, and all Matplotlib windows are closed correctly after the tests.
     print('Running unit tests...')
     cwd = os.getcwd()
-    os.chdir(ktk.config.root_folder + '/tests')
+    os.chdir(kineticstoolkit.config.root_folder + '/tests')
     subprocess.call(['pytest', '--ignore=interactive'])
     os.chdir(cwd)
 
@@ -58,8 +59,9 @@ def run_static_type_checker() -> None:
     # clean, and all Matplotlib windows are closed correctly after the tests.
     print('Running mypy...')
     cwd = os.getcwd()
-    os.chdir(ktk.config.root_folder)
-    subprocess.call(['mypy', '--ignore-missing-imports', '-p', 'ktk'])
+    os.chdir(kineticstoolkit.config.root_folder)
+    subprocess.call(['mypy', '--ignore-missing-imports', '-p',
+                     'kineticstoolkit'])
     os.chdir(cwd)
 
 
@@ -67,11 +69,11 @@ def run_doc_tests() -> None:
     """Run all doc tests."""
     print('Running doc tests...')
     cwd = os.getcwd()
-    os.chdir(ktk.config.root_folder + '/ktk')
+    os.chdir(kineticstoolkit.config.root_folder + '/kineticstoolkit')
     for file in os.listdir():
         if file.endswith('.py'):
             try:
-                module = eval('ktk.' + file.split('.py')[0])
+                module = eval('kineticstoolkit.' + file.split('.py')[0])
                 doctest.testmod(module,
                                 optionflags=doctest.NORMALIZE_WHITESPACE)
                 print(f"Doctests passed in file {file}.")
@@ -93,7 +95,7 @@ def build_tutorials() -> None:
     cwd = os.getcwd()
 
     # Run notebooks to generate the tutorials
-    os.chdir(ktk.config.root_folder + '/doc')
+    os.chdir(kineticstoolkit.config.root_folder + '/doc')
     files = [file for file in os.listdir() if file.endswith('.ipynb')]
     with multiprocessing.Pool() as pool:
         pool.map(_generate_tutorial, files)
@@ -109,7 +111,7 @@ def build_website(clean: bool = False) -> None:
 
     """
     cwd = os.getcwd()
-    os.chdir(ktk.config.root_folder + '/doc')
+    os.chdir(kineticstoolkit.config.root_folder + '/doc')
 
     if clean:
         subprocess.call(['make', 'clean'])
@@ -119,7 +121,8 @@ def build_website(clean: bool = False) -> None:
     os.environ['SPHINX_APIDOC_OPTIONS'] = \
         'members,undoc-members,show-inheritance,autosummary'
     subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
-                      '-o', 'api', '../ktk', 'external', 'ktk.cmdgui'])
+                      '-o', 'api', '../kineticstoolkit', 'external',
+                      'kineticstoolkit.cmdgui'])
 
     # Generate site
     print('Generating site...')
@@ -127,7 +130,7 @@ def build_website(clean: bool = False) -> None:
 
     # Open site
     webbrowser.open_new_tab(
-        'file://' + ktk.config.root_folder + '/doc/_build/html/index.html')
+        'file://' + kineticstoolkit.config.root_folder + '/doc/_build/html/index.html')
     os.chdir(cwd)
 
 
@@ -136,7 +139,7 @@ def clean() -> None:
     cwd = os.getcwd()
 
     # Clean /doc folder
-    os.chdir(ktk.config.root_folder + '/doc')
+    os.chdir(kineticstoolkit.config.root_folder + '/doc')
 
     files = os.listdir()
     for file in files:
@@ -159,15 +162,17 @@ def clean() -> None:
 
 def compile_for_pypi() -> None:
     """Compile for PyPi."""
-    shutil.rmtree(ktk.config.root_folder + '/dist', ignore_errors=True)
-    shutil.rmtree(ktk.config.root_folder + '/build', ignore_errors=True)
-    os.chdir(ktk.config.root_folder)
+    shutil.rmtree(kineticstoolkit.config.root_folder + '/dist',
+                  ignore_errors=True)
+    shutil.rmtree(kineticstoolkit.config.root_folder + '/build',
+                  ignore_errors=True)
+    os.chdir(kineticstoolkit.config.root_folder)
     subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
 
 
 def upload_to_pypi() -> None:
     """Upload to PyPi. Only works on macOS for now."""
-    root_folder = ktk.config.root_folder
+    root_folder = kineticstoolkit.config.root_folder
     subprocess.call([
         'osascript',
         '-e',

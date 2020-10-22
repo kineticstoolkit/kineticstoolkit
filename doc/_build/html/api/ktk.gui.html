@@ -59,8 +59,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.inversedynamics module" href="ktk.inversedynamics.html" />
-    <link rel="prev" title="ktk.geometry module" href="ktk.geometry.html" />
 
 
 
@@ -171,15 +169,6 @@
     
     
     
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
-          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
-      </ul>
-    </div>
-  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -349,187 +338,8 @@
 <p class="admonition-title">Warning</p>
 <p>This module is currently experimental and its API could be modified in
 the future without warnings. It should be considered only as helper functions
-for ktk’s own use.</p>
+for Kinetics Toolkit’s own use.</p>
 </div>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.gui.button_dialog" title="ktk.gui.button_dialog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">button_dialog</span></code></a>([message, choices])</p></td>
-<td><p>Create a blocking dialog message window with a selection of buttons.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.gui.get_credentials" title="ktk.gui.get_credentials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_credentials</span></code></a>()</p></td>
-<td><p>Ask the user’s username and password.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.gui.get_filename" title="ktk.gui.get_filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filename</span></code></a>([initial_folder])</p></td>
-<td><p>Get file name interactively using a file dialog window.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.gui.get_folder" title="ktk.gui.get_folder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_folder</span></code></a>([initial_folder])</p></td>
-<td><p>Get folder interactively using a file dialog window.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.gui.message" title="ktk.gui.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span></code></a>([message])</p></td>
-<td><p>Show a message window.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.gui.set_color_order" title="ktk.gui.set_color_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color_order</span></code></a>(setting)</p></td>
-<td><p>Define the standard color order for matplotlib.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="ktk.gui.button_dialog">
-<code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">button_dialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">'Please select an option.'</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">['Cancel', 'OK']</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.button_dialog" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a blocking dialog message window with a selection of buttons.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>message</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Message that is presented to the user.</p></li>
-<li><p><strong>choices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of button text.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The button number (0 = First button, 1 = Second button, etc.) If the
-user closes the window instead of clicking a button, a value of -1 is
-returned.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>int</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.gui.get_credentials">
-<code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.get_credentials" title="Permalink to this definition">¶</a></dt>
-<dd><p>Ask the user’s username and password.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A tuple of two strings containing the username and password,
-respectively, or an empty tuple if the user closed the window.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Tuple[str]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.gui.get_filename">
-<code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial_folder</span><span class="o">=</span><span class="default_value">'.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.get_filename" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get file name interactively using a file dialog window.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>initial_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The initial folder of the file dialog.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The full path of the selected file. An empty string is returned if the
-user cancelled.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.gui.get_folder">
-<code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">get_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial_folder</span><span class="o">=</span><span class="default_value">'.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.get_folder" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get folder interactively using a file dialog window.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>initial_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The initial folder of the file dialog.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The full path of the selected folder. An empty string is returned if
-the user cancelled.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.gui.message">
-<code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.message" title="Permalink to this definition">¶</a></dt>
-<dd><p>Show a message window.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>message</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The message to show. Use ‘’ to close every message window.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.gui.set_color_order">
-<code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">set_color_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.set_color_order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the standard color order for matplotlib.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>setting</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>Either a string or a list of colors.</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>If a string, it can be either:</dt><dd><ul>
-<li><p>’default’: Default v2.0 matplotlib colors.</p></li>
-<li><p>’classic’: Default classic Matlab colors (bgrcmyk).</p></li>
-<li><dl class="simple">
-<dt>’xyz’: Same as classic but begins with rgb instead of bgr to</dt><dd><p>be consistent with most 3d visualization softwares.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>If a list, it can be either a list of chars from [bgrcmyk], a list of
-hexadecimal color values, or any list supported by matplotlib’s
-axes.prop_cycle rcParam.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
 
 
 
@@ -542,30 +352,6 @@ axes.prop_cycle rcParam.</p></li>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ktk.geometry.html" title="ktk.geometry module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.geometry module </span>
-              </div>
-            </a>
-          
-          
-            <a href="ktk.inversedynamics.html" title="ktk.inversedynamics module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.inversedynamics module </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         

@@ -16,15 +16,15 @@
 # limitations under the License.
 
 """
-Provide decorators for ktk functions.
+Provide decorators for Kinetics Toolkit's functions.
 
-The following decorator can be used on each ktk's function and method:
+The following decorator can be used on each Kinetics Toolkit's's function:
 
-    - @stable: Documented, stable function in a ktk release.
+    - @stable: Documented, stable function in a release.
 
-    - @experimental: Documented, experimental function in a ktk release.
+    - @experimental: Documented, experimental function in a release.
 
-    - @deprecated: Documented but deprecated function in a ktk release.
+    - @deprecated: Documented but deprecated function in a release.
 
     - @unstable: Documented only in the development version.
 
@@ -46,7 +46,7 @@ __license__ = "Apache 2.0"
 from functools import wraps
 import warnings
 import textwrap
-import ktk.config
+import kineticstoolkit.config
 
 
 experimental_docstring = """
@@ -120,7 +120,7 @@ def _inject_in_docstring(docstring: str, text: str) -> str:
 
 def stable(listing):
     """
-    Decorate stable ktk functions.
+    Decorate stable Kinetics Toolkit's functions.
 
     Adds this function to the main documentation.
 
@@ -142,7 +142,7 @@ def stable(listing):
 
 def experimental(listing):
     """
-    Decorate experimental ktk functions.
+    Decorate experimental Kinetics Toolkit's functions.
 
     Adds this function to the main documentation with no warning for the
     moment. Also adds a warning section to its docstring.
@@ -167,7 +167,7 @@ def experimental(listing):
 
 def deprecated(listing):
     """
-    Decorate deprecated ktk functions.
+    Decorate deprecated Kinetics Toolkit's functions.
 
     Adds this function to the main documentation and generates a FutureWarning
     on use. Also adds a warning section to its docstring.
@@ -181,8 +181,8 @@ def deprecated(listing):
         @wraps(func)
         def wrapper(*args, **kwargs):
             warnings.warn("This function is deprecated and will be removed "
-                          "in a future version of ktk. Please consult ktk's "
-                          "API for replacement solutions.",
+                          "in a future version of Kinetics Toolkit. Please "
+                          "consult the API for replacement solutions.",
                           FutureWarning)
             # Call the function being decorated and return the result
             return func(*args, **kwargs)
@@ -196,11 +196,11 @@ def deprecated(listing):
 
 def unstable(listing):
     """
-    Decorate unstable ktk functions.
+    Decorate unstable Kinetics Toolkit's functions.
 
     Adds this function to the main documentation only if
-    ktk.config.version == 'master'.  Also adds a warning section to its
-    docstring.
+    kineticstoolkit.config.version == 'master'.  Also adds a warning section
+    to its docstring.
 
     Parameter listing is a list of attributes of the module that will be
     returned by the module's or class' __dir__ function.
@@ -212,7 +212,7 @@ def unstable(listing):
         def wrapper(*args, **kwargs):
             # Call the function being decorated and return the result
             return func(*args, **kwargs)
-        if ktk.config.version == 'master':
+        if kineticstoolkit.config.version == 'master':
             listing.append(func.__name__)
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, unstable_docstring)
@@ -223,7 +223,7 @@ def unstable(listing):
 
 def dead(listing):
     """
-    Decorate dead ktk functions.
+    Decorate dead Kinetics Toolkit's functions.
 
     Does not add this function to the main documentation and generates a
     FutureWarning on use. Also adds a warning section to its docstring.
@@ -237,8 +237,8 @@ def dead(listing):
         @wraps(func)
         def wrapper(*args, **kwargs):
             warnings.warn("This function is deprecated and will be removed "
-                          "in a future version of ktk. Please consult ktk's "
-                          "API for replacement solutions.",
+                          "in a future version of Kinetics Toolkit. Please "
+                          "consult the API for replacement solutions.",
                           FutureWarning)
             # Call the function being decorated and return the result
             return func(*args, **kwargs)
@@ -251,7 +251,7 @@ def dead(listing):
 
 def private(listing):
     """
-    Decorate private ktk functions.
+    Decorate private Kinetics Toolkit's functions.
 
     Does not add this function to the main documentation.
     Also adds a warning section to its docstring.

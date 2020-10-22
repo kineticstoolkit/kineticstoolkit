@@ -18,7 +18,7 @@
 """
 Provide miscelleanous helper functions to the user.
 
-These functions are accessible from ktk's toplevel namespace
+These functions are accessible from Kinetics Toolkit's toplevel namespace
 (i.e., ktk.explore).
 """
 
@@ -28,10 +28,10 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk.config
-import ktk._repr as _repr
-import ktk.gui
-from ktk.decorators import stable, unstable, experimental
+import kineticstoolkit.config
+import kineticstoolkit._repr as _repr
+import kineticstoolkit.gui
+from kineticstoolkit.decorators import stable, unstable, experimental
 
 import os
 import sys
@@ -58,10 +58,10 @@ def explore(folder_name: str = '') -> None:
     if not folder_name:
         folder_name = os.getcwd()
 
-    if ktk.config.is_pc is True:
+    if kineticstoolkit.config.is_pc is True:
         os.system(f'start explorer {folder_name}')
 
-    elif ktk.config.is_mac is True:
+    elif kineticstoolkit.config.is_mac is True:
         subprocess.call(['open', folder_name])
 
     else:
@@ -87,10 +87,10 @@ def terminal(folder_name: str = '') -> None:
     if not folder_name:
         folder_name = os.getcwd()
 
-    if ktk.config.is_pc is True:
+    if kineticstoolkit.config.is_pc is True:
         os.system(f'cmd /c start /D {folder_name} cmd')
 
-    elif ktk.config.is_mac is True:
+    elif kineticstoolkit.config.is_mac is True:
         subprocess.call([
                 'osascript',
                 '-e',
@@ -111,10 +111,10 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         'change_matplotlib_defaults': True,
         'change_numpy_print_options': True}) -> None:
     """
-    Set ktk to lab mode.
+    Set Kinetics Toolkit to lab mode.
 
-    This function does not affect ktk's inner working. It exists mostly
-    for cosmetic reasons, so that working with ktk in an IPython console
+    This function does not affect Kinetics Toolkit's inner working. It exists
+    mostly for cosmetic reasons, so that working with ktk in an IPython console
     (e.g., Spyder, Jupyter) is more enjoyable, at least to the developer's
     taste. It changes defaults and is not reversible in a given session. The
     usual way to call it is right after importing ktk.
@@ -143,7 +143,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
             _ip = _IPython.get_ipython()
             formatter = _ip.display_formatter.formatters['text/plain']
             formatter.for_type(dict, lambda n, p, cycle:
-                               _repr._ktk_format_dict(n, p, cycle))
+                               _repr._kineticstoolkit_format_dict(n, p, cycle))
         except Exception:
             pass
 
@@ -153,7 +153,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         _mpl.rcParams['figure.figsize'] = [10, 5]
         _mpl.rcParams['figure.dpi'] = 75
         _mpl.rcParams['lines.linewidth'] = 1
-        ktk.gui.set_color_order('xyz')
+        kineticstoolkit.gui.set_color_order('xyz')
 
     if config['change_numpy_print_options']:
         import numpy as _np
@@ -164,12 +164,12 @@ def start_lab_mode(*, config: Dict[str, bool] = {
 @unstable(listing)
 def update() -> None:
     """
-    Update ktk to the last available version - Not for the public version.
+    Update Kinetics Toolkit to the latest master branch.
 
-    If ktk was installed using pip (default when using the public open-source
-    version), then update ktk using pip instead:
+    If Kinetics Toolkit was installed using pip (default when using the stable
+    version), then update using pip instead:
 
-        pip upgrade ktk
+        pip upgrade kineticstoolkit
 
     Parameters
     ----------
@@ -179,14 +179,14 @@ def update() -> None:
     -------
     None
     """
-    if ktk.config.is_pc:
+    if kineticstoolkit.config.is_pc:
         current_dir = os.getcwd()
-        os.chdir(ktk.config.root_folder)
+        os.chdir(kineticstoolkit.config.root_folder)
         print(subprocess.check_output(
             ['git', 'pull', 'origin', 'master']).decode(sys.getdefaultencoding()))
         os.chdir(current_dir)
 
-    if ktk.config.is_mac:
+    if kineticstoolkit.config.is_mac:
         subprocess.call([
             'osascript',
             '-e',
@@ -195,18 +195,18 @@ def update() -> None:
             'osascript',
             '-e',
             ('tell application "Terminal" to do script "cd \'' +
-             ktk.config.root_folder +
+             kineticstoolkit.config.root_folder +
              '\'; git pull origin master"')])
 
 
 @experimental(listing)
 def tutorials() -> None:
     """
-    Open the KTK tutorials in a web browser.
+    Open the Kinetics Toolkits tutorials in a web browser.
 
     Usage: ktk.tutorials()
     """
-    _webbrowser.open('file:///' + ktk.config.root_folder +
+    _webbrowser.open('file:///' + kineticstoolkit.config.root_folder +
                      '/tutorials/index.html',
                      new=2)
 

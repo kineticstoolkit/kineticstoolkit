@@ -31,8 +31,8 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-from ktk import TimeSeries
-from ktk.decorators import unstable
+from kineticstoolkit import TimeSeries
+from kineticstoolkit.decorators import unstable
 import pandas as pd
 from typing import Dict, List
 

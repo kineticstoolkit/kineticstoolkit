@@ -16,15 +16,7 @@
 # limitations under the License.
 
 """
-Kinetics Toolkit - Lab mode
-===========================
-
-This module loads ktk in lab mode. The standard way to use this module is:
-    import ktk.lab as ktk
-
-To get started, please consult ktk's
-[website](https://felixchenier.uqam.ca/ktk)
-
+Imports Kinetics Toolkit using ktk as shortname (deprecated).
 """
 
 __author__ = "Félix Chénier"
@@ -32,7 +24,10 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from ktk import *
-from ktk.tools import start_lab_mode
+from kineticstoolkit import *
+import warnings
 
-start_lab_mode()
+warnings.warn("Please use 'import kineticstoolkit as ktk' or "
+              "'import kineticstoolkit.lab as ktk' instead of "
+              "'import ktk'. This usage is deprecated and will be removed "
+              "in future versions.", FutureWarning)

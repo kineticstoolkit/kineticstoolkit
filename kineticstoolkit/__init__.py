@@ -16,11 +16,11 @@
 # limitations under the License.
 
 """
-Kinetics Toolkit - Development version
-======================================
+Kinetics Toolkit
+================
 
-To get started, please consult ktk's
-[website](https://felixchenier.uqam.ca/ktk_develop)
+To get started, please consult Kinetics Toolkit's
+[website](https://felixchenier.uqam.ca/kineticstoolkit)
 
 """
 
@@ -31,58 +31,58 @@ __license__ = "Apache 2.0"
 
 
 listing = []
-import ktk.config
+import kineticstoolkit.config
 
 # --- Import released modules and functions
-from ktk.timeseries import TimeSeries, TimeSeriesEvent
+from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 listing.append('TimeSeries')
 listing.append('TimeSeriesEvent')
 
-from ktk.tools import explore, terminal, update, tutorials
+from kineticstoolkit.tools import explore, terminal, update, tutorials
 listing.append('explore')
 listing.append('terminal')
 listing.append('update')
 listing.append('tutorials')
 
-from ktk.player import Player
+from kineticstoolkit.player import Player
 listing.append('Player')
 
-from ktk.loadsave import load, save
+from kineticstoolkit.loadsave import load, save
 listing.append('load')
 listing.append('save')
 
-from ktk import filters
+from kineticstoolkit import filters
 listing.append('filters')
 
-from ktk import kinematics
+from kineticstoolkit import kinematics
 listing.append('kinematics')
 
-from ktk import pushrimkinetics
+from kineticstoolkit import pushrimkinetics
 listing.append('pushrimkinetics')
 
-from ktk import cycles
+from kineticstoolkit import cycles
 listing.append('cycles')
 
-from ktk import _repr
-from ktk import gui
+from kineticstoolkit import _repr
+from kineticstoolkit import gui
 
 # --- Import unstable modules if we are on master
-if ktk.config.version == 'master':
+if kineticstoolkit.config.version == 'master':
 
-    from ktk.dbinterface import DBInterface
+    from kineticstoolkit.dbinterface import DBInterface
     listing.append('DBInterface')
 
-    from ktk import geometry
+    from kineticstoolkit import geometry
     listing.append('geometry')
 
-    from ktk import inversedynamics
+    from kineticstoolkit import inversedynamics
     listing.append('inversedynamics')
 
-    from ktk import emg
+    from kineticstoolkit import emg
     listing.append('emg')
 
 try:
-    from ktk import dev
+    from kineticstoolkit import dev
     listing.append('dev')
 except Exception:
     pass

@@ -29,10 +29,11 @@ import numpy as np
 import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
-from ktk import TimeSeries
-from ktk.decorators import stable, private
+from kineticstoolkit import TimeSeries
+from kineticstoolkit.decorators import stable, private
 from typing import Tuple, Union, Sequence, List
-import ktk  # for doctests
+
+import kineticstoolkit as ktk  # for doctests
 
 
 listing = []  # type: List[str]

@@ -19,7 +19,7 @@
 Provide functions to load and save data.
 
 The classes defined in this module are accessible directly from the toplevel
-ktk namespace (i.e. ktk.load, ktk.save).
+Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
 
 """
 
@@ -28,10 +28,10 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from ktk.timeseries import TimeSeries
-from ktk.timeseries import dataframe_to_dict_of_arrays
-from ktk.decorators import stable, private
-import ktk.config
+from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.timeseries import dataframe_to_dict_of_arrays
+from kineticstoolkit.decorators import stable, private
+import kineticstoolkit.config
 
 import scipy.io as spio
 import os
@@ -88,7 +88,8 @@ def save(filename: str, variable: Any) -> None:
                 return {'class__': 'numpy.array',
                         'value': obj.tolist()}
 
-            elif str(type(obj)) == "<class 'ktk.timeseries.TimeSeries'>":
+            elif str(type(obj)) == \
+                    "<class 'kineticstoolkit.timeseries.TimeSeries'>":
                 out = {}
                 out['class__'] = 'ktk.TimeSeries'
                 out['time'] = obj.time.tolist()
@@ -134,18 +135,18 @@ def save(filename: str, variable: Any) -> None:
                 return super().default(obj)
 
     now = datetime.now()
-    if ktk.config.is_pc:
+    if kineticstoolkit.config.is_pc:
         computer = 'PC'
-    elif ktk.config.is_mac:
+    elif kineticstoolkit.config.is_mac:
         computer = 'Mac'
-    elif ktk.config.is_linux:
+    elif kineticstoolkit.config.is_linux:
         computer = 'Linux'
     else:
         computer = 'Unknown'
 
     metadata = {
-        'Software': 'Kinetics Toolkit (ktk)',
-        'Version': ktk.config.version,
+        'Software': 'Kinetics Toolkit',
+        'Version': kineticstoolkit.config.version,
         'Computer': computer,
         'FileFormat': 1.0,
         'SaveDate': now.strftime('%Y-%m-%d'),
@@ -154,7 +155,7 @@ def save(filename: str, variable: Any) -> None:
     }
 
     # Save
-    temp_folder = ktk.config.temp_folder + '/save' + str(time.time())
+    temp_folder = kineticstoolkit.config.temp_folder + '/save' + str(time.time())
 
     try:
         shutil.rmtree(temp_folder)
@@ -283,7 +284,7 @@ def _load_object_hook(obj):
             return np.array(obj['value'])
 
         elif to_class == 'ktk.TimeSeries':
-            out = ktk.TimeSeries()
+            out = TimeSeries()
             out.time = np.array(obj['time'])
             out.time_info = obj['time_info']
             out.data_info = obj['data_info']
@@ -310,8 +311,8 @@ def _load_object_hook(obj):
 
         else:
             warnings.warn(f'The "{to_class}" class is not supported by '
-                          'this version of ktk. Please check that ktk is '
-                          'up to date.')
+                          'this version of Kinetics Toolkit. Please check '
+                          'that Kinetics Toolkit is up to date.')
             return obj
 
     else:
@@ -340,7 +341,7 @@ def _load_ktk_zip(filename, include_metadata=False):
         # No data.json. It seems to be the old format.
 
         basename = os.path.basename(filename)
-        temp_folder_name = ktk.config.temp_folder + '/' + basename
+        temp_folder_name = kineticstoolkit.config.temp_folder + '/' + basename
 
         # We will rename the folder to .dict to uniformize loading using _load
         # if needed.
@@ -512,11 +513,11 @@ def _convert_cell_arrays_to_lists(the_input):
 @private(listing)
 def _convert_to_timeseries(the_input):
     """
-    Convert dicts of Matlab timeseries to KTK TimeSeries.
+    Convert dicts of Matlab timeseries to Kinetics Toolkit TimeSeries.
 
     This function recursively goes into the_input and checks for dicts that
     result from obvious Matlab's structures of timeseries. These structures are
-    converted to KTK Timeseries.
+    converted to Kinetics Toolkit Timeseries.
 
     Parameters
     ----------

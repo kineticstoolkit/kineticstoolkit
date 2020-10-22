@@ -59,8 +59,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.mplhelper module" href="ktk.mplhelper.html" />
-    <link rel="prev" title="ktk.lab module" href="ktk.lab.html" />
 
 
 
@@ -171,15 +169,6 @@
     
     
     
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
-          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
-      </ul>
-    </div>
-  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -346,71 +335,7 @@
 <span id="ktk-loadsave-module"></span><h1 id="api-ktk-loadsave--page-root">ktk.loadsave module<a class="headerlink" href="#api-ktk-loadsave--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Provide functions to load and save data.</p>
 <p>The classes defined in this module are accessible directly from the toplevel
-ktk namespace (i.e. ktk.load, ktk.save).</p>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.loadsave.load" title="ktk.loadsave.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(filename)</p></td>
-<td><p>Load a ktk.zip file.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.loadsave.save" title="ktk.loadsave.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(filename, variable)</p></td>
-<td><p>Save a variable to a ktk.zip file.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="ktk.loadsave.load">
-<code class="sig-prename descclassname">ktk.loadsave.</code><code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.loadsave.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a ktk.zip file.</p>
-<p>Load a data file as saved using the ktk.save function.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<em>str</em>) – The path of the zip file to load.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The loaded variable.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Any</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.loadsave.save">
-<code class="sig-prename descclassname">ktk.loadsave.</code><code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.loadsave.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save a variable to a ktk.zip file.</p>
-<p>A ktk.zip file is a zipped folder containing two files:</p>
-<ul class="simple">
-<li><p>metadata.json, which includes save date, user, etc.</p></li>
-<li><p>data.json, which includes the data.</p></li>
-</ul>
-<p>The following classes are supported:</p>
-<ul class="simple">
-<li><p>dict containing any supported class</p></li>
-<li><p>list containing any supported class</p></li>
-<li><p>str</p></li>
-<li><p>int</p></li>
-<li><p>float</p></li>
-<li><p>True</p></li>
-<li><p>False</p></li>
-<li><p>None</p></li>
-<li><p>numpy.array</p></li>
-<li><p>pandas.DataFrame</p></li>
-<li><p>pandas.Series</p></li>
-<li><p>ktk.TimeSeries</p></li>
-</ul>
-<p>Tuples are also supported but will be loaded back as lists, without
-warning.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
+Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).</p>
 
 
 
@@ -423,30 +348,6 @@ warning.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ktk.lab.html" title="ktk.lab module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.lab module </span>
-              </div>
-            </a>
-          
-          
-            <a href="ktk.mplhelper.html" title="ktk.mplhelper module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.mplhelper module </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         

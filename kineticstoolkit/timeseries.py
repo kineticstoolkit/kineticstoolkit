@@ -19,7 +19,7 @@
 Provide the TimeSeries and TimeSeriesEvent classes.
 
 The classes defined in this module are accessible directly from the toplevel
-ktk namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)
+Kinetics Toolkit's namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)
 
 """
 
@@ -29,8 +29,8 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk._repr
-from ktk.decorators import stable, experimental, unstable
+import kineticstoolkit._repr
+from kineticstoolkit.decorators import stable, experimental, unstable
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -401,10 +401,10 @@ class TimeSeries():
             TimeSeries
 
         """
-        return ktk._repr._format_class_attributes(self)
+        return kineticstoolkit._repr._format_class_attributes(self)
 
     def __repr__(self):
-        return ktk._repr._format_class_attributes(self)
+        return kineticstoolkit._repr._format_class_attributes(self)
 
     def __eq__(self, ts):
         """
@@ -752,7 +752,7 @@ class TimeSeries():
         while finished is False:
             finished = True  # Only one pass by default
 
-            button = ktk.gui.button_dialog(
+            button = kineticstoolkit.gui.button_dialog(
                 f'Adding the event "{name}".\n'
                 'Please zoom on the location to \n'
                 'add the event, then click Next.',
@@ -763,19 +763,19 @@ class TimeSeries():
                 return False
 
             if multiple_events:
-                ktk.gui.message(
+                kineticstoolkit.gui.message(
                     'Left-click to add events; \n'
                     'Right-click to delete; \n'
                     'ENTER to finish.')
                 plt.pause(0.001)  # Update the plot
                 coordinates = plt.ginput(99999)
-                ktk.gui.message('')
+                kineticstoolkit.gui.message('')
 
             else:
-                ktk.gui.message(
+                kineticstoolkit.gui.message(
                     'Please left-click on the event to add.')
                 coordinates = plt.ginput(1)
-                ktk.gui.message('')
+                kineticstoolkit.gui.message('')
 
             # Add these events
             for i in range(len(coordinates)):
@@ -784,7 +784,7 @@ class TimeSeries():
             if multiple_events:
                 plt.cla()
                 ts.plot(plot)
-                button = ktk.gui.button_dialog(
+                button = kineticstoolkit.gui.button_dialog(
                     f'Adding the event "{name}".\n'
                     'Do you want to add more of these events?',
                     ['Cancel', 'Add more', "Finished"])
@@ -796,7 +796,7 @@ class TimeSeries():
                 elif button == 2:
                     finished = True
 
-        ktk.gui.message('')
+        kineticstoolkit.gui.message('')
         plt.close(fig)
         self.events = ts.events  # Add the events to self.
         return True
@@ -1021,7 +1021,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
 
         >>> ts.get_index_before_time(0.9)
@@ -1173,7 +1172,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
         >>> ts.time
         array([0. , 0.5, 1. , 1.5, 2. ])
@@ -1233,7 +1231,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -1274,7 +1271,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -1315,7 +1311,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -1356,7 +1351,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -1395,7 +1389,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -1429,7 +1422,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -1467,7 +1459,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.add_event(0.2, 'event')
         >>> ts.add_event(0.35, 'event')
@@ -1514,7 +1505,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.add_event(0.2, 'event')
         >>> ts.add_event(0.35, 'event')
@@ -1562,7 +1552,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
         >>> ts.add_event(0.2, 'event')
         >>> ts.add_event(0.55, 'event')
@@ -1602,10 +1591,10 @@ class TimeSeries():
         """
         fig = plt.figure()
         self.plot(data_keys)
-        ktk.gui.message('Click on both sides of the portion to keep.')
+        kineticstoolkit.gui.message('Click on both sides of the portion to keep.')
         plt.pause(0.001)  # Redraw
         points = plt.ginput(2)
-        ktk.gui.message('')
+        kineticstoolkit.gui.message('')
         times = [points[0][0], points[1][0]]
         plt.close(fig)
         return self.get_ts_between_times(min(times), max(times),
@@ -1720,7 +1709,6 @@ class TimeSeries():
 
         Example
         -------
-        >>> import ktk
         >>> ts = ktk.TimeSeries(time = np.arange(10))
         >>> ts.time
         array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -1781,16 +1769,16 @@ class TimeSeries():
         if ts2 is None:
             # Synchronize ts1 only
             self.plot(data_keys)
-            choice = ktk.gui.button_dialog(
+            choice = kineticstoolkit.gui.button_dialog(
                 'Please zoom on the time zero and press Next.',
                 ['Cancel', 'Next'])
             if choice != 1:
                 plt.close(fig)
                 return
 
-            ktk.gui.message('Click on the sync event.')
+            kineticstoolkit.gui.message('Click on the sync event.')
             click = plt.ginput(1)
-            ktk.gui.message('')
+            kineticstoolkit.gui.message('')
             plt.close(fig)
             self.shift(-click[0][0])
 
@@ -1819,7 +1807,7 @@ class TimeSeries():
                 plt.grid(True)
                 plt.tight_layout()
 
-                choice = ktk.gui.button_dialog(
+                choice = kineticstoolkit.gui.button_dialog(
                     'Please select an option.',
                     choices=['Zero ts1 only, using ts1',
                              'Zero ts2 only, using ts2',
@@ -1829,47 +1817,47 @@ class TimeSeries():
                              'Finished'])
 
                 if choice == 0:  # Zero ts1 only
-                    ktk.gui.message(
+                    kineticstoolkit.gui.message(
                         'Click on the time zero in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.gui.message('')
+                    kineticstoolkit.gui.message('')
 
                     self.shift(-click_1[0][0])
 
                 elif choice == 1:  # Zero ts2 only
-                    ktk.gui.message(
+                    kineticstoolkit.gui.message(
                         'Click on the time zero in ts2.')
                     click_1 = plt.ginput(1)
-                    ktk.gui.message('')
+                    kineticstoolkit.gui.message('')
 
                     ts2.shift(-click_1[0][0])
 
                 elif choice == 2:  # Zero ts1 and ts2 using ts1
-                    ktk.gui.message(
+                    kineticstoolkit.gui.message(
                         'Click on the time zero in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.gui.message('')
+                    kineticstoolkit.gui.message('')
 
                     self.shift(-click_1[0][0])
                     ts2.shift(-click_1[0][0])
 
                 elif choice == 3:  # Zero ts1 and ts2 using ts2
-                    ktk.gui.message(
+                    kineticstoolkit.gui.message(
                         'Click on the time zero in ts2.')
                     click_2 = plt.ginput(1)
-                    ktk.gui.message('')
+                    kineticstoolkit.gui.message('')
 
                     self.shift(-click_2[0][0])
                     ts2.shift(-click_2[0][0])
 
                 elif choice == 4:  # Sync on a common event
-                    ktk.gui.message(
+                    kineticstoolkit.gui.message(
                         'Click on the sync event in ts1.')
                     click_1 = plt.ginput(1)
-                    ktk.gui.message(
+                    kineticstoolkit.gui.message(
                         'Now click on the same event in ts2.')
                     click_2 = plt.ginput(1)
-                    ktk.gui.message('')
+                    kineticstoolkit.gui.message('')
 
                     self.shift(-click_1[0][0])
                     ts2.shift(-click_2[0][0])
@@ -2111,6 +2099,6 @@ class TimeSeries():
 
 if __name__ == "__main__":
     import doctest
-    import ktk
+    import kineticstoolkit as ktk
     import numpy as np
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

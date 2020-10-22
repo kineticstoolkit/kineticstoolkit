@@ -59,8 +59,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.kinematics module" href="ktk.kinematics.html" />
-    <link rel="prev" title="ktk.gui module" href="ktk.gui.html" />
 
 
 
@@ -171,15 +169,6 @@
     
     
     
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
-          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
-      </ul>
-    </div>
-  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -350,152 +339,6 @@
 <p>This module is currently experimental and its API and behaviour could be
 modified in the future.</p>
 </div>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.inversedynamics.calculate_proximal_wrench" title="ktk.inversedynamics.calculate_proximal_wrench"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_proximal_wrench</span></code></a>(ts, inertial_constants)</p></td>
-<td><p>Calculate the proximal wrench based on a TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.inversedynamics.get_anthropometrics" title="ktk.inversedynamics.get_anthropometrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_anthropometrics</span></code></a>(segment_name, total_mass)</p></td>
-<td><p>Get anthropometric values for a given segment name.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="ktk.inversedynamics.calculate_proximal_wrench">
-<code class="sig-prename descclassname">ktk.inversedynamics.</code><code class="sig-name descname">calculate_proximal_wrench</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">inertial_constants</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.inversedynamics.calculate_proximal_wrench" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the proximal wrench based on a TimeSeries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This method is experimental and has not been strongly validated yet.</p>
-</div>
-<p>This function is based on R. Dumas, R. Aissaoui, and J. A. De Guise,
-“A 3D generic inverse dynamic method using wrench notation and quaternion
-algebra,” Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>A TimeSeries with the following data keys:</p>
-<ul>
-<li><p>ProximalJointPosition (Nx4)</p></li>
-<li><p>DistalJointPosition (Nx4)</p></li>
-<li><p>ForceApplicationPosition (Nx4)</p></li>
-<li><p>DistalForces (Nx4)</p></li>
-<li><p>DistalMoments (Nx4)</p></li>
-</ul>
-</p></li>
-<li><p><strong>inertial_constants</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – <p>A dict that contains the following keys:</p>
-<ul>
-<li><p>Mass’: Mass of the segment, in kg.</p></li>
-<li><p>COMProximalRatio’: Distance between the segment’s center
-of mass and the proximal joint, as a ratio of the
-distance between both joints.</p></li>
-<li><p>’GyrationCOMRatio’: Radius of gyration around the segment’s
-center of mass, as a ratio of the distance between
-both joints.</p></li>
-</ul>
-<p>This dict may be generated using the get_anthropometrics function.</p>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A copy of the input timeseries plus these extra data keys:</p>
-<ul class="simple">
-<li><p>’ProximalForces’ (Nx4)</p></li>
-<li><p>’ProximalMoments’ (Nx4)</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="ktk.timeseries.html#ktk.timeseries.TimeSeries" title="ktk.timeseries.TimeSeries">TimeSeries</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.inversedynamics.get_anthropometrics">
-<code class="sig-prename descclassname">ktk.inversedynamics.</code><code class="sig-name descname">get_anthropometrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">segment_name</span></em>, <em class="sig-param"><span class="n">total_mass</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.inversedynamics.get_anthropometrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get anthropometric values for a given segment name.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This method is experimental and its signature and behaviour could change
-in the future.</p>
-</div>
-<p>For the moment, only this table is available:</p>
-<p>D. A. Winter, Biomechanics and Motor Control of Human Movement,
-4th ed. University of Waterloo, Waterloo, Ontario, Canada,
-John Wiley &amp; Sons, 2009.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>segment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The name of the segment, either:</p>
-<ul>
-<li><p>’Hand’ (wrist axis to knuckle II of middle finger)</p></li>
-<li><p>’Forearm’ (elbow axis to ulnar styloid)</p></li>
-<li><p>’UpperArm’ (glenohumeral axis to elbow axis)</p></li>
-<li><p>’ForearmHand’ (elbow axis to ulnar styloid)</p></li>
-<li><p>’TotalArm’ (glenohumeral joint to ulnar styloid)</p></li>
-<li><p>’Foot’ (lateral malleolus to head metatarsal II)</p></li>
-<li><p>’Leg’ (femoral condyles to medial malleolus)</p></li>
-<li><p>’Thigh’ (greater trochanter to femoral condyles)</p></li>
-<li><p>’FootLeg’ (fomeral condyles to medial malleolus)</p></li>
-<li><p>’TotalLeg’ (greater trochanter to medial malleolus)</p></li>
-<li><p>’TrunkHeadNeck’ (greater trochanter to glenohumeral joint)</p></li>
-<li><p>’HeadArmsTrunk’ (greater trochanter to glenohumeral joint)</p></li>
-</ul>
-</p></li>
-<li><p><strong>total_mass</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The total mass of the person, in kg.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A dict with the following keys:</p>
-<ul class="simple">
-<li><p>’Mass’ : Mass of the segment, in kg.</p></li>
-<li><p>’COMProximalRatio’ : Distance between the segment’s center of
-mass and the proximal joint, as a ratio of the distance between
-both joints.</p></li>
-<li><p>’COMDistalRatio’ : Distance between the segment’s center of mass
-and the distal joint, as a ratio of the distance between
-both joints.</p></li>
-<li><p>’GyrationCOMRatio’: Radius of gyration around the segment’s center
-of mass, as a ratio of the distance between both joints.</p></li>
-<li><dl class="simple">
-<dt>’GyrationProximalRatio’: Radius of gyration around the segment’s</dt><dd><p>proximal joint, as a ratio of the distance between both joints.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>’GyrationDistalRatio’: Radius of gyration around the segment’s</dt><dd><p>distal joint, as a ratio of the distance between both joints.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, float]</p>
-</dd>
-</dl>
-</dd></dl>
 
 
 
@@ -508,30 +351,6 @@ of mass, as a ratio of the distance between both joints.</p></li>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ktk.gui.html" title="ktk.gui module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.gui module </span>
-              </div>
-            </a>
-          
-          
-            <a href="ktk.kinematics.html" title="ktk.kinematics module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.kinematics module </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         

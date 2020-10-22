@@ -25,9 +25,10 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk.filters
-from ktk import TimeSeries
-from ktk.decorators import stable, unstable, private, dead
+import kineticstoolkit.filters as filters
+import kineticstoolkit.cycles as cycles
+from kineticstoolkit import TimeSeries
+from kineticstoolkit.decorators import stable, unstable, private, dead
 
 import numpy as np
 from numpy import sin, cos, pi
@@ -479,7 +480,7 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     tsangle = TimeSeries()
     tsangle.time = tsin.time
     tsangle.data['Angle'] = tsin.data['Angle']
-    tsvelocity = ktk.filters.savgol(tsangle, window_length=21,
+    tsvelocity = filters.savgol(tsangle, window_length=21,
                                     poly_order=2, deriv=1)
     tsout = tsin.copy()
     tsout.data['Velocity'] = tsvelocity.data['Angle']
@@ -746,14 +747,14 @@ def detect_pushes(
     ts_force.events = tsin.events
 
     # Smooth the total force to avoid detecting pushes on glitches
-    ts_force = ktk.filters.smooth(ts_force, 11)
+    ts_force = filters.smooth(ts_force, 11)
 
     # Remove the median if it existed
     ts_force.data['Ftot'] = \
             ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
 
     # Find the pushes
-    ts_force = ktk.cycles.detect_cycles(
+    ts_force = cycles.detect_cycles(
         ts_force, 'Ftot',
         event_name1='push',
         event_name2='recovery',

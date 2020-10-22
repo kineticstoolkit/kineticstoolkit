@@ -22,7 +22,7 @@ Warning
 -------
 This module is currently experimental and its API could be modified in
 the future without warnings. It should be considered only as helper functions
-for ktk's own use.
+for Kinetics Toolkit's own use.
 """
 
 __author__ = "Félix Chénier"
@@ -30,7 +30,7 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import ktk.config
+import kineticstoolkit.config
 
 import subprocess
 from threading import Thread
@@ -39,9 +39,9 @@ import matplotlib.pyplot as plt
 import sys
 import os
 from typing import Sequence, Union, Tuple, Any, List
-from ktk.decorators import experimental, unstable
+from kineticstoolkit.decorators import experimental, unstable
 
-CMDGUI = ktk.config.root_folder + "/ktk/cmdgui.py"
+CMDGUI = kineticstoolkit.config.root_folder + "/kineticstoolkit/cmdgui.py"
 _message_window_int = [0]
 listing = []  # type: List[str]
 
@@ -57,9 +57,9 @@ def message(message: str = '') -> None:
         The message to show. Use '' to close every message window.
     """
     # Begins by deleting the current message
-    for file in os.listdir(ktk.config.temp_folder):
+    for file in os.listdir(kineticstoolkit.config.temp_folder):
         if 'gui_message_flag' in file:
-            os.remove(ktk.config.temp_folder + '/' + file)
+            os.remove(kineticstoolkit.config.temp_folder + '/' + file)
 
     if message is None or message == '':
         return
@@ -67,11 +67,12 @@ def message(message: str = '') -> None:
     print(message)
 
     _message_window_int[0] += 1
-    flagfile = (ktk.config.temp_folder + '/gui_message_flag' +
+    flagfile = (kineticstoolkit.config.temp_folder + '/gui_message_flag' +
                 str(_message_window_int))
 
     fid = open(flagfile, 'w')
-    fid.write('DELETE THIS FILE TO CLOSE THE KTK GUI MESSAGE WINDOW.')
+    fid.write("DELETE THIS FILE TO CLOSE THE KINETICS TOOLKIT GUI MESSAGE "
+              "WINDOW.")
     fid.close()
 
     command_call = [sys.executable, CMDGUI, 'message', 'Kinetics Toolkit',
@@ -176,7 +177,7 @@ def get_credentials() -> Tuple[str, str]:
         respectively, or an empty tuple if the user closed the window.
 
     """
-    str_call = ['get_credentials', 'KTK',
+    str_call = ['get_credentials', 'Kinetics Toolkit',
                 'Please enter your login information.']
     temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                    stderr=subprocess.DEVNULL)
@@ -202,7 +203,7 @@ def get_folder(initial_folder: str = '.') -> str:
         the user cancelled.
 
     """
-    str_call = ['get_folder', 'ktk.gui.get_folder', initial_folder]
+    str_call = ['get_folder', 'kineticstoolkit.gui.get_folder', initial_folder]
     temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                     stderr=subprocess.DEVNULL)
     result = temp.decode(sys.getdefaultencoding())
@@ -226,7 +227,8 @@ def get_filename(initial_folder: str = '.') -> str:
         The full path of the selected file. An empty string is returned if the
         user cancelled.
     """
-    str_call = ['get_filename', 'ktk.gui.get_filename', initial_folder]
+    str_call = ['get_filename', 'kineticstoolkit.gui.get_filename',
+                initial_folder]
     temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
                                     stderr=subprocess.DEVNULL)
     result = temp.decode(sys.getdefaultencoding())

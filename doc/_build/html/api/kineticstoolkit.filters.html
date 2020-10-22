@@ -1,0 +1,607 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>kineticstoolkit.filters module &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kineticstoolkit.geometry module" href="kineticstoolkit.geometry.html" />
+    <link rel="prev" title="kineticstoolkit.emg module" href="kineticstoolkit.emg.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=white data-md-color-accent=orange>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#api/kineticstoolkit.filters" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Kinetics Toolkit (ktk) master documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Kinetics Toolkit (ktk) master documentation logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic"> kineticstoolkit.filters module </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="GET" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    kineticstoolkit
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
+          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">kineticstoolkit</a></li>
+          <li class="md-tabs__item"><a href="kineticstoolkit.html" class="md-tabs__link">kineticstoolkit package</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    kineticstoolkit
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../labmode.html" class="md-nav__link">Lab mode</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../geometry.html" class="md-nav__link">Geometry</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../filters.html" class="md-nav__link">Filters</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../kinematics.html" class="md-nav__link">Kinematics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../cycles.html" class="md-nav__link">Cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../release_notes.html" class="md-nav__link">Release Notes</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../api_reference.html" class="md-nav__link">API Reference</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<span id="kineticstoolkit-filters-module"></span><h1 id="api-kineticstoolkit-filters--page-root">kineticstoolkit.filters module<a class="headerlink" href="#api-kineticstoolkit-filters--page-root" title="Permalink to this headline">¶</a></h1>
+<p>Provide standard filters for TimeSeries.</p>
+<p><strong>Functions</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.filters.butter" title="kineticstoolkit.filters.butter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">butter</span></code></a>(ts, /, fc, *[, order, btype, filtfilt])</p></td>
+<td><p>Apply a Butterworth filter to a TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.filters.deriv" title="kineticstoolkit.filters.deriv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deriv</span></code></a>(ts, /[, n])</p></td>
+<td><p>Calculate the nth numerical derivative.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.filters.median" title="kineticstoolkit.filters.median"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median</span></code></a>(ts, /[, window_length])</p></td>
+<td><p>Calculate a moving median.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.filters.savgol" title="kineticstoolkit.filters.savgol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savgol</span></code></a>(ts, /, *, window_length, poly_order)</p></td>
+<td><p>Apply a Savitzky-Golay filter on a TimeSeries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.filters.smooth" title="kineticstoolkit.filters.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>(ts, /, window_length)</p></td>
+<td><p>Apply a smoothing (moving average) filter on a TimeSeries.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="kineticstoolkit.filters.butter">
+<code class="sig-prename descclassname">kineticstoolkit.filters.</code><code class="sig-name descname">butter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">fc</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">btype</span><span class="o">=</span><span class="default_value">'lowpass'</span></em>, <em class="sig-param"><span class="n">filtfilt</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.butter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a Butterworth filter to a TimeSeries.</p>
+<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><p>The sampling rate must be constant.</p></li>
+<li><p>If the TimeSeries contains missing samples, a warning is issued, missing
+samples are interpolated using a first-order interpolation before
+filtering, and then replaced by NaNs in the filtered signal.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries.</p></li>
+<li><p><strong>fc</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>]) – Cut-off frequency in Hz. This is a float for single-frequency filters
+(lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
+for two-frequency filters (bandpass, bandstop).</p></li>
+<li><p><strong>order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. Order of the filter.</p></li>
+<li><p><strong>btype</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. {‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’}.</p></li>
+<li><p><strong>filtfilt</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. If True, the filter is applied two times in reverse direction
+to eliminate time lag. If False, the filter is applied only in forward
+direction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.filters.deriv">
+<code class="sig-prename descclassname">kineticstoolkit.filters.</code><code class="sig-name descname">deriv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.deriv" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the nth numerical derivative.</p>
+<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><p>The sample rate must be constant.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input timeseries</p></li>
+<li><p><strong>n</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Order of the derivative.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Source data</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">time</span>
+<span class="go">array([0. , 0.1, 0.2, 0.3, 0.4])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
+<span class="go">array([0., 0., 1., 1., 0.])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># First derivative</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span><span class="o">.</span><span class="n">time</span>
+<span class="go">array([0.05, 0.15, 0.25, 0.35])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts1</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
+<span class="go">array([  0.,  10.,   0., -10.])</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># Second derivative</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">deriv</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span><span class="o">.</span><span class="n">time</span>
+<span class="go">array([0.1, 0.2, 0.3])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts2</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span>
+<span class="go">array([ 100., -100., -100.])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.filters.median">
+<code class="sig-prename descclassname">kineticstoolkit.filters.</code><code class="sig-name descname">median</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">window_length</span><span class="o">=</span><span class="default_value">3</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.median" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate a moving median.</p>
+<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries</p></li>
+<li><p><strong>window_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. Kernel size, must be odd. The default is 3.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">11.</span><span class="p">,</span> <span class="mf">20.</span><span class="p">,</span> <span class="mf">14.</span><span class="p">,</span> <span class="mf">15.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'data1'</span><span class="p">]</span>
+<span class="go">array([10., 11., 11., 14., 15., 15.])</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.filters.savgol">
+<code class="sig-prename descclassname">kineticstoolkit.filters.</code><code class="sig-name descname">savgol</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">window_length</span></em>, <em class="sig-param"><span class="n">poly_order</span></em>, <em class="sig-param"><span class="n">deriv</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.savgol" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a Savitzky-Golay filter on a TimeSeries.</p>
+<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><p>The sampling rate must be constant.</p></li>
+<li><p>If the TimeSeries contains missing samples, a warning is issued, missing
+samples are interpolated using a first-order interpolation before
+filtering, and then replaced by NaNs in the filtered signal.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries</p></li>
+<li><p><strong>window_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The length of the filter window. window_length must be a positive
+odd integer less or equal than the length of the TimeSeries.</p></li>
+<li><p><strong>poly_order</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The order of the polynomial used to fit the samples. polyorder must be
+less than window_length.</p></li>
+<li><p><strong>deriv</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The order of the derivative to compute. The default is 0,
+which means to filter the data without differentiating.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.filters.smooth">
+<code class="sig-prename descclassname">kineticstoolkit.filters.</code><code class="sig-name descname">smooth</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">window_length</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.smooth" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply a smoothing (moving average) filter on a TimeSeries.</p>
+<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><p>The sampling rate must be constant.</p></li>
+<li><p>If the TimeSeries contains missing samples, a warning is issued, missing
+samples are interpolated using a first-order interpolation before
+filtering, and then replaced by NaNs in the filtered signal.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries.</p></li>
+<li><p><strong>window_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – The length of the filter window. window_length must be a positive
+odd integer less or equal than the length of the TimeSeries.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="kineticstoolkit.emg.html" title="kineticstoolkit.emg module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> kineticstoolkit.emg module </span>
+              </div>
+            </a>
+          
+          
+            <a href="kineticstoolkit.geometry.html" title="kineticstoolkit.geometry module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> kineticstoolkit.geometry module </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2020, Félix Chénier.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>

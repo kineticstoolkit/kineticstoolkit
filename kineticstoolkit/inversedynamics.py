@@ -31,12 +31,12 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk.filters
-from ktk.decorators import unstable
+import kineticstoolkit.filters
+from kineticstoolkit.decorators import unstable
 
 import numpy as np
 from typing import Dict, List
-from ktk import TimeSeries
+from kineticstoolkit import TimeSeries
 
 
 listing = []  # type: List[str]
@@ -194,8 +194,8 @@ def calculate_proximal_wrench(
         ts.data['ProximalJointPosition'])
 
     ts_com = ts.get_subset('CenterOfMassPosition')
-    ts_acc = ktk.filters.savgol(ts_com, window_length=21, poly_order=2,
-                                deriv=2)
+    ts_acc = kineticstoolkit.filters.savgol(
+        ts_com, window_length=21, poly_order=2, deriv=2)
     ts.data['CenterOfMassAcceleration'] = ts_acc.data['CenterOfMassPosition']
 
     # Rotation angle, velocity and acceleration
@@ -214,10 +214,10 @@ def calculate_proximal_wrench(
         segment_angle_z[:, np.newaxis]), axis=1)
 
     ts_angle = ts.get_subset('Angle')
-    ts_angvel = ktk.filters.savgol(ts_angle, window_length=21, poly_order=2,
-                                   deriv=1)
-    ts_angacc = ktk.filters.savgol(ts_angle, window_length=21, poly_order=2,
-                                   deriv=2)
+    ts_angvel = kineticstoolkit.filters.savgol(
+        ts_angle, window_length=21, poly_order=2, deriv=1)
+    ts_angacc = kineticstoolkit.filters.savgol(
+        ts_angle, window_length=21, poly_order=2, deriv=2)
     ts.data['AngularVelocity'] = ts_angvel.data['Angle']
     ts.data['AngularAcceleration'] = ts_angacc.data['Angle']
 

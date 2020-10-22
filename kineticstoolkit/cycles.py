@@ -27,8 +27,8 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-from ktk.timeseries import TimeSeries, TimeSeriesEvent
-from ktk.decorators import stable
+from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
+from kineticstoolkit.decorators import stable
 import warnings
 from typing import List, Dict, Tuple
 
@@ -211,7 +211,7 @@ def time_normalize(
     event_name2. For example, to time-normalize a TimeSeries between each
     heel strike and the next heel strike:
 
-        ktk.cycles.time_normalize(ts, 'heelstrike', '_')
+        kineticstoolkit.cycles.time_normalize(ts, 'heelstrike', '_')
 
     Parameters
     ----------
@@ -435,7 +435,7 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
 
 #     Example
 #     -------
-#     >>> import ktk
+#     >>> import kineticstoolkit.lab as ktk
 #     >>> # Create a TimeSeries with different time-normalized events
 #     >>> ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
 #     >>> ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
@@ -502,7 +502,8 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
 
     Example
     -------
-    >>> import ktk, numpy as np
+    >>> import kineticstoolkit.lab as ktk
+    >>> import numpy as np
     >>> # Create a data sample with four different cycles, the most different
     >>> # begin cycle 2 (cos instead of sin), then cycle 0.
     >>> x = np.arange(0, 10, 0.1)

@@ -59,8 +59,6 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="ktk.dev module" href="ktk.dev.html" />
-    <link rel="prev" title="ktk.dbinterface module" href="ktk.dbinterface.html" />
 
 
 
@@ -171,15 +169,6 @@
     
     
     
-  <nav class="md-tabs" data-md-component="tabs">
-    <div class="md-tabs__inner md-grid">
-      <ul class="md-tabs__list">
-          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
-          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">ktk</a></li>
-          <li class="md-tabs__item"><a href="ktk.html" class="md-tabs__link">ktk package</a></li>
-      </ul>
-    </div>
-  </nav>
     <main class="md-main">
       <div class="md-main__inner md-grid" data-md-component="container">
         
@@ -344,13 +333,13 @@
             
   
 <span id="ktk-decorators-module"></span><h1 id="api-ktk-decorators--page-root">ktk.decorators module<a class="headerlink" href="#api-ktk-decorators--page-root" title="Permalink to this headline">¶</a></h1>
-<p>Provide decorators for ktk functions.</p>
-<p>The following decorator can be used on each ktk’s function and method:</p>
+<p>Provide decorators for Kinetics Toolkit’s functions.</p>
+<p>The following decorator can be used on each Kinetics Toolkit’s’s function:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>@stable: Documented, stable function in a ktk release.</p></li>
-<li><p>@experimental: Documented, experimental function in a ktk release.</p></li>
-<li><p>@deprecated: Documented but deprecated function in a ktk release.</p></li>
+<li><p>@stable: Documented, stable function in a release.</p></li>
+<li><p>@experimental: Documented, experimental function in a release.</p></li>
+<li><p>@deprecated: Documented but deprecated function in a release.</p></li>
 <li><p>@unstable: Documented only in the development version.</p></li>
 <li><p>@dead: Undocumented, deprecated function in the development version.</p></li>
 <li><p>@private: Undocumented, for private use by the module only.</p></li>
@@ -358,87 +347,6 @@
 <p>Each of these decorators take a list as argument, and adds the function
 to the list if this function should be added to the __dir__ magic function.</p>
 </div></blockquote>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.decorators.dead" title="ktk.decorators.dead"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dead</span></code></a>(listing)</p></td>
-<td><p>Decorate dead ktk functions.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.decorators.deprecated" title="ktk.decorators.deprecated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deprecated</span></code></a>(listing)</p></td>
-<td><p>Decorate deprecated ktk functions.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.decorators.experimental" title="ktk.decorators.experimental"><code class="xref py py-obj docutils literal notranslate"><span class="pre">experimental</span></code></a>(listing)</p></td>
-<td><p>Decorate experimental ktk functions.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.decorators.private" title="ktk.decorators.private"><code class="xref py py-obj docutils literal notranslate"><span class="pre">private</span></code></a>(listing)</p></td>
-<td><p>Decorate private ktk functions.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#ktk.decorators.stable" title="ktk.decorators.stable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stable</span></code></a>(listing)</p></td>
-<td><p>Decorate stable ktk functions.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#ktk.decorators.unstable" title="ktk.decorators.unstable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstable</span></code></a>(listing)</p></td>
-<td><p>Decorate unstable ktk functions.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="ktk.decorators.dead">
-<code class="sig-prename descclassname">ktk.decorators.</code><code class="sig-name descname">dead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.decorators.dead" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorate dead ktk functions.</p>
-<p>Does not add this function to the main documentation and generates a
-FutureWarning on use. Also adds a warning section to its docstring.</p>
-<p>Parameter listing is a list of attributes of the module that will be
-returned by the module’s or class’ __dir__ function.</p>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.decorators.deprecated">
-<code class="sig-prename descclassname">ktk.decorators.</code><code class="sig-name descname">deprecated</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.decorators.deprecated" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorate deprecated ktk functions.</p>
-<p>Adds this function to the main documentation and generates a FutureWarning
-on use. Also adds a warning section to its docstring.</p>
-<p>Parameter listing is a list of attributes of the module that will be
-returned by the module’s or class’ __dir__ function.</p>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.decorators.experimental">
-<code class="sig-prename descclassname">ktk.decorators.</code><code class="sig-name descname">experimental</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.decorators.experimental" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorate experimental ktk functions.</p>
-<p>Adds this function to the main documentation with no warning for the
-moment. Also adds a warning section to its docstring.</p>
-<p>Parameter listing is a list of attributes of the module that will be
-returned by the module’s or class’ __dir__ function.</p>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.decorators.private">
-<code class="sig-prename descclassname">ktk.decorators.</code><code class="sig-name descname">private</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.decorators.private" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorate private ktk functions.</p>
-<p>Does not add this function to the main documentation.
-Also adds a warning section to its docstring.</p>
-<p>Parameter listing is a list of attributes of the module that will be
-returned by the module’s or class’ __dir__ function.</p>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.decorators.stable">
-<code class="sig-prename descclassname">ktk.decorators.</code><code class="sig-name descname">stable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.decorators.stable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorate stable ktk functions.</p>
-<p>Adds this function to the main documentation.</p>
-<p>Parameter listing is a list of attributes of the module that will be
-returned by the module’s or class’ __dir__ function.</p>
-</dd></dl>
-<dl class="py function">
-<dt id="ktk.decorators.unstable">
-<code class="sig-prename descclassname">ktk.decorators.</code><code class="sig-name descname">unstable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.decorators.unstable" title="Permalink to this definition">¶</a></dt>
-<dd><p>Decorate unstable ktk functions.</p>
-<p>Adds this function to the main documentation only if
-ktk.config.version == ‘master’.  Also adds a warning section to its
-docstring.</p>
-<p>Parameter listing is a list of attributes of the module that will be
-returned by the module’s or class’ __dir__ function.</p>
-</dd></dl>
 
 
 
@@ -451,30 +359,6 @@ returned by the module’s or class’ __dir__ function.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="ktk.dbinterface.html" title="ktk.dbinterface module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> ktk.dbinterface module </span>
-              </div>
-            </a>
-          
-          
-            <a href="ktk.dev.html" title="ktk.dev module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> ktk.dev module </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
           
         </a>
         

@@ -25,9 +25,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import ktk.geometry
-from ktk import TimeSeries
-from ktk.decorators import stable, unstable
+import kineticstoolkit.geometry as geometry
+from kineticstoolkit import TimeSeries
+from kineticstoolkit.decorators import stable, unstable
 from typing import Sequence, Dict, Any, List
 
 import numpy as np
@@ -339,10 +339,10 @@ def create_rigid_body_config(
                 markers.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
-    global_points = global_points[~ktk.geometry.isnan(global_points)]
+    global_points = global_points[~geometry.isnan(global_points)]
 
-    rigid_bodies = ktk.geometry.create_reference_frames(global_points)
-    local_points = ktk.geometry.get_local_coordinates(
+    rigid_bodies = geometry.create_reference_frames(global_points)
+    local_points = geometry.get_local_coordinates(
             global_points, rigid_bodies)
 
     # Take the average
@@ -405,11 +405,11 @@ def register_markers(
             else:
                 global_points[:, :, i_marker] = np.nan
 
-        (local_points, global_points) = ktk.geometry.match_size(
+        (local_points, global_points) = geometry.match_size(
                 local_points, global_points)
 
         # Compute the rigid body trajectory
-        rigid_bodies.data[rigid_body_name] = ktk.geometry.register_points(
+        rigid_bodies.data[rigid_body_name] = geometry.register_points(
                 global_points, local_points)
 
     return rigid_bodies
@@ -452,8 +452,8 @@ def create_virtual_marker_config(
     marker = markers.data[marker_name]
     rigid_body = rigid_bodies.data[rigid_body_name]
 
-    local_points = ktk.geometry.get_local_coordinates(marker, rigid_body)
-    to_keep = ~ktk.geometry.isnan(local_points)
+    local_points = geometry.get_local_coordinates(marker, rigid_body)
+    to_keep = ~geometry.isnan(local_points)
 
     if np.all(to_keep is False):
         warnings.warn(f'There are no frame where both {marker_name} and'

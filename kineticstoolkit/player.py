@@ -18,8 +18,8 @@
 """
 Provides the Player class to visualize markers and rigid bodies in 3d.
 
-The Player class is accessible directly from the toplevel ktk namespace
-(i.e., ktk.Player).
+The Player class is accessible directly from the toplevel Kinetics Toolkit
+namespace (i.e., ktk.Player).
 """
 
 __author__ = "Félix Chénier"
@@ -28,7 +28,7 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-from ktk.timeseries import TimeSeries
+from kineticstoolkit.timeseries import TimeSeries
 
 import matplotlib.pyplot as plt
 from matplotlib import animation
