@@ -644,8 +644,9 @@ data_info attribute could indicate the unit of data[‘Forces’]:</p>
 <dd><p>Fill missing samples with the given method.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This function is experimental. Its signature and default values may
-change in future.</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
@@ -1295,6 +1296,12 @@ one nan value).</p>
 <dt id="ktk.timeseries.TimeSeries.merge">
 <code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_keys</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resample</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.timeseries.TimeSeries.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge another TimeSeries into the current TimeSeries.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <p>This method merges a TimeSeries into the current TimeSeries, copying
 the data, data_info and events.</p>
 <dl class="field-list simple">
@@ -1513,7 +1520,11 @@ list, starting at 0, where the occurrences are sorted in time.</p></li>
 <dd><p>Resample the TimeSeries.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This function is experimental and may change signature and behaviour.</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1724,8 +1735,9 @@ to plot. See TimeSeries.plot() for more information.</p></li>
 <dd><p>Synchronize one or two TimeSeries by shifting their time.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This function is experimental and may change signature
-and behaviour.</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
 </div>
 <p>If this method is called on only one TimeSeries, an interactive
 interface asks the user to click on the time to set to zero.</p>

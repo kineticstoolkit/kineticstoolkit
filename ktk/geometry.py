@@ -33,22 +33,14 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 import ktk.external.icp as icp
+from ktk.decorators import unstable
 from typing import Tuple, List
 
 
-def __dir__() -> List[str]:
-    return [
-        'matmul',
-        'create_rotation_matrices',
-        'create_reference_frames',
-        'get_local_coordinates',
-        'get_global_coordinates',
-        'isnan',
-        'match_size',
-        'register_points',
-    ]
+listing = []  # type: List[str]
 
 
+@unstable(listing)
 def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
@@ -94,6 +86,7 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return result
 
 
+@unstable(listing)
 def create_rotation_matrices(axis: str, angles: np.ndarray) -> np.ndarray:
     """
     Create a Nx4x4 series of rotation matrices around a given axis.
@@ -149,6 +142,7 @@ def create_rotation_matrices(axis: str, angles: np.ndarray) -> np.ndarray:
     return T
 
 
+@unstable(listing)
 def create_reference_frames(global_points: np.ndarray,
                             method: str = 'centroid') -> np.ndarray:
     """
@@ -297,6 +291,7 @@ def create_reference_frames(global_points: np.ndarray,
     return T
 
 
+@unstable(listing)
 def get_local_coordinates(global_coordinates: np.ndarray,
                           reference_frames: np.ndarray) -> np.ndarray:
     """
@@ -355,6 +350,7 @@ def get_local_coordinates(global_coordinates: np.ndarray,
     return local_coordinates
 
 
+@unstable(listing)
 def get_global_coordinates(local_coordinates: np.ndarray,
                            reference_frames: np.ndarray) -> np.ndarray:
     """
@@ -386,6 +382,7 @@ def get_global_coordinates(local_coordinates: np.ndarray,
     return global_coordinates
 
 
+@unstable(listing)
 def isnan(input: np.ndarray, /) -> np.ndarray:
     """
     Check which samples has at least one NaN.
@@ -408,6 +405,7 @@ def isnan(input: np.ndarray, /) -> np.ndarray:
     return temp
 
 
+@unstable(listing)
 def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     """
     Match the first dimension of op1 and op2.
@@ -436,6 +434,7 @@ def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return op1, op2
 
 
+@unstable(listing)
 def register_points(global_points: np.ndarray,
                     local_points: np.ndarray) -> np.ndarray:
     """
@@ -487,3 +486,6 @@ def register_points(global_points: np.ndarray,
             T[i_sample] = np.nan
 
     return T
+
+def __dir__():
+    return listing

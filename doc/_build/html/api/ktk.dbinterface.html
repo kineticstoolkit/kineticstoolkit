@@ -433,6 +433,14 @@ none is given, a dialog box asks the user to point to this folder.</p></li>
 <dt id="ktk.dbinterface.DBInterface.batch_fix_file_type">
 <code class="sig-name descname">batch_fix_file_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em>, <em class="sig-param"><span class="n">new_file_type_label</span></em>, <em class="sig-param"><span class="n">create_file_entries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.batch_fix_file_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Batch-rename files in a folder to their new corresponding dbfid.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>This function is helpful to quickly assign new dbfids to a batch
 of processed file based on files that are already referenced in the
 database.</p>
@@ -484,6 +492,14 @@ contain the specified FileTypeLabel</p></li>
 <dt id="ktk.dbinterface.DBInterface.create_file_entry">
 <code class="sig-name descname">create_file_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trial_id</span></em>, <em class="sig-param"><span class="n">file_type_label</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.create_file_entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a file entry in the database.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>The project’s tables are updated after adding the file entry.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -512,6 +528,14 @@ get(participant, session, trial)[‘TrialID’].</p></li>
 <dt id="ktk.dbinterface.DBInterface.get">
 <code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">session</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">trial</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract information from a project.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -540,6 +564,14 @@ For example, <cite>participant</cite> could not be ‘’ if <cite>session</cite
 <dt id="ktk.dbinterface.DBInterface.load">
 <code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span></em>, <em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">trial</span></em>, <em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.load" title="Permalink to this definition">¶</a></dt>
 <dd><p>Load a variable from a BIOMEC referenced file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>This method load the ktk.zip file associated to a participant,
 session, trial and file type.</p>
 <dl class="field-list simple">
@@ -573,6 +605,14 @@ session, trial and file type.</p>
 <dt id="ktk.dbinterface.DBInterface.refresh">
 <code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.refresh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update from database and reindex files.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -583,6 +623,14 @@ session, trial and file type.</p>
 <dt id="ktk.dbinterface.DBInterface.rename">
 <code class="sig-name descname">rename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">dbfid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.rename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename a file to include or modify a dbfid code in its filename.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -599,6 +647,14 @@ session, trial and file type.</p>
 <dt id="ktk.dbinterface.DBInterface.save">
 <code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span></em>, <em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">trial</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a variable to a BIOMEC referenced file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>This method saves the specified variable following either of these
 cases:</p>
 <ul class="simple">
@@ -644,6 +700,14 @@ database, then the file is saved as in 2nd case.</p></li>
 <dt id="ktk.dbinterface.DBInterface.tag_files">
 <code class="sig-name descname">tag_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">include_trial_name</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.dbinterface.DBInterface.tag_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename all files to include tags in file names.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>This method renames all the files referenced by the project following
 the given specifications. The resulting file can be either:</p>
 <ul class="simple">

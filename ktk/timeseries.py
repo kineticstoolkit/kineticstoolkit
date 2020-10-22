@@ -1640,11 +1640,6 @@ class TimeSeries():
         """
         Fill missing samples with the given method.
 
-        Warning
-        -------
-        This function is experimental. Its signature and default values may
-        change in future.
-
         Note
         ----
         The sample rate must be constant.
@@ -1756,12 +1751,6 @@ class TimeSeries():
                 data_keys2: Union[str, List[str]] = [], /) -> None:
         """
         Synchronize one or two TimeSeries by shifting their time.
-
-        Warning
-        -------
-        This function is experimental and may change signature
-        and behaviour.
-
 
         If this method is called on only one TimeSeries, an interactive
         interface asks the user to click on the time to set to zero.
@@ -1946,10 +1935,6 @@ class TimeSeries():
         """
         Resample the TimeSeries.
 
-        Warning
-        -------
-        This function is experimental and may change signature and behaviour.
-
         Parameters
         ----------
         new_time
@@ -2043,7 +2028,7 @@ class TimeSeries():
 
         self.time = new_time
 
-    @stable(ts_listing)
+    @experimental(ts_listing)
     def merge(self,
               ts: 'TimeSeries',
               data_keys: Union[str, List[str]] = [], /, *,

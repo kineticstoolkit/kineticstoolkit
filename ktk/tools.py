@@ -31,14 +31,19 @@ __license__ = "Apache 2.0"
 import ktk.config
 import ktk._repr as _repr
 import ktk.gui
+from ktk.decorators import stable, unstable, experimental
 
 import os
 import sys
 import subprocess
 import webbrowser as _webbrowser
-from typing import Dict
+from typing import Dict, List
 
 
+listing = []  # type: List[str]
+
+
+@stable(listing)
 def explore(folder_name: str = '') -> None:
     """
     Open an Explorer window (on Windows) or a Finder window (on macOS)
@@ -64,6 +69,7 @@ def explore(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
+@stable(listing)
 def terminal(folder_name: str = '') -> None:
     """
     Open a terminal window.
@@ -99,6 +105,7 @@ def terminal(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
+@stable(listing)
 def start_lab_mode(*, config: Dict[str, bool] = {
         'change_ipython_dict_repr': True,
         'change_matplotlib_defaults': True,
@@ -154,6 +161,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         _np.set_printoptions(suppress=True)
 
 
+@unstable(listing)
 def update() -> None:
     """
     Update ktk to the last available version - Not for the public version.
@@ -191,6 +199,7 @@ def update() -> None:
              '\'; git pull origin master"')])
 
 
+@experimental(listing)
 def tutorials() -> None:
     """
     Open the KTK tutorials in a web browser.
@@ -200,3 +209,7 @@ def tutorials() -> None:
     _webbrowser.open('file:///' + ktk.config.root_folder +
                      '/tutorials/index.html',
                      new=2)
+
+
+def __dir__():
+    return listing

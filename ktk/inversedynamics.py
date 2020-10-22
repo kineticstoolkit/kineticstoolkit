@@ -30,13 +30,19 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
+
 import ktk.filters
+from ktk.decorators import unstable
 
 import numpy as np
-from typing import Dict
+from typing import Dict, List
 from ktk import TimeSeries
 
 
+listing = []  # type: List[str]
+
+
+@unstable(listing)
 def get_anthropometrics(segment_name: str,
                         total_mass: float) -> Dict[str, float]:
     """
@@ -122,6 +128,7 @@ def get_anthropometrics(segment_name: str,
         raise ValueError(f'The segment "{segment_name}" is not available.')
 
 
+@unstable(listing)
 def calculate_proximal_wrench(
         ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
     """
@@ -282,3 +289,7 @@ def calculate_proximal_wrench(
     ts.data['ProximalMoments'][:, 0:3] = proximal_wrench[:, 3:6, 0]
 
     return ts
+
+
+def __dir__():
+    return listing

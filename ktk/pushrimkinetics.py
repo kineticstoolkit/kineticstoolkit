@@ -704,9 +704,9 @@ def detect_pushes(
         min_push_time: float = 0.1,
         min_push_force: float = 30.0) -> TimeSeries:
     """
-    Deprecated since October 2020. Detect pushes and recoveries automatically.
+    Detect pushes and recoveries automatically.
 
-    Please use ktk.cycles.detect_cycles instead.
+    Deprecated since October 2020. Please use ktk.cycles.detect_cycles instead.
 
     Parameters
     ----------
@@ -740,9 +740,6 @@ def detect_pushes(
         - 'recovery'
 
     """
-    warnings.warn("detect_pushes is deprecated. Please use "
-                  "ktk.cycles.detect_cycles instead.", FutureWarning)
-
     # Calculate the total force
     f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
     ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
@@ -781,8 +778,6 @@ def remove_sinusoids(
     Deprecated since October 2020. Please use
     ktk.pushrimkinetics.remove_offsets instead.
     """
-    warnings.warn("remove_sinusoids is deprecated. Please use "
-                  "ktk.pushrimkinetics.remove_offsets instead.", FutureWarning)
     return remove_offsets(kinetics, baseline_kinetics)
 
 

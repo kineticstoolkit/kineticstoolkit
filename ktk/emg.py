@@ -32,17 +32,18 @@ __license__ = "Apache 2.0"
 
 
 from ktk import TimeSeries
+from ktk.decorators import unstable
 import pandas as pd
-from typing import Dict
+from typing import Dict, List
 
+
+listing = []  # type: List[str]
+
+
+@unstable(listing)
 def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
     """
     Read a CSV file exported from Delsys Trigno converter.
-
-    Warning
-    -------
-    This function is currently experimental and may change signature and
-    behaviour in the future.
 
     Parameters
     ----------
@@ -102,3 +103,7 @@ def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
             emg[short_name] = ts
 
     return {'emg': emg, 'acc': acc, 'gyro': gyro, 'mag': mag}
+
+
+def __dir__():
+    return listing

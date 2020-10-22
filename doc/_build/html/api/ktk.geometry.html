@@ -387,6 +387,14 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <dt id="ktk.geometry.create_reference_frames">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">create_reference_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_points</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'centroid'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.create_reference_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Nx4x4 series of reference frames based on a point cloud series.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>Create reference frames based on global points, using the provided
 method, and returns this series of reference frames as a series of
 transformation matrices.</p>
@@ -483,6 +491,14 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 <dt id="ktk.geometry.create_rotation_matrices">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">create_rotation_matrices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">angles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.create_rotation_matrices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Nx4x4 series of rotation matrices around a given axis.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -502,6 +518,14 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 <dt id="ktk.geometry.get_global_coordinates">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">get_global_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_coordinates</span></em>, <em class="sig-param"><span class="n">reference_frames</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.get_global_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Express local coordinates in the global reference frame.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -530,6 +554,14 @@ expressed in.</p></li>
 <dt id="ktk.geometry.get_local_coordinates">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">get_local_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_coordinates</span></em>, <em class="sig-param"><span class="n">reference_frames</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.get_local_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Express global coordinates in local reference frames.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -558,6 +590,14 @@ coordinates in.</p></li>
 <dt id="ktk.geometry.isnan">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">isnan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.isnan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check which samples has at least one NaN.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Array where the first dimension corresponds to time.</p>
@@ -575,6 +615,14 @@ True for the samples that contain at least one NaN.</p>
 <dt id="ktk.geometry.match_size">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">match_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op1</span></em>, <em class="sig-param"><span class="n">op2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.match_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Match the first dimension of op1 and op2.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>Broadcasts the first dimension of op1 or op2, if required, so that both
 inputs have the same size in first dimension. If no modification is
 required on an input, then the output is a reference to the same input.
@@ -592,6 +640,14 @@ Otherwise, the output is a new variable.</p>
 <dt id="ktk.geometry.matmul">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op1</span></em>, <em class="sig-param"><span class="n">op2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matrix multiplication between series of matrices.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <p>This function is a wrapper for numpy’s matmul function (operator @), that
 helps numpy to understand ktk’s convention that the first dimension always
 corresponds to time.</p>
@@ -616,6 +672,14 @@ mismatch errors.</p>
 <dt id="ktk.geometry.register_points">
 <code class="sig-prename descclassname">ktk.geometry.</code><code class="sig-name descname">register_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_points</span></em>, <em class="sig-param"><span class="n">local_points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.geometry.register_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the rigid transformations between two series of point clouds.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

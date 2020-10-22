@@ -382,6 +382,12 @@ for ktk’s own use.</p>
 <dt id="ktk.gui.button_dialog">
 <code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">button_dialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">'Please select an option.'</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">['Cancel', 'OK']</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.button_dialog" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a blocking dialog message window with a selection of buttons.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -403,6 +409,12 @@ returned.</p>
 <dt id="ktk.gui.get_credentials">
 <code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.get_credentials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Ask the user’s username and password.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A tuple of two strings containing the username and password,
@@ -417,6 +429,12 @@ respectively, or an empty tuple if the user closed the window.</p>
 <dt id="ktk.gui.get_filename">
 <code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial_folder</span><span class="o">=</span><span class="default_value">'.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.get_filename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get file name interactively using a file dialog window.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>initial_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The initial folder of the file dialog.</p>
@@ -434,6 +452,12 @@ user cancelled.</p>
 <dt id="ktk.gui.get_folder">
 <code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">get_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial_folder</span><span class="o">=</span><span class="default_value">'.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.get_folder" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get folder interactively using a file dialog window.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>initial_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The initial folder of the file dialog.</p>
@@ -451,6 +475,12 @@ the user cancelled.</p>
 <dt id="ktk.gui.message">
 <code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.message" title="Permalink to this definition">¶</a></dt>
 <dd><p>Show a message window.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>message</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The message to show. Use ‘’ to close every message window.</p>
@@ -464,6 +494,14 @@ the user cancelled.</p>
 <dt id="ktk.gui.set_color_order">
 <code class="sig-prename descclassname">ktk.gui.</code><code class="sig-name descname">set_color_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.gui.set_color_order" title="Permalink to this definition">¶</a></dt>
 <dd><p>Define the standard color order for matplotlib.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+Although it should be working, please do not use this function in stable
+production work since it may not be fully tested, it may change signature and
+behaviour drastically or even be deleted.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>setting</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>Either a string or a list of colors.</p>
