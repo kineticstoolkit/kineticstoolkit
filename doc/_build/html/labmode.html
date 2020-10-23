@@ -47,7 +47,7 @@
   
   
   
-    <title>Lab mode &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Lab mode &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Lab mode </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -378,23 +378,15 @@
             
   
 <h1 id="labmode--page-root">Lab mode<a class="headerlink" href="#labmode--page-root" title="Permalink to this headline">¶</a></h1>
-<p>KTK includes a lab mode that changes some defaults so that doing scientific
-work in IPython-based environments is more enjoyable (at least for me).
-This mode does not affect anything besides visual representations and is
-completely facultative.</p>
+<p>Kinetics Toolkit includes a lab mode that changes some defaults so that doing scientific work in IPython-based environments is more enjoyable (at least for me). This mode does not affect anything besides visual representations and is completely facultative.</p>
 
 <h2 id="when-to-use-lab-mode">When to use lab mode<a class="headerlink" href="#when-to-use-lab-mode" title="Permalink to this headline">¶</a></h2>
-<p><strong>Use it</strong> if you want to run ktk as an integrated work environment using
-IPython based environments (Spyder, Jupyter) in a biomechanics research labs.
-If you’re not sure, use lab mode.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<p><strong>Use it</strong> if you want to use Kinetics Toolkit as an integrated work environment using IPython based environments (Spyder, Jupyter) in a biomechanics research labs. If you’re not sure, use lab mode.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 </pre></div>
 </div>
-<p><strong>Do not use it</strong> if you already have a working environment and you simply want
-to use some ktk classes or functions within your own setup, and you don’t
-want ktk to mess with your defaults. The appearance of the results may differ
-from the tutorials, which all use lab mode.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk</span>
+<p><strong>Do not use it</strong> if you already have a working environment and you simply want to use some ktk classes or functions within your own setup, and you don’t want ktk to mess with your defaults. The appearance of the results may differ from the tutorials, which all use lab mode.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit</span> <span class="k">as</span> <span class="nn">ktk</span>
 </pre></div>
 </div>
 
@@ -402,10 +394,7 @@ from the tutorials, which all use lab mode.</p>
 <h2 id="what-lab-mode-does">What lab mode does<a class="headerlink" href="#what-lab-mode-does" title="Permalink to this headline">¶</a></h2>
 
 <h3 id="modification-to-repr-of-dictionaries">Modification to repr of dictionaries<a class="headerlink" href="#modification-to-repr-of-dictionaries" title="Permalink to this headline">¶</a></h3>
-<p>In ktk, data are often stored as dictionaries, which can lead to very large
-printouts when we simply want to see the dictionary’s contents. Importing ktk
-changes the repr of dictionaries in IPython so that a summary of the dict’s
-content is shown, more like the representation of a Matlab struct.</p>
+<p>Kinetics Toolkit often stores data as nested dictionaries, which can lead to very large printouts when we simply want to see the dictionary’s contents. Importing ktk changes the repr of dictionaries in IPython so that a summary of the dict’s content is shown, more like the representation of a Matlab struct.</p>
 <p>For example, let’s create a dummy dictionary:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
@@ -428,7 +417,7 @@ content is shown, more like the representation of a Matlab struct.</p>
 </pre></div>
 </div>
 <p>Modified dict representation in lab mode:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">data</span>
 <span class="go">{</span>
 <span class="go">    'data1': &lt;array of shape (30,)&gt;,</span>

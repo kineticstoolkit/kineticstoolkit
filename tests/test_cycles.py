@@ -23,7 +23,7 @@ __license__ = "Apache 2.0"
 """
 Unit tests for the cycles module.
 """
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 
 

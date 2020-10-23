@@ -35,7 +35,7 @@ DELETE FROM Users WHERE UserID = @UserID;
 
 """
 
-import ktk
+import kineticstoolkit as ktk
 import os
 import shutil
 import warnings

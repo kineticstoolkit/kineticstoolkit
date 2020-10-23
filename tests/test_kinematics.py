@@ -10,7 +10,7 @@ Unit tests for ktk.kinematics.
 For now this is the original tutorial without any additional check.
 """
 
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 
 

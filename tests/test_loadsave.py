@@ -5,10 +5,9 @@ Created on Fri Jul 19 14:57:41 2019
 
 @author: felix
 """
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 import pandas as pd
-import os
 
 
 # test_loadmat():

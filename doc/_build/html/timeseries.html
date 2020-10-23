@@ -47,7 +47,7 @@
   
   
   
-    <title>Getting started with TimeSeries &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Getting started with TimeSeries &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Getting started with TimeSeries </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -627,7 +627,7 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="timeseries--page-root">Getting started with TimeSeries<a class="headerlink" href="#timeseries--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.timeseries.html"><span class="doc">ktk.TimeSeries</span></a> class is the basis of most ktk modules and is the only “new” class ktk users have to learn.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.timeseries.html"><span class="doc">TimeSeries</span></a> class is the basis of most Kinetic Toolkit’s modules and is the only “new” class that users have to learn.</p>
 <hr class="docutils"/>
 <p><strong>The three roles of the TimeSeries class are to:</strong></p>
 <ol class="arabic simple">
@@ -642,7 +642,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
@@ -930,7 +930,7 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 </pre></div></div>
 </div>
 <p>Similarly, the <code class="docutils literal notranslate"><span class="pre">data_info</span></code> property associates metadata to data. This property is a dictionary of dictionaries, where the first key corresponds to the data key, and the second key is the metadata.</p>
-<p>The <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.add_data_info"><span class="std std-ref">TimeSeries.add_data_info()</span></a> method eases the management of <code class="docutils literal notranslate"><span class="pre">data_info</span></code>.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.add_data_info"><span class="std std-ref">TimeSeries.add_data_info()</span></a> method eases the management of <code class="docutils literal notranslate"><span class="pre">data_info</span></code>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -941,7 +941,7 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 </pre></div>
 </div>
 </div>
-<p>Unless explicitly mentioned, metadata is not used for calculation. It is rather a way to clarify the data by adding information to it. Some ktk functions however read those metadata: for example, the <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.plot"><span class="std std-ref">TimeSeries.plot()</span></a> method looks for <code class="docutils literal notranslate"><span class="pre">Unit</span></code> information and print it on the y axis.</p>
+<p>Unless explicitly mentioned, metadata is not used for calculation. It is rather a way to clarify the data by adding information to it. Some ktk functions however read those metadata: for example, the <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.plot"><span class="std std-ref">TimeSeries.plot()</span></a> method looks for <code class="docutils literal notranslate"><span class="pre">Unit</span></code> information and print it on the y axis.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
@@ -961,8 +961,8 @@ array([ 0.        ,  0.00416667,  0.00833333, ..., 20.82083333,
 
 
 <h3 id="events">events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h3>
-<p>In the figure above, we see that the TimeSeries has cyclic information that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Then, we see a series of pushes and recoveries. For now, we will add these events in the TimeSeries by hand using <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.add_event"><span class="std std-ref">TimeSeries.add_event()</span></a>. It is also possible to
-add events interactively using <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.ui_add_event"><span class="std std-ref">TimeSeries.ui_add_event()</span></a>.</p>
+<p>In the figure above, we see that the TimeSeries has cyclic information that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Then, we see a series of pushes and recoveries. For now, we will add these events in the TimeSeries by hand using <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.add_event"><span class="std std-ref">TimeSeries.add_event()</span></a>.
+It is also possible to add events interactively using <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.ui_add_event"><span class="std std-ref">TimeSeries.ui_add_event()</span></a>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -1032,7 +1032,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 
 
 <h2 id="Using-events-to-synchronize-TimeSeries">Using events to synchronize TimeSeries<a class="headerlink" href="#Using-events-to-synchronize-TimeSeries" title="Permalink to this headline">¶</a></h2>
-<p>Let’s see how we can make use of these events. First, the <code class="docutils literal notranslate"><span class="pre">sync</span></code> event can be used to set the zero-time, in the case where, for example, this wheel must be synchronized with another wheel, or with another instrument that also has a synchronization event. The <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.sync_event"><span class="std std-ref">TimeSeries.sync_event()</span></a> shifts the TimeSeries’ time and events time so that the sync event becomes the new “zero-time”.</p>
+<p>Let’s see how we can make use of these events. First, the <code class="docutils literal notranslate"><span class="pre">sync</span></code> event can be used to set the zero-time, in the case where, for example, this wheel must be synchronized with another wheel, or with another instrument that also has a synchronization event. The <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.sync_event"><span class="std std-ref">TimeSeries.sync_event()</span></a> shifts the TimeSeries’ time and events time so that the sync event becomes the new “zero-time”.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
@@ -1053,7 +1053,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 
 
 <h2 id="Using-events-to-extract-sub-TimeSeries">Using events to extract sub-TimeSeries<a class="headerlink" href="#Using-events-to-extract-sub-TimeSeries" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class comes with a myriad of methods such as <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.get_ts_after_event"><span class="std std-ref">TimeSeries.get_ts_after_event()</span></a>, <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.get_ts_between_events"><span class="std std-ref">TimeSeries.get_ts_between_events()</span></a>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class comes with a myriad of methods such as <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event"><span class="std std-ref">TimeSeries.get_ts_after_event()</span></a>, <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_between_events"><span class="std std-ref">TimeSeries.get_ts_between_events()</span></a>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -1079,7 +1079,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 
 
 <h2 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="headerlink" href="#Subsetting-and-merging-timeseries" title="Permalink to this headline">¶</a></h2>
-<p>We can use the <a class="reference internal" href="api/ktk.timeseries.html#ktk.timeseries.TimeSeries.get_subset"><span class="std std-ref">TimeSeries.get_subset()</span></a> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
+<p>We can use the <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_subset"><span class="std std-ref">TimeSeries.get_subset()</span></a> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
@@ -1118,7 +1118,7 @@ add events interactively using <a class="reference internal" href="api/ktk.times
 <img alt="_images/timeseries_31_0.png" src="_images/timeseries_31_0.png"/>
 </div>
 </div>
-<p>For more information, please refer to the <a class="reference internal" href="api/ktk.timeseries.html"><span class="doc">API reference for the TimeSeries class</span></a>.</p>
+<p>For more information, please refer to the <a class="reference internal" href="api/kineticstoolkit.timeseries.html"><span class="doc">API reference for the TimeSeries class</span></a>.</p>
 
 
 

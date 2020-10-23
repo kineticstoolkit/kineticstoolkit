@@ -5,7 +5,7 @@
 """
 Tests for ktk.Player
 """
-import ktk
+import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
 
 def test_instanciate():

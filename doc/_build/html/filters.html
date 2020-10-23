@@ -47,7 +47,7 @@
   
   
   
-    <title>Filters &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Filters &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Filters </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -611,13 +611,13 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="filters--page-root">Filters<a class="headerlink" href="#filters--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.filters.html"><span class="doc">ktk.filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for numpy’s and scipy’s filters.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html"><span class="doc">filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for numpy’s and scipy’s filters.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">scipy</span> <span class="k">as</span> <span class="nn">sp</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
@@ -684,7 +684,7 @@ div.rendered_html tbody tr:hover {
 </div>
 
 <h2 id="Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter<a class="headerlink" href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.butter"><span class="std std-ref">ktk.filters.butter()</span></a> function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.butter"><span class="std std-ref">ktk.filters.butter()</span></a> function method applies a butterworth filter on a TimeSeries, using <code class="docutils literal notranslate"><span class="pre">scipy.signal</span></code>’s functions.</p>
 <p>Here is how to filter using a no-lag Butterworth filter of order 2 at different cut-off frequencies:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
@@ -737,7 +737,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average<a class="headerlink" href="#Smoothing-a-TimeSeries-with-a-moving-average" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.smooth"><span class="std std-ref">ktk.filters.smooth()</span></a> function applies a moving average on TimeSeries data.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.smooth"><span class="std std-ref">ktk.filters.smooth()</span></a> function applies a moving average on TimeSeries data.</p>
 <p>Here is how to smooth a signal using a moving average filter using different window lengths.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -790,7 +790,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. This is an extension of the moving average using a polynom of higher degrees than 0.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> function applies the <code class="docutils literal notranslate"><span class="pre">scipy.signal.savgol_filter</span></code> filter to a TimeSeries. This is an extension of the moving average using a polynom of higher degrees than 0.</p>
 <p>Here is how to smooth a signal using a Savitsky-Golay filter of order 2 using different window lengths.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -843,7 +843,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter<a class="headerlink" href="#Removing-artefacts-using-a-median-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.median"><span class="std std-ref">ktk.filters.median()</span></a> function filters a TimeSeries using a median filter. This type of filter is pretty powerful for removing artefacts that rarely happen twice in a row. Here is how to use this filter with a window length of 3.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.median"><span class="std std-ref">ktk.filters.median()</span></a> function filters a TimeSeries using a median filter. This type of filter is pretty powerful for removing artefacts that rarely happen twice in a row. Here is how to use this filter with a window length of 3.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -871,7 +871,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Derivating-using-a-differential-filter">Derivating using a differential filter<a class="headerlink" href="#Derivating-using-a-differential-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.deriv"><span class="std std-ref">ktk.filters.deriv()</span></a> function derivates a signal in time using the centered difference formula. Since the derivative is calculated between the original data points, the resulting TimeSeries has a modified time vector that is also between the original time points.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.deriv"><span class="std std-ref">ktk.filters.deriv()</span></a> function derivates a signal in time using the centered difference formula. Since the derivative is calculated between the original data points, the resulting TimeSeries has a modified time vector that is also between the original time points.</p>
 <p>Here is how to use this function to obtain the first derivative of a signal without preliminary filtering.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -964,7 +964,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter<a class="headerlink" href="#Derivating-using-a-Savitsky-Golay-filter" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="api/ktk.filters.html#ktk.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> can smooth but also derivate with a very good performance. Here is how to derivate a signal using this type of filter.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.savgol"><span class="std std-ref">ktk.filters.savgol()</span></a> can smooth but also derivate with a very good performance. Here is how to derivate a signal using this type of filter.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -993,7 +993,7 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/filters_23_0.png" src="_images/filters_23_0.png"/>
 </div>
 </div>
-<p>For more information, please check the <a class="reference internal" href="api/ktk.filters.html"><span class="doc">API Reference for the filters module</span></a>.</p>
+<p>For more information, please check the <a class="reference internal" href="api/kineticstoolkit.filters.html"><span class="doc">API Reference for the filters module</span></a>.</p>
 
 
 

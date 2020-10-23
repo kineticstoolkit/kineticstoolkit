@@ -47,7 +47,7 @@
   
   
   
-    <title>Inverse Dynamics &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Inverse Dynamics &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Inverse Dynamics </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -603,7 +603,7 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="inversedynamics--page-root">Inverse Dynamics<a class="headerlink" href="#inversedynamics--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.inversedynamics.html"><span class="doc">inversedynamics</span></a> module calculates the proximal forces and moments based on the segment’s kinematics and distal forces and moments, based on the general method published in [1].</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">inversedynamics</span></a> module calculates the proximal forces and moments based on the segment’s kinematics and distal forces and moments, based on the general method published in [1].</p>
 <p>The results are the forces and moments applied by the distal segment on the proximal articulation, in the global coordinates system.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -620,7 +620,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 </pre></div>
 </div>
 </div>
@@ -696,7 +696,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/felix/Documents/Recherche/kineticstoolkit/ktk/filters.py:50: UserWarning: NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:51: UserWarning: NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
   warnings.warn('NaNs found in the signal. They have been '
 </pre></div></div>
 </div>
@@ -737,7 +737,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/felix/Documents/Recherche/kineticstoolkit/ktk/filters.py:50: UserWarning: NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:51: UserWarning: NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
   warnings.warn('NaNs found in the signal. They have been '
 </pre></div></div>
 </div>
@@ -778,7 +778,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/Users/felix/Documents/Recherche/kineticstoolkit/ktk/filters.py:50: UserWarning: NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:51: UserWarning: NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
   warnings.warn('NaNs found in the signal. They have been '
 </pre></div></div>
 </div>
@@ -789,7 +789,7 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/inversedynamics_9_1.png" src="_images/inversedynamics_9_1.png"/>
 </div>
 </div>
-<p>For more information on inversedynamics, please check the <a class="reference internal" href="api/ktk.inversedynamics.html"><span class="doc">API Reference</span></a>.</p>
+<p>For more information on inversedynamics, please check the <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">API Reference for the inversedynamics module</span></a>.</p>
 
 
 

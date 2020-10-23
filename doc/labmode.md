@@ -1,27 +1,19 @@
 Lab mode
 ========
 
-KTK includes a lab mode that changes some defaults so that doing scientific
-work in IPython-based environments is more enjoyable (at least for me).
-This mode does not affect anything besides visual representations and is
-completely facultative.
+Kinetics Toolkit includes a lab mode that changes some defaults so that doing scientific work in IPython-based environments is more enjoyable (at least for me). This mode does not affect anything besides visual representations and is completely facultative.
 
 
 When to use lab mode
 --------------------
 
-__Use it__ if you want to run ktk as an integrated work environment using
-IPython based environments (Spyder, Jupyter) in a biomechanics research labs.
-If you're not sure, use lab mode.
+__Use it__ if you want to use Kinetics Toolkit as an integrated work environment using IPython based environments (Spyder, Jupyter) in a biomechanics research labs. If you're not sure, use lab mode.
 
-    >>> import ktk.lab as ktk
+    >>> import kineticstoolkit.lab as ktk
 
-__Do not use it__ if you already have a working environment and you simply want
-to use some ktk classes or functions within your own setup, and you don't
-want ktk to mess with your defaults. The appearance of the results may differ
-from the tutorials, which all use lab mode.
+__Do not use it__ if you already have a working environment and you simply want to use some ktk classes or functions within your own setup, and you don't want ktk to mess with your defaults. The appearance of the results may differ from the tutorials, which all use lab mode.
 
-    >>> import ktk
+    >>> import kineticstoolkit as ktk
 
 
 What lab mode does
@@ -29,10 +21,7 @@ What lab mode does
 
 ### Modification to repr of dictionaries ###
 
-In ktk, data are often stored as dictionaries, which can lead to very large
-printouts when we simply want to see the dictionary's contents. Importing ktk
-changes the repr of dictionaries in IPython so that a summary of the dict's
-content is shown, more like the representation of a Matlab struct.
+Kinetics Toolkit often stores data as nested dictionaries, which can lead to very large printouts when we simply want to see the dictionary's contents. Importing ktk changes the repr of dictionaries in IPython so that a summary of the dict's content is shown, more like the representation of a Matlab struct.
 
 For example, let's create a dummy dictionary:
 
@@ -57,7 +46,7 @@ Default dict representation:
 
 Modified dict representation in lab mode:
 
-    >>> import ktk.lab as ktk
+    >>> import kineticstoolkit.lab as ktk
     >>> data
     {
         'data1': <array of shape (30,)>,

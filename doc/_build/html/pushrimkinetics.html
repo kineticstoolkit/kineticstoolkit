@@ -47,7 +47,7 @@
   
   
   
-    <title>Pushrim Kinetics &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Pushrim Kinetics &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Pushrim Kinetics </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -611,13 +611,13 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="pushrimkinetics--page-root">Pushrim Kinetics<a class="headerlink" href="#pushrimkinetics--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.pushrimkinetics.html"><span class="doc">ktk.pushrimkinetics</span></a> module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html"><span class="doc">pushrimkinetics</span></a> module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -626,7 +626,7 @@ div.rendered_html tbody tr:hover {
 </div>
 
 <h2 id="Read-data-from-file">Read data from file<a class="headerlink" href="#Read-data-from-file" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to load data from a file, using the <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.read_file"><span class="std std-ref">ktk.pushrimkinetics.read_file()</span></a> function.</p>
+<p>The first step is to load data from a file, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.read_file"><span class="std std-ref">ktk.pushrimkinetics.read_file()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -710,8 +710,8 @@ TimeSeries with attributes:
 
 
 <h2 id="Calculate-forces-and-moments">Calculate forces and moments<a class="headerlink" href="#Calculate-forces-and-moments" title="Permalink to this headline">¶</a></h2>
-<p>If the loaded data doesn’t include forces and moments but only raw data (for exemple, when loading data from a SmartWheel’s SD card), we must calculate the forces and moments based on a calibration matrix. The function <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.calculate_forces_and_moments"><span class="std std-ref">ktk.pushrimkinetics.calculate_forces_and_moments()</span></a> performs this calculation. In this example, we use a calibration matrix that is included in <code class="docutils literal notranslate"><span class="pre">ktk.pushrimkinetics.CALIBRATION_MATRICES</span></code>, and we
-express the calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel’s angular encoder).</p>
+<p>If the loaded data doesn’t include forces and moments but only raw data (for exemple, when loading data from a SmartWheel’s SD card), we must calculate the forces and moments based on a calibration matrix. The function <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments"><span class="std std-ref">ktk.pushrimkinetics.calculate_forces_and_moments()</span></a> performs this calculation. In this example, we use a calibration matrix that is included in
+<code class="docutils literal notranslate"><span class="pre">ktk.pushrimkinetics.CALIBRATION_MATRICES</span></code>, and we express the calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel’s angular encoder).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -766,7 +766,7 @@ express the calculated forces and moments in a reference frame that is orthogona
 
 
 <h2 id="Removing-dynamic-offsets-in-forces-and-moments">Removing dynamic offsets in forces and moments<a class="headerlink" href="#Removing-dynamic-offsets-in-forces-and-moments" title="Permalink to this headline">¶</a></h2>
-<p>We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets()</span></a>.</p>
+<p>We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets()</span></a>.</p>
 <p>Let’s apply this function on the data we just loaded.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -808,11 +808,12 @@ express the calculated forces and moments in a reference frame that is orthogona
 <img alt="_images/pushrimkinetics_14_0.png" src="_images/pushrimkinetics_14_0.png"/>
 </div>
 </div>
-<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets</span></a> help for more information.</p>
+<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets</span></a> help for more information.</p>
 
 
 <h2 id="Calculate-velocity-and-power">Calculate velocity and power<a class="headerlink" href="#Calculate-velocity-and-power" title="Permalink to this headline">¶</a></h2>
-<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.calculate_velocity"><span class="std std-ref">ktk.pushrimkinetics.calculate_velocity()</span></a> function. Once the velocity has been calculated, the output power can also be calculated by multiplying the velocity by the propulsion moment, using the <a class="reference internal" href="api/ktk.pushrimkinetics.html#ktk.pushrimkinetics.calculate_power"><span class="std std-ref">ktk.pushrimkinetics.calculate_power()</span></a> function.</p>
+<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.calculate_velocity"><span class="std std-ref">ktk.pushrimkinetics.calculate_velocity()</span></a> function. Once the velocity has been calculated, the output power can also be calculated by multiplying the velocity by the propulsion moment, using the
+<a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.calculate_power"><span class="std std-ref">ktk.pushrimkinetics.calculate_power()</span></a> function.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -839,7 +840,7 @@ express the calculated forces and moments in a reference frame that is orthogona
 
 
 <h2 id="Detecting-the-pushes">Detecting the pushes<a class="headerlink" href="#Detecting-the-pushes" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="cycles.html"><span class="doc">ktk.cycles</span></a> module provides powerful tools to detect and manage cycles. Here we use <a class="reference internal" href="api/ktk.cycles.html#ktk.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles</span></a> to detect the pushes using these specifications: - a push starts when the total force crosses 5 N upward; - a push ends when the total force crosses 2 N downward; - for a push to be valid, it must last at least 100 ms; - to be valid, the total force must reach 25 N.</p>
+<p>The <a class="reference internal" href="cycles.html"><span class="doc">kineticstoolkit.cycles</span></a> module provides powerful tools to detect and manage cycles. Here we use <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles</span></a> to detect the pushes using these specifications: - a push starts when the total force crosses 5 N upward; - a push ends when the total force crosses 2 N downward; - for a push to be valid, it must last at least 100 ms; - to be valid, the total force must reach 25 N.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
@@ -1132,7 +1133,7 @@ express the calculated forces and moments in a reference frame that is orthogona
 </table>
 </div></div>
 </div>
-<p>For more information, please check the <a class="reference internal" href="api/ktk.pushrimkinetics.html"><span class="doc">API Reference for ktk.pushrimkinetics</span></a>.</p>
+<p>For more information, please check the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html"><span class="doc">API Reference for the pushrimkinetics module</span></a>.</p>
 
 
 

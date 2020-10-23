@@ -26,7 +26,7 @@ Unit tests for the pushrimkinetics module.
 Most of the tests are the tutorial itself.
 """
 
-import ktk
+import kineticstoolkit as ktk
 import numpy as np
 
 

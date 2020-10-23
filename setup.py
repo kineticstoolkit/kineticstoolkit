@@ -3,16 +3,17 @@ import setuptools
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-with open("VERSION", 'r') as fh:
+with open("VERSION", "r") as fh:
     version = fh.read()
 
+
 setuptools.setup(
-    name='ktk',
+    name='kineticstoolkit',
     version=version,
-    description='A pure-python library to facilitate research in biomechanics.',
+    description='An open-source python library to facilitate research in biomechanics.',
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url='https://felixchenier.uqam.ca',
+    url='https://felixchenier.uqam.ca/kineticstoolkit',
     author='Félix Chénier',
     author_email='chenier.felix@uqam.ca',
     license='Apache',

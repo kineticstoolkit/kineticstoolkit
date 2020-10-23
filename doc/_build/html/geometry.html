@@ -47,7 +47,7 @@
   
   
   
-    <title>Geometry &#8212; Kinetics Toolkit (ktk) master documentation</title>
+    <title>Geometry &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit (ktk) master documentation"
+        <a href="index.html" title="Kinetics Toolkit master documentation"
            class="md-header-nav__button md-logo">
           
               <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit (ktk) master documentation logo">
+                   alt="Kinetics Toolkit master documentation logo">
           
         </a>
       </div>
@@ -100,7 +100,7 @@
       </div>
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit - Development version</span>
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
           <span class="md-header-nav__topic"> Geometry </span>
         </div>
       </div>
@@ -179,13 +179,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit (ktk) master documentation" class="md-nav__button md-logo">
+    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
       
         <img src="_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
-       title="Kinetics Toolkit (ktk) master documentation">Kinetics Toolkit - Development version</a>
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -611,7 +611,11 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="geometry--page-root">Geometry<a class="headerlink" href="#geometry--page-root" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/ktk.geometry.html"><span class="doc">geometry</span></a> module simplifies the calculation of linear algebric operations on series of points, vectors and transformation matrices.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This module is in development and has not been released.</p>
+</div>
+<p>The <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module simplifies the calculation of linear algebric operations on series of points, vectors and transformation matrices.</p>
 
 <h2 id="Array-convention">Array convention<a class="headerlink" href="#Array-convention" title="Permalink to this headline">¶</a></h2>
 <p>Every point, vector or matrix is considered as a series, where the dimensions of the array are:</p>
@@ -690,7 +694,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">ktk.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
@@ -698,7 +702,7 @@ div.rendered_html tbody tr:hover {
 
 
 <h2 id="Matrix-multiplication">Matrix multiplication<a class="headerlink" href="#Matrix-multiplication" title="Permalink to this headline">¶</a></h2>
-<p>To facilitate the multiplication of series, ktk.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use ktk.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow ktk’s array convention. For example:</p>
+<p>To facilitate the multiplication of series, kineticstoolkit.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use kineticstoolkit.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow ktk’s array convention. For example:</p>
 <p><strong>Matrix multiplication between a matrix and a series of points</strong></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -792,7 +796,7 @@ array([4., 6., 8.])
 
 
 <h2 id="Creating-series-of-rotation-matrices">Creating series of rotation matrices<a class="headerlink" href="#Creating-series-of-rotation-matrices" title="Permalink to this headline">¶</a></h2>
-<p>The function <code class="docutils literal notranslate"><span class="pre">ktk.geometry.create_rotation_matrices</span></code> allows creating series of Nx4x4 matrices around a given axis. For example, this command creates a rotation matrix of 90 degrees around the x axis. Note that the angle argument is a list or an array, to comply with the <code class="docutils literal notranslate"><span class="pre">ktk.geometry</span></code>’s convention above.</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">kineticstoolkit.geometry.create_rotation_matrices</span></code> allows creating series of Nx4x4 matrices around a given axis. For example, this command creates a rotation matrix of 90 degrees around the x axis. Note that the angle argument is a list or an array, to comply with the <code class="docutils literal notranslate"><span class="pre">kineticstoolkit.geometry</span></code>’s convention above.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -881,7 +885,7 @@ array([[[ 1.        , -0.        ,  0.        ,  0.        ],
 </pre></div>
 </div>
 </div>
-<p>Now we can create a reference frame based on these three markers. Please consult the <a class="reference internal" href="api/ktk.geometry.html"><span class="doc">API reference</span></a> for the different marker configurations available for the creation of reference frames.</p>
+<p>Now we can create a reference frame based on these three markers. Please consult the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">API reference</span></a> for the different marker configurations available for the creation of reference frames.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -958,7 +962,7 @@ array([[[0., 1., 0.],
 </pre></div></div>
 </div>
 <p>in which case the results is effectively the global points as we defined them at the beginning.</p>
-<p>For more information on geometry, please check the <a class="reference internal" href="api/ktk.geometry.html"><span class="doc">API Reference</span></a>.</p>
+<p>For more information on geometry, please check the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">API Reference for the geometry module</span></a>.</p>
 
 
 

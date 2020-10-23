@@ -7,10 +7,10 @@ Classes
 
 .. autosummary::
 
-   ktk.timeseries.TimeSeries
-   ktk.timeseries.TimeSeriesEvent
-   ktk.player.Player
-   ktk.dbinterface.DBInterface
+   kineticstoolkit.timeseries.TimeSeries
+   kineticstoolkit.timeseries.TimeSeriesEvent
+   kineticstoolkit.player.Player
+   kineticstoolkit.dbinterface.DBInterface
 
 
 Modules
@@ -19,18 +19,18 @@ Modules
 
 .. autosummary::
 
-   ktk.config
-   ktk.cycles
-   ktk.dev
-   ktk.emg
-   ktk.filters
-   ktk.geometry
-   ktk.gui
-   ktk.inversedynamics
-   ktk.kinematics
-   ktk.loadsave
-   ktk.pushrimkinetics
-   ktk.tools
+   kineticstoolkit.config
+   kineticstoolkit.cycles
+   kineticstoolkit.dev
+   kineticstoolkit.emg
+   kineticstoolkit.filters
+   kineticstoolkit.geometry
+   kineticstoolkit.gui
+   kineticstoolkit.inversedynamics
+   kineticstoolkit.kinematics
+   kineticstoolkit.loadsave
+   kineticstoolkit.pushrimkinetics
+   kineticstoolkit.tools
 
 
 .. toctree::
