@@ -40,6 +40,7 @@ import webbrowser
 import doctest
 import multiprocessing
 import time
+import json
 
 
 def run_unit_tests() -> None:
@@ -87,6 +88,18 @@ def _generate_tutorial(file: str) -> None:
     subprocess.call(['jupyter-nbconvert', '--execute',
                      '--log-level', 'WARN', '--inplace',
                      '--to', 'notebook', file])
+
+    # Remove execution metadata (which changes after each run and pollutes
+    # the git repository)
+    with open(file, 'r') as fid:
+        contents = json.load(fid)
+
+    for cell in contents['cells']:
+        cell['metadata'].pop('execution', None)
+
+    with open(file, 'w') as fid:
+        json.dump(contents, fid, indent=1)
+
 
 def build_tutorials() -> None:
     """Build the markdown from notebooks tutorials."""

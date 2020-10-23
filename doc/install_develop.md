@@ -24,9 +24,9 @@ Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type
 Installing Kinetics Toolkit
 ---------------------------
 
-Clone Kinetics Toolkit from github: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'kineticstoolkit' in the current folder. You may wish to facultatively change the current folder before running theses commands.
+Clone Kinetics Toolkit from github: On Windows, open Git Bash (ktk) from the Anaconda3 menu. On macOS or Linux, open a terminal. In that terminal, run this command. This will create a folder named 'ktk_develop' in the current folder. You may wish to facultatively change the current folder before running theses commands.
 
-    git clone https://github.com/felixchenier/kineticstoolkit.git
+    git clone https://github.com/felixchenier/kineticstoolkit.git ktk_develop
 
 
 Configuring Spyder
@@ -44,7 +44,7 @@ Kinetics Toolkit uses Matplotlib for user interaction. To set it permanently in 
 
 ### Python path ###
 
-In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the `kineticstoolkit` folder that you just cloned to the python path (the outer one, not the inner one).
+In Spyder, look for the **PYTHONPATH manager**. Open this manager and add the `ktk_develop` folder that you just cloned to the python path.
 
 Restart Spyder. Writing `import kineticstoolkit` should now find and import Kinetics Toolkit
 without error.
