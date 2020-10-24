@@ -1,5 +1,5 @@
-Installing the stable version
-=============================
+Installing
+==========
 
 Although Kinetics Toolkit is distributed via `pip`, I strongly recommend using a conda environment, if only to install `ezc3d` which is required for opening c3d files and which is distributed via `conda-forge`.
 

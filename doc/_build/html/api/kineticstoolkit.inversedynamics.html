@@ -47,7 +47,7 @@
   
   
   
-    <title>kineticstoolkit.inversedynamics module &#8212; Kinetics Toolkit master documentation</title>
+    <title>kineticstoolkit.inversedynamics module &#8212; Kinetics Toolkit 0.3b documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kinetics Toolkit master documentation"
+        <a href="../index.html" title="Kinetics Toolkit 0.3b documentation"
            class="md-header-nav__button md-logo">
           
               <img src="../_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+                   alt="Kinetics Toolkit 0.3b documentation logo">
           
         </a>
       </div>
@@ -188,13 +188,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kinetics Toolkit 0.3b documentation" class="md-nav__button md-logo">
       
         <img src="../_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
+       title="Kinetics Toolkit 0.3b documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -218,14 +218,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
+      <a href="../install.html" class="md-nav__link">Installing</a>
       
     
     </li>
@@ -253,13 +246,6 @@
     <li class="md-nav__item">
     
     
-      <a href="../geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../filters.html" class="md-nav__link">Filters</a>
       
     
@@ -281,21 +267,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../cycles.html" class="md-nav__link">Cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -309,7 +281,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="https://felixchenier.uqam.ca/ktk_develop" class="md-nav__link">Development version</a>
       
     
     </li>
@@ -350,152 +322,6 @@
 <p>This module is currently experimental and its API and behaviour could be
 modified in the future.</p>
 </div>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.inversedynamics.calculate_proximal_wrench" title="kineticstoolkit.inversedynamics.calculate_proximal_wrench"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_proximal_wrench</span></code></a>(ts, inertial_constants)</p></td>
-<td><p>Calculate the proximal wrench based on a TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.inversedynamics.get_anthropometrics" title="kineticstoolkit.inversedynamics.get_anthropometrics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_anthropometrics</span></code></a>(segment_name, total_mass)</p></td>
-<td><p>Get anthropometric values for a given segment name.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.calculate_proximal_wrench">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">calculate_proximal_wrench</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">inertial_constants</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_proximal_wrench" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the proximal wrench based on a TimeSeries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This method is experimental and has not been strongly validated yet.</p>
-</div>
-<p>This function is based on R. Dumas, R. Aissaoui, and J. A. De Guise,
-“A 3D generic inverse dynamic method using wrench notation and quaternion
-algebra,” Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>A TimeSeries with the following data keys:</p>
-<ul>
-<li><p>ProximalJointPosition (Nx4)</p></li>
-<li><p>DistalJointPosition (Nx4)</p></li>
-<li><p>ForceApplicationPosition (Nx4)</p></li>
-<li><p>DistalForces (Nx4)</p></li>
-<li><p>DistalMoments (Nx4)</p></li>
-</ul>
-</p></li>
-<li><p><strong>inertial_constants</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – <p>A dict that contains the following keys:</p>
-<ul>
-<li><p>Mass’: Mass of the segment, in kg.</p></li>
-<li><p>COMProximalRatio’: Distance between the segment’s center
-of mass and the proximal joint, as a ratio of the
-distance between both joints.</p></li>
-<li><p>’GyrationCOMRatio’: Radius of gyration around the segment’s
-center of mass, as a ratio of the distance between
-both joints.</p></li>
-</ul>
-<p>This dict may be generated using the get_anthropometrics function.</p>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A copy of the input timeseries plus these extra data keys:</p>
-<ul class="simple">
-<li><p>’ProximalForces’ (Nx4)</p></li>
-<li><p>’ProximalMoments’ (Nx4)</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.get_anthropometrics">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">get_anthropometrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">segment_name</span></em>, <em class="sig-param"><span class="n">total_mass</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.get_anthropometrics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get anthropometric values for a given segment name.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This method is experimental and its signature and behaviour could change
-in the future.</p>
-</div>
-<p>For the moment, only this table is available:</p>
-<p>D. A. Winter, Biomechanics and Motor Control of Human Movement,
-4th ed. University of Waterloo, Waterloo, Ontario, Canada,
-John Wiley &amp; Sons, 2009.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>segment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The name of the segment, either:</p>
-<ul>
-<li><p>’Hand’ (wrist axis to knuckle II of middle finger)</p></li>
-<li><p>’Forearm’ (elbow axis to ulnar styloid)</p></li>
-<li><p>’UpperArm’ (glenohumeral axis to elbow axis)</p></li>
-<li><p>’ForearmHand’ (elbow axis to ulnar styloid)</p></li>
-<li><p>’TotalArm’ (glenohumeral joint to ulnar styloid)</p></li>
-<li><p>’Foot’ (lateral malleolus to head metatarsal II)</p></li>
-<li><p>’Leg’ (femoral condyles to medial malleolus)</p></li>
-<li><p>’Thigh’ (greater trochanter to femoral condyles)</p></li>
-<li><p>’FootLeg’ (fomeral condyles to medial malleolus)</p></li>
-<li><p>’TotalLeg’ (greater trochanter to medial malleolus)</p></li>
-<li><p>’TrunkHeadNeck’ (greater trochanter to glenohumeral joint)</p></li>
-<li><p>’HeadArmsTrunk’ (greater trochanter to glenohumeral joint)</p></li>
-</ul>
-</p></li>
-<li><p><strong>total_mass</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The total mass of the person, in kg.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A dict with the following keys:</p>
-<ul class="simple">
-<li><p>’Mass’ : Mass of the segment, in kg.</p></li>
-<li><p>’COMProximalRatio’ : Distance between the segment’s center of
-mass and the proximal joint, as a ratio of the distance between
-both joints.</p></li>
-<li><p>’COMDistalRatio’ : Distance between the segment’s center of mass
-and the distal joint, as a ratio of the distance between
-both joints.</p></li>
-<li><p>’GyrationCOMRatio’: Radius of gyration around the segment’s center
-of mass, as a ratio of the distance between both joints.</p></li>
-<li><dl class="simple">
-<dt>’GyrationProximalRatio’: Radius of gyration around the segment’s</dt><dd><p>proximal joint, as a ratio of the distance between both joints.</p>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>’GyrationDistalRatio’: Radius of gyration around the segment’s</dt><dd><p>distal joint, as a ratio of the distance between both joints.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, float]</p>
-</dd>
-</dl>
-</dd></dl>
 
 
 

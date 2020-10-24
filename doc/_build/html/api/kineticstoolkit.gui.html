@@ -47,7 +47,7 @@
   
   
   
-    <title>kineticstoolkit.gui module &#8212; Kinetics Toolkit master documentation</title>
+    <title>kineticstoolkit.gui module &#8212; Kinetics Toolkit 0.3b documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kinetics Toolkit master documentation"
+        <a href="../index.html" title="Kinetics Toolkit 0.3b documentation"
            class="md-header-nav__button md-logo">
           
               <img src="../_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+                   alt="Kinetics Toolkit 0.3b documentation logo">
           
         </a>
       </div>
@@ -188,13 +188,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kinetics Toolkit 0.3b documentation" class="md-nav__button md-logo">
       
         <img src="../_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
+       title="Kinetics Toolkit 0.3b documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -218,14 +218,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
+      <a href="../install.html" class="md-nav__link">Installing</a>
       
     
     </li>
@@ -253,13 +246,6 @@
     <li class="md-nav__item">
     
     
-      <a href="../geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../filters.html" class="md-nav__link">Filters</a>
       
     
@@ -281,21 +267,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../cycles.html" class="md-nav__link">Cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -309,7 +281,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="https://felixchenier.uqam.ca/ktk_develop" class="md-nav__link">Development version</a>
       
     
     </li>
@@ -372,9 +344,6 @@ for Kinetics Toolkit’s own use.</p>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.gui.message" title="kineticstoolkit.gui.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span></code></a>([message])</p></td>
 <td><p>Show a message window.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.gui.set_color_order" title="kineticstoolkit.gui.set_color_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color_order</span></code></a>(setting)</p></td>
-<td><p>Define the standard color order for matplotlib.</p></td>
 </tr>
 </tbody>
 </table>
@@ -486,47 +455,7 @@ and may change slightly in the future.</p>
 <dd class="field-odd"><p><strong>message</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The message to show. Use ‘’ to close every message window.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="kineticstoolkit.gui.set_color_order">
-<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">set_color_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.set_color_order" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define the standard color order for matplotlib.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>setting</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>Either a string or a list of colors.</p>
-<ul class="simple">
-<li><dl class="simple">
-<dt>If a string, it can be either:</dt><dd><ul>
-<li><p>’default’: Default v2.0 matplotlib colors.</p></li>
-<li><p>’classic’: Default classic Matlab colors (bgrcmyk).</p></li>
-<li><dl class="simple">
-<dt>’xyz’: Same as classic but begins with rgb instead of bgr to</dt><dd><p>be consistent with most 3d visualization softwares.</p>
-</dd>
-</dl>
-</li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>If a list, it can be either a list of chars from [bgrcmyk], a list of
-hexadecimal color values, or any list supported by matplotlib’s
-axes.prop_cycle rcParam.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>

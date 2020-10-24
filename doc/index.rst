@@ -1,13 +1,7 @@
 Kinetics Toolkit
 ================
 
-.. note::
-   This is the website for the development version. Switch to the stable_
-   version.
-
-.. _stable: https://felixchenier.uqam.ca/kineticstoolkit
-
-Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
+Kinetics Toolkit is an open-source, pure-python package of integrated
 classes and functions that aims to facilitate research in biomechanics using
 python.
 
@@ -116,18 +110,14 @@ Site map
     :maxdepth: 3
 
     install
-    install_develop
     labmode
     timeseries
     loadsave
-    geometry
     filters
     kinematics
     pushrimkinetics
-    inversedynamics
     cycles
-    dbinterface
     release_notes
-    Stable version <https://felixchenier.uqam.ca/kineticstoolkit>
+    Development version <https://felixchenier.uqam.ca/ktk_develop>
     api_reference
 

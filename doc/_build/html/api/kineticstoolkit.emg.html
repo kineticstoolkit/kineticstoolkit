@@ -47,7 +47,7 @@
   
   
   
-    <title>kineticstoolkit.emg module &#8212; Kinetics Toolkit master documentation</title>
+    <title>kineticstoolkit.emg module &#8212; Kinetics Toolkit 0.3b documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kinetics Toolkit master documentation"
+        <a href="../index.html" title="Kinetics Toolkit 0.3b documentation"
            class="md-header-nav__button md-logo">
           
               <img src="../_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+                   alt="Kinetics Toolkit 0.3b documentation logo">
           
         </a>
       </div>
@@ -188,13 +188,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kinetics Toolkit 0.3b documentation" class="md-nav__button md-logo">
       
         <img src="../_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
+       title="Kinetics Toolkit 0.3b documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -218,14 +218,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
+      <a href="../install.html" class="md-nav__link">Installing</a>
       
     
     </li>
@@ -253,13 +246,6 @@
     <li class="md-nav__item">
     
     
-      <a href="../geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../filters.html" class="md-nav__link">Filters</a>
       
     
@@ -281,21 +267,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../cycles.html" class="md-nav__link">Cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -309,7 +281,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="https://felixchenier.uqam.ca/ktk_develop" class="md-nav__link">Development version</a>
       
     
     </li>
@@ -350,44 +322,6 @@
 <p>This module is in very early development (almost empty) and will change in the
 future.</p>
 </div>
-<p><strong>Functions</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.emg.read_delsys_csv" title="kineticstoolkit.emg.read_delsys_csv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_delsys_csv</span></code></a>(filename)</p></td>
-<td><p>Read a CSV file exported from Delsys Trigno converter.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py function">
-<dt id="kineticstoolkit.emg.read_delsys_csv">
-<code class="sig-prename descclassname">kineticstoolkit.emg.</code><code class="sig-name descname">read_delsys_csv</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.emg.read_delsys_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a CSV file exported from Delsys Trigno converter.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the CSV file to read.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A dict with the following keys: ‘emg’, ‘acc’, gyro’, ‘mag’, each
-one containing another dict whose keys correspond to a different
-sensor.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Dict[str, <a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a>]]</p>
-</dd>
-</dl>
-</dd></dl>
 
 
 

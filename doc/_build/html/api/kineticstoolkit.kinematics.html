@@ -47,7 +47,7 @@
   
   
   
-    <title>kineticstoolkit.kinematics module &#8212; Kinetics Toolkit master documentation</title>
+    <title>kineticstoolkit.kinematics module &#8212; Kinetics Toolkit 0.3b documentation</title>
     <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
@@ -87,11 +87,11 @@
   <nav class="md-header-nav md-grid">
     <div class="md-flex navheader">
       <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="../index.html" title="Kinetics Toolkit master documentation"
+        <a href="../index.html" title="Kinetics Toolkit 0.3b documentation"
            class="md-header-nav__button md-logo">
           
               <img src="../_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+                   alt="Kinetics Toolkit 0.3b documentation logo">
           
         </a>
       </div>
@@ -188,13 +188,13 @@
               <div class="md-sidebar__inner">
                 <nav class="md-nav md-nav--primary" data-md-level="0">
   <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="../index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
+    <a href="../index.html" title="Kinetics Toolkit 0.3b documentation" class="md-nav__button md-logo">
       
         <img src="../_static/logo.png" alt=" logo" width="48" height="48">
       
     </a>
     <a href="../index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
+       title="Kinetics Toolkit 0.3b documentation">Kinetics Toolkit</a>
   </label>
     <div class="md-nav__source">
       <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
@@ -218,14 +218,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
+      <a href="../install.html" class="md-nav__link">Installing</a>
       
     
     </li>
@@ -253,13 +246,6 @@
     <li class="md-nav__item">
     
     
-      <a href="../geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../filters.html" class="md-nav__link">Filters</a>
       
     
@@ -281,21 +267,7 @@
     <li class="md-nav__item">
     
     
-      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
       <a href="../cycles.html" class="md-nav__link">Cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -309,7 +281,7 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="https://felixchenier.uqam.ca/ktk_develop" class="md-nav__link">Development version</a>
       
     
     </li>
@@ -352,97 +324,14 @@
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.create_rigid_body_config" title="kineticstoolkit.kinematics.create_rigid_body_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_rigid_body_config</span></code></a>(markers, marker_names)</p></td>
-<td><p>Create a rigid body configuration based on a static acquisition.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.create_virtual_marker_config" title="kineticstoolkit.kinematics.create_virtual_marker_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_virtual_marker_config</span></code></a>(markers, …)</p></td>
-<td><p>Create a virtual marker configuration based on a probing acquisition.</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.read_c3d_file" title="kineticstoolkit.kinematics.read_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_c3d_file</span></code></a>(filename)</p></td>
 <td><p>Read markers from a C3D file.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.read_n3d_file" title="kineticstoolkit.kinematics.read_n3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_n3d_file</span></code></a>(filename[, labels])</p></td>
 <td><p>Read markers from an NDI N3D file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.register_markers" title="kineticstoolkit.kinematics.register_markers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_markers</span></code></a>(markers, rigid_body_configs)</p></td>
-<td><p>Calculate the trajectory of rigid bodies.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.write_trc_file" title="kineticstoolkit.kinematics.write_trc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_trc_file</span></code></a>(markers, filename)</p></td>
-<td><p>Export a markers TimeSeries to OpenSim’s TRC file format.</p></td>
-</tr>
 </tbody>
 </table>
-<dl class="py function">
-<dt id="kineticstoolkit.kinematics.create_rigid_body_config">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">create_rigid_body_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">marker_names</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.create_rigid_body_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a rigid body configuration based on a static acquisition.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories during the static acquisition.</p></li>
-<li><p><strong>marker_names</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The markers that define the rigid body.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Dictionary with the following keys:</p>
-<ul class="simple">
-<li><p>MarkerNames : the same as marker_names</p></li>
-<li><p>LocalPoints : a 1x4xM array that indicates the local position of
-each M marker in the created rigid body config.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="kineticstoolkit.kinematics.create_virtual_marker_config">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">create_virtual_marker_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">rigid_bodies</span></em>, <em class="sig-param"><span class="n">marker_name</span></em>, <em class="sig-param"><span class="n">rigid_body_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.create_virtual_marker_config" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a virtual marker configuration based on a probing acquisition.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories during the probing acquisition. This
-TimeSeries must have at least marker_name in its data keys.</p></li>
-<li><p><strong>rigid_bodies</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Rigid body trajectories during this probing acquisition. This
-TimeSeries must have at least rigid_body_name in its data keys.</p></li>
-<li><p><strong>marker_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the marker to express in local coordinates.</p></li>
-<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body to express marker_name in relation to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Dictionary with the following keys:</p>
-<ul class="simple">
-<li><p>RigidBodyName : Name of the virtual marker’s rigid body</p></li>
-<li><p>LocalPoint : Local position of this marker in the reference frame
-defined by the rigid body RigidBodyName. LocalPoint is expressed as
-a 1x4 array.</p></li>
-</ul>
-</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.kinematics.read_c3d_file">
 <code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">read_c3d_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.read_c3d_file" title="Permalink to this definition">¶</a></dt>
@@ -507,63 +396,6 @@ corresponds to a data key. Each marker position is expressed in this form:</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="kineticstoolkit.kinematics.register_markers">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">register_markers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">rigid_body_configs</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.register_markers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the trajectory of rigid bodies.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<p>Calculates the trajectory of rigid bodies using
-<cite>ktk.geometry.register_points</cite>.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories to calculate the rigid body trajectories on.</p></li>
-<li><p><strong>rigid_body_configs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A dict where each key is a rigid body configuration, and where
-each rigid body configuration is a dict with the following
-keys: ‘MarkerNames’ and ‘LocalPoints’.</p></li>
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. Set to True to print the rigid body being computed.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>TimeSeries where each data key is a Nx4x4 series of rigid
-transformations.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
-<dt id="kineticstoolkit.kinematics.write_trc_file">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">write_trc_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.write_trc_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export a markers TimeSeries to OpenSim’s TRC file format.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><em>TimeSeries</em></a>) – Markers trajectories.</p></li>
-<li><p><strong>filename</strong> (<em>str</em>) – Name of the trc file to create.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
