@@ -22,7 +22,7 @@ copyright = '2020, Félix Chénier'
 author = 'Félix Chénier'
 
 # The full version, including alpha/beta/rc tags
-with open('../VERSION', 'r') as fid:
+with open('../kineticstoolkit/VERSION', 'r') as fid:
     release = fid.read()
 
 # -- General configuration ---------------------------------------------------

@@ -50,7 +50,7 @@ root_folder = os.path.dirname(os.path.dirname(__file__))
 home_folder = os.path.expanduser("~")
 
 # Kinetics Toolkit version
-with open(root_folder + '/VERSION', 'r') as fid:
+with open(root_folder + '/kineticstoolkit/VERSION', 'r') as fid:
     version = fid.read()
 
 # Operating system
