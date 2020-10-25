@@ -21,6 +21,7 @@ Kinetics Toolkit - Lab mode
 
 This module loads Kinetics Toolkit in lab mode. The standard way to use this
 module is:
+
     import kineticstoolkit.lab as ktk
 
 To get started, please consult Kinetics Toolkit's

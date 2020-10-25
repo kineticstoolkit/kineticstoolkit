@@ -25,7 +25,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.decorators import stable, unstable
 from typing import Sequence, Dict, Any, List
