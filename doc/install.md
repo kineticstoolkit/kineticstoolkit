@@ -1,7 +1,7 @@
 Installing the stable version
 =============================
 
-Kinetics Toolkit is hosted both on PyPi and conda-forge. However, Kinetics Toolkit relies on `ezc3d` to read c3d files, which is
+Kinetics Toolkit is hosted on both PyPi and conda-forge. However, Kinetics Toolkit relies on `ezc3d` to read c3d files, which is
 distributed only on conda-forge. The recommended installation method is therefore using conda-forge.
 
 1. Download and install Anaconda or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) with python 3.8 or newer.
