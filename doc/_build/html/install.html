@@ -344,25 +344,21 @@
             
   
 <h1 id="install--page-root">Installing the stable version<a class="headerlink" href="#install--page-root" title="Permalink to this headline">¶</a></h1>
-<p>Although Kinetics Toolkit is distributed via <code class="docutils literal notranslate"><span class="pre">pip</span></code>, I strongly recommend using a conda environment, if only to install <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> which is required for opening c3d files and which is distributed via <code class="docutils literal notranslate"><span class="pre">conda-forge</span></code>.</p>
+<p>Kinetics Toolkit is hosted both on PyPi and conda-forge. However, Kinetics Toolkit relies on <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> to read c3d files, which is
+distributed only on conda-forge. The recommended installation method is therefore using conda-forge.</p>
 <ol>
-<li><p>Download and install Anaconda or Miniconda with python 3.8 or newer.</p></li>
-<li><p>Create a new environment (recommended): open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code class="docutils literal notranslate"><span class="pre">ktk</span></code> virtual environment and install the dependencies in this environment.</p>
+<li><p>Download and install Anaconda or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> with python 3.8 or newer.</p></li>
+<li><p>Create a new environment (recommended): open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code class="docutils literal notranslate"><span class="pre">ktk</span></code> virtual environment and install Kinetics Toolkit in this environment.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">ktk</span>
 
  <span class="n">conda</span> <span class="n">activate</span> <span class="n">ktk</span>
 
- <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span> <span class="n">matplotlib</span> <span class="n">scipy</span> <span class="n">pandas</span> <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span> <span class="n">pyqt</span> <span class="n">ezc3d</span>
+ <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span> <span class="n">ezc3d</span>
 </pre></div>
 </div>
 </li>
-<li><p>Interactive functions can be tricky in Python. Ktk’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop, which is completely supported in the Spyder IDE. Therefore I recommend using Spyder, but any IDE that uses IPython should also work well.</p>
+<li><p>Interactive functions can be tricky in Python. Kinetics Toolkit’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop, which is completely supported in the Spyder IDE. Therefore I recommend using Spyder, but any IDE that uses IPython should also work well.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">spyder</span>
-</pre></div>
-</div>
-</li>
-<li><p>Install Kinetics Toolkit</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">pip</span> <span class="n">install</span> <span class="n">kineticstoolkit</span>
 </pre></div>
 </div>
 </li>
