@@ -903,9 +903,8 @@ TimeSeries with attributes:
     <span class="n">propulsion_moment_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ts_push</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">])</span>
     <span class="n">propulsion_moment_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ts_push</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">])</span>
 
-    <span class="n">Ftot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">ts_push</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-    <span class="n">total_force_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">Ftot</span><span class="p">)</span>
-    <span class="n">total_force_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Ftot</span><span class="p">)</span>
+    <span class="n">total_force_mean</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">ts_push</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">])</span>
+    <span class="n">total_force_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ts_push</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Ftot'</span><span class="p">])</span>
 
     <span class="c1"># Record this information in the records list</span>
     <span class="n">records</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
@@ -972,8 +971,8 @@ TimeSeries with attributes:
 <td>75.85</td>
 <td>9.106452</td>
 <td>12.716142</td>
-<td>247.615781</td>
-<td>573.241399</td>
+<td>34.117531</td>
+<td>44.257457</td>
 </tr>
 <tr>
 <th>1</th>
@@ -983,8 +982,8 @@ TimeSeries with attributes:
 <td>88.33</td>
 <td>6.992656</td>
 <td>11.005038</td>
-<td>163.686433</td>
-<td>332.486535</td>
+<td>30.669055</td>
+<td>47.699743</td>
 </tr>
 <tr>
 <th>2</th>
@@ -994,8 +993,8 @@ TimeSeries with attributes:
 <td>88.51</td>
 <td>6.244814</td>
 <td>9.327931</td>
-<td>125.207490</td>
-<td>262.775237</td>
+<td>25.279054</td>
+<td>37.581425</td>
 </tr>
 <tr>
 <th>3</th>
@@ -1005,8 +1004,8 @@ TimeSeries with attributes:
 <td>79.80</td>
 <td>4.328190</td>
 <td>7.851847</td>
-<td>115.665575</td>
-<td>226.092903</td>
+<td>23.573272</td>
+<td>39.199059</td>
 </tr>
 <tr>
 <th>4</th>
@@ -1016,8 +1015,8 @@ TimeSeries with attributes:
 <td>90.70</td>
 <td>5.271423</td>
 <td>8.831854</td>
-<td>106.729053</td>
-<td>235.999115</td>
+<td>22.133097</td>
+<td>40.147530</td>
 </tr>
 <tr>
 <th>5</th>
@@ -1027,8 +1026,8 @@ TimeSeries with attributes:
 <td>97.12</td>
 <td>5.611598</td>
 <td>8.544609</td>
-<td>128.801165</td>
-<td>265.724018</td>
+<td>25.567489</td>
+<td>41.677356</td>
 </tr>
 <tr>
 <th>6</th>
@@ -1038,8 +1037,8 @@ TimeSeries with attributes:
 <td>93.60</td>
 <td>4.906104</td>
 <td>7.642254</td>
-<td>111.536052</td>
-<td>231.972469</td>
+<td>23.327076</td>
+<td>37.582148</td>
 </tr>
 <tr>
 <th>7</th>
@@ -1049,8 +1048,8 @@ TimeSeries with attributes:
 <td>90.00</td>
 <td>5.233192</td>
 <td>7.801526</td>
-<td>111.687530</td>
-<td>226.772163</td>
+<td>23.085664</td>
+<td>36.135763</td>
 </tr>
 <tr>
 <th>8</th>
@@ -1060,8 +1059,8 @@ TimeSeries with attributes:
 <td>86.13</td>
 <td>4.663521</td>
 <td>6.557192</td>
-<td>113.793957</td>
-<td>230.329009</td>
+<td>25.296090</td>
+<td>40.663234</td>
 </tr>
 <tr>
 <th>9</th>
@@ -1071,8 +1070,8 @@ TimeSeries with attributes:
 <td>87.18</td>
 <td>3.506395</td>
 <td>5.401392</td>
-<td>101.048132</td>
-<td>192.844248</td>
+<td>21.393315</td>
+<td>35.221362</td>
 </tr>
 <tr>
 <th>10</th>
@@ -1082,8 +1081,8 @@ TimeSeries with attributes:
 <td>87.63</td>
 <td>4.315006</td>
 <td>6.866585</td>
-<td>98.524811</td>
-<td>199.607568</td>
+<td>21.510567</td>
+<td>35.246447</td>
 </tr>
 <tr>
 <th>11</th>
@@ -1093,8 +1092,8 @@ TimeSeries with attributes:
 <td>93.87</td>
 <td>4.903095</td>
 <td>8.089712</td>
-<td>111.162606</td>
-<td>223.157478</td>
+<td>22.627376</td>
+<td>36.680779</td>
 </tr>
 <tr>
 <th>12</th>
@@ -1104,8 +1103,8 @@ TimeSeries with attributes:
 <td>85.43</td>
 <td>3.821445</td>
 <td>6.286805</td>
-<td>99.937887</td>
-<td>189.716469</td>
+<td>20.963591</td>
+<td>35.007896</td>
 </tr>
 <tr>
 <th>13</th>
@@ -1115,8 +1114,8 @@ TimeSeries with attributes:
 <td>95.36</td>
 <td>4.967660</td>
 <td>7.923602</td>
-<td>114.929073</td>
-<td>248.574445</td>
+<td>24.124500</td>
+<td>38.413724</td>
 </tr>
 <tr>
 <th>14</th>
@@ -1126,8 +1125,8 @@ TimeSeries with attributes:
 <td>90.18</td>
 <td>4.261794</td>
 <td>6.951129</td>
-<td>104.019981</td>
-<td>209.902786</td>
+<td>21.341208</td>
+<td>38.651713</td>
 </tr>
 </tbody>
 </table>
