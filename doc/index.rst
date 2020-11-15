@@ -68,10 +68,9 @@ Higher level modules and classes
   calculation for analysing spatiotemporal and kinetic parameters of wheelchair propulsion.
 
 
-You can however ask your questions and submit bugs
-or feature requests on `ktk's github issue tracker`_. Please keep in mind that I
-develop ktk mainly for my lab and I have limited resources for troubleshooting, but if I can
-answer, I'll do.
+You can ask your questions and submit bugs or feature requests on `ktk's github issue tracker`_.
+However, please keep in mind that I develop Kinetics Toolkit primarily for my lab and I have limited
+resources for troubleshooting. But if I can answer, I'll do.
 
 .. _`ktk's github issue tracker`: https://github.com/felixchenier/kineticstoolkit/issues
 
