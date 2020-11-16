@@ -19,6 +19,14 @@ setuptools.setup(
     license='Apache',
 	license_files=['LICENSE.txt', 'NOTICE.txt'],
     packages=setuptools.find_packages(),
+    package_data={
+        'kineticstoolkit': ['logo.png', 'logo_hires.png'],
+    },
+    project_urls={
+        'Documentation': 'https://felixchenier.uqam./kineticstoolkit',
+        'Source': 'https://github.com/felixchenier/kineticstoolkit/',
+        'Tracker': 'https://github.com/felixchenier/kineticstoolkit/issues',
+    },
     install_requires=['pandas',
                       'pyqt5',
                       'scipy',
