@@ -50,7 +50,15 @@ def run_unit_tests() -> None:
     print('Running unit tests...')
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder + '/tests')
-    subprocess.call(['pytest', '--ignore=interactive'])
+    subprocess.call(['coverage', 'run',
+                     '--source', '../kineticstoolkit',
+                     '--omit', '../kineticstoolkit/dev.py',
+                     '--omit', '../kineticstoolkit/cmdgui.py',
+                     '-m', 'pytest', '--ignore=interactive'])
+    subprocess.call(['coverage', 'html'])
+    webbrowser.open_new_tab(
+        'file://' + kineticstoolkit.config.root_folder +
+        '/tests/htmlcov/index.html')
     os.chdir(cwd)
 
 
