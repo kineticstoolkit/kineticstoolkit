@@ -29,3 +29,5 @@ test.ktk.zip
 doc/_build/doctrees
 html/*.ipynb
 doc/_build/html/*.ipynb
+.coverage
+tests/htmlcov

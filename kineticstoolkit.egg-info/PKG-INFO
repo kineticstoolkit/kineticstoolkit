@@ -1,0 +1,31 @@
+Metadata-Version: 2.1
+Name: kineticstoolkit
+Version: 0.3.3
+Summary: An open-source python library to facilitate research in biomechanics.
+Home-page: https://felixchenier.uqam.ca/kineticstoolkit
+Author: Félix Chénier
+Author-email: chenier.felix@uqam.ca
+License: Apache
+Project-URL: Documentation, https://felixchenier.uqam./kineticstoolkit
+Project-URL: Source, https://github.com/felixchenier/kineticstoolkit/
+Project-URL: Tracker, https://github.com/felixchenier/kineticstoolkit/issues
+Description: Kinetics Toolkit
+        ================
+        
+        Kinetics Toolkit is an open-source, pure-python package of integrated
+        classes and functions that aims to facilitate research in biomechanics using
+        python.
+        
+        Please consult https://felixchenier.uqam.ca/kineticstoolkit for information.
+        
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Natural Language :: English
+Classifier: Operating System :: MacOS
+Classifier: Operating System :: Microsoft :: Windows
+Classifier: Operating System :: POSIX
+Classifier: Programming Language :: Python :: 3
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
