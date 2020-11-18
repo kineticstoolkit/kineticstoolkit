@@ -34,6 +34,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit import *
-from kineticstoolkit.tools import start_lab_mode
+
+# Import also some hidden functions
+from kineticstoolkit import __dir__
+from kineticstoolkit import start_lab_mode
 
 start_lab_mode()

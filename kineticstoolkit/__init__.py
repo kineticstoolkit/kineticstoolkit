@@ -44,6 +44,8 @@ listing.append('terminal')
 listing.append('update')
 listing.append('tutorials')
 
+from kineticstoolkit.tools import start_lab_mode  # Keep this one hidden.
+
 from kineticstoolkit.player import Player
 listing.append('Player')
 
@@ -67,7 +69,8 @@ from kineticstoolkit import _repr
 from kineticstoolkit import gui
 
 # --- Import unstable modules if we are on master
-if kineticstoolkit.config.version == 'master':
+from kineticstoolkit import config
+if config.version == 'master':
 
     from kineticstoolkit.dbinterface import DBInterface
     listing.append('DBInterface')
@@ -86,6 +89,7 @@ try:
     listing.append('dev')
 except Exception:
     pass
+
 
 
 def __dir__():

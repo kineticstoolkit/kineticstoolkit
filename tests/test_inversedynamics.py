@@ -38,7 +38,7 @@ def test_calculate_proximal_wrenches_2d_static():
 
     """
     n_points = 100
-    ts = ktk.TimeSeries(time=np.linspace(0, 10, n_points))
+    ts = ktk.TimeSeries(time=np.linspace(0, 5, n_points))
     ts.data['ProximalJointPosition'] = np.repeat(
         np.array([[0, 0, 0, 1]]), n_points, axis=0)
     ts.data['DistalJointPosition'] = np.repeat(
@@ -60,10 +60,10 @@ def test_calculate_proximal_wrenches_2d_static():
         ts, inertial_constants)
 
     assert np.all(np.abs(
-        np.median(prox.data['ProximalForces'], axis=0) - np.array(
+        np.nanmedian(prox.data['ProximalForces'], axis=0) - np.array(
         [0., 80 + 3. * 9.81, 0., 0.])) < 1E-10)
     assert np.all(np.abs(
-        np.median(prox.data['ProximalMoments'], axis=0) - np.array(
+        np.nanmedian(prox.data['ProximalMoments'], axis=0) - np.array(
         [0., 0., 160 + 3. * 9.81, 0.])) < 1E-10)
 
 

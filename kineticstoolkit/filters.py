@@ -224,6 +224,12 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     n
         Order of the derivative.
 
+    Returns
+    -------
+    TimeSeries
+        A copy of the input TimeSeries, with n less points than the original
+        one.
+
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))

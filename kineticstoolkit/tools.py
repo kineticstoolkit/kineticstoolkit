@@ -37,6 +37,7 @@ import os
 import sys
 import subprocess
 import webbrowser as _webbrowser
+import warnings
 from typing import Dict, List
 
 
@@ -109,7 +110,9 @@ def terminal(folder_name: str = '') -> None:
 def start_lab_mode(*, config: Dict[str, bool] = {
         'change_ipython_dict_repr': True,
         'change_matplotlib_defaults': True,
-        'change_numpy_print_options': True}) -> None:
+        'change_numpy_print_options': True,
+        'change_warnings_format': True,
+        }) -> None:
     """
     Set Kinetics Toolkit to lab mode.
 
@@ -130,6 +133,9 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         'change_numpy_print_options' :
             True to change default print options in numpy to use fixed point
             notation in printouts.
+        'change_logging_defaults' :
+            True to change logging module's default to a more extended format
+            with file and line number.
 
     Returns
     -------
@@ -159,6 +165,13 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         import numpy as _np
         # Select default mode for numpy
         _np.set_printoptions(suppress=True)
+
+    if config['change_warnings_format']:
+        # Monkey-patch warning.formatwarning
+        def formatwarning(message, category, filename, lineno, line=None):
+            return f'WARNING [{filename}:{lineno}] {message}\n'
+        warnings.formatwarning = formatwarning
+
 
 
 @unstable(listing)

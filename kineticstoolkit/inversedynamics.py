@@ -18,7 +18,7 @@
 """
 Provide functions to calculate inverse dynamics.
 
-Warning
+warninging
 -------
 This module is currently experimental and its API and behaviour could be
 modified in the future.
@@ -32,11 +32,13 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.filters
-from kineticstoolkit.decorators import unstable
+from kineticstoolkit.decorators import unstable, private
 
 import numpy as np
 from typing import Dict, List
 from kineticstoolkit import TimeSeries
+
+import warnings
 
 
 listing = []  # type: List[str]
@@ -47,12 +49,6 @@ def get_anthropometrics(segment_name: str,
                         total_mass: float) -> Dict[str, float]:
     """
     Get anthropometric values for a given segment name.
-
-    Warning
-    -------
-    This method is experimental and its signature and behaviour could change
-    in the future.
-
 
     For the moment, only this table is available:
 
@@ -129,15 +125,259 @@ def get_anthropometrics(segment_name: str,
 
 
 @unstable(listing)
+def calculate_com_position(
+        ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
+    """
+    Calculate the position of the segment's center of mass.
+
+    Adds the data key 'COMPosition' to the TimeSeries based on the
+    'COMProximalRatio' key of the dict inertial_constants.
+
+    Parameters
+    ----------
+    ts
+        A TimeSeries with the following data keys:
+
+        - ProximalJointPosition (Nx4)
+        - DistalJointPosition (Nx4)
+
+    inertial_constants
+        A dict with at least a 'COMProximalRatio' key, which is the distance
+        between the segment's center of mass and the proximal joint, as a
+        ratio of the distance between both joints.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the input timeseries plus the 'COMPosition' data
+        key.
+
+    """
+    ts = ts.copy()
+
+    ts.data['COMPosition'] = (
+        inertial_constants['COMProximalRatio'] *
+        (ts.data['DistalJointPosition'] - ts.data['ProximalJointPosition']) +
+        ts.data['ProximalJointPosition'])
+    return ts
+
+
+@unstable(listing)
+def calculate_com_acceleration(
+        ts: TimeSeries, filter_func: str, **kwargs) -> TimeSeries:
+    """
+    Calculate the acceleration of the segment's center of mass.
+
+    Adds the data key 'COMAcceleration' to the TimeSeries based on the
+    specified filter function.
+
+    Parameters
+    ----------
+    ts
+        A TimeSeries with the at least a 'COMPosition' data key.
+    filter_func
+        'savgol': calculate the acceleration using the 2nd order coefficient
+        of a moving polynomial.
+        'butter': no-lag 2nd order filter followed by a centered derivate.
+
+    Additionnal parameters for a Savistky-Golay filter (savgol)
+    -----------------------------------------------------------
+    window_length
+        The length of the filter window. window_length must be a positive
+        odd integer less or equal than the length of the TimeSeries.
+    poly_order
+        Optional. The order of the polynomial used to fit the samples.
+        polyorder must be less than window_length. The default is 2.
+
+    Additionnal parameters for a Butterworth filter (butter)
+    --------------------------------------------------------
+    fc
+        Cut-off frequency in Hz.
+    order
+        Optional. Order of the filter. The default is 2.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the input timeseries plus the 'COMAcceleration' data
+        key.
+
+    """
+    ts = ts.copy()
+
+    if filter_func == 'savgol':
+        if 'window_length' not in kwargs:
+            raise ValueError(
+                "window_length must be specified for Savitzky-Golay filters")
+        if 'poly_order' not in kwargs:
+            kwargs['poly_order'] = 2
+
+        ts_com = ts.get_subset('COMPosition')
+        ts_acc = kineticstoolkit.filters.savgol(
+            ts_com, window_length=kwargs['window_length'],
+            poly_order=kwargs['poly_order'], deriv=2)
+
+        return ts
+
+    elif filter_func == 'butter':
+        if 'fc' not in kwargs:
+            raise ValueError(
+                "fc must be specified for Butterworth filters")
+        if 'order' not in kwargs:
+            kwargs['order'] = 2
+
+        ts_com = ts.get_subset('COMPosition')
+        ts_acc = kineticstoolkit.filters.butter(
+            ts_com, fc=kwargs['fc'],
+            order=kwargs['order'])
+
+        ts_acc = kineticstoolkit.filters.deriv(ts_acc, n=2)
+        ts_acc.rename_data('COMPosition', 'COMAcceleration')
+
+        ts.merge(ts_acc, resample=True)
+
+        return ts
+
+    else:
+        raise ValueError('Unknown filter type')
+
+
+@unstable(listing)
+def calculate_segment_angles(ts: TimeSeries) -> TimeSeries:
+    """
+    Calculate the segment's projection angles in the three axes.
+
+    Parameters
+    ----------
+    ts
+        A TimeSeries with the following data keys:
+
+        - ProximalJointPosition (Nx4)
+        - DistalJointPosition (Nx4)
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the input timeseries plus the 'SegmentAngles' data
+        key, represented as an Nx3 numpy array.
+
+    """
+    ts = ts.copy()
+
+    proximal_to_distal_joint_distance = (
+        ts.data['DistalJointPosition'] - ts.data['ProximalJointPosition'])
+
+    segment_angle_x = np.arctan2(
+        proximal_to_distal_joint_distance[:, 2],
+        proximal_to_distal_joint_distance[:, 1])
+    segment_angle_y = np.arctan2(
+        proximal_to_distal_joint_distance[:, 2],
+        proximal_to_distal_joint_distance[:, 0])
+    segment_angle_z = np.arctan2(
+        proximal_to_distal_joint_distance[:, 1],
+        proximal_to_distal_joint_distance[:, 0])
+    ts.data['SegmentAngles'] = np.concatenate((
+        segment_angle_x[:, np.newaxis],
+        segment_angle_y[:, np.newaxis],
+        segment_angle_z[:, np.newaxis]), axis=1)
+
+    return ts
+
+
+@unstable(listing)
+def calculate_segment_rotation_rates(
+        ts: TimeSeries, filter_func: str, **kwargs) -> TimeSeries:
+    """
+    Calculate the segments' projected angular velocities and accelerations.
+
+    Parameters
+    ----------
+    ts
+        A TimeSeries with at least the 'SegmentAngles' key (Nx3).
+
+    filter_func
+        'savgol': calculate the velocity and acceleration using the 1st and
+        2nd order coefficients of a moving polynomial.
+        'butter': no-lag 2nd order filter followed by centered derivates.
+
+    Additionnal parameters for a Savistky-Golay filter (savgol)
+    -----------------------------------------------------------
+    window_length
+        The length of the filter window. window_length must be a positive
+        odd integer less or equal than the length of the TimeSeries.
+    poly_order
+        Optional. The order of the polynomial used to fit the samples.
+        polyorder must be less than window_length. The default is 2.
+
+    Additionnal parameters for a Butterworth filter (butter)
+    --------------------------------------------------------
+    fc
+        Cut-off frequency in Hz.
+    order
+        Optional. Order of the filter. The default is 2.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the input timeseries plus the 'AngularVelocity' and
+        'AngularAcceleration' data keys (each Nx3).
+
+    """
+    ts = ts.copy()
+
+    if filter_func == 'savgol':
+        if 'window_length' not in kwargs:
+            raise ValueError(
+                "window_length must be specified for Savitzky-Golay filters")
+        if 'poly_order' not in kwargs:
+            kwargs['poly_order'] = 2
+
+        ts_angle = ts.get_subset('SegmentAngles')
+        ts_angvel = kineticstoolkit.filters.savgol(
+            ts_angle,
+            window_length=kwargs['window_length'],
+            poly_order=kwargs['poly_order'], deriv=1)
+        ts_angacc = kineticstoolkit.filters.savgol(
+            ts_angle,
+            window_length=kwargs['window_length'],
+            poly_order=kwargs['poly_order'], deriv=2)
+        ts.data['AngularVelocity'] = ts_angvel.data['SegmentAngles']
+        ts.data['AngularAcceleration'] = ts_angacc.data['SegmentAngles']
+
+        return ts
+
+    elif filter_func == 'butter':
+        if 'fc' not in kwargs:
+            raise ValueError(
+                "fc must be specified for Butterworth filters")
+        if 'order' not in kwargs:
+            kwargs['order'] = 2
+
+        ts_angle = ts.get_subset('SegmentAngles')
+        ts_filt = kineticstoolkit.filters.butter(
+            ts_angle, fc=kwargs['fc'],
+            order=kwargs['order'])
+
+        ts_vel = kineticstoolkit.filters.deriv(ts_filt, n=1)
+        ts_vel.rename_data('SegmentAngles', 'AngularVelocity')
+
+        ts_acc = kineticstoolkit.filters.deriv(ts_filt, n=2)
+        ts_acc.rename_data('SegmentAngles', 'AngularAcceleration')
+
+        ts.merge(ts_vel, resample=True)
+        ts.merge(ts_acc, resample=True)
+
+        return ts
+
+    else:
+        raise ValueError('Unknown filter type')
+
+
+@unstable(listing)
 def calculate_proximal_wrench(
         ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
     """
     Calculate the proximal wrench based on a TimeSeries.
-
-    Warning
-    -------
-    This method is experimental and has not been strongly validated yet.
-
 
     This function is based on R. Dumas, R. Aissaoui, and J. A. De Guise,
     "A 3D generic inverse dynamic method using wrench notation and quaternion
@@ -154,13 +394,17 @@ def calculate_proximal_wrench(
         - DistalForces (Nx4)
         - DistalMoments (Nx4)
 
+        and these ones (although they can be reconstructed automatically by
+        the function, in which case warnings are issued):
+
+        - COMPosition (Nx4)
+        - COMAcceleration (Nx4)
+        - SegmentAngles (Nx3)
+
     inertial_constants
         A dict that contains the following keys:
 
-        - Mass': Mass of the segment, in kg.
-        - COMProximalRatio': Distance between the segment's center
-          of mass and the proximal joint, as a ratio of the
-          distance between both joints.
+        - 'Mass': Mass of the segment, in kg.
         - 'GyrationCOMRatio': Radius of gyration around the segment's
           center of mass, as a ratio of the distance between
           both joints.
@@ -179,55 +423,49 @@ def calculate_proximal_wrench(
 
     n_frames = ts.time.shape[0]
 
-    ts.data['ProximalToDistalJointDistance'] = (
+    proximal_to_distal_joint_distance = (
         ts.data['DistalJointPosition'] -
         ts.data['ProximalJointPosition'])
 
     ts.data['RadiusOfGyration'] = (
         inertial_constants['GyrationCOMRatio'] *
-        ts.data['ProximalToDistalJointDistance'])
+        proximal_to_distal_joint_distance)
 
     # Center of mass position and acceleration
-    ts.data['CenterOfMassPosition'] = (
-        inertial_constants['COMProximalRatio'] *
-        ts.data['ProximalToDistalJointDistance'] +
-        ts.data['ProximalJointPosition'])
+    if 'COMPosition' not in ts.data:
+        ts = calculate_com_position(ts, inertial_constants)
+        warnings.warn(
+            "COMPosition not found in input TimeSeries. I calculated it.")
 
-    ts_com = ts.get_subset('CenterOfMassPosition')
-    ts_acc = kineticstoolkit.filters.savgol(
-        ts_com, window_length=21, poly_order=2, deriv=2)
-    ts.data['CenterOfMassAcceleration'] = ts_acc.data['CenterOfMassPosition']
+    if 'COMAcceleration' not in ts.data:
+        ts = calculate_com_acceleration(
+            ts, filter_func='butter', fc=6, order=4)
+        warnings.warn(
+            "COMAcceleration not found in input TimeSeries. I calculated it "
+            "using a low-pass ButterWorth filter of order 4 at 6 Hz.")
 
     # Rotation angle, velocity and acceleration
-    segment_angle_x = np.arctan2(
-        ts.data['ProximalToDistalJointDistance'][:, 2],
-        ts.data['ProximalToDistalJointDistance'][:, 1])
-    segment_angle_y = np.arctan2(
-        ts.data['ProximalToDistalJointDistance'][:, 2],
-        ts.data['ProximalToDistalJointDistance'][:, 0])
-    segment_angle_z = np.arctan2(
-        ts.data['ProximalToDistalJointDistance'][:, 1],
-        ts.data['ProximalToDistalJointDistance'][:, 0])
-    ts.data['Angle'] = np.concatenate((
-        segment_angle_x[:, np.newaxis],
-        segment_angle_y[:, np.newaxis],
-        segment_angle_z[:, np.newaxis]), axis=1)
+    if 'SegmentAngles' not in ts.data:
+        ts = calculate_segment_angles(ts)
+        warnings.warn(
+            "SegmentAngles not found in input TimeSeries. I calculated it.")
 
-    ts_angle = ts.get_subset('Angle')
-    ts_angvel = kineticstoolkit.filters.savgol(
-        ts_angle, window_length=21, poly_order=2, deriv=1)
-    ts_angacc = kineticstoolkit.filters.savgol(
-        ts_angle, window_length=21, poly_order=2, deriv=2)
-    ts.data['AngularVelocity'] = ts_angvel.data['Angle']
-    ts.data['AngularAcceleration'] = ts_angacc.data['Angle']
+    if (('AngularVelocity' not in ts.data) or
+            ('AngularAcceleration' not in ts.data)):
+        ts = calculate_segment_rotation_rates(
+            ts, filter_func='butter', fc=6, order=4)
+        warnings.warn(
+            "AngularVelocity and/or AngularAcceleration not found in input "
+            "TimeSeries. I calculated it using a low-pass ButterWorth filter "
+            "of order 4 at 6 Hz.")
 
     # Forces line of the wrench equation (16)
-    a_i = ts.data['CenterOfMassAcceleration'][:, 0:3]
+    a_i = ts.data['COMAcceleration'][:, 0:3]
     g = np.array([0, -9.81, 0])
     F_i_minus_1 = ts.data['DistalForces'][:, 0:3]
 
     # Moments line of the wrench equation (16)
-    c_i = (ts.data['CenterOfMassPosition'][:, 0:3] -
+    c_i = (ts.data['COMPosition'][:, 0:3] -
            ts.data['ProximalJointPosition'][:, 0:3])
     d_i = (ts.data['ForceApplicationPosition'] -
            ts.data['ProximalJointPosition'])[:, 0:3]
