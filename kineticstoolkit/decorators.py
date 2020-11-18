@@ -73,9 +73,14 @@ Warning
 Unreleased function.
 
 This function is currently being developped and has not been released yet.
-Although it should be working, please do not use this function in stable
-production work since it may not be fully tested, it may change signature and
-behaviour drastically or even be deleted.
+It may not have been validated, it may change signature and behaviour
+drastically or even be deleted.
+"""
+
+unstable_warning = """
+The function {name} is currently being developped and has not been released
+yet. It may not have been validated, it may change signature and behaviour
+drastically or even be deleted.
 """
 
 dead_docstring = """
@@ -95,6 +100,20 @@ Private function.
 This function should be used by Kinetics Toolkit only. Do not base your work
 on this function.
 """
+
+private_warning = """
+The function {name} should be used by Kinetics Toolkit only. Do not base
+your work on this function.
+"""
+
+class KTKUnstableWarning(UserWarning):
+    """Warning raised when using an unstable Kinetics Toolkig function."""
+    pass
+
+
+class KTKPrivateWarning(UserWarning):
+    """Warning raised when using a private Kinetics Toolkig function."""
+    pass
 
 
 def _inject_in_docstring(docstring: str, text: str) -> str:
@@ -133,7 +152,11 @@ def stable(listing):
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Call the function being decorated and return the result
-            return func(*args, **kwargs)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                return func(*args, **kwargs)
+
         listing.append(func.__name__)
         return wrapper
     # Return the new decorator
@@ -156,7 +179,11 @@ def experimental(listing):
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Call the function being decorated and return the result
-            return func(*args, **kwargs)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                return func(*args, **kwargs)
+
         listing.append(func.__name__)
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, experimental_docstring)
@@ -185,7 +212,11 @@ def deprecated(listing):
                           "consult the API for replacement solutions.",
                           FutureWarning)
             # Call the function being decorated and return the result
-            return func(*args, **kwargs)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                return func(*args, **kwargs)
+
         listing.append(func.__name__)
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, deprecated_docstring)
@@ -198,9 +229,12 @@ def unstable(listing):
     """
     Decorate unstable Kinetics Toolkit's functions.
 
-    Adds this function to the main documentation only if
-    kineticstoolkit.config.version == 'master'.  Also adds a warning section
-    to its docstring.
+    if kineticstoolkit.config.version == 'master':
+        Adds this function to the main documentation.
+    else:
+        Generate a KTKUnstableWarning on use.
+
+    Also adds a warning section to its docstring.
 
     Parameter listing is a list of attributes of the module that will be
     returned by the module's or class' __dir__ function.
@@ -211,7 +245,15 @@ def unstable(listing):
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Call the function being decorated and return the result
-            return func(*args, **kwargs)
+            if kineticstoolkit.config.version != 'master':
+                warnings.warn(KTKUnstableWarning(
+                    unstable_warning.format(name=func.__name__)))
+
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                return func(*args, **kwargs)
+
         if kineticstoolkit.config.version == 'master':
             listing.append(func.__name__)
         wrapper.__doc__ = _inject_in_docstring(
@@ -241,7 +283,11 @@ def dead(listing):
                           "consult the API for replacement solutions.",
                           FutureWarning)
             # Call the function being decorated and return the result
-            return func(*args, **kwargs)
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                return func(*args, **kwargs)
+
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, dead_docstring)
         return wrapper
@@ -265,6 +311,8 @@ def private(listing):
         @wraps(func)
         def wrapper(*args, **kwargs):
             # Call the function being decorated and return the result
+            warnings.warn(KTKPrivateWarning(
+                private_warning.format(name=func.__name__)))
             return func(*args, **kwargs)
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, private_docstring)

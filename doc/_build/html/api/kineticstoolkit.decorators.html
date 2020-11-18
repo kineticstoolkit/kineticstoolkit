@@ -358,6 +358,21 @@
 <p>Each of these decorators take a list as argument, and adds the function
 to the list if this function should be added to the __dir__ magic function.</p>
 </div></blockquote>
+<p><strong>Exceptions</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.KTKPrivateWarning" title="kineticstoolkit.decorators.KTKPrivateWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTKPrivateWarning</span></code></a></p></td>
+<td><p>Warning raised when using a private Kinetics Toolkig function.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.KTKUnstableWarning" title="kineticstoolkit.decorators.KTKUnstableWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTKUnstableWarning</span></code></a></p></td>
+<td><p>Warning raised when using an unstable Kinetics Toolkig function.</p></td>
+</tr>
+</tbody>
+</table>
 <p><strong>Functions</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -385,6 +400,16 @@ to the list if this function should be added to the __dir__ magic function.</p>
 </tr>
 </tbody>
 </table>
+<dl class="py exception">
+<dt id="kineticstoolkit.decorators.KTKPrivateWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">kineticstoolkit.decorators.</code><code class="sig-name descname">KTKPrivateWarning</code><a class="headerlink" href="#kineticstoolkit.decorators.KTKPrivateWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warning raised when using a private Kinetics Toolkig function.</p>
+</dd></dl>
+<dl class="py exception">
+<dt id="kineticstoolkit.decorators.KTKUnstableWarning">
+<em class="property">exception </em><code class="sig-prename descclassname">kineticstoolkit.decorators.</code><code class="sig-name descname">KTKUnstableWarning</code><a class="headerlink" href="#kineticstoolkit.decorators.KTKUnstableWarning" title="Permalink to this definition">¶</a></dt>
+<dd><p>Warning raised when using an unstable Kinetics Toolkig function.</p>
+</dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.decorators.dead">
 <code class="sig-prename descclassname">kineticstoolkit.decorators.</code><code class="sig-name descname">dead</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.decorators.dead" title="Permalink to this definition">¶</a></dt>
@@ -433,9 +458,13 @@ returned by the module’s or class’ __dir__ function.</p>
 <dt id="kineticstoolkit.decorators.unstable">
 <code class="sig-prename descclassname">kineticstoolkit.decorators.</code><code class="sig-name descname">unstable</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">listing</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.decorators.unstable" title="Permalink to this definition">¶</a></dt>
 <dd><p>Decorate unstable Kinetics Toolkit’s functions.</p>
-<p>Adds this function to the main documentation only if
-kineticstoolkit.config.version == ‘master’.  Also adds a warning section
-to its docstring.</p>
+<dl class="simple">
+<dt>if kineticstoolkit.config.version == ‘master’:</dt><dd><p>Adds this function to the main documentation.</p>
+</dd>
+<dt>else:</dt><dd><p>Generate a KTKUnstableWarning on use.</p>
+</dd>
+</dl>
+<p>Also adds a warning section to its docstring.</p>
 <p>Parameter listing is a list of attributes of the module that will be
 returned by the module’s or class’ __dir__ function.</p>
 </dd></dl>
