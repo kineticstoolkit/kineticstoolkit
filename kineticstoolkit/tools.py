@@ -169,7 +169,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
     if config['change_warnings_format']:
         # Monkey-patch warning.formatwarning
         def formatwarning(message, category, filename, lineno, line=None):
-            return f'WARNING [{filename}:{lineno}] {message}\n'
+            return f'{category.__name__} [{filename}:{lineno}] {message}\n'
         warnings.formatwarning = formatwarning
 
 

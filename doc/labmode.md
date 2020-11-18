@@ -53,6 +53,19 @@ Modified dict representation in lab mode:
         'data2': <array of shape (30,)>,
         'data3': <array of shape (30,)>
     }
+    
+### Modification to warnings format ###
+
+Kinetics Toolkit sometimes generates warnings when calculations are encountering unexpected data, when assumptions were made or to flag relevant suspicious informations to the user. Importing ktk in lab mode pretty-prints those warnings so they are clearer to see and understand.
+
+For example, a default user warning would print as:
+
+    path/to/filename.py:1: UserWarning: Something strange happened in this function
+      warnings.warn('Something strange happened in this function')
+
+Importing ktk in lab mode reformats warnings as:
+
+    UserWarning [path/to/filename.py:1] Something strange happened in this function
 
 
 ### Modification to repr of numpy's floats ###
