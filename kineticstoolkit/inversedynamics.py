@@ -18,7 +18,7 @@
 """
 Provide functions to calculate inverse dynamics.
 
-warninging
+Warning
 -------
 This module is currently experimental and its API and behaviour could be
 modified in the future.
