@@ -427,9 +427,19 @@ def calculate_proximal_wrench(
         ts.data['DistalJointPosition'] -
         ts.data['ProximalJointPosition'])
 
-    ts.data['RadiusOfGyration'] = (
-        inertial_constants['GyrationCOMRatio'] *
-        proximal_to_distal_joint_distance)
+    ts.data['RadiusOfGyration'] = np.zeros((n_frames, 3))
+    ts.data['RadiusOfGyration'][:, 0] = \
+        inertial_constants['GyrationCOMRatio'] * np.sqrt(
+        proximal_to_distal_joint_distance[:, 1] ** 2 +
+        proximal_to_distal_joint_distance[:, 2] ** 2)
+    ts.data['RadiusOfGyration'][:, 1] =  \
+        inertial_constants['GyrationCOMRatio'] * np.sqrt(
+        proximal_to_distal_joint_distance[:, 0] ** 2 +
+        proximal_to_distal_joint_distance[:, 2] ** 2)
+    ts.data['RadiusOfGyration'][:, 2] =  \
+        inertial_constants['GyrationCOMRatio'] * np.sqrt(
+        proximal_to_distal_joint_distance[:, 0] ** 2 +
+        proximal_to_distal_joint_distance[:, 1] ** 2)
 
     # Center of mass position and acceleration
     if 'COMPosition' not in ts.data:
@@ -445,13 +455,16 @@ def calculate_proximal_wrench(
             "using a low-pass ButterWorth filter of order 4 at 6 Hz.")
 
     # Rotation angle, velocity and acceleration
-    if 'SegmentAngles' not in ts.data:
-        ts = calculate_segment_angles(ts)
-        warnings.warn(
-            "SegmentAngles not found in input TimeSeries. I calculated it.")
 
     if (('AngularVelocity' not in ts.data) or
             ('AngularAcceleration' not in ts.data)):
+
+        # Start by calculating the angles
+        if 'SegmentAngles' not in ts.data:
+            ts = calculate_segment_angles(ts)
+            warnings.warn(
+                "SegmentAngles not found in input TimeSeries. I calculated it.")
+
         ts = calculate_segment_rotation_rates(
             ts, filter_func='butter', fc=6, order=4)
         warnings.warn(

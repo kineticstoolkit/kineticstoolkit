@@ -30,7 +30,7 @@ import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.decorators import stable
 import warnings
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Sequence
 
 
 listing = []  # type: List[str]
@@ -197,6 +197,7 @@ def time_normalize(
         event_name1: str,
         event_name2: str, *,
         n_points: int = 100,
+        relative_span: Sequence[float] = [0, 1],
         ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -222,12 +223,25 @@ def time_normalize(
     event_name2
         The event name that correspond to the end of a cycle.
     n_points
-        Optional. The number of points of the output TimeSeries.
+        Optional. The number of points per cycle in the output TimeSeries.
+    relative_span
+        Optional. Use this argument to include a larger or smaller part of the
+        time-normalized cycles. For example, to time-normalize each cycle from
+        -20% to 119% (all inclusive) with one point per percent, then use
+        n_points = 140 and relative_span = [-0.2, 1.2].
 
     Returns
     -------
     TimeSeries
         A new TimeSeries where each cycle has been time-normalized.
+
+    Notes
+    -----
+    When specifying a non-default relative_span: If a given cycle does not
+    contain enough data to cover the requested relative_span, a warning is
+    issued and this cycle is not included into the time-normalized output
+    TimeSeries. This behaviour could change in the future.
+
     """
     # Find the final number of cycles
     if len(ts.events) < 2:
@@ -249,54 +263,78 @@ def time_normalize(
     dest_data_shape = {}  # type: Dict[str, Tuple[int]]
 
     while True:
-        # Get the TimeSeries for this cycle
-        subts = ts.get_ts_between_events(event_name1, event_name2,
-                                         i_cycle, i_cycle,
-                                         inclusive=True)
+        # Get the event times for this cycle
+        original_begin = ts.get_event_time(event_name1, i_cycle)
+        original_end = ts.get_event_time(event_name2, i_cycle)
+        if np.isnan(original_end) and event_name2 == '_':
+            # Try again, this time by specifying the event_name2 directly.
+            # For example, if the TimeSeries doesn't have '_' events, but
+            # the user follows the recommendation to use '_' instead of the
+            # event name.
+            original_end = ts.get_event_time(event_name1, i_cycle + 1)
 
-        if subts.time.shape[0] == 0:  # Empty TimeSeries, retry
-            subts = ts.get_ts_between_events(event_name1, event_name1,
-                                             i_cycle, i_cycle + 1,
-                                             inclusive=True)
+        # Calculate the new span
+        new_begin = (original_begin +
+                     relative_span[0] * (original_end - original_begin))
+        new_end = (original_begin +
+                   relative_span[1] * (original_end - original_begin))
+
+        if new_begin < ts.time[0] or new_end > ts.time[-1]:
+            warnings.warn(f"Cycle {i_cycle} doesn't have enough data to "
+                          "cover the requested relative span. This cycle "
+                          "has been ignored and is not included in the "
+                          "output TimeSeries.")
+
+            i_cycle += 1
+            continue
+
+        # Extract the TimeSeries for this cycle
+        subts = ts.get_ts_between_times(new_begin, new_end, inclusive=True)
 
         if subts.time.shape[0] == 0:  # We are done. Quit the loop.
             break
 
-        subts.trim_events()
+        # Keep the events that are only in the cycle
+        events = []  # All events
+        other_events = []  # Only the events that are not begin/end events
+        for event in ts.events:
+            if event.time >= original_begin and event.time < original_end:
+                events.append(event)
+
+                # Separate begin/end events from the other, so that we can add
+                # the other events to the final TimeSeries afterward
+                if event.name != event_name1 and event.name != event_name2:
+                    other_events.append(event)
+
+        subts.events = events
         subts.sort_events()
 
-        # Separate start/end events from the other
-        start_end_events = []
-        other_events = []
-        for event in subts.events:
-            if event.name == event_name1 or event.name == event_name2:
-                start_end_events.append(event)
-            else:
-                other_events.append(event)
+        subts.resample(
+            np.linspace(new_begin, new_end, n_points))
 
-        original_start = subts.events[0].time
-        original_stop = subts.events[-1].time
 
-        # Resample this TimeSeries on n_points
-        try:
-            subts.resample(
-                np.linspace(subts.time[0], subts.time[-1], n_points))
-        except ValueError:
-            subts.resample(
-                np.linspace(subts.time[0], subts.time[-1], n_points),
-                fill_value='extrapolate')
-            warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
+        # # Resample this TimeSeries on n_points
+        # try:
+        # except ValueError:
+        #     subts.resample(
+        #         np.linspace(new_begin, new_end, n_points),
+        #         fill_value='extrapolate')
+        #     warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
         # Resample the events and add them to the
         # destination TimeSeries
-        dest_ts.add_event(i_cycle * n_points, event_name1)
-        dest_ts.add_event((i_cycle + 1) * n_points - 1, '_')
+        def time_to_percent(time):
+            return ((time - original_begin) /
+                    (original_end - original_begin) *
+                    (n_points - 1) + (new_begin - original_begin) +
+                    i_cycle * n_points)
+
+        dest_ts.add_event(time_to_percent(original_begin), event_name1)
+        dest_ts.add_event(time_to_percent(original_end), '_')
         for i_event, event in enumerate(other_events):
 
             # Resample
-            new_time = ((event.time - original_start) /
-                        (original_stop - original_start) *
-                        (n_points - 1)) + i_cycle * n_points
+            new_time = time_to_percent(event.time)
             dest_ts.add_event(new_time, event.name)
 
         # Add this cycle to dest_time and dest_data

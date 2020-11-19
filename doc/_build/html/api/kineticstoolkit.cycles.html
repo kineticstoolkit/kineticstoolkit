@@ -501,7 +501,7 @@ on.</p></li>
 </dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.cycles.time_normalize">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">relative_span</span><span class="o">=</span><span class="default_value">[0, 1]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time-normalize cycles in a TimeSeries.</p>
 <p>This method time-normalizes the TimeSeries at each cycle defined by
 event_name1 and event_name2 on n_points. The time-normalized cycles are
@@ -520,7 +520,11 @@ heel strike and the next heel strike:</p>
 <li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The TimeSeries to analyze.</p></li>
 <li><p><strong>event_name1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the begin of a cycle.</p></li>
 <li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the end of a cycle.</p></li>
-<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points of the output TimeSeries.</p></li>
+<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points per cycle in the output TimeSeries.</p></li>
+<li><p><strong>relative_span</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Use this argument to include a larger or smaller part of the
+time-normalized cycles. For example, to time-normalize each cycle from
+-20% to 119% (all inclusive) with one point per percent, then use
+n_points = 140 and relative_span = [-0.2, 1.2].</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -530,6 +534,13 @@ heel strike and the next heel strike:</p>
 <dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<p>When specifying a non-default relative_span: If a given cycle does not
+contain enough data to cover the requested relative_span, a warning is
+issued and this cycle is not included into the time-normalized output
+TimeSeries. This behaviour could change in the future.</p>
+</div>
 </dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.cycles.unstack">

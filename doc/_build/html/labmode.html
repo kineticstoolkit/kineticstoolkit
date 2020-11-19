@@ -240,6 +240,8 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#modification-to-repr-of-dictionaries" class="md-nav__link">Modification to repr of dictionaries</a>
         </li>
+        <li class="md-nav__item"><a href="#modification-to-warnings-format" class="md-nav__link">Modification to warnings format</a>
+        </li>
         <li class="md-nav__item"><a href="#modification-to-repr-of-numpy-s-floats" class="md-nav__link">Modification to repr of numpy’s floats</a>
         </li>
         <li class="md-nav__item"><a href="#alternative-defaults-for-matplotlib" class="md-nav__link">Alternative defaults for matplotlib</a>
@@ -359,6 +361,8 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#modification-to-repr-of-dictionaries" class="md-nav__link">Modification to repr of dictionaries</a>
         </li>
+        <li class="md-nav__item"><a href="#modification-to-warnings-format" class="md-nav__link">Modification to warnings format</a>
+        </li>
         <li class="md-nav__item"><a href="#modification-to-repr-of-numpy-s-floats" class="md-nav__link">Modification to repr of numpy’s floats</a>
         </li>
         <li class="md-nav__item"><a href="#alternative-defaults-for-matplotlib" class="md-nav__link">Alternative defaults for matplotlib</a>
@@ -424,6 +428,19 @@
 <span class="go">    'data2': &lt;array of shape (30,)&gt;,</span>
 <span class="go">    'data3': &lt;array of shape (30,)&gt;</span>
 <span class="go">}</span>
+</pre></div>
+</div>
+
+
+<h3 id="modification-to-warnings-format">Modification to warnings format<a class="headerlink" href="#modification-to-warnings-format" title="Permalink to this headline">¶</a></h3>
+<p>Kinetics Toolkit sometimes generates warnings when calculations are encountering unexpected data, when assumptions were made or to flag relevant suspicious informations to the user. Importing ktk in lab mode pretty-prints those warnings so they are clearer to see and understand.</p>
+<p>For example, a default user warning would print as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">filename</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Something</span> <span class="n">strange</span> <span class="n">happened</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">function</span>
+  <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s1">'Something strange happened in this function'</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Importing ktk in lab mode reformats warnings as:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">UserWarning</span> <span class="p">[</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">filename</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="n">Something</span> <span class="n">strange</span> <span class="n">happened</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">function</span>
 </pre></div>
 </div>
 

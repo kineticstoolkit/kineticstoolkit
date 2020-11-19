@@ -72,7 +72,7 @@ def test_get_ts_at_event___get_ts_at_time():
     assert new_ts.time == 11
 
 
-def tes_get_ts_before_time():
+def test_get_ts_before_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
     new_ts = ts.get_ts_before_time(-2)
     assert new_ts.time.tolist() == []
@@ -94,6 +94,9 @@ def test_get_ts_between_times():
     assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
     new_ts = ts.get_ts_between_times(-2, -1)
     assert new_ts.time.tolist() == []
+    # Test that inclusive works
+    new_ts = ts.get_ts_between_times(4.5, 7.5, inclusive=True)
+    assert new_ts.time.tolist() == [4., 5., 6., 7., 8.]
 
 
 def test_merge_and_resample():

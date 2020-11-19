@@ -187,6 +187,15 @@ def test_normalize():
     # There should be no nan in ts2
     assert ~ts2.isnan('test').all()
 
+    # Now test that relative_span works, with -10 to 115%.
+    ts3 = ktk.cycles.time_normalize(ts, 'push', '_',
+                                    n_points = 125, relative_span=[-0.1, 1.15])
+    assert np.abs(ts3.events[0].time - 10) < 1E-12
+    assert ts3.events[0].name == 'push'
+
+
+
+
 
 def test_most_repeatable_cycles():
     # Create a TimeSeries with 5 cycles, one of those is different from

@@ -850,7 +850,7 @@ class TimeSeries():
     @stable(ts_listing)
     def plot(self,
              data_keys: Union[str, List[str]] = [],
-             /, *,
+             /, *args,
              event_names: bool = True,
              legend: bool = True,
              **kwargs) -> None:
@@ -866,7 +866,8 @@ class TimeSeries():
         legend
             Optional. True to plot a legend, False otherwise.
 
-        Additional keyboard arguments are passed to the pyplot's plot function.
+        Additional positional and keyboard arguments are passed to the
+        pyplot's plot function.
 
         Example
         -------
@@ -899,7 +900,7 @@ class TimeSeries():
         # Plot the curves
         for i_label, label in enumerate(labels):
             axes.plot(df.index.to_numpy(),
-                     df[label].to_numpy(), label=label, **kwargs)
+                      df[label].to_numpy(), *args, label=label, **kwargs)
 
         # Add labels
         plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
@@ -1031,25 +1032,31 @@ class TimeSeries():
         >>> ts.get_index_before_time(1)
         1
 
-        >>> ts.get_index_before_time(1, inclusive=True)
-        2
-
         >>> ts.get_index_before_time(1.1)
         2
+
+        >>> ts.get_index_before_time(1.1, inclusive=True)
+        3
 
         >>> ts.get_index_before_time(-1)
         nan
 
         """
         diff = float(time) - self.time
-        if inclusive:
-            diff[diff < 0] = np.nan
-        else:
-            diff[diff <= 0] = np.nan
+        diff[diff <= 0] = np.nan
+
         if np.all(np.isnan(diff)):  # All nans
             return np.nan
+
+        index = np.nanargmin(diff)
+
+        if inclusive and self.time[index] < time:
+            index += 1
+
+        if index < self.time.shape[0]:
+            return index
         else:
-            return np.nanargmin(diff)
+            return np.nan
 
     @stable(ts_listing)
     def get_index_after_time(self, time: float, /, *,
@@ -1077,28 +1084,34 @@ class TimeSeries():
         >>> ts.get_index_after_time(0.9)
         2
 
+        >>> ts.get_index_after_time(0.9, inclusive=True)
+        1
+
         >>> ts.get_index_after_time(1)
         3
 
         >>> ts.get_index_after_time(1, inclusive=True)
         2
 
-        >>> ts.get_index_after_time(1.1)
-        3
-
         >>> ts.get_index_after_time(13)
         nan
 
         """
         diff = self.time - float(time)
-        if inclusive:
-            diff[diff < 0] = np.nan
-        else:
-            diff[diff <= 0] = np.nan
+        diff[diff <= 0] = np.nan
+
         if np.all(np.isnan(diff)):  # All nans
             return np.nan
+
+        index = np.nanargmin(diff)
+
+        if inclusive and self.time[index] > time:
+            index -= 1
+
+        if index >= 0:
+            return index
         else:
-            return np.nanargmin(diff)
+            return np.nan
 
     @stable(ts_listing)
     def get_event_time(self, event_name: str,
@@ -1364,17 +1377,8 @@ class TimeSeries():
         array([0. , 0.1, 0.2, 0.3])
 
         """
-        out_ts = self.copy()
         index = self.get_index_before_time(time, inclusive=inclusive)
-        if np.isnan(index):
-            index_range = range(0)
-        else:
-            index_range = range(0, index + 1)
-
-        out_ts.time = out_ts.time[index_range]
-        for the_data in out_ts.data.keys():
-            out_ts.data[the_data] = out_ts.data[the_data][index_range]
-        return out_ts
+        return self.get_ts_before_index(index, inclusive=True)
 
     @stable(ts_listing)
     def get_ts_after_time(self, time: float, /, *,
@@ -1401,12 +1405,10 @@ class TimeSeries():
         >>> ts.get_ts_after_time(0.3, inclusive=True).time
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
+        >>> ts.get_ts_after_time(0.25, inclusive=True).time
+        array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
-        if inclusive:
-            index = self.get_index_before_time(time, inclusive=True)
-        else:
-            index = self.get_index_after_time(time, inclusive=False)
-
+        index = self.get_index_after_time(time, inclusive=inclusive)
         return self.get_ts_after_index(index, inclusive=True)
 
     @stable(ts_listing)
@@ -1481,12 +1483,7 @@ class TimeSeries():
 
         """
         time = self.get_event_time(event_name, event_occurrence)
-        if inclusive:
-            index = self.get_index_after_time(time, inclusive=True)
-        else:
-            index = self.get_index_before_time(time, inclusive=False)
-
-        return self.get_ts_before_index(index, inclusive=True)
+        return self.get_ts_before_time(time, inclusive=inclusive)
 
     @stable(ts_listing)
     def get_ts_after_event(self, event_name: str,
@@ -1527,12 +1524,7 @@ class TimeSeries():
 
         """
         time = self.get_event_time(event_name, event_occurrence)
-        if inclusive:
-            index = self.get_index_before_time(time, inclusive=True)
-        else:
-            index = self.get_index_after_time(time, inclusive=False)
-
-        return self.get_ts_after_index(index, inclusive=True)
+        return self.get_ts_after_time(time, inclusive=inclusive)
 
     @stable(ts_listing)
     def get_ts_between_events(self, event_name1: str, event_name2: str,

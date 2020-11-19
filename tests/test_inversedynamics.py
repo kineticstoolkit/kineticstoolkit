@@ -120,7 +120,8 @@ def test_calculate_proximal_wrenches_2d_dynamic():
     # angular acceleration of 1 rad/s2. This means the COM has an upward
     # linear acceleration of 1 m/s2. We expect the y proximal force to have
     # an additional (ma) component upward. For the moments, we expect an
-    # additional z proximal moment of (Ialpha) = I = m(k^2 + 1^2)
+    # additional z proximal moment of (Ialpha) = I
+    # I = mk^2 + md^2 = 0.04 * 3 + 3 = 3.12
     ts.data['COMAcceleration'] = np.array([[0, 1, 0, 0]])
     ts.data['AngularVelocity'] = np.array([[0, 0, 0]])
     ts.data['AngularAcceleration'] = np.array([[0, 0, 1]])
@@ -131,8 +132,8 @@ def test_calculate_proximal_wrenches_2d_dynamic():
     assert np.all(np.abs(prox.data['ProximalForces'][0] -
                          [0., (80 + 3. * 9.81) + 3, 0., 0.]) < 1E-10)
     assert np.all(np.abs(prox.data['ProximalMoments'][0] -
-                         [0., 0.,
-                          (160 + 3. * 9.81) + 3 * (0.1 ** 2 + 1), 0.]) < 1E-10)
+                          [0., 0.,
+                          (160 + 3. * 9.81) + 3.12, 0.]) < 1E-10)
 
 
 if __name__ == "__main__":
