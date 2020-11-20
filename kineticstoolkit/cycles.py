@@ -30,7 +30,7 @@ import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.decorators import stable
 import warnings
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Sequence
 
 
 listing = []  # type: List[str]
@@ -197,6 +197,7 @@ def time_normalize(
         event_name1: str,
         event_name2: str, *,
         n_points: int = 100,
+        relative_span: Sequence[float] = [0, 1],
         ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -223,11 +224,24 @@ def time_normalize(
         The event name that correspond to the end of a cycle.
     n_points
         Optional. The number of points of the output TimeSeries.
+    relative_span
+        Optional. Use this argument to include a larger or smaller part of the
+        time-normalized cycles. For example, to time-normalize each cycle from
+        -20% to 119% (all inclusive) with one point per percent, then use
+        n_points = 140 and relative_span = [-0.2, 1.2].
 
     Returns
     -------
     TimeSeries
         A new TimeSeries where each cycle has been time-normalized.
+
+    Notes
+    -----
+    When specifying a non-default relative_span: If a given cycle does not
+    contain enough data to cover the requested relative_span, a warning is
+    issued and this cycle is not included into the time-normalized output
+    TimeSeries. This behaviour could change in the future.
+
     """
     # Find the final number of cycles
     if len(ts.events) < 2:
@@ -249,20 +263,32 @@ def time_normalize(
     dest_data_shape = {}  # type: Dict[str, Tuple[int]]
 
     while True:
-        # Get the TimeSeries for this cycle
-        subts = ts.get_ts_between_events(event_name1, event_name2,
-                                         i_cycle, i_cycle,
-                                         inclusive=True)
+        # Get the begin and end times for this cycle
+        begin_time = ts.get_event_time(event_name1, i_cycle)
+        end_time = ts.get_event_time(event_name2, i_cycle)
+        if np.isnan(end_time) and event_name2 == '_':
+            end_time = ts.get_event_time(event_name1, i_cycle + 1)
 
-        if subts.time.shape[0] == 0:  # Empty TimeSeries, retry
-            subts = ts.get_ts_between_events(event_name1, event_name1,
-                                             i_cycle, i_cycle + 1,
-                                             inclusive=True)
+        # Get the extended begin and end times considering relative_span
+        extended_begin_time = (begin_time +
+                               relative_span[0] * (end_time - begin_time))
+        extended_end_time = (begin_time +
+                             relative_span[1] * (end_time - begin_time))
+
+        # Get the TimeSeries for this cycle
+        subts = ts.get_ts_between_times(extended_begin_time,
+                                        extended_end_time,
+                                        inclusive=True)
 
         if subts.time.shape[0] == 0:  # We are done. Quit the loop.
             break
 
-        subts.trim_events()
+        # Keep only the events in the unextended span
+        events = []
+        for event in subts.events:
+            if event.time >= begin_time and event.time <= end_time:
+                events.append(event)
+        subts.events = events
         subts.sort_events()
 
         # Separate start/end events from the other
@@ -274,29 +300,37 @@ def time_normalize(
             else:
                 other_events.append(event)
 
-        original_start = subts.events[0].time
-        original_stop = subts.events[-1].time
-
         # Resample this TimeSeries on n_points
         try:
             subts.resample(
-                np.linspace(subts.time[0], subts.time[-1], n_points))
+                np.linspace(extended_begin_time,
+                            extended_end_time, n_points))
         except ValueError:
             subts.resample(
-                np.linspace(subts.time[0], subts.time[-1], n_points),
+                np.linspace(extended_begin_time,
+                            extended_end_time, n_points),
                 fill_value='extrapolate')
             warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
         # Resample the events and add them to the
         # destination TimeSeries
-        dest_ts.add_event(i_cycle * n_points, event_name1)
-        dest_ts.add_event((i_cycle + 1) * n_points - 1, '_')
+        def time_to_normalized_time(time):
+            return ((time - extended_begin_time) /
+                    (extended_end_time - extended_begin_time) *
+                    (n_points - 1)) + i_cycle * n_points
+
+        dest_ts.add_event(
+            time_to_normalized_time(
+                start_end_events[0].time), start_end_events[0].name)
+
+        dest_ts.add_event(
+            time_to_normalized_time(
+                start_end_events[1].time), '_')
+
         for i_event, event in enumerate(other_events):
 
             # Resample
-            new_time = ((event.time - original_start) /
-                        (original_stop - original_start) *
-                        (n_points - 1)) + i_cycle * n_points
+            new_time = time_to_normalized_time(event.time)
             dest_ts.add_event(new_time, event.name)
 
         # Add this cycle to dest_time and dest_data

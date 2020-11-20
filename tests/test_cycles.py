@@ -179,6 +179,12 @@ def test_normalize():
     # Samething but with push to next push
     ts1 = ktk.cycles.time_normalize(ts, 'push', '_')
     assert len(ts1.events) == 12  # No missing events
+    assert ts1.events[0].name == 'push'
+    assert np.abs(ts1.events[0].time - 0) < 1E-12
+    assert ts1.events[1].name == 'recovery'
+    assert np.abs(ts1.events[1].time - 49.5) < 1E-12
+    assert ts1.events[2].name == '_'
+    assert np.abs(ts1.events[2].time - 99) < 1E-12
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
     ts2 = ktk.cycles.time_normalize(ts1, 'push', '_')
@@ -187,12 +193,42 @@ def test_normalize():
     # There should be no nan in ts2
     assert ~ts2.isnan('test').all()
 
-    # Now test that relative_span works, with -10 to 115%.
+    # Now test that relative_span works, with 0 to 110%, with 110 points.
+    # It should give the same events and the same first data for each cycle
     ts3 = ktk.cycles.time_normalize(ts, 'push', '_',
-                                    n_points = 125, relative_span=[-0.1, 1.15])
-    assert np.abs(ts3.events[0].time - 10) < 1E-12
-    assert ts3.events[0].name == 'push'
+                                    n_points = 110,
+                                    relative_span=[0, 1.1])
+    ts3.plot([], '.')
 
+    assert len(ts1.events) == 12  # No missing events
+    # assert ts3.events[0].name == 'push'
+    # assert np.abs(ts3.events[0].time - 0) < 1E-12
+    # assert ts3.events[1].name == 'recovery'
+    # assert np.abs(ts3.events[1].time - 49.5) < 1E-12
+    # assert ts3.events[2].name == '_'
+    # assert np.abs(ts3.events[2].time - 99) < 1E-12
+
+    assert np.all(np.abs(ts1.data['test'][0:100] -
+                          ts3.data['test'][0:100]) < 1E-12)
+    assert np.all(np.abs(ts1.data['test'][100:200] -
+                          ts3.data['test'][110:210]) < 1E-12)
+
+    # Now test that relative_span works, with -10% to 110%, with 120 points.
+    # ts4 = ktk.cycles.time_normalize(ts, 'push', '_',
+    #                                 n_points = 110,
+    #                                 relative_span=[0, 1.1])
+    # assert len(ts1.events) == 12  # No missing events
+    # assert ts1.events[0].name == 'push'
+    # assert np.abs(ts1.events[0].time - 0) < 1E-12
+    # assert ts1.events[1].name == 'recovery'
+    # assert np.abs(ts1.events[1].time - 49.5) < 1E-12
+    # assert ts1.events[2].name == '_'
+    # assert np.abs(ts1.events[2].time - 99) < 1E-12
+
+    # assert np.all(np.abs(ts1.data['test'][0:100] -
+    #                      ts3.data['test'][0:100]) < 1E12)
+    # assert np.all(np.abs(ts1.data['test'][100:200] -
+    #                      ts3.data['test'][110:210]) < 1E12)
 
 
 
