@@ -25,6 +25,7 @@ Unit tests for the cycles module.
 """
 import kineticstoolkit as ktk
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 def test_detect_cycles():
@@ -193,43 +194,30 @@ def test_normalize():
     # There should be no nan in ts2
     assert ~ts2.isnan('test').all()
 
-    # Now test that relative_span works, with 0 to 110%, with 110 points.
-    # It should give the same events and the same first data for each cycle
-    ts3 = ktk.cycles.time_normalize(ts, 'push', '_',
-                                    n_points = 110,
-                                    relative_span=[0, 1.1])
-    ts3.plot([], '.')
+    #Test with a wider range
+    ts3 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=150,
+                                    relative_span=[0, 1.5])
 
-    assert len(ts1.events) == 12  # No missing events
-    # assert ts3.events[0].name == 'push'
-    # assert np.abs(ts3.events[0].time - 0) < 1E-12
-    # assert ts3.events[1].name == 'recovery'
-    # assert np.abs(ts3.events[1].time - 49.5) < 1E-12
-    # assert ts3.events[2].name == '_'
-    # assert np.abs(ts3.events[2].time - 99) < 1E-12
 
-    assert np.all(np.abs(ts1.data['test'][0:100] -
-                          ts3.data['test'][0:100]) < 1E-12)
-    assert np.all(np.abs(ts1.data['test'][100:200] -
-                          ts3.data['test'][110:210]) < 1E-12)
 
-    # Now test that relative_span works, with -10% to 110%, with 120 points.
-    # ts4 = ktk.cycles.time_normalize(ts, 'push', '_',
-    #                                 n_points = 110,
-    #                                 relative_span=[0, 1.1])
-    # assert len(ts1.events) == 12  # No missing events
-    # assert ts1.events[0].name == 'push'
-    # assert np.abs(ts1.events[0].time - 0) < 1E-12
-    # assert ts1.events[1].name == 'recovery'
-    # assert np.abs(ts1.events[1].time - 49.5) < 1E-12
-    # assert ts1.events[2].name == '_'
-    # assert np.abs(ts1.events[2].time - 99) < 1E-12
+def test_normalize_extended():
+    """Test normalize with extended_span."""
+    ts = ktk.TimeSeries(time=np.arange(10))
+    ts.data['test'] = np.arange(10) ** 2
+    ts.add_event(2, 'push')
+    ts.add_event(4, 'recovery')
+    ts.add_event(6, 'push')
 
-    # assert np.all(np.abs(ts1.data['test'][0:100] -
-    #                      ts3.data['test'][0:100]) < 1E12)
-    # assert np.all(np.abs(ts1.data['test'][100:200] -
-    #                      ts3.data['test'][110:210]) < 1E12)
+    ts1 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10)
+    ts2 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=11,
+                                    relative_span=[0, 1.111111111])
 
+    # plt.subplot(2,1,1)
+    # ts1.plot([], '.r')
+    # plt.grid(True)
+    # plt.subplot(2,1,2)
+    # ts2.plot([], '.b')
+    # plt.grid(True)
 
 
 

@@ -269,19 +269,28 @@ def time_normalize(
         if np.isnan(end_time) and event_name2 == '_':
             end_time = ts.get_event_time(event_name1, i_cycle + 1)
 
+        if np.isnan(begin_time) or np.isnan(end_time):
+            # We are done. Quit the loop.
+            break
+
         # Get the extended begin and end times considering relative_span
         extended_begin_time = (begin_time +
                                relative_span[0] * (end_time - begin_time))
         extended_end_time = (begin_time +
                              relative_span[1] * (end_time - begin_time))
 
-        # Get the TimeSeries for this cycle
-        subts = ts.get_ts_between_times(extended_begin_time,
-                                        extended_end_time,
-                                        inclusive=True)
-
-        if subts.time.shape[0] == 0:  # We are done. Quit the loop.
-            break
+        # Resample this TimeSeries on n_points
+        subts = ts.copy()
+        try:
+            subts.resample(
+                np.linspace(extended_begin_time,
+                            extended_end_time, n_points))
+        except ValueError:
+            subts.resample(
+                np.linspace(extended_begin_time,
+                            extended_end_time, n_points),
+                fill_value='extrapolate')
+            warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
         # Keep only the events in the unextended span
         events = []
@@ -299,18 +308,6 @@ def time_normalize(
                 start_end_events.append(event)
             else:
                 other_events.append(event)
-
-        # Resample this TimeSeries on n_points
-        try:
-            subts.resample(
-                np.linspace(extended_begin_time,
-                            extended_end_time, n_points))
-        except ValueError:
-            subts.resample(
-                np.linspace(extended_begin_time,
-                            extended_end_time, n_points),
-                fill_value='extrapolate')
-            warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
         # Resample the events and add them to the
         # destination TimeSeries
