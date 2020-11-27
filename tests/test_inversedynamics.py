@@ -43,7 +43,7 @@ def test_calculate_proximal_wrenches_2d_static():
     SegmentAngles, AngularVelocity and AngularAcceleration.
     """
     n_points = 100
-    ts = ktk.TimeSeries(time=np.linspace(0, 5, n_points))
+    ts = ktk.TimeSeries(time=np.linspace(0, 1, n_points))
     ts.data['ProximalJointPosition'] = np.repeat(
         np.array([[0, 0, 0, 1]]), n_points, axis=0)
     ts.data['DistalJointPosition'] = np.repeat(

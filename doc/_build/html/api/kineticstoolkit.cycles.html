@@ -48,8 +48,8 @@
   
   
     <title>kineticstoolkit.cycles module &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -345,7 +345,7 @@
   
 <span id="kineticstoolkit-cycles-module"></span><h1 id="api-kineticstoolkit-cycles--page-root">kineticstoolkit.cycles module<a class="headerlink" href="#api-kineticstoolkit-cycles--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Identify cycles and time-normalize data.</p>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%"/>
@@ -496,13 +496,19 @@ on.</p></li>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.unstack()</span></code></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.unstack</span></code></p>
 </div>
 </dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.cycles.time_normalize">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">relative_span</span><span class="o">=</span><span class="default_value">[0, 1]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">span</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time-normalize cycles in a TimeSeries.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <p>This method time-normalizes the TimeSeries at each cycle defined by
 event_name1 and event_name2 on n_points. The time-normalized cycles are
 put end to end. For example, for a TimeSeries that contains three
@@ -520,11 +526,9 @@ heel strike and the next heel strike:</p>
 <li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The TimeSeries to analyze.</p></li>
 <li><p><strong>event_name1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the begin of a cycle.</p></li>
 <li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the end of a cycle.</p></li>
-<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points per cycle in the output TimeSeries.</p></li>
-<li><p><strong>relative_span</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Use this argument to include a larger or smaller part of the
-time-normalized cycles. For example, to time-normalize each cycle from
--20% to 119% (all inclusive) with one point per percent, then use
-n_points = 140 and relative_span = [-0.2, 1.2].</p></li>
+<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points of the output TimeSeries.</p></li>
+<li><p><strong>span</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Optional. Specifies which normalized points to include in the output
+TimeSeries. See note below.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -536,10 +540,16 @@ n_points = 140 and relative_span = [-0.2, 1.2].</p></li>
 </dl>
 <div class="admonition-notes admonition">
 <p class="admonition-title">Notes</p>
-<p>When specifying a non-default relative_span: If a given cycle does not
-contain enough data to cover the requested relative_span, a warning is
-issued and this cycle is not included into the time-normalized output
-TimeSeries. This behaviour could change in the future.</p>
+<p>The span argument is experimental. Use it to define which normalized
+points to include in the output TimeSeries. For example, to normalize in
+percents and to include only data from 10 to 90% of each cycle, assign
+100 to n_points and [10, 90] to span. The resulting TimeSeries will then
+be expressed in percents and wrap each 80 points. It is also possible to&lt;
+include pre-cycle or post-cycle data. For example, to normalize in
+percents and to include 20% pre-cycle and 15% post-cycle, assign 100 to
+n_points and [-20, 15] to span. The resulting TimeSeries will then wrap
+each 135 points with the cycles starting at 20, 155, etc. and ending at
+119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.</p>
 </div>
 </dd></dl>
 <dl class="py function">
@@ -563,7 +573,7 @@ the other dimensions are the data itself.</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.stack()</span></code></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.stack</span></code></p>
 </div>
 </dd></dl>
 
@@ -615,7 +625,7 @@ the other dimensions are the data itself.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

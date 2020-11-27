@@ -48,8 +48,8 @@
   
   
     <title>kineticstoolkit.lab module &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -360,6 +360,54 @@ module is:</p>
 </div></blockquote>
 <p>To get started, please consult Kinetics Toolkit’s
 [website](<a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">https://felixchenier.uqam.ca/kineticstoolkit</a>)</p>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">DBInterface</span></code>(project_label[, user, password, …])</p></td>
+<td><p>Interface for Felix Chenier’s BIOMEC database.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Player</span></code>(*ts[, segments, current_frame, …])</p></td>
+<td><p>A class that allows visualizing markers and rigid bodies in 3D.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeries</span></code>([time, time_info, data, …])</p></td>
+<td><p>A class that implements TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesEvent</span></code>([time, name])</p></td>
+<td><p>Define an event in a timeseries.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Functions:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">explore</span></code>([folder_name])</p></td>
+<td><p>Open an Explorer window (on Windows) or a Finder window (on macOS)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code>(filename)</p></td>
+<td><p>Load a ktk.zip file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code>(filename, variable)</p></td>
+<td><p>Save a variable to a ktk.zip file.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">terminal</span></code>([folder_name])</p></td>
+<td><p>Open a terminal window.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">tutorials</span></code>()</p></td>
+<td><p>Open the Kinetics Toolkits tutorials in a web browser.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">update</span></code>()</p></td>
+<td><p>Update Kinetics Toolkit to the latest master branch.</p></td>
+</tr>
+</tbody>
+</table>
 
 
 
@@ -410,7 +458,7 @@ module is:</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

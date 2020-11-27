@@ -48,8 +48,8 @@
   
   
     <title>kineticstoolkit.pushrimkinetics module &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -345,7 +345,7 @@
   
 <span id="kineticstoolkit-pushrimkinetics-module"></span><h1 id="api-kineticstoolkit-pushrimkinetics--page-root">kineticstoolkit.pushrimkinetics module<a class="headerlink" href="#api-kineticstoolkit-pushrimkinetics--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Provide functions to process kinetic data from instrumented wheelchair wheels.</p>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%"/>
@@ -374,7 +374,7 @@
 </table>
 <dl class="py function">
 <dt id="kineticstoolkit.pushrimkinetics.calculate_forces_and_moments">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_forces_and_moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">gains</span></em>, <em class="sig-param"><span class="n">offsets</span><span class="o">=</span><span class="default_value">array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transducer</span><span class="o">=</span><span class="default_value">'force_cell'</span></em>, <em class="sig-param"><span class="n">reference_frame</span><span class="o">=</span><span class="default_value">'wheel'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_forces_and_moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">gains</span></em>, <em class="sig-param"><span class="n">offsets</span><span class="o">=</span><span class="default_value">array([0., 0., 0., 0., 0., 0.])</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transducer</span><span class="o">=</span><span class="default_value">'force_cell'</span></em>, <em class="sig-param"><span class="n">reference_frame</span><span class="o">=</span><span class="default_value">'wheel'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate pushrim forces and moments based on raw channel values.</p>
 <p>For standard force cells (with each channel being a raw value
 corresponding to Fx, Fy, Fz, Mx, My, Mz, respectively), calculates
@@ -460,11 +460,11 @@ filter, please see the <code class="docutils literal notranslate"><span class="p
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <dl class="simple">
-<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.filters.butter()</span></code></dt><dd><p>Butterworth filter for TimeSeries</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.butter</span></code></dt><dd><p>Butterworth filter for TimeSeries</p>
 </dd>
-<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.filters.savgol()</span></code></dt><dd><p>Savitsky-golay filter for TimeSeries</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.savgol</span></code></dt><dd><p>Savitsky-golay filter for TimeSeries</p>
 </dd>
-<dt><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.filters.deriv()</span></code></dt><dd><p>Derivative filter for TimeSeries</p>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.deriv</span></code></dt><dd><p>Derivative filter for TimeSeries</p>
 </dd>
 </dl>
 </div>
@@ -501,7 +501,7 @@ instead).</p>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-func docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles()</span></code></p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles</span></code></p>
 </div>
 </dd></dl>
 <dl class="py function">
@@ -607,7 +607,7 @@ Engineering and Physics, vol. 40, pp. 75–86, 2017.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

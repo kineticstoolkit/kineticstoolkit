@@ -48,8 +48,8 @@
   
   
     <title>kineticstoolkit.decorators module &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -358,45 +358,48 @@
 <p>Each of these decorators take a list as argument, and adds the function
 to the list if this function should be added to the __dir__ magic function.</p>
 </div></blockquote>
-<p><strong>Exceptions</strong></p>
+<p><strong>Exceptions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.KTKPrivateWarning" title="kineticstoolkit.decorators.KTKPrivateWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTKPrivateWarning</span></code></a></p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTKPrivateWarning</span></code></p></td>
 <td><p>Warning raised when using a private Kinetics Toolkig function.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.KTKUnstableWarning" title="kineticstoolkit.decorators.KTKUnstableWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTKUnstableWarning</span></code></a></p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">KTKUnstableWarning</span></code></p></td>
 <td><p>Warning raised when using an unstable Kinetics Toolkig function.</p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.dead" title="kineticstoolkit.decorators.dead"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dead</span></code></a>(listing)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dead</span></code>(listing)</p></td>
 <td><p>Decorate dead Kinetics Toolkit’s functions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.deprecated" title="kineticstoolkit.decorators.deprecated"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deprecated</span></code></a>(listing)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">deprecated</span></code>(listing)</p></td>
 <td><p>Decorate deprecated Kinetics Toolkit’s functions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.experimental" title="kineticstoolkit.decorators.experimental"><code class="xref py py-obj docutils literal notranslate"><span class="pre">experimental</span></code></a>(listing)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">experimental</span></code>(listing)</p></td>
 <td><p>Decorate experimental Kinetics Toolkit’s functions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.private" title="kineticstoolkit.decorators.private"><code class="xref py py-obj docutils literal notranslate"><span class="pre">private</span></code></a>(listing)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">private</span></code>(listing)</p></td>
 <td><p>Decorate private Kinetics Toolkit’s functions.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.stable" title="kineticstoolkit.decorators.stable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">stable</span></code></a>(listing)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stable</span></code>(listing)</p></td>
 <td><p>Decorate stable Kinetics Toolkit’s functions.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.decorators.unstable" title="kineticstoolkit.decorators.unstable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstable</span></code></a>(listing)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstable</span></code>(listing)</p></td>
 <td><p>Decorate unstable Kinetics Toolkit’s functions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">wraps</span></code>(wrapped[, assigned, updated])</p></td>
+<td><p>Decorator factory to apply update_wrapper() to a wrapper function</p></td>
 </tr>
 </tbody>
 </table>
@@ -517,7 +520,7 @@ returned by the module’s or class’ __dir__ function.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

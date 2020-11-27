@@ -28,9 +28,9 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.decorators import stable
+from kineticstoolkit.decorators import stable, experimental
 import warnings
-from typing import List, Dict, Tuple, Sequence
+from typing import List, Dict, Tuple, Sequence, Optional
 
 
 listing = []  # type: List[str]
@@ -191,13 +191,13 @@ def detect_cycles(ts: TimeSeries,
     return tsout
 
 
-@stable(listing)
+@experimental(listing)
 def time_normalize(
         ts: TimeSeries, /,
         event_name1: str,
         event_name2: str, *,
         n_points: int = 100,
-        relative_span: Sequence[float] = [0, 1],
+        span: Optional[Sequence[int]] = None,
         ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -224,11 +224,9 @@ def time_normalize(
         The event name that correspond to the end of a cycle.
     n_points
         Optional. The number of points of the output TimeSeries.
-    relative_span
-        Optional. Use this argument to include a larger or smaller part of the
-        time-normalized cycles. For example, to time-normalize each cycle from
-        -20% to 119% (all inclusive) with one point per percent, then use
-        n_points = 140 and relative_span = [-0.2, 1.2].
+    span
+        Optional. Specifies which normalized points to include in the output
+        TimeSeries. See note below.
 
     Returns
     -------
@@ -237,12 +235,22 @@ def time_normalize(
 
     Notes
     -----
-    When specifying a non-default relative_span: If a given cycle does not
-    contain enough data to cover the requested relative_span, a warning is
-    issued and this cycle is not included into the time-normalized output
-    TimeSeries. This behaviour could change in the future.
+    The span argument is experimental. Use it to define which normalized
+    points to include in the output TimeSeries. For example, to normalize in
+    percents and to include only data from 10 to 90% of each cycle, assign
+    100 to n_points and [10, 90] to span. The resulting TimeSeries will then
+    be expressed in percents and wrap each 80 points. It is also possible to<
+    include pre-cycle or post-cycle data. For example, to normalize in
+    percents and to include 20% pre-cycle and 15% post-cycle, assign 100 to
+    n_points and [-20, 15] to span. The resulting TimeSeries will then wrap
+    each 135 points with the cycles starting at 20, 155, etc. and ending at
+    119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.
 
     """
+    # Optional span
+    if span is None:
+        span = [0, n_points]
+
     # Find the final number of cycles
     if len(ts.events) < 2:
         raise(ValueError('No cycle can be defined from these event names.'))
@@ -257,7 +265,10 @@ def time_normalize(
     # Initialize the destination TimeSeries
     dest_ts = ts.copy()
     dest_ts.events = []
-    dest_ts.time_info['Unit'] = '%'
+    if n_points == 100:
+        dest_ts.time_info['Unit'] = '%'
+    else:
+        dest_ts.time_info['Unit'] = f"1/{n_points}"
 
     dest_data = {}  # type: Dict[str, List[np.ndarray]]
     dest_data_shape = {}  # type: Dict[str, Tuple[int]]
@@ -275,20 +286,23 @@ def time_normalize(
 
         # Get the extended begin and end times considering relative_span
         extended_begin_time = (begin_time +
-                               relative_span[0] * (end_time - begin_time))
+                               span[0] / (n_points - 1) *
+                               (end_time - begin_time))
         extended_end_time = (begin_time +
-                             relative_span[1] * (end_time - begin_time))
+                             (span[1] - 1) / (n_points - 1) *
+                             (end_time - begin_time))
 
         # Resample this TimeSeries on n_points
         subts = ts.copy()
         try:
             subts.resample(
                 np.linspace(extended_begin_time,
-                            extended_end_time, n_points))
+                            extended_end_time, span[1] - span[0]))
         except ValueError:
+            subts = ts.copy()  # Recopy since we may have messed with subts
             subts.resample(
                 np.linspace(extended_begin_time,
-                            extended_end_time, n_points),
+                            extended_end_time, span[1] - span[0]),
                 fill_value='extrapolate')
             warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
@@ -309,20 +323,20 @@ def time_normalize(
             else:
                 other_events.append(event)
 
-        # Resample the events and add them to the
-        # destination TimeSeries
+        # Add begin and end event
+        dest_ts.add_event(-span[0] +
+                          i_cycle * (span[1] - span[0]),
+                          event_name1)
+        dest_ts.add_event(-span[0] + n_points - 1 +
+                          i_cycle * (span[1] - span[0]),
+                          '_')
+
+        # Add the other events
         def time_to_normalized_time(time):
+            """Resample the events times."""
             return ((time - extended_begin_time) /
                     (extended_end_time - extended_begin_time) *
-                    (n_points - 1)) + i_cycle * n_points
-
-        dest_ts.add_event(
-            time_to_normalized_time(
-                start_end_events[0].time), start_end_events[0].name)
-
-        dest_ts.add_event(
-            time_to_normalized_time(
-                start_end_events[1].time), '_')
+                    (span[1] - span[0] - 1) + i_cycle * (span[1] - span[0]))
 
         for i_event, event in enumerate(other_events):
 
@@ -342,13 +356,13 @@ def time_normalize(
     n_cycles = i_cycle
 
     # Put back dest_time and dest_data in dest_ts
-    dest_ts.time = np.arange(n_cycles * n_points)
+    dest_ts.time = np.arange(n_cycles * (span[1] - span[0]))
     for key in ts.data:
         # Stack the data into a [cycle, percent, values] shape
         temp = np.array(dest_data[key])
         # Reshape to put all cycles end to end
         new_shape = list(dest_data_shape[key])
-        new_shape[0] = n_cycles * n_points
+        new_shape[0] = n_cycles * (span[1] - span[0])
         dest_ts.data[key] = np.reshape(temp, new_shape)
 
     dest_ts.sort_events()
@@ -579,8 +593,10 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     set_all = set(range(n_cycles))
     set_done = set(done_cycles)
     remain = sorted(list(set_all - set_done))
-    out_cycles.append(remain[1])
-    out_cycles.append(remain[0])
+    if len(remain) > 1:
+        out_cycles.append(remain[1])
+    if len(remain) > 0:
+        out_cycles.append(remain[0])
 
     return out_cycles[-1::-1]
 

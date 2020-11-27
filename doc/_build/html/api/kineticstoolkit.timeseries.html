@@ -48,8 +48,8 @@
   
   
     <title>kineticstoolkit.timeseries module &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
     <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
@@ -347,33 +347,66 @@
 <p>Provide the TimeSeries and TimeSeriesEvent classes.</p>
 <p>The classes defined in this module are accessible directly from the toplevel
 Kinetics Toolkit’s namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)</p>
-<p><strong>Classes</strong></p>
+<p><strong>Data:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>([time, time_info, data, …])</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Dict</span></code></p></td>
+<td><p>The central part of internal API.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">List</span></code></p></td>
+<td><p>The central part of internal API.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Tuple</span></code></p></td>
+<td><p>Tuple type; Tuple[X, Y] is the cross-product type of X and Y.</p></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Classes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeries</span></code>([time, time_info, data, …])</p></td>
 <td><p>A class that implements TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeriesEvent" title="kineticstoolkit.timeseries.TimeSeriesEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesEvent</span></code></a>([time, name])</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesEvent</span></code>([time, name])</p></td>
 <td><p>Define an event in a timeseries.</p></td>
 </tr>
 </tbody>
 </table>
-<p><strong>Functions</strong></p>
+<p><strong>Functions:</strong></p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%"/>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.dataframe_to_dict_of_arrays" title="kineticstoolkit.timeseries.dataframe_to_dict_of_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe_to_dict_of_arrays</span></code></a>(dataframe)</p></td>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe_to_dict_of_arrays</span></code>(dataframe)</p></td>
 <td><p>Convert a pandas DataFrame to a dict of numpy ndarrays.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.dict_of_arrays_to_dataframe" title="kineticstoolkit.timeseries.dict_of_arrays_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_of_arrays_to_dataframe</span></code></a>(dict_of_arrays)</p></td>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">deepcopy</span></code>(x[, memo, _nil])</p></td>
+<td><p>Deep copy operation on arbitrary Python objects.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_of_arrays_to_dataframe</span></code>(dict_of_arrays)</p></td>
 <td><p>Convert a dict of ndarray of any dimension to a pandas DataFrame.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">experimental</span></code>(listing)</p></td>
+<td><p>Decorate experimental Kinetics Toolkit’s functions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">literal_eval</span></code>(node_or_string)</p></td>
+<td><p>Safely evaluate an expression node or a string containing a Python expression.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">stable</span></code>(listing)</p></td>
+<td><p>Decorate stable Kinetics Toolkit’s functions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">unstable</span></code>(listing)</p></td>
+<td><p>Decorate unstable Kinetics Toolkit’s functions.</p></td>
 </tr>
 </tbody>
 </table>
@@ -383,126 +416,6 @@ Kinetics Toolkit’s namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)</p>
 <dd><p>A class that implements TimeSeries.</p>
 <p>This class implements a Timeseries in a way that resembles the timeseries
 and tscollection found in Matlab.</p>
-<p><strong>Methods</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.add_data_info" title="kineticstoolkit.timeseries.TimeSeries.add_data_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_data_info</span></code></a>(data_key, info_key, value)</p></td>
-<td><p>Add metadata to TimeSeries’ data.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.add_event" title="kineticstoolkit.timeseries.TimeSeries.add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_event</span></code></a>(time[, name])</p></td>
-<td><p>Add an event to the TimeSeries.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.copy" title="kineticstoolkit.timeseries.TimeSeries.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
-<td><p>Deep copy of a TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.fill_missing_samples" title="kineticstoolkit.timeseries.TimeSeries.fill_missing_samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_missing_samples</span></code></a>(max_missing_samples, *)</p></td>
-<td><p>Fill missing samples with the given method.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.from_dataframe" title="kineticstoolkit.timeseries.TimeSeries.from_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code></a>()</p></td>
-<td><p>Create a new TimeSeries from a Pandas Dataframe</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_event_time" title="kineticstoolkit.timeseries.TimeSeries.get_event_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_event_time</span></code></a>(event_name[, event_occurrence])</p></td>
-<td><p>Get the time of the specified event.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_index_after_time" title="kineticstoolkit.timeseries.TimeSeries.get_index_after_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_after_time</span></code></a>(time, /, *[, inclusive])</p></td>
-<td><p>Get the time index that is just after the specified time.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_index_at_time" title="kineticstoolkit.timeseries.TimeSeries.get_index_at_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_at_time</span></code></a>(time, /)</p></td>
-<td><p>Get the time index that is the closest to the specified time.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_index_before_time" title="kineticstoolkit.timeseries.TimeSeries.get_index_before_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_before_time</span></code></a>(time, /, *[, inclusive])</p></td>
-<td><p>Get the time index that is just before the specified time.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_subset" title="kineticstoolkit.timeseries.TimeSeries.get_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_subset</span></code></a>(data_keys)</p></td>
-<td><p>Return a subset of the TimeSeries.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event" title="kineticstoolkit.timeseries.TimeSeries.get_ts_after_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_event</span></code></a>(event_name[, …])</p></td>
-<td><p>Get a subset of the TimeSeries after the specified event.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_index" title="kineticstoolkit.timeseries.TimeSeries.get_ts_after_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_index</span></code></a>(index, /, *[, inclusive])</p></td>
-<td><p>Get a subset of the TimeSeries after the specified time index.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_time" title="kineticstoolkit.timeseries.TimeSeries.get_ts_after_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_time</span></code></a>(time, /, *[, inclusive])</p></td>
-<td><p>Get a subset of the TimeSeries after the specified time.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_at_event" title="kineticstoolkit.timeseries.TimeSeries.get_ts_at_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_event</span></code></a>(event_name[, event_occurrence])</p></td>
-<td><p>Get a one-data subset of the TimeSeries at the event’s nearest time.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_at_time" title="kineticstoolkit.timeseries.TimeSeries.get_ts_at_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_time</span></code></a>(time, /)</p></td>
-<td><p>Get a one-data subset of the TimeSeries at the nearest time.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_event" title="kineticstoolkit.timeseries.TimeSeries.get_ts_before_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_event</span></code></a>(event_name[, …])</p></td>
-<td><p>Get a subset of the TimeSeries before the specified event.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_index" title="kineticstoolkit.timeseries.TimeSeries.get_ts_before_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_index</span></code></a>(index, /, *[, inclusive])</p></td>
-<td><p>Get a subset of the TimeSeries before the specified time index.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_time" title="kineticstoolkit.timeseries.TimeSeries.get_ts_before_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_time</span></code></a>(time, /, *[, inclusive])</p></td>
-<td><p>Get a subset of the TimeSeries before the specified time.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_events" title="kineticstoolkit.timeseries.TimeSeries.get_ts_between_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_events</span></code></a>(event_name1, event_name2)</p></td>
-<td><p>Get a subset of the TimeSeries between two specified events.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_indexes" title="kineticstoolkit.timeseries.TimeSeries.get_ts_between_indexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_indexes</span></code></a>(index1, index2, /, *)</p></td>
-<td><p>Get a subset of the TimeSeries before two specified time indexes.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_times" title="kineticstoolkit.timeseries.TimeSeries.get_ts_between_times"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_times</span></code></a>(time1, time2, /, *[, …])</p></td>
-<td><p>Get a subset of the TimeSeries between two specified times.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.isnan" title="kineticstoolkit.timeseries.TimeSeries.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a>(data_key, /)</p></td>
-<td><p>Return a boolean array of missing samples.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.merge" title="kineticstoolkit.timeseries.TimeSeries.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(ts[, data_keys, resample, overwrite])</p></td>
-<td><p>Merge another TimeSeries into the current TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.plot" title="kineticstoolkit.timeseries.TimeSeries.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([data_keys, event_names, legend])</p></td>
-<td><p>Plot the TimeSeries using matplotlib.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.remove_data" title="kineticstoolkit.timeseries.TimeSeries.remove_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data</span></code></a>(data_key, /)</p></td>
-<td><p>Remove a data key and its associated metadata.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.remove_data_info" title="kineticstoolkit.timeseries.TimeSeries.remove_data_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data_info</span></code></a>(data_key, info_key, /)</p></td>
-<td><p>Remove metadata from a TimeSeries’ data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.remove_event" title="kineticstoolkit.timeseries.TimeSeries.remove_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_event</span></code></a>(event_name[, event_occurrence])</p></td>
-<td><p>Remove an event.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.rename_data" title="kineticstoolkit.timeseries.TimeSeries.rename_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_data</span></code></a>(old_data_key, new_data_key, /)</p></td>
-<td><p>Rename a key in data and data_info.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.resample" title="kineticstoolkit.timeseries.TimeSeries.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code></a>(new_time[, kind, fill_value])</p></td>
-<td><p>Resample the TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.shift" title="kineticstoolkit.timeseries.TimeSeries.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a>(time, /)</p></td>
-<td><p>Shift time and events.time.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.sort_events" title="kineticstoolkit.timeseries.TimeSeries.sort_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_events</span></code></a>(*[, unique])</p></td>
-<td><p>Sorts the TimeSeries’ events from the earliest to the latest.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.sync_event" title="kineticstoolkit.timeseries.TimeSeries.sync_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_event</span></code></a>(event_name[, event_occurrence])</p></td>
-<td><p>Shift time and events.time so that event_name is the new time zero.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.to_dataframe" title="kineticstoolkit.timeseries.TimeSeries.to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code></a>()</p></td>
-<td><p>Create a DataFrame by reshaping all data to one bidimensional table.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="kineticstoolkit.timeseries.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a>()</p></td>
-<td><p>Delete the events that are outside the TimeSeries’ time vector.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
-<td><p>Add one or many events interactively to the TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
-<td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
-<td><p>Synchronize one or two TimeSeries by shifting their time.</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="py attribute">
 <dt id="kineticstoolkit.timeseries.TimeSeries.time">
 <code class="sig-name descname">time</code><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.time" title="Permalink to this definition">¶</a></dt>
@@ -562,6 +475,126 @@ data_info attribute could indicate the unit of data[‘Forces’]:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
 </pre></div>
 </div>
+<p><strong>Methods:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_data_info</span></code>(data_key, info_key, value)</p></td>
+<td><p>Add metadata to TimeSeries’ data.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_event</span></code>(time[, name])</p></td>
+<td><p>Add an event to the TimeSeries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>()</p></td>
+<td><p>Deep copy of a TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_missing_samples</span></code>(max_missing_samples, *)</p></td>
+<td><p>Fill missing samples with the given method.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code>()</p></td>
+<td><p>Create a new TimeSeries from a Pandas Dataframe</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_event_time</span></code>(event_name[, event_occurrence])</p></td>
+<td><p>Get the time of the specified event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_after_time</span></code>(time, /, *[, inclusive])</p></td>
+<td><p>Get the time index that is just after the specified time.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_at_time</span></code>(time, /)</p></td>
+<td><p>Get the time index that is the closest to the specified time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_before_time</span></code>(time, /, *[, inclusive])</p></td>
+<td><p>Get the time index that is just before the specified time.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_subset</span></code>(data_keys)</p></td>
+<td><p>Return a subset of the TimeSeries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_event</span></code>(event_name[, …])</p></td>
+<td><p>Get a subset of the TimeSeries after the specified event.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_index</span></code>(index, /, *[, inclusive])</p></td>
+<td><p>Get a subset of the TimeSeries after the specified time index.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_time</span></code>(time, /, *[, inclusive])</p></td>
+<td><p>Get a subset of the TimeSeries after the specified time.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_event</span></code>(event_name[, event_occurrence])</p></td>
+<td><p>Get a one-data subset of the TimeSeries at the event’s nearest time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_time</span></code>(time, /)</p></td>
+<td><p>Get a one-data subset of the TimeSeries at the nearest time.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_event</span></code>(event_name[, …])</p></td>
+<td><p>Get a subset of the TimeSeries before the specified event.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_index</span></code>(index, /, *[, inclusive])</p></td>
+<td><p>Get a subset of the TimeSeries before the specified time index.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_time</span></code>(time, /, *[, inclusive])</p></td>
+<td><p>Get a subset of the TimeSeries before the specified time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_events</span></code>(event_name1, event_name2)</p></td>
+<td><p>Get a subset of the TimeSeries between two specified events.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_indexes</span></code>(index1, index2, /, *)</p></td>
+<td><p>Get a subset of the TimeSeries before two specified time indexes.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_times</span></code>(time1, time2, /, *[, …])</p></td>
+<td><p>Get a subset of the TimeSeries between two specified times.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code>(data_key, /)</p></td>
+<td><p>Return a boolean array of missing samples.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code>(ts[, data_keys, resample, overwrite])</p></td>
+<td><p>Merge another TimeSeries into the current TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code>([data_keys, event_names, legend])</p></td>
+<td><p>Plot the TimeSeries using matplotlib.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data</span></code>(data_key, /)</p></td>
+<td><p>Remove a data key and its associated metadata.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data_info</span></code>(data_key, info_key, /)</p></td>
+<td><p>Remove metadata from a TimeSeries’ data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_event</span></code>(event_name[, event_occurrence])</p></td>
+<td><p>Remove an event.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_data</span></code>(old_data_key, new_data_key, /)</p></td>
+<td><p>Rename a key in data and data_info.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code>(new_time[, kind, fill_value])</p></td>
+<td><p>Resample the TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code>(time, /)</p></td>
+<td><p>Shift time and events.time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_events</span></code>(*[, unique])</p></td>
+<td><p>Sorts the TimeSeries’ events from the earliest to the latest.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_event</span></code>(event_name[, event_occurrence])</p></td>
+<td><p>Shift time and events.time so that event_name is the new time zero.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code>()</p></td>
+<td><p>Create a DataFrame by reshaping all data to one bidimensional table.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code>()</p></td>
+<td><p>Delete the events that are outside the TimeSeries’ time vector.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code>([name, plot, multiple_events])</p></td>
+<td><p>Add one or many events interactively to the TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code>([data_keys, inclusive])</p></td>
+<td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code>([data_keys, ts2, data_keys2])</p></td>
+<td><p>Synchronize one or two TimeSeries by shifting their time.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py method">
 <dt id="kineticstoolkit.timeseries.TimeSeries.add_data_info">
 <code class="sig-name descname">add_data_info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_key</span></em>, <em class="sig-param"><span class="n">info_key</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.add_data_info" title="Permalink to this definition">¶</a></dt>
@@ -623,7 +656,7 @@ data_info attribute could indicate the unit of data[‘Forces’]:</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -663,7 +696,7 @@ supported by scipy.interpolate.interp1d, such as ‘linear’,
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1311,7 +1344,7 @@ False), the duplicate data in ts is ignored.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1339,7 +1372,7 @@ False), the duplicate data in ts is ignored.</p></li>
 <p>plots only the forces and moments, without plotting the angle.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1385,7 +1418,7 @@ False), the duplicate data in ts is ignored.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1419,7 +1452,7 @@ False), the duplicate data in ts is ignored.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1460,7 +1493,7 @@ list, starting at 0, where the occurrences are sorted in time.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1503,7 +1536,7 @@ list, starting at 0, where the occurrences are sorted in time.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1526,7 +1559,7 @@ drastically or even be deleted.</p>
 supported by scipy.interpolate.interp1d, such as ‘linear’,
 ‘nearest’, ‘zero’, ‘slinear’, ‘quadratic’, ‘cubic’, ‘previous’,
 ‘next’. Additionally, kind can be ‘pchip’.</p></li>
-<li><p><strong>fill_value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="docutils literal notranslate"><span class="pre">None</span></code>]) – Optional. The fill value to use if new_time vector contains point
+<li><p><strong>fill_value</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code>]) – Optional. The fill value to use if new_time vector contains point
 outside the current TimeSeries’ time vector. Use ‘extrapolate’ to
 extrapolate.</p></li>
 </ul>
@@ -1562,7 +1595,7 @@ extrapolate.</p></li>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1575,7 +1608,7 @@ extrapolate.</p></li>
 <dd class="field-odd"><p><strong>time_shift</strong> – Time to be added to time and events.time.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1613,7 +1646,7 @@ have both the same name and the same time.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1629,7 +1662,7 @@ have both the same name and the same time.</p>
 </ul>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1676,7 +1709,7 @@ and data_info are not included in the resulting DataFrame.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1753,7 +1786,7 @@ modified by this method.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">None</span></code></p>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1770,21 +1803,6 @@ write for convenience.</p>
 <p>This class is rarely used by itself, it is easier to use the <cite>TimeSeries`</cite>
 methods to deal with events.</p>
 <p class="rubric">Example</p>
-<p><strong>Attributes</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%"/>
-<col style="width: 90%"/>
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeriesEvent.name" title="kineticstoolkit.timeseries.TimeSeriesEvent.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></p></td>
-<td><p>The name of the event.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeriesEvent.time" title="kineticstoolkit.timeseries.TimeSeriesEvent.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></a></p></td>
-<td><p>The time at which the event happened.</p></td>
-</tr>
-</tbody>
-</table>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">event</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeriesEvent</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">event</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">1.5</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">'event_name'</span>
@@ -1792,6 +1810,21 @@ methods to deal with events.</p>
 <span class="go">[1.5, 'event_name']</span>
 </pre></div>
 </div>
+<p><strong>Attributes:</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
+<td><p>The name of the event.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></p></td>
+<td><p>The time at which the event happened.</p></td>
+</tr>
+</tbody>
+</table>
 <dl class="py method">
 <dt id="kineticstoolkit.timeseries.TimeSeriesEvent.name">
 <em class="property">property </em><code class="sig-name descname">name</code><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeriesEvent.name" title="Permalink to this definition">¶</a></dt>
@@ -1992,7 +2025,7 @@ first dimension’s size.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

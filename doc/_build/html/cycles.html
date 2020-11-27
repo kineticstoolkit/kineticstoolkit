@@ -48,8 +48,8 @@
   
   
     <title>Cycles &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -803,13 +803,36 @@ div.rendered_html tbody tr:hover {
 <img alt="_images/cycles_16_0.png" src="_images/cycles_16_0.png"/>
 </div>
 </div>
+<p>It is also possible to include data before 0% and after 100% using the <code class="docutils literal notranslate"><span class="pre">span</span></code> parameter. For example, to include pre-push and post-release data:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts_normalized_on_push_with_span</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">time_normalize</span><span class="p">(</span><span class="n">ts_with_events</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">,</span> <span class="n">span</span><span class="o">=</span><span class="p">[</span><span class="o">-</span><span class="mi">20</span><span class="p">,</span> <span class="mi">125</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ts_normalized_on_push_with_span</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Ftot'</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">ts_normalized_on_push_with_span</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_18_0.png" src="_images/cycles_18_0.png"/>
+</div>
+</div>
+<p>Note that in this case, each time point represents 1% of a push cycle, but the TimeSeries wrap every 145 points (0 to 19 is the pre-push for the first cycle, 20 to 119 is the first push, 120 to 144 is the post-release for the first cycle, etc.).</p>
 
 
 <h2 id="Combining-the-cycles">Combining the cycles<a class="headerlink" href="#Combining-the-cycles" title="Permalink to this headline">¶</a></h2>
 <p>Time-normalizing cycles is often performed in the aim of performing further operations such as computing and visualizing the average cycle. Therefore, the next logical step is often to group the cycles into indexable arrays. This can be done using the <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.stack"><span class="std std-ref">ktk.cycles.stack()</span></a> function.</p>
 <p>In this example, we will stack the data from the last computed TimeSeries.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -819,7 +842,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -836,7 +859,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>The first dimension of each dictionary’s entry corresponds to the cycles. It now becomes easier to perform operations on cycles. For example, we may want to plot the propulsive moment <code class="docutils literal notranslate"><span class="pre">Mz</span></code> (<code class="docutils literal notranslate"><span class="pre">Moments[2]</span></code>) in each cycle one of top of the other:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -858,7 +881,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/cycles_20_0.png" src="_images/cycles_20_0.png"/>
+<img alt="_images/cycles_23_0.png" src="_images/cycles_23_0.png"/>
 </div>
 </div>
 
@@ -866,7 +889,7 @@ div.rendered_html tbody tr:hover {
 <h2 id="Finding-the-most-repeatable-cycles">Finding the most repeatable cycles<a class="headerlink" href="#Finding-the-most-repeatable-cycles" title="Permalink to this headline">¶</a></h2>
 <p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different between each other. We can use the <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.most_repeatable_cycles"><span class="std std-ref">ktk.cycles.most_repeatable_cycles()</span></a> function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -876,7 +899,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -886,7 +909,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <p>We see that cycles 12 (last) and 0 (first) were expectedly found as the least repeatable pushes since they are respectively a braking push and an acceleration push. Now let’s make the same plot of <code class="docutils literal notranslate"><span class="pre">Mz</span></code>, but based only on the five most repeatable cycles.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -908,7 +931,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/cycles_24_0.png" src="_images/cycles_24_0.png"/>
+<img alt="_images/cycles_27_0.png" src="_images/cycles_27_0.png"/>
 </div>
 </div>
 <p>For more information on cycles, please check the <a class="reference internal" href="api/kineticstoolkit.cycles.html"><span class="doc">API Reference for the cycles module</span></a>.</p>
@@ -962,7 +985,7 @@ div.rendered_html tbody tr:hover {
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.2.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

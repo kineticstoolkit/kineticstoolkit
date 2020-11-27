@@ -43,6 +43,8 @@ import warnings
 
 listing = []  # type: List[str]
 
+default_filter_fc = 10  # Hz
+default_filter_order = 2
 
 @unstable(listing)
 def get_anthropometrics(segment_name: str,
@@ -449,10 +451,12 @@ def calculate_proximal_wrench(
 
     if 'COMAcceleration' not in ts.data:
         ts = calculate_com_acceleration(
-            ts, filter_func='butter', fc=6, order=4)
+            ts, filter_func='butter',
+            fc=default_filter_fc, order=default_filter_order)
         warnings.warn(
-            "COMAcceleration not found in input TimeSeries. I calculated it "
-            "using a low-pass ButterWorth filter of order 4 at 6 Hz.")
+            f"COMAcceleration not found in input TimeSeries. I calculated it "
+            f"using a low-pass ButterWorth filter of order "
+            f"{default_filter_order} at {default_filter_fc} Hz.")
 
     # Rotation angle, velocity and acceleration
 
@@ -466,11 +470,12 @@ def calculate_proximal_wrench(
                 "SegmentAngles not found in input TimeSeries. I calculated it.")
 
         ts = calculate_segment_rotation_rates(
-            ts, filter_func='butter', fc=6, order=4)
+            ts, filter_func='butter',
+            fc=default_filter_fc, order=default_filter_order)
         warnings.warn(
-            "AngularVelocity and/or AngularAcceleration not found in input "
-            "TimeSeries. I calculated it using a low-pass ButterWorth filter "
-            "of order 4 at 6 Hz.")
+            f"COMAcceleration not found in input TimeSeries. I calculated it "
+            f"using a low-pass ButterWorth filter of order "
+            f"{default_filter_order} at {default_filter_fc} Hz.")
 
     # Forces line of the wrench equation (16)
     a_i = ts.data['COMAcceleration'][:, 0:3]

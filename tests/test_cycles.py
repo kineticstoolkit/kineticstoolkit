@@ -153,7 +153,7 @@ def test_detect_cycles():
     assert len(ts5.events) == 3
 
 
-def test_normalize():
+def test_time_normalize():
     # Create a TimeSeries with some events directly synced with the data and
     # some other that aren't.
     ts = ktk.TimeSeries()
@@ -195,29 +195,70 @@ def test_normalize():
     assert ~ts2.isnan('test').all()
 
     #Test with a wider range
-    ts3 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=150,
-                                    relative_span=[0, 1.5])
-
-
-
-def test_normalize_extended():
-    """Test normalize with extended_span."""
-    ts = ktk.TimeSeries(time=np.arange(10))
-    ts.data['test'] = np.arange(10) ** 2
-    ts.add_event(2, 'push')
-    ts.add_event(4, 'recovery')
-    ts.add_event(6, 'push')
-
-    ts1 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10)
-    ts2 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=11,
-                                    relative_span=[0, 1.111111111])
-
+    ts3 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=100,
+                                    span=[-25, 125])
     # plt.subplot(2,1,1)
-    # ts1.plot([], '.r')
+    # ts3.plot([], '.r')
     # plt.grid(True)
     # plt.subplot(2,1,2)
-    # ts2.plot([], '.b')
-    # plt.grid(True)
+    # ts1.plot([], '.b')
+
+    assert np.all(np.abs(ts3.data['test'][25:125] -
+                         ts1.data['test'][0:100]) < 1E-12)
+    assert np.all(np.abs(ts3.data['test'][175:275] -
+                         ts1.data['test'][100:200]) < 1E-12)
+    assert np.all(np.abs(ts3.data['test'][325:425] -
+                         ts1.data['test'][200:300]) < 1E-12)
+    assert np.all(np.abs(ts3.data['test'][475:575] -
+                         ts1.data['test'][300:400]) < 1E-12)
+
+    assert ts3.events[0].name == 'push'
+    assert np.abs(ts3.events[0].time - (0 + 25)) < 1E-12
+    assert ts3.events[1].name == 'recovery'
+    assert np.abs(ts3.events[1].time - (0.5 * 99 + 25)) < 1E-12
+    assert ts3.events[2].name == '_'
+    assert np.abs(ts3.events[2].time - (99 + 25)) < 1E-12
+
+    assert ts3.events[3].name == 'push'
+    assert np.abs(ts3.events[3].time - (0 + 175)) < 1E-12
+    assert ts3.events[4].name == 'recovery'
+    assert np.abs(ts3.events[4].time - ((0.95/2) * 99 + 175)) < 1E-12
+    assert ts3.events[5].name == '_'
+    assert np.abs(ts3.events[5].time - (99 + 175)) < 1E-12
+
+    assert ts3.events[6].name == 'push'
+    assert np.abs(ts3.events[6].time - (0 + 325)) < 1E-12
+    assert ts3.events[7].name == 'recovery'
+    assert np.abs(ts3.events[7].time - ((1.05/2.05) * 99 + 325)) < 1E-12
+    assert ts3.events[8].name == '_'
+    assert np.abs(ts3.events[8].time - (99 + 325)) < 1E-12
+
+
+# def test_normalize_extended():
+#     """
+#     Test normalize with extended_span.
+#     Commented because a more exhaustive test is done in test_timenormalize
+#     ts = ktk.TimeSeries(time=np.arange(10))
+#     ts.data['test'] = np.arange(10) ** 2
+#     ts.add_event(2, 'push')
+#     ts.add_event(4, 'recovery')
+#     ts.add_event(6, 'push')
+
+#     ts1 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10)
+#     ts2 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10,
+#                                     span=[0, 11])
+#     ts3 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10,
+#                                     span=[-1, 10])
+
+#     plt.subplot(3,1,1)
+#     ts3.plot([], '.r')
+#     plt.grid(True)
+#     plt.subplot(3,1,2)
+#     ts1.plot([], '.b')
+#     plt.grid(True)
+#     plt.subplot(3,1,3)
+#     ts2.plot([], '.g')
+#     plt.grid(True)
 
 
 
