@@ -32,8 +32,10 @@ The following decorator can be used on each Kinetics Toolkit's's function:
 
     - @private: Undocumented, for private use by the module only.
 
-    Each of these decorators take a list as argument, and adds the function
-    to the list if this function should be added to the __dir__ magic function.
+    Each of these decorators add the _include_in_dir property to the decorated
+    function. The provided function ``directory`` looks at these properties
+    to return a custom __dir__ to Kinematics Toolkit's classes. See such class
+    for example.
 
 """
 
@@ -47,6 +49,7 @@ from functools import wraps
 import warnings
 import textwrap
 import kineticstoolkit.config
+from typing import Dict, Any
 
 
 experimental_docstring = """
@@ -137,95 +140,75 @@ def _inject_in_docstring(docstring: str, text: str) -> str:
     return '\n'.join(result)
 
 
-def stable(listing):
+def stable(func):
     """
     Decorate stable Kinetics Toolkit's functions.
 
     Adds this function to the main documentation.
 
-    Parameter listing is a list of attributes of the module that will be
-    returned by the module's or class' __dir__ function.
     """
-    # Define a new decorator, named "decorator", to return
-    def decorator(func):
-        # Ensure the decorated function keeps its metadata
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Call the function being decorated and return the result
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-                return func(*args, **kwargs)
-
-        listing.append(func.__name__)
-        return wrapper
-    # Return the new decorator
-    return decorator
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Call the function being decorated and return the result
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+            return func(*args, **kwargs)
+    wrapper._include_in_dir = True
+    return wrapper
 
 
-def experimental(listing):
+def experimental(func):
     """
     Decorate experimental Kinetics Toolkit's functions.
 
     Adds this function to the main documentation with no warning for the
     moment. Also adds a warning section to its docstring.
 
-    Parameter listing is a list of attributes of the module that will be
-    returned by the module's or class' __dir__ function.
     """
-    # Define a new decorator, named "decorator", to return
-    def decorator(func):
-        # Ensure the decorated function keeps its metadata
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Call the function being decorated and return the result
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-                return func(*args, **kwargs)
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Call the function being decorated and return the result
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+            return func(*args, **kwargs)
 
-        listing.append(func.__name__)
-        wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, experimental_docstring)
-        return wrapper
-    # Return the new decorator
-    return decorator
+    wrapper.__doc__ = _inject_in_docstring(
+        func.__doc__, experimental_docstring)
+    wrapper._include_in_dir = True
+    return wrapper
 
 
-def deprecated(listing):
+def deprecated(func):
     """
     Decorate deprecated Kinetics Toolkit's functions.
 
     Adds this function to the main documentation and generates a FutureWarning
     on use. Also adds a warning section to its docstring.
 
-    Parameter listing is a list of attributes of the module that will be
-    returned by the module's or class' __dir__ function.
     """
-    # Define a new decorator, named "decorator", to return
-    def decorator(func):
-        # Ensure the decorated function keeps its metadata
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            warnings.warn("This function is deprecated and will be removed "
-                          "in a future version of Kinetics Toolkit. Please "
-                          "consult the API for replacement solutions.",
-                          FutureWarning)
-            # Call the function being decorated and return the result
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-                return func(*args, **kwargs)
-
-        listing.append(func.__name__)
-        wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, deprecated_docstring)
-        return wrapper
-    # Return the new decorator
-    return decorator
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        warnings.warn("This function is deprecated and will be removed "
+                      "in a future version of Kinetics Toolkit. Please "
+                      "consult the API for replacement solutions.",
+                      FutureWarning)
+        # Call the function being decorated and return the result
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+            return func(*args, **kwargs)
+    wrapper.__doc__ = _inject_in_docstring(
+        func.__doc__, deprecated_docstring)
+    wrapper._include_in_dir = True
+    return wrapper
 
 
-def unstable(listing):
+def unstable(func):
     """
     Decorate unstable Kinetics Toolkit's functions.
 
@@ -236,34 +219,31 @@ def unstable(listing):
 
     Also adds a warning section to its docstring.
 
-    Parameter listing is a list of attributes of the module that will be
-    returned by the module's or class' __dir__ function.
     """
-    # Define a new decorator, named "decorator", to return
-    def decorator(func):
-        # Ensure the decorated function keeps its metadata
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Call the function being decorated and return the result
-            if kineticstoolkit.config.version != 'master':
-                warnings.warn(KTKUnstableWarning(
-                    unstable_warning.format(name=func.__name__)))
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Call the function being decorated and return the result
+        if kineticstoolkit.config.version != 'master':
+            warnings.warn(KTKUnstableWarning(
+                unstable_warning.format(name=func.__name__)))
 
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-                return func(*args, **kwargs)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+            return func(*args, **kwargs)
 
-        if kineticstoolkit.config.version == 'master':
-            listing.append(func.__name__)
-        wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, unstable_docstring)
-        return wrapper
-    # Return the new decorator
-    return decorator
+    if kineticstoolkit.config.version == 'master':
+        wrapper._include_in_dir = True
+    else:
+        wrapper._include_in_dir = False
+
+    wrapper.__doc__ = _inject_in_docstring(
+        func.__doc__, unstable_docstring)
+    return wrapper
 
 
-def dead(listing):
+def dead(func):
     """
     Decorate dead Kinetics Toolkit's functions.
 
@@ -273,29 +253,26 @@ def dead(listing):
     Parameter listing is a list of attributes of the module that will be
     returned by the module's or class' __dir__ function.
     """
-    # Define a new decorator, named "decorator", to return
-    def decorator(func):
-        # Ensure the decorated function keeps its metadata
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            warnings.warn("This function is deprecated and will be removed "
-                          "in a future version of Kinetics Toolkit. Please "
-                          "consult the API for replacement solutions.",
-                          FutureWarning)
-            # Call the function being decorated and return the result
-            with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-                return func(*args, **kwargs)
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        warnings.warn("This function is deprecated and will be removed "
+                      "in a future version of Kinetics Toolkit. Please "
+                      "consult the API for replacement solutions.",
+                      FutureWarning)
+        # Call the function being decorated and return the result
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+            return func(*args, **kwargs)
 
-        wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, dead_docstring)
-        return wrapper
-    # Return the new decorator
-    return decorator
+    wrapper.__doc__ = _inject_in_docstring(
+        func.__doc__, dead_docstring)
+    wrapper._include_in_dir = False
+    return wrapper
 
 
-def private(listing):
+def private(func):
     """
     Decorate private Kinetics Toolkit's functions.
 
@@ -304,18 +281,44 @@ def private(listing):
 
     Parameter listing is a list of attributes of the module that will be
     returned by the module's or class' __dir__ function.
+
     """
-    # Define a new decorator, named "decorator", to return
-    def decorator(func):
-        # Ensure the decorated function keeps its metadata
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Call the function being decorated and return the result
-            warnings.warn(KTKPrivateWarning(
-                private_warning.format(name=func.__name__)))
-            return func(*args, **kwargs)
-        wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, private_docstring)
-        return wrapper
-    # Return the new decorator
-    return decorator
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Call the function being decorated and return the result
+        warnings.warn(KTKPrivateWarning(
+            private_warning.format(name=func.__name__)))
+        return func(*args, **kwargs)
+    wrapper.__doc__ = _inject_in_docstring(
+        func.__doc__, private_docstring)
+    wrapper._include_in_dir = False
+    return wrapper
+
+
+def directory(module_locals: Dict[str, Any]):
+    """
+    Return the module's public directory for dir function.
+
+    Parameters
+    ----------
+    module_locals
+        The module's locals as generated by the locals() function.
+
+    Returns
+    -------
+    List of public objects.
+
+    """
+    dir_ = []
+    for key in module_locals:
+        try:
+            if module_locals[key]._include_in_dir:
+                dir_.append(key)
+        except AttributeError:
+            pass
+    return dir_
+
+
+def __dir__():
+    return []

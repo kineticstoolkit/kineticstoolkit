@@ -25,7 +25,7 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.gui as gui
 from kineticstoolkit.loadsave import save, load
-from kineticstoolkit.decorators import unstable, private
+from kineticstoolkit.decorators import unstable, private, directory
 
 import requests
 import os
@@ -33,9 +33,6 @@ from io import StringIO
 import pandas as pd
 import warnings
 from typing import *
-
-
-listing = []  # type: List[str]
 
 
 class DBInterface():
@@ -137,7 +134,7 @@ class DBInterface():
         s += f'--------------------------------------------------\n'
         return s
 
-    @private(listing)
+    @private
     def _fetch_table(self, table_name: str) -> pd.DataFrame:
         global _module_user, _module_password
         url = self.url + '/kineticstoolkit/dbinterface.php'
@@ -160,7 +157,7 @@ class DBInterface():
             print(csv_text)
             raise ValueError('Unknown exception, see above.')
 
-    @private(listing)
+    @private
     def _scan_files(self):
 
         # Scan all files in root folder
@@ -198,7 +195,7 @@ class DBInterface():
         # Convert to a Pandas DataFrame
         return pd.DataFrame(dict_files)
 
-    @private(listing)
+    @private
     def _filter_table(self,
                       table: pd.DataFrame,
                       filters: Dict[str, str]) -> pd.DataFrame:
@@ -208,7 +205,7 @@ class DBInterface():
                 table = table[table[column] == filters[column]]
         return table
 
-    @unstable(listing)
+    @unstable
     def get(self, participant: str = '', session: str = '',
             trial : str = '', file: str = '') -> Dict[str, Any]:
         """
@@ -308,7 +305,7 @@ class DBInterface():
 
         return dict_out
 
-    @private(listing)
+    @private
     def _refresh_tables(self) -> None:
         """Fetch tables on BIOMEC and merge them in the class instance."""
 
@@ -363,14 +360,14 @@ class DBInterface():
         self.tables['Files']['FileLabel'] = \
             self.tables['Files']['FileTypeLabel']
 
-    @unstable(listing)
+    @unstable
     def refresh(self) -> None:
         """Update from database and reindex files."""
 
         self.tables['FileAssociations'] = self._scan_files()
         self._refresh_tables()
 
-    @unstable(listing)
+    @unstable
     def create_file_entry(self, trial_id: int, file_type_label: str) -> None:
         """
         Create a file entry in the database.
@@ -406,7 +403,7 @@ class DBInterface():
         self._refresh_tables()
         return
 
-    @unstable(listing)
+    @unstable
     def save(self, participant: str, session: str, trial: str,
              file: str, variable: Any) -> str:
         """
@@ -486,7 +483,7 @@ class DBInterface():
 
         return file_name
 
-    @unstable(listing)
+    @unstable
     def load(self, participant: str, session: str, trial: str,
              file: str) -> Any:
         """
@@ -514,7 +511,7 @@ class DBInterface():
         return load(self.get(
             participant, session, trial, file)['FileName'])
 
-    @unstable(listing)
+    @unstable
     def rename(self, filename: str, dbfid: int) -> None:
         """
         Rename a file to include or modify a dbfid code in its filename.
@@ -541,7 +538,7 @@ class DBInterface():
 
         os.rename(filename, new_filename)
 
-    @unstable(listing)
+    @unstable
     def tag_files(self,
                   include_trial_name: bool = True,
                   dry_run: bool = True) -> None:
@@ -604,7 +601,7 @@ class DBInterface():
         print('Refreshing project...')
         self.refresh()
 
-    @unstable(listing)
+    @unstable
     def batch_fix_file_type(self,
                             folder: str,
                             new_file_type_label: str,
@@ -736,8 +733,10 @@ class DBInterface():
 
         return out
 
-    def __dir__(self):
-        return listing
+    class_locals = locals()
+
+    def __dir__():
+        return directory(class_locals)
 
 
 if __name__ == "__main__":

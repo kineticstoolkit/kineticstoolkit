@@ -28,7 +28,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.filters as filters
 import kineticstoolkit.cycles as cycles
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import stable, unstable, private, dead
+from kineticstoolkit.decorators import stable, unstable, private, dead, directory
 
 import numpy as np
 from numpy import sin, cos, pi
@@ -38,10 +38,7 @@ import struct  # to unpack binary data from SmartWheels' txt files
 from typing import Union, Optional, List
 
 
-listing = []  # type: List[str]
-
-
-@stable(listing)
+@stable
 def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
@@ -171,7 +168,7 @@ def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     return ts
 
 
-@unstable(listing)
+@unstable
 def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     """
     Find recovery indices based on a vector of propulsion moments.
@@ -225,7 +222,7 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     return index
 
 
-@stable(listing)
+@stable
 def remove_offsets(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -306,7 +303,7 @@ def remove_offsets(
     return kinetics
 
 
-@stable(listing)
+@stable
 def calculate_forces_and_moments(
         kinetics: TimeSeries, /,
         gains: Union[np.ndarray, str],
@@ -448,7 +445,7 @@ def calculate_forces_and_moments(
     return(kinetics)
 
 
-@stable(listing)
+@stable
 def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate velocity based on wheel angle.
@@ -489,7 +486,7 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     return tsout
 
 
-@stable(listing)
+@stable
 def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate power based on wheel velocity and moment.
@@ -514,7 +511,7 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
 
 
 #--- Deprecated functions ---#
-@private(listing)
+@private
 def _old_calculate_forces_and_moments(
         kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
     """
@@ -697,7 +694,7 @@ def _old_calculate_forces_and_moments(
     return(kinetics)
 
 
-@dead(listing)
+@dead
 def detect_pushes(
         tsin: TimeSeries, /, *,
         push_threshold: float = 5.0,
@@ -770,7 +767,7 @@ def detect_pushes(
     return tsout
 
 
-@dead(listing)
+@dead
 def remove_sinusoids(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -850,8 +847,12 @@ CALIBRATION_MATRICES['MSA_Racing_1'] = {
     }
 
 
+module_locals = locals()
+
+
 def __dir__():
-    return listing
+    return directory(module_locals)
+
 
 if __name__ == "__main__":
     import doctest

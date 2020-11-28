@@ -39,14 +39,13 @@ import matplotlib.pyplot as plt
 import sys
 import os
 from typing import Sequence, Union, Tuple, Any, List
-from kineticstoolkit.decorators import experimental, unstable
+from kineticstoolkit.decorators import experimental, unstable, directory
 
 CMDGUI = kineticstoolkit.config.root_folder + "/kineticstoolkit/cmdgui.py"
 _message_window_int = [0]
-listing = []  # type: List[str]
 
 
-@experimental(listing)
+@experimental
 def message(message: str = '') -> None:
     """
     Show a message window.
@@ -88,7 +87,7 @@ def message(message: str = '') -> None:
     plt.pause(0.1)
 
 
-@experimental(listing)
+@experimental
 def button_dialog(message: str = 'Please select an option.',
                   choices: Sequence[str] = ['Cancel', 'OK']) -> int:
     """
@@ -126,7 +125,7 @@ def button_dialog(message: str = 'Please select an option.',
     return button[0]
 
 
-@unstable(listing)
+@unstable
 def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     """
     Define the standard color order for matplotlib.
@@ -165,7 +164,7 @@ def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=thelist)
 
 
-@experimental(listing)
+@experimental
 def get_credentials() -> Tuple[str, str]:
     """
     Ask the user's username and password.
@@ -186,7 +185,7 @@ def get_credentials() -> Tuple[str, str]:
     return tuple(str.split(result))  # type: ignore
 
 
-@experimental(listing)
+@experimental
 def get_folder(initial_folder: str = '.') -> str:
     """
     Get folder interactively using a file dialog window.
@@ -211,7 +210,7 @@ def get_folder(initial_folder: str = '.') -> str:
     return result
 
 
-@experimental(listing)
+@experimental
 def get_filename(initial_folder: str = '.') -> str:
     """
     Get file name interactively using a file dialog window.
@@ -236,5 +235,8 @@ def get_filename(initial_folder: str = '.') -> str:
     return result
 
 
+module_locals = locals()
+
+
 def __dir__():
-    return listing
+    return directory(module_locals)

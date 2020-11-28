@@ -49,7 +49,7 @@ Lower level modules, classes and functions
 
 - `cycles` : a module that detects, time-normalizes and stacks cycles (e.g., gait cycles,
   wheelchair propulsion cycles, etc.)
-  
+
 - `save` and `load` : two functions to save and load results to/from JSON-based `ktk.zip` files.
 
 - other helper functions.
@@ -112,7 +112,7 @@ Site map
 ---------
 
 .. toctree::
-    :maxdepth: 3
+    :maxdepth: 2
 
     install
     install_develop

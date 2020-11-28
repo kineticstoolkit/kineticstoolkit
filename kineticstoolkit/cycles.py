@@ -28,15 +28,12 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.decorators import stable, experimental
+from kineticstoolkit.decorators import stable, experimental, directory
 import warnings
 from typing import List, Dict, Tuple, Sequence, Optional
 
 
-listing = []  # type: List[str]
-
-
-@stable(listing)
+@stable
 def detect_cycles(ts: TimeSeries,
                   data_key: str, /,
                   event_name1: str,
@@ -191,7 +188,7 @@ def detect_cycles(ts: TimeSeries,
     return tsout
 
 
-@experimental(listing)
+@experimental
 def time_normalize(
         ts: TimeSeries, /,
         event_name1: str,
@@ -369,7 +366,7 @@ def time_normalize(
     return dest_ts
 
 
-@stable(listing)
+@stable
 def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
@@ -410,7 +407,7 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     return data
 
 
-@stable(listing)
+@stable
 def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
@@ -513,7 +510,7 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
 #     return out
 
 
-@stable(listing)
+@stable
 def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
@@ -601,8 +598,11 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     return out_cycles[-1::-1]
 
 
-def __dir__() -> List[str]:
-    return listing
+module_locals = locals()
+
+
+def __dir__():
+    return directory(module_locals)
 
 
 if __name__ == "__main__":

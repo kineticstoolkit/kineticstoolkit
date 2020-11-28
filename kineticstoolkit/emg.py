@@ -32,15 +32,12 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import unstable
+from kineticstoolkit.decorators import unstable, directory
 import pandas as pd
 from typing import Dict, List
 
 
-listing = []  # type: List[str]
-
-
-@unstable(listing)
+@unstable
 def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
     """
     Read a CSV file exported from Delsys Trigno converter.
@@ -105,5 +102,8 @@ def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
     return {'emg': emg, 'acc': acc, 'gyro': gyro, 'mag': mag}
 
 
+module_locals = locals()
+
+
 def __dir__():
-    return listing
+    return directory(module_locals)

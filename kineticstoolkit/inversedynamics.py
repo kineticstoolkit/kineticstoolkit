@@ -32,7 +32,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.filters
-from kineticstoolkit.decorators import unstable, private
+from kineticstoolkit.decorators import unstable, private, directory
 
 import numpy as np
 from typing import Dict, List
@@ -41,12 +41,10 @@ from kineticstoolkit import TimeSeries
 import warnings
 
 
-listing = []  # type: List[str]
-
 default_filter_fc = 10  # Hz
 default_filter_order = 2
 
-@unstable(listing)
+@unstable
 def get_anthropometrics(segment_name: str,
                         total_mass: float) -> Dict[str, float]:
     """
@@ -126,7 +124,7 @@ def get_anthropometrics(segment_name: str,
         raise ValueError(f'The segment "{segment_name}" is not available.')
 
 
-@unstable(listing)
+@unstable
 def calculate_com_position(
         ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
     """
@@ -164,7 +162,7 @@ def calculate_com_position(
     return ts
 
 
-@unstable(listing)
+@unstable
 def calculate_com_acceleration(
         ts: TimeSeries, filter_func: str, **kwargs) -> TimeSeries:
     """
@@ -244,7 +242,7 @@ def calculate_com_acceleration(
         raise ValueError('Unknown filter type')
 
 
-@unstable(listing)
+@unstable
 def calculate_segment_angles(ts: TimeSeries) -> TimeSeries:
     """
     Calculate the segment's projection angles in the three axes.
@@ -286,7 +284,7 @@ def calculate_segment_angles(ts: TimeSeries) -> TimeSeries:
     return ts
 
 
-@unstable(listing)
+@unstable
 def calculate_segment_rotation_rates(
         ts: TimeSeries, filter_func: str, **kwargs) -> TimeSeries:
     """
@@ -375,7 +373,7 @@ def calculate_segment_rotation_rates(
         raise ValueError('Unknown filter type')
 
 
-@unstable(listing)
+@unstable
 def calculate_proximal_wrench(
         ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
     """
@@ -547,5 +545,8 @@ def calculate_proximal_wrench(
     return ts
 
 
+module_locals = locals()
+
+
 def __dir__():
-    return listing
+    return directory(module_locals)

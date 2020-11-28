@@ -31,7 +31,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
-from kineticstoolkit.decorators import stable, unstable, experimental
+from kineticstoolkit.decorators import stable, unstable, experimental, directory
 
 import os
 import sys
@@ -41,10 +41,7 @@ import warnings
 from typing import Dict, List
 
 
-listing = []  # type: List[str]
-
-
-@stable(listing)
+@stable
 def explore(folder_name: str = '') -> None:
     """
     Open an Explorer window (on Windows) or a Finder window (on macOS)
@@ -70,7 +67,7 @@ def explore(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
-@stable(listing)
+@stable
 def terminal(folder_name: str = '') -> None:
     """
     Open a terminal window.
@@ -106,7 +103,7 @@ def terminal(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
-@stable(listing)
+@stable
 def start_lab_mode(*, config: Dict[str, bool] = {
         'change_ipython_dict_repr': True,
         'change_matplotlib_defaults': True,
@@ -174,7 +171,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
 
 
 
-@unstable(listing)
+@unstable
 def update() -> None:
     """
     Update Kinetics Toolkit to the latest master branch.
@@ -212,7 +209,7 @@ def update() -> None:
              '\'; git pull origin master"')])
 
 
-@experimental(listing)
+@experimental
 def tutorials() -> None:
     """
     Open the Kinetics Toolkits tutorials in a web browser.
@@ -224,5 +221,8 @@ def tutorials() -> None:
                      new=2)
 
 
+module_locals = locals()
+
+
 def __dir__():
-    return listing
+    return directory(module_locals)

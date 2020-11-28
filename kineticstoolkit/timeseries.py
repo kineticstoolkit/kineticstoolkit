@@ -30,7 +30,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import stable, experimental, unstable
+from kineticstoolkit.decorators import stable, experimental, unstable, directory
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -42,9 +42,6 @@ from copy import deepcopy
 from typing import Dict, List, Tuple, Any, Union
 
 import kineticstoolkit as ktk  # For doctests
-
-
-ts_listing = []  # type: List[str]
 
 
 def dataframe_to_dict_of_arrays(
@@ -447,7 +444,7 @@ class TimeSeries():
 
         return True
 
-    @stable(ts_listing)
+    @stable
     def to_dataframe(self) -> pd.DataFrame:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
@@ -466,7 +463,7 @@ class TimeSeries():
         df.index = self.time
         return df
 
-    @stable(ts_listing)
+    @stable
     def from_dataframe(dataframe: pd.DataFrame, /) -> 'TimeSeries':
         """
         Create a new TimeSeries from a Pandas Dataframe
@@ -494,7 +491,7 @@ class TimeSeries():
         ts.time = dataframe.index.to_numpy()
         return ts
 
-    @stable(ts_listing)
+    @stable
     def add_data_info(self, data_key: str, info_key: str, value: Any) -> None:
         """
         Add metadata to TimeSeries' data.
@@ -534,7 +531,7 @@ class TimeSeries():
         else:  # Create and assign value
             self.data_info[data_key] = {info_key: value}
 
-    @stable(ts_listing)
+    @stable
     def remove_data_info(self, data_key: str, info_key: str, /) -> None:
         """
         Remove metadata from a TimeSeries' data.
@@ -567,7 +564,7 @@ class TimeSeries():
         except KeyError:
             pass
 
-    @stable(ts_listing)
+    @stable
     def rename_data(self, old_data_key: str, new_data_key: str, /) -> None:
         """
         Rename a key in data and data_info.
@@ -605,7 +602,7 @@ class TimeSeries():
         if old_data_key in self.data_info:
             self.data_info[new_data_key] = self.data_info.pop(old_data_key)
 
-    @stable(ts_listing)
+    @stable
     def remove_data(self, data_key: str, /) -> None:
         """
         Remove a data key and its associated metadata.
@@ -651,7 +648,7 @@ class TimeSeries():
         except KeyError:
             pass
 
-    @stable(ts_listing)
+    @stable
     def add_event(self, time: float, name: str = 'event') -> None:
         """
         Add an event to the TimeSeries.
@@ -676,7 +673,7 @@ class TimeSeries():
         """
         self.events.append(TimeSeriesEvent(time, name))
 
-    @stable(ts_listing)
+    @stable
     def remove_event(self,
                      event_name: str, event_occurrence : int = 0, /) -> None:
         """
@@ -719,7 +716,7 @@ class TimeSeries():
                 new_events.append(event)
         self.events = new_events
 
-    @stable(ts_listing)
+    @stable
     def ui_add_event(self,
                      name: str = 'event',
                      plot: Union[str, List[str]] = [], /, *,
@@ -803,7 +800,7 @@ class TimeSeries():
         self.events = ts.events  # Add the events to self.
         return True
 
-    @stable(ts_listing)
+    @stable
     def sort_events(self, *, unique: bool = True) -> None:
         """
         Sorts the TimeSeries' events from the earliest to the latest.
@@ -842,12 +839,12 @@ class TimeSeries():
                         (self.events[i].name == self.events[i - 1].name)):
                     self.events.pop(i)
 
-    @stable(ts_listing)
+    @stable
     def copy(self) -> 'TimeSeries':
         """Deep copy of a TimeSeries."""
         return deepcopy(self)
 
-    @stable(ts_listing)
+    @stable
     def plot(self,
              data_keys: Union[str, List[str]] = [],
              /, *args,
@@ -972,7 +969,7 @@ class TimeSeries():
             axes.legend(loc=legend_location,
                        ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
-    @stable(ts_listing)
+    @stable
     def get_index_at_time(self, time: float, /) -> int:
         """
         Get the time index that is the closest to the specified time.
@@ -1003,7 +1000,7 @@ class TimeSeries():
         """
         return np.argmin(np.abs(self.time - float(time)))
 
-    @stable(ts_listing)
+    @stable
     def get_index_before_time(self, time: float, /, *,
                               inclusive: bool = False) -> int:
         """
@@ -1058,7 +1055,7 @@ class TimeSeries():
         else:
             return np.nan
 
-    @stable(ts_listing)
+    @stable
     def get_index_after_time(self, time: float, /, *,
                              inclusive: bool = False) -> int:
         """
@@ -1113,7 +1110,7 @@ class TimeSeries():
         else:
             return np.nan
 
-    @stable(ts_listing)
+    @stable
     def get_event_time(self, event_name: str,
                        event_occurrence: int = 0, /) -> float:
         """
@@ -1169,7 +1166,7 @@ class TimeSeries():
             the_event_times = np.sort(the_event_times)
             return the_event_times[event_occurrence]
 
-    @stable(ts_listing)
+    @stable
     def get_ts_at_time(self, time: float, /) -> 'TimeSeries':
         """
         Get a one-data subset of the TimeSeries at the nearest time.
@@ -1208,7 +1205,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    @stable(ts_listing)
+    @stable
     def get_ts_at_event(self, event_name: str,
                         event_occurrence: int = 0, /) -> 'TimeSeries':
         """
@@ -1231,7 +1228,7 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_at_time(time)
 
-    @stable(ts_listing)
+    @stable
     def get_ts_before_index(self, index: int, /, *,
                             inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1271,7 +1268,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    @stable(ts_listing)
+    @stable
     def get_ts_after_index(self, index: int, /, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1311,7 +1308,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    @stable(ts_listing)
+    @stable
     def get_ts_between_indexes(self, index1: int, index2: int, /, *,
                                inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1351,7 +1348,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    @stable(ts_listing)
+    @stable
     def get_ts_before_time(self, time: float, /, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1380,7 +1377,7 @@ class TimeSeries():
         index = self.get_index_before_time(time, inclusive=inclusive)
         return self.get_ts_before_index(index, inclusive=True)
 
-    @stable(ts_listing)
+    @stable
     def get_ts_after_time(self, time: float, /, *,
                           inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1411,7 +1408,7 @@ class TimeSeries():
         index = self.get_index_after_time(time, inclusive=inclusive)
         return self.get_ts_after_index(index, inclusive=True)
 
-    @stable(ts_listing)
+    @stable
     def get_ts_between_times(self, time1: float, time2: float, /, *,
                              inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1444,7 +1441,7 @@ class TimeSeries():
                                            inclusive=inclusive)
         return new_ts
 
-    @stable(ts_listing)
+    @stable
     def get_ts_before_event(self, event_name: str,
                             event_occurrence: int = 0, /, *,
                             inclusive: bool = False) -> 'TimeSeries':
@@ -1485,7 +1482,7 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_before_time(time, inclusive=inclusive)
 
-    @stable(ts_listing)
+    @stable
     def get_ts_after_event(self, event_name: str,
                            event_occurrence: int = 0, /, *,
                            inclusive: bool = False) -> 'TimeSeries':
@@ -1526,7 +1523,7 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_after_time(time, inclusive=inclusive)
 
-    @stable(ts_listing)
+    @stable
     def get_ts_between_events(self, event_name1: str, event_name2: str,
                               event_occurrence1: int = 0,
                               event_occurrence2: int = 0,
@@ -1566,7 +1563,7 @@ class TimeSeries():
                                     inclusive=inclusive)
         return ts
 
-    @stable(ts_listing)
+    @stable
     def ui_get_ts_between_clicks(
             self,
             data_keys: Union[str, List[str]] = [], /, *,
@@ -1594,7 +1591,7 @@ class TimeSeries():
         return self.get_ts_between_times(min(times), max(times),
                                          inclusive=inclusive)
 
-    @stable(ts_listing)
+    @stable
     def isnan(self, data_key: str, /) -> np.ndarray:
         """
         Return a boolean array of missing samples.
@@ -1617,7 +1614,7 @@ class TimeSeries():
             values = np.sum(values, 1)
         return np.isnan(values)
 
-    @experimental(ts_listing)
+    @experimental
     def fill_missing_samples(self, max_missing_samples: int, *,
                              method: str = 'linear') -> None:
         """
@@ -1665,7 +1662,7 @@ class TimeSeries():
 
             self.data[data] = ts.data[data]
 
-    @stable(ts_listing)
+    @stable
     def shift(self, time: float, /) -> None:
         """
         Shift time and events.time.
@@ -1680,7 +1677,7 @@ class TimeSeries():
             event.time = event.time + time
         self.time = self.time + time
 
-    @stable(ts_listing)
+    @stable
     def sync_event(self, event_name: str,
                    event_occurrence: int = 0, /) -> None:
         """
@@ -1696,7 +1693,7 @@ class TimeSeries():
         """
         self.shift(-self.get_event_time(event_name, event_occurrence))
 
-    @stable(ts_listing)
+    @stable
     def trim_events(self) -> None:
         """
         Delete the events that are outside the TimeSeries' time vector.
@@ -1726,7 +1723,7 @@ class TimeSeries():
             if event.time >= self.time[0] and event.time <= self.time[-1]:
                 self.add_event(event.time, event.name)
 
-    @experimental(ts_listing)
+    @experimental
     def ui_sync(self,
                 data_keys: Union[str, List[str]] = [],
                 ts2: Union['TimeSeries', None] = None,
@@ -1860,7 +1857,7 @@ class TimeSeries():
                     plt.close(fig)
                     finished = True
 
-    @stable(ts_listing)
+    @stable
     def get_subset(self, data_keys: Union[str, List[str]]) -> 'TimeSeries':
         """
         Return a subset of the TimeSeries.
@@ -1909,7 +1906,7 @@ class TimeSeries():
 
         return ts
 
-    @unstable(ts_listing)
+    @unstable
     def resample(self,
                  new_time: np.ndarray,
                  kind: str = 'linear', *,
@@ -2010,7 +2007,7 @@ class TimeSeries():
 
         self.time = new_time
 
-    @experimental(ts_listing)
+    @experimental
     def merge(self,
               ts: 'TimeSeries',
               data_keys: Union[str, List[str]] = [], /, *,
@@ -2085,10 +2082,10 @@ class TimeSeries():
             self.events.append(event)
         self.sort_events()
 
+    class_locals = locals()
+
     def __dir__(self):
-        """Dir for the TimeSeries."""
-        print('allo')
-        return ts_listing
+        return directory(self.class_locals)
 
 
 if __name__ == "__main__":

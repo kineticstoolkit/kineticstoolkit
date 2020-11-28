@@ -27,7 +27,7 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import stable, unstable
+from kineticstoolkit.decorators import stable, unstable, directory
 from typing import Sequence, Dict, Any, List
 
 import numpy as np
@@ -41,10 +41,7 @@ except ModuleNotFoundError:
                   'will not work.')
 
 
-listing = []  # type: List[str]
-
-
-@stable(listing)
+@stable
 def read_c3d_file(filename: str) -> TimeSeries:
     """
     Read markers from a C3D file.
@@ -115,7 +112,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
     return output
 
 
-@stable(listing)
+@stable
 def read_n3d_file(filename: str, labels: Sequence[str] = []):
     """
     Read markers from an NDI N3D file.
@@ -303,7 +300,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
-@unstable(listing)
+@unstable
 def create_rigid_body_config(
     markers: TimeSeries,
     marker_names: Sequence[str]
@@ -355,7 +352,7 @@ def create_rigid_body_config(
             }
 
 
-@unstable(listing)
+@unstable
 def register_markers(
         markers: TimeSeries,
         rigid_body_configs: Dict[str, Dict[str, Any]],
@@ -415,7 +412,7 @@ def register_markers(
     return rigid_bodies
 
 
-@unstable(listing)
+@unstable
 def create_virtual_marker_config(
         markers: TimeSeries,
         rigid_bodies: TimeSeries,
@@ -466,7 +463,7 @@ def create_virtual_marker_config(
             'LocalPoint': local_points}
 
 
-@unstable(listing)
+@unstable
 def write_trc_file(markers: TimeSeries, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
@@ -522,5 +519,8 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
             fid.write('\n')
 
 
+module_locals = locals()
+
+
 def __dir__():
-    return listing
+    return directory(module_locals)
