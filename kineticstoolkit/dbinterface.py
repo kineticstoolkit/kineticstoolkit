@@ -733,10 +733,8 @@ class DBInterface():
 
         return out
 
-    class_locals = locals()
-
-    def __dir__():
-        return directory(class_locals)
+    def __dir__(self):
+        return directory(self.__dict__)
 
 
 if __name__ == "__main__":

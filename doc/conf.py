@@ -41,7 +41,7 @@ extensions = [
 ]
 
 autodoc_default_options = {
-#    'autosummary': True,
+    'autosummary': True,
     'autodoc_typehints': 'description',
     'autosummary-imported-members': False,
 }

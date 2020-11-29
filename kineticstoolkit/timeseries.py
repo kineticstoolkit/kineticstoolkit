@@ -389,6 +389,9 @@ class TimeSeries():
         self.data_info = data_info.copy()
         self.events = events.copy()
 
+    def __dir__(self):
+        return directory(TimeSeries.__dict__)
+
     def __str__(self):
         """
         Print a textual descriptive of the TimeSeries contents.
@@ -2081,11 +2084,6 @@ class TimeSeries():
         for event in ts.events:
             self.events.append(event)
         self.sort_events()
-
-    class_locals = locals()
-
-    def __dir__(self):
-        return directory(self.class_locals)
 
 
 if __name__ == "__main__":

@@ -49,7 +49,7 @@ from functools import wraps
 import warnings
 import textwrap
 import kineticstoolkit.config
-from typing import Dict, Any
+from typing import Dict, List, Any
 
 
 experimental_docstring = """
@@ -296,7 +296,7 @@ def private(func):
     return wrapper
 
 
-def directory(module_locals: Dict[str, Any]):
+def directory(module_locals: Dict[str, Any]) -> List[str]:
     """
     Return the module's public directory for dir function.
 

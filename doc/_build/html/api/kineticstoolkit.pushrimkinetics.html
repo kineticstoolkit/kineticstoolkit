@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>kineticstoolkit.pushrimkinetics module &#8212; Kinetics Toolkit master documentation</title>
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/material.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../_static/css/custom.css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="kineticstoolkit.timeseries module" href="kineticstoolkit.timeseries.html" />
+    <link rel="prev" title="kineticstoolkit.player module" href="kineticstoolkit.player.html" />
+
+
+
+  
+   
+
+  </head>
+  <body dir=ltr
+        data-md-color-primary=white data-md-color-accent=orange>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#api/kineticstoolkit.pushrimkinetics" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="Kinetics Toolkit master documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/logo.png" height="26"
+                   alt="Kinetics Toolkit master documentation logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">Kinetics Toolkit</span>
+          <span class="md-header-nav__topic"> kineticstoolkit.pushrimkinetics module </span>
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" action="../search.html" method="GET" name="search">
+      <input type="text" class="md-search__input" name="q" placeholder="Search"
+             autocapitalize="off" autocomplete="off" spellcheck="false"
+             data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    kineticstoolkit
+  </div>
+</a>
+          </div>
+        </div>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
+
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../api_reference.html" class="md-tabs__link">API Reference</a></li>
+          <li class="md-tabs__item"><a href="modules.html" class="md-tabs__link">kineticstoolkit</a></li>
+          <li class="md-tabs__item"><a href="kineticstoolkit.html" class="md-tabs__link">kineticstoolkit package</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/logo.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    kineticstoolkit
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+    
+      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../labmode.html" class="md-nav__link">Lab mode</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../geometry.html" class="md-nav__link">Geometry</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../filters.html" class="md-nav__link">Filters</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../kinematics.html" class="md-nav__link">Kinematics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../cycles.html" class="md-nav__link">Cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../release_notes.html" class="md-nav__link">Release Notes</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../api_reference.html" class="md-nav__link">API Reference</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+  <ul class="md-nav__list" data-md-scrollfix="">
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
+            
+  
+<span id="kineticstoolkit-pushrimkinetics-module"></span><h1 id="api-kineticstoolkit-pushrimkinetics--page-root">kineticstoolkit.pushrimkinetics module<a class="headerlink" href="#api-kineticstoolkit-pushrimkinetics--page-root" title="Permalink to this headline">¶</a></h1>
+<p>Provide functions to process kinetic data from instrumented wheelchair wheels.</p>
+<p><strong>Functions</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%"/>
+<col style="width: 90%"/>
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments" title="kineticstoolkit.pushrimkinetics.calculate_forces_and_moments"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_forces_and_moments</span></code></a>(kinetics, /, gains)</p></td>
+<td><p>Calculate pushrim forces and moments based on raw channel values.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.calculate_power" title="kineticstoolkit.pushrimkinetics.calculate_power"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_power</span></code></a>(tsin, /)</p></td>
+<td><p>Calculate power based on wheel velocity and moment.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.calculate_velocity" title="kineticstoolkit.pushrimkinetics.calculate_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_velocity</span></code></a>(tsin, /)</p></td>
+<td><p>Calculate velocity based on wheel angle.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.find_recovery_indices" title="kineticstoolkit.pushrimkinetics.find_recovery_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_recovery_indices</span></code></a>(Mz, /)</p></td>
+<td><p>Find recovery indices based on a vector of propulsion moments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.read_file" title="kineticstoolkit.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename, /[, file_format])</p></td>
+<td><p>Read a file containing pushrim kinetics data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.remove_offsets" title="kineticstoolkit.pushrimkinetics.remove_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_offsets</span></code></a>(kinetics[, baseline_kinetics])</p></td>
+<td><p>Remove dynamic offsets in forces and moments.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.calculate_forces_and_moments">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_forces_and_moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">gains</span></em>, <em class="sig-param"><span class="n">offsets</span><span class="o">=</span><span class="default_value">array([0., 0., 0., 0., 0., 0.])</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transducer</span><span class="o">=</span><span class="default_value">'force_cell'</span></em>, <em class="sig-param"><span class="n">reference_frame</span><span class="o">=</span><span class="default_value">'wheel'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate pushrim forces and moments based on raw channel values.</p>
+<p>For standard force cells (with each channel being a raw value
+corresponding to Fx, Fy, Fz, Mx, My, Mz, respectively), calculates
+the forces and moments using a sensitivity matrix (gains) and an
+offset vector (offsets):</p>
+<p><code class="docutils literal notranslate"><span class="pre">[Fx,</span> <span class="pre">Fy,</span> <span class="pre">Fz,</span> <span class="pre">Mx,</span> <span class="pre">My,</span> <span class="pre">Mz]</span> <span class="pre">=</span> <span class="pre">gains</span> <span class="pre">@</span> <span class="pre">channels</span> <span class="pre">+</span> <span class="pre">offsets</span></code></p>
+<p>For SmartWheel, calculates the forces and moments using a gain
+vector (gains) and an offset vector (offsets).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kinetics</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries that must contain a ‘Channels’ key in its data dict.</p></li>
+<li><p><strong>gains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – 6x6 gain matrix (force_cell) or gain vector of length 6 (smartwheel).</p></li>
+<li><p><strong>offsets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Optional. Offset vector of length 6.</p></li>
+<li><p><strong>transducer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘force_cell’ or ‘smartwheel’.</p></li>
+<li><p><strong>reference_frame</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘wheel’ or ‘hub’. ‘wheel’ to report the forces and moments
+into the local wheel’s reference frame; ‘hub’ to compensate for the
+wheel rotation and match the reference frame used by the SmartWheel:
+x anteroposterior, y in the wheel plane, upward for non-camberred
+wheels, and z perpendicular to the wheel plane, outward.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the input TimeSeries, with the added ‘Forces’
+and ‘Moments’ data keys.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Some calibration matrices are provided as examples in the
+<code class="docutils literal notranslate"><span class="pre">pushrimkinetics.CALIBRATION_MATRICES</span></code> dictionary. This dictionary can
+be used directly using dict unpacking. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_force_and_moments</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">CALIBRATION_MATRICES</span><span class="p">[</span><span class="s1">'SmartWheel_123'</span><span class="p">],</span>
+    <span class="n">reference_frame</span><span class="o">=</span><span class="s1">'level'</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.calculate_power">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate power based on wheel velocity and moment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tsin</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the data keys ‘Velocity’ and
+‘Moments’. The units must be consistent (e.g., rad/s and Nm)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the TimeSeries with the added data key ‘Power’.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.calculate_velocity">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_velocity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_velocity" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate velocity based on wheel angle.</p>
+<p>The velocity is calculated by deriving the angle using a 2nd order
+Savitzky-Golay filter of length 21. This filter has been experimentally
+validated to maximize the signal-to-noise ratio for a SmartWheel recording
+at 240 Hz. This function may change signature in the future to include
+other filtering options. To manually get the velocity using a custom
+filter, please see the <code class="docutils literal notranslate"><span class="pre">ktk.filters</span></code> module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>tsin</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the data key ‘Angle’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the TimeSeries with the added data key ‘Velocity’.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.butter</span></code></dt><dd><p>Butterworth filter for TimeSeries</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.savgol</span></code></dt><dd><p>Savitsky-golay filter for TimeSeries</p>
+</dd>
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.deriv</span></code></dt><dd><p>Derivative filter for TimeSeries</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.find_recovery_indices">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">find_recovery_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Mz</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.find_recovery_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find recovery indices based on a vector of propulsion moments.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+It may not have been validated, it may change signature and behaviour
+drastically or even be deleted.</p>
+</div>
+<p>This function analyzes the Mz moments to find which data correspond to
+pushes and which data correspond to recoveries. The method is very
+conservative on what could be considered as a recovery, so that every
+index returned by this function is almost certain to correspond to a
+recovery. This function is used by <cite>pushrimkinetics.remove_sinusoids</cite>
+to identify the instants with no hand contact. It should not be used to
+isolate the push and recovery phases (use <cite>ktk.cycles.detect_cycles()</cite>
+instead).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Mz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Array that contains the propulsion moments in Nm.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of bools where each True represents recovery.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles</span></code></p>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.read_file">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">read_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">file_format</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.read_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a file containing pushrim kinetics data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the file to open</p></li>
+<li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Format of the file. Can be either:</p>
+<ul>
+<li><p>’smartwheel’ (SmartWheel CSV file)</p></li>
+<li><p>’smartwheeltxt’ (SmartWheel SD-Card TXT file)</p></li>
+<li><p>’racingwheel’ (will change)</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.remove_offsets">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">remove_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">baseline_kinetics</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.remove_offsets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Remove dynamic offsets in forces and moments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kinetics</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least Forces, Moments and Angle data.</p></li>
+<li><p><strong>baseline_kinetics</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – Optional. TimeSeries that contains at least Forces and Moments data.
+This TimeSeries contains a baseline trial, where the wheelchair must be
+pushed by an operator and where no external force must be applied on
+the pushrims. If no baseline is provided, the baseline is calculated
+based on a detection of recoveries in the supplied kinetics
+TimeSeries.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A copy of the input TimeSeries, where sinusoids are removed from
+Forces and Moments data.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+<div class="admonition-references admonition">
+<p class="admonition-title">References</p>
+<p>F. Chénier, R. Aissaoui, C. Gauthier, and D. H. Gagnon,
+“Wheelchair pushrim kinetics measurement: A method to cancel
+inaccuracies due to pushrim weight and wheel camber,” Medical
+Engineering and Physics, vol. 40, pp. 75–86, 2017.</p>
+</div>
+</dd></dl>
+
+
+
+          </article>
+        </div>
+      </div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="kineticstoolkit.player.html" title="kineticstoolkit.player module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> kineticstoolkit.player module </span>
+              </div>
+            </a>
+          
+          
+            <a href="kineticstoolkit.timeseries.html" title="kineticstoolkit.timeseries module"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> kineticstoolkit.timeseries module </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
+    </div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2020, Félix Chénier.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
+  </body>
+</html>
