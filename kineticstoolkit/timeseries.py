@@ -885,6 +885,9 @@ class TimeSeries():
         else:
             ts = self.get_subset(data_keys)
 
+        if len(ts.data) == 0:
+            raise ValueError('There is no data to plot.')
+
         # Sort events to help finding each event's occurrence
         ts.sort_events(unique=False)
 
