@@ -36,6 +36,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 import pandas as pd
+import xarray as xr
 import warnings
 from ast import literal_eval
 from copy import deepcopy
@@ -446,6 +447,22 @@ class TimeSeries():
             return False
 
         return True
+
+    @unstable
+    def to_dataset(self) -> xr.Dataset:
+        """
+        Export the main TimeSeries contents to an xarray Dataset.
+
+        For now, metadata and events are not exported. This function is a test
+        and may disappear. For now this is mainly to experiment with xarray.
+
+        """
+        dataset = xr.Dataset()
+        for key in self.data:
+            dataset[key] = xr.DataArray(
+                self.data[key])
+            dataset[key] = dataset[key].rename({'dim_0': 'time'})
+            dataset[key] = dataset[key].assign_coords({'time': self.time})
 
     @stable
     def to_dataframe(self) -> pd.DataFrame:
