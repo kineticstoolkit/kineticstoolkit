@@ -125,8 +125,8 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         'change_ipython_dict_repr' :
             True to summarize defaults dict printouts in IPython.
         'change_matplotlib_defaults' :
-            True to change default figure size, dpi, line width and color
-            order in Matplotlib.
+            True to change default figure size, autolayout, dpi, line width
+            and color order in Matplotlib.
         'change_numpy_print_options' :
             True to change default print options in numpy to use fixed point
             notation in printouts.
@@ -156,6 +156,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         _mpl.rcParams['figure.figsize'] = [10, 5]
         _mpl.rcParams['figure.dpi'] = 75
         _mpl.rcParams['lines.linewidth'] = 1
+        _mpl.rcParams['figure.autolayout'] = True
         kineticstoolkit.gui.set_color_order('xyz')
 
     if config['change_numpy_print_options']:

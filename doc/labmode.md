@@ -83,6 +83,9 @@ the following modifications are made to default matplotlib figures:
 
 - The standard figure size is changed to [10, 5], which is a little bigger
   than the default and is thus more practical for interactive navigation.
+  
+- The standard figure autolayout is changed to True, so that figures automatically
+  adapt to resizing.
 
 - The default color order is changed to (rgbcmyko) with o being orange. The
   first colors, red, green and blue, are consistent the colours assigned to
