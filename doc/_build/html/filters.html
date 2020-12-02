@@ -47,7 +47,7 @@
   
   
   
-    <title>Filters &#8212; Kinetics Toolkit master documentation</title>
+    <title>Filtering TimeSeries &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -59,8 +59,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Kinematics" href="kinematics.html" />
-    <link rel="prev" title="Geometry" href="geometry.html" />
+    <link rel="next" title="Detecting and normalizing cycles" href="cycles.html" />
+    <link rel="prev" title="Getting started with TimeSeries" href="timeseries.html" />
 
 
 
@@ -101,7 +101,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Filters </span>
+          <span class="md-header-nav__topic"> Filtering TimeSeries </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -208,6 +208,11 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="install.html" class="md-nav__link">Installing the stable version</a>
       
@@ -222,9 +227,7 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -237,30 +240,16 @@
     <li class="md-nav__item">
     
     
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Filters </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Filtering TimeSeries </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">Filters</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Filtering TimeSeries</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#filters--page-root" class="md-nav__link">Filters</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#filters--page-root" class="md-nav__link">Filtering TimeSeries</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" class="md-nav__link">Filtering a TimeSeries using a Butterworth filter</a>
         </li>
@@ -284,14 +273,40 @@
     <li class="md-nav__item">
     
     
-      <a href="kinematics.html" class="md-nav__link">Kinematics</a>
+      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
       
     
     </li>
@@ -304,8 +319,13 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
-      <a href="cycles.html" class="md-nav__link">Cycles</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -326,14 +346,14 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="api_reference.html" class="md-nav__link">API Reference</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
       
     
     </li>
@@ -351,7 +371,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#filters--page-root" class="md-nav__link">Filters</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#filters--page-root" class="md-nav__link">Filtering TimeSeries</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Filtering-a-TimeSeries-using-a-Butterworth-filter" class="md-nav__link">Filtering a TimeSeries using a Butterworth filter</a>
         </li>
@@ -610,7 +630,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 
-<h1 id="filters--page-root">Filters<a class="headerlink" href="#filters--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="filters--page-root">Filtering TimeSeries<a class="headerlink" href="#filters--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.filters.html"><span class="doc">filters</span></a> module wraps some filters to use directly with ktk’s TimeSeries objects. These filters are convenience wrappers for numpy’s and scipy’s filters.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -1007,7 +1027,7 @@ div.rendered_html tbody tr:hover {
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="geometry.html" title="Geometry"
+            <a href="timeseries.html" title="Getting started with TimeSeries"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -1016,17 +1036,17 @@ div.rendered_html tbody tr:hover {
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Geometry </span>
+                      class="md-footer-nav__direction"> Previous </span> Getting started with TimeSeries </span>
               </div>
             </a>
           
           
-            <a href="kinematics.html" title="Kinematics"
+            <a href="cycles.html" title="Detecting and normalizing cycles"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Kinematics </span>
+                class="md-footer-nav__direction"> Next </span> Detecting and normalizing cycles </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

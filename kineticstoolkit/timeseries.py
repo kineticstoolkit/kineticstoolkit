@@ -36,7 +36,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 import pandas as pd
-import xarray as xr
+
+try:
+    import xarray as xr
+except ImportError:
+    pass
+
 import warnings
 from ast import literal_eval
 from copy import deepcopy
@@ -461,8 +466,11 @@ class TimeSeries():
         for key in self.data:
             dataset[key] = xr.DataArray(
                 self.data[key])
-            dataset[key] = dataset[key].rename({'dim_0': 'time'})
+            # No clue why mypy doesn't run well on this line. rename expect
+            # a Mapping[Hashable, Hashable] which I think a Dict[str, str] is.
+            dataset[key] = dataset[key].rename({'dim_0': 'time'})  # type: ignore
             dataset[key] = dataset[key].assign_coords({'time': self.time})
+        return dataset
 
     @stable
     def to_dataframe(self) -> pd.DataFrame:

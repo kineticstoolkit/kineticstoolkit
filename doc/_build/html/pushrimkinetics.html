@@ -47,7 +47,7 @@
   
   
   
-    <title>Pushrim Kinetics &#8212; Kinetics Toolkit master documentation</title>
+    <title>Wheelchair kinetics &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -60,7 +60,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Inverse Dynamics" href="inversedynamics.html" />
-    <link rel="prev" title="Kinematics" href="kinematics.html" />
+    <link rel="prev" title="Kinematics analysis" href="kinematics.html" />
 
 
 
@@ -101,7 +101,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Pushrim Kinetics </span>
+          <span class="md-header-nav__topic"> Wheelchair kinetics </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -208,6 +208,11 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="install.html" class="md-nav__link">Installing the stable version</a>
       
@@ -222,9 +227,7 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -237,28 +240,40 @@
     <li class="md-nav__item">
     
     
+      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
       
     
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="geometry.html" class="md-nav__link">Geometry</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="filters.html" class="md-nav__link">Filters</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics</a>
+      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
       
     
     </li>
@@ -266,15 +281,15 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Pushrim Kinetics </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Wheelchair kinetics </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">Pushrim Kinetics</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Wheelchair kinetics</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#pushrimkinetics--page-root" class="md-nav__link">Pushrim Kinetics</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#pushrimkinetics--page-root" class="md-nav__link">Wheelchair kinetics</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Read-data-from-file" class="md-nav__link">Read data from file</a>
         </li>
@@ -304,8 +319,13 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
-      <a href="cycles.html" class="md-nav__link">Cycles</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -326,14 +346,14 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="api_reference.html" class="md-nav__link">API Reference</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
       
     
     </li>
@@ -351,7 +371,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#pushrimkinetics--page-root" class="md-nav__link">Pushrim Kinetics</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#pushrimkinetics--page-root" class="md-nav__link">Wheelchair kinetics</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Read-data-from-file" class="md-nav__link">Read data from file</a>
         </li>
@@ -610,7 +630,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 
-<h1 id="pushrimkinetics--page-root">Pushrim Kinetics<a class="headerlink" href="#pushrimkinetics--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="pushrimkinetics--page-root">Wheelchair kinetics<a class="headerlink" href="#pushrimkinetics--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html"><span class="doc">pushrimkinetics</span></a> module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -1146,7 +1166,7 @@ TimeSeries with attributes:
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="kinematics.html" title="Kinematics"
+            <a href="kinematics.html" title="Kinematics analysis"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -1155,7 +1175,7 @@ TimeSeries with attributes:
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Kinematics </span>
+                      class="md-footer-nav__direction"> Previous </span> Kinematics analysis </span>
               </div>
             </a>
           

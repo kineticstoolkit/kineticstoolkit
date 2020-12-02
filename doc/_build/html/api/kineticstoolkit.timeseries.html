@@ -217,6 +217,11 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="../install.html" class="md-nav__link">Installing the stable version</a>
       
@@ -231,9 +236,7 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="../labmode.html" class="md-nav__link">Lab mode</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -246,35 +249,47 @@
     <li class="md-nav__item">
     
     
+      <a href="../filters.html" class="md-nav__link">Filtering TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="../loadsave.html" class="md-nav__link">Saving and loading</a>
       
     
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
     
-      <a href="../geometry.html" class="md-nav__link">Geometry</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../kinematics.html" class="md-nav__link">Kinematics analysis</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="../filters.html" class="md-nav__link">Filters</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../kinematics.html" class="md-nav__link">Kinematics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      <a href="../pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
       
     
     </li>
@@ -287,8 +302,13 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
-      <a href="../cycles.html" class="md-nav__link">Cycles</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -309,14 +329,14 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="../api_reference.html" class="md-nav__link">API Reference</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="../api_reference.html" class="md-nav__link">API Reference</a>
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
       
     
     </li>
@@ -489,16 +509,19 @@ and tscollection found in Matlab.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.to_dataframe" title="kineticstoolkit.timeseries.TimeSeries.to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code></a>()</p></td>
 <td><p>Create a DataFrame by reshaping all data to one bidimensional table.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="kineticstoolkit.timeseries.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.to_dataset" title="kineticstoolkit.timeseries.TimeSeries.to_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataset</span></code></a>()</p></td>
+<td><p>Export the main TimeSeries contents to an xarray Dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="kineticstoolkit.timeseries.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a>()</p></td>
 <td><p>Delete the events that are outside the TimeSeries’ time vector.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
 <td><p>Add one or many events interactively to the TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
 <td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
 <td><p>Synchronize one or two TimeSeries by shifting their time.</p></td>
 </tr>
 </tbody>
@@ -1647,6 +1670,25 @@ and data_info are not included in the resulting DataFrame.</p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p>DataFrame</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="kineticstoolkit.timeseries.TimeSeries.to_dataset">
+<code class="sig-name descname">to_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.to_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Export the main TimeSeries contents to an xarray Dataset.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+It may not have been validated, it may change signature and behaviour
+drastically or even be deleted.</p>
+</div>
+<p>For now, metadata and events are not exported. This function is a test
+and may disappear. For now this is mainly to experiment with xarray.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
 </dd>
 </dl>
 </dd></dl>

@@ -47,7 +47,7 @@
   
   
   
-    <title>Cycles &#8212; Kinetics Toolkit master documentation</title>
+    <title>Detecting and normalizing cycles &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -59,8 +59,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="DBInterface" href="dbinterface.html" />
-    <link rel="prev" title="Inverse Dynamics" href="inversedynamics.html" />
+    <link rel="next" title="Rigid transformations, coordinates and reference frames" href="geometry.html" />
+    <link rel="prev" title="Filtering TimeSeries" href="filters.html" />
 
 
 
@@ -101,7 +101,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Cycles </span>
+          <span class="md-header-nav__topic"> Detecting and normalizing cycles </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -208,6 +208,11 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="install.html" class="md-nav__link">Installing the stable version</a>
       
@@ -222,9 +227,7 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -237,42 +240,7 @@
     <li class="md-nav__item">
     
     
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="geometry.html" class="md-nav__link">Geometry</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="filters.html" class="md-nav__link">Filters</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
       
     
     </li>
@@ -280,15 +248,15 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Cycles </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Detecting and normalizing cycles </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">Cycles</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Detecting and normalizing cycles</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#cycles--page-root" class="md-nav__link">Cycles</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#cycles--page-root" class="md-nav__link">Detecting and normalizing cycles</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Detecting-cycles" class="md-nav__link">Detecting cycles</a>
         </li>
@@ -302,6 +270,58 @@
         </li>
   </ul>
 </nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -322,14 +342,14 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="api_reference.html" class="md-nav__link">API Reference</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
       
     
     </li>
@@ -347,7 +367,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#cycles--page-root" class="md-nav__link">Cycles</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#cycles--page-root" class="md-nav__link">Detecting and normalizing cycles</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Detecting-cycles" class="md-nav__link">Detecting cycles</a>
         </li>
@@ -602,7 +622,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 
-<h1 id="cycles--page-root">Cycles<a class="headerlink" href="#cycles--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="cycles--page-root">Detecting and normalizing cycles<a class="headerlink" href="#cycles--page-root" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.cycles.html"><span class="doc">cycles</span></a> module allows detecting cycles in TimeSeries, time-normalize these cycles and find the most repeatable ones.</p>
 <p>In this tutorial, we will use kinetics data from wheelchair propulsion using a csv file.</p>
 <div class="nbinput docutils container">
@@ -948,7 +968,7 @@ div.rendered_html tbody tr:hover {
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="inversedynamics.html" title="Inverse Dynamics"
+            <a href="filters.html" title="Filtering TimeSeries"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -957,17 +977,17 @@ div.rendered_html tbody tr:hover {
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Inverse Dynamics </span>
+                      class="md-footer-nav__direction"> Previous </span> Filtering TimeSeries </span>
               </div>
             </a>
           
           
-            <a href="dbinterface.html" title="DBInterface"
+            <a href="geometry.html" title="Rigid transformations, coordinates and reference frames"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> DBInterface </span>
+                class="md-footer-nav__direction"> Next </span> Rigid transformations, coordinates and reference frames </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

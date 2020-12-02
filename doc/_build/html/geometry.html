@@ -47,7 +47,7 @@
   
   
   
-    <title>Geometry &#8212; Kinetics Toolkit master documentation</title>
+    <title>Rigid transformations, coordinates and reference frames &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -59,8 +59,8 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Filters" href="filters.html" />
-    <link rel="prev" title="Saving and loading" href="loadsave.html" />
+    <link rel="next" title="Saving and loading" href="loadsave.html" />
+    <link rel="prev" title="Detecting and normalizing cycles" href="cycles.html" />
 
 
 
@@ -101,7 +101,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Geometry </span>
+          <span class="md-header-nav__topic"> Rigid transformations, coordinates and reference frames </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -208,6 +208,11 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="install.html" class="md-nav__link">Installing the stable version</a>
       
@@ -222,9 +227,7 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -237,7 +240,14 @@
     <li class="md-nav__item">
     
     
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
+      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
       
     
     </li>
@@ -245,15 +255,15 @@
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Geometry </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Rigid transformations, coordinates and reference frames </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">Geometry</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Rigid transformations, coordinates and reference frames</a>
       
         
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#geometry--page-root" class="md-nav__link">Geometry</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#geometry--page-root" class="md-nav__link">Rigid transformations, coordinates and reference frames</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Array-convention" class="md-nav__link">Array convention</a>
         </li>
@@ -277,21 +287,26 @@
     <li class="md-nav__item">
     
     
-      <a href="filters.html" class="md-nav__link">Filters</a>
+      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="kinematics.html" class="md-nav__link">Kinematics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
       
     
     </li>
@@ -304,8 +319,13 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
-      <a href="cycles.html" class="md-nav__link">Cycles</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -326,14 +346,14 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="api_reference.html" class="md-nav__link">API Reference</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
       
     
     </li>
@@ -351,7 +371,7 @@
 <nav class="md-nav md-nav--secondary">
     <label class="md-nav__title" for="__toc">Contents</label>
   <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#geometry--page-root" class="md-nav__link">Geometry</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#geometry--page-root" class="md-nav__link">Rigid transformations, coordinates and reference frames</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Array-convention" class="md-nav__link">Array convention</a>
         </li>
@@ -610,7 +630,7 @@ div.rendered_html tbody tr:hover {
 }
 </style>
 
-<h1 id="geometry--page-root">Geometry<a class="headerlink" href="#geometry--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="geometry--page-root">Rigid transformations, coordinates and reference frames<a class="headerlink" href="#geometry--page-root" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This module is in development and has not been released.</p>
@@ -976,7 +996,7 @@ array([[[0., 1., 0.],
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
           
-            <a href="loadsave.html" title="Saving and loading"
+            <a href="cycles.html" title="Detecting and normalizing cycles"
                class="md-flex md-footer-nav__link md-footer-nav__link--prev"
                rel="prev">
               <div class="md-flex__cell md-flex__cell--shrink">
@@ -985,17 +1005,17 @@ array([[[0., 1., 0.],
               <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
                 <span class="md-flex__ellipsis">
                   <span
-                      class="md-footer-nav__direction"> Previous </span> Saving and loading </span>
+                      class="md-footer-nav__direction"> Previous </span> Detecting and normalizing cycles </span>
               </div>
             </a>
           
           
-            <a href="filters.html" title="Filters"
+            <a href="loadsave.html" title="Saving and loading"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Filters </span>
+                class="md-footer-nav__direction"> Next </span> Saving and loading </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

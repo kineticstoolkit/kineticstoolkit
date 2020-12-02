@@ -207,6 +207,11 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
     
       <a href="install.html" class="md-nav__link">Installing the stable version</a>
       
@@ -221,9 +226,7 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -236,35 +239,47 @@
     <li class="md-nav__item">
     
     
+      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
       <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
       
     
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
     
-      <a href="geometry.html" class="md-nav__link">Geometry</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="filters.html" class="md-nav__link">Filters</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Pushrim Kinetics</a>
+      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
       
     
     </li>
@@ -277,8 +292,13 @@
     </li>
     <li class="md-nav__item">
     
+      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
-      <a href="cycles.html" class="md-nav__link">Cycles</a>
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="labmode.html" class="md-nav__link">Lab mode</a>
       
     
     </li>
@@ -299,14 +319,14 @@
     <li class="md-nav__item">
     
     
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      <a href="api_reference.html" class="md-nav__link">API Reference</a>
       
     
     </li>
     <li class="md-nav__item">
     
     
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
+      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
       
     
     </li>
@@ -438,6 +458,7 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 
 <h2 id="site-map">Site map<a class="headerlink" href="#site-map" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">INSTALLING</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing the stable version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install_develop.html">Installing the development version</a><ul>
@@ -447,16 +468,42 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="install_develop.html#keeping-up-to-date">Keeping up to date</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="labmode.html#when-to-use-lab-mode">When to use lab mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labmode.html#what-lab-mode-does">What lab mode does</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">THE BASICS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="timeseries.html">Getting started with TimeSeries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#TimeSeries-basics">TimeSeries basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Exporting-and-importing-pandas-DataFrames">Exporting and importing pandas DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Subsetting-and-merging-timeseries">Subsetting and merging timeseries</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries.html">Getting started with TimeSeries</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Properties">Properties</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Using-events-to-synchronize-TimeSeries">Using events to synchronize TimeSeries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Using-events-to-extract-sub-TimeSeries">Using events to extract sub-TimeSeries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries.html#Subsetting-and-merging-timeseries">Subsetting and merging timeseries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filtering TimeSeries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Derivating-using-a-differential-filter">Derivating using a differential filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters.html#Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cycles.html#Detecting-cycles">Detecting cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cycles.html#Time-normalizing-cycles">Time-normalizing cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cycles.html#Combining-the-cycles">Combining the cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cycles.html#Finding-the-most-repeatable-cycles">Finding the most repeatable cycles</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Array-convention">Array convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-rotation-matrices">Creating series of rotation matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-reference-frames">Creating series of reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-coordinates">Calculating local coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-global-coordinates">Calculating global coordinates</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a><ul>
@@ -467,32 +514,19 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-.ktk.zip-in-Matlab">Loading a .ktk.zip in Matlab</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Geometry</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Array-convention">Array convention</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-rotation-matrices">Creating series of rotation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-reference-frames">Creating series of reference frames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-coordinates">Calculating local coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-global-coordinates">Calculating global coordinates</a></li>
 </ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Derivating-using-a-differential-filter">Derivating using a differential filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics</a><ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Visualizing-the-markers">Visualizing the markers</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Reconstructing-kinematics">Reconstructing kinematics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Processing-an-experimental-trial">Processing an experimental trial</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Pushrim Kinetics</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Read-data-from-file">Read data from file</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Calculate-forces-and-moments">Calculate forces and moments</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Removing-dynamic-offsets-in-forces-and-moments">Removing dynamic offsets in forces and moments</a></li>
@@ -508,11 +542,14 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="cycles.html">Cycles</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Detecting-cycles">Detecting cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Time-normalizing-cycles">Time-normalizing cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Combining-the-cycles">Combining the cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="cycles.html#Finding-the-most-repeatable-cycles">Finding the most repeatable cycles</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">MORE IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="labmode.html#when-to-use-lab-mode">When to use lab mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labmode.html#what-lab-mode-does">What lab mode does</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a><ul>
@@ -530,12 +567,12 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.1-(May-2020)">Version 0.1 (May 2020)</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Stable version</a></li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#classes">Classes</a></li>
 <li class="toctree-l2"><a class="reference internal" href="api_reference.html#modules">Modules</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Stable version</a></li>
 </ul>
 </div>
 

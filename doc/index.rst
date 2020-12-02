@@ -112,21 +112,36 @@ Site map
 ---------
 
 .. toctree::
+    :caption: INSTALLING
     :maxdepth: 2
 
     install
     install_develop
-    labmode
+
+.. toctree::
+    :caption: THE BASICS
+    :maxdepth: 2
+
     timeseries
-    loadsave
-    geometry
     filters
+    cycles
+    geometry
+    loadsave
+
+.. toctree::
+    :caption: INTEGRATED BIOMECHANICAL ANALYSES
+    :maxdepth: 2
+
     kinematics
     pushrimkinetics
     inversedynamics
-    cycles
+
+.. toctree::
+    :caption: MORE IN DEPTH
+    :maxdepth: 2
+
+    labmode
     dbinterface
     release_notes
-    Stable version <https://felixchenier.uqam.ca/kineticstoolkit>
     api_reference
-
+    Stable version <https://felixchenier.uqam.ca/kineticstoolkit>
