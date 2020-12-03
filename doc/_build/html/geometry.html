@@ -271,7 +271,7 @@
         </li>
         <li class="md-nav__item"><a href="#Series-of-vectors-and-points" class="md-nav__link">Series of vectors and points</a>
         </li>
-        <li class="md-nav__item"><a href="#Series-of-sets-of-vectors-or-points" class="md-nav__link">Series of sets of vectors or points</a>
+        <li class="md-nav__item"><a href="#Series-of-groups-of-vectors-or-points" class="md-nav__link">Series of groups of vectors or points</a>
         </li>
         <li class="md-nav__item"><a href="#Series-of-transformation-matrices" class="md-nav__link">Series of transformation matrices</a>
         </li>
@@ -391,7 +391,7 @@
         </li>
         <li class="md-nav__item"><a href="#Series-of-vectors-and-points" class="md-nav__link">Series of vectors and points</a>
         </li>
-        <li class="md-nav__item"><a href="#Series-of-sets-of-vectors-or-points" class="md-nav__link">Series of sets of vectors or points</a>
+        <li class="md-nav__item"><a href="#Series-of-groups-of-vectors-or-points" class="md-nav__link">Series of groups of vectors or points</a>
         </li>
         <li class="md-nav__item"><a href="#Series-of-transformation-matrices" class="md-nav__link">Series of transformation matrices</a>
         </li>
@@ -683,8 +683,8 @@ div.rendered_html tbody tr:hover {
 </ul>
 
 
-<h3 id="Series-of-sets-of-vectors-or-points">Series of sets of vectors or points<a class="headerlink" href="#Series-of-sets-of-vectors-or-points" title="Permalink to this headline">¶</a></h3>
-<p><a class="reference internal" href="_images/series_of_m_sets_of_n_vectors.png"><img alt="Series of m sets of n vectors" src="_images/series_of_m_sets_of_n_vectors.png" style="width: 400px;"/></a> <a class="reference internal" href="_images/series_of_m_sets_of_n_points.png"><img alt="Series of m sets of n points" src="_images/series_of_m_sets_of_n_points.png" style="width: 400px;"/></a></p>
+<h3 id="Series-of-groups-of-vectors-or-points">Series of groups of vectors or points<a class="headerlink" href="#Series-of-groups-of-vectors-or-points" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="_images/series_of_m_groups_of_n_vectors.png"><img alt="Series of m groups of n vectors" src="_images/series_of_m_groups_of_n_vectors.png" style="width: 400px;"/></a> <a class="reference internal" href="_images/series_of_m_groups_of_n_points.png"><img alt="Series of m groups of n points" src="_images/series_of_m_groups_of_n_points.png" style="width: 400px;"/></a></p>
 
 
 <h3 id="Series-of-transformation-matrices">Series of transformation matrices<a class="headerlink" href="#Series-of-transformation-matrices" title="Permalink to this headline">¶</a></h3>
@@ -710,7 +710,7 @@ div.rendered_html tbody tr:hover {
 <p>To facilitate the multiplication of series, kineticstoolkit.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use kineticstoolkit.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow Kinetics Toolkit’s array convention. For example:</p>
 <p><strong>Matrix multiplication between a matrix and a series of points</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -730,7 +730,7 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -742,7 +742,7 @@ array([[0., 1., 0., 1.],
 </div>
 <p><strong>Multiplication between a series of floats and a series of vectors</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -759,7 +759,7 @@ array([[0., 1., 0., 1.],
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -771,7 +771,7 @@ array([[0. , 0. , 0. , 0. ],
 </div>
 <p><strong>Dot product between a series of points and a single point</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -788,7 +788,7 @@ array([[0. , 0. , 0. , 0. ],
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
