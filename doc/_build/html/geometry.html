@@ -265,7 +265,19 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#geometry--page-root" class="md-nav__link">Rigid transformations, coordinates and reference frames</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Array-convention" class="md-nav__link">Array convention</a>
+        <li class="md-nav__item"><a href="#Dimension-convention" class="md-nav__link">Dimension convention</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Series-of-scalars" class="md-nav__link">Series of scalars</a>
+        </li>
+        <li class="md-nav__item"><a href="#Series-of-vectors-and-points" class="md-nav__link">Series of vectors and points</a>
+        </li>
+        <li class="md-nav__item"><a href="#Series-of-sets-of-vectors-or-points" class="md-nav__link">Series of sets of vectors or points</a>
+        </li>
+        <li class="md-nav__item"><a href="#Series-of-transformation-matrices" class="md-nav__link">Series of transformation matrices</a>
+        </li>
+        <li class="md-nav__item"><a href="#Working-with-constants" class="md-nav__link">Working with constants</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#Matrix-multiplication" class="md-nav__link">Matrix multiplication</a>
         </li>
@@ -373,7 +385,19 @@
   <ul class="md-nav__list" data-md-scrollfix="">
         <li class="md-nav__item"><a href="#geometry--page-root" class="md-nav__link">Rigid transformations, coordinates and reference frames</a><nav class="md-nav">
               <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Array-convention" class="md-nav__link">Array convention</a>
+        <li class="md-nav__item"><a href="#Dimension-convention" class="md-nav__link">Dimension convention</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Series-of-scalars" class="md-nav__link">Series of scalars</a>
+        </li>
+        <li class="md-nav__item"><a href="#Series-of-vectors-and-points" class="md-nav__link">Series of vectors and points</a>
+        </li>
+        <li class="md-nav__item"><a href="#Series-of-sets-of-vectors-or-points" class="md-nav__link">Series of sets of vectors or points</a>
+        </li>
+        <li class="md-nav__item"><a href="#Series-of-transformation-matrices" class="md-nav__link">Series of transformation matrices</a>
+        </li>
+        <li class="md-nav__item"><a href="#Working-with-constants" class="md-nav__link">Working with constants</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#Matrix-multiplication" class="md-nav__link">Matrix multiplication</a>
         </li>
@@ -635,80 +659,40 @@ div.rendered_html tbody tr:hover {
 <p class="admonition-title">Warning</p>
 <p>This module is in development and has not been released.</p>
 </div>
-<p>The <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module simplifies the calculation of linear algebric operations on series of points, vectors and transformation matrices.</p>
+<p>The <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module simplifies the calculation of linear algebric operations on series of points, vectors and transformation matrices. Contrarily to most other modules, this module does not work with TimeSeries directly, but instead with the TimeSeries data. The convention for dimension order is strict but well defined.</p>
 
-<h2 id="Array-convention">Array convention<a class="headerlink" href="#Array-convention" title="Permalink to this headline">¶</a></h2>
-<p>Every point, vector or matrix is considered as a series, where the dimensions of the array are:</p>
+<h2 id="Dimension-convention">Dimension convention<a class="headerlink" href="#Dimension-convention" title="Permalink to this headline">¶</a></h2>
+<p>In this module, every point, vector or matrix is considered as a <strong>series</strong>, even constants which are series of 1. The dimensions of these series are:</p>
 <ul class="simple">
-<li><p>First dimension (N) : time. Constants are also reprented as series: they have only one data on the first dimension.</p></li>
-<li><p>Second dimension (4) : point/vector coordinates, or matrix line.</p></li>
-<li><p>Third dimension (M, optional) : point index (for sets of point), or matrix column.</p></li>
+<li><p>Dimension 0 = time (length of m). Constants are expressed as series with m = 1 and are broadcasted to match other series with m &gt; 1.</p></li>
+<li><p>Dimension 1 (optional) = axis or row (length of 4).</p></li>
+<li><p>Dimension 2 (optional) = point/vector index or column (length of n).</p></li>
 </ul>
-<p>For example, floats, points, vectors, sets and matrices are expressed as following:</p>
-<p><strong>Single float</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">a</span><span class="p">]</span>
+<p>To understand better how to express series of scalars, vectors, points, sets and matrices, please refer to the following pictures:</p>
 
-<span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-</pre></div>
-</div>
-<p><strong>Series of floats</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[</span><span class="n">a</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">a</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="o">...</span><span class="p">]</span>
+<h3 id="Series-of-scalars">Series of scalars<a class="headerlink" href="#Series-of-scalars" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="_images/series_of_m_scalars.png"><img alt="Series of m scalars" src="_images/series_of_m_scalars.png" style="width: 400px;"/></a></p>
 
-<span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">]</span>
-</pre></div>
-</div>
-<p><strong>Series of points</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">x</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span>  <span class="mf">1.</span><span class="p">],</span>
- <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span>  <span class="mf">1.</span><span class="p">],</span>
- <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span>  <span class="mf">1.</span><span class="p">],</span>
- <span class="p">[</span> <span class="o">...</span> <span class="p">,</span>  <span class="o">...</span> <span class="p">,</span>  <span class="o">...</span> <span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
 
-<span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_coordinate</span><span class="p">]</span>
-</pre></div>
-</div>
-<p><strong>Series of vectors</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[</span><span class="n">x</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t0</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">],</span>
- <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">],</span>
- <span class="p">[</span><span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span>  <span class="mf">0.</span><span class="p">],</span>
- <span class="p">[</span> <span class="o">...</span> <span class="p">,</span>  <span class="o">...</span> <span class="p">,</span>  <span class="o">...</span> <span class="p">,</span> <span class="o">...</span><span class="p">]]</span>
+<h3 id="Series-of-vectors-and-points">Series of vectors and points<a class="headerlink" href="#Series-of-vectors-and-points" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="_images/series_of_m_vectors.png"><img alt="Series of m vectors" src="_images/series_of_m_vectors.png" style="width: 400px;"/></a> <a class="reference internal" href="_images/series_of_m_points.png"><img alt="Series of m points" src="_images/series_of_m_points.png" style="width: 400px;"/></a></p>
+<p>Note the difference between vectors and points: vectors (e.g., forces, velocities) have zeros as their fourth coordinate while points (e.g., marker coordinates) have ones. This difference has an impact on algeabric calculation:</p>
+<ul class="simple">
+<li><p>A rigid transformation of a vector gives a new rotated vector expressed as a new orientation and amplitude.</p></li>
+<li><p>A rigid transformation on a point yields a translated point expressed as its new coordinates in the new reference frame.</p></li>
+</ul>
 
-<span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_coordinate</span><span class="p">]</span>
-</pre></div>
-</div>
-<p><strong>Series of sets of point</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[[</span><span class="n">x1</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">x2</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">x3</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">x4</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">y1</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y2</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y3</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">y4</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">z1</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z2</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z3</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">z4</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
-  <span class="p">[</span>  <span class="mf">1.</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>      <span class="mf">1.</span> <span class="p">]],</span>
 
- <span class="p">[[</span><span class="n">x1</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">x2</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">x3</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">x4</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">y1</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y2</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y3</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">y4</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">z1</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z2</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z3</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">z4</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
-  <span class="p">[</span>  <span class="mf">1.</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>     <span class="mf">1.</span><span class="p">,</span>     <span class="mf">1.</span>  <span class="p">]],</span>
+<h3 id="Series-of-sets-of-vectors-or-points">Series of sets of vectors or points<a class="headerlink" href="#Series-of-sets-of-vectors-or-points" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="_images/series_of_m_sets_of_n_vectors.png"><img alt="Series of m sets of n vectors" src="_images/series_of_m_sets_of_n_vectors.png" style="width: 400px;"/></a> <a class="reference internal" href="_images/series_of_m_sets_of_n_points.png"><img alt="Series of m sets of n points" src="_images/series_of_m_sets_of_n_points.png" style="width: 400px;"/></a></p>
 
-  <span class="o">...</span>
- <span class="p">]</span>
 
-<span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_coordinate</span><span class="p">,</span> <span class="n">i_point</span><span class="p">]</span>
-</pre></div>
-</div>
-<p><strong>Series of matrices</strong></p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">[[[</span><span class="n">R11</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R12</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R13</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">Tx</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">R21</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R22</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R23</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">Ty</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">R31</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R32</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">R33</span><span class="p">(</span><span class="n">t1</span><span class="p">),</span> <span class="n">Tz</span><span class="p">(</span><span class="n">t1</span><span class="p">)],</span>
-  <span class="p">[</span>   <span class="mf">0.</span><span class="p">,</span>      <span class="mf">0.</span><span class="p">,</span>      <span class="mf">0.</span><span class="p">,</span>     <span class="mf">1.</span>  <span class="p">]],</span>
+<h3 id="Series-of-transformation-matrices">Series of transformation matrices<a class="headerlink" href="#Series-of-transformation-matrices" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference internal" href="_images/series_of_m_transformation_matrices.png"><img alt="Series of m transformation matrices" src="_images/series_of_m_transformation_matrices.png" style="width: 500px;"/></a></p>
 
- <span class="p">[[</span><span class="n">R11</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R12</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R13</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">Tx</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">R21</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R22</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R23</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">Ty</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
-  <span class="p">[</span><span class="n">R31</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R32</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">R33</span><span class="p">(</span><span class="n">t2</span><span class="p">),</span> <span class="n">Tz</span><span class="p">(</span><span class="n">t2</span><span class="p">)],</span>
-  <span class="p">[</span>   <span class="mf">0.</span><span class="p">,</span>      <span class="mf">0.</span><span class="p">,</span>      <span class="mf">0.</span><span class="p">,</span>     <span class="mf">1.</span>  <span class="p">]],</span>
 
-  <span class="o">...</span>
- <span class="p">]</span>
-
-<span class="n">value</span> <span class="o">=</span> <span class="n">array</span><span class="p">[</span><span class="n">i_time</span><span class="p">,</span> <span class="n">i_row</span><span class="p">,</span> <span class="n">i_column</span><span class="p">]</span>
-</pre></div>
-</div>
+<h3 id="Working-with-constants">Working with constants<a class="headerlink" href="#Working-with-constants" title="Permalink to this headline">¶</a></h3>
+<p>As a reminder, in the geometry module, everything is considered as a series. Therefore, always ensure that the first dimension of any array is reserved to time. For example, the vector (x = 1, y = 2, z = 3) must be expressed as <code class="docutils literal notranslate"><span class="pre">np.array([[1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0]])</span></code> (note the double brackets). A common error would be to express it as <code class="docutils literal notranslate"><span class="pre">np.array([1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0])</span></code> (single brackets), which would mean a series of 4 floats instead of one constant vector.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -721,31 +705,32 @@ div.rendered_html tbody tr:hover {
 </div>
 
 
+
 <h2 id="Matrix-multiplication">Matrix multiplication<a class="headerlink" href="#Matrix-multiplication" title="Permalink to this headline">¶</a></h2>
-<p>To facilitate the multiplication of series, kineticstoolkit.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use kineticstoolkit.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow ktk’s array convention. For example:</p>
+<p>To facilitate the multiplication of series, kineticstoolkit.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use kineticstoolkit.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow Kinetics Toolkit’s array convention. For example:</p>
 <p><strong>Matrix multiplication between a matrix and a series of points</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Single rigid transformation matrix</span>
+<span></span><span class="c1"># A single rigid transformation matrix</span>
 <span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
                <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]])</span>
 
-<span class="c1"># Series of 3 points</span>
+<span class="c1"># times a series of 3 points</span>
 <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
                    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 
-<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>  <span class="c1"># gives a series of 3 points</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -757,55 +742,53 @@ array([[0., 1., 0., 1.],
 </div>
 <p><strong>Multiplication between a series of floats and a series of vectors</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Series of 3 floats</span>
-<span class="n">floats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">])</span>
+<span></span><span class="c1"># A series of 3 floats</span>
+<span class="n">floats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
 
-<span class="c1"># Series of 3 vectors</span>
-<span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="c1"># times a series of 3 vectors</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
 
-<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">floats</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">floats</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>  <span class="c1"># gives a series of 3 vectors</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 array([[0. , 0. , 0. , 0. ],
-       [1. , 0.5, 0. , 0. ],
-       [3. , 1. , 0. , 0. ],
-       [6. , 1.5, 0. , 0. ]])
+       [0.5, 0.5, 0. , 0. ],
+       [2. , 1. , 0. , 0. ]])
 </pre></div></div>
 </div>
 <p><strong>Dot product between a series of points and a single point</strong></p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Series of 3 points</span>
+<span></span><span class="c1"># A series of 3 points</span>
 <span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
                    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 
-<span class="c1"># Single point</span>
+<span class="c1"># times a single point</span>
 <span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
 
-<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>  <span class="c1"># gives a series of 3 scalars</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
