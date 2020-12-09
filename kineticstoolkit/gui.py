@@ -20,8 +20,7 @@ Provide simple GUI functions.
 
 Warning
 -------
-This module is currently experimental and its API could be modified in
-the future without warnings. It should be considered only as helper functions
+This module is private and should be considered only as helper functions
 for Kinetics Toolkit's own use.
 """
 
@@ -30,22 +29,17 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import kineticstoolkit.config
-
-import subprocess
-from threading import Thread
+import kineticstoolkit.config as config
+import limitedinteraction as li
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import sys
 import os
 from typing import Sequence, Union, Tuple, Any, List
-from kineticstoolkit.decorators import experimental, unstable, directory
-
-CMDGUI = kineticstoolkit.config.root_folder + "/kineticstoolkit/cmdgui.py"
-_message_window_int = [0]
+from kineticstoolkit.decorators import unstable, directory, private
 
 
-@experimental
+@private
 def message(message: str = '') -> None:
     """
     Show a message window.
@@ -55,39 +49,13 @@ def message(message: str = '') -> None:
     message
         The message to show. Use '' to close every message window.
     """
-    # Begins by deleting the current message
-    for file in os.listdir(kineticstoolkit.config.temp_folder):
-        if 'gui_message_flag' in file:
-            os.remove(kineticstoolkit.config.temp_folder + '/' + file)
-
-    if message is None or message == '':
-        return
-
-    print(message)
-
-    _message_window_int[0] += 1
-    flagfile = (kineticstoolkit.config.temp_folder + '/gui_message_flag' +
-                str(_message_window_int))
-
-    fid = open(flagfile, 'w')
-    fid.write("DELETE THIS FILE TO CLOSE THE KINETICS TOOLKIT GUI MESSAGE "
-              "WINDOW.")
-    fid.close()
-
-    command_call = [sys.executable, CMDGUI, 'message', 'Kinetics Toolkit',
-                    message, flagfile]
-
-    def threaded_function():
-        subprocess.call(command_call,
-                        stderr=subprocess.DEVNULL)
-
-    thread = Thread(target=threaded_function)
-    thread.start()
-    plt.pause(0.5)
-    plt.pause(0.1)
+    li.message(
+        message,
+        icon=[config.root_folder + '/kineticstoolkit/logo.png',
+              config.root_folder + '/kineticstoolkit/logo_hires.png'])
 
 
-@experimental
+@private
 def button_dialog(message: str = 'Please select an option.',
                   choices: Sequence[str] = ['Cancel', 'OK']) -> int:
     """
@@ -107,25 +75,13 @@ def button_dialog(message: str = 'Please select an option.',
         user closes the window instead of clicking a button, a value of -1 is
         returned.
     """
-    # Run the button dialog in a separate thread to allow updating matplotlib
-    button = [None]
-    command_call = [sys.executable, CMDGUI, 'button_dialog',
-                    'Kinetics Toolkit', message] + list(choices)
-
-    def threaded_function():
-        button[0] = int(subprocess.check_output(command_call,
-                        stderr=subprocess.DEVNULL))
-
-    thread = Thread(target=threaded_function)
-    thread.start()
-
-    while button[0] is None:
-        plt.pause(0.2)  # Update matplotlib so that is responds to user input
-
-    return button[0]
+    return li.button_dialog(
+        message, choices,
+        icon=[config.root_folder + '/kineticstoolkit/logo.png',
+              config.root_folder + '/kineticstoolkit/logo_hires.png'])
 
 
-@unstable
+@private
 def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     """
     Define the standard color order for matplotlib.
@@ -164,7 +120,7 @@ def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=thelist)
 
 
-@experimental
+@private
 def get_credentials() -> Tuple[str, str]:
     """
     Ask the user's username and password.
@@ -176,16 +132,13 @@ def get_credentials() -> Tuple[str, str]:
         respectively, or an empty tuple if the user closed the window.
 
     """
-    str_call = ['get_credentials', 'Kinetics Toolkit',
-                'Please enter your login information.']
-    temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
-                                   stderr=subprocess.DEVNULL)
-
-    result = temp.decode(sys.getdefaultencoding())
-    return tuple(str.split(result))  # type: ignore
+    return li.input_dialog('Please enter your credentials',
+                           descriptions=['Username:', 'Password:'],
+                           masked=[False, True],
+                           icon='lock')
 
 
-@experimental
+@private
 def get_folder(initial_folder: str = '.') -> str:
     """
     Get folder interactively using a file dialog window.
@@ -202,15 +155,13 @@ def get_folder(initial_folder: str = '.') -> str:
         the user cancelled.
 
     """
-    str_call = ['get_folder', 'kineticstoolkit.gui.get_folder', initial_folder]
-    temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
-                                    stderr=subprocess.DEVNULL)
-    result = temp.decode(sys.getdefaultencoding())
-    result = result.replace('\n', '').replace('\r', '')
-    return result
+    return li.get_folder(
+        initial_folder,
+        icon=[config.root_folder + '/kineticstoolkit/logo.png',
+              config.root_folder + '/kineticstoolkit/logo_hires.png'])
 
 
-@experimental
+@private
 def get_filename(initial_folder: str = '.') -> str:
     """
     Get file name interactively using a file dialog window.
@@ -226,13 +177,10 @@ def get_filename(initial_folder: str = '.') -> str:
         The full path of the selected file. An empty string is returned if the
         user cancelled.
     """
-    str_call = ['get_filename', 'kineticstoolkit.gui.get_filename',
-                initial_folder]
-    temp = subprocess.check_output([sys.executable, CMDGUI] + str_call,
-                                    stderr=subprocess.DEVNULL)
-    result = temp.decode(sys.getdefaultencoding())
-    result = result.replace('\n', '').replace('\r', '')
-    return result
+    return li.get_filename(
+        initial_folder,
+        icon=[config.root_folder + '/kineticstoolkit/logo.png',
+              config.root_folder + '/kineticstoolkit/logo_hires.png'])
 
 
 module_locals = locals()

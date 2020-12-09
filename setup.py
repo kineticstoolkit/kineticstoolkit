@@ -32,6 +32,7 @@ setuptools.setup(
                       'scipy',
                       'matplotlib',
                       'scikit-learn',
+                      'limitedinteraction',
                       ],
     classifiers=[
         'Development Status :: 3 - Alpha',
