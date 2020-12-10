@@ -380,25 +380,28 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_reference_frames" title="kineticstoolkit.geometry.create_reference_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reference_frames</span></code></a>(global_points[, method])</p></td>
 <td><p>Create a Nx4x4 series of reference frames based on a point cloud series.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_rotation_matrices" title="kineticstoolkit.geometry.create_rotation_matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_rotation_matrices</span></code></a>(axis, angles)</p></td>
-<td><p>Create a Nx4x4 series of rotation matrices around a given axis.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_rotation_matrices" title="kineticstoolkit.geometry.create_rotation_matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_rotation_matrices</span></code></a>(seq, angles[, degrees])</p></td>
+<td><p>Create an Nx4x4 series of rotation matrices from Euler coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_global_coordinates" title="kineticstoolkit.geometry.get_global_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_coordinates</span></code></a>(local_coordinates, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_euler_angles" title="kineticstoolkit.geometry.get_euler_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_euler_angles</span></code></a>(T, seq[, degrees])</p></td>
+<td><p>Represent a series of transformation matrices as series of Euler angles.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_global_coordinates" title="kineticstoolkit.geometry.get_global_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_coordinates</span></code></a>(local_coordinates, …)</p></td>
 <td><p>Express local coordinates in the global reference frame.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_local_coordinates" title="kineticstoolkit.geometry.get_local_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_coordinates</span></code></a>(global_coordinates, …)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_local_coordinates" title="kineticstoolkit.geometry.get_local_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_coordinates</span></code></a>(global_coordinates, …)</p></td>
 <td><p>Express global coordinates in local reference frames.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.isnan" title="kineticstoolkit.geometry.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a>(input, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.isnan" title="kineticstoolkit.geometry.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a>(input, /)</p></td>
 <td><p>Check which samples has at least one NaN.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.match_size" title="kineticstoolkit.geometry.match_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_size</span></code></a>(op1, op2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.match_size" title="kineticstoolkit.geometry.match_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_size</span></code></a>(op1, op2)</p></td>
 <td><p>Match the first dimension of op1 and op2.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.matmul" title="kineticstoolkit.geometry.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(op1, op2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.matmul" title="kineticstoolkit.geometry.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(op1, op2)</p></td>
 <td><p>Matrix multiplication between series of matrices.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
 <td><p>Find the rigid transformations between two series of point clouds.</p></td>
 </tr>
 </tbody>
@@ -508,8 +511,8 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 </dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.geometry.create_rotation_matrices">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_rotation_matrices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">axis</span></em>, <em class="sig-param"><span class="n">angles</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_rotation_matrices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a Nx4x4 series of rotation matrices around a given axis.</p>
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_rotation_matrices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">angles</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_rotation_matrices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an Nx4x4 series of rotation matrices from Euler coordinates.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Unreleased function.</p>
@@ -517,15 +520,111 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 It may not have been validated, it may change signature and behaviour
 drastically or even be deleted.</p>
 </div>
+<p>This function is a wrapper for scipy.transform.Rotation.from_euler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>axis</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Can be either ‘x’, ‘y’ or ‘z’.</p></li>
-<li><p><strong>angles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Series of angles in radians.</p></li>
+<li><p><strong>seq</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specifies sequence of axes for rotations. Up to 3 characters belonging
+to the set {‘X’, ‘Y’, ‘Z’} for intrinsic rotations (moving axes), or
+{‘x’, ‘y’, ‘z’} for extrinsic rotations (fixed axes). Extrinsic and
+intrinsic rotations cannot be mixed in one function call.</p></li>
+<li><p><strong>angles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>float or array_like, shape (N,) or (N, [1 or 2 or 3]). Euler angles
+specified in radians (degrees is False) or degrees (degrees is True).
+For a single character seq, angles can be:</p>
+<blockquote>
+<div><ul>
+<li><p>a single value</p></li>
+<li><p>array_like with shape (N,), where each angle[i] corresponds to a
+single rotation</p></li>
+<li><p>array_like with shape (N, 1), where each angle[i, 0] corresponds
+to a single rotation</p></li>
+</ul>
+</div></blockquote>
+<dl class="simple">
+<dt>For 2- and 3-character wide seq, angles can be:</dt><dd><ul>
+<li><p>array_like with shape (W,) where W is the width of seq, which
+corresponds to a single rotation with W axes</p></li>
+<li><p>array_like with shape (N, W) where each angle[i] corresponds to
+a sequence of Euler angles describing a single rotation</p></li>
+</ul>
+</dd>
+</dl>
+</p></li>
+<li><p><strong>degrees</strong> – If True, then the given angles are assumed to be in degrees. Default
+is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A Nx4x4 series of rotation transformation matrices.</p>
+<dd class="field-even"><p>An Nx4x4 series of rotation matrices.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<p class="rubric">Example</p>
+<p>Create a rotation matrix that rotates 0, then 90 degrees around x:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">array([[[ 1.,  0.,  0.,  0.],</span>
+<span class="go">        [ 0.,  1.,  0.,  0.],</span>
+<span class="go">        [ 0.,  0.,  1.,  0.],</span>
+<span class="go">        [ 0.,  0.,  0.,  1.]],</span>
+
+<span class="go">       [[ 1.,  0.,  0.,  0.],</span>
+<span class="go">        [ 0.,  0., -1.,  0.],</span>
+<span class="go">        [ 0.,  1.,  0.,  0.],</span>
+<span class="go">        [ 0.,  0.,  0.,  1.]]])</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="kineticstoolkit.geometry.get_euler_angles">
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_euler_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_euler_angles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Represent a series of transformation matrices as series of Euler angles.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped and has not been released yet.
+It may not have been validated, it may change signature and behaviour
+drastically or even be deleted.</p>
+</div>
+<p>This function is a wrapper for scipy.transform.Rotation.as_euler. Please
+consult scipy help for the complete docstring.</p>
+<p>Euler angles suffer from the problem of gimbal lock, where the
+representation loses a degree of freedom and it is not possible to
+determine the first and third angles uniquely. In this case, a warning is
+raised, and the third angle is set to zero. Note however that the returned
+angles still represent the correct rotation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>T</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An Nx4x4 series of transformation matrices.</p></li>
+<li><p><strong>seq</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – 3 characters belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic
+rotations (moving axes), or {‘x’, ‘y’, ‘z’} for extrinsic rotations
+(fixed axes). Adjacent axes cannot be the same. Extrinsic and
+intrinsic rotations cannot be mixed in one function call.</p></li>
+<li><p><strong>degrees</strong> – Returned angles are in degrees if this flag is True, else they are in
+radians. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>A Tx3 array of Euler angles. The returned angles are in the range:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>First angle belongs to [-180, 180] degrees (both inclusive)</p></li>
+<li><p>Third angle belongs to [-180, 180] degrees (both inclusive)</p></li>
+<li><dl class="simple">
+<dt>Second angle belongs to:</dt><dd><ul>
+<li><p>[-90, 90] degrees if all axes are different (like xyz)</p></li>
+<li><p>[0, 180] degrees if first and third axes are the same (like
+zxz)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>

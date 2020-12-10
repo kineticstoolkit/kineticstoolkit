@@ -32,8 +32,9 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
+import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.decorators import unstable, directory
+from kineticstoolkit.decorators import unstable, directory, dead
 from typing import Tuple, List
 
 
@@ -84,59 +85,122 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
 
 
 @unstable
-def create_rotation_matrices(axis: str, angles: np.ndarray) -> np.ndarray:
+def create_rotation_matrices(seq: str,
+                             angles: np.ndarray,
+                             degrees=False) -> np.ndarray:
     """
-    Create a Nx4x4 series of rotation matrices around a given axis.
+    Create an Nx4x4 series of rotation matrices from Euler coordinates.
+
+    This function is a wrapper for scipy.transform.Rotation.from_euler.
 
     Parameters
     ----------
-    axis
-        Can be either 'x', 'y' or 'z'.
+    seq
+        Specifies sequence of axes for rotations. Up to 3 characters belonging
+        to the set {'X', 'Y', 'Z'} for intrinsic rotations (moving axes), or
+        {'x', 'y', 'z'} for extrinsic rotations (fixed axes). Extrinsic and
+        intrinsic rotations cannot be mixed in one function call.
 
     angles
-        Series of angles in radians.
+        float or array_like, shape (N,) or (N, [1 or 2 or 3]). Euler angles
+        specified in radians (degrees is False) or degrees (degrees is True).
+        For a single character seq, angles can be:
+
+            - a single value
+            - array_like with shape (N,), where each angle[i] corresponds to a
+              single rotation
+            - array_like with shape (N, 1), where each angle[i, 0] corresponds
+              to a single rotation
+
+        For 2- and 3-character wide seq, angles can be:
+            - array_like with shape (W,) where W is the width of seq, which
+              corresponds to a single rotation with W axes
+            - array_like with shape (N, W) where each angle[i] corresponds to
+              a sequence of Euler angles describing a single rotation
+
+    degrees
+        If True, then the given angles are assumed to be in degrees. Default
+        is False.
 
     Returns
     -------
     np.ndarray
-        A Nx4x4 series of rotation transformation matrices.
+        An Nx4x4 series of rotation matrices.
+
+    Example
+    -------
+    Create a rotation matrix that rotates 0, then 90 degrees around x:
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> ktk.geometry.create_rotation_matrices('x', [0, 90], degrees=True)
+        array([[[ 1.,  0.,  0.,  0.],
+                [ 0.,  1.,  0.,  0.],
+                [ 0.,  0.,  1.,  0.],
+                [ 0.,  0.,  0.,  1.]],
+        <BLANKLINE>
+               [[ 1.,  0.,  0.,  0.],
+                [ 0.,  0., -1.,  0.],
+                [ 0.,  1.,  0.,  0.],
+                [ 0.,  0.,  0.,  1.]]])
 
     """
-    angles = np.array(angles)
-
-    T = np.zeros((angles.shape[0], 4, 4))
-
-    if axis == 'x':
-        for i in range(angles.size):
-            T[i, 1, 1] = np.cos(angles[i])
-            T[i, 1, 2] = np.sin(-angles[i])
-            T[i, 2, 1] = np.sin(angles[i])
-            T[i, 2, 2] = np.cos(angles[i])
-            T[i, 0, 0] = 1.0
-            T[i, 3, 3] = 1.0
-
-    elif axis == 'y':
-        for i in range(angles.size):
-            T[i, 0, 0] = np.cos(angles[i])
-            T[i, 2, 0] = np.sin(-angles[i])
-            T[i, 0, 2] = np.sin(angles[i])
-            T[i, 2, 2] = np.cos(angles[i])
-            T[i, 1, 1] = 1.0
-            T[i, 3, 3] = 1.0
-
-    elif axis == 'z':
-        for i in range(angles.size):
-            T[i, 0, 0] = np.cos(angles[i])
-            T[i, 0, 1] = np.sin(-angles[i])
-            T[i, 1, 0] = np.sin(angles[i])
-            T[i, 1, 1] = np.cos(angles[i])
-            T[i, 2, 2] = 1.0
-            T[i, 3, 3] = 1.0
-
-    else:
-        raise ValueError("axis must be either 'x', 'y' or 'z'")
-
+    rotation = transform.Rotation.from_euler(seq, angles, degrees)
+    R = rotation.as_matrix()
+    if len(R.shape) == 2:  # Single rotation: add the Time dimension.
+        R = R[np.newaxis, ...]
+    n_samples = R.shape[0]
+    T = np.empty((n_samples, 4, 4))
+    T[:, 0:3, 0:3] = R
+    T[:, 0:3, 3] = 0  # No translation
+    T[:, 3, 0:3] = 0
+    T[:, 3, 3] = 1
     return T
+
+
+@unstable
+def get_euler_angles(T: np.ndarray, seq: str, degrees=False) -> np.ndarray:
+    """
+    Represent a series of transformation matrices as series of Euler angles.
+
+    This function is a wrapper for scipy.transform.Rotation.as_euler. Please
+    consult scipy help for the complete docstring.
+
+    Euler angles suffer from the problem of gimbal lock, where the
+    representation loses a degree of freedom and it is not possible to
+    determine the first and third angles uniquely. In this case, a warning is
+    raised, and the third angle is set to zero. Note however that the returned
+    angles still represent the correct rotation.
+
+    Parameters
+    ----------
+    T
+        An Nx4x4 series of transformation matrices.
+
+    seq
+        3 characters belonging to the set {'X', 'Y', 'Z'} for intrinsic
+        rotations (moving axes), or {'x', 'y', 'z'} for extrinsic rotations
+        (fixed axes). Adjacent axes cannot be the same. Extrinsic and
+        intrinsic rotations cannot be mixed in one function call.
+
+    degrees
+        Returned angles are in degrees if this flag is True, else they are in
+        radians. Default is False.
+
+    Returns
+    -------
+    np.ndarray
+        A Tx3 array of Euler angles. The returned angles are in the range:
+
+            - First angle belongs to [-180, 180] degrees (both inclusive)
+            - Third angle belongs to [-180, 180] degrees (both inclusive)
+            - Second angle belongs to:
+                - [-90, 90] degrees if all axes are different (like xyz)
+                - [0, 180] degrees if first and third axes are the same (like
+                  zxz)
+
+    """
+    R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
+    return R.as_euler(seq, degrees)
 
 
 @unstable
@@ -490,3 +554,8 @@ module_locals = locals()
 
 def __dir__():
     return directory(module_locals)
+
+
+if __name__ == "__main__":
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
