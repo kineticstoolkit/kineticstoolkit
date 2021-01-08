@@ -299,11 +299,35 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Loading-sample-data" class="md-nav__link">Loading sample data</a>
         </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-hand" class="md-nav__link">Calculate the force and moments at the hand</a>
+        <li class="md-nav__item"><a href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" class="md-nav__link">Put everything relevant into one, synchronized TimeSeries</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-wrist" class="md-nav__link">Calculate the force and moments at the wrist</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Calculate-the-COM-position-of-the-wheel-segment" class="md-nav__link">Calculate the COM position of the wheel segment</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-COM-acceleration-of-the-wheel-segment" class="md-nav__link">Calculate the COM acceleration of the wheel segment</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the wheel segment’s angles around the global x, y and z axes</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a>
+        </li>
+        <li class="md-nav__item"><a href="#Finally,-calculate-the-proximal-forces-and-moments" class="md-nav__link">Finally, calculate the proximal forces and moments</a>
+        </li>
+        <li class="md-nav__item"><a href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" class="md-nav__link">Add the calculated distal forces and moments to the ts_all TimeSeries</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-elbow" class="md-nav__link">Calculate the force and moments at the elbow</a>
         </li>
         <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-shoulder" class="md-nav__link">Calculate the force and moments at the shoulder</a>
+        </li>
+        <li class="md-nav__item"><a href="#Get-the-forces-and-moments-in-the-correct-reference-frames" class="md-nav__link">Get the forces and moments in the correct reference frames</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Local-forces" class="md-nav__link">Local forces</a>
+        </li>
+        <li class="md-nav__item"><a href="#Local-moments" class="md-nav__link">Local moments</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -370,11 +394,35 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#Loading-sample-data" class="md-nav__link">Loading sample data</a>
         </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-hand" class="md-nav__link">Calculate the force and moments at the hand</a>
+        <li class="md-nav__item"><a href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" class="md-nav__link">Put everything relevant into one, synchronized TimeSeries</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-wrist" class="md-nav__link">Calculate the force and moments at the wrist</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Calculate-the-COM-position-of-the-wheel-segment" class="md-nav__link">Calculate the COM position of the wheel segment</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-COM-acceleration-of-the-wheel-segment" class="md-nav__link">Calculate the COM acceleration of the wheel segment</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the wheel segment’s angles around the global x, y and z axes</a>
+        </li>
+        <li class="md-nav__item"><a href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a>
+        </li>
+        <li class="md-nav__item"><a href="#Finally,-calculate-the-proximal-forces-and-moments" class="md-nav__link">Finally, calculate the proximal forces and moments</a>
+        </li>
+        <li class="md-nav__item"><a href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" class="md-nav__link">Add the calculated distal forces and moments to the ts_all TimeSeries</a>
+        </li></ul>
+            </nav>
         </li>
         <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-elbow" class="md-nav__link">Calculate the force and moments at the elbow</a>
         </li>
         <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-shoulder" class="md-nav__link">Calculate the force and moments at the shoulder</a>
+        </li>
+        <li class="md-nav__item"><a href="#Get-the-forces-and-moments-in-the-correct-reference-frames" class="md-nav__link">Get the forces and moments in the correct reference frames</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Local-forces" class="md-nav__link">Local forces</a>
+        </li>
+        <li class="md-nav__item"><a href="#Local-moments" class="md-nav__link">Local moments</a>
+        </li></ul>
+            </nav>
         </li></ul>
             </nav>
         </li>
@@ -641,13 +689,8 @@ div.rendered_html tbody tr:hover {
 <p>The results are the forces and moments applied by the distal segment on the proximal articulation, in the global coordinates system.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This is still a very experimental module that has not been validated yet.</p>
+<p>This is an experimental module, its API and behaviour may change in the future.</p>
 </div>
-<p>To date, the following tests were made and were successful:</p>
-<ol class="arabic simple">
-<li><p>A complete loop from the point of force application point to the force point application, using real wheelchair propulsion data, with a fake mass of 0 kg. In these test conditions, the proximal and distal kinetics are equal, as expected. This test was to verify that the implemented matrices are exempt of sign errors.</p></li>
-<li><p>Real wheelchair propulsion data was inspected and seems plausible.</p></li>
-</ol>
 <p>[1] R. Dumas, R. Aissaoui, and J. A. De Guise, “A 3D generic inverse dynamic method using wrench notation and quaternion algebra,” Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -655,187 +698,779 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
 </pre></div>
 </div>
 </div>
 
 <h2 id="Loading-sample-data">Loading sample data<a class="headerlink" href="#Loading-sample-data" title="Permalink to this headline">¶</a></h2>
-<p>In this tutorial, we will load propulsion data from a sprint in Wheelchair Basketball. Kinetics were recorded using an instrumented wheel (SmartWheel) and kinematics were recorded using an optoelectronic system (Optitrack). Data were preprocessed in Matlab.</p>
-<div class="nbinput nblast docutils container">
+<p>In this tutorial, we will load propulsion data from a sprint in Wheelchair Basketball. Kinetics were recorded using an instrumented wheel (SmartWheel) and kinematics were recorded using an optoelectronic system (Optitrack). Both are synchronized.</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Total mass of the participant</span>
-<span class="n">total_mass</span> <span class="o">=</span> <span class="mi">75</span>
+<span></span><span class="c1"># Load kinetics</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'data/inversedynamics/basketball_kinetics.ktk.zip'</span><span class="p">)</span>
 
-<span class="c1"># Load kinetics</span>
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'data/inversedynamics/basketball_kinetics.mat'</span><span class="p">)</span>
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">kinetics</span><span class="p">[</span><span class="s1">'kineticsSWR'</span><span class="p">]</span>
+<span class="c1"># Change some signs to match (locally): x anterior, # y up, z lateral (right)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># Correct the signs so that the moments are in a correct coordinate system</span>
-<span class="c1"># (The SmartWheel usually reports Mz positive when it should be negative)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
 
-<span class="c1"># Load kinematics</span>
-<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'data/inversedynamics/basketball_kinematics.mat'</span><span class="p">)</span>
-<span class="n">kinematics</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">'kinematics'</span><span class="p">]</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">'Markers'</span><span class="p">]</span>
+<span class="c1"># Keep everything between sync and stop recording events.</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">)</span>
 
-<span class="c1"># Sync kinetics and kinematics (there is a 5.525 time lag between both)</span>
-<span class="n">markers</span><span class="o">.</span><span class="n">time</span> <span class="o">-=</span> <span class="mf">5.525</span>
-
-<span class="c1"># Merge all under the same ts_all TimeSeries.</span>
-<span class="n">ts_all</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">kinetics</span><span class="p">,</span> <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-
-<span class="c1"># Keep only the sprint data</span>
-<span class="n">ts_all</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">get_ts_between_times</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
+<span class="c1"># Look at the data</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-
-
-<h2 id="Calculate-the-force-and-moments-at-the-hand">Calculate the force and moments at the hand<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-hand" title="Permalink to this headline">¶</a></h2>
-<p>The same calculation is done on every segment, from distal to proximal. We begin with the segment ‘Wheel’, since the kinetics are measured at the wheel, and we go up to the hand, which will later be the new point of force application.</p>
-<p>We will ignore the inertial parameters of the pushrim.</p>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_3_0.png" src="_images/inversedynamics_3_0.png"/>
+</div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">pushrim_inertial_parameters</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Mass'</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                               <span class="s1">'COMProximalRatio'</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                               <span class="s1">'GyrationCOMRatio'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span></span><span class="c1"># Load kinematics</span>
+<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'data/inversedynamics/basketball_kinematics.ktk.zip'</span><span class="p">)[</span><span class="s1">'Kinematics'</span><span class="p">]</span>
 
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span class="c1"># Extract markers</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">'Markers'</span><span class="p">]</span>
+<span class="n">markers</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
 
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'BodyR_HandR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">]</span>
+<span class="c1"># Extract reference frames</span>
+<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">'ReferenceFrames'</span><span class="p">]</span>
+<span class="n">reference_frames</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
 
-<span class="n">new_ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span>
-        <span class="n">ts</span><span class="p">,</span> <span class="n">pushrim_inertial_parameters</span><span class="p">)</span>
+<span class="c1"># Keep everything between sync and stop recording events.</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">)</span>
+<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">)</span>
 
-<span class="c1"># Print the results</span>
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'DistalForces'</span><span class="p">,</span> <span class="s1">'DistalMoments'</span><span class="p">])</span>
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ProximalForces'</span><span class="p">,</span> <span class="s1">'ProximalMoments'</span><span class="p">])</span>
+<span class="c1"># Plot one sample</span>
+<span class="n">markers</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'RadialStyloidR'</span><span class="p">)</span>
+
+<span class="c1"># Check what markers are available</span>
+<span class="n">markers</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+{
+                     'ArmR_Marker1': &lt;array of shape (1210, 4)&gt;,
+                     'ArmR_Marker2': &lt;array of shape (1210, 4)&gt;,
+                     'ArmR_Marker3': &lt;array of shape (1210, 4)&gt;,
+                     'ArmR_Marker4': &lt;array of shape (1210, 4)&gt;,
+                  'BackrestHeightL': &lt;array of shape (1210, 4)&gt;,
+                  'BackrestHeightR': &lt;array of shape (1210, 4)&gt;,
+      'BackwardFrontAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
+      'BackwardFrontAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
+       'BackwardRearAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
+       'BackwardRearAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
+                   'Body_AcromionR': &lt;array of shape (1210, 4)&gt;,
+                          'Body_C7': &lt;array of shape (1210, 4)&gt;,
+                       'Body_HandR': &lt;array of shape (1210, 4)&gt;,
+          'Body_LateralEpicondyleR': &lt;array of shape (1210, 4)&gt;,
+                           'ElbowR': &lt;array of shape (1210, 4)&gt;,
+               'ExternalMalleolusL': &lt;array of shape (1210, 4)&gt;,
+               'ExternalMalleolusR': &lt;array of shape (1210, 4)&gt;,
+        'FemoralLateralEpicondyleL': &lt;array of shape (1210, 4)&gt;,
+        'FemoralLateralEpicondyleR': &lt;array of shape (1210, 4)&gt;,
+                 'ForearmR_Marker1': &lt;array of shape (1210, 4)&gt;,
+                 'ForearmR_Marker2': &lt;array of shape (1210, 4)&gt;,
+                 'ForearmR_Marker3': &lt;array of shape (1210, 4)&gt;,
+                 'ForearmR_Marker4': &lt;array of shape (1210, 4)&gt;,
+       'ForwardFrontAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
+       'ForwardFrontAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
+        'ForwardRearAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
+        'ForwardRearAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
+                       'FrontSeatL': &lt;array of shape (1210, 4)&gt;,
+                       'FrontSeatR': &lt;array of shape (1210, 4)&gt;,
+         'HumeralMedialEpicondyleL': &lt;array of shape (1210, 4)&gt;,
+         'HumeralMedialEpicondyleR': &lt;array of shape (1210, 4)&gt;,
+                             'L5S1': &lt;array of shape (1210, 4)&gt;,
+                           'Meta2L': &lt;array of shape (1210, 4)&gt;,
+                           'Meta2R': &lt;array of shape (1210, 4)&gt;,
+                           'Meta5L': &lt;array of shape (1210, 4)&gt;,
+                           'Meta5R': &lt;array of shape (1210, 4)&gt;,
+                        'OlecraneL': &lt;array of shape (1210, 4)&gt;,
+                        'OlecraneR': &lt;array of shape (1210, 4)&gt;,
+                   'RadialStyloidL': &lt;array of shape (1210, 4)&gt;,
+                   'RadialStyloidR': &lt;array of shape (1210, 4)&gt;,
+                        'RearSeatL': &lt;array of shape (1210, 4)&gt;,
+                        'RearSeatR': &lt;array of shape (1210, 4)&gt;,
+                 'RearWheelCenterL': &lt;array of shape (1210, 4)&gt;,
+                 'RearWheelCenterR': &lt;array of shape (1210, 4)&gt;,
+                'RearWheelContactL': &lt;array of shape (1210, 4)&gt;,
+                'RearWheelContactR': &lt;array of shape (1210, 4)&gt;,
+                    'RearWheelTopL': &lt;array of shape (1210, 4)&gt;,
+                    'RearWheelTopR': &lt;array of shape (1210, 4)&gt;,
+                      'SWR_Marker1': &lt;array of shape (1210, 4)&gt;,
+                      'SWR_Marker2': &lt;array of shape (1210, 4)&gt;,
+                      'SWR_Marker3': &lt;array of shape (1210, 4)&gt;,
+                      'SWR_Marker4': &lt;array of shape (1210, 4)&gt;,
+                    'UlnarStyloidL': &lt;array of shape (1210, 4)&gt;,
+                    'UlnarStyloidR': &lt;array of shape (1210, 4)&gt;,
+      'WheelchairAnteriorDirection': &lt;array of shape (1210, 4)&gt;,
+                 'WheelchairCenter': &lt;array of shape (1210, 4)&gt;,
+              'WheelchairR_Marker1': &lt;array of shape (1210, 4)&gt;,
+              'WheelchairR_Marker2': &lt;array of shape (1210, 4)&gt;,
+              'WheelchairR_Marker3': &lt;array of shape (1210, 4)&gt;,
+              'WheelchairR_Marker4': &lt;array of shape (1210, 4)&gt;
+}
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_5_1.png" src="_images/inversedynamics_5_1.png"/>
+<img alt="_images/inversedynamics_4_1.png" src="_images/inversedynamics_4_1.png"/>
 </div>
 </div>
-
-
-<h2 id="Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-elbow" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
-
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'BodyR_HandR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
-
-<span class="n">new_ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span>
-        <span class="n">ts</span><span class="p">,</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">get_anthropometrics</span><span class="p">(</span><span class="s1">'ForearmHand'</span><span class="p">,</span> <span class="n">total_mass</span><span class="p">))</span>
-
-<span class="c1"># Print the results</span>
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'DistalForces'</span><span class="p">,</span> <span class="s1">'DistalMoments'</span><span class="p">])</span>
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ProximalForces'</span><span class="p">,</span> <span class="s1">'ProximalMoments'</span><span class="p">])</span>
+<span></span><span class="c1"># Check what reference frames are available</span>
+<span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_7_1.png" src="_images/inversedynamics_7_1.png"/>
-</div>
+<div class="highlight"><pre>
+{
+        'HumerusR': &lt;array of shape (1210, 4, 4)&gt;,
+           'Trunk': &lt;array of shape (1210, 4, 4)&gt;,
+          'WheelL': &lt;array of shape (1210, 4, 4)&gt;,
+          'WheelR': &lt;array of shape (1210, 4, 4)&gt;,
+      'Wheelchair': &lt;array of shape (1210, 4, 4)&gt;
+}
+</pre></div></div>
 </div>
 
 
-<h2 id="Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-shoulder" title="Permalink to this headline">¶</a></h2>
+<h2 id="Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries<a class="headerlink" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" title="Permalink to this headline">¶</a></h2>
+<p>We will now create a single TimeSeries with every relevant signal. Note that for kinematics, we use <code class="docutils literal notranslate"><span class="pre">merge</span></code> instead of simply copying the data, because kinetics and kinematics have different sampling rate and therefore the data have different lengths. Merging takes care of resampling.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span></span><span class="n">ts_all</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'BodyR_AcromionR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
+<span class="c1"># Add reference frames (to put pushrim kinetics in global coordinates,</span>
+<span class="c1"># and at the end to express shoulder dynamics in local coordinates).</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">'WheelR'</span><span class="p">,</span> <span class="s1">'HumerusR'</span><span class="p">,</span> <span class="s1">'Trunk'</span><span class="p">]),</span>
+    <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Add the forces and moments, expressed in global coordinates.</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WheelR'</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WheelR'</span><span class="p">]</span>
+    <span class="p">)</span>
+
+<span class="c1"># Add relevant markers</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">markers</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
+        <span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">,</span> <span class="s1">'RadialStyloidR'</span><span class="p">,</span> <span class="s1">'ElbowR'</span><span class="p">,</span> <span class="s1">'Body_AcromionR'</span><span class="p">]),</span>
+    <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="c1"># Check the contents of this TimeSeries</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+        'Body_AcromionR': &lt;array of shape (2421, 4)&gt;,
+                'ElbowR': &lt;array of shape (2421, 4)&gt;,
+             'HubForces': &lt;array of shape (2421, 4)&gt;,
+            'HubMoments': &lt;array of shape (2421, 4)&gt;,
+              'HumerusR': &lt;array of shape (2421, 4, 4)&gt;,
+        'RadialStyloidR': &lt;array of shape (2421, 4)&gt;,
+      'RearWheelCenterR': &lt;array of shape (2421, 4)&gt;,
+                 'Trunk': &lt;array of shape (2421, 4, 4)&gt;,
+                'WheelR': &lt;array of shape (2421, 4, 4)&gt;
+}
+</pre></div></div>
+</div>
+
+
+<h2 id="Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-wrist" title="Permalink to this headline">¶</a></h2>
+<p>The same calculation is done on every segment, from distal to proximal. We begin with the segment ‘Wheel’ with the point of force application at the hub (since the measured values are referred at the hub).</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Create an empty TimeSeries</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+
+<span class="c1"># Add the kinetics data to this TimeSeries</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubForces'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubMoments'</span><span class="p">]</span>
+
+<span class="c1"># Add the kinematics data to this TimeSeries.</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
+
+<span class="c1"># Check the contents of the resulting TimeSeries.</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
+           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
+      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
+         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;
+}
+</pre></div></div>
+</div>
+<p>We now have everything to start computing the forces and moments at the wrist.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># We neglect the inertial properties of the wheel. This is a limit and we could improve on this.</span>
+<span class="n">inertial_constants</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Mass'</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                      <span class="s1">'COMProximalRatio'</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                      <span class="s1">'GyrationCOMRatio'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="Calculate-the-COM-position-of-the-wheel-segment">Calculate the COM position of the wheel segment<a class="headerlink" href="#Calculate-the-COM-position-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_position</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
+                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
+           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
+      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
+         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;
+}
+</pre></div></div>
+</div>
+
+
+<h3 id="Calculate-the-COM-acceleration-of-the-wheel-segment">Calculate the COM acceleration of the wheel segment<a class="headerlink" href="#Calculate-the-COM-acceleration-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
+                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
+                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
+           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
+      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
+         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;
+}
+</pre></div></div>
+</div>
+
+
+<h3 id="Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">Calculate the wheel segment’s angles around the global x, y and z axes<a class="headerlink" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_angles</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
+                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
+                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
+           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
+      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
+         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'SegmentAngles': &lt;array of shape (2421, 3)&gt;
+}
+</pre></div></div>
+</div>
+
+
+<h3 id="Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes<a class="headerlink" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+           'AngularAcceleration': &lt;array of shape (2421, 3)&gt;,
+               'AngularVelocity': &lt;array of shape (2421, 3)&gt;,
+               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
+                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
+                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
+           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
+      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
+         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'SegmentAngles': &lt;array of shape (2421, 3)&gt;
+}
+</pre></div></div>
+</div>
+
+
+<h3 id="Finally,-calculate-the-proximal-forces-and-moments">Finally, calculate the proximal forces and moments<a class="headerlink" href="#Finally,-calculate-the-proximal-forces-and-moments" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
+
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+           'AngularAcceleration': &lt;array of shape (2421, 3)&gt;,
+               'AngularVelocity': &lt;array of shape (2421, 3)&gt;,
+               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
+                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
+                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
+           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
+                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
+      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
+                'ProximalForces': &lt;array of shape (2421, 4)&gt;,
+         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;,
+               'ProximalMoments': &lt;array of shape (2421, 4)&gt;,
+              'RadiusOfGyration': &lt;array of shape (2421, 3)&gt;,
+                 'SegmentAngles': &lt;array of shape (2421, 3)&gt;
+}
+</pre></div></div>
+</div>
+
+
+<h3 id="Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">Add the calculated distal forces and moments to the ts_all TimeSeries<a class="headerlink" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Plot the hub and wrist forces (identical since</span>
+<span class="c1"># there were no inertial constants on this segment)</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'HubForces'</span><span class="p">,</span> <span class="s1">'WristForces'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_24_0.png" src="_images/inversedynamics_24_0.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Plot the hub and wrist moments (not identical</span>
+<span class="c1"># because of the lever arm between the hub and wrist)</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'HubMoments'</span><span class="p">,</span> <span class="s1">'WristMoments'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_25_0.png" src="_images/inversedynamics_25_0.png"/>
+</div>
+</div>
+
+
+
+<h2 id="Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-elbow" title="Permalink to this headline">¶</a></h2>
+<p>The method is identical for the other segments. However, for these segments, we will define inertial constants based on anthropometric tables.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">inertial_constants</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">get_anthropometrics</span><span class="p">(</span>
+    <span class="n">segment_name</span><span class="o">=</span><span class="s1">'Forearm'</span><span class="p">,</span>
+    <span class="n">total_mass</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+
+<span class="n">inertial_constants</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+             'COMDistalRatio': 0.57,
+           'COMProximalRatio': 0.43,
+           'GyrationCOMRatio': 0.303,
+        'GyrationDistalRatio': 0.647,
+      'GyrationProximalRatio': 0.526,
+                       'Mass': 1.28
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Create an empty TimeSeries</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+
+<span class="c1"># Add the kinetics data to this TimeSeries</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristForces'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristMoments'</span><span class="p">]</span>
+
+<span class="c1"># Add the kinematics data to this TimeSeries.</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
+
+<span class="c1"># Calculate the COM position and acceleration</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_position</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Calculate the segment's angle, angular velocity and angular acceleration</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_angles</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Calculate the proximal forces and moments</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
+
+<span class="c1"># Add the calculated forces and moments to ts_all</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+
+<span class="c1"># Compare the wrist forces to the elbow forces</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'WristForces'</span><span class="p">,</span> <span class="s1">'ElbowForces'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_28_0.png" src="_images/inversedynamics_28_0.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Compare the wrist moments to the elbow moments</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'WristMoments'</span><span class="p">,</span> <span class="s1">'ElbowMoments'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_29_0.png" src="_images/inversedynamics_29_0.png"/>
+</div>
+</div>
+
+
+<h2 id="Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-shoulder" title="Permalink to this headline">¶</a></h2>
+<p>We proceed exactly as for the elbow.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">inertial_constants</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">get_anthropometrics</span><span class="p">(</span>
+    <span class="n">segment_name</span><span class="o">=</span><span class="s1">'UpperArm'</span><span class="p">,</span>
+    <span class="n">total_mass</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
+
+<span class="n">inertial_constants</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+             'COMDistalRatio': 0.564,
+           'COMProximalRatio': 0.436,
+           'GyrationCOMRatio': 0.322,
+        'GyrationDistalRatio': 0.645,
+      'GyrationProximalRatio': 0.542,
+                       'Mass': 2.24
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Create an empty TimeSeries</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+
+<span class="c1"># Add the kinetics data to this TimeSeries</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowForces'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowMoments'</span><span class="p">]</span>
+
+<span class="c1"># Add the kinematics data to this TimeSeries.</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Body_AcromionR'</span><span class="p">]</span>
 
-<span class="n">new_ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span>
-        <span class="n">ts</span><span class="p">,</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">get_anthropometrics</span><span class="p">(</span><span class="s1">'UpperArm'</span><span class="p">,</span> <span class="n">total_mass</span><span class="p">))</span>
+<span class="c1"># Calculate the COM position and acceleration</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_position</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="c1"># Print the results</span>
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'DistalForces'</span><span class="p">,</span> <span class="s1">'DistalMoments'</span><span class="p">])</span>
-<span class="n">new_ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ProximalForces'</span><span class="p">,</span> <span class="s1">'ProximalMoments'</span><span class="p">])</span>
+<span class="c1"># Calculate the segment's angle, angular velocity and angular acceleration</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_angles</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># Calculate the proximal forces and moments</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
+
+<span class="c1"># Add the calculated forces and moments to ts_all</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+
+<span class="c1"># Compare the elbow forces to the shoulder forces</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ElbowForces'</span><span class="p">,</span> <span class="s1">'ShoulderForces'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_32_0.png" src="_images/inversedynamics_32_0.png"/>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Compare the elbow moments to the shoulder moments</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ElbowMoments'</span><span class="p">,</span> <span class="s1">'ShoulderMoments'</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_33_0.png" src="_images/inversedynamics_33_0.png"/>
+</div>
+</div>
+
+
+<h2 id="Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames<a class="headerlink" href="#Get-the-forces-and-moments-in-the-correct-reference-frames" title="Permalink to this headline">¶</a></h2>
+<p>Please note that every force and moment we just calculated is expressed in the global reference frame, which is of limited value for interpretation. It is much more useful to express these data in local coordinates. Several conventions may be used, here we will express the shoulder forces in the trunk reference frame, and the shoulder moments in the humeral reference frame.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Create a new TimeSeries</span>
+<span class="n">local_joint_dynamics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+
+<span class="c1"># Fill it with the external forces</span>
+<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderForces'</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Trunk'</span><span class="p">]</span>
+<span class="p">)</span>
+
+<span class="c1"># This is the forces applied by the trunk on the humerus. Normally we want the contrary,</span>
+<span class="c1"># the external forces applied by the humerus on the trunk:</span>
+<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span>
+
+<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderMoments'</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HumerusR'</span><span class="p">]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+
+<h3 id="Local-forces">Local forces<a class="headerlink" href="#Local-forces" title="Permalink to this headline">¶</a></h3>
+<p>Let’s plot the shoulder forces in the trunk reference frame:</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">'Anterior'</span><span class="p">,</span> <span class="s1">'Upward'</span><span class="p">,</span> <span class="s1">'Lateral'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'External forces in the trunk reference frame:'</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
+<div class="output_area docutils container">
 <div class="highlight"><pre>
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+External forces in the trunk reference frame:
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_9_1.png" src="_images/inversedynamics_9_1.png"/>
+<img alt="_images/inversedynamics_37_1.png" src="_images/inversedynamics_37_1.png"/>
+</div>
+</div>
+
+
+<h3 id="Local-moments">Local moments<a class="headerlink" href="#Local-moments" title="Permalink to this headline">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">'Abduction'</span><span class="p">,</span> <span class="s1">'Internal rotation'</span><span class="p">,</span> <span class="s1">'Flexion'</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">'Net internal shoulder moments:'</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Net internal shoulder moments:
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/inversedynamics_39_1.png" src="_images/inversedynamics_39_1.png"/>
 </div>
 </div>
 <p>For more information on inversedynamics, please check the <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">API Reference for the inversedynamics module</span></a>.</p>
+
 
 
 

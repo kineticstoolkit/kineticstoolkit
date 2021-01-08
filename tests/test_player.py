@@ -14,9 +14,9 @@ def test_instanciate():
     # Load markers
     kinematics = ktk.load(
         ktk.config.root_folder +
-        '/doc/data/inversedynamics/basketball_kinematics.mat')
+        '/doc/data/inversedynamics/basketball_kinematics.ktk.zip')
 
-    kinematics = kinematics['kinematics']
+    kinematics = kinematics['Kinematics']
 
     # The player can be instanciated to show markers
     pl = ktk.Player(kinematics['Markers'], target=[-5, 0, 0])
@@ -24,14 +24,14 @@ def test_instanciate():
     pl.close()
 
     # The player can be instanciated to show rigid bodies
-    pl = ktk.Player(kinematics['VirtualRigidBodies'],
+    pl = ktk.Player(kinematics['ReferenceFrames'],
         target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 
     # Or the player can be instanciated to show both markers and rigid bodies
     pl = ktk.Player(kinematics['Markers'],
-        kinematics['VirtualRigidBodies'],
+        kinematics['ReferenceFrames'],
         target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
