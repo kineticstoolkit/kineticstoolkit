@@ -79,6 +79,7 @@ class DBInterface():
         table = self.tables['Files']['FileLabel']
         return table.drop_duplicates().to_list()
 
+    @unstable
     def __init__(self,
                  project_label: str,
                  user: str = '',

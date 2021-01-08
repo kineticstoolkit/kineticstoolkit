@@ -55,7 +55,6 @@
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script src="../_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -383,7 +382,7 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_rotation_matrices" title="kineticstoolkit.geometry.create_rotation_matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_rotation_matrices</span></code></a>(seq, angles[, degrees])</p></td>
 <td><p>Create an Nx4x4 series of rotation matrices from Euler coordinates.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_euler_angles" title="kineticstoolkit.geometry.get_euler_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_euler_angles</span></code></a>(T, seq[, degrees])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_euler_angles" title="kineticstoolkit.geometry.get_euler_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_euler_angles</span></code></a>(T, seq[, degrees, alt_angles])</p></td>
 <td><p>Represent a series of transformation matrices as series of Euler angles.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_global_coordinates" title="kineticstoolkit.geometry.get_global_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_coordinates</span></code></a>(local_coordinates, …)</p></td>
@@ -579,7 +578,7 @@ is False.</p></li>
 </dd></dl>
 <dl class="py function">
 <dt id="kineticstoolkit.geometry.get_euler_angles">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_euler_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_euler_angles" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_euler_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">alt_angles</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_euler_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represent a series of transformation matrices as series of Euler angles.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -605,26 +604,47 @@ rotations (moving axes), or {‘x’, ‘y’, ‘z’} for extrinsic rotations
 intrinsic rotations cannot be mixed in one function call.</p></li>
 <li><p><strong>degrees</strong> – Returned angles are in degrees if this flag is True, else they are in
 radians. Default is False.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A Tx3 array of Euler angles. The returned angles are in the range:</p>
+<li><p><strong>alt_angles</strong> – <p>Return an alternate sequence with the second angle inverted, that
+leads to the same rotation matrices. More specifically:</p>
 <blockquote>
-<div><ul class="simple">
+<div><ul>
 <li><p>First angle belongs to [-180, 180] degrees (both inclusive)</p></li>
-<li><p>Third angle belongs to [-180, 180] degrees (both inclusive)</p></li>
 <li><dl class="simple">
 <dt>Second angle belongs to:</dt><dd><ul>
+<li><dl class="simple">
+<dt>Default case (alt_angles = False):</dt><dd><ul>
 <li><p>[-90, 90] degrees if all axes are different (like xyz)</p></li>
-<li><p>[0, 180] degrees if first and third axes are the same (like
-zxz)</p></li>
+<li><p>[0, 180] degrees if first and third axes are the same
+(like zxz)</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Alternate case (alt_angles = True):</dt><dd><ul>
+<li><p>[90, 270] degrees if all axes are different (like xyz)</p></li>
+<li><p>[-180, 0] degrees if first and third axes are the same
+(like zxz)</p></li>
 </ul>
 </dd>
 </dl>
 </li>
 </ul>
+</dd>
+</dl>
+</li>
+<li><p>Third angle belongs to [-180, 180] degrees (both inclusive)</p></li>
+</ul>
 </div></blockquote>
-</p>
+<p>One rationale for adding this special case is the calculation
+of shoulder angles: when following the ISB recommendation (YXY), X
+corresponds to the negative elevation and thus we expect to get
+negative values for Y. In this case, just use alt_angles = True.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Tx3 array of Euler angles.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>
@@ -857,7 +877,7 @@ matrices.</p>
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

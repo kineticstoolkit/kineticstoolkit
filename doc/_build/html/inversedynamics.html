@@ -55,7 +55,6 @@
     <script src="_static/jquery.js"></script>
     <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
-    <script src="_static/language_data.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -393,21 +392,35 @@
 /* CSS for nbsphinx extension */
 
 /* remove conflicting styling from Sphinx themes */
-div.nbinput.container,
-div.nbinput.container div.prompt,
-div.nbinput.container div.input_area,
-div.nbinput.container div[class*=highlight],
-div.nbinput.container div[class*=highlight] pre,
-div.nboutput.container,
-div.nboutput.container div.prompt,
-div.nboutput.container div.output_area,
-div.nboutput.container div[class*=highlight],
-div.nboutput.container div[class*=highlight] pre {
-    background: none;
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
     border: none;
-    padding: 0 0;
+    padding: 0;
     margin: 0;
     box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
 }
 
 /* avoid gaps between output lines */
@@ -508,7 +521,7 @@ div.nboutput.container div.output_area {
 div.nbinput.container div.input_area {
     border: 1px solid #e0e0e0;
     border-radius: 2px;
-    background: #f5f5f5;
+    /*background: #f5f5f5;*/
 }
 
 /* override MathJax center alignment in output cells */
@@ -574,6 +587,7 @@ div.nboutput.container div.output_area.rendered_html,
 div.nboutput.container div.output_area > div.output_javascript,
 div.nboutput.container div.output_area:not(.rendered_html) > img{
     padding: 5px;
+    margin: 0;
 }
 
 /* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
@@ -716,12 +730,12 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -761,12 +775,12 @@ UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/invers
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -806,12 +820,12 @@ UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/invers
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
-UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:447] COMPosition not found in input TimeSeries. I calculated it.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:454] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:467] SegmentAngles not found in input TimeSeries. I calculated it.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/filters.py:48] NaNs found in the signal. They have been interpolated before filtering, and then put back in the filtered data.
+UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/inversedynamics.py:473] COMAcceleration not found in input TimeSeries. I calculated it using a low-pass ButterWorth filter of order 2 at 10 Hz.
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
@@ -872,7 +886,7 @@ UserWarning [/Users/felix/Documents/Recherche/ktk_develop/kineticstoolkit/invers
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.3.1.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>

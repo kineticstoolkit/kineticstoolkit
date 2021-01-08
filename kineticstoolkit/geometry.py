@@ -158,7 +158,8 @@ def create_rotation_matrices(seq: str,
 
 
 @unstable
-def get_euler_angles(T: np.ndarray, seq: str, degrees=False) -> np.ndarray:
+def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
+                     alt_angles=False) -> np.ndarray:
     """
     Represent a series of transformation matrices as series of Euler angles.
 
@@ -186,21 +187,49 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False) -> np.ndarray:
         Returned angles are in degrees if this flag is True, else they are in
         radians. Default is False.
 
+    alt_angles
+        Return an alternate sequence with the second angle inverted, that
+        leads to the same rotation matrices. More specifically:
+            - First angle belongs to [-180, 180] degrees (both inclusive)
+            - Second angle belongs to:
+                - Default case (alt_angles = False):
+                    - [-90, 90] degrees if all axes are different (like xyz)
+                    - [0, 180] degrees if first and third axes are the same
+                      (like zxz)
+                - Alternate case (alt_angles = True):
+                    - [90, 270] degrees if all axes are different (like xyz)
+                    - [-180, 0] degrees if first and third axes are the same
+                      (like zxz)
+            - Third angle belongs to [-180, 180] degrees (both inclusive)
+
+        One rationale for adding this special case is the calculation
+        of shoulder angles: when following the ISB recommendation (YXY), X
+        corresponds to the negative elevation and thus we expect to get
+        negative values for Y. In this case, just use alt_angles = True.
+
     Returns
     -------
     np.ndarray
-        A Tx3 array of Euler angles. The returned angles are in the range:
+        A Tx3 array of Euler angles.
 
-            - First angle belongs to [-180, 180] degrees (both inclusive)
-            - Third angle belongs to [-180, 180] degrees (both inclusive)
-            - Second angle belongs to:
-                - [-90, 90] degrees if all axes are different (like xyz)
-                - [0, 180] degrees if first and third axes are the same (like
-                  zxz)
 
     """
     R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
-    return R.as_euler(seq, degrees)
+    angles = R.as_euler(seq, degrees)
+
+    offset = 180 if degrees else np.pi
+
+    if alt_angles:
+        if seq[0] == seq[2]:  # Euler angles
+            angles[:, 0] = np.mod(angles[:, 0], 2 * offset) - offset
+            angles[:, 1] = -angles[:, 1]
+            angles[:, 2] = np.mod(angles[:, 2], 2 * offset) - offset
+        else:  # Tait-Bryan angles
+            angles[:, 0] = np.mod(angles[:, 0], 2 * offset) - offset
+            angles[:, 1] = np.pi - angles[:, 1]
+            angles[:, 2] = np.mod(angles[:, 2], 2 * offset) - offset
+
+    return angles
 
 
 @unstable
