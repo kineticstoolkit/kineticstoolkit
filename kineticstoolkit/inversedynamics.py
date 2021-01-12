@@ -175,25 +175,27 @@ def calculate_com_acceleration(
     ----------
     ts
         A TimeSeries with the at least a 'COMPosition' data key.
+
     filter_func
         'savgol': calculate the acceleration using the 2nd order coefficient
         of a moving polynomial.
         'butter': no-lag 2nd order filter followed by a centered derivate.
 
-    Additionnal parameters for a Savistky-Golay filter (savgol)
-    -----------------------------------------------------------
     window_length
+        Only for Savistky-Golay filters (savgol).
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
+
     poly_order
+        Only for Savistky-Golay filters (savgol).
         Optional. The order of the polynomial used to fit the samples.
         polyorder must be less than window_length. The default is 2.
 
-    Additionnal parameters for a Butterworth filter (butter)
-    --------------------------------------------------------
     fc
+        Only for Butterworth filters (butter).
         Cut-off frequency in Hz.
     order
+        Only for Butterworth filters (butter).
         Optional. Order of the filter. The default is 2.
 
     Returns
@@ -300,20 +302,22 @@ def calculate_segment_rotation_rates(
         2nd order coefficients of a moving polynomial.
         'butter': no-lag 2nd order filter followed by centered derivates.
 
-    Additionnal parameters for a Savistky-Golay filter (savgol)
-    -----------------------------------------------------------
     window_length
+        Only for Savitzky-Golay filters (savgol).
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
+
     poly_order
+        Only for Savitzky-Golay filters (savgol).
         Optional. The order of the polynomial used to fit the samples.
         polyorder must be less than window_length. The default is 2.
 
-    Additionnal parameters for a Butterworth filter (butter)
-    --------------------------------------------------------
     fc
+        Only for Butterworth filters (butter).
         Cut-off frequency in Hz.
+
     order
+        Only for Butterworth filters (butter).
         Optional. Order of the filter. The default is 2.
 
     Returns

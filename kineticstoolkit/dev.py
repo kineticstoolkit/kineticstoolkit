@@ -48,14 +48,16 @@ def run_unit_tests() -> None:
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
     print('Running unit tests...')
+
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder + '/tests')
     subprocess.call(['coverage', 'run',
                      '--source', '../kineticstoolkit',
                      '--omit', '../kineticstoolkit/dev.py',
                      '--omit', '../kineticstoolkit/cmdgui.py',
-                     '-m', 'pytest', '--ignore=interactive'])
-    subprocess.call(['coverage', 'html'])
+                     '-m', 'pytest', '--ignore=interactive'],
+                    env=kineticstoolkit.config.env)
+    subprocess.call(['coverage', 'html'], env=kineticstoolkit.config.env)
     webbrowser.open_new_tab(
         'file://' + kineticstoolkit.config.root_folder +
         '/tests/htmlcov/index.html')
@@ -70,7 +72,8 @@ def run_static_type_checker() -> None:
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder)
     subprocess.call(['mypy', '--ignore-missing-imports', '-p',
-                     'kineticstoolkit'])
+                     'kineticstoolkit'],
+                    env=kineticstoolkit.config.env)
     os.chdir(cwd)
 
 
@@ -95,7 +98,8 @@ def _generate_tutorial(file: str) -> None:
     print(file)
     subprocess.call(['jupyter-nbconvert', '--execute',
                      '--log-level', 'WARN', '--inplace',
-                     '--to', 'notebook', file])
+                     '--to', 'notebook', file],
+                    env=kineticstoolkit.config.env)
 
     # Remove execution metadata (which changes after each run and pollutes
     # the git repository)
@@ -135,7 +139,7 @@ def build_website(clean: bool = False) -> None:
     os.chdir(kineticstoolkit.config.root_folder + '/doc')
 
     if clean:
-        subprocess.call(['make', 'clean'])
+        subprocess.call(['make', 'clean'], env=kineticstoolkit.config.env)
 
     # Generate API
     print('Generating API...')
@@ -143,11 +147,12 @@ def build_website(clean: bool = False) -> None:
         'members,undoc-members,autosummary'
     subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
                       '-o', 'api', '../kineticstoolkit',
-                      'external'])
+                      'external'],
+                    env=kineticstoolkit.config.env)
 
     # Generate site
     print('Generating site...')
-    subprocess.call(['make', 'html'])
+    subprocess.call(['make', 'html'], env=kineticstoolkit.config.env)
 
     # Open site
     webbrowser.open_new_tab(
@@ -161,7 +166,8 @@ def clean() -> None:
                      '--ClearOutputPreprocessor.enabled=True',
                      '--log-level', 'WARN',
                      '--inplace',
-                     kineticstoolkit.config.root_folder + '/doc/*.ipynb'])
+                     kineticstoolkit.config.root_folder + '/doc/*.ipynb'],
+                    env=kineticstoolkit.config.env)
 
 
 def compile_for_pypi() -> None:
@@ -171,7 +177,8 @@ def compile_for_pypi() -> None:
     shutil.rmtree(kineticstoolkit.config.root_folder + '/build',
                   ignore_errors=True)
     os.chdir(kineticstoolkit.config.root_folder)
-    subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'])
+    subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'],
+                    env=kineticstoolkit.config.env)
 
 
 def upload_to_pypi() -> None:
@@ -181,7 +188,8 @@ def upload_to_pypi() -> None:
         'osascript',
         '-e',
         'tell application "Terminal" to do script '
-        f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'])
+        f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'],
+        env=kineticstoolkit.config.env)
 
 
 def release() -> None:

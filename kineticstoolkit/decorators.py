@@ -75,15 +75,15 @@ Warning
 -------
 Unreleased function.
 
-This function is currently being developped and has not been released yet.
-It may not have been validated, it may change signature and behaviour
-drastically or even be deleted.
+This function is currently being developped, tested or validated and has
+not been released yet. It may change signature and behaviour or even be
+deleted.
 """
 
 unstable_warning = """
-The function {name} is currently being developped and has not been released
-yet. It may not have been validated, it may change signature and behaviour
-drastically or even be deleted.
+The function {name} is currently being developped, tested or validated and has
+not been released yet. It may change signature and behaviour or even be
+deleted.
 """
 
 dead_docstring = """

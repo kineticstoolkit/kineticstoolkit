@@ -41,6 +41,7 @@ def __dir__() -> List[str]:
         'is_linux',
         'temp_folder',
         'version',
+        'pythonpath',
     ]
 
 # Root folder (kineticstoolkit installation)
@@ -74,3 +75,9 @@ try:
 except Exception:
     warnings.warn('Could not set temporary folder.')
     temp_folder = '.'
+
+# Environment, including python path. If PYTHONPATH is defined in Spyder and
+# Spyder is opened as a standalone app, define PYTHONPATH as SPY_PYTHONPATH.
+env = os.environ.copy()
+if 'SPY_PYTHONPATH' in env and 'PYTHONPATH' not in env:
+    env['PYTHONPATH'] = env['SPY_PYTHONPATH']
