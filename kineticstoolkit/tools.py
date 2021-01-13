@@ -156,7 +156,6 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         _mpl.rcParams['figure.figsize'] = [10, 5]
         _mpl.rcParams['figure.dpi'] = 75
         _mpl.rcParams['lines.linewidth'] = 1
-        _mpl.rcParams['figure.autolayout'] = True
         kineticstoolkit.gui.set_color_order('xyz')
 
     if config['change_numpy_print_options']:

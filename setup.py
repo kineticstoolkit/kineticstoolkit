@@ -20,7 +20,7 @@ setuptools.setup(
 	license_files=['LICENSE.txt', 'NOTICE.txt'],
     packages=setuptools.find_packages(),
     package_data={
-        'kineticstoolkit': ['logo.png', 'logo_hires.png'],
+        'kineticstoolkit': ['VERSION', 'logo.png', 'logo_hires.png'],
     },
     project_urls={
         'Documentation': 'https://felixchenier.uqam.ca/kineticstoolkit',

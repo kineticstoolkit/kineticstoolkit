@@ -53,7 +53,7 @@ Modified dict representation in lab mode:
         'data2': <array of shape (30,)>,
         'data3': <array of shape (30,)>
     }
-    
+
 ### Modification to warnings format ###
 
 Kinetics Toolkit sometimes generates warnings when calculations are encountering unexpected data, when assumptions were made or to flag relevant suspicious informations to the user. Importing ktk in lab mode pretty-prints those warnings so they are clearer to see and understand.
@@ -83,9 +83,6 @@ the following modifications are made to default matplotlib figures:
 
 - The standard figure size is changed to [10, 5], which is a little bigger
   than the default and is thus more practical for interactive navigation.
-  
-- The standard figure autolayout is changed to True, so that figures automatically
-  adapt to resizing.
 
 - The default color order is changed to (rgbcmyko) with o being orange. The
   first colors, red, green and blue, are consistent the colours assigned to

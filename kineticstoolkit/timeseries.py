@@ -37,17 +37,15 @@ import numpy as np
 import scipy as sp
 import pandas as pd
 
-try:
-    import xarray as xr
-except ImportError:
-    pass
-
 import warnings
 from ast import literal_eval
 from copy import deepcopy
 from typing import Dict, List, Tuple, Any, Union
 
 import kineticstoolkit as ktk  # For doctests
+
+
+window_placement = {'top': 50, 'right': 0}
 
 
 def dataframe_to_dict_of_arrays(
@@ -453,25 +451,6 @@ class TimeSeries():
 
         return True
 
-    @unstable
-    def to_dataset(self) -> xr.Dataset:
-        """
-        Export the main TimeSeries contents to an xarray Dataset.
-
-        For now, metadata and events are not exported. This function is a test
-        and may disappear. For now this is mainly to experiment with xarray.
-
-        """
-        dataset = xr.Dataset()
-        for key in self.data:
-            dataset[key] = xr.DataArray(
-                self.data[key])
-            # No clue why mypy doesn't run well on this line. rename expect
-            # a Mapping[Hashable, Hashable] which I think a Dict[str, str] is.
-            dataset[key] = dataset[key].rename({'dim_0': 'time'})  # type: ignore
-            dataset[key] = dataset[key].assign_coords({'time': self.time})
-        return dataset
-
     @stable
     def to_dataframe(self) -> pd.DataFrame:
         """
@@ -783,7 +762,7 @@ class TimeSeries():
                 f'Adding the event "{name}".\n'
                 'Please zoom on the location to \n'
                 'add the event, then click Next.',
-                ['Cancel', 'Next'])
+                ['Cancel', 'Next'], **window_placement)
 
             if button <= 0:  # Cancel
                 plt.close(fig)
@@ -793,14 +772,15 @@ class TimeSeries():
                 kineticstoolkit.gui.message(
                     'Left-click to add events; \n'
                     'Right-click to delete; \n'
-                    'ENTER to finish.')
+                    'ENTER to finish.', **window_placement)
                 plt.pause(0.001)  # Update the plot
                 coordinates = plt.ginput(99999)
                 kineticstoolkit.gui.message('')
 
             else:
                 kineticstoolkit.gui.message(
-                    'Please left-click on the event to add.')
+                    'Please left-click on the event to add.',
+                    **window_placement)
                 coordinates = plt.ginput(1)
                 kineticstoolkit.gui.message('')
 
@@ -814,7 +794,7 @@ class TimeSeries():
                 button = kineticstoolkit.gui.button_dialog(
                     f'Adding the event "{name}".\n'
                     'Do you want to add more of these events?',
-                    ['Cancel', 'Add more', "Finished"])
+                    ['Cancel', 'Add more', "Finished"], **window_placement)
                 if button <= 0:  # Cancel
                     plt.close(fig)
                     return False
@@ -1613,7 +1593,8 @@ class TimeSeries():
         """
         fig = plt.figure()
         self.plot(data_keys)
-        kineticstoolkit.gui.message('Click on both sides of the portion to keep.')
+        kineticstoolkit.gui.message(
+            'Click on both sides of the portion to keep.', **window_placement)
         plt.pause(0.001)  # Redraw
         points = plt.ginput(2)
         kineticstoolkit.gui.message('')
@@ -1793,12 +1774,13 @@ class TimeSeries():
             self.plot(data_keys)
             choice = kineticstoolkit.gui.button_dialog(
                 'Please zoom on the time zero and press Next.',
-                ['Cancel', 'Next'])
+                ['Cancel', 'Next'], **window_placement)
             if choice != 1:
                 plt.close(fig)
                 return
 
-            kineticstoolkit.gui.message('Click on the sync event.')
+            kineticstoolkit.gui.message('Click on the sync event.',
+                                        **window_placement)
             click = plt.ginput(1)
             kineticstoolkit.gui.message('')
             plt.close(fig)
@@ -1836,11 +1818,11 @@ class TimeSeries():
                              'Zero both TimeSeries, using ts1',
                              'Zero both TimeSeries, using ts2',
                              'Sync both TimeSeries on a common event',
-                             'Finished'])
+                             'Finished'], **window_placement)
 
                 if choice == 0:  # Zero ts1 only
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts1.')
+                        'Click on the time zero in ts1.', **window_placement)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -1848,7 +1830,7 @@ class TimeSeries():
 
                 elif choice == 1:  # Zero ts2 only
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts2.')
+                        'Click on the time zero in ts2.', **window_placement)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -1856,7 +1838,7 @@ class TimeSeries():
 
                 elif choice == 2:  # Zero ts1 and ts2 using ts1
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts1.')
+                        'Click on the time zero in ts1.', **window_placement)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -1865,7 +1847,7 @@ class TimeSeries():
 
                 elif choice == 3:  # Zero ts1 and ts2 using ts2
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts2.')
+                        'Click on the time zero in ts2.', **window_placement)
                     click_2 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -1874,10 +1856,11 @@ class TimeSeries():
 
                 elif choice == 4:  # Sync on a common event
                     kineticstoolkit.gui.message(
-                        'Click on the sync event in ts1.')
+                        'Click on the sync event in ts1.', **window_placement)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message(
-                        'Now click on the same event in ts2.')
+                        'Now click on the same event in ts2.',
+                        **window_placement)
                     click_2 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 

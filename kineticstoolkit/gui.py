@@ -40,7 +40,7 @@ from kineticstoolkit.decorators import unstable, directory, private
 
 
 @private
-def message(message: str = '') -> None:
+def message(message: str = '', **kwargs) -> None:
     """
     Show a message window.
 
@@ -52,12 +52,14 @@ def message(message: str = '') -> None:
     li.message(
         message,
         icon=[config.root_folder + '/kineticstoolkit/logo.png',
-              config.root_folder + '/kineticstoolkit/logo_hires.png'])
+              config.root_folder + '/kineticstoolkit/logo_hires.png'],
+        **kwargs)
 
 
 @private
 def button_dialog(message: str = 'Please select an option.',
-                  choices: Sequence[str] = ['Cancel', 'OK']) -> int:
+                  choices: Sequence[str] = ['Cancel', 'OK'],
+                  **kwargs) -> int:
     """
     Create a blocking dialog message window with a selection of buttons.
 
@@ -78,7 +80,8 @@ def button_dialog(message: str = 'Please select an option.',
     return li.button_dialog(
         message, choices,
         icon=[config.root_folder + '/kineticstoolkit/logo.png',
-              config.root_folder + '/kineticstoolkit/logo_hires.png'])
+              config.root_folder + '/kineticstoolkit/logo_hires.png'],
+        **kwargs)
 
 
 @private

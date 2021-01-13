@@ -399,7 +399,8 @@ Kinetics Toolkit’s namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)</p>
 <dl class="py class">
 <dt id="kineticstoolkit.timeseries.TimeSeries">
 <em class="property">class </em><code class="sig-prename descclassname">kineticstoolkit.timeseries.</code><code class="sig-name descname">TimeSeries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span><span class="o">=</span><span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">time_info</span><span class="o">=</span><span class="default_value">{'Unit': 's'}</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">data_info</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">events</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class that implements TimeSeries.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that implements TimeSeries.</p>
 <p>This class implements a Timeseries in a way that resembles the timeseries
 and tscollection found in Matlab.</p>
 <p><strong>Methods</strong></p>
@@ -508,19 +509,16 @@ and tscollection found in Matlab.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.to_dataframe" title="kineticstoolkit.timeseries.TimeSeries.to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code></a>()</p></td>
 <td><p>Create a DataFrame by reshaping all data to one bidimensional table.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.to_dataset" title="kineticstoolkit.timeseries.TimeSeries.to_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataset</span></code></a>()</p></td>
-<td><p>Export the main TimeSeries contents to an xarray Dataset.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="kineticstoolkit.timeseries.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="kineticstoolkit.timeseries.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a>()</p></td>
 <td><p>Delete the events that are outside the TimeSeries’ time vector.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
 <td><p>Add one or many events interactively to the TimeSeries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
 <td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
 <td><p>Synchronize one or two TimeSeries by shifting their time.</p></td>
 </tr>
 </tbody>
@@ -1673,25 +1671,6 @@ and data_info are not included in the resulting DataFrame.</p>
 </dl>
 </dd></dl>
 <dl class="py method">
-<dt id="kineticstoolkit.timeseries.TimeSeries.to_dataset">
-<code class="sig-name descname">to_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.to_dataset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Export the main TimeSeries contents to an xarray Dataset.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
-<p>For now, metadata and events are not exported. This function is a test
-and may disappear. For now this is mainly to experiment with xarray.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dataset</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py method">
 <dt id="kineticstoolkit.timeseries.TimeSeries.trim_events">
 <code class="sig-name descname">trim_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Delete the events that are outside the TimeSeries’ time vector.</p>
@@ -1802,7 +1781,8 @@ modified by this method.</p>
 <dl class="py class">
 <dt id="kineticstoolkit.timeseries.TimeSeriesEvent">
 <em class="property">class </em><code class="sig-prename descclassname">kineticstoolkit.timeseries.</code><code class="sig-name descname">TimeSeriesEvent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'event'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeriesEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define an event in a timeseries.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<p>Define an event in a timeseries.</p>
 <p>This class derives from the list class. A TimeSeriesEvent is always a
 two-items list with the first item being the time and the second item
 being the name of the event.</p>
