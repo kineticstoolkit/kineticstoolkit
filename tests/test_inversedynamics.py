@@ -68,12 +68,13 @@ def test_calculate_proximal_wrenches_2d_static():
         prox = ktk.inversedynamics.calculate_proximal_wrench(
             ts, inertial_constants)
 
-    assert np.all(np.abs(
-        np.nanmedian(prox.data['ProximalForces'], axis=0) - np.array(
-            [0., 80 + 3. * 9.81, 0., 0.])) < 1E-10)
-    assert np.all(np.abs(
-        np.nanmedian(prox.data['ProximalMoments'], axis=0) - np.array(
-            [0., 0., 160 + 3. * 9.81, 0.])) < 1E-10)
+    assert np.allclose(
+        np.nanmedian(prox.data['ProximalForces'], axis=0),
+        [0., 80 + 3. * 9.81, 0., 0.])
+
+    assert np.allclose(
+        np.nanmedian(prox.data['ProximalMoments'], axis=0),
+        [0., 0., 160 + 3. * 9.81, 0.])
 
 
 def test_calculate_proximal_wrenches_2d_dynamic():
@@ -129,11 +130,10 @@ def test_calculate_proximal_wrenches_2d_dynamic():
     prox = ktk.inversedynamics.calculate_proximal_wrench(
         ts, inertial_constants)
 
-    assert np.all(np.abs(prox.data['ProximalForces'][0] -
-                         [0., (80 + 3. * 9.81) + 3, 0., 0.]) < 1E-10)
-    assert np.all(np.abs(prox.data['ProximalMoments'][0] -
-                         [0., 0.,
-                         (160 + 3. * 9.81) + 3.12, 0.]) < 1E-10)
+    assert np.allclose(prox.data['ProximalForces'][0],
+                       [0., (80 + 3. * 9.81) + 3, 0., 0.])
+    assert np.allclose(prox.data['ProximalMoments'][0],
+                       [0., 0., (160 + 3. * 9.81) + 3.12, 0.])
 
     # Test 3: Like test 2 but by swapping x and z (Fz <--> Fx, -Mx <--> Mz)
     ts = ktk.TimeSeries(time=np.array([0]))
@@ -156,10 +156,10 @@ def test_calculate_proximal_wrenches_2d_dynamic():
     prox = ktk.inversedynamics.calculate_proximal_wrench(
         ts, inertial_constants)
 
-    assert np.all(np.abs(prox.data['ProximalForces'][0] -
-                         [0., (80 + 3. * 9.81) + 3, 0., 0.]) < 1E-10)
-    assert np.all(np.abs(prox.data['ProximalMoments'][0] -
-                         [-((160 + 3. * 9.81) + 3.12), 0., 0., 0.]) < 1E-10)
+    assert np.allclose(prox.data['ProximalForces'][0],
+                       [0., (80 + 3. * 9.81) + 3, 0., 0.])
+    assert np.allclose(prox.data['ProximalMoments'][0],
+                       [-((160 + 3. * 9.81) + 3.12), 0., 0., 0.])
 
 
 if __name__ == "__main__":
