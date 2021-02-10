@@ -117,7 +117,64 @@ def test_create_reference_frames_get_local_global_coordinates():
     assert np.sum(np.abs(test_global - global_markers)) < 1E-10
 
 
+def test_get_euler_angles():
+    """Test get_euler_angles and create_rotation_matrices."""
+    np.random.seed(0)
+
+    # Test with only one angle
+    angles = np.random.rand(10) * 2 * np.pi
+    T = ktk.geometry.create_rotation_matrices(
+        'X', angles)
+    test_angles = ktk.geometry.get_euler_angles(
+        T, 'XYZ')
+    assert np.allclose(angles, np.mod(test_angles[:, 0], 2 * np.pi))
+
+    # Test with three angles (tait-bryan), and with this time in degrees
+    angles = np.zeros((10, 3))
+    angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
+    angles[:, 1] = (np.random.rand(10) - 1) * 90
+    angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
+    T = ktk.geometry.create_rotation_matrices(
+        'XYZ', angles, degrees=True)
+    test_angles = ktk.geometry.get_euler_angles(
+        T, 'XYZ', degrees=True)
+    assert np.allclose(angles, test_angles)
+
+    # Test with proper euler angles
+    angles = np.zeros((10, 3))
+    angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
+    angles[:, 1] = np.random.rand(10) * 180
+    angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
+    T = ktk.geometry.create_rotation_matrices(
+        'XYX', angles, degrees=True)
+    test_angles = ktk.geometry.get_euler_angles(
+        T, 'XYX', degrees=True)
+    assert np.allclose(angles, test_angles)
+
+    # Test alt_angles with tait-bryan
+    angles = np.zeros((10, 3))
+    angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
+    angles[:, 1] = np.random.rand(10) * 180 + 90
+    angles[angles[:, 1] > 180, :] -= 360
+    angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
+    T = ktk.geometry.create_rotation_matrices(
+        'XYZ', angles, degrees=True)
+    test_angles = ktk.geometry.get_euler_angles(
+        T, 'XYZ', degrees=True, alt_angles=True)
+    assert np.allclose(angles, test_angles)
+
+    # Test alt_angles with proper euler angles
+    angles = np.zeros((10, 3))
+    angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
+    angles[:, 1] = -np.random.rand(10) * 180
+    angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
+    T = ktk.geometry.create_rotation_matrices(
+        'XYX', angles, degrees=True)
+    test_angles = ktk.geometry.get_euler_angles(
+        T, 'XYX', degrees=True, alt_angles=True)
+    assert np.allclose(angles, test_angles)
+
+
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__])
-
