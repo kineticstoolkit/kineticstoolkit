@@ -35,7 +35,7 @@ import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
 from kineticstoolkit.decorators import unstable, directory, dead
-from typing import Tuple, List
+from typing import Tuple, List, Optional
 
 
 @unstable
@@ -235,152 +235,124 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
 
 
 @unstable
-def create_reference_frames(global_points: np.ndarray,
-                            method: str = 'centroid') -> np.ndarray:
+def create_reference_frames(
+        origin: np.ndarray,
+        x: Optional[np.ndarray] = None,
+        y: Optional[np.ndarray] = None,
+        z: Optional[np.ndarray] = None,
+        xy: Optional[np.ndarray] = None,
+        xz: Optional[np.ndarray] = None,
+        yz: Optional[np.ndarray] = None) -> np.ndarray:
     """
     Create a Nx4x4 series of reference frames based on a point cloud series.
 
-    Create reference frames based on global points, using the provided
-    method, and returns this series of reference frames as a series of
-    transformation matrices.
+    Create reference frames based on points and returns this series of
+    reference frames as a series of transformation matrices.
 
     Parameters
     ----------
-    global_points
-        A series of N sets of M points in a global reference frame (Nx4xM).
+    origin
+        A series of N points (Nx4) that corresponds to the origin of the
+        returned reference frames.
 
-    method
-        Optional. The method to use to construct a reference frame based on
-        these points.
+    x or y or z
+        A series of N points (Nx4) that is aligned toward the {x|y|z}
+        axis of the returned reference frames.
 
-        Available values are:
+    xy or xz (when x is specified)
+        A series of N points (Nx4) in the {xy|xz} plane of the returned
+        reference frames.
 
-        - 'centroid' : An arbitraty system that is useful for marker clusters.
-            - Origin = Centroid of all points;
-            - X is directed toward the first point;
-            - Z is normal to the plane formed by the origin and both
-              first points;
-            - Y is the vectorial product of X and Z.
+    xy or yz (when y is specified)
+        A series of N points (Nx4) in the {xy|yz} plane of the returned
+        reference frames.
 
-        - 'yz' : Reference frame based on vertical and lateral vectors.
-            - Origin = First point;
-            - Y is directed toward the second point (up);
-            - Z is normal to the plane formed by the three markers (right);
-            - X is the vectorial product of Y and Z.
-
-        - 'zy' : Reference frame based on vertical and lateral vectors.
-            - Origin = First point;
-            - Z is directed toward the second point (right);
-            - Y is normal to the plane formed by the three markers (up);
-            - X is the vectorial product of Y and Z.
-
-        - 'isb-humerus' : Reference frame of the humerus as suggested by
-          the International Society of Biomechanics [1], when the elbow is
-          flexed by 90 degrees and the forearm is in complete pronation.
-
-            - Origin = GH joint;
-            - X is directed forward;
-            - Y is directed upward;
-            - Z is directed to the right;
-            - Point 1 = GH joint;
-            - Point 2 = Elbow center;
-            - Point 3 = Ulnar styloid.
-
-        - 'isb-forarm' : Reference frame of the forearm as suggested by
-          the International Society of Biomechanics [1].
-
-            - Origin = Ulnar Styloid;
-            - X is directed forward in anatomic position;
-            - Y is directed upward in anatomic position;
-            - Z is directed to the right in anatomic position;
-            - Point 1 = Ulnar Styloid;
-            - Point 2 = Elbow center;
-            - Point 3 = Radial styloid.
+    xz or yz (when z is specified)
+        A series of N points (Nx4) in the {xz|yz} plane of the returned
+        reference frames.
 
     Returns
     -------
     np.ndarray
         Series of transformation matrices (Nx4x4).
 
-    References
-    ----------
-    1. G. Wu et al., "ISB recommendation on definitions of joint
-       coordinate systems of various joints for the reporting of human joint
-       motion - Part II: shoulder, elbow, wrist and hand," Journal of
-       Biomechanics, vol. 38, no. 5, pp. 981--992, 2005.
+    Examples
+    --------
+    # Create a translated reference frame using 3 points:
+    >>> import kineticstoolkit.lab as ktk
+    >>> point1 = [[2., 2., 2., 1.]]
+    >>> point2 = [[10., 2., 2., 1.]]
+    >>> point3 = [[10., 10., 2., 1.]]
+    >>> rf = ktk.geometry.create_reference_frames(point1, x=point2, xy=point3)
+    >>> rf
+    array([[[1., 0., 0., 2.],
+            [0., 1., 0., 2.],
+            [0., 0., 1., 2.],
+            [0., 0., 0., 1.]]])
+
+    # Create a reference frame where local z is global y and local x is
+    # global x:
+    >>> point1 = [[0., 0., 0., 1.]]
+    >>> point2 = [[0., 11., 0., 1.]]
+    >>> point3 = [[12., 0., 0., 1.]]
+    >>> rf = ktk.geometry.create_reference_frames(point1, z=point2, xz=point3)
+    >>> rf
+    array([[[ 1.,  0.,  0.,  0.],
+            [-0.,  0.,  1.,  0.],
+            [ 0., -1.,  0.,  0.],
+            [ 0.,  0.,  0.,  1.]]])
 
     """
     def normalize(v):
+        """Normalize series of vectors."""
         norm = np.linalg.norm(v, axis=1)
         return v / norm[..., np.newaxis]
 
-    if (method == 'centroid') or (method == 'ocx1'):
-        # Origin
-        origin = np.mean(global_points, 2)[:, 0:3]
-        # X axis
-        x = global_points[:, 0:3, 0] - origin
-        x = normalize(x)
-        # Z plane
-        y_temp = global_points[:, 0:3, 1] - origin
-        y_temp = normalize(y_temp)
-        # Z axis
-        z = np.cross(x, y_temp)
-        z = normalize(z)
-        # Y axis
-        y = np.cross(z, x)
+    def cross(v1, v2):
+        """Cross on series of vectors of length 4."""
+        c = v1.copy()
+        c[:, 0:3] = np.cross(v1[:, 0:3], v2[:, 0:3])
+        return c
 
-    elif (method == 'yz') or (method == 'o1y2'):
-        origin = global_points[:, 0:3, 0]
-        y = normalize(global_points[:, 0:3, 1] - origin)
-        z_temp = normalize(global_points[:, 0:3, 2] - origin)
-        x = normalize(np.cross(y, z_temp))
-        z = np.cross(x, y)
+    origin = np.array(origin)
 
-    elif (method == 'zx') or (method == 'o1z2'):
-        origin = global_points[:, 0:3, 0]
-        z = normalize(global_points[:, 0:3, 1] - origin)
-        x_temp = normalize(global_points[:, 0:3, 2] - origin)
-        y = normalize(np.cross(z, x_temp))
-        x = np.cross(y, z)
+    if x is not None:
+        v_x = normalize(np.array(x) - origin)
+        if xy is not None:
+            v_z = normalize(cross(v_x, np.array(xy) - origin))
+            v_y = cross(v_z, v_x)
+        elif xz is not None:
+            v_y = -normalize(cross(v_x, np.array(xz) - origin))
+            v_z = cross(v_x, v_y)
+        else:
+            raise ValueError("Either xy or xz must be set.")
 
-    elif method == 'isb-humerus':
-        # Origin
-        origin = global_points[:, 0:3, 0]
-        # Y axis
-        y = origin - global_points[:, 0:3, 1]
-        y = normalize(y)
-        # YF axis
-        yf = global_points[:, 0:3, 2] - global_points[:, 0:3, 1]
-        yf = normalize(yf)
-        # Z axis
-        z = np.cross(yf, y)
-        z = normalize(z)
-        # X axis
-        x = np.cross(y, z)
+    elif y is not None:
+        v_y = normalize(y - origin)
+        if yz is not None:
+            v_x = normalize(cross(v_y, np.array(yz) - origin))
+            v_z = cross(v_x, v_y)
+        elif xy is not None:
+            v_z = -normalize(cross(v_y, np.array(xy) - origin))
+            v_x = cross(v_y, v_z)
+        else:
+            raise ValueError("Either xy or yz must be set.")
 
-    elif method == 'isb-forearm':
-        # Origin
-        origin = global_points[:, 0:3, 0]
-        # Y axis
-        y = global_points[:, 0:3, 1] - origin
-        y = normalize(y)
-        # Z axis
-        z = np.cross(global_points[:, 0:3, 2] - global_points[:, 0:3, 1], y)
-        z = normalize(z)
-        # X axis
-        x = np.cross(y, z)
+    elif z is not None:
+        v_z = normalize(z - origin)
+        if xz is not None:
+            v_y = normalize(cross(v_z, np.array(xz) - origin))
+            v_x = cross(v_y, v_z)
+        elif yz is not None:
+            v_x = -normalize(cross(v_z, np.array(yz) - origin))
+            v_y = cross(v_z, v_x)
+        else:
+            raise ValueError("Either yz or xz must be set.")
 
     else:
-        raise ValueError(f'Method ({method}) is not implemented.')
+        raise ValueError("Either x, y or z must be set.")
 
-    T = np.zeros((len(x), 4, 4))
-    T[:, 0:3, 0] = x
-    T[:, 0:3, 1] = y
-    T[:, 0:3, 2] = z
-    T[:, 0:3, 3] = origin
-    T[:, 3, 3] = np.ones(len(x))
-
-    return T
+    return np.dstack((v_x, v_y, v_z, origin))
 
 
 @unstable
