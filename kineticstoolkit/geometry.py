@@ -197,7 +197,8 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
                     - [0, 180] degrees if first and third axes are the same
                       (like zxz)
                 - Alternate case (alt_angles = True):
-                    - [90, 270] degrees if all axes are different (like xyz)
+                    - [-180, -90], [90, 180] degrees if all axes are different
+                      (like xyz)
                     - [-180, 0] degrees if first and third axes are the same
                       (like zxz)
             - Third angle belongs to [-180, 180] degrees (both inclusive)
@@ -226,7 +227,8 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
             angles[:, 2] = np.mod(angles[:, 2], 2 * offset) - offset
         else:  # Tait-Bryan angles
             angles[:, 0] = np.mod(angles[:, 0], 2 * offset) - offset
-            angles[:, 1] = np.pi - angles[:, 1]
+            angles[:, 1] = offset - angles[:, 1]
+            angles[angles[:, 1] > offset, :] -= (2 * offset)
             angles[:, 2] = np.mod(angles[:, 2], 2 * offset) - offset
 
     return angles
