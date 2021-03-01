@@ -1,5 +1,5 @@
-Installing the stable version
-=============================
+Installing Kinetics Toolkit
+===========================
 
 Kinetics Toolkit is hosted on both PyPi and conda-forge. However, Kinetics Toolkit relies on `ezc3d` to read c3d files, which is
 distributed only on conda-forge. The recommended installation method is therefore using conda-forge.
@@ -11,8 +11,34 @@ distributed only on conda-forge. The recommended installation method is therefor
         conda create -n ktk
 
         conda activate ktk
+        
+3. Install Kinetics Toolkit
 
-        conda install -c conda-forge kineticstoolkit ezc3d
+    Stable version (recommended):
+        
+    a) Install:
+
+            conda install -c conda-forge kineticstoolkit ezc3d
+            
+    b) To keep up to date:
+        
+            conda update -c conda-forge kineticstoolkit
+        
+    Development version (for programmers):
+    
+    a) Install the dependencies:
+        
+            conda install -c conda-forge python=3.8 matplotlib scipy pandas scikit-learn pyqt ezc3d limitedinteraction git pytest mypy coverage jupyterlab spyder sphinx sphinx-material recommonmark sphinx-autodoc-typehints autodocsumm nbsphinx twine
+            
+    b) Clone the git repository:
+        
+            git clone https://github.com/felixchenier/kineticstoolkit.git ktk_develop
+            
+    c) Add ktk_develop to your PYTHON_PATH
+        
+    d) To keep up to date:
+        
+            cd ktk_develop; git pull origin master
    
 3. Interactive functions can be tricky in Python. Kinetics Toolkit's interactive functions make use of IPython's integration of Matplotlib/Qt5's event loop, which is completely supported in the Spyder IDE. Therefore I recommend using Spyder, but any IDE that uses IPython should also work well.
 
@@ -27,4 +53,3 @@ Verify that you are able to import Kinetics Toolkit in the interactive IPython c
     or
     
     >>> import kineticstoolkit.lab as ktk
-

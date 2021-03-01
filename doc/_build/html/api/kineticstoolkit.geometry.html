@@ -216,26 +216,14 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../install_develop.html" class="md-nav__link">Installing the development version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
+      
     
     </li>
     <li class="md-nav__item">
@@ -294,13 +282,6 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
     </li>
@@ -308,13 +289,6 @@
     
     
       <a href="../labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -336,6 +310,25 @@
     
     
       <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -394,13 +387,10 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.isnan" title="kineticstoolkit.geometry.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a>(input, /)</p></td>
 <td><p>Check which samples has at least one NaN.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.match_size" title="kineticstoolkit.geometry.match_size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">match_size</span></code></a>(op1, op2)</p></td>
-<td><p>Match the first dimension of op1 and op2.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.matmul" title="kineticstoolkit.geometry.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(op1, op2)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.matmul" title="kineticstoolkit.geometry.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(op1, op2)</p></td>
 <td><p>Matrix multiplication between series of matrices.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
 <td><p>Find the rigid transformations between two series of point clouds.</p></td>
 </tr>
 </tbody>
@@ -409,13 +399,6 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <dt id="kineticstoolkit.geometry.create_reference_frames">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_reference_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_reference_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Nx4x4 series of reference frames based on a point cloud series.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <p>Create reference frames based on points and vectors and returns this series
 of reference frames as a series of transformation matrices.</p>
 <p>This function’s behaviour is better explained using an example. We will
@@ -496,13 +479,6 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 <dt id="kineticstoolkit.geometry.create_rotation_matrices">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_rotation_matrices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">angles</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_rotation_matrices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an Nx4x4 series of rotation matrices from Euler coordinates.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <p>This function is a wrapper for scipy.transform.Rotation.from_euler.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -564,13 +540,6 @@ is False.</p></li>
 <dt id="kineticstoolkit.geometry.get_euler_angles">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_euler_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">alt_angles</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_euler_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represent a series of transformation matrices as series of Euler angles.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <p>This function is a wrapper for scipy.transform.Rotation.as_euler. Please
 consult scipy help for the complete docstring.</p>
 <p>Euler angles suffer from the problem of gimbal lock, where the
@@ -635,13 +604,6 @@ negative values for Y. In this case, just use alt_angles = True.</p>
 <dt id="kineticstoolkit.geometry.get_global_coordinates">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_global_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_coordinates</span></em>, <em class="sig-param"><span class="n">reference_frames</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_global_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Express local coordinates in the global reference frame.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -670,13 +632,6 @@ expressed in.</p></li>
 <dt id="kineticstoolkit.geometry.get_local_coordinates">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_local_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_coordinates</span></em>, <em class="sig-param"><span class="n">reference_frames</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_local_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Express global coordinates in local reference frames.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -726,40 +681,9 @@ True for the samples that contain at least one NaN.</p>
 </dl>
 </dd></dl>
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.match_size">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">match_size</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op1</span></em>, <em class="sig-param"><span class="n">op2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.match_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Match the first dimension of op1 and op2.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
-<p>Broadcasts the first dimension of op1 or op2, if required, so that both
-inputs have the same size in first dimension. If no modification is
-required on an input, then the output is a reference to the same input.
-Otherwise, the output is a new variable.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>References or copies of op1 and op2 now matched in size.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>2x np.ndarray</p>
-</dd>
-</dl>
-</dd></dl>
-<dl class="py function">
 <dt id="kineticstoolkit.geometry.matmul">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op1</span></em>, <em class="sig-param"><span class="n">op2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matrix multiplication between series of matrices.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <p>This function is a wrapper for numpy’s matmul function (operator @), that
 helps numpy to understand Kinetics Toolkit’s convention that the first
 dimension always corresponds to time.</p>
@@ -784,13 +708,6 @@ mismatch errors.</p>
 <dt id="kineticstoolkit.geometry.register_points">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">register_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_points</span></em>, <em class="sig-param"><span class="n">local_points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.register_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the rigid transformations between two series of point clouds.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">

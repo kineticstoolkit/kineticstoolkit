@@ -1,12 +1,6 @@
 Kinetics Toolkit
 ================
 
-.. note::
-   This is the website for the development version. Switch to the stable_
-   version.
-
-.. _stable: https://felixchenier.uqam.ca/kineticstoolkit
-
 Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
 classes and functions that aims to facilitate research in biomechanics using
 python.
@@ -32,11 +26,10 @@ Example
 .. image:: https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif
 
 
-Stable version
---------------
+Package contents
+----------------
 
-The stable version API is mostly settled and well tested using a comprehensive set of unit tests and
-doc tests, and currently includes:
+Kinetics Toolkit currently includes the following modules, classes and fuctions:
 
 Lower level modules, classes and functions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,32 +61,22 @@ Higher level modules and classes
   calculation for analysing spatiotemporal and kinetic parameters of wheelchair propulsion.
 
 
-You can ask your questions and submit bugs or feature requests on `ktk's github issue tracker`_.
+All these modules are in active development but in general mostly settled. Other modules are also
+being developed.
+
+You can ask questions and submit bugs or feature requests on `ktk's github issue tracker`_.
 However, please keep in mind that I develop Kinetics Toolkit primarily for my lab and I have limited
-resources for troubleshooting. But if I can answer, I'll do.
+resources for troubleshooting. But if I can answer, I'll be glad to help.
 
 .. _`ktk's github issue tracker`: https://github.com/felixchenier/kineticstoolkit/issues
 
 
-Development version
--------------------
-
-The development_ version is developed in parallel with my research projects following the needs
-of the moment, and is therefore well less settled, tested and stable.
-
-.. _development: https://felixchenier.uqam.ca/ktk_develop/
-
-
 Credits
 -------
-Kinetics Toolkit is developed by Professor `Félix Chénier`_ at Université du
-Québec à Montréal, Canada.
+Kinetics Toolkit is developed at the Mobility and Adaptive Sports Research Lab
+by Professor `Félix Chénier`_ at Université du Québec à Montréal, Canada.
 
-Some external code has been directly included into ktk's source code. Here are
-the credits for these nice people.
-
-- Clay Flannigan : icp_ - Python implementation of m-dimensional Iterative
-  Closest Point method
+Thanks to Clay Flannigan for his icp_ method that has been included in Kinetics Toolkit.
 
 I also want to credit the people involved in ktk's dependencies:
 
@@ -112,16 +95,10 @@ Site map
 ---------
 
 .. toctree::
-    :caption: INSTALLING
-    :maxdepth: 2
-
-    install
-    install_develop
-
-.. toctree::
     :caption: THE BASICS
     :maxdepth: 2
 
+    install
     timeseries
     filters
     cycles
@@ -134,14 +111,18 @@ Site map
 
     kinematics
     pushrimkinetics
-    inversedynamics
 
 .. toctree::
     :caption: MORE IN DEPTH
     :maxdepth: 2
 
     labmode
-    dbinterface
     release_notes
     api_reference
     Stable version <https://felixchenier.uqam.ca/kineticstoolkit>
+
+.. toctree::
+    :caption: IN DEVELOPMENT
+
+    inversedynamics
+    dbinterface

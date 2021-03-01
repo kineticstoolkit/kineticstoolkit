@@ -26,7 +26,7 @@ to time. For constants, use a length of 1 as the first dimension.
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2021 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -34,11 +34,11 @@ __license__ = "Apache 2.0"
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.decorators import unstable, directory, dead
-from typing import Tuple, List, Optional
+from kineticstoolkit.decorators import stable, unstable, private, directory
+from typing import Optional
 
 
-@unstable
+@stable
 def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
@@ -84,7 +84,7 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return result
 
 
-@unstable
+@stable
 def create_rotation_matrices(seq: str,
                              angles: np.ndarray,
                              degrees=False) -> np.ndarray:
@@ -157,7 +157,7 @@ def create_rotation_matrices(seq: str,
     return T
 
 
-@unstable
+@stable
 def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
                      alt_angles=False) -> np.ndarray:
     """
@@ -237,7 +237,7 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
     return angles
 
 
-@unstable
+@stable
 def create_reference_frames(
         origin: np.ndarray,
         x: Optional[np.ndarray] = None,
@@ -375,7 +375,7 @@ def create_reference_frames(
     return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
-@unstable
+@stable
 def get_local_coordinates(global_coordinates: np.ndarray,
                           reference_frames: np.ndarray) -> np.ndarray:
     """
@@ -434,7 +434,7 @@ def get_local_coordinates(global_coordinates: np.ndarray,
     return local_coordinates
 
 
-@unstable
+@stable
 def get_global_coordinates(local_coordinates: np.ndarray,
                            reference_frames: np.ndarray) -> np.ndarray:
     """
@@ -489,7 +489,7 @@ def isnan(input: np.ndarray, /) -> np.ndarray:
     return temp
 
 
-@unstable
+@private
 def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     """
     Match the first dimension of op1 and op2.
@@ -518,7 +518,7 @@ def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return op1, op2
 
 
-@unstable
+@stable
 def register_points(global_points: np.ndarray,
                     local_points: np.ndarray) -> np.ndarray:
     """

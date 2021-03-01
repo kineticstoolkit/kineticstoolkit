@@ -58,7 +58,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing the stable version" href="install.html" />
+    <link rel="next" title="Installing Kinetics Toolkit" href="install.html" />
 
 
 
@@ -206,26 +206,14 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install_develop.html" class="md-nav__link">Installing the development version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
+      
     
     </li>
     <li class="md-nav__item">
@@ -284,13 +272,6 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
     </li>
@@ -298,13 +279,6 @@
     
     
       <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -329,6 +303,25 @@
       
     
     </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
+      
+    
+    </li>
   </ul>
   
 
@@ -347,15 +340,13 @@
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#example" class="md-nav__link">Example</a>
         </li>
-        <li class="md-nav__item"><a href="#stable-version" class="md-nav__link">Stable version</a><nav class="md-nav">
+        <li class="md-nav__item"><a href="#package-contents" class="md-nav__link">Package contents</a><nav class="md-nav">
               <ul class="md-nav__list">
         <li class="md-nav__item"><a href="#lower-level-modules-classes-and-functions" class="md-nav__link">Lower level modules, classes and functions</a>
         </li>
         <li class="md-nav__item"><a href="#higher-level-modules-and-classes" class="md-nav__link">Higher level modules and classes</a>
         </li></ul>
             </nav>
-        </li>
-        <li class="md-nav__item"><a href="#development-version" class="md-nav__link">Development version</a>
         </li>
         <li class="md-nav__item"><a href="#credits" class="md-nav__link">Credits</a>
         </li>
@@ -374,11 +365,6 @@
             
   
 <h1 id="index--page-root">Kinetics Toolkit<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>This is the website for the development version. Switch to the <a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">stable</a>
-version.</p>
-</div>
 <p>Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
 classes and functions that aims to facilitate research in biomechanics using
 python.</p>
@@ -399,9 +385,8 @@ Montreal.</p>
 <img alt="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" src="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif"/>
 
 
-<h2 id="stable-version">Stable version<a class="headerlink" href="#stable-version" title="Permalink to this headline">¶</a></h2>
-<p>The stable version API is mostly settled and well tested using a comprehensive set of unit tests and
-doc tests, and currently includes:</p>
+<h2 id="package-contents">Package contents<a class="headerlink" href="#package-contents" title="Permalink to this headline">¶</a></h2>
+<p>Kinetics Toolkit currently includes the following modules, classes and fuctions:</p>
 
 <h3 id="lower-level-modules-classes-and-functions">Lower level modules, classes and functions<a class="headerlink" href="#lower-level-modules-classes-and-functions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
@@ -426,26 +411,18 @@ graphical user interface.</p></li>
 the pushrim kinetics, removes dynamic offsets in kinetic signals, and perform speed and power
 calculation for analysing spatiotemporal and kinetic parameters of wheelchair propulsion.</p></li>
 </ul>
-<p>You can ask your questions and submit bugs or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>.
+<p>All these modules are in active development but in general mostly settled. Other modules are also
+being developed.</p>
+<p>You can ask questions and submit bugs or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>.
 However, please keep in mind that I develop Kinetics Toolkit primarily for my lab and I have limited
-resources for troubleshooting. But if I can answer, I’ll do.</p>
+resources for troubleshooting. But if I can answer, I’ll be glad to help.</p>
 
-
-
-<h2 id="development-version">Development version<a class="headerlink" href="#development-version" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop/">development</a> version is developed in parallel with my research projects following the needs
-of the moment, and is therefore well less settled, tested and stable.</p>
 
 
 <h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
-<p>Kinetics Toolkit is developed by Professor <a class="reference external" href="https://felixchenier.uqam.ca">Félix Chénier</a> at Université du
-Québec à Montréal, Canada.</p>
-<p>Some external code has been directly included into ktk’s source code. Here are
-the credits for these nice people.</p>
-<ul class="simple">
-<li><p>Clay Flannigan : <a class="reference external" href="https://github.com/ClayFlannigan/icp">icp</a> - Python implementation of m-dimensional Iterative
-Closest Point method</p></li>
-</ul>
+<p>Kinetics Toolkit is developed at the Mobility and Adaptive Sports Research Lab
+by Professor <a class="reference external" href="https://felixchenier.uqam.ca">Félix Chénier</a> at Université du Québec à Montréal, Canada.</p>
+<p>Thanks to Clay Flannigan for his <a class="reference external" href="https://github.com/ClayFlannigan/icp">icp</a> method that has been included in Kinetics Toolkit.</p>
 <p>I also want to credit the people involved in ktk’s dependencies:</p>
 <ul class="simple">
 <li><p>Benjamin Michaud : <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> - Easy to use C3D reader/writer for C++, Python
@@ -457,21 +434,9 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 
 <h2 id="site-map">Site map<a class="headerlink" href="#site-map" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">INSTALLING</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installing the stable version</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install_develop.html">Installing the development version</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="install_develop.html#requirements">Requirements</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_develop.html#installing-kinetics-toolkit">Installing Kinetics Toolkit</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_develop.html#configuring-spyder">Configuring Spyder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="install_develop.html#keeping-up-to-date">Keeping up to date</a></li>
-</ul>
-</li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">THE BASICS</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">Getting started with TimeSeries</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#TimeSeries-basics">TimeSeries basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#Exporting-and-importing-pandas-DataFrames">Exporting and importing pandas DataFrames</a></li>
@@ -499,10 +464,9 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html#Dimension-convention">Dimension convention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-rotation-matrices">Creating series of rotation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Creating-series-of-reference-frames">Creating series of reference frames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-coordinates">Calculating local coordinates</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-global-coordinates">Calculating global coordinates</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Series-of-rotations">Series of rotations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Series-of-reference-frames">Series of reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-and-global-coordinates">Calculating local and global coordinates</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a><ul>
@@ -534,15 +498,6 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Extracting-spatiotemporal-and-kinetic-parameters">Extracting spatiotemporal and kinetic parameters</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Loading-sample-data">Loading sample data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames</a></li>
-</ul>
-</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -551,15 +506,6 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="labmode.html#when-to-use-lab-mode">When to use lab mode</a></li>
 <li class="toctree-l2"><a class="reference internal" href="labmode.html#what-lab-mode-does">What lab mode does</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Connecting-to-a-BIOMEC-project">Connecting to a BIOMEC project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Navigating-in-the-project">Navigating in the project</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Saving-data-to-a-BIOMEC-referenced-file">Saving data to a BIOMEC referenced file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Loading-data-from-a-BIOMEC-referenced-file">Loading data from a BIOMEC referenced file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Dealing-with-external-software">Dealing with external software</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Including-information-in-file-names">Including information in file names</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
@@ -577,6 +523,41 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Stable version</a></li>
 </ul>
 </div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Loading-sample-data">Loading sample data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Calculate-the-COM-position-of-the-wheel-segment">Calculate the COM position of the wheel segment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Calculate-the-COM-acceleration-of-the-wheel-segment">Calculate the COM acceleration of the wheel segment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">Calculate the wheel segment’s angles around the global x, y and z axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Finally,-calculate-the-proximal-forces-and-moments">Finally, calculate the proximal forces and moments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">Add the calculated distal forces and moments to the ts_all TimeSeries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html#Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Local-forces">Local forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="inversedynamics.html#Local-moments">Local moments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Connecting-to-a-BIOMEC-project">Connecting to a BIOMEC project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Navigating-in-the-project">Navigating in the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Saving-data-to-a-BIOMEC-referenced-file">Saving data to a BIOMEC referenced file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Loading-data-from-a-BIOMEC-referenced-file">Loading data from a BIOMEC referenced file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Dealing-with-external-software">Dealing with external software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html#Including-information-in-file-names">Including information in file names</a></li>
+</ul>
+</li>
+</ul>
+</div>
 
 
 
@@ -591,12 +572,12 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
       <nav class="md-footer-nav__inner md-grid">
           
           
-            <a href="install.html" title="Installing the stable version"
+            <a href="install.html" title="Installing Kinetics Toolkit"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Installing the stable version </span>
+                class="md-footer-nav__direction"> Next </span> Installing Kinetics Toolkit </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

@@ -27,8 +27,8 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import stable, unstable, directory
-from typing import Sequence, Dict, Any, List
+from kineticstoolkit.decorators import stable, unstable, experimental, directory
+from typing import Sequence, Dict, Any
 
 import numpy as np
 import warnings
@@ -300,7 +300,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
-@unstable
+@experimental
 def create_rigid_body_config(
     markers: TimeSeries,
     marker_names: Sequence[str]
@@ -355,7 +355,7 @@ def create_rigid_body_config(
             }
 
 
-@unstable
+@experimental
 def register_markers(
         markers: TimeSeries,
         rigid_body_configs: Dict[str, Dict[str, Any]],
@@ -415,7 +415,7 @@ def register_markers(
     return rigid_bodies
 
 
-@unstable
+@experimental
 def create_virtual_marker_config(
         markers: TimeSeries,
         rigid_bodies: TimeSeries,

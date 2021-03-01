@@ -47,7 +47,7 @@
   
   
   
-    <title>Installing the stable version &#8212; Kinetics Toolkit master documentation</title>
+    <title>Installing Kinetics Toolkit &#8212; Kinetics Toolkit master documentation</title>
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" href="_static/material.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
@@ -58,7 +58,7 @@
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing the development version" href="install_develop.html" />
+    <link rel="next" title="Getting started with TimeSeries" href="timeseries.html" />
     <link rel="prev" title="Kinetics Toolkit" href="index.html" />
 
 
@@ -100,7 +100,7 @@
       <div class="md-flex__cell md-flex__cell--stretch">
         <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
           <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Installing the stable version </span>
+          <span class="md-header-nav__topic"> Installing Kinetics Toolkit </span>
         </div>
       </div>
       <div class="md-flex__cell md-flex__cell--shrink">
@@ -207,16 +207,16 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
+      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
     
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Installing the stable version </label>
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Installing Kinetics Toolkit </label>
     
-      <a href="#" class="md-nav__link md-nav__link--active">Installing the stable version</a>
+      <a href="#" class="md-nav__link md-nav__link--active">Installing Kinetics Toolkit</a>
       
         
 <nav class="md-nav md-nav--secondary">
@@ -224,18 +224,6 @@
   </ul>
 </nav>
       
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install_develop.html" class="md-nav__link">Installing the development version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
     
     </li>
     <li class="md-nav__item">
@@ -294,13 +282,6 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
     </li>
@@ -308,13 +289,6 @@
     
     
       <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -336,6 +310,25 @@
     
     
       <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -362,7 +355,7 @@
           <article class="md-content__inner md-typeset" role="main">
             
   
-<h1 id="install--page-root">Installing the stable version<a class="headerlink" href="#install--page-root" title="Permalink to this headline">¶</a></h1>
+<h1 id="install--page-root">Installing Kinetics Toolkit<a class="headerlink" href="#install--page-root" title="Permalink to this headline">¶</a></h1>
 <p>Kinetics Toolkit is hosted on both PyPi and conda-forge. However, Kinetics Toolkit relies on <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> to read c3d files, which is
 distributed only on conda-forge. The recommended installation method is therefore using conda-forge.</p>
 <ol>
@@ -371,8 +364,31 @@ distributed only on conda-forge. The recommended installation method is therefor
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">ktk</span>
 
  <span class="n">conda</span> <span class="n">activate</span> <span class="n">ktk</span>
-
- <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span> <span class="n">ezc3d</span>
+</pre></div>
+</div>
+</li>
+<li><p>Install Kinetics Toolkit</p>
+<p>Stable version (recommended):</p>
+<p>a) Install:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span> <span class="n">ezc3d</span>
+</pre></div>
+</div>
+<p>b) To keep up to date:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">conda</span> <span class="n">update</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span>
+</pre></div>
+</div>
+<p>Development version (for programmers):</p>
+<p>a) Install the dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span> <span class="n">matplotlib</span> <span class="n">scipy</span> <span class="n">pandas</span> <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span> <span class="n">pyqt</span> <span class="n">ezc3d</span> <span class="n">limitedinteraction</span> <span class="n">git</span> <span class="n">pytest</span> <span class="n">mypy</span> <span class="n">coverage</span> <span class="n">jupyterlab</span> <span class="n">spyder</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">material</span> <span class="n">recommonmark</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">autodoc</span><span class="o">-</span><span class="n">typehints</span> <span class="n">autodocsumm</span> <span class="n">nbsphinx</span> <span class="n">twine</span>
+</pre></div>
+</div>
+<p>b) Clone the git repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">felixchenier</span><span class="o">/</span><span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">git</span> <span class="n">ktk_develop</span>
+</pre></div>
+</div>
+<p>c) Add ktk_develop to your PYTHON_PATH</p>
+<p>d) To keep up to date:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">cd</span> <span class="n">ktk_develop</span><span class="p">;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
 </pre></div>
 </div>
 </li>
@@ -417,12 +433,12 @@ distributed only on conda-forge. The recommended installation method is therefor
             </a>
           
           
-            <a href="install_develop.html" title="Installing the development version"
+            <a href="timeseries.html" title="Getting started with TimeSeries"
                class="md-flex md-footer-nav__link md-footer-nav__link--next"
                rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
                 class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Installing the development version </span>
+                class="md-footer-nav__direction"> Next </span> Getting started with TimeSeries </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink"><i
                 class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>

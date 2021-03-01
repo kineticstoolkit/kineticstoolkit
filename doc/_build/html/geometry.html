@@ -207,26 +207,14 @@
   <ul class="md-nav__list">
     <li class="md-nav__item">
     
-      <span class="md-nav__link caption"><span class="caption-text">INSTALLING</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install.html" class="md-nav__link">Installing the stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install_develop.html" class="md-nav__link">Installing the development version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
+      
     
     </li>
     <li class="md-nav__item">
@@ -280,13 +268,11 @@
         </li>
         <li class="md-nav__item"><a href="#Matrix-multiplication" class="md-nav__link">Matrix multiplication</a>
         </li>
-        <li class="md-nav__item"><a href="#Creating-series-of-rotation-matrices" class="md-nav__link">Creating series of rotation matrices</a>
+        <li class="md-nav__item"><a href="#Series-of-rotations" class="md-nav__link">Series of rotations</a>
         </li>
-        <li class="md-nav__item"><a href="#Creating-series-of-reference-frames" class="md-nav__link">Creating series of reference frames</a>
+        <li class="md-nav__item"><a href="#Series-of-reference-frames" class="md-nav__link">Series of reference frames</a>
         </li>
-        <li class="md-nav__item"><a href="#Calculating-local-coordinates" class="md-nav__link">Calculating local coordinates</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculating-global-coordinates" class="md-nav__link">Calculating global coordinates</a>
+        <li class="md-nav__item"><a href="#Calculating-local-and-global-coordinates" class="md-nav__link">Calculating local and global coordinates</a>
         </li></ul>
             </nav>
         </li>
@@ -323,13 +309,6 @@
     </li>
     <li class="md-nav__item">
     
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
       <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
     
     </li>
@@ -337,13 +316,6 @@
     
     
       <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -365,6 +337,25 @@
     
     
       <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
       
     
     </li>
@@ -400,13 +391,11 @@
         </li>
         <li class="md-nav__item"><a href="#Matrix-multiplication" class="md-nav__link">Matrix multiplication</a>
         </li>
-        <li class="md-nav__item"><a href="#Creating-series-of-rotation-matrices" class="md-nav__link">Creating series of rotation matrices</a>
+        <li class="md-nav__item"><a href="#Series-of-rotations" class="md-nav__link">Series of rotations</a>
         </li>
-        <li class="md-nav__item"><a href="#Creating-series-of-reference-frames" class="md-nav__link">Creating series of reference frames</a>
+        <li class="md-nav__item"><a href="#Series-of-reference-frames" class="md-nav__link">Series of reference frames</a>
         </li>
-        <li class="md-nav__item"><a href="#Calculating-local-coordinates" class="md-nav__link">Calculating local coordinates</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculating-global-coordinates" class="md-nav__link">Calculating global coordinates</a>
+        <li class="md-nav__item"><a href="#Calculating-local-and-global-coordinates" class="md-nav__link">Calculating local and global coordinates</a>
         </li></ul>
             </nav>
         </li>
@@ -669,10 +658,6 @@ div.rendered_html tbody tr:hover {
 </style>
 
 <h1 id="geometry--page-root">Rigid transformations, coordinates and reference frames<a class="headerlink" href="#geometry--page-root" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This module is in development and has not been released.</p>
-</div>
 <p>The <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module simplifies the calculation of linear algebric operations on series of points, vectors and transformation matrices. Contrarily to most other modules, this module does not work with TimeSeries directly, but instead with the TimeSeries data. The convention for dimension order is strict but well defined.</p>
 
 <h2 id="Dimension-convention">Dimension convention<a class="headerlink" href="#Dimension-convention" title="Permalink to this headline">¶</a></h2>
@@ -706,40 +691,40 @@ div.rendered_html tbody tr:hover {
 
 
 <h3 id="Working-with-constants">Working with constants<a class="headerlink" href="#Working-with-constants" title="Permalink to this headline">¶</a></h3>
-<p>As a reminder, in the geometry module, everything is considered as a series. Therefore, always ensure that the first dimension of any array is reserved to time. For example, the vector (x = 1, y = 2, z = 3) must be expressed as <code class="docutils literal notranslate"><span class="pre">np.array([[1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0]])</span></code> (note the double brackets). A common error would be to express it as <code class="docutils literal notranslate"><span class="pre">np.array([1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0])</span></code> (single brackets), which would mean a series of 4 floats instead of one constant vector.</p>
-<div class="nbinput nblast docutils container">
+<p>Since everything in the <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module is considered as a series, always ensure that the first dimension of any array is reserved to time. For example, the vector (x = 1, y = 2, z = 3) must be expressed as <code class="docutils literal notranslate"><span class="pre">np.array([[1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0]])</span></code> (note the double brackets). A common error would be to express it as <code class="docutils literal notranslate"><span class="pre">np.array([1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0])</span></code> (single brackets), which would mean a series of 4 floats instead of one constant vector.</p>
+<p>A quick way to convert a constant array to a series is to use numpy’s <code class="docutils literal notranslate"><span class="pre">newaxis</span></code>:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="n">one_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">one_matrix</span>
 </pre></div>
 </div>
 </div>
-
-
-
-<h2 id="Matrix-multiplication">Matrix multiplication<a class="headerlink" href="#Matrix-multiplication" title="Permalink to this headline">¶</a></h2>
-<p>To facilitate the multiplication of series, kineticstoolkit.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use kineticstoolkit.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow Kinetics Toolkit’s array convention. For example:</p>
-<p><strong>Matrix multiplication between a matrix and a series of points</strong></p>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[1., 0., 0., 0.],
+       [0., 1., 0., 0.],
+       [0., 0., 1., 0.],
+       [0., 0., 0., 1.]])
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># A single rigid transformation matrix</span>
-<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-               <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]]])</span>
-
-<span class="c1"># times a series of 3 points</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                   <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-
-<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>  <span class="c1"># gives a series of 3 points</span>
+<span></span><span class="n">series_of_one_matrix</span> <span class="o">=</span> <span class="n">one_matrix</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+<span class="n">series_of_one_matrix</span>
 </pre></div>
 </div>
 </div>
@@ -749,236 +734,131 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([[0., 1., 0., 1.],
-       [1., 1., 0., 1.],
-       [2., 1., 0., 1.]])
+array([[[1., 0., 0., 0.],
+        [0., 1., 0., 0.],
+        [0., 0., 1., 0.],
+        [0., 0., 0., 1.]]])
 </pre></div></div>
 </div>
-<p><strong>Multiplication between a series of floats and a series of vectors</strong></p>
+
+
+
+<h2 id="Matrix-multiplication">Matrix multiplication<a class="headerlink" href="#Matrix-multiplication" title="Permalink to this headline">¶</a></h2>
+<p>To facilitate the multiplication of series, kineticstoolkit.geometry provides a <code class="docutils literal notranslate"><span class="pre">matmul</span></code> function that matches both matrices’ time dimensions before applying the numpy’s @ or * operator accordingly on each time iteration. Therefore, when dealing with series of floats, vectors, points or matrices, it is advisable to use kineticstoolkit.geometry’s <code class="docutils literal notranslate"><span class="pre">matmul</span></code> instead of the @ operator, which will garranty to follow Kinetics Toolkit’s array convention. For example among others:</p>
+<p><strong>Matrix multiplication between a matrix and a series of points</strong></p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># A series of 3 floats</span>
-<span class="n">floats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+<span></span><span class="c1"># A single rigid transformation matrix that translates 3 units in x</span>
+<span class="n">T</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">3.</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+               <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]])</span>
 
-<span class="c1"># times a series of 3 vectors</span>
-<span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-                    <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="c1"># times a series of 5 points</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
+                   <span class="p">[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
 
-<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">floats</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>  <span class="c1"># gives a series of 3 vectors</span>
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">points</span><span class="p">)</span>  <span class="c1"># gives a series of 5 points</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[3., 1., 0., 1.],
+       [4., 1., 0., 1.],
+       [5., 1., 0., 1.],
+       [6., 1., 0., 1.],
+       [7., 1., 0., 1.]])
+</pre></div></div>
+</div>
+<p><strong>Multiplication between a series of floats and a series of vectors</strong></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># A series of 5 floats</span>
+<span class="n">floats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+
+<span class="c1"># times a series of 5 vectors</span>
+<span class="n">vectors</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mf">3.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
+                    <span class="p">[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]])</span>
+
+<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">floats</span><span class="p">,</span> <span class="n">vectors</span><span class="p">)</span>  <span class="c1"># gives a series of 5 vectors</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 array([[0. , 0. , 0. , 0. ],
        [0.5, 0.5, 0. , 0. ],
-       [2. , 1. , 0. , 0. ]])
-</pre></div></div>
-</div>
-<p><strong>Dot product between a series of points and a single point</strong></p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># A series of 3 points</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                   <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
-                   <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-
-<span class="c1"># times a single point</span>
-<span class="n">point</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
-
-<span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">matmul</span><span class="p">(</span><span class="n">points</span><span class="p">,</span> <span class="n">point</span><span class="p">)</span>  <span class="c1"># gives a series of 3 scalars</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([4., 6., 8.])
+       [2. , 1. , 0. , 0. ],
+       [3. , 1. , 0. , 0. ],
+       [4. , 1. , 0. , 0. ]])
 </pre></div></div>
 </div>
 
 
-<h2 id="Creating-series-of-rotation-matrices">Creating series of rotation matrices<a class="headerlink" href="#Creating-series-of-rotation-matrices" title="Permalink to this headline">¶</a></h2>
-<p>The function <code class="docutils literal notranslate"><span class="pre">kineticstoolkit.geometry.create_rotation_matrices</span></code> allows creating series of Nx4x4 matrices around a given axis. For example, this command creates a rotation matrix of 90 degrees around the x axis. Note that the angle argument is a list or an array, to comply with the <code class="docutils literal notranslate"><span class="pre">kineticstoolkit.geometry</span></code>’s convention above.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">'x'</span><span class="p">,</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="o">/</span><span class="mi">2</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[[ 1.,  0.,  0.,  0.],
-        [ 0.,  0., -1.,  0.],
-        [ 0.,  1.,  0.,  0.],
-        [ 0.,  0.,  0.,  1.]]])
-</pre></div></div>
-</div>
-<p>As another example, this will create a series of 100 rotation matrices around the z axis, from 0 to 360 degrees:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">'z'</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">,</span> <span class="mi">100</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[[ 1.        ,  0.        ,  0.        ,  0.        ],
-        [ 0.        ,  1.        ,  0.        ,  0.        ],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]],
-
-       [[ 0.99798668, -0.06342392,  0.        ,  0.        ],
-        [ 0.06342392,  0.99798668,  0.        ,  0.        ],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]],
-
-       [[ 0.99195481, -0.12659245,  0.        ,  0.        ],
-        [ 0.12659245,  0.99195481,  0.        ,  0.        ],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]],
-
-       ...,
-
-       [[ 0.99195481,  0.12659245,  0.        ,  0.        ],
-        [-0.12659245,  0.99195481,  0.        ,  0.        ],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]],
-
-       [[ 0.99798668,  0.06342392,  0.        ,  0.        ],
-        [-0.06342392,  0.99798668,  0.        ,  0.        ],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]],
-
-       [[ 1.        ,  0.        ,  0.        ,  0.        ],
-        [-0.        ,  1.        ,  0.        ,  0.        ],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]]])
-</pre></div></div>
-</div>
+<h2 id="Series-of-rotations">Series of rotations<a class="headerlink" href="#Series-of-rotations" title="Permalink to this headline">¶</a></h2>
+<p>The <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides two functions for manipulating series of rotations:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.create_rotation_matrices"><span class="std std-ref">create_rotation_matrices</span></a>: A wrapper to <code class="docutils literal notranslate"><span class="pre">scipy.transform.Rotation.from_euler</span></code> that creates Nx4x4 series rigid transformations based on rotation axes and angles.</p></li>
+<li><p><a class="reference internal" href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.create_rotation_matrices"><span class="std std-ref">get_euler_angles</span></a>: A wrapper to <code class="docutils literal notranslate"><span class="pre">scipy.transform.Rotation.as_euler</span></code> that extracts Euler angles from Nx4x4 series of rigid transformations.</p></li>
+</ul>
 
 
-<h2 id="Creating-series-of-reference-frames">Creating series of reference frames<a class="headerlink" href="#Creating-series-of-reference-frames" title="Permalink to this headline">¶</a></h2>
-<p>Let’s say we have the position of three markers, and we want to create a reference frame based on these markers. This is the aim of the <code class="docutils literal notranslate"><span class="pre">create_reference_frames</span></code> function.</p>
-<p>If the markers are at these positions (1, 1, 1), (4, 5, 6) and (7, 8, 9), we can create a reference frame based on these three markers. Please consult the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">API reference</span></a> for the different ways to create reference frames.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">marker1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
-<span class="n">marker2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
-<span class="n">marker3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
-
-<span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span>
-    <span class="n">origin</span><span class="o">=</span><span class="n">marker1</span><span class="p">,</span>
-    <span class="n">x</span><span class="o">=</span><span class="n">marker2</span> <span class="o">-</span> <span class="n">marker1</span><span class="p">,</span>
-    <span class="n">xy</span><span class="o">=</span><span class="n">marker3</span> <span class="o">-</span> <span class="n">marker1</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-
-
-<h2 id="Calculating-local-coordinates">Calculating local coordinates<a class="headerlink" href="#Calculating-local-coordinates" title="Permalink to this headline">¶</a></h2>
-<p>We now have a reference frame defined from three markers. If we are interested to know the local position of these markers in the new-created frame, we can use the function <code class="docutils literal notranslate"><span class="pre">get_local_coordinates</span></code>.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">global_markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">,</span> <span class="n">marker3</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
-<span class="n">global_markers</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[[1., 4., 7.],
-        [1., 5., 8.],
-        [1., 6., 9.],
-        [1., 1., 1.]]])
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">local_markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span><span class="n">global_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-<span class="n">local_markers</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[[ 0.        ,  7.07106781, 12.16223664],
-        [ 0.        ,  0.        ,  1.03923048],
-        [ 0.        ,  0.        ,  0.        ],
-        [ 1.        ,  1.        ,  1.        ]]])
-</pre></div></div>
-</div>
+<h2 id="Series-of-reference-frames">Series of reference frames<a class="headerlink" href="#Series-of-reference-frames" title="Permalink to this headline">¶</a></h2>
+<a class="reference internal image-reference" href="_images/humerus_reference_frame.png"><img alt="Right humerus reference frame" src="_images/humerus_reference_frame.png" style="width: 200px;"/></a>
+<p>The <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides the <a class="reference internal" href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.create_reference_frames"><span class="std std-ref">create_reference_frames</span></a> function to generate series of reference frames based on marker positions.</p>
+<p>In this example, we will create the series of N rigid transformations that corresponds to the 3d position and orientation of the right humerus, based on three markers:</p>
+<ul class="simple">
+<li><p>GH: the Nx4 trajectory of the gleno-humeral joint;</p></li>
+<li><p>EL: the Nx4 trajectory of the lateral elbow epicondyle;</p></li>
+<li><p>EM: the Nx4 trajectory of the medial elbow epicondyle.</p></li>
+</ul>
+<p>We will follow the recommendations of the International Society of Biomechanics [1]:</p>
+<ol class="arabic">
+<li><p><strong>The origin is GH</strong>;</p>
+<p><code class="docutils literal notranslate"><span class="pre">origin</span> <span class="pre">=</span> <span class="pre">GH</span></code></p>
+</li>
+<li><p><strong>The y axis is the line between GH and the midpoint of EL and EM, pointing to GH</strong>;</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">GH</span> <span class="pre">-</span> <span class="pre">(EL</span> <span class="pre">+</span> <span class="pre">EM)</span> <span class="pre">/</span> <span class="pre">2</span></code></p>
+</li>
+<li><p><strong>The x axis is the normal to the GH-EL-EM plane, pointing forward</strong>;</p>
+<p>We define the yz plane (in yellow) by a second vector (in yellow) that is in this plane. The x axis will then be generated by the cross product of y and yz.</p>
+<p><code class="docutils literal notranslate"><span class="pre">yz</span> <span class="pre">=</span> <span class="pre">EL</span> <span class="pre">-</span> <span class="pre">EM</span></code></p>
+</li>
+<li><p><strong>The z axis is perpendicular to x and y, pointing to the right</strong>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">reference_frames</span> <span class="pre">=</span> <span class="pre">ktk.geometry.create_reference_frames(origin=origin,</span> <span class="pre">y=y,</span> <span class="pre">yz=yz)</span></code></p>
+<p>This yields a series of rigid transformation matrices that express the humerus reference frame shown in the figure above.</p>
+</li>
+</ol>
+<p>[1] G. Wu et al., “ISB recommendation on definitions of joint coordinate systems of various joints for the reporting of human joint motion - Part II: shoulder, elbow, wrist and hand,” Journal of Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p>
 
 
-<h2 id="Calculating-global-coordinates">Calculating global coordinates<a class="headerlink" href="#Calculating-global-coordinates" title="Permalink to this headline">¶</a></h2>
-<p>In the case we have the markers’ local coordinates and we would like to express these markers in the global reference frame, we would use the mirror function <code class="docutils literal notranslate"><span class="pre">get_global_coordinates</span></code>.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span><span class="n">local_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[[1., 4., 7.],
-        [1., 5., 8.],
-        [1., 6., 9.],
-        [1., 1., 1.]]])
-</pre></div></div>
-</div>
-<p>in which case the results is effectively the global points as we defined them at the beginning.</p>
+<h2 id="Calculating-local-and-global-coordinates">Calculating local and global coordinates<a class="headerlink" href="#Calculating-local-and-global-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Finally, the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides function to change the reference frame used to express points, vectors and matrices from local to global coordinates and vice versa:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_local_coordinates"><span class="std std-ref">get_local_coordinates</span></a>: Express global coordinates inside a local reference frame;</p></li>
+<li><p><a class="reference internal" href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_global_coordinates"><span class="std std-ref">get_global_coordinates</span></a>: Express local coordinates in global coordinates.</p></li>
+</ul>
 <p>For more information on geometry, please check the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">API Reference for the geometry module</span></a>.</p>
 
 
