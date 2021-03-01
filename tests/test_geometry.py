@@ -84,7 +84,10 @@ def test_create_reference_frames_get_local_global_coordinates():
     # Repeat for N=5
     global_markers = np.repeat(global_markers, 5, axis=0)
 
-    T = ktk.geometry.create_reference_frames(global_markers)
+    T = ktk.geometry.create_reference_frames(
+        origin=global_marker1,
+        x=global_marker2 - global_marker1,
+        xy=global_marker3 - global_marker1)
     local_markers = ktk.geometry.get_local_coordinates(global_markers, T)
 
     # Verify that the distances between markers are the same
@@ -115,6 +118,63 @@ def test_create_reference_frames_get_local_global_coordinates():
     test_global = T @ local_markers
 
     assert np.sum(np.abs(test_global - global_markers)) < 1E-10
+
+
+def test_create_reference_frames():
+    """Test create_reference_frames."""
+    # Create identity
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        x=[[2, 0, 0, 0]],
+        xy=[[2, 2, 0, 0]])
+    assert np.allclose(test, np.eye(4)[np.newaxis])
+
+    # Rotate 90 degrees around y
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        x=[[0, 0, -2, 0]],
+        xy=[[0, 2, -2, 0]])
+    assert np.allclose(test,
+                       ktk.geometry.create_rotation_matrices('y', np.pi / 2))
+
+    # Rotate 90 degrees around z
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        x=[[0, 2, 0, 0]],
+        xy=[[-2, 2, 0, 0]])
+    assert np.allclose(test,
+                       ktk.geometry.create_rotation_matrices('z', np.pi / 2))
+
+    # Create identity using other vectors and planes
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        x=[[2, 0, 0, 0]],
+        xz=[[2, 0, 2, 0]])
+    assert np.allclose(test, np.eye(4)[np.newaxis])
+
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        y=[[0, 2, 0, 0]],
+        xy=[[2, 2, 0, 0]])
+    assert np.allclose(test, np.eye(4)[np.newaxis])
+
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        y=[[0, 2, 0, 0]],
+        yz=[[0, 2, 2, 0]])
+    assert np.allclose(test, np.eye(4)[np.newaxis])
+
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        z=[[0, 0, 2, 0]],
+        xz=[[2, 0, 2, 0]])
+    assert np.allclose(test, np.eye(4)[np.newaxis])
+
+    test = ktk.geometry.create_reference_frames(
+        [[0, 0, 0, 1]],
+        z=[[0, 0, 2, 0]],
+        yz=[[0, 2, 2, 0]])
+    assert np.allclose(test, np.eye(4)[np.newaxis])
 
 
 def test_get_euler_angles():

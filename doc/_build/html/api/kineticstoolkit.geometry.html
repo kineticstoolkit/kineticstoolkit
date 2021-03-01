@@ -376,7 +376,7 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <col style="width: 90%"/>
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_reference_frames" title="kineticstoolkit.geometry.create_reference_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reference_frames</span></code></a>(global_points[, method])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_reference_frames" title="kineticstoolkit.geometry.create_reference_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reference_frames</span></code></a>(origin[, x, y, z, …])</p></td>
 <td><p>Create a Nx4x4 series of reference frames based on a point cloud series.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_rotation_matrices" title="kineticstoolkit.geometry.create_rotation_matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_rotation_matrices</span></code></a>(seq, angles[, degrees])</p></td>
@@ -407,7 +407,7 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 </table>
 <dl class="py function">
 <dt id="kineticstoolkit.geometry.create_reference_frames">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_reference_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_points</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'centroid'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_reference_frames" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_reference_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_reference_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Nx4x4 series of reference frames based on a point cloud series.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -416,79 +416,49 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 not been released yet. It may change signature and behaviour or even be
 deleted.</p>
 </div>
-<p>Create reference frames based on global points, using the provided
-method, and returns this series of reference frames as a series of
-transformation matrices.</p>
+<p>Create reference frames based on points and vectors and returns this series
+of reference frames as a series of transformation matrices.</p>
+<p>This function’s behaviour is better explained using an example. We will
+create reference frames for the right humerus, based on the recommendations
+of the International Society of Biomechanics [1]. Lets say we have
+constructed series of points for the glenohumeral joint (GH), lateral elbow
+epicondyle (EL) and medial elbow epicondyle (EM). Following the ISB:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The origin is GH;</p></li>
+<li><p>The y axis is the line between GH and the midpoint of EL and EM,
+pointing to GH;</p></li>
+<li><p>The x axis is the normal to the GH-EL-EM plane, pointing forward;
+which means that GH-EL-EM is a yz plane.</p></li>
+<li><p>The z axis is perpendicular to x and y, pointing to the right.</p></li>
+</ol>
+</div></blockquote>
+<p>Therefore:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>origin = GH</p></li>
+<li><p>y = GH - (EL + EM) / 2</p></li>
+<li><p>yz = EL - EM  # The x axis is formed by cross(y, yz)</p></li>
+<li><dl class="simple">
+<dt>reference_frames = ktk.geometry.create_reference_frames(</dt><dd><p>origin=origin, y=y, yz=yz)</p>
+</dd>
+</dl>
+</li>
+</ol>
+</div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>global_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A series of N sets of M points in a global reference frame (Nx4xM).</p></li>
-<li><p><strong>method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Optional. The method to use to construct a reference frame based on
-these points.</p>
-<p>Available values are:</p>
-<ul>
-<li><dl class="simple">
-<dt>’centroid’<span class="classifier">An arbitraty system that is useful for marker clusters.</span></dt><dd><ul class="simple">
-<li><p>Origin = Centroid of all points;</p></li>
-<li><p>X is directed toward the first point;</p></li>
-<li><p>Z is normal to the plane formed by the origin and both
-first points;</p></li>
-<li><p>Y is the vectorial product of X and Z.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>’yz’<span class="classifier">Reference frame based on vertical and lateral vectors.</span></dt><dd><ul class="simple">
-<li><p>Origin = First point;</p></li>
-<li><p>Y is directed toward the second point (up);</p></li>
-<li><p>Z is normal to the plane formed by the three markers (right);</p></li>
-<li><p>X is the vectorial product of Y and Z.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><dl class="simple">
-<dt>’zy’<span class="classifier">Reference frame based on vertical and lateral vectors.</span></dt><dd><ul class="simple">
-<li><p>Origin = First point;</p></li>
-<li><p>Z is directed toward the second point (right);</p></li>
-<li><p>Y is normal to the plane formed by the three markers (up);</p></li>
-<li><p>X is the vectorial product of Y and Z.</p></li>
-</ul>
-</dd>
-</dl>
-</li>
-<li><p>’isb-humerus’ : Reference frame of the humerus as suggested by
-the International Society of Biomechanics [1], when the elbow is
-flexed by 90 degrees and the forearm is in complete pronation.</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Origin = GH joint;</p></li>
-<li><p>X is directed forward;</p></li>
-<li><p>Y is directed upward;</p></li>
-<li><p>Z is directed to the right;</p></li>
-<li><p>Point 1 = GH joint;</p></li>
-<li><p>Point 2 = Elbow center;</p></li>
-<li><p>Point 3 = Ulnar styloid.</p></li>
-</ul>
-</div></blockquote>
-</li>
-<li><p>’isb-forarm’ : Reference frame of the forearm as suggested by
-the International Society of Biomechanics [1].</p>
-<blockquote>
-<div><ul class="simple">
-<li><p>Origin = Ulnar Styloid;</p></li>
-<li><p>X is directed forward in anatomic position;</p></li>
-<li><p>Y is directed upward in anatomic position;</p></li>
-<li><p>Z is directed to the right in anatomic position;</p></li>
-<li><p>Point 1 = Ulnar Styloid;</p></li>
-<li><p>Point 2 = Elbow center;</p></li>
-<li><p>Point 3 = Radial styloid.</p></li>
-</ul>
-</div></blockquote>
-</li>
-</ul>
-</p></li>
+<li><p><strong>origin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A series of N points (Nx4) that corresponds to the origin of the
+returned reference frames.</p></li>
+<li><p><strong>x|y|z</strong> – A series of N vectors (Nx4) that are aligned toward the {x|y|z}
+axis of the returned reference frames.</p></li>
+<li><p><strong>xy|xz</strong> – When x is specified, a series of N vectors (Nx4) in the {xy|xz} plane
+of the returned reference frames.</p></li>
+<li><p><strong>xy|yz</strong> – When y is specified, a series of N vectors (Nx4) in the {xy|yz} plane
+of the returned reference frames.</p></li>
+<li><p><strong>xz|yz</strong> – When z is specified, a series of N vectors (Nx4) in the {xz|yz} plane
+of the returned reference frames.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -498,6 +468,20 @@ the International Society of Biomechanics [1].</p>
 <dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
+<p class="rubric">Examples</p>
+<p>Create a translated reference frame using 3 points:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">xy</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rf</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rf</span>
+<span class="go">array([[[1., 0., 0., 2.],</span>
+<span class="go">        [0., 1., 0., 2.],</span>
+<span class="go">        [0., 0., 1., 2.],</span>
+<span class="go">        [0., 0., 0., 1.]]])</span>
+</pre></div>
+</div>
 <div class="admonition-references admonition">
 <p class="admonition-title">References</p>
 <ol class="arabic simple">
@@ -606,10 +590,8 @@ intrinsic rotations cannot be mixed in one function call.</p></li>
 radians. Default is False.</p></li>
 <li><p><strong>alt_angles</strong> – <p>Return an alternate sequence with the second angle inverted, that
 leads to the same rotation matrices. More specifically:</p>
-<blockquote>
-<div><ul>
-<li><p>First angle belongs to [-180, 180] degrees (both inclusive)</p></li>
-<li><dl class="simple">
+<p>First angle belongs to [-180, 180] degrees (both inclusive)</p>
+<dl class="simple">
 <dt>Second angle belongs to:</dt><dd><ul>
 <li><dl class="simple">
 <dt>Default case (alt_angles = False):</dt><dd><ul>
@@ -622,7 +604,8 @@ leads to the same rotation matrices. More specifically:</p>
 </li>
 <li><dl class="simple">
 <dt>Alternate case (alt_angles = True):</dt><dd><ul>
-<li><p>[90, 270] degrees if all axes are different (like xyz)</p></li>
+<li><p>[-180, -90], [90, 180] degrees if all axes are different
+(like xyz)</p></li>
 <li><p>[-180, 0] degrees if first and third axes are the same
 (like zxz)</p></li>
 </ul>
@@ -632,10 +615,7 @@ leads to the same rotation matrices. More specifically:</p>
 </ul>
 </dd>
 </dl>
-</li>
-<li><p>Third angle belongs to [-180, 180] degrees (both inclusive)</p></li>
-</ul>
-</div></blockquote>
+<p>Third angle belongs to [-180, 180] degrees (both inclusive)</p>
 <p>One rationale for adding this special case is the calculation
 of shoulder angles: when following the ISB recommendation (YXY), X
 corresponds to the negative elevation and thus we expect to get

@@ -190,18 +190,21 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
     alt_angles
         Return an alternate sequence with the second angle inverted, that
         leads to the same rotation matrices. More specifically:
-            - First angle belongs to [-180, 180] degrees (both inclusive)
-            - Second angle belongs to:
-                - Default case (alt_angles = False):
-                    - [-90, 90] degrees if all axes are different (like xyz)
-                    - [0, 180] degrees if first and third axes are the same
-                      (like zxz)
-                - Alternate case (alt_angles = True):
-                    - [-180, -90], [90, 180] degrees if all axes are different
-                      (like xyz)
-                    - [-180, 0] degrees if first and third axes are the same
-                      (like zxz)
-            - Third angle belongs to [-180, 180] degrees (both inclusive)
+
+        First angle belongs to [-180, 180] degrees (both inclusive)
+
+        Second angle belongs to:
+            - Default case (alt_angles = False):
+                - [-90, 90] degrees if all axes are different (like xyz)
+                - [0, 180] degrees if first and third axes are the same
+                  (like zxz)
+            - Alternate case (alt_angles = True):
+                - [-180, -90], [90, 180] degrees if all axes are different
+                  (like xyz)
+                - [-180, 0] degrees if first and third axes are the same
+                  (like zxz)
+
+        Third angle belongs to [-180, 180] degrees (both inclusive)
 
         One rationale for adding this special case is the calculation
         of shoulder angles: when following the ISB recommendation (YXY), X
@@ -246,8 +249,29 @@ def create_reference_frames(
     """
     Create a Nx4x4 series of reference frames based on a point cloud series.
 
-    Create reference frames based on points and returns this series of
-    reference frames as a series of transformation matrices.
+    Create reference frames based on points and vectors and returns this series
+    of reference frames as a series of transformation matrices.
+
+    This function's behaviour is better explained using an example. We will
+    create reference frames for the right humerus, based on the recommendations
+    of the International Society of Biomechanics [1]. Lets say we have
+    constructed series of points for the glenohumeral joint (GH), lateral elbow
+    epicondyle (EL) and medial elbow epicondyle (EM). Following the ISB:
+
+        1. The origin is GH;
+        2. The y axis is the line between GH and the midpoint of EL and EM,
+           pointing to GH;
+        3. The x axis is the normal to the GH-EL-EM plane, pointing forward;
+           which means that GH-EL-EM is a yz plane.
+        4. The z axis is perpendicular to x and y, pointing to the right.
+
+    Therefore:
+
+        1. origin = GH
+        2. y = GH - (EL + EM) / 2
+        3. yz = EL - EM  # The x axis is formed by cross(y, yz)
+        4. reference_frames = ktk.geometry.create_reference_frames(
+            origin=origin, y=y, yz=yz)
 
     Parameters
     ----------
@@ -255,21 +279,21 @@ def create_reference_frames(
         A series of N points (Nx4) that corresponds to the origin of the
         returned reference frames.
 
-    x or y or z
-        A series of N points (Nx4) that is aligned toward the {x|y|z}
+    x|y|z
+        A series of N vectors (Nx4) that are aligned toward the {x|y|z}
         axis of the returned reference frames.
 
-    xy or xz (when x is specified)
-        A series of N points (Nx4) in the {xy|xz} plane of the returned
-        reference frames.
+    xy|xz
+        When x is specified, a series of N vectors (Nx4) in the {xy|xz} plane
+        of the returned reference frames.
 
-    xy or yz (when y is specified)
-        A series of N points (Nx4) in the {xy|yz} plane of the returned
-        reference frames.
+    xy|yz
+        When y is specified, a series of N vectors (Nx4) in the {xy|yz} plane
+        of the returned reference frames.
 
-    xz or yz (when z is specified)
-        A series of N points (Nx4) in the {xz|yz} plane of the returned
-        reference frames.
+    xz|yz
+        When z is specified, a series of N vectors (Nx4) in the {xz|yz} plane
+        of the returned reference frames.
 
     Returns
     -------
@@ -278,29 +302,25 @@ def create_reference_frames(
 
     Examples
     --------
-    # Create a translated reference frame using 3 points:
-    >>> import kineticstoolkit.lab as ktk
-    >>> point1 = [[2., 2., 2., 1.]]
-    >>> point2 = [[10., 2., 2., 1.]]
-    >>> point3 = [[10., 10., 2., 1.]]
-    >>> rf = ktk.geometry.create_reference_frames(point1, x=point2, xy=point3)
-    >>> rf
-    array([[[1., 0., 0., 2.],
-            [0., 1., 0., 2.],
-            [0., 0., 1., 2.],
-            [0., 0., 0., 1.]]])
+    Create a translated reference frame using 3 points:
 
-    # Create a reference frame where local z is global y and local x is
-    # global x:
-    >>> point1 = [[0., 0., 0., 1.]]
-    >>> point2 = [[0., 11., 0., 1.]]
-    >>> point3 = [[12., 0., 0., 1.]]
-    >>> rf = ktk.geometry.create_reference_frames(point1, z=point2, xz=point3)
-    >>> rf
-    array([[[ 1.,  0.,  0.,  0.],
-            [-0.,  0.,  1.,  0.],
-            [ 0., -1.,  0.,  0.],
-            [ 0.,  0.,  0.,  1.]]])
+        >>> import kineticstoolkit.lab as ktk
+        >>> origin = [[2., 2., 2., 1.]]
+        >>> x = [[10., 0., 0., 0.]]
+        >>> xy = [[10., 10., 0., 0.]]
+        >>> rf = ktk.geometry.create_reference_frames(origin, x=x, xy=xy)
+        >>> rf
+        array([[[1., 0., 0., 2.],
+                [0., 1., 0., 2.],
+                [0., 0., 1., 2.],
+                [0., 0., 0., 1.]]])
+
+    References
+    ----------
+    1. G. Wu et al., "ISB recommendation on definitions of joint
+       coordinate systems of various joints for the reporting of human joint
+       motion - Part II: shoulder, elbow, wrist and hand," Journal of
+       Biomechanics, vol. 38, no. 5, pp. 981--992, 2005.
 
     """
     def normalize(v):
@@ -317,34 +337,34 @@ def create_reference_frames(
     origin = np.array(origin)
 
     if x is not None:
-        v_x = normalize(np.array(x) - origin)
+        v_x = normalize(np.array(x))
         if xy is not None:
-            v_z = normalize(cross(v_x, np.array(xy) - origin))
+            v_z = normalize(cross(v_x, np.array(xy)))
             v_y = cross(v_z, v_x)
         elif xz is not None:
-            v_y = -normalize(cross(v_x, np.array(xz) - origin))
+            v_y = -normalize(cross(v_x, np.array(xz)))
             v_z = cross(v_x, v_y)
         else:
             raise ValueError("Either xy or xz must be set.")
 
     elif y is not None:
-        v_y = normalize(y - origin)
+        v_y = normalize(np.array(y))
         if yz is not None:
-            v_x = normalize(cross(v_y, np.array(yz) - origin))
+            v_x = normalize(cross(v_y, np.array(yz)))
             v_z = cross(v_x, v_y)
         elif xy is not None:
-            v_z = -normalize(cross(v_y, np.array(xy) - origin))
+            v_z = -normalize(cross(v_y, np.array(xy)))
             v_x = cross(v_y, v_z)
         else:
             raise ValueError("Either xy or yz must be set.")
 
     elif z is not None:
-        v_z = normalize(z - origin)
+        v_z = normalize(np.array(z))
         if xz is not None:
-            v_y = normalize(cross(v_z, np.array(xz) - origin))
+            v_y = normalize(cross(v_z, np.array(xz)))
             v_x = cross(v_y, v_z)
         elif yz is not None:
-            v_x = -normalize(cross(v_z, np.array(yz) - origin))
+            v_x = -normalize(cross(v_z, np.array(yz)))
             v_y = cross(v_z, v_x)
         else:
             raise ValueError("Either yz or xz must be set.")
@@ -352,7 +372,7 @@ def create_reference_frames(
     else:
         raise ValueError("Either x, y or z must be set.")
 
-    return np.dstack((v_x, v_y, v_z, origin))
+    return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
 @unstable

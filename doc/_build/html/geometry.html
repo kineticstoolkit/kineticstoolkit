@@ -888,29 +888,34 @@ array([[[ 1.        ,  0.        ,  0.        ,  0.        ],
 
 <h2 id="Creating-series-of-reference-frames">Creating series of reference frames<a class="headerlink" href="#Creating-series-of-reference-frames" title="Permalink to this headline">¶</a></h2>
 <p>Let’s say we have the position of three markers, and we want to create a reference frame based on these markers. This is the aim of the <code class="docutils literal notranslate"><span class="pre">create_reference_frames</span></code> function.</p>
-<p>If the markers are at these positions (0, 0, 0), (1, 0, 0) and (0, 1, 0):</p>
+<p>If the markers are at these positions (1, 1, 1), (4, 5, 6) and (7, 8, 9), we can create a reference frame based on these three markers. Please consult the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">API reference</span></a> for the different ways to create reference frames.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">global_markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-    <span class="p">[[[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
-      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">],</span>
-      <span class="p">[</span><span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">],</span>
-      <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]])</span>
+<span></span><span class="n">marker1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+<span class="n">marker2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">4.</span><span class="p">,</span> <span class="mf">5.</span><span class="p">,</span> <span class="mf">6.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+<span class="n">marker3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">7.</span><span class="p">,</span> <span class="mf">8.</span><span class="p">,</span> <span class="mf">9.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]])</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span>
+    <span class="n">origin</span><span class="o">=</span><span class="n">marker1</span><span class="p">,</span>
+    <span class="n">x</span><span class="o">=</span><span class="n">marker2</span> <span class="o">-</span> <span class="n">marker1</span><span class="p">,</span>
+    <span class="n">xy</span><span class="o">=</span><span class="n">marker3</span> <span class="o">-</span> <span class="n">marker1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>Now we can create a reference frame based on these three markers. Please consult the <a class="reference internal" href="api/kineticstoolkit.geometry.html"><span class="doc">API reference</span></a> for the different marker configurations available for the creation of reference frames.</p>
+
+
+<h2 id="Calculating-local-coordinates">Calculating local coordinates<a class="headerlink" href="#Calculating-local-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>We now have a reference frame defined from three markers. If we are interested to know the local position of these markers in the new-created frame, we can use the function <code class="docutils literal notranslate"><span class="pre">get_local_coordinates</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">T</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span><span class="n">global_markers</span><span class="p">)</span>
-
-<span class="n">T</span>
+<span></span><span class="n">global_markers</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">((</span><span class="n">marker1</span><span class="p">,</span> <span class="n">marker2</span><span class="p">,</span> <span class="n">marker3</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">global_markers</span>
 </pre></div>
 </div>
 </div>
@@ -920,23 +925,18 @@ array([[[ 1.        ,  0.        ,  0.        ,  0.        ],
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([[[-0.70710678,  0.70710678,  0.        ,  0.33333333],
-        [-0.70710678, -0.70710678,  0.        ,  0.33333333],
-        [ 0.        ,  0.        ,  1.        ,  0.        ],
-        [ 0.        ,  0.        ,  0.        ,  1.        ]]])
+array([[[1., 4., 7.],
+        [1., 5., 8.],
+        [1., 6., 9.],
+        [1., 1., 1.]]])
 </pre></div></div>
 </div>
-
-
-<h2 id="Calculating-local-coordinates">Calculating local coordinates<a class="headerlink" href="#Calculating-local-coordinates" title="Permalink to this headline">¶</a></h2>
-<p>We now have a reference frame defined from three markers. If we are interested to know the local position of these markers in the new-created frame, we can use the function <code class="docutils literal notranslate"><span class="pre">get_local_coordinates</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">local_markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span><span class="n">global_markers</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
-
 <span class="n">local_markers</span>
 </pre></div>
 </div>
@@ -947,8 +947,8 @@ array([[[-0.70710678,  0.70710678,  0.        ,  0.33333333],
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([[[ 0.47140452, -0.23570226, -0.23570226],
-        [ 0.        ,  0.70710678, -0.70710678],
+array([[[ 0.        ,  7.07106781, 12.16223664],
+        [ 0.        ,  0.        ,  1.03923048],
         [ 0.        ,  0.        ,  0.        ],
         [ 1.        ,  1.        ,  1.        ]]])
 </pre></div></div>
@@ -972,9 +972,9 @@ array([[[ 0.47140452, -0.23570226, -0.23570226],
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-array([[[0., 1., 0.],
-        [0., 0., 1.],
-        [0., 0., 0.],
+array([[[1., 4., 7.],
+        [1., 5., 8.],
+        [1., 6., 9.],
         [1., 1., 1.]]])
 </pre></div></div>
 </div>
