@@ -1,400 +1,201 @@
 
 
+
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
-    <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
-
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>TimeSeries &mdash; Kinetics Toolkit master documentation</title>
   
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
   
   
+
   
-    <title>Getting started with TimeSeries &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/material.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Filtering TimeSeries" href="filters.html" />
-    <link rel="prev" title="Installing Kinetics Toolkit" href="install.html" />
+    <link rel="next" title="Saving and loading" href="loadsave.html" />
+    <link rel="prev" title="Dimension convention" href="dimension_convention.html" />
 
 
+ 
+</head>
 
-  
+<body class="wy-body-for-nav">
+
    
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+          
 
-  </head>
-  <body dir=ltr
-        data-md-color-primary=white data-md-color-accent=orange>
-  
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
-  
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#timeseries" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit master documentation"
-           class="md-header-nav__button md-logo">
           
-              <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+            <a href="index.html">
           
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Getting started with TimeSeries </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="GET" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+
+          
+            
+            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
 
-      </div>
-      
-        <div class="md-flex__cell md-flex__cell--shrink">
-          <div class="md-header-nav__source">
-            <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
-
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-          </div>
+          
         </div>
-      
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
 
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/logo.png" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
-  </label>
-    <div class="md-nav__source">
-      <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TimeSeries</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#TimeSeries-basics">TimeSeries basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Exporting-and-importing-pandas-DataFrames">Exporting and importing pandas DataFrames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Metadata">Metadata</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Events">Events</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Using-events-to-synchronize-TimeSeries">Using events to synchronize TimeSeries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Using-events-to-extract-shorter-TimeSeries">Using events to extract shorter TimeSeries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Subsetting-and-merging-timeseries">Subsetting and merging timeseries</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+</ul>
+<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
 
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-    </div>
-  
-  
-
-  
-  <ul class="md-nav__list">
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Getting started with TimeSeries </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">Getting started with TimeSeries</a>
-      
+            
+          
+        </div>
         
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#timeseries--page-root" class="md-nav__link">Getting started with TimeSeries</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#TimeSeries-basics" class="md-nav__link">TimeSeries basics</a>
-        </li>
-        <li class="md-nav__item"><a href="#Exporting-and-importing-pandas-DataFrames" class="md-nav__link">Exporting and importing pandas DataFrames</a>
-        </li>
-        <li class="md-nav__item"><a href="#Metadata" class="md-nav__link">Metadata</a>
-        </li>
-        <li class="md-nav__item"><a href="#Events" class="md-nav__link">Events</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Using-events-to-synchronize-TimeSeries" class="md-nav__link">Using events to synchronize TimeSeries</a>
-        </li>
-        <li class="md-nav__item"><a href="#Using-events-to-extract-shorter-TimeSeries" class="md-nav__link">Using events to extract shorter TimeSeries</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#Subsetting-and-merging-timeseries" class="md-nav__link">Subsetting and merging timeseries</a>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="release_notes.html" class="md-nav__link">Release Notes</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
-      
-    
-    </li>
-  </ul>
-  
+      </div>
+    </nav>
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#timeseries--page-root" class="md-nav__link">Getting started with TimeSeries</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#TimeSeries-basics" class="md-nav__link">TimeSeries basics</a>
-        </li>
-        <li class="md-nav__item"><a href="#Exporting-and-importing-pandas-DataFrames" class="md-nav__link">Exporting and importing pandas DataFrames</a>
-        </li>
-        <li class="md-nav__item"><a href="#Metadata" class="md-nav__link">Metadata</a>
-        </li>
-        <li class="md-nav__item"><a href="#Events" class="md-nav__link">Events</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Using-events-to-synchronize-TimeSeries" class="md-nav__link">Using events to synchronize TimeSeries</a>
-        </li>
-        <li class="md-nav__item"><a href="#Using-events-to-extract-shorter-TimeSeries" class="md-nav__link">Using events to extract shorter TimeSeries</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#Subsetting-and-merging-timeseries" class="md-nav__link">Subsetting and merging timeseries</a>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
         
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Kinetics Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>TimeSeries</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   
 <style>
@@ -643,21 +444,43 @@ div.rendered_html tbody tr:nth-child(odd) {
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
-</style>
 
-<h1 id="timeseries--page-root">Getting started with TimeSeries<a class="headerlink" href="#timeseries--page-root" title="Permalink to this headline">¶</a></h1>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="TimeSeries">
+<h1>TimeSeries<a class="headerlink" href="#TimeSeries" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.timeseries.html"><span class="doc">TimeSeries</span></a> class is the basis of most Kinetic Toolkit’s modules and is the only class that users have to learn after python standard types and numpy arrays.</p>
-<hr class="docutils"/>
+<hr class="docutils" />
 <p><strong>The three roles of the TimeSeries class are to:</strong></p>
 <ol class="arabic simple">
 <li><p><em>organize multidimensional data in time;</em></p></li>
 <li><p><em>deal with events;</em></p></li>
 <li><p><em>associate metadata to data.</em></p></li>
 </ol>
-<hr class="docutils"/>
+<hr class="docutils" />
 <p>TimeSeries are largely inspired by Matlab’s <code class="docutils literal notranslate"><span class="pre">timeseries</span></code> and <code class="docutils literal notranslate"><span class="pre">tscollection</span></code>.</p>
-
-<h2 id="TimeSeries-basics">TimeSeries basics<a class="headerlink" href="#TimeSeries-basics" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="TimeSeries-basics">
+<h2>TimeSeries basics<a class="headerlink" href="#TimeSeries-basics" title="Permalink to this headline">¶</a></h2>
 <p>Every TimeSeries contains the following attributes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">time</span></code>: A numpy array that contains the time vector.</p></li>
@@ -677,7 +500,7 @@ div.rendered_html tbody tr:hover {
 
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>  <span class="c1"># 10 seconds at 10 Hz</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Sinus'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Sinus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
 
 <span class="n">ts</span>
 </pre></div>
@@ -713,7 +536,7 @@ TimeSeries with attributes:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'Sinus': &lt;array of shape (100,)&gt;
+      &#39;Sinus&#39;: &lt;array of shape (100,)&gt;
 }
 </pre></div></div>
 </div>
@@ -731,7 +554,7 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_5_0.png" src="_images/timeseries_5_0.png"/>
+<img alt="_images/timeseries_5_0.png" src="_images/timeseries_5_0.png" />
 </div>
 </div>
 <p>A TimeSeries can contain many independent data that share a same time vector:</p>
@@ -740,7 +563,7 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Cosinus'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span></span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Cosinus&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
 
 <span class="n">ts</span>
 </pre></div>
@@ -776,8 +599,8 @@ TimeSeries with attributes:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'Cosinus': &lt;array of shape (100,)&gt;,
-        'Sinus': &lt;array of shape (100,)&gt;
+      &#39;Cosinus&#39;: &lt;array of shape (100,)&gt;,
+        &#39;Sinus&#39;: &lt;array of shape (100,)&gt;
 }
 </pre></div></div>
 </div>
@@ -794,7 +617,7 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_9_0.png" src="_images/timeseries_9_0.png"/>
+<img alt="_images/timeseries_9_0.png" src="_images/timeseries_9_0.png" />
 </div>
 </div>
 <p>A TimeSeries can also contain multidimensional data, as long as the first dimension corresponds to time. Here, we simulate a moving kinematics marker.</p>
@@ -804,14 +627,14 @@ TimeSeries with attributes:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Initialize the numpy array to 100 samples of a (x, y, z, 1) position vector.</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Marker1'</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Marker1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">100</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
 <span class="c1"># Simulate a randomly moving marker</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Marker1'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>  <span class="c1"># x</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Marker1'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>  <span class="c1"># y</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Marker1'</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>  <span class="c1"># z</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Marker1'</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>                                                         <span class="c1"># 1</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Marker1&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>  <span class="c1"># x</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Marker1&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>  <span class="c1"># y</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Marker1&#39;</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">cumsum</span><span class="p">(</span><span class="mf">0.01</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)))</span>  <span class="c1"># z</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Marker1&#39;</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>                                                         <span class="c1"># 1</span>
 
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
@@ -824,9 +647,9 @@ TimeSeries with attributes:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'Cosinus': &lt;array of shape (100,)&gt;,
-      'Marker1': &lt;array of shape (100, 4)&gt;,
-        'Sinus': &lt;array of shape (100,)&gt;
+      &#39;Cosinus&#39;: &lt;array of shape (100,)&gt;,
+      &#39;Marker1&#39;: &lt;array of shape (100, 4)&gt;,
+        &#39;Sinus&#39;: &lt;array of shape (100,)&gt;
 }
 </pre></div></div>
 </div>
@@ -843,12 +666,12 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_12_0.png" src="_images/timeseries_12_0.png"/>
+<img alt="_images/timeseries_12_0.png" src="_images/timeseries_12_0.png" />
 </div>
 </div>
-
-
-<h2 id="Exporting-and-importing-pandas-DataFrames">Exporting and importing pandas DataFrames<a class="headerlink" href="#Exporting-and-importing-pandas-DataFrames" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Exporting-and-importing-pandas-DataFrames">
+<h2>Exporting and importing pandas DataFrames<a class="headerlink" href="#Exporting-and-importing-pandas-DataFrames" title="Permalink to this headline">¶</a></h2>
 <p>TimeSeries integrate well with pandas DataFrames and therefore with a plethora or data analysis softwares, using the <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.to_dataframe"><span class="std std-ref">TimeSeries.to_dataframe()</span></a> and <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.from_dataframe"><span class="std std-ref">TimeSeries.from_dataframe()</span></a> methods. For example, exporting the previous TimeSeries to a DataFrame gives:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -867,7 +690,7 @@ TimeSeries with attributes:
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped="">
+<style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -881,118 +704,118 @@ TimeSeries with attributes:
     }
 </style>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>Sinus</th>
-<th>Cosinus</th>
-<th>Marker1[0]</th>
-<th>Marker1[1]</th>
-<th>Marker1[2]</th>
-<th>Marker1[3]</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>0.0</th>
-<td>0.000000</td>
-<td>1.000000</td>
-<td>0.000488</td>
-<td>0.001778</td>
-<td>-0.001882</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>0.1</th>
-<td>0.099833</td>
-<td>0.995004</td>
-<td>0.003128</td>
-<td>0.001256</td>
-<td>-0.001801</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>0.2</th>
-<td>0.198669</td>
-<td>0.980067</td>
-<td>0.006796</td>
-<td>0.003087</td>
-<td>-0.002942</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>0.3</th>
-<td>0.295520</td>
-<td>0.955336</td>
-<td>0.010912</td>
-<td>0.009539</td>
-<td>-0.007287</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>0.4</th>
-<td>0.389418</td>
-<td>0.921061</td>
-<td>0.014265</td>
-<td>0.013478</td>
-<td>-0.016385</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>...</th>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr>
-<th>9.5</th>
-<td>-0.075151</td>
-<td>-0.997172</td>
-<td>0.827000</td>
-<td>2.869612</td>
-<td>-0.542776</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>9.6</th>
-<td>-0.174327</td>
-<td>-0.984688</td>
-<td>0.806256</td>
-<td>2.905226</td>
-<td>-0.546104</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>9.7</th>
-<td>-0.271761</td>
-<td>-0.962365</td>
-<td>0.780714</td>
-<td>2.938383</td>
-<td>-0.545809</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>9.8</th>
-<td>-0.366479</td>
-<td>-0.930426</td>
-<td>0.758461</td>
-<td>2.967121</td>
-<td>-0.540786</td>
-<td>1.0</td>
-</tr>
-<tr>
-<th>9.9</th>
-<td>-0.457536</td>
-<td>-0.889191</td>
-<td>0.731255</td>
-<td>2.995202</td>
-<td>-0.531154</td>
-<td>1.0</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Sinus</th>
+      <th>Cosinus</th>
+      <th>Marker1[0]</th>
+      <th>Marker1[1]</th>
+      <th>Marker1[2]</th>
+      <th>Marker1[3]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.0</th>
+      <td>0.000000</td>
+      <td>1.000000</td>
+      <td>0.000488</td>
+      <td>0.001778</td>
+      <td>-0.001882</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>0.1</th>
+      <td>0.099833</td>
+      <td>0.995004</td>
+      <td>0.003128</td>
+      <td>0.001256</td>
+      <td>-0.001801</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>0.2</th>
+      <td>0.198669</td>
+      <td>0.980067</td>
+      <td>0.006796</td>
+      <td>0.003087</td>
+      <td>-0.002942</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>0.3</th>
+      <td>0.295520</td>
+      <td>0.955336</td>
+      <td>0.010912</td>
+      <td>0.009539</td>
+      <td>-0.007287</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>0.4</th>
+      <td>0.389418</td>
+      <td>0.921061</td>
+      <td>0.014265</td>
+      <td>0.013478</td>
+      <td>-0.016385</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>9.5</th>
+      <td>-0.075151</td>
+      <td>-0.997172</td>
+      <td>0.827000</td>
+      <td>2.869612</td>
+      <td>-0.542776</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>9.6</th>
+      <td>-0.174327</td>
+      <td>-0.984688</td>
+      <td>0.806256</td>
+      <td>2.905226</td>
+      <td>-0.546104</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>9.7</th>
+      <td>-0.271761</td>
+      <td>-0.962365</td>
+      <td>0.780714</td>
+      <td>2.938383</td>
+      <td>-0.545809</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>9.8</th>
+      <td>-0.366479</td>
+      <td>-0.930426</td>
+      <td>0.758461</td>
+      <td>2.967121</td>
+      <td>-0.540786</td>
+      <td>1.0</td>
+    </tr>
+    <tr>
+      <th>9.9</th>
+      <td>-0.457536</td>
+      <td>-0.889191</td>
+      <td>0.731255</td>
+      <td>2.995202</td>
+      <td>-0.531154</td>
+      <td>1.0</td>
+    </tr>
+  </tbody>
 </table>
 <p>100 rows × 6 columns</p>
 </div></div>
@@ -1014,7 +837,7 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_16_0.png" src="_images/timeseries_16_0.png"/>
+<img alt="_images/timeseries_16_0.png" src="_images/timeseries_16_0.png" />
 </div>
 </div>
 <p>For the rest of this tutorial, we will work with wheelchair propulsion kinetic data from a CSV file.</p>
@@ -1026,13 +849,13 @@ TimeSeries with attributes:
 <span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
 
 <span class="c1"># Read some columns</span>
-<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">'data/timeseries/smartwheel.csv'</span><span class="p">,</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;data/timeseries/smartwheel.csv&#39;</span><span class="p">,</span>
                  <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">18</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">21</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">23</span><span class="p">],</span>
-                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">'Forces[0]'</span><span class="p">,</span> <span class="s1">'Forces[1]'</span><span class="p">,</span> <span class="s1">'Forces[2]'</span><span class="p">,</span>
-                        <span class="s1">'Moments[0]'</span><span class="p">,</span> <span class="s1">'Moments[1]'</span><span class="p">,</span> <span class="s1">'Moments[2]'</span><span class="p">],</span>
+                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;Forces[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[2]&#39;</span><span class="p">,</span>
+                        <span class="s1">&#39;Moments[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Moments[2]&#39;</span><span class="p">],</span>
                  <span class="n">nrows</span><span class="o">=</span><span class="mi">5000</span><span class="p">)</span>
 
-<span class="c1"># Assign time to the DataFrame's index, where the sampling rate is 240 Hz.</span>
+<span class="c1"># Assign time to the DataFrame&#39;s index, where the sampling rate is 240 Hz.</span>
 <span class="n">df</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="mi">240</span>
 <span class="n">df</span>
 </pre></div>
@@ -1044,7 +867,7 @@ TimeSeries with attributes:
 </div>
 <div class="output_area rendered_html docutils container">
 <div>
-<style scoped="">
+<style scoped>
     .dataframe tbody tr th:only-of-type {
         vertical-align: middle;
     }
@@ -1058,118 +881,118 @@ TimeSeries with attributes:
     }
 </style>
 <table border="1" class="dataframe">
-<thead>
-<tr style="text-align: right;">
-<th></th>
-<th>Forces[0]</th>
-<th>Forces[1]</th>
-<th>Forces[2]</th>
-<th>Moments[0]</th>
-<th>Moments[1]</th>
-<th>Moments[2]</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th>0.000000</th>
-<td>1.27</td>
-<td>-0.89</td>
-<td>-0.20</td>
-<td>-0.03</td>
-<td>0.05</td>
-<td>-0.03</td>
-</tr>
-<tr>
-<th>0.004167</th>
-<td>0.49</td>
-<td>-0.83</td>
-<td>-0.51</td>
-<td>0.02</td>
-<td>-0.01</td>
-<td>-0.13</td>
-</tr>
-<tr>
-<th>0.008333</th>
-<td>0.00</td>
-<td>-0.78</td>
-<td>-0.51</td>
-<td>0.04</td>
-<td>-0.07</td>
-<td>-0.18</td>
-</tr>
-<tr>
-<th>0.012500</th>
-<td>-0.13</td>
-<td>-0.93</td>
-<td>-0.41</td>
-<td>0.03</td>
-<td>-0.16</td>
-<td>-0.18</td>
-</tr>
-<tr>
-<th>0.016667</th>
-<td>-0.02</td>
-<td>-0.89</td>
-<td>0.00</td>
-<td>0.01</td>
-<td>-0.21</td>
-<td>-0.13</td>
-</tr>
-<tr>
-<th>...</th>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-<td>...</td>
-</tr>
-<tr>
-<th>20.812500</th>
-<td>0.87</td>
-<td>-1.73</td>
-<td>0.00</td>
-<td>0.08</td>
-<td>-0.07</td>
-<td>-0.03</td>
-</tr>
-<tr>
-<th>20.816667</th>
-<td>0.68</td>
-<td>-2.38</td>
-<td>0.20</td>
-<td>0.07</td>
-<td>-0.05</td>
-<td>0.08</td>
-</tr>
-<tr>
-<th>20.820833</th>
-<td>0.39</td>
-<td>-2.72</td>
-<td>0.20</td>
-<td>0.02</td>
-<td>0.00</td>
-<td>0.10</td>
-</tr>
-<tr>
-<th>20.825000</th>
-<td>0.32</td>
-<td>-2.51</td>
-<td>0.41</td>
-<td>0.04</td>
-<td>0.05</td>
-<td>0.08</td>
-</tr>
-<tr>
-<th>20.829167</th>
-<td>0.39</td>
-<td>-1.54</td>
-<td>0.82</td>
-<td>0.08</td>
-<td>0.06</td>
-<td>-0.10</td>
-</tr>
-</tbody>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>Forces[0]</th>
+      <th>Forces[1]</th>
+      <th>Forces[2]</th>
+      <th>Moments[0]</th>
+      <th>Moments[1]</th>
+      <th>Moments[2]</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0.000000</th>
+      <td>1.27</td>
+      <td>-0.89</td>
+      <td>-0.20</td>
+      <td>-0.03</td>
+      <td>0.05</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>0.004167</th>
+      <td>0.49</td>
+      <td>-0.83</td>
+      <td>-0.51</td>
+      <td>0.02</td>
+      <td>-0.01</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>0.008333</th>
+      <td>0.00</td>
+      <td>-0.78</td>
+      <td>-0.51</td>
+      <td>0.04</td>
+      <td>-0.07</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.012500</th>
+      <td>-0.13</td>
+      <td>-0.93</td>
+      <td>-0.41</td>
+      <td>0.03</td>
+      <td>-0.16</td>
+      <td>-0.18</td>
+    </tr>
+    <tr>
+      <th>0.016667</th>
+      <td>-0.02</td>
+      <td>-0.89</td>
+      <td>0.00</td>
+      <td>0.01</td>
+      <td>-0.21</td>
+      <td>-0.13</td>
+    </tr>
+    <tr>
+      <th>...</th>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+      <td>...</td>
+    </tr>
+    <tr>
+      <th>20.812500</th>
+      <td>0.87</td>
+      <td>-1.73</td>
+      <td>0.00</td>
+      <td>0.08</td>
+      <td>-0.07</td>
+      <td>-0.03</td>
+    </tr>
+    <tr>
+      <th>20.816667</th>
+      <td>0.68</td>
+      <td>-2.38</td>
+      <td>0.20</td>
+      <td>0.07</td>
+      <td>-0.05</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>20.820833</th>
+      <td>0.39</td>
+      <td>-2.72</td>
+      <td>0.20</td>
+      <td>0.02</td>
+      <td>0.00</td>
+      <td>0.10</td>
+    </tr>
+    <tr>
+      <th>20.825000</th>
+      <td>0.32</td>
+      <td>-2.51</td>
+      <td>0.41</td>
+      <td>0.04</td>
+      <td>0.05</td>
+      <td>0.08</td>
+    </tr>
+    <tr>
+      <th>20.829167</th>
+      <td>0.39</td>
+      <td>-1.54</td>
+      <td>0.82</td>
+      <td>0.08</td>
+      <td>0.06</td>
+      <td>-0.10</td>
+    </tr>
+  </tbody>
 </table>
 <p>5000 rows × 6 columns</p>
 </div></div>
@@ -1216,8 +1039,8 @@ TimeSeries with attributes:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-       'Forces': &lt;array of shape (5000, 3)&gt;,
-      'Moments': &lt;array of shape (5000, 3)&gt;
+       &#39;Forces&#39;: &lt;array of shape (5000, 3)&gt;,
+      &#39;Moments&#39;: &lt;array of shape (5000, 3)&gt;
 }
 </pre></div></div>
 </div>
@@ -1234,12 +1057,12 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_22_0.png" src="_images/timeseries_22_0.png"/>
+<img alt="_images/timeseries_22_0.png" src="_images/timeseries_22_0.png" />
 </div>
 </div>
-
-
-<h2 id="Metadata">Metadata<a class="headerlink" href="#Metadata" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Metadata">
+<h2>Metadata<a class="headerlink" href="#Metadata" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">time_info</span></code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code class="docutils literal notranslate"><span class="pre">time_info</span></code> includes the <code class="docutils literal notranslate"><span class="pre">Unit</span></code> metadata, which corresponds to <code class="docutils literal notranslate"><span class="pre">s</span></code>. Any other metadata can be added by adding new keys in <code class="docutils literal notranslate"><span class="pre">time_info</span></code>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -1257,7 +1080,7 @@ TimeSeries with attributes:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'Unit': 's'
+      &#39;Unit&#39;: &#39;s&#39;
 }
 </pre></div></div>
 </div>
@@ -1267,8 +1090,8 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">,</span> <span class="s1">'Unit'</span><span class="p">,</span> <span class="s1">'N'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">,</span> <span class="s1">'Unit'</span><span class="p">,</span> <span class="s1">'Nm'</span><span class="p">)</span>
+<span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Nm&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1286,12 +1109,12 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_28_0.png" src="_images/timeseries_28_0.png"/>
+<img alt="_images/timeseries_28_0.png" src="_images/timeseries_28_0.png" />
 </div>
 </div>
-
-
-<h2 id="Events">Events<a class="headerlink" href="#Events" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Events">
+<h2>Events<a class="headerlink" href="#Events" title="Permalink to this headline">¶</a></h2>
 <p>In the figure above, we see that the TimeSeries contains cyclic data that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Thereafter, we see a series of pushes and recoveries.</p>
 <p>We will add these events to the TimeSeries by hand using <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.add_event"><span class="std std-ref">TimeSeries.add_event()</span></a>. It is also possible to add events interactively using <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.ui_add_event"><span class="std std-ref">TimeSeries.ui_add_event()</span></a>. Please see the tutorial on the <a class="reference internal" href="cycles.html"><span class="doc">cycles</span></a> module to learn how to detect cycles automatically.</p>
 <div class="nbinput nblast docutils container">
@@ -1299,17 +1122,17 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">4.35</span><span class="p">,</span> <span class="s1">'sync'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">8.56</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">9.93</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">10.50</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.12</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.78</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">12.33</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.39</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.88</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">14.86</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">15.30</span><span class="p">,</span> <span class="s1">'recovery'</span><span class="p">)</span>
+<span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">4.35</span><span class="p">,</span> <span class="s1">&#39;sync&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">8.56</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">9.93</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">10.50</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.12</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.78</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">12.33</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.39</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.88</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">14.86</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">15.30</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1352,17 +1175,17 @@ TimeSeries with attributes:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[[4.35, 'sync'],
- [8.56, 'push'],
- [9.93, 'recovery'],
- [10.5, 'push'],
- [11.12, 'recovery'],
- [11.78, 'push'],
- [12.33, 'recovery'],
- [13.39, 'push'],
- [13.88, 'recovery'],
- [14.86, 'push'],
- [15.3, 'recovery']]
+[[4.35, &#39;sync&#39;],
+ [8.56, &#39;push&#39;],
+ [9.93, &#39;recovery&#39;],
+ [10.5, &#39;push&#39;],
+ [11.12, &#39;recovery&#39;],
+ [11.78, &#39;push&#39;],
+ [12.33, &#39;recovery&#39;],
+ [13.39, &#39;push&#39;],
+ [13.88, &#39;recovery&#39;],
+ [14.86, &#39;push&#39;],
+ [15.3, &#39;recovery&#39;]]
 </pre></div></div>
 </div>
 <p>If we plot again the TimeSeries, we can see the added events.</p>
@@ -1379,18 +1202,18 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_35_0.png" src="_images/timeseries_35_0.png"/>
+<img alt="_images/timeseries_35_0.png" src="_images/timeseries_35_0.png" />
 </div>
 </div>
-
-<h3 id="Using-events-to-synchronize-TimeSeries">Using events to synchronize TimeSeries<a class="headerlink" href="#Using-events-to-synchronize-TimeSeries" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Using-events-to-synchronize-TimeSeries">
+<h3>Using events to synchronize TimeSeries<a class="headerlink" href="#Using-events-to-synchronize-TimeSeries" title="Permalink to this headline">¶</a></h3>
 <p>Let’s see how we can make use of these events. First, the <code class="docutils literal notranslate"><span class="pre">sync</span></code> event can be used to set the zero-time. This would be useful to sync this TimeSeries with data from another wheel, or with any another instrument that also has such synchronization event. The <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.sync_event"><span class="std std-ref">TimeSeries.sync_event()</span></a> shifts the TimeSeries’ time and every event’s time so that the sync event becomes the new “zero-time”.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">sync_event</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">)</span>
+<span></span><span class="n">ts</span><span class="o">.</span><span class="n">sync_event</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1399,12 +1222,12 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_37_0.png" src="_images/timeseries_37_0.png"/>
+<img alt="_images/timeseries_37_0.png" src="_images/timeseries_37_0.png" />
 </div>
 </div>
-
-
-<h3 id="Using-events-to-extract-shorter-TimeSeries">Using events to extract shorter TimeSeries<a class="headerlink" href="#Using-events-to-extract-shorter-TimeSeries" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Using-events-to-extract-shorter-TimeSeries">
+<h3>Using events to extract shorter TimeSeries<a class="headerlink" href="#Using-events-to-extract-shorter-TimeSeries" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class comes with a myriad of methods such as <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event"><span class="std std-ref">TimeSeries.get_ts_after_event()</span></a>, <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_between_events"><span class="std std-ref">TimeSeries.get_ts_between_events()</span></a>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
@@ -1412,7 +1235,7 @@ TimeSeries with attributes:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Extract data push event 0 up to push event 4.</span>
-<span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'push'</span><span class="p">,</span> <span class="s1">'push'</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Remove the events that are not contained into the new time range.</span>
 <span class="n">ts2</span><span class="o">.</span><span class="n">trim_events</span><span class="p">()</span>
@@ -1425,20 +1248,20 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_39_0.png" src="_images/timeseries_39_0.png"/>
+<img alt="_images/timeseries_39_0.png" src="_images/timeseries_39_0.png" />
 </div>
 </div>
-
-
-
-<h2 id="Subsetting-and-merging-timeseries">Subsetting and merging timeseries<a class="headerlink" href="#Subsetting-and-merging-timeseries" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="Subsetting-and-merging-timeseries">
+<h2>Subsetting and merging timeseries<a class="headerlink" href="#Subsetting-and-merging-timeseries" title="Permalink to this headline">¶</a></h2>
 <p>We can use the <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_subset"><span class="std std-ref">TimeSeries.get_subset()</span></a> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="s1">'Forces'</span><span class="p">])</span>
+<span></span><span class="n">ts3</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">get_subset</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">])</span>
 
 <span class="n">ts3</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
@@ -1451,7 +1274,7 @@ TimeSeries with attributes:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'Forces': &lt;array of shape (1514, 3)&gt;
+      &#39;Forces&#39;: &lt;array of shape (1514, 3)&gt;
 }
 </pre></div></div>
 </div>
@@ -1468,69 +1291,59 @@ TimeSeries with attributes:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/timeseries_42_0.png" src="_images/timeseries_42_0.png"/>
+<img alt="_images/timeseries_42_0.png" src="_images/timeseries_42_0.png" />
 </div>
 </div>
 <p>For more information, please refer to the <a class="reference internal" href="api/kineticstoolkit.timeseries.html"><span class="doc">API reference for the TimeSeries class</span></a>.</p>
+</div>
+</div>
 
 
-
-
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-            <a href="install.html" title="Installing Kinetics Toolkit"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> Installing Kinetics Toolkit </span>
-              </div>
-            </a>
-          
-          
-            <a href="filters.html" title="Filtering TimeSeries"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Filtering TimeSeries </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2020, Félix Chénier.
-              
+           </div>
+           
           </div>
-            Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
-             and
-            <a href="https://github.com/bashtage/sphinx-material/">Material for
-              Sphinx</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="loadsave.html" class="btn btn-neutral float-right" title="Saving and loading" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dimension_convention.html" class="btn btn-neutral float-left" title="Dimension convention" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Félix Chénier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-    </div>
-  </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>

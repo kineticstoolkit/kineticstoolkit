@@ -1,8 +1,9 @@
-Installing Kinetics Toolkit
-===========================
+Installing
+==========
 
-Kinetics Toolkit is hosted on both PyPi and conda-forge. However, Kinetics Toolkit relies on `ezc3d` to read c3d files, which is
-distributed only on conda-forge. The recommended installation method is therefore using conda-forge.
+Kinetics Toolkit is distributed via both conda-forge and PyPi. The source code is hosted on [git-hub](https://github.com/felixchenier/kineticstoolkit).
+
+Since reading c3d files relies on `ezc3d` which binaries are distributed only via conda-forge, the recommended installation method is therefore using conda-forge.
 
 1. Download and install Anaconda or [Miniconda](https://docs.conda.io/en/latest/miniconda.html) with python 3.8 or newer.
 
@@ -40,11 +41,12 @@ distributed only on conda-forge. The recommended installation method is therefor
         
             cd ktk_develop; git pull origin master
    
-3. Interactive functions can be tricky in Python. Kinetics Toolkit's interactive functions make use of IPython's integration of Matplotlib/Qt5's event loop, which is completely supported in the Spyder IDE. Therefore I recommend using Spyder, but any IDE that uses IPython should also work well.
+3. Interactive functions can be tricky in Python. Kinetics Toolkit's interactive functions make use of IPython's integration of Matplotlib/Qt5's event loop, which is completely supported in Spyder IDE. Therefore I recommend using [Spyder](https://www.spyder-ide.org) since it is so oriented towards science, but any IDE that uses IPython should also work well. Be sure to [configure Spyder](https://docs.spyder-ide.org/current/faq.html#using-existing-environment) to use the ktk environment you just created.
 
-        conda install -c conda-forge spyder
+4. Choose the Qt5 backend for IPython.
 
-4. Choose the Qt5 backend for IPython: if you are using the Spyder IDE, go to the Spyder's preferences, to the **IPython console** item, then to the **Graphics** pane. In the **Graphics backend** box, select **Qt5**. Restart Spyder.
+    - If you are using the Spyder IDE, go to the Spyder's preferences, to the **IPython console** item, then to the **Graphics** pane. In the **Graphics backend** box, select **Qt5**. Restart Spyder.
+    - Otherwise, you can just type `%matplotlib qt5` in IPython or Jupyter.
 
 Verify that you are able to import Kinetics Toolkit in the interactive IPython console. This should work without error:
 

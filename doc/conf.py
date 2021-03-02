@@ -81,9 +81,10 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints',
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-# html_theme = 'sphinx_rtd_theme'
-html_theme = 'sphinx_material'
+html_theme = 'sphinx_rtd_theme'
+# html_theme = 'sphinx_material'
 
+'''
 # Material theme options (see theme.conf for more information)
 html_theme_options = {
 
@@ -114,6 +115,23 @@ html_theme_options = {
     'master_doc': False,
 
 }
+'''
+
+# Read the docs theme configuration
+html_theme_options = {
+    'logo_only': True,  # default False
+    'display_version': True,
+    'prev_next_buttons_location': 'bottom',
+    'style_external_links': True,  # default False
+    'vcs_pageview_mode': '',
+    'style_nav_header_background': 'black',
+    # Toc options
+    'collapse_navigation': True,
+    'sticky_navigation': False,  # default True
+    'navigation_depth': 4,
+    'includehidden': True,
+    'titles_only': False
+}
 
 html_sidebars = {
     "**": ["globaltoc.html", "localtoc.html", "searchbox.html"]
@@ -121,7 +139,7 @@ html_sidebars = {
 
 html_show_sourcelink = False
 html_copy_source = False
-html_logo = 'logo.png'
+html_logo = '_static/logo_with_text_black.png'
 html_css_files = ['css/custom.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,

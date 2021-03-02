@@ -1,391 +1,198 @@
 
 
+
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
-    <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
-
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>DBInterface &mdash; Kinetics Toolkit master documentation</title>
   
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
   
   
+
   
-    <title>DBInterface &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/material.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Lab mode" href="labmode.html" />
     <link rel="prev" title="Inverse Dynamics" href="inversedynamics.html" />
 
 
+ 
+</head>
 
-  
+<body class="wy-body-for-nav">
+
    
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+          
 
-  </head>
-  <body dir=ltr
-        data-md-color-primary=white data-md-color-accent=orange>
-  
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
-  
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#dbinterface" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit master documentation"
-           class="md-header-nav__button md-logo">
           
-              <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+            <a href="index.html">
           
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> DBInterface </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="GET" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+
+          
+            
+            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
 
-      </div>
-      
-        <div class="md-flex__cell md-flex__cell--shrink">
-          <div class="md-header-nav__source">
-            <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
-
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-          </div>
+          
         </div>
-      
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
 
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/logo.png" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
-  </label>
-    <div class="md-nav__source">
-      <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+</ul>
+<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">DBInterface</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Connecting-to-a-BIOMEC-project">Connecting to a BIOMEC project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Navigating-in-the-project">Navigating in the project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Saving-data-to-a-BIOMEC-referenced-file">Saving data to a BIOMEC referenced file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Loading-data-from-a-BIOMEC-referenced-file">Loading data from a BIOMEC referenced file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Dealing-with-external-software">Dealing with external software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Including-information-in-file-names">Including information in file names</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
 
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-    </div>
-  
-  
-
-  
-  <ul class="md-nav__list">
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="release_notes.html" class="md-nav__link">Release Notes</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> DBInterface </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">DBInterface</a>
-      
+            
+          
+        </div>
         
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#dbinterface--page-root" class="md-nav__link">DBInterface</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Connecting-to-a-BIOMEC-project" class="md-nav__link">Connecting to a BIOMEC project</a>
-        </li>
-        <li class="md-nav__item"><a href="#Navigating-in-the-project" class="md-nav__link">Navigating in the project</a>
-        </li>
-        <li class="md-nav__item"><a href="#Saving-data-to-a-BIOMEC-referenced-file" class="md-nav__link">Saving data to a BIOMEC referenced file</a>
-        </li>
-        <li class="md-nav__item"><a href="#Loading-data-from-a-BIOMEC-referenced-file" class="md-nav__link">Loading data from a BIOMEC referenced file</a>
-        </li>
-        <li class="md-nav__item"><a href="#Dealing-with-external-software" class="md-nav__link">Dealing with external software</a>
-        </li>
-        <li class="md-nav__item"><a href="#Including-information-in-file-names" class="md-nav__link">Including information in file names</a>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-      
-    
-    </li>
-  </ul>
-  
+      </div>
+    </nav>
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#dbinterface--page-root" class="md-nav__link">DBInterface</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Connecting-to-a-BIOMEC-project" class="md-nav__link">Connecting to a BIOMEC project</a>
-        </li>
-        <li class="md-nav__item"><a href="#Navigating-in-the-project" class="md-nav__link">Navigating in the project</a>
-        </li>
-        <li class="md-nav__item"><a href="#Saving-data-to-a-BIOMEC-referenced-file" class="md-nav__link">Saving data to a BIOMEC referenced file</a>
-        </li>
-        <li class="md-nav__item"><a href="#Loading-data-from-a-BIOMEC-referenced-file" class="md-nav__link">Loading data from a BIOMEC referenced file</a>
-        </li>
-        <li class="md-nav__item"><a href="#Dealing-with-external-software" class="md-nav__link">Dealing with external software</a>
-        </li>
-        <li class="md-nav__item"><a href="#Including-information-in-file-names" class="md-nav__link">Including information in file names</a>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
         
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Kinetics Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>DBInterface</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   
 <style>
@@ -634,9 +441,31 @@ div.rendered_html tbody tr:nth-child(odd) {
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
-</style>
 
-<h1 id="dbinterface--page-root">DBInterface<a class="headerlink" href="#dbinterface--page-root" title="Permalink to this headline">¶</a></h1>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="DBInterface">
+<h1>DBInterface<a class="headerlink" href="#DBInterface" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>This class is in development and has not been released.</p>
@@ -655,14 +484,14 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-
-<h2 id="Connecting-to-a-BIOMEC-project">Connecting to a BIOMEC project<a class="headerlink" href="#Connecting-to-a-BIOMEC-project" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Connecting-to-a-BIOMEC-project">
+<h2>Connecting to a BIOMEC project<a class="headerlink" href="#Connecting-to-a-BIOMEC-project" title="Permalink to this headline">¶</a></h2>
 <p>The class constructor connects to the project and asks the user’s credentials and the folder where the data files are stored.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="s1">'FC_XX18A'</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="s1">&#39;FC_XX18A&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The constructor can also be run non-interactively:</p>
@@ -671,13 +500,13 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project_label</span> <span class="o">=</span> <span class="s1">'dummyProject'</span>
-<span class="n">user</span> <span class="o">=</span> <span class="s1">'dummyUser'</span>
-<span class="n">password</span> <span class="o">=</span> <span class="s1">'dummyPassword'</span>
-<span class="n">root_folder</span> <span class="o">=</span> <span class="s1">'data/dbinterface/FC_XX18A'</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">''</span>
-<span class="n">url</span> <span class="o">=</span> <span class="s1">'http://localhost/biomec'</span>  <span class="c1"># This line is only for this tutorial,</span>
-                                 <span class="c1"># please don't execute it.</span>
+<span></span><span class="n">project_label</span> <span class="o">=</span> <span class="s1">&#39;dummyProject&#39;</span>
+<span class="n">user</span> <span class="o">=</span> <span class="s1">&#39;dummyUser&#39;</span>
+<span class="n">password</span> <span class="o">=</span> <span class="s1">&#39;dummyPassword&#39;</span>
+<span class="n">root_folder</span> <span class="o">=</span> <span class="s1">&#39;data/dbinterface/FC_XX18A&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+<span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;http://localhost/biomec&#39;</span>  <span class="c1"># This line is only for this tutorial,</span>
+                                 <span class="c1"># please don&#39;t execute it.</span>
 
 <span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">,</span>
                           <span class="n">user</span><span class="o">=</span><span class="n">user</span><span class="p">,</span>
@@ -687,9 +516,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-
-
-<h2 id="Navigating-in-the-project">Navigating in the project<a class="headerlink" href="#Navigating-in-the-project" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Navigating-in-the-project">
+<h2>Navigating in the project<a class="headerlink" href="#Navigating-in-the-project" title="Permalink to this headline">¶</a></h2>
 <p>Just typing <code class="docutils literal notranslate"><span class="pre">project</span></code> gives an overview of the project’s content.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
@@ -715,16 +544,16 @@ project_label: dummyProject
   root_folder: data/dbinterface/FC_XX18A
 --------------------------------------------------
 participants:
-['P1']
+[&#39;P1&#39;]
 --------------------------------------------------
 sessions:
-['GymnaseN1', 'ArenaCESR1']
+[&#39;GymnaseN1&#39;, &#39;ArenaCESR1&#39;]
 --------------------------------------------------
 trials:
-['Run1', 'Run2', 'Walk1', 'Walk2']
+[&#39;Run1&#39;, &#39;Run2&#39;, &#39;Walk1&#39;, &#39;Walk2&#39;]
 --------------------------------------------------
 files:
-['Kinematics', 'Kinetics', 'SyncedKinematics']
+[&#39;Kinematics&#39;, &#39;Kinetics&#39;, &#39;SyncedKinematics&#39;]
 --------------------------------------------------
 </pre></div></div>
 </div>
@@ -745,12 +574,12 @@ files:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-          'Participants': &lt;list of 1 items&gt;,
-        'ProjectEndDate': None,
-             'ProjectID': 11,
-          'ProjectLabel': 'dummyProject',
-      'ProjectStartDate': None,
-          'ProjectTitle': 'Dummy Project for the ktkDBInterface tutorial'
+          &#39;Participants&#39;: &lt;list of 1 items&gt;,
+        &#39;ProjectEndDate&#39;: None,
+             &#39;ProjectID&#39;: 11,
+          &#39;ProjectLabel&#39;: &#39;dummyProject&#39;,
+      &#39;ProjectStartDate&#39;: None,
+          &#39;ProjectTitle&#39;: &#39;Dummy Project for the ktkDBInterface tutorial&#39;
 }
 </pre></div></div>
 </div>
@@ -759,7 +588,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">)</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -770,19 +599,19 @@ files:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-                   'AIS': None,
-           'DateOfBirth': None,
-          'DateOfInjury': None,
-          'DominantSide': None,
-         'ParticipantID': 127,
-      'ParticipantLabel': 'P1',
-             'Pathology': 'Pathologie inconnue',
-             'ProjectID': 11,
-          'ProjectLabel': 'dummyProject',
-              'Sessions': &lt;list of 2 items&gt;,
-                   'Sex': None,
-             'Traumatic': None,
-                   'UID': 1
+                   &#39;AIS&#39;: None,
+           &#39;DateOfBirth&#39;: None,
+          &#39;DateOfInjury&#39;: None,
+          &#39;DominantSide&#39;: None,
+         &#39;ParticipantID&#39;: 127,
+      &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+             &#39;Pathology&#39;: &#39;Pathologie inconnue&#39;,
+             &#39;ProjectID&#39;: 11,
+          &#39;ProjectLabel&#39;: &#39;dummyProject&#39;,
+              &#39;Sessions&#39;: &lt;list of 2 items&gt;,
+                   &#39;Sex&#39;: None,
+             &#39;Traumatic&#39;: None,
+                   &#39;UID&#39;: 1
 }
 </pre></div></div>
 </div>
@@ -791,7 +620,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">)[</span><span class="s1">'Sessions'</span><span class="p">]</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">)[</span><span class="s1">&#39;Sessions&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -801,7 +630,7 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['GymnaseN1', 'ArenaCESR1']
+[&#39;GymnaseN1&#39;, &#39;ArenaCESR1&#39;]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -809,7 +638,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">)</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -820,15 +649,15 @@ files:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-          'ParticipantID': 127,
-       'ParticipantLabel': 'P1',
-             'PlaceLabel': 'GymnaseN',
-            'SessionDate': '2018-10-17',
-              'SessionID': 127,
-           'SessionLabel': 'GymnaseN1',
-           'SessionNotes': None,
-      'SessionRepetition': 1,
-                 'Trials': &lt;list of 4 items&gt;
+          &#39;ParticipantID&#39;: 127,
+       &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+             &#39;PlaceLabel&#39;: &#39;GymnaseN&#39;,
+            &#39;SessionDate&#39;: &#39;2018-10-17&#39;,
+              &#39;SessionID&#39;: 127,
+           &#39;SessionLabel&#39;: &#39;GymnaseN1&#39;,
+           &#39;SessionNotes&#39;: None,
+      &#39;SessionRepetition&#39;: 1,
+                 &#39;Trials&#39;: &lt;list of 4 items&gt;
 }
 </pre></div></div>
 </div>
@@ -837,7 +666,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">)[</span><span class="s1">'Trials'</span><span class="p">]</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">)[</span><span class="s1">&#39;Trials&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -847,7 +676,7 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['Run1', 'Run2', 'Walk1', 'Walk2']
+[&#39;Run1&#39;, &#39;Run2&#39;, &#39;Walk1&#39;, &#39;Walk2&#39;]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -855,7 +684,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">)</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -866,17 +695,17 @@ files:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-                     'Files': &lt;list of 3 items&gt;,
-          'ParticipantLabel': 'P1',
-                 'SessionID': 127,
-              'SessionLabel': 'GymnaseN1',
-                   'TrialID': 3150,
-                'TrialLabel': 'Run1',
-                'TrialNotes': None,
-           'TrialRepetition': 1,
-      'TrialTypeDescription': None,
-               'TrialTypeID': 204,
-            'TrialTypeLabel': 'Run'
+                     &#39;Files&#39;: &lt;list of 3 items&gt;,
+          &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+                 &#39;SessionID&#39;: 127,
+              &#39;SessionLabel&#39;: &#39;GymnaseN1&#39;,
+                   &#39;TrialID&#39;: 3150,
+                &#39;TrialLabel&#39;: &#39;Run1&#39;,
+                &#39;TrialNotes&#39;: None,
+           &#39;TrialRepetition&#39;: 1,
+      &#39;TrialTypeDescription&#39;: None,
+               &#39;TrialTypeID&#39;: 204,
+            &#39;TrialTypeLabel&#39;: &#39;Run&#39;
 }
 </pre></div></div>
 </div>
@@ -885,7 +714,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">)[</span><span class="s1">'Files'</span><span class="p">]</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">)[</span><span class="s1">&#39;Files&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -895,7 +724,7 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['Kinematics', 'Kinetics', 'SyncedKinematics']
+[&#39;Kinematics&#39;, &#39;Kinetics&#39;, &#39;SyncedKinematics&#39;]
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -903,7 +732,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Kinematics'</span><span class="p">)</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -914,19 +743,19 @@ files:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'FileFormatExtension': None,
-          'FileFormatLabel': 'C3D',
-                   'FileID': 6681,
-                'FileLabel': 'Kinematics',
-                 'FileName': 'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d',
-      'FileTypeDescription': 'Kinematics recorded using a Vicon system',
-               'FileTypeID': 29,
-            'FileTypeLabel': 'Kinematics',
-         'ParticipantLabel': 'P1',
-             'SessionLabel': 'GymnaseN1',
-                  'TrialID': 3150,
-               'TrialLabel': 'Run1',
-                    'dbfid': 'dbfid6681n'
+      &#39;FileFormatExtension&#39;: None,
+          &#39;FileFormatLabel&#39;: &#39;C3D&#39;,
+                   &#39;FileID&#39;: 6681,
+                &#39;FileLabel&#39;: &#39;Kinematics&#39;,
+                 &#39;FileName&#39;: &#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;,
+      &#39;FileTypeDescription&#39;: &#39;Kinematics recorded using a Vicon system&#39;,
+               &#39;FileTypeID&#39;: 29,
+            &#39;FileTypeLabel&#39;: &#39;Kinematics&#39;,
+         &#39;ParticipantLabel&#39;: &#39;P1&#39;,
+             &#39;SessionLabel&#39;: &#39;GymnaseN1&#39;,
+                  &#39;TrialID&#39;: 3150,
+               &#39;TrialLabel&#39;: &#39;Run1&#39;,
+                    &#39;dbfid&#39;: &#39;dbfid6681n&#39;
 }
 </pre></div></div>
 </div>
@@ -935,7 +764,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Kinematics'</span><span class="p">)[</span><span class="s1">'FileName'</span><span class="p">]</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -945,12 +774,12 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d'
+&#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;
 </pre></div></div>
 </div>
-
-
-<h2 id="Saving-data-to-a-BIOMEC-referenced-file">Saving data to a BIOMEC referenced file<a class="headerlink" href="#Saving-data-to-a-BIOMEC-referenced-file" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Saving-data-to-a-BIOMEC-referenced-file">
+<h2>Saving data to a BIOMEC referenced file<a class="headerlink" href="#Saving-data-to-a-BIOMEC-referenced-file" title="Permalink to this headline">¶</a></h2>
 <p>The ktk library provides the function ktk.save to save a variable to a JSON file. The ktk.save function is helpful to save temporary results.</p>
 <p>However, sometimes we need to save results to BIOMEC so that these results become new inputs for subsequent work. In these case, we use the ktk.DBInterface’s <code class="docutils literal notranslate"><span class="pre">save</span></code> method.</p>
 <p>For example, let’s say we just synchronized the kinematics for Run1 of participant 1:</p>
@@ -959,8 +788,8 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">synced_kinematics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'dummy_data'</span><span class="p">:</span>
-                     <span class="s1">'Normally we would save something more useful'</span><span class="p">}</span>
+<span></span><span class="n">synced_kinematics</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;dummy_data&#39;</span><span class="p">:</span>
+                     <span class="s1">&#39;Normally we would save something more useful&#39;</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -970,7 +799,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">,</span> <span class="n">synced_kinematics</span><span class="p">)</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;SyncedKinematics&#39;</span><span class="p">,</span> <span class="n">synced_kinematics</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -980,7 +809,7 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-'data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip'
+&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip&#39;
 </pre></div></div>
 </div>
 <p>This creates the file entry in BIOMEC if needed, then save the file with a relevant name into the project folder.</p>
@@ -990,7 +819,7 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">)[</span><span class="s1">'FileName'</span><span class="p">]</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;SyncedKinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1000,19 +829,19 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-'data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip'
+&#39;data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip&#39;
 </pre></div></div>
 </div>
-
-
-<h2 id="Loading-data-from-a-BIOMEC-referenced-file">Loading data from a BIOMEC referenced file<a class="headerlink" href="#Loading-data-from-a-BIOMEC-referenced-file" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Loading-data-from-a-BIOMEC-referenced-file">
+<h2>Loading data from a BIOMEC referenced file<a class="headerlink" href="#Loading-data-from-a-BIOMEC-referenced-file" title="Permalink to this headline">¶</a></h2>
 <p>To load back data saved to BIOMEC, we use the ktk.DBInterface’s <code class="docutils literal notranslate"><span class="pre">load</span></code> method.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">test</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'SyncedKinematics'</span><span class="p">)</span>
+<span></span><span class="n">test</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;SyncedKinematics&#39;</span><span class="p">)</span>
 
 <span class="n">test</span>
 </pre></div>
@@ -1025,7 +854,7 @@ files:
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-      'dummy_data': 'Normally we would save something more useful'
+      &#39;dummy_data&#39;: &#39;Normally we would save something more useful&#39;
 }
 </pre></div></div>
 </div>
@@ -1035,13 +864,13 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/SyncedKinematics'</span><span class="p">)</span>
+<span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/SyncedKinematics&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-
-
-<h2 id="Dealing-with-external-software">Dealing with external software<a class="headerlink" href="#Dealing-with-external-software" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Dealing-with-external-software">
+<h2>Dealing with external software<a class="headerlink" href="#Dealing-with-external-software" title="Permalink to this headline">¶</a></h2>
 <p>The DBInterface’s <code class="docutils literal notranslate"><span class="pre">save</span></code> and <code class="docutils literal notranslate"><span class="pre">load</span></code> methods work very well for data that were processed in Python using ktk. However, things may get complicated when using external software to process data.</p>
 <p>In this example, we will synchronize the kinematics using an external synchronizing tool, then enter the resulting files into BIOMEC. We will work with these files:</p>
 <div class="nbinput docutils container">
@@ -1050,9 +879,9 @@ files:
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">file_list</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">'Walk1'</span><span class="p">,</span> <span class="s1">'Walk2'</span><span class="p">,</span> <span class="s1">'Run1'</span><span class="p">,</span> <span class="s1">'Run2'</span><span class="p">]:</span>
+<span class="k">for</span> <span class="n">trial</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;Walk1&#39;</span><span class="p">,</span> <span class="s1">&#39;Walk2&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run2&#39;</span><span class="p">]:</span>
     <span class="n">file_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-        <span class="s1">'P1'</span><span class="p">,</span> <span class="s1">'GymnaseN1'</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="s1">'Kinematics'</span><span class="p">)[</span><span class="s1">'FileName'</span><span class="p">])</span>
+        <span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="n">trial</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">])</span>
 
 <span class="n">file_list</span>
 </pre></div>
@@ -1064,10 +893,10 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d',
- 'data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d',
- 'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d',
- 'data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d']
+[&#39;data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d&#39;,
+ &#39;data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d&#39;,
+ &#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;,
+ &#39;data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d&#39;]
 </pre></div></div>
 </div>
 <p>Let say we synchronized these files using an external software, and then we exported the synchronized files into a separate folder.</p>
@@ -1077,13 +906,13 @@ files:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+<span></span><span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
 
 <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">file_list</span><span class="p">:</span>
-    <span class="n">dest_file</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+    <span class="n">dest_file</span> <span class="o">=</span> <span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">root_folder</span><span class="p">,</span> <span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
     <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">file</span><span class="p">,</span> <span class="n">dest_file</span><span class="p">)</span>
 
-<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+<span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1093,10 +922,10 @@ files:
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['kinematics3_dbfid6685n.c3d',
- 'kinematics2_dbfid6683n.c3d',
- 'kinematics4_dbfid6687n.c3d',
- 'kinematics1_dbfid6681n.c3d']
+[&#39;kinematics3_dbfid6685n.c3d&#39;,
+ &#39;kinematics2_dbfid6683n.c3d&#39;,
+ &#39;kinematics4_dbfid6687n.c3d&#39;,
+ &#39;kinematics1_dbfid6681n.c3d&#39;]
 </pre></div></div>
 </div>
 <p>All is good, but the dbfids in the new <code class="docutils literal notranslate"><span class="pre">synchronized_files</span></code> folder refer to the original <code class="docutils literal notranslate"><span class="pre">Kinematics</span></code> file type, not to the <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> file type. Moreover, there are now duplicate dbfids in the project:</p>
@@ -1132,14 +961,14 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[('data/dbinterface/FC_XX18A/synchronized_files/kinematics3_dbfid6685n.c3d',
-  'data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d'),
- ('data/dbinterface/FC_XX18A/synchronized_files/kinematics2_dbfid6683n.c3d',
-  'data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d'),
- ('data/dbinterface/FC_XX18A/synchronized_files/kinematics4_dbfid6687n.c3d',
-  'data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d'),
- ('data/dbinterface/FC_XX18A/synchronized_files/kinematics1_dbfid6681n.c3d',
-  'data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d')]
+[(&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics3_dbfid6685n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics3_dbfid6685n.c3d&#39;),
+ (&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics2_dbfid6683n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics2_dbfid6683n.c3d&#39;),
+ (&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics4_dbfid6687n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics4_dbfid6687n.c3d&#39;),
+ (&#39;data/dbinterface/FC_XX18A/synchronized_files/kinematics1_dbfid6681n.c3d&#39;,
+  &#39;data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;)]
 </pre></div></div>
 </div>
 <p>Therefore we need to assign new dbfids to the files we just synchronized, so that they refer to <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> entries in BIOMEC. The method <code class="docutils literal notranslate"><span class="pre">batch_fix_file_type</span></code> will help.</p>
@@ -1148,8 +977,8 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">project</span><span class="o">.</span><span class="n">batch_fix_file_type</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">,</span>
-                            <span class="s1">'SyncedKinematics'</span><span class="p">,</span>
+<span></span><span class="n">project</span><span class="o">.</span><span class="n">batch_fix_file_type</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">,</span>
+                            <span class="s1">&#39;SyncedKinematics&#39;</span><span class="p">,</span>
                             <span class="n">create_file_entries</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
                             <span class="n">dry_run</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
@@ -1162,9 +991,9 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-               'Ignore': &lt;list of 0 items&gt;,
-      'NoFileTypeLabel': &lt;list of 0 items&gt;,
-               'Rename': &lt;list of 4 items&gt;
+               &#39;Ignore&#39;: &lt;list of 0 items&gt;,
+      &#39;NoFileTypeLabel&#39;: &lt;list of 0 items&gt;,
+               &#39;Rename&#39;: &lt;list of 4 items&gt;
 }
 </pre></div></div>
 </div>
@@ -1174,7 +1003,7 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+<span></span><span class="n">os</span><span class="o">.</span><span class="n">listdir</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1184,10 +1013,10 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['kinematics4_dbfid11526n.c3d',
- 'kinematics1_dbfid11524n.c3d',
- 'kinematics3_dbfid8491n.c3d',
- 'kinematics2_dbfid11525n.c3d']
+[&#39;kinematics4_dbfid11526n.c3d&#39;,
+ &#39;kinematics1_dbfid11524n.c3d&#39;,
+ &#39;kinematics3_dbfid8491n.c3d&#39;,
+ &#39;kinematics2_dbfid11525n.c3d&#39;]
 </pre></div></div>
 </div>
 <p>The files’ dbfid have been updated so they now refer to <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> and not to <code class="docutils literal notranslate"><span class="pre">Kinematics</span></code> anymore. Moreover, the project does not have duplicate dbfids anymore:</p>
@@ -1206,14 +1035,14 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">'/synchronized_files'</span><span class="p">)</span>
+<span></span><span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/synchronized_files&#39;</span><span class="p">)</span>
 <span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
-
-
-<h2 id="Including-information-in-file-names">Including information in file names<a class="headerlink" href="#Including-information-in-file-names" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Including-information-in-file-names">
+<h2>Including information in file names<a class="headerlink" href="#Including-information-in-file-names" title="Permalink to this headline">¶</a></h2>
 <p>It can be difficult to deal with a bunch of numbered files without knowing their signification without looking in BIOMEC. The <code class="docutils literal notranslate"><span class="pre">tag_files</span></code> method allows adding the trial name to the file names, so that their context is a bit clearer and less error-prone.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
@@ -1230,14 +1059,14 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['kinetics_dbfid6688n.csv',
- 'kinematics3_dbfid6685n.c3d',
- 'kinetics_dbfid6684n.csv',
- 'kinetics_dbfid6682n.csv',
- 'kinematics2_dbfid6683n.c3d',
- 'kinematics4_dbfid6687n.c3d',
- 'kinetics_dbfid6686n.csv',
- 'kinematics1_dbfid6681n.c3d']
+[&#39;kinetics_dbfid6688n.csv&#39;,
+ &#39;kinematics3_dbfid6685n.c3d&#39;,
+ &#39;kinetics_dbfid6684n.csv&#39;,
+ &#39;kinetics_dbfid6682n.csv&#39;,
+ &#39;kinematics2_dbfid6683n.c3d&#39;,
+ &#39;kinematics4_dbfid6687n.c3d&#39;,
+ &#39;kinetics_dbfid6686n.csv&#39;,
+ &#39;kinematics1_dbfid6681n.c3d&#39;]
 </pre></div></div>
 </div>
 <p>Include the trial name in the file names:</p>
@@ -1268,14 +1097,14 @@ Refreshing project...
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['kinematics1_dbfid6681n_{Run1}.c3d',
- 'kinetics_dbfid6682n_{Run1}.csv',
- 'kinematics4_dbfid6687n_{Walk2}.c3d',
- 'kinematics3_dbfid6685n_{Walk1}.c3d',
- 'kinematics2_dbfid6683n_{Run2}.c3d',
- 'kinetics_dbfid6688n_{Walk2}.csv',
- 'kinetics_dbfid6684n_{Run2}.csv',
- 'kinetics_dbfid6686n_{Walk1}.csv']
+[&#39;kinematics1_dbfid6681n_{Run1}.c3d&#39;,
+ &#39;kinetics_dbfid6682n_{Run1}.csv&#39;,
+ &#39;kinematics4_dbfid6687n_{Walk2}.c3d&#39;,
+ &#39;kinematics3_dbfid6685n_{Walk1}.c3d&#39;,
+ &#39;kinematics2_dbfid6683n_{Run2}.c3d&#39;,
+ &#39;kinetics_dbfid6688n_{Walk2}.csv&#39;,
+ &#39;kinetics_dbfid6684n_{Run2}.csv&#39;,
+ &#39;kinetics_dbfid6686n_{Walk1}.csv&#39;]
 </pre></div></div>
 </div>
 <p>Remove the trial name from the file names:</p>
@@ -1306,65 +1135,66 @@ Refreshing project...
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-['kinetics_dbfid6688n.csv',
- 'kinematics3_dbfid6685n.c3d',
- 'kinetics_dbfid6684n.csv',
- 'kinetics_dbfid6682n.csv',
- 'kinematics2_dbfid6683n.c3d',
- 'kinematics4_dbfid6687n.c3d',
- 'kinetics_dbfid6686n.csv',
- 'kinematics1_dbfid6681n.c3d']
+[&#39;kinetics_dbfid6688n.csv&#39;,
+ &#39;kinematics3_dbfid6685n.c3d&#39;,
+ &#39;kinetics_dbfid6684n.csv&#39;,
+ &#39;kinetics_dbfid6682n.csv&#39;,
+ &#39;kinematics2_dbfid6683n.c3d&#39;,
+ &#39;kinematics4_dbfid6687n.c3d&#39;,
+ &#39;kinetics_dbfid6686n.csv&#39;,
+ &#39;kinematics1_dbfid6681n.c3d&#39;]
 </pre></div></div>
 </div>
 <p>For more information on DBInterface, please check the <a class="reference internal" href="api/kineticstoolkit.dbinterface.html"><span class="doc">API Reference</span></a>.</p>
+</div>
+</div>
 
 
-
-
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-            <a href="inversedynamics.html" title="Inverse Dynamics"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> Inverse Dynamics </span>
-              </div>
-            </a>
-          
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2020, Félix Chénier.
-              
+           </div>
+           
           </div>
-            Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
-             and
-            <a href="https://github.com/bashtage/sphinx-material/">Material for
-              Sphinx</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="labmode.html" class="btn btn-neutral float-right" title="Lab mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="inversedynamics.html" class="btn btn-neutral float-left" title="Inverse Dynamics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Félix Chénier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-    </div>
-  </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>

@@ -1,432 +1,210 @@
 
 
+
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
-    <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
-
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Inverse Dynamics &mdash; Kinetics Toolkit master documentation</title>
   
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
   
   
+
   
-    <title>Inverse Dynamics &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/material.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="DBInterface" href="dbinterface.html" />
-    <link rel="prev" title="kineticstoolkit.tools module" href="api/kineticstoolkit.tools.html" />
+    <link rel="prev" title="Wheelchair kinetics" href="pushrimkinetics.html" />
 
 
+ 
+</head>
 
-  
+<body class="wy-body-for-nav">
+
    
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+          
 
-  </head>
-  <body dir=ltr
-        data-md-color-primary=white data-md-color-accent=orange>
-  
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
-  
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#inversedynamics" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="index.html" title="Kinetics Toolkit master documentation"
-           class="md-header-nav__button md-logo">
           
-              <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+            <a href="index.html">
           
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Inverse Dynamics </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="GET" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+
+          
+            
+            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
 
-      </div>
-      
-        <div class="md-flex__cell md-flex__cell--shrink">
-          <div class="md-header-nav__source">
-            <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
-
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-          </div>
+          
         </div>
-      
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
 
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="index.html" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/logo.png" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="index.html"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
-  </label>
-    <div class="md-nav__source">
-      <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+</ul>
+<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Inverse Dynamics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Loading-sample-data">Loading sample data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-COM-position-of-the-wheel-segment">Calculate the COM position of the wheel segment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-COM-acceleration-of-the-wheel-segment">Calculate the COM acceleration of the wheel segment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">Calculate the wheel segment’s angles around the global x, y and z axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Finally,-calculate-the-proximal-forces-and-moments">Finally, calculate the proximal forces and moments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">Add the calculated distal forces and moments to the ts_all TimeSeries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Local-forces">Local forces</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Local-moments">Local moments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
 
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-    </div>
-  
-  
-
-  
-  <ul class="md-nav__list">
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="release_notes.html" class="md-nav__link">Release Notes</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
-    <label class="md-nav__link md-nav__link--active" for="__toc"> Inverse Dynamics </label>
-    
-      <a href="#" class="md-nav__link md-nav__link--active">Inverse Dynamics</a>
-      
+            
+          
+        </div>
         
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#inversedynamics--page-root" class="md-nav__link">Inverse Dynamics</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Loading-sample-data" class="md-nav__link">Loading sample data</a>
-        </li>
-        <li class="md-nav__item"><a href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" class="md-nav__link">Put everything relevant into one, synchronized TimeSeries</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-wrist" class="md-nav__link">Calculate the force and moments at the wrist</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Calculate-the-COM-position-of-the-wheel-segment" class="md-nav__link">Calculate the COM position of the wheel segment</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-COM-acceleration-of-the-wheel-segment" class="md-nav__link">Calculate the COM acceleration of the wheel segment</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the wheel segment’s angles around the global x, y and z axes</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a>
-        </li>
-        <li class="md-nav__item"><a href="#Finally,-calculate-the-proximal-forces-and-moments" class="md-nav__link">Finally, calculate the proximal forces and moments</a>
-        </li>
-        <li class="md-nav__item"><a href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" class="md-nav__link">Add the calculated distal forces and moments to the ts_all TimeSeries</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-elbow" class="md-nav__link">Calculate the force and moments at the elbow</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-shoulder" class="md-nav__link">Calculate the force and moments at the shoulder</a>
-        </li>
-        <li class="md-nav__item"><a href="#Get-the-forces-and-moments-in-the-correct-reference-frames" class="md-nav__link">Get the forces and moments in the correct reference frames</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Local-forces" class="md-nav__link">Local forces</a>
-        </li>
-        <li class="md-nav__item"><a href="#Local-moments" class="md-nav__link">Local moments</a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
-      
-    
-    </li>
-  </ul>
-  
+      </div>
+    </nav>
 
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#inversedynamics--page-root" class="md-nav__link">Inverse Dynamics</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Loading-sample-data" class="md-nav__link">Loading sample data</a>
-        </li>
-        <li class="md-nav__item"><a href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" class="md-nav__link">Put everything relevant into one, synchronized TimeSeries</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-wrist" class="md-nav__link">Calculate the force and moments at the wrist</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Calculate-the-COM-position-of-the-wheel-segment" class="md-nav__link">Calculate the COM position of the wheel segment</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-COM-acceleration-of-the-wheel-segment" class="md-nav__link">Calculate the COM acceleration of the wheel segment</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the wheel segment’s angles around the global x, y and z axes</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" class="md-nav__link">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a>
-        </li>
-        <li class="md-nav__item"><a href="#Finally,-calculate-the-proximal-forces-and-moments" class="md-nav__link">Finally, calculate the proximal forces and moments</a>
-        </li>
-        <li class="md-nav__item"><a href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" class="md-nav__link">Add the calculated distal forces and moments to the ts_all TimeSeries</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-elbow" class="md-nav__link">Calculate the force and moments at the elbow</a>
-        </li>
-        <li class="md-nav__item"><a href="#Calculate-the-force-and-moments-at-the-shoulder" class="md-nav__link">Calculate the force and moments at the shoulder</a>
-        </li>
-        <li class="md-nav__item"><a href="#Get-the-forces-and-moments-in-the-correct-reference-frames" class="md-nav__link">Get the forces and moments in the correct reference frames</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#Local-forces" class="md-nav__link">Local forces</a>
-        </li>
-        <li class="md-nav__item"><a href="#Local-moments" class="md-nav__link">Local moments</a>
-        </li></ul>
-            </nav>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
         
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Kinetics Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Inverse Dynamics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   
 <style>
@@ -675,9 +453,31 @@ div.rendered_html tbody tr:nth-child(odd) {
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
-</style>
 
-<h1 id="inversedynamics--page-root">Inverse Dynamics<a class="headerlink" href="#inversedynamics--page-root" title="Permalink to this headline">¶</a></h1>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Inverse-Dynamics">
+<h1>Inverse Dynamics<a class="headerlink" href="#Inverse-Dynamics" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">inversedynamics</span></a> module calculates the proximal forces and moments based on the segment’s kinematics and distal forces and moments, based on the general method published in [1].</p>
 <p>The results are the forces and moments applied by the distal segment on the proximal articulation, in the global coordinates system.</p>
 <div class="admonition warning">
@@ -695,8 +495,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-
-<h2 id="Loading-sample-data">Loading sample data<a class="headerlink" href="#Loading-sample-data" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Loading-sample-data">
+<h2>Loading sample data<a class="headerlink" href="#Loading-sample-data" title="Permalink to this headline">¶</a></h2>
 <p>In this tutorial, we will load propulsion data from a sprint in Wheelchair Basketball. Kinetics were recorded using an instrumented wheel (SmartWheel) and kinematics were recorded using an optoelectronic system (Optitrack). Both are synchronized.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -704,23 +504,23 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Load kinetics</span>
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'data/inversedynamics/basketball_kinetics.ktk.zip'</span><span class="p">)</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinetics.ktk.zip&#39;</span><span class="p">)</span>
 
 <span class="c1"># Change some signs to match (locally): x anterior, # y up, z lateral (right)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
 
-<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
 
 <span class="c1"># Keep everything between sync and stop recording events.</span>
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">)</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">)</span>
 
 <span class="c1"># Look at the data</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
+<span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -728,7 +528,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_3_0.png" src="_images/inversedynamics_3_0.png"/>
+<img alt="_images/inversedynamics_3_0.png" src="_images/inversedynamics_3_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -737,22 +537,22 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Load kinematics</span>
-<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">'data/inversedynamics/basketball_kinematics.ktk.zip'</span><span class="p">)[</span><span class="s1">'Kinematics'</span><span class="p">]</span>
+<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinematics.ktk.zip&#39;</span><span class="p">)[</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">]</span>
 
 <span class="c1"># Extract markers</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">'Markers'</span><span class="p">]</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;Markers&#39;</span><span class="p">]</span>
 <span class="n">markers</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
 
 <span class="c1"># Extract reference frames</span>
-<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">'ReferenceFrames'</span><span class="p">]</span>
+<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;ReferenceFrames&#39;</span><span class="p">]</span>
 <span class="n">reference_frames</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
 
 <span class="c1"># Keep everything between sync and stop recording events.</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">)</span>
-<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">'sync'</span><span class="p">,</span> <span class="s1">'stop'</span><span class="p">)</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">)</span>
+<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">)</span>
 
 <span class="c1"># Plot one sample</span>
-<span class="n">markers</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'RadialStyloidR'</span><span class="p">)</span>
+<span class="n">markers</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">)</span>
 
 <span class="c1"># Check what markers are available</span>
 <span class="n">markers</span><span class="o">.</span><span class="n">data</span>
@@ -766,66 +566,66 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-                     'ArmR_Marker1': &lt;array of shape (1210, 4)&gt;,
-                     'ArmR_Marker2': &lt;array of shape (1210, 4)&gt;,
-                     'ArmR_Marker3': &lt;array of shape (1210, 4)&gt;,
-                     'ArmR_Marker4': &lt;array of shape (1210, 4)&gt;,
-                  'BackrestHeightL': &lt;array of shape (1210, 4)&gt;,
-                  'BackrestHeightR': &lt;array of shape (1210, 4)&gt;,
-      'BackwardFrontAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
-      'BackwardFrontAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
-       'BackwardRearAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
-       'BackwardRearAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
-                   'Body_AcromionR': &lt;array of shape (1210, 4)&gt;,
-                          'Body_C7': &lt;array of shape (1210, 4)&gt;,
-                       'Body_HandR': &lt;array of shape (1210, 4)&gt;,
-          'Body_LateralEpicondyleR': &lt;array of shape (1210, 4)&gt;,
-                           'ElbowR': &lt;array of shape (1210, 4)&gt;,
-               'ExternalMalleolusL': &lt;array of shape (1210, 4)&gt;,
-               'ExternalMalleolusR': &lt;array of shape (1210, 4)&gt;,
-        'FemoralLateralEpicondyleL': &lt;array of shape (1210, 4)&gt;,
-        'FemoralLateralEpicondyleR': &lt;array of shape (1210, 4)&gt;,
-                 'ForearmR_Marker1': &lt;array of shape (1210, 4)&gt;,
-                 'ForearmR_Marker2': &lt;array of shape (1210, 4)&gt;,
-                 'ForearmR_Marker3': &lt;array of shape (1210, 4)&gt;,
-                 'ForearmR_Marker4': &lt;array of shape (1210, 4)&gt;,
-       'ForwardFrontAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
-       'ForwardFrontAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
-        'ForwardRearAntitipCenterL': &lt;array of shape (1210, 4)&gt;,
-        'ForwardRearAntitipCenterR': &lt;array of shape (1210, 4)&gt;,
-                       'FrontSeatL': &lt;array of shape (1210, 4)&gt;,
-                       'FrontSeatR': &lt;array of shape (1210, 4)&gt;,
-         'HumeralMedialEpicondyleL': &lt;array of shape (1210, 4)&gt;,
-         'HumeralMedialEpicondyleR': &lt;array of shape (1210, 4)&gt;,
-                             'L5S1': &lt;array of shape (1210, 4)&gt;,
-                           'Meta2L': &lt;array of shape (1210, 4)&gt;,
-                           'Meta2R': &lt;array of shape (1210, 4)&gt;,
-                           'Meta5L': &lt;array of shape (1210, 4)&gt;,
-                           'Meta5R': &lt;array of shape (1210, 4)&gt;,
-                        'OlecraneL': &lt;array of shape (1210, 4)&gt;,
-                        'OlecraneR': &lt;array of shape (1210, 4)&gt;,
-                   'RadialStyloidL': &lt;array of shape (1210, 4)&gt;,
-                   'RadialStyloidR': &lt;array of shape (1210, 4)&gt;,
-                        'RearSeatL': &lt;array of shape (1210, 4)&gt;,
-                        'RearSeatR': &lt;array of shape (1210, 4)&gt;,
-                 'RearWheelCenterL': &lt;array of shape (1210, 4)&gt;,
-                 'RearWheelCenterR': &lt;array of shape (1210, 4)&gt;,
-                'RearWheelContactL': &lt;array of shape (1210, 4)&gt;,
-                'RearWheelContactR': &lt;array of shape (1210, 4)&gt;,
-                    'RearWheelTopL': &lt;array of shape (1210, 4)&gt;,
-                    'RearWheelTopR': &lt;array of shape (1210, 4)&gt;,
-                      'SWR_Marker1': &lt;array of shape (1210, 4)&gt;,
-                      'SWR_Marker2': &lt;array of shape (1210, 4)&gt;,
-                      'SWR_Marker3': &lt;array of shape (1210, 4)&gt;,
-                      'SWR_Marker4': &lt;array of shape (1210, 4)&gt;,
-                    'UlnarStyloidL': &lt;array of shape (1210, 4)&gt;,
-                    'UlnarStyloidR': &lt;array of shape (1210, 4)&gt;,
-      'WheelchairAnteriorDirection': &lt;array of shape (1210, 4)&gt;,
-                 'WheelchairCenter': &lt;array of shape (1210, 4)&gt;,
-              'WheelchairR_Marker1': &lt;array of shape (1210, 4)&gt;,
-              'WheelchairR_Marker2': &lt;array of shape (1210, 4)&gt;,
-              'WheelchairR_Marker3': &lt;array of shape (1210, 4)&gt;,
-              'WheelchairR_Marker4': &lt;array of shape (1210, 4)&gt;
+                     &#39;ArmR_Marker1&#39;: &lt;array of shape (1210, 4)&gt;,
+                     &#39;ArmR_Marker2&#39;: &lt;array of shape (1210, 4)&gt;,
+                     &#39;ArmR_Marker3&#39;: &lt;array of shape (1210, 4)&gt;,
+                     &#39;ArmR_Marker4&#39;: &lt;array of shape (1210, 4)&gt;,
+                  &#39;BackrestHeightL&#39;: &lt;array of shape (1210, 4)&gt;,
+                  &#39;BackrestHeightR&#39;: &lt;array of shape (1210, 4)&gt;,
+      &#39;BackwardFrontAntitipCenterL&#39;: &lt;array of shape (1210, 4)&gt;,
+      &#39;BackwardFrontAntitipCenterR&#39;: &lt;array of shape (1210, 4)&gt;,
+       &#39;BackwardRearAntitipCenterL&#39;: &lt;array of shape (1210, 4)&gt;,
+       &#39;BackwardRearAntitipCenterR&#39;: &lt;array of shape (1210, 4)&gt;,
+                   &#39;Body_AcromionR&#39;: &lt;array of shape (1210, 4)&gt;,
+                          &#39;Body_C7&#39;: &lt;array of shape (1210, 4)&gt;,
+                       &#39;Body_HandR&#39;: &lt;array of shape (1210, 4)&gt;,
+          &#39;Body_LateralEpicondyleR&#39;: &lt;array of shape (1210, 4)&gt;,
+                           &#39;ElbowR&#39;: &lt;array of shape (1210, 4)&gt;,
+               &#39;ExternalMalleolusL&#39;: &lt;array of shape (1210, 4)&gt;,
+               &#39;ExternalMalleolusR&#39;: &lt;array of shape (1210, 4)&gt;,
+        &#39;FemoralLateralEpicondyleL&#39;: &lt;array of shape (1210, 4)&gt;,
+        &#39;FemoralLateralEpicondyleR&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;ForearmR_Marker1&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;ForearmR_Marker2&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;ForearmR_Marker3&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;ForearmR_Marker4&#39;: &lt;array of shape (1210, 4)&gt;,
+       &#39;ForwardFrontAntitipCenterL&#39;: &lt;array of shape (1210, 4)&gt;,
+       &#39;ForwardFrontAntitipCenterR&#39;: &lt;array of shape (1210, 4)&gt;,
+        &#39;ForwardRearAntitipCenterL&#39;: &lt;array of shape (1210, 4)&gt;,
+        &#39;ForwardRearAntitipCenterR&#39;: &lt;array of shape (1210, 4)&gt;,
+                       &#39;FrontSeatL&#39;: &lt;array of shape (1210, 4)&gt;,
+                       &#39;FrontSeatR&#39;: &lt;array of shape (1210, 4)&gt;,
+         &#39;HumeralMedialEpicondyleL&#39;: &lt;array of shape (1210, 4)&gt;,
+         &#39;HumeralMedialEpicondyleR&#39;: &lt;array of shape (1210, 4)&gt;,
+                             &#39;L5S1&#39;: &lt;array of shape (1210, 4)&gt;,
+                           &#39;Meta2L&#39;: &lt;array of shape (1210, 4)&gt;,
+                           &#39;Meta2R&#39;: &lt;array of shape (1210, 4)&gt;,
+                           &#39;Meta5L&#39;: &lt;array of shape (1210, 4)&gt;,
+                           &#39;Meta5R&#39;: &lt;array of shape (1210, 4)&gt;,
+                        &#39;OlecraneL&#39;: &lt;array of shape (1210, 4)&gt;,
+                        &#39;OlecraneR&#39;: &lt;array of shape (1210, 4)&gt;,
+                   &#39;RadialStyloidL&#39;: &lt;array of shape (1210, 4)&gt;,
+                   &#39;RadialStyloidR&#39;: &lt;array of shape (1210, 4)&gt;,
+                        &#39;RearSeatL&#39;: &lt;array of shape (1210, 4)&gt;,
+                        &#39;RearSeatR&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;RearWheelCenterL&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;RearWheelCenterR&#39;: &lt;array of shape (1210, 4)&gt;,
+                &#39;RearWheelContactL&#39;: &lt;array of shape (1210, 4)&gt;,
+                &#39;RearWheelContactR&#39;: &lt;array of shape (1210, 4)&gt;,
+                    &#39;RearWheelTopL&#39;: &lt;array of shape (1210, 4)&gt;,
+                    &#39;RearWheelTopR&#39;: &lt;array of shape (1210, 4)&gt;,
+                      &#39;SWR_Marker1&#39;: &lt;array of shape (1210, 4)&gt;,
+                      &#39;SWR_Marker2&#39;: &lt;array of shape (1210, 4)&gt;,
+                      &#39;SWR_Marker3&#39;: &lt;array of shape (1210, 4)&gt;,
+                      &#39;SWR_Marker4&#39;: &lt;array of shape (1210, 4)&gt;,
+                    &#39;UlnarStyloidL&#39;: &lt;array of shape (1210, 4)&gt;,
+                    &#39;UlnarStyloidR&#39;: &lt;array of shape (1210, 4)&gt;,
+      &#39;WheelchairAnteriorDirection&#39;: &lt;array of shape (1210, 4)&gt;,
+                 &#39;WheelchairCenter&#39;: &lt;array of shape (1210, 4)&gt;,
+              &#39;WheelchairR_Marker1&#39;: &lt;array of shape (1210, 4)&gt;,
+              &#39;WheelchairR_Marker2&#39;: &lt;array of shape (1210, 4)&gt;,
+              &#39;WheelchairR_Marker3&#39;: &lt;array of shape (1210, 4)&gt;,
+              &#39;WheelchairR_Marker4&#39;: &lt;array of shape (1210, 4)&gt;
 }
 </pre></div></div>
 </div>
@@ -833,7 +633,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_4_1.png" src="_images/inversedynamics_4_1.png"/>
+<img alt="_images/inversedynamics_4_1.png" src="_images/inversedynamics_4_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -853,17 +653,17 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-        'HumerusR': &lt;array of shape (1210, 4, 4)&gt;,
-           'Trunk': &lt;array of shape (1210, 4, 4)&gt;,
-          'WheelL': &lt;array of shape (1210, 4, 4)&gt;,
-          'WheelR': &lt;array of shape (1210, 4, 4)&gt;,
-      'Wheelchair': &lt;array of shape (1210, 4, 4)&gt;
+        &#39;HumerusR&#39;: &lt;array of shape (1210, 4, 4)&gt;,
+           &#39;Trunk&#39;: &lt;array of shape (1210, 4, 4)&gt;,
+          &#39;WheelL&#39;: &lt;array of shape (1210, 4, 4)&gt;,
+          &#39;WheelR&#39;: &lt;array of shape (1210, 4, 4)&gt;,
+      &#39;Wheelchair&#39;: &lt;array of shape (1210, 4, 4)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h2 id="Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries<a class="headerlink" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Put-everything-relevant-into-one,-synchronized-TimeSeries">
+<h2>Put everything relevant into one, synchronized TimeSeries<a class="headerlink" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" title="Permalink to this headline">¶</a></h2>
 <p>We will now create a single TimeSeries with every relevant signal. Note that for kinematics, we use <code class="docutils literal notranslate"><span class="pre">merge</span></code> instead of simply copying the data, because kinetics and kinematics have different sampling rate and therefore the data have different lengths. Merging takes care of resampling.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -876,24 +676,24 @@ div.rendered_html tbody tr:hover {
 <span class="c1"># and at the end to express shoulder dynamics in local coordinates).</span>
 <span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
     <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">'WheelR'</span><span class="p">,</span> <span class="s1">'HumerusR'</span><span class="p">,</span> <span class="s1">'Trunk'</span><span class="p">]),</span>
+        <span class="p">[</span><span class="s1">&#39;WheelR&#39;</span><span class="p">,</span> <span class="s1">&#39;HumerusR&#39;</span><span class="p">,</span> <span class="s1">&#39;Trunk&#39;</span><span class="p">]),</span>
     <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Add the forces and moments, expressed in global coordinates.</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
-    <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">],</span>
-    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WheelR'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;HubForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WheelR&#39;</span><span class="p">]</span>
     <span class="p">)</span>
 
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
-    <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">],</span>
-    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WheelR'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;HubMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
+    <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WheelR&#39;</span><span class="p">]</span>
     <span class="p">)</span>
 
 <span class="c1"># Add relevant markers</span>
 <span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
     <span class="n">markers</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
-        <span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">,</span> <span class="s1">'RadialStyloidR'</span><span class="p">,</span> <span class="s1">'ElbowR'</span><span class="p">,</span> <span class="s1">'Body_AcromionR'</span><span class="p">]),</span>
+        <span class="p">[</span><span class="s1">&#39;RearWheelCenterR&#39;</span><span class="p">,</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">,</span> <span class="s1">&#39;ElbowR&#39;</span><span class="p">,</span> <span class="s1">&#39;Body_AcromionR&#39;</span><span class="p">]),</span>
     <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Check the contents of this TimeSeries</span>
@@ -908,21 +708,21 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-        'Body_AcromionR': &lt;array of shape (2421, 4)&gt;,
-                'ElbowR': &lt;array of shape (2421, 4)&gt;,
-             'HubForces': &lt;array of shape (2421, 4)&gt;,
-            'HubMoments': &lt;array of shape (2421, 4)&gt;,
-              'HumerusR': &lt;array of shape (2421, 4, 4)&gt;,
-        'RadialStyloidR': &lt;array of shape (2421, 4)&gt;,
-      'RearWheelCenterR': &lt;array of shape (2421, 4)&gt;,
-                 'Trunk': &lt;array of shape (2421, 4, 4)&gt;,
-                'WheelR': &lt;array of shape (2421, 4, 4)&gt;
+        &#39;Body_AcromionR&#39;: &lt;array of shape (2421, 4)&gt;,
+                &#39;ElbowR&#39;: &lt;array of shape (2421, 4)&gt;,
+             &#39;HubForces&#39;: &lt;array of shape (2421, 4)&gt;,
+            &#39;HubMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+              &#39;HumerusR&#39;: &lt;array of shape (2421, 4, 4)&gt;,
+        &#39;RadialStyloidR&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;RearWheelCenterR&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;Trunk&#39;: &lt;array of shape (2421, 4, 4)&gt;,
+                &#39;WheelR&#39;: &lt;array of shape (2421, 4, 4)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h2 id="Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-wrist" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Calculate-the-force-and-moments-at-the-wrist">
+<h2>Calculate the force and moments at the wrist<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-wrist" title="Permalink to this headline">¶</a></h2>
 <p>The same calculation is done on every segment, from distal to proximal. We begin with the segment ‘Wheel’ with the point of force application at the hub (since the measured values are referred at the hub).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
@@ -933,13 +733,13 @@ div.rendered_html tbody tr:hover {
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
 <span class="c1"># Add the kinetics data to this TimeSeries</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubForces'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HubMoments'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;HubForces&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;HubMoments&#39;</span><span class="p">]</span>
 
 <span class="c1"># Add the kinematics data to this TimeSeries.</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RearWheelCenterR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForceApplicationPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RearWheelCenterR&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalJointPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RearWheelCenterR&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalJointPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">]</span>
 
 <span class="c1"># Check the contents of the resulting TimeSeries.</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span>
@@ -953,11 +753,11 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
-           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
-      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
-         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;
+                  &#39;DistalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+           &#39;DistalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;DistalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;ForceApplicationPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+         &#39;ProximalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;
 }
 </pre></div></div>
 </div>
@@ -968,14 +768,14 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># We neglect the inertial properties of the wheel. This is a limit and we could improve on this.</span>
-<span class="n">inertial_constants</span> <span class="o">=</span> <span class="p">{</span><span class="s1">'Mass'</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                      <span class="s1">'COMProximalRatio'</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
-                      <span class="s1">'GyrationCOMRatio'</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
+<span class="n">inertial_constants</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Mass&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                      <span class="s1">&#39;COMProximalRatio&#39;</span> <span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                      <span class="s1">&#39;GyrationCOMRatio&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">}</span>
 </pre></div>
 </div>
 </div>
-
-<h3 id="Calculate-the-COM-position-of-the-wheel-segment">Calculate the COM position of the wheel segment<a class="headerlink" href="#Calculate-the-COM-position-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Calculate-the-COM-position-of-the-wheel-segment">
+<h3>Calculate the COM position of the wheel segment<a class="headerlink" href="#Calculate-the-COM-position-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -994,24 +794,24 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
-                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
-           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
-      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
-         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;
+                   &#39;COMPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                  &#39;DistalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+           &#39;DistalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;DistalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;ForceApplicationPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+         &#39;ProximalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h3 id="Calculate-the-COM-acceleration-of-the-wheel-segment">Calculate the COM acceleration of the wheel segment<a class="headerlink" href="#Calculate-the-COM-acceleration-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Calculate-the-COM-acceleration-of-the-wheel-segment">
+<h3>Calculate the COM acceleration of the wheel segment<a class="headerlink" href="#Calculate-the-COM-acceleration-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;butter&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
@@ -1024,19 +824,19 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
-                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
-                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
-           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
-      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
-         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;
+               &#39;COMAcceleration&#39;: &lt;array of shape (2421, 4)&gt;,
+                   &#39;COMPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                  &#39;DistalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+           &#39;DistalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;DistalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;ForceApplicationPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+         &#39;ProximalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h3 id="Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">Calculate the wheel segment’s angles around the global x, y and z axes<a class="headerlink" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">
+<h3>Calculate the wheel segment’s angles around the global x, y and z axes<a class="headerlink" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -1055,26 +855,26 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
-                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
-                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
-           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
-      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
-         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'SegmentAngles': &lt;array of shape (2421, 3)&gt;
+               &#39;COMAcceleration&#39;: &lt;array of shape (2421, 4)&gt;,
+                   &#39;COMPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                  &#39;DistalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+           &#39;DistalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;DistalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;ForceApplicationPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+         &#39;ProximalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;SegmentAngles&#39;: &lt;array of shape (2421, 3)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h3 id="Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes<a class="headerlink" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">
+<h3>Calculate the segment’s angular velocity and acceleration around the global x, y and z axes<a class="headerlink" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;butter&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="n">ts</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
@@ -1087,22 +887,22 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-           'AngularAcceleration': &lt;array of shape (2421, 3)&gt;,
-               'AngularVelocity': &lt;array of shape (2421, 3)&gt;,
-               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
-                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
-                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
-           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
-      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
-         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'SegmentAngles': &lt;array of shape (2421, 3)&gt;
+           &#39;AngularAcceleration&#39;: &lt;array of shape (2421, 3)&gt;,
+               &#39;AngularVelocity&#39;: &lt;array of shape (2421, 3)&gt;,
+               &#39;COMAcceleration&#39;: &lt;array of shape (2421, 4)&gt;,
+                   &#39;COMPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                  &#39;DistalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+           &#39;DistalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;DistalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;ForceApplicationPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+         &#39;ProximalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;SegmentAngles&#39;: &lt;array of shape (2421, 3)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h3 id="Finally,-calculate-the-proximal-forces-and-moments">Finally, calculate the proximal forces and moments<a class="headerlink" href="#Finally,-calculate-the-proximal-forces-and-moments" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Finally,-calculate-the-proximal-forces-and-moments">
+<h3>Finally, calculate the proximal forces and moments<a class="headerlink" href="#Finally,-calculate-the-proximal-forces-and-moments" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -1121,32 +921,32 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-           'AngularAcceleration': &lt;array of shape (2421, 3)&gt;,
-               'AngularVelocity': &lt;array of shape (2421, 3)&gt;,
-               'COMAcceleration': &lt;array of shape (2421, 4)&gt;,
-                   'COMPosition': &lt;array of shape (2421, 4)&gt;,
-                  'DistalForces': &lt;array of shape (2421, 4)&gt;,
-           'DistalJointPosition': &lt;array of shape (2421, 4)&gt;,
-                 'DistalMoments': &lt;array of shape (2421, 4)&gt;,
-      'ForceApplicationPosition': &lt;array of shape (2421, 4)&gt;,
-                'ProximalForces': &lt;array of shape (2421, 4)&gt;,
-         'ProximalJointPosition': &lt;array of shape (2421, 4)&gt;,
-               'ProximalMoments': &lt;array of shape (2421, 4)&gt;,
-              'RadiusOfGyration': &lt;array of shape (2421, 3)&gt;,
-                 'SegmentAngles': &lt;array of shape (2421, 3)&gt;
+           &#39;AngularAcceleration&#39;: &lt;array of shape (2421, 3)&gt;,
+               &#39;AngularVelocity&#39;: &lt;array of shape (2421, 3)&gt;,
+               &#39;COMAcceleration&#39;: &lt;array of shape (2421, 4)&gt;,
+                   &#39;COMPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                  &#39;DistalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+           &#39;DistalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                 &#39;DistalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+      &#39;ForceApplicationPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+                &#39;ProximalForces&#39;: &lt;array of shape (2421, 4)&gt;,
+         &#39;ProximalJointPosition&#39;: &lt;array of shape (2421, 4)&gt;,
+               &#39;ProximalMoments&#39;: &lt;array of shape (2421, 4)&gt;,
+              &#39;RadiusOfGyration&#39;: &lt;array of shape (2421, 3)&gt;,
+                 &#39;SegmentAngles&#39;: &lt;array of shape (2421, 3)&gt;
 }
 </pre></div></div>
 </div>
-
-
-<h3 id="Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">Add the calculated distal forces and moments to the ts_all TimeSeries<a class="headerlink" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">
+<h3>Add the calculated distal forces and moments to the ts_all TimeSeries<a class="headerlink" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+<span></span><span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WristForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalForces&#39;</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WristMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalMoments&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
@@ -1157,7 +957,7 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Plot the hub and wrist forces (identical since</span>
 <span class="c1"># there were no inertial constants on this segment)</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'HubForces'</span><span class="p">,</span> <span class="s1">'WristForces'</span><span class="p">])</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;HubForces&#39;</span><span class="p">,</span> <span class="s1">&#39;WristForces&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1165,7 +965,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_24_0.png" src="_images/inversedynamics_24_0.png"/>
+<img alt="_images/inversedynamics_24_0.png" src="_images/inversedynamics_24_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1175,7 +975,7 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Plot the hub and wrist moments (not identical</span>
 <span class="c1"># because of the lever arm between the hub and wrist)</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'HubMoments'</span><span class="p">,</span> <span class="s1">'WristMoments'</span><span class="p">])</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;HubMoments&#39;</span><span class="p">,</span> <span class="s1">&#39;WristMoments&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1183,13 +983,13 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_25_0.png" src="_images/inversedynamics_25_0.png"/>
+<img alt="_images/inversedynamics_25_0.png" src="_images/inversedynamics_25_0.png" />
 </div>
 </div>
-
-
-
-<h2 id="Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-elbow" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+<div class="section" id="Calculate-the-force-and-moments-at-the-elbow">
+<h2>Calculate the force and moments at the elbow<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-elbow" title="Permalink to this headline">¶</a></h2>
 <p>The method is identical for the other segments. However, for these segments, we will define inertial constants based on anthropometric tables.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -1197,7 +997,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">inertial_constants</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">get_anthropometrics</span><span class="p">(</span>
-    <span class="n">segment_name</span><span class="o">=</span><span class="s1">'Forearm'</span><span class="p">,</span>
+    <span class="n">segment_name</span><span class="o">=</span><span class="s1">&#39;Forearm&#39;</span><span class="p">,</span>
     <span class="n">total_mass</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 
 <span class="n">inertial_constants</span>
@@ -1211,12 +1011,12 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-             'COMDistalRatio': 0.57,
-           'COMProximalRatio': 0.43,
-           'GyrationCOMRatio': 0.303,
-        'GyrationDistalRatio': 0.647,
-      'GyrationProximalRatio': 0.526,
-                       'Mass': 1.28
+             &#39;COMDistalRatio&#39;: 0.57,
+           &#39;COMProximalRatio&#39;: 0.43,
+           &#39;GyrationCOMRatio&#39;: 0.303,
+        &#39;GyrationDistalRatio&#39;: 0.647,
+      &#39;GyrationProximalRatio&#39;: 0.526,
+                       &#39;Mass&#39;: 1.28
 }
 </pre></div></div>
 </div>
@@ -1229,31 +1029,31 @@ div.rendered_html tbody tr:hover {
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
 <span class="c1"># Add the kinetics data to this TimeSeries</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristForces'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'WristMoments'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WristForces&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;WristMoments&#39;</span><span class="p">]</span>
 
 <span class="c1"># Add the kinematics data to this TimeSeries.</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'RadialStyloidR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForceApplicationPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalJointPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalJointPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowR&#39;</span><span class="p">]</span>
 
 <span class="c1"># Calculate the COM position and acceleration</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_position</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;butter&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="c1"># Calculate the segment's angle, angular velocity and angular acceleration</span>
+<span class="c1"># Calculate the segment&#39;s angle, angular velocity and angular acceleration</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_angles</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;butter&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># Calculate the proximal forces and moments</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
 
 <span class="c1"># Add the calculated forces and moments to ts_all</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalForces&#39;</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalMoments&#39;</span><span class="p">]</span>
 
 <span class="c1"># Compare the wrist forces to the elbow forces</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'WristForces'</span><span class="p">,</span> <span class="s1">'ElbowForces'</span><span class="p">])</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;WristForces&#39;</span><span class="p">,</span> <span class="s1">&#39;ElbowForces&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1261,7 +1061,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_28_0.png" src="_images/inversedynamics_28_0.png"/>
+<img alt="_images/inversedynamics_28_0.png" src="_images/inversedynamics_28_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1270,7 +1070,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Compare the wrist moments to the elbow moments</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'WristMoments'</span><span class="p">,</span> <span class="s1">'ElbowMoments'</span><span class="p">])</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;WristMoments&#39;</span><span class="p">,</span> <span class="s1">&#39;ElbowMoments&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1278,12 +1078,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_29_0.png" src="_images/inversedynamics_29_0.png"/>
+<img alt="_images/inversedynamics_29_0.png" src="_images/inversedynamics_29_0.png" />
 </div>
 </div>
-
-
-<h2 id="Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-shoulder" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Calculate-the-force-and-moments-at-the-shoulder">
+<h2>Calculate the force and moments at the shoulder<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-shoulder" title="Permalink to this headline">¶</a></h2>
 <p>We proceed exactly as for the elbow.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
@@ -1291,7 +1091,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">inertial_constants</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">get_anthropometrics</span><span class="p">(</span>
-    <span class="n">segment_name</span><span class="o">=</span><span class="s1">'UpperArm'</span><span class="p">,</span>
+    <span class="n">segment_name</span><span class="o">=</span><span class="s1">&#39;UpperArm&#39;</span><span class="p">,</span>
     <span class="n">total_mass</span><span class="o">=</span><span class="mi">80</span><span class="p">)</span>
 
 <span class="n">inertial_constants</span>
@@ -1305,12 +1105,12 @@ div.rendered_html tbody tr:hover {
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 {
-             'COMDistalRatio': 0.564,
-           'COMProximalRatio': 0.436,
-           'GyrationCOMRatio': 0.322,
-        'GyrationDistalRatio': 0.645,
-      'GyrationProximalRatio': 0.542,
-                       'Mass': 2.24
+             &#39;COMDistalRatio&#39;: 0.564,
+           &#39;COMProximalRatio&#39;: 0.436,
+           &#39;GyrationCOMRatio&#39;: 0.322,
+        &#39;GyrationDistalRatio&#39;: 0.645,
+      &#39;GyrationProximalRatio&#39;: 0.542,
+                       &#39;Mass&#39;: 2.24
 }
 </pre></div></div>
 </div>
@@ -1323,31 +1123,31 @@ div.rendered_html tbody tr:hover {
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
 <span class="c1"># Add the kinetics data to this TimeSeries</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowForces'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowMoments'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowForces&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowMoments&#39;</span><span class="p">]</span>
 
 <span class="c1"># Add the kinematics data to this TimeSeries.</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ForceApplicationPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'DistalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ElbowR'</span><span class="p">]</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalJointPosition'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Body_AcromionR'</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForceApplicationPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowR&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;DistalJointPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ElbowR&#39;</span><span class="p">]</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalJointPosition&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Body_AcromionR&#39;</span><span class="p">]</span>
 
 <span class="c1"># Calculate the COM position and acceleration</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_position</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_com_acceleration</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;butter&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
-<span class="c1"># Calculate the segment's angle, angular velocity and angular acceleration</span>
+<span class="c1"># Calculate the segment&#39;s angle, angular velocity and angular acceleration</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_angles</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
-<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">'butter'</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_segment_rotation_rates</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;butter&#39;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
 
 <span class="c1"># Calculate the proximal forces and moments</span>
 <span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">inversedynamics</span><span class="o">.</span><span class="n">calculate_proximal_wrench</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">inertial_constants</span><span class="p">)</span>
 
 <span class="c1"># Add the calculated forces and moments to ts_all</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderForces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalForces'</span><span class="p">]</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderMoments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ProximalMoments'</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ShoulderForces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalForces&#39;</span><span class="p">]</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ShoulderMoments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProximalMoments&#39;</span><span class="p">]</span>
 
 <span class="c1"># Compare the elbow forces to the shoulder forces</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ElbowForces'</span><span class="p">,</span> <span class="s1">'ShoulderForces'</span><span class="p">])</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;ElbowForces&#39;</span><span class="p">,</span> <span class="s1">&#39;ShoulderForces&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1355,7 +1155,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_32_0.png" src="_images/inversedynamics_32_0.png"/>
+<img alt="_images/inversedynamics_32_0.png" src="_images/inversedynamics_32_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1364,7 +1164,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Compare the elbow moments to the shoulder moments</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">'ElbowMoments'</span><span class="p">,</span> <span class="s1">'ShoulderMoments'</span><span class="p">])</span>
+<span class="n">ts_all</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;ElbowMoments&#39;</span><span class="p">,</span> <span class="s1">&#39;ShoulderMoments&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -1372,12 +1172,12 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_33_0.png" src="_images/inversedynamics_33_0.png"/>
+<img alt="_images/inversedynamics_33_0.png" src="_images/inversedynamics_33_0.png" />
 </div>
 </div>
-
-
-<h2 id="Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames<a class="headerlink" href="#Get-the-forces-and-moments-in-the-correct-reference-frames" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="Get-the-forces-and-moments-in-the-correct-reference-frames">
+<h2>Get the forces and moments in the correct reference frames<a class="headerlink" href="#Get-the-forces-and-moments-in-the-correct-reference-frames" title="Permalink to this headline">¶</a></h2>
 <p>Please note that every force and moment we just calculated is expressed in the global reference frame, which is of limited value for interpretation. It is much more useful to express these data in local coordinates. Several conventions may be used, here we will express the shoulder forces in the trunk reference frame, and the shoulder moments in the humeral reference frame.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
@@ -1388,33 +1188,33 @@ div.rendered_html tbody tr:hover {
 <span class="n">local_joint_dynamics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">ts_all</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
 <span class="c1"># Fill it with the external forces</span>
-<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
-    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderForces'</span><span class="p">],</span>
-    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Trunk'</span><span class="p">]</span>
+<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ShoulderForces&#39;</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Trunk&#39;</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="c1"># This is the forces applied by the trunk on the humerus. Normally we want the contrary,</span>
 <span class="c1"># the external forces applied by the humerus on the trunk:</span>
-<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Forces'</span><span class="p">]</span>
+<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span>
 
-<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'Moments'</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
-    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'ShoulderMoments'</span><span class="p">],</span>
-    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">'HumerusR'</span><span class="p">]</span>
+<span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Moments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ShoulderMoments&#39;</span><span class="p">],</span>
+    <span class="n">ts_all</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;HumerusR&#39;</span><span class="p">]</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
-
-<h3 id="Local-forces">Local forces<a class="headerlink" href="#Local-forces" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Local-forces">
+<h3>Local forces<a class="headerlink" href="#Local-forces" title="Permalink to this headline">¶</a></h3>
 <p>Let’s plot the shoulder forces in the trunk reference frame:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Forces'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">'Anterior'</span><span class="p">,</span> <span class="s1">'Upward'</span><span class="p">,</span> <span class="s1">'Lateral'</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'External forces in the trunk reference frame:'</span><span class="p">)</span>
+<span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Anterior&#39;</span><span class="p">,</span> <span class="s1">&#39;Upward&#39;</span><span class="p">,</span> <span class="s1">&#39;Lateral&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;External forces in the trunk reference frame:&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1430,20 +1230,20 @@ External forces in the trunk reference frame:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_37_1.png" src="_images/inversedynamics_37_1.png"/>
+<img alt="_images/inversedynamics_37_1.png" src="_images/inversedynamics_37_1.png" />
 </div>
 </div>
-
-
-<h3 id="Local-moments">Local moments<a class="headerlink" href="#Local-moments" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="Local-moments">
+<h3>Local moments<a class="headerlink" href="#Local-moments" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">'Moments'</span><span class="p">)</span>
-<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">'Abduction'</span><span class="p">,</span> <span class="s1">'Internal rotation'</span><span class="p">,</span> <span class="s1">'Flexion'</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">'Net internal shoulder moments:'</span><span class="p">)</span>
+<span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Abduction&#39;</span><span class="p">,</span> <span class="s1">&#39;Internal rotation&#39;</span><span class="p">,</span> <span class="s1">&#39;Flexion&#39;</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Net internal shoulder moments:&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1459,70 +1259,60 @@ Net internal shoulder moments:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_39_1.png" src="_images/inversedynamics_39_1.png"/>
+<img alt="_images/inversedynamics_39_1.png" src="_images/inversedynamics_39_1.png" />
 </div>
 </div>
 <p>For more information on inversedynamics, please check the <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">API Reference for the inversedynamics module</span></a>.</p>
+</div>
+</div>
+</div>
 
 
-
-
-
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-            <a href="api/kineticstoolkit.tools.html" title="kineticstoolkit.tools module"
-               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
-               rel="prev">
-              <div class="md-flex__cell md-flex__cell--shrink">
-                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
-              </div>
-              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
-                <span class="md-flex__ellipsis">
-                  <span
-                      class="md-footer-nav__direction"> Previous </span> kineticstoolkit.tools module </span>
-              </div>
-            </a>
-          
-          
-            <a href="dbinterface.html" title="DBInterface"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> DBInterface </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2020, Félix Chénier.
-              
+           </div>
+           
           </div>
-            Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
-             and
-            <a href="https://github.com/bashtage/sphinx-material/">Material for
-              Sphinx</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="dbinterface.html" class="btn btn-neutral float-right" title="DBInterface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pushrimkinetics.html" class="btn btn-neutral float-left" title="Wheelchair kinetics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Félix Chénier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-    </div>
-  </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>

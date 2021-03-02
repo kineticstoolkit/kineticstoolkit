@@ -1,443 +1,270 @@
 
 
+
 <!DOCTYPE html>
-
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <meta name="lang:clipboard.copy" content="Copy to clipboard">
-  <meta name="lang:clipboard.copied" content="Copied to clipboard">
-  <meta name="lang:search.language" content="en">
-  <meta name="lang:search.pipeline.stopwords" content="True">
-  <meta name="lang:search.pipeline.trimmer" content="True">
-  <meta name="lang:search.result.none" content="No matching documents">
-  <meta name="lang:search.result.one" content="1 matching document">
-  <meta name="lang:search.result.other" content="# matching documents">
-  <meta name="lang:search.tokenizer" content="[\s\-]+">
-
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
   
-    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
-    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
-
-    <style>
-      body,
-      input {
-        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
-      }
-
-      code,
-      kbd,
-      pre {
-        font-family: "Roboto Mono", "Courier New", Courier, monospace
-      }
-    </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Kinetics Toolkit &mdash; Kinetics Toolkit master documentation</title>
   
 
-  <link rel="stylesheet" href="_static/stylesheets/application.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-palette.css"/>
-  <link rel="stylesheet" href="_static/stylesheets/application-fixes.css"/>
   
-  <link rel="stylesheet" href="_static/fonts/material-icons.css"/>
-  
-  <meta name="theme-color" content="#3f51b5">
-  <script src="_static/javascripts/modernizr.js"></script>
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+
   
   
+
   
-    <title>Kinetics Toolkit &#8212; Kinetics Toolkit master documentation</title>
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/material.css" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="_static/css/custom.css" />
-    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/doctools.js"></script>
-    <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Installing Kinetics Toolkit" href="install.html" />
+    <link rel="next" title="Installing" href="install.html" />
 
 
+ 
+</head>
 
-  
+<body class="wy-body-for-nav">
+
    
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+          
 
-  </head>
-  <body dir=ltr
-        data-md-color-primary=white data-md-color-accent=orange>
-  
-  <svg class="md-svg">
-    <defs data-children-count="0">
-      
-      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
-      
-    </defs>
-  </svg>
-  
-  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
-  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
-  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
-  <a href="#index" tabindex="1" class="md-skip"> Skip to content </a>
-  <header class="md-header" data-md-component="header">
-  <nav class="md-header-nav md-grid">
-    <div class="md-flex navheader">
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <a href="#" title="Kinetics Toolkit master documentation"
-           class="md-header-nav__button md-logo">
           
-              <img src="_static/logo.png" height="26"
-                   alt="Kinetics Toolkit master documentation logo">
+            <a href="#">
           
-        </a>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
-      </div>
-      <div class="md-flex__cell md-flex__cell--stretch">
-        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
-          <span class="md-header-nav__topic">Kinetics Toolkit</span>
-          <span class="md-header-nav__topic"> Kinetics Toolkit </span>
-        </div>
-      </div>
-      <div class="md-flex__cell md-flex__cell--shrink">
-        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
-        
-<div class="md-search" data-md-component="search" role="dialog">
-  <label class="md-search__overlay" for="__search"></label>
-  <div class="md-search__inner" role="search">
-    <form class="md-search__form" action="search.html" method="GET" name="search">
-      <input type="text" class="md-search__input" name="q" placeholder="Search"
-             autocapitalize="off" autocomplete="off" spellcheck="false"
-             data-md-component="query" data-md-state="active">
-      <label class="md-icon md-search__icon" for="__search"></label>
-      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
-        &#xE5CD;
-      </button>
-    </form>
-    <div class="md-search__output">
-      <div class="md-search__scrollwrap" data-md-scrollfix>
-        <div class="md-search-result" data-md-component="result">
-          <div class="md-search-result__meta">
-            Type to start searching
-          </div>
-          <ol class="md-search-result__list"></ol>
-        </div>
-      </div>
-    </div>
-  </div>
+
+          
+            
+            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
 </div>
 
-      </div>
-      
-        <div class="md-flex__cell md-flex__cell--shrink">
-          <div class="md-header-nav__source">
-            <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
-
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-          </div>
+          
         </div>
-      
-      
-  
-  <script src="_static/javascripts/version_dropdown.js"></script>
-  <script>
-    var json_loc = ""versions.json"",
-        target_loc = "../",
-        text = "Versions";
-    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
-  </script>
-  
 
-    </div>
-  </nav>
-</header>
-
-  
-  <div class="md-container">
-    
-    
-    
-    <main class="md-main">
-      <div class="md-main__inner md-grid" data-md-component="container">
         
-          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                <nav class="md-nav md-nav--primary" data-md-level="0">
-  <label class="md-nav__title md-nav__title--site" for="__drawer">
-    <a href="#" title="Kinetics Toolkit master documentation" class="md-nav__button md-logo">
-      
-        <img src="_static/logo.png" alt=" logo" width="48" height="48">
-      
-    </a>
-    <a href="#"
-       title="Kinetics Toolkit master documentation">Kinetics Toolkit</a>
-  </label>
-    <div class="md-nav__source">
-      <a href="https://github.com/felixchenier/kineticstoolkit/" title="Go to repository" class="md-source" data-md-source="github">
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
+</ul>
+<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+</ul>
+<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
+</ul>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+</ul>
 
-    <div class="md-source__icon">
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
-        <use xlink:href="#__github" width="24" height="24"></use>
-      </svg>
-    </div>
-  
-  <div class="md-source__repository">
-    kineticstoolkit
-  </div>
-</a>
-    </div>
-  
-  
-
-  
-  <ul class="md-nav__list">
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">THE BASICS</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="install.html" class="md-nav__link">Installing Kinetics Toolkit</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="timeseries.html" class="md-nav__link">Getting started with TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="filters.html" class="md-nav__link">Filtering TimeSeries</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="cycles.html" class="md-nav__link">Detecting and normalizing cycles</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="geometry.html" class="md-nav__link">Rigid transformations, coordinates and reference frames</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="loadsave.html" class="md-nav__link">Saving and loading</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="kinematics.html" class="md-nav__link">Kinematics analysis</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="pushrimkinetics.html" class="md-nav__link">Wheelchair kinetics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">MORE IN DEPTH</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="labmode.html" class="md-nav__link">Lab mode</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="release_notes.html" class="md-nav__link">Release Notes</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="api_reference.html" class="md-nav__link">API Reference</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="https://felixchenier.uqam.ca/kineticstoolkit" class="md-nav__link">Stable version</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-      <span class="md-nav__link caption"><span class="caption-text">IN DEVELOPMENT</span></span>
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="inversedynamics.html" class="md-nav__link">Inverse Dynamics</a>
-      
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="dbinterface.html" class="md-nav__link">DBInterface</a>
-      
-    
-    </li>
-  </ul>
-  
-
-</nav>
-              </div>
-            </div>
-          </div>
-          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
-            <div class="md-sidebar__scrollwrap">
-              <div class="md-sidebar__inner">
-                
-<nav class="md-nav md-nav--secondary">
-    <label class="md-nav__title" for="__toc">Contents</label>
-  <ul class="md-nav__list" data-md-scrollfix="">
-        <li class="md-nav__item"><a href="#index--page-root" class="md-nav__link">Kinetics Toolkit</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#example" class="md-nav__link">Example</a>
-        </li>
-        <li class="md-nav__item"><a href="#package-contents" class="md-nav__link">Package contents</a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#lower-level-modules-classes-and-functions" class="md-nav__link">Lower level modules, classes and functions</a>
-        </li>
-        <li class="md-nav__item"><a href="#higher-level-modules-and-classes" class="md-nav__link">Higher level modules and classes</a>
-        </li></ul>
-            </nav>
-        </li>
-        <li class="md-nav__item"><a href="#credits" class="md-nav__link">Credits</a>
-        </li>
-        <li class="md-nav__item"><a href="#site-map" class="md-nav__link">Site map</a>
-        </li></ul>
-            </nav>
-        </li>
-  </ul>
-</nav>
-              </div>
-            </div>
-          </div>
+            
+          
+        </div>
         
-        <div class="md-content">
-          <article class="md-content__inner md-typeset" role="main">
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Kinetics Toolkit</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content style-external-links">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Kinetics Toolkit</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   
-<h1 id="index--page-root">Kinetics Toolkit<a class="headerlink" href="#index--page-root" title="Permalink to this headline">¶</a></h1>
-<p>Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated
-classes and functions that aims to facilitate research in biomechanics using
-python.</p>
-<p>Kinetics Toolkit is mainly addressed to researchers and students in
-biomechanics with a little background in programming, who may or may not
-already have a working workflow and who want to understand and control their
-data. This is why special attention is made to build rich API documentation and
-tutorials, and to ensure the interoperability of ktk with other environments
-(using pandas Dataframes and JSON files as intermediate data containers).</p>
-<p>Kinetics Toolkit is developed at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> in
-Montreal.</p>
+<style>
+/* CSS overrides for sphinx_rtd_theme */
 
-<h2 id="example">Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span><span class="s1">'my_file.c3d'</span><span class="p">)</span>
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="kinetics-toolkit">
+<h1>Kinetics Toolkit<a class="headerlink" href="#kinetics-toolkit" title="Permalink to this headline">¶</a></h1>
+<p>Kinetics Toolkit (ktk) is an open-source, pure-python package of integrated classes and functions that aims to facilitate research in biomechanics using python. It is mainly addressed to researchers and students in biomechanics with a little background in programming, who want to understand and control their data. This is why special attention is made on documentation and interoperability with other environments (using pandas Dataframes and JSON files as intermediate data containers).</p>
+<p>Kinetics Toolkit is developed at the <a class="reference external" href="https://felixchenier.uqam.ca">Mobility and Adaptive Sports Research Lab</a> in Montreal.</p>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span>   <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span><span class="s1">&#39;my_file.c3d&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span>   <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" src="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif"/>
-
-
-<h2 id="package-contents">Package contents<a class="headerlink" href="#package-contents" title="Permalink to this headline">¶</a></h2>
-<p>Kinetics Toolkit currently includes the following modules, classes and fuctions:</p>
-
-<h3 id="lower-level-modules-classes-and-functions">Lower level modules, classes and functions<a class="headerlink" href="#lower-level-modules-classes-and-functions" title="Permalink to this headline">¶</a></h3>
+<img alt="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" src="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" />
+</div>
+<div class="section" id="package-contents">
+<h2>Package contents<a class="headerlink" href="#package-contents" title="Permalink to this headline">¶</a></h2>
+<p>Kinetics Toolkit currently includes:</p>
+<div class="section" id="lower-level-modules-classes-and-functions">
+<h3>Lower level modules, classes and functions<a class="headerlink" href="#lower-level-modules-classes-and-functions" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><cite>TimeSeries</cite> : a generic class to represent time-varying
-n-dimensional data and events, with many methods to extract, merge and subset
-TimeSeries data.</p></li>
-<li><p><cite>filters</cite> : a module that wraps some filters from scipy to be applied directly on TimeSeries.</p></li>
-<li><p><cite>cycles</cite> : a module that detects, time-normalizes and stacks cycles (e.g., gait cycles,
-wheelchair propulsion cycles, etc.)</p></li>
-<li><p><cite>save</cite> and <cite>load</cite> : two functions to save and load results to/from JSON-based <cite>ktk.zip</cite> files.</p></li>
+<li><p><cite>TimeSeries</cite> : a generic class to represent time-varying n-dimensional data and events, with many methods to extract, merge and subset TimeSeries data.</p></li>
+<li><p><cite>filters</cite> : a module to filter TimeSeries.</p></li>
+<li><p><cite>cycles</cite> : a module that detects and processes cycles and phases.</p></li>
+<li><p><cite>save</cite>/<cite>load</cite> : functions to save/load data in a zipped JSON format.</p></li>
 <li><p>other helper functions.</p></li>
 </ul>
-
-
-<h3 id="higher-level-modules-and-classes">Higher level modules and classes<a class="headerlink" href="#higher-level-modules-and-classes" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="higher-level-modules-and-classes">
+<h3>Higher level modules and classes<a class="headerlink" href="#higher-level-modules-and-classes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><cite>kinematics</cite> : a module that loads c3d and n3d files as TimeSeries of
-3d marker positions.</p></li>
-<li><p><cite>player.Player</cite> : a class that allows visualizing 3d markers using a simple
-graphical user interface.</p></li>
-<li><p><cite>pushrimkinetics</cite> : a module that reads files from instrumented wheelchair wheels, reconstructs
-the pushrim kinetics, removes dynamic offsets in kinetic signals, and perform speed and power
-calculation for analysing spatiotemporal and kinetic parameters of wheelchair propulsion.</p></li>
+<li><p><cite>kinematics</cite> : a module to read and process marker data.</p></li>
+<li><p><cite>player.Player</cite> : a class to visualize markers in 3D using a simple interactive interface.</p></li>
+<li><p><cite>pushrimkinetics</cite> : a module to read and process kinetics data from instrumented wheelchair wheels.</p></li>
 </ul>
-<p>All these modules are in active development but in general mostly settled. Other modules are also
-being developed.</p>
-<p>You can ask questions and submit bugs or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>.
-However, please keep in mind that I develop Kinetics Toolkit primarily for my lab and I have limited
-resources for troubleshooting. But if I can answer, I’ll be glad to help.</p>
-
-
-
-<h2 id="credits">Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
-<p>Kinetics Toolkit is developed at the Mobility and Adaptive Sports Research Lab
-by Professor <a class="reference external" href="https://felixchenier.uqam.ca">Félix Chénier</a> at Université du Québec à Montréal, Canada.</p>
-<p>Thanks to Clay Flannigan for his <a class="reference external" href="https://github.com/ClayFlannigan/icp">icp</a> method that has been included in Kinetics Toolkit.</p>
-<p>I also want to credit the people involved in ktk’s dependencies:</p>
-<ul class="simple">
-<li><p>Benjamin Michaud : <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> - Easy to use C3D reader/writer for C++, Python
-and Matlab</p></li>
-<li><p>The dedicated people behind major software and packages used by ktk such as
-python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
-</ul>
-
-
-<h2 id="site-map">Site map<a class="headerlink" href="#site-map" title="Permalink to this headline">¶</a></h2>
+<p>Other modules are also being developed.</p>
+<p>You can ask questions and submit bugs or feature requests on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit/issues">ktk’s github issue tracker</a>. However, please keep in mind that I develop Kinetics Toolkit primarily for my lab and I have limited resources for troubleshooting. But if I can answer, I’ll be glad to help.</p>
+</div>
+</div>
+<div class="section" id="credits">
+<h2>Credits<a class="headerlink" href="#credits" title="Permalink to this headline">¶</a></h2>
+<p>Kinetics Toolkit is developed at the Mobility and Adaptive Sports Research Lab by Professor <a class="reference external" href="https://felixchenier.uqam.ca">Félix Chénier</a> at Université du Québec à Montréal, Canada.</p>
+<p>Thanks to Clay Flannigan for his <a class="reference external" href="https://github.com/ClayFlannigan/icp">icp</a> method, to Benjamin Michaud for his <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> module, and to the dedicated people behind major software and packages used by Kinetics Toolkit, such as python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p>
+</div>
+<div class="section" id="site-map">
+<h2>Site map<a class="headerlink" href="#site-map" title="Permalink to this headline">¶</a></h2>
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">THE BASICS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installing Kinetics Toolkit</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries.html">Getting started with TimeSeries</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-scalars">Series of scalars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-vectors-and-points">Series of vectors and points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-groups-of-vectors-or-points">Series of groups of vectors or points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-transformation-matrices">Series of transformation matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Working-with-constants">Working with constants</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#TimeSeries-basics">TimeSeries basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#Exporting-and-importing-pandas-DataFrames">Exporting and importing pandas DataFrames</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#Metadata">Metadata</a></li>
@@ -445,7 +272,20 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#Subsetting-and-merging-timeseries">Subsetting and merging timeseries</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filtering TimeSeries</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Saving-a-variable">Saving a variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-variable">Loading a variable</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Supported-types">Supported types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#The-.ktk.zip-format">The .ktk.zip format</a></li>
+<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-.ktk.zip-in-Matlab">Loading a .ktk.zip in Matlab</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="filters.html#Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average</a></li>
 <li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter</a></li>
@@ -462,25 +302,16 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Dimension-convention">Dimension convention</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html#Series-of-rotations">Series of rotations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html#Series-of-reference-frames">Series of reference frames</a></li>
 <li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-and-global-coordinates">Calculating local and global coordinates</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Saving-a-variable">Saving a variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-variable">Loading a variable</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Supported-types">Supported types</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#The-.ktk.zip-format">The .ktk.zip format</a></li>
-<li class="toctree-l2"><a class="reference internal" href="loadsave.html#Loading-a-.ktk.zip-in-Matlab">Loading a .ktk.zip in Matlab</a></li>
-</ul>
-</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">INTEGRATED BIOMECHANICAL ANALYSES</span></p>
+<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="kinematics.html#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
@@ -498,29 +329,6 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 <li class="toctree-l2"><a class="reference internal" href="pushrimkinetics.html#Extracting-spatiotemporal-and-kinetic-parameters">Extracting spatiotemporal and kinetic parameters</a></li>
 </ul>
 </li>
-</ul>
-</div>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">MORE IN DEPTH</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="labmode.html#when-to-use-lab-mode">When to use lab mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labmode.html#what-lab-mode-does">What lab mode does</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Upcoming-release-(currently-in-Master)">Upcoming release (currently in Master)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.3-(October-2020)">Version 0.3 (October 2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.2-(August-2020)">Version 0.2 (August 2020)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.1-(May-2020)">Version 0.1 (May 2020)</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api_reference.html#modules">Modules</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Stable version</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
@@ -558,52 +366,100 @@ python, numpy, matplotlib, pandas, jupyter, pytest, sphinx, etc.</p></li>
 </li>
 </ul>
 </div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="labmode.html#when-to-use-lab-mode">When to use lab mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labmode.html#what-lab-mode-does">What lab mode does</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#modification-to-warnings-format">Modification to warnings format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#modification-to-repr-of-numpy-s-floats">Modification to repr of numpy’s floats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#alternative-defaults-for-matplotlib">Alternative defaults for matplotlib</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Upcoming-release-(currently-in-Master)">Upcoming release (currently in Master)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#New-Features">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#Improvements">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#Breaking-Changes">Breaking Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.3-(October-2020)">Version 0.3 (October 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-1">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#improvements-1">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#breaking-changes-1">Breaking Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.2-(August-2020)">Version 0.2 (August 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-2">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#improvements-2">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#breaking-changes-2">Breaking Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release_notes.html#Version-0.1-(May-2020)">Version 0.1 (May 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release_notes.html#new-features-3">New Features</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#modules">Modules</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
 
 
-
-
-          </article>
-        </div>
-      </div>
-    </main>
-  </div>
-  <footer class="md-footer">
-    <div class="md-footer-nav">
-      <nav class="md-footer-nav__inner md-grid">
-          
-          
-            <a href="install.html" title="Installing Kinetics Toolkit"
-               class="md-flex md-footer-nav__link md-footer-nav__link--next"
-               rel="next">
-            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
-                class="md-flex__ellipsis"> <span
-                class="md-footer-nav__direction"> Next </span> Installing Kinetics Toolkit </span>
-            </div>
-            <div class="md-flex__cell md-flex__cell--shrink"><i
-                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
-            </div>
-          
-        </a>
-        
-      </nav>
-    </div>
-    <div class="md-footer-meta md-typeset">
-      <div class="md-footer-meta__inner md-grid">
-        <div class="md-footer-copyright">
-          <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2020, Félix Chénier.
-              
+           </div>
+           
           </div>
-            Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
-             and
-            <a href="https://github.com/bashtage/sphinx-material/">Material for
-              Sphinx</a>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="install.html" class="btn btn-neutral float-right" title="Installing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, Félix Chénier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
         </div>
       </div>
-    </div>
-  </footer>
-  <script src="_static/javascripts/application.js"></script>
-  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
-  </body>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(false);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
 </html>
