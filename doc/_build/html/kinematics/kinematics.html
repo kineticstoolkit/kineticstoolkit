@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Wheelchair kinetics" href="../pushrimkinetics.html" />
+    <link rel="next" title="Loading and visualizing markers" href="load_visualize.html" />
     <link rel="prev" title="Converting between transformation matrices and Euler angles" href="../geometry/euler_angles.html" />
 
 
@@ -93,44 +93,36 @@
               
             
             
-              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 </ul>
-<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filters</a></li>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../geometry/geometry.html">Rigid body geometry</a></li>
-</ul>
-<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
-<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Kinematics analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Visualizing-the-markers">Visualizing the markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Reconstructing-kinematics">Reconstructing kinematics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Defining-segment-configurations">Defining segment configurations</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#Processing-an-experimental-trial">Processing an experimental trial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_visualize.html">Loading and visualizing markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html">Simple analysis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../inversedynamics.html">Inverse Dynamics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dbinterface.html">DBInterface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/website.html">Development website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">API REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
 </ul>
@@ -200,252 +192,6 @@
             
   
 <style>
-/* CSS for nbsphinx extension */
-
-/* remove conflicting styling from Sphinx themes */
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt *,
-div.nbinput.container div.input_area pre,
-div.nboutput.container div.output_area pre,
-div.nbinput.container div.input_area .highlight,
-div.nboutput.container div.output_area .highlight {
-    border: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-}
-
-div.nbinput.container > div[class*=highlight],
-div.nboutput.container > div[class*=highlight] {
-    margin: 0;
-}
-
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt * {
-    background: none;
-}
-
-div.nboutput.container div.output_area .highlight,
-div.nboutput.container div.output_area pre {
-    background: unset;
-}
-
-div.nboutput.container div.output_area div.highlight {
-    color: unset;  /* override Pygments text color */
-}
-
-/* avoid gaps between output lines */
-div.nboutput.container div[class*=highlight] pre {
-    line-height: normal;
-}
-
-/* input/output containers */
-div.nbinput.container,
-div.nboutput.container {
-    display: -webkit-flex;
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    width: 100%;
-}
-@media (max-width: 540px) {
-    div.nbinput.container,
-    div.nboutput.container {
-        flex-direction: column;
-    }
-}
-
-/* input container */
-div.nbinput.container {
-    padding-top: 5px;
-}
-
-/* last container */
-div.nblast.container {
-    padding-bottom: 5px;
-}
-
-/* input prompt */
-div.nbinput.container div.prompt pre {
-    color: #307FC1;
-}
-
-/* output prompt */
-div.nboutput.container div.prompt pre {
-    color: #BF5B3D;
-}
-
-/* all prompts */
-div.nbinput.container div.prompt,
-div.nboutput.container div.prompt {
-    width: 4.5ex;
-    padding-top: 5px;
-    position: relative;
-    user-select: none;
-}
-
-div.nbinput.container div.prompt > div,
-div.nboutput.container div.prompt > div {
-    position: absolute;
-    right: 0;
-    margin-right: 0.3ex;
-}
-
-@media (max-width: 540px) {
-    div.nbinput.container div.prompt,
-    div.nboutput.container div.prompt {
-        width: unset;
-        text-align: left;
-        padding: 0.4em;
-    }
-    div.nboutput.container div.prompt.empty {
-        padding: 0;
-    }
-
-    div.nbinput.container div.prompt > div,
-    div.nboutput.container div.prompt > div {
-        position: unset;
-    }
-}
-
-/* disable scrollbars on prompts */
-div.nbinput.container div.prompt pre,
-div.nboutput.container div.prompt pre {
-    overflow: hidden;
-}
-
-/* input/output area */
-div.nbinput.container div.input_area,
-div.nboutput.container div.output_area {
-    -webkit-flex: 1;
-    flex: 1;
-    overflow: auto;
-}
-@media (max-width: 540px) {
-    div.nbinput.container div.input_area,
-    div.nboutput.container div.output_area {
-        width: 100%;
-    }
-}
-
-/* input area */
-div.nbinput.container div.input_area {
-    border: 1px solid #e0e0e0;
-    border-radius: 2px;
-    /*background: #f5f5f5;*/
-}
-
-/* override MathJax center alignment in output cells */
-div.nboutput.container div[class*=MathJax] {
-    text-align: left !important;
-}
-
-/* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput.container div.math p {
-    text-align: left;
-}
-
-/* standard error */
-div.nboutput.container div.output_area.stderr {
-    background: #fdd;
-}
-
-/* ANSI colors */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-default-inverse-fg { color: #FFFFFF; }
-.ansi-default-inverse-bg { background-color: #000000; }
-
-.ansi-bold { font-weight: bold; }
-.ansi-underline { text-decoration: underline; }
-
-
-div.nbinput.container div.input_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight].math,
-div.nboutput.container div.output_area.rendered_html,
-div.nboutput.container div.output_area > div.output_javascript,
-div.nboutput.container div.output_area:not(.rendered_html) > img{
-    padding: 5px;
-    margin: 0;
-}
-
-/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
-div.nbinput.container div.input_area > div[class^='highlight'],
-div.nboutput.container div.output_area > div[class^='highlight']{
-    overflow-y: hidden;
-}
-
-/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
-    display: none;
-}
-
-/* Some additional styling taken form the Jupyter notebook CSS */
-div.rendered_html table {
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: black;
-  font-size: 12px;
-  table-layout: fixed;
-}
-div.rendered_html thead {
-  border-bottom: 1px solid black;
-  vertical-align: bottom;
-}
-div.rendered_html tr,
-div.rendered_html th,
-div.rendered_html td {
-  text-align: right;
-  vertical-align: middle;
-  padding: 0.5em 0.5em;
-  line-height: normal;
-  white-space: normal;
-  max-width: none;
-  border: none;
-}
-div.rendered_html th {
-  font-weight: bold;
-}
-div.rendered_html tbody tr:nth-child(odd) {
-  background: #f5f5f5;
-}
-div.rendered_html tbody tr:hover {
-  background: rgba(66, 165, 245, 0.2);
-}
-
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
@@ -468,9 +214,10 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Kinematics-analysis">
-<h1>Kinematics analysis<a class="headerlink" href="#Kinematics-analysis" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">kinematics</span></a> module allows opening trajectories of markers from c3d or n3d files, and process those trajectory to:</p>
+<div class="section" id="kinematics-analysis">
+<h1>Kinematics analysis<a class="headerlink" href="#kinematics-analysis" title="Permalink to this headline">¶</a></h1>
+<p>The <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">kinematics</span></a> module allows opening trajectories of markers from c3d or n3d
+files, and process those trajectory to:</p>
 <ul class="simple">
 <li><p>create rigid body configurations based on a static acquisitions;</p></li>
 <li><p>register the markers trajectories to rigid body trajectories;</p></li>
@@ -479,297 +226,20 @@ div.rendered_html tbody tr:hover {
 <li><p>and other operations that will be implemented in the future.</p></li>
 </ul>
 <p>Here is a quick example of how to reconstruct complete kinematics during a task, based on a static acquisition and probing acquisitions.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="Loading-a-c3d-or-n3d-file">
-<h2>Loading a c3d or n3d file<a class="headerlink" href="#Loading-a-c3d-or-n3d-file" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">kinematics</span></code> module provide the methods <code class="docutils literal notranslate"><span class="pre">read_c3d_file</span></code> and <code class="docutils literal notranslate"><span class="pre">read_n3d_file</span></code> to read files generated by common motion capture devices. Reading c3d files is provided by the external <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> module; see the <em>Installing</em> section for information on how to install <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code>.</p>
-<p>In this tutorial, we will read a n3d file generated by an Optotrak system.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Names of the markers</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="s1">&#39;Probe1&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe2&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe3&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe4&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe5&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe6&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;WheelchairRearR&#39;</span><span class="p">,</span> <span class="s1">&#39;WheelchairRearL&#39;</span><span class="p">,</span> <span class="s1">&#39;WheelchairFront&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ScapulaL1&#39;</span><span class="p">,</span> <span class="s1">&#39;ScapulaL2&#39;</span><span class="p">,</span> <span class="s1">&#39;ScapulaL3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ScapulaR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ScapulaR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ScapulaR3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Head1&#39;</span><span class="p">,</span> <span class="s1">&#39;Head2&#39;</span><span class="p">,</span> <span class="s1">&#39;Head3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;Sternum&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ArmL1&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmL2&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmL3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;LateralEpicondyleL&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmL1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmL2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmL3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;NAG&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;GloveL1&#39;</span><span class="p">,</span> <span class="s1">&#39;GloveL2&#39;</span><span class="p">,</span> <span class="s1">&#39;GloveL3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;ArmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;LateralEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR3&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;NAR&#39;</span><span class="p">,</span>
-    <span class="s1">&#39;GloveR1&#39;</span><span class="p">,</span> <span class="s1">&#39;GloveR2&#39;</span><span class="p">,</span> <span class="s1">&#39;GloveR3&#39;</span><span class="p">]</span>
-
-<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="s1">&#39;data/kinematics/sample_static.n3d&#39;</span><span class="p">,</span>
-                                       <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
-
-<span class="n">markers</span>
-</pre></div>
-</div>
-</div>
-<p>Each data key corresponds to the trajectory of one marker:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">markers</span><span class="o">.</span><span class="n">data</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="Visualizing-the-markers">
-<h2>Visualizing the markers<a class="headerlink" href="#Visualizing-the-markers" title="Permalink to this headline">¶</a></h2>
-<p>The <code class="docutils literal notranslate"><span class="pre">Player</span></code> class is a matplotlib based user interface to visualize markers, rigid bodies and segments in three dimensions. It is important to select an interactive IPython’s GUI front-end, or the Player’s figure will simply print out without being interactive. See the <em>Installing</em> section for more information.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="Reconstructing-kinematics">
-<h2>Reconstructing kinematics<a class="headerlink" href="#Reconstructing-kinematics" title="Permalink to this headline">¶</a></h2>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The rest of this tutorial refer to functions that are still experimental and that may change behaviour and signature.</p>
-</div>
-<div class="section" id="Defining-rigid-body-configurations-using-a-static-acquisition">
-<h3>Defining rigid body configurations using a static acquisition<a class="headerlink" href="#Defining-rigid-body-configurations-using-a-static-acquisition" title="Permalink to this headline">¶</a></h3>
-<p>One of the aims of the static trial is to have a sample where every marker is visible. We use this trial to define the rigid body configuration. A rigid body configuration is a list of markers that form a rigid body, along with their local position in the rigid body’s reference frame.</p>
-<p>For this example, we will create rigid bodies for the markers triads ‘ArmR’ and ‘ForearmR’.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">config</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>                 <span class="c1"># Will contain all configuration data.</span>
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all rigid body configurations.</span>
-
-<span class="c1"># Read the static trial</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="s1">&#39;data/kinematics/sample_static.n3d&#39;</span><span class="p">,</span>
-                                       <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
-
-<span class="c1"># Show this trial, just to inspect it</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
-           <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Create the rigid body configurations</span>
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">][</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_rigid_body_config</span><span class="p">(</span>
-        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ArmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR3&#39;</span><span class="p">])</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">][</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_rigid_body_config</span><span class="p">(</span>
-        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ForearmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR3&#39;</span><span class="p">])</span>
-</pre></div>
-</div>
-</div>
-<p>The probe’s rigid body configuration is created manually from its specifications. Each local point is expressed relative to a reference frame that is centered at the probe’s tip.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">][</span><span class="s1">&#39;Probe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;MarkerNames&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;Probe1&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe2&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe3&#39;</span><span class="p">,</span>
-                        <span class="s1">&#39;Probe4&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe5&#39;</span><span class="p">,</span> <span class="s1">&#39;Probe6&#39;</span><span class="p">],</span>
-        <span class="s1">&#39;LocalPoints&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span>
-                <span class="p">[</span><span class="mf">2.1213</span><span class="p">,</span>   <span class="mf">2.1213</span><span class="p">,</span>  <span class="mf">2.0575</span><span class="p">,</span>   <span class="mf">2.1213</span><span class="p">,</span>   <span class="mf">1.7070</span><span class="p">,</span>   <span class="mf">1.7762</span><span class="p">],</span>
-                <span class="p">[</span><span class="o">-</span><span class="mf">15.8328</span><span class="p">,</span> <span class="mf">15.8508</span><span class="p">,</span> <span class="mf">16.0096</span><span class="p">,</span>  <span class="mf">16.1204</span><span class="p">,</span>  <span class="o">-</span><span class="mf">15.5780</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.6057</span><span class="p">],</span>
-                <span class="p">[</span><span class="mf">86.4285</span><span class="p">,</span>  <span class="mf">86.4285</span><span class="p">,</span> <span class="mf">130.9445</span><span class="p">,</span> <span class="mf">175.4395</span><span class="p">,</span> <span class="mf">175.3805</span><span class="p">,</span> <span class="mf">130.8888</span><span class="p">],</span>
-                <span class="p">[</span><span class="mi">1000</span><span class="p">,</span>     <span class="mi">1000</span><span class="p">,</span>    <span class="mi">1000</span><span class="p">,</span>     <span class="mi">1000</span><span class="p">,</span>     <span class="mi">1000</span><span class="p">,</span>     <span class="mi">1000</span><span class="p">]]]</span>
-                <span class="p">)</span> <span class="o">/</span> <span class="mi">1000</span>
-        <span class="p">}</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">
-<h3>Defining the virtual marker configurations based on probing acquisitions<a class="headerlink" href="#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all virtual marker configurations</span>
-</pre></div>
-</div>
-</div>
-<p>Since this is a repetitive operation, we will create a new function that will be called for each virtual marker:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">def</span> <span class="nf">process_probing_acquisition</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">):</span>
-
-    <span class="c1"># Load the markers</span>
-    <span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
-
-    <span class="c1"># Calculate rigid body trajectories using these markers</span>
-    <span class="n">rigid_bodies</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">register_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span>
-                                                   <span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">])</span>
-
-    <span class="c1"># Add the marker &#39;ProbeTip&#39; in markers. This is the origin of the Probe</span>
-    <span class="c1"># rigid body.</span>
-    <span class="n">markers</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ProbeTip&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rigid_bodies</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Probe&#39;</span><span class="p">][:,</span> <span class="p">:,</span> <span class="mi">3</span><span class="p">]</span>
-    <span class="n">markers</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;ProbeTip&#39;</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
-
-    <span class="c1"># Create the marker configuration</span>
-    <span class="k">return</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_virtual_marker_config</span><span class="p">(</span>
-            <span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span> <span class="s1">&#39;ProbeTip&#39;</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Now, we can process every probing acquisition.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="s1">&#39;AcromionR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_probing_acromion_R.n3d&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR&#39;</span><span class="p">)</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="s1">&#39;MedialEpicondyleR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_probing_medial_epicondyle_R.n3d&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR&#39;</span><span class="p">)</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="s1">&#39;OlecraneR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_probing_olecrane_R.n3d&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">)</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_probing_radial_styloid_R.n3d&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">)</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="s1">&#39;UlnarStyloidR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_probing_ulnar_styloid_R.n3d&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="section" id="Defining-segment-configurations">
-<h4>Defining segment configurations<a class="headerlink" href="#Defining-segment-configurations" title="Permalink to this headline">¶</a></h4>
-<p>This step is purely for visualization. Here, we define different segments that will be shown in the Player.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;Segments&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Will contain all segment definitions</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;Segments&#39;</span><span class="p">][</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-        <span class="s1">&#39;Links&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;AcromionR&#39;</span><span class="p">,</span> <span class="s1">&#39;MedialEpicondyleR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;AcromionR&#39;</span><span class="p">,</span> <span class="s1">&#39;LateralEpicondyleR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;AcromionR&#39;</span><span class="p">,</span> <span class="s1">&#39;OlecraneR&#39;</span><span class="p">]]</span>
-        <span class="p">}</span>
-
-<span class="n">config</span><span class="p">[</span><span class="s1">&#39;Segments&#39;</span><span class="p">][</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
-        <span class="s1">&#39;Links&#39;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;MedialEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;MedialEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;UlnarStyloidR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;LateralEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;LateralEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;UlnarStyloidR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;OlecraneR&#39;</span><span class="p">,</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;OlecraneR&#39;</span><span class="p">,</span> <span class="s1">&#39;UlnarStyloidR&#39;</span><span class="p">],</span>
-                  <span class="p">[</span><span class="s1">&#39;UlnarStyloidR&#39;</span><span class="p">,</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">]]</span>
-        <span class="p">}</span>
-</pre></div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="section" id="Processing-an-experimental-trial">
-<h2>Processing an experimental trial<a class="headerlink" href="#Processing-an-experimental-trial" title="Permalink to this headline">¶</a></h2>
-<p>Now that we configured the rigid bodies and the virtual markers, we are ready to load an experimental trial, calculate the rigid body trajectories and recreate the virtual markers using these rigid bodies.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Load the markers of the experimental trial</span>
-<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_n3d_file</span><span class="p">(</span>
-        <span class="s1">&#39;data/kinematics/sample_propulsion.n3d&#39;</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">)</span>
-
-<span class="c1"># Show those markers in a player</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
-           <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Compute the rigid body trajectories</span>
-<span class="n">rigid_bodies</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">register_markers</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;RigidBodies&#39;</span><span class="p">])</span>
-
-<span class="c1"># Show those rigid bodies and markers in a player</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span>
-           <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Add the virtual markers</span>
-
-<span class="k">for</span> <span class="n">virtual_marker</span> <span class="ow">in</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">]:</span>
-    <span class="n">local_coordinates</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="n">virtual_marker</span><span class="p">][</span><span class="s1">&#39;LocalPoint&#39;</span><span class="p">]</span>
-    <span class="n">rigid_body_name</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="s1">&#39;VirtualMarkers&#39;</span><span class="p">][</span><span class="n">virtual_marker</span><span class="p">][</span><span class="s1">&#39;RigidBodyName&#39;</span><span class="p">]</span>
-    <span class="n">reference_frame</span> <span class="o">=</span> <span class="n">rigid_bodies</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">rigid_body_name</span><span class="p">]</span>
-
-    <span class="n">markers</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">virtual_marker</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
-            <span class="n">local_coordinates</span><span class="p">,</span> <span class="n">reference_frame</span><span class="p">)</span>
-
-    <span class="c1"># Assign a color for these virtual markers</span>
-    <span class="n">markers</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="n">virtual_marker</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
-
-<span class="c1"># Show the markers and rigid bodies in a player</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span>
-                    <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span> <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Add the segments</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span>
-                    <span class="n">segments</span><span class="o">=</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;Segments&#39;</span><span class="p">],</span> <span class="n">zoom</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">azimuth</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">elevation</span><span class="o">=</span><span class="mf">0.16</span><span class="p">,</span>
-                    <span class="n">translation</span><span class="o">=</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">))</span>
-</pre></div>
-</div>
-</div>
-<p>For more information on kinematics, please check the <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">API Reference for the kinematics module</span></a>.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="load_visualize.html">Loading and visualizing markers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Loading">Loading</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Visualizing-the-markers">Visualizing the markers</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="simple_analysis.html">Simple analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 
@@ -779,7 +249,7 @@ div.rendered_html tbody tr:hover {
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../pushrimkinetics.html" class="btn btn-neutral float-right" title="Wheelchair kinetics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="load_visualize.html" class="btn btn-neutral float-right" title="Loading and visualizing markers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="../geometry/euler_angles.html" class="btn btn-neutral float-left" title="Converting between transformation matrices and Euler angles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

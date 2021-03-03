@@ -32,13 +32,13 @@ import numpy as np
 
 def test_read_csv_txt_file():
     """Test that read_file works similarly for SW's csv and txt files."""
-    filename_csv = ('../doc/data/pushrimkinetics/'
-                    'sample_sw_csvtxt.csv')
+    filename_csv = (ktk.config.root_folder +
+                    '/data/pushrimkinetics/sample_sw_csvtxt.csv')
     kinetics_csv = ktk.pushrimkinetics.read_file(
         filename_csv, file_format='smartwheel')
 
-    filename_txt = ('../doc/data/pushrimkinetics/'
-                    'sample_sw_csvtxt.TXT')
+    filename_txt = (ktk.config.root_folder +
+                    '/data/pushrimkinetics/sample_sw_csvtxt.TXT')
     kinetics_txt = ktk.pushrimkinetics.read_file(
         filename_txt, file_format='smartwheeltxt')
 
@@ -49,12 +49,14 @@ def test_read_csv_txt_file():
 def test_remove_offsets():
     """Test that remove_offsets works with and without a baseline."""
     kinetics = ktk.pushrimkinetics.read_file(
-        '../doc/data/pushrimkinetics/'
+        ktk.config.root_folder +
+        '/data/pushrimkinetics/' +
         'sample_swl_overground_propulsion_withrubber.csv',
         file_format='smartwheel')
 
     baseline = ktk.pushrimkinetics.read_file(
-        '../doc/data/pushrimkinetics/'
+        ktk.config.root_folder +
+        '/data/pushrimkinetics/' +
         'sample_swl_overground_baseline_withrubber.csv',
         file_format='smartwheel')
 

@@ -93,37 +93,37 @@
               
             
             
-              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 </ul>
-<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Rigid body geometry</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="what_is_a_reference_frame.html">What is a reference frame</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html">Kinetics Toolkit’s dimension conventions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference_frame.html">Creating and navigating between referenceframes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="euler_angles.html">Converting between transformation matrices and Eulerangles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html">Dimension conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reference_frame.html">Creating and navigating between reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="euler_angles.html">Converting between transformation matrices and Euler angles</a></li>
 </ul>
 </li>
-</ul>
-<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
-<ul>
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../inversedynamics.html">Inverse Dynamics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dbinterface.html">DBInterface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/website.html">Development website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">API REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
 </ul>
@@ -215,30 +215,29 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="Rigid-body-geometry">
-<h1>Rigid body geometry<a class="headerlink" href="#Rigid-body-geometry" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="rigid-body-geometry">
+<h1>Rigid body geometry<a class="headerlink" href="#rigid-body-geometry" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module simplifies the calculation of linear algebric operations on series of points, vectors and transformation matrices.</p>
 <p>In this tutorial, we will do a quick starter on what is a reference frame and its relation with rigid transformation matrices, how to express and navigate between reference frames and local/global coordinates, and how to extract rotation angles from a series of transformation matrices.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_a_reference_frame.html">What is a reference frame</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Kinetics Toolkit’s dimension conventions</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-scalars">Series of scalars</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-vectors-and-points">Series of vectors and points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-groups-of-vectors-or-points">Series of groups of vectors or points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-transformation-matrices">Series of transformation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Working-with-constants">Working with constants</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dimension_conventions.html">Dimension conventions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html#Series-of-scalars">Series of scalars</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html#Series-of-vectors-and-points">Series of vectors and points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html#Series-of-groups-of-vectors-or-points">Series of groups of vectors or points</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html#Series-of-transformation-matrices">Series of transformation matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html#Working-with-constants">Working with constants</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="reference_frame.html">Creating and navigating between referenceframes</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="reference_frame.html">Creating and navigating between reference frames</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reference_frame.html#Creating-reference-frames">Creating reference frames</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reference_frame.html#Calculating-local-and-global-coordinates">Calculating local and global coordinates</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="euler_angles.html">Converting between transformation matrices and Eulerangles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="euler_angles.html">Converting between transformation matrices and Euler angles</a></li>
 </ul>
 </div>
-<p>For more information on geometry, please check the <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">API Reference for the geometry module</span></a>.</p>
 </div>
 
 

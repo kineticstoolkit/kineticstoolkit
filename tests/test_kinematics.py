@@ -18,7 +18,7 @@ def test_read_n3d_file():
     """Regression test."""
     markers = ktk.kinematics.read_n3d_file(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_optotrak.n3d')
+        '/data/kinematics/sample_optotrak.n3d')
 
     tol = 1E-4
     assert(np.abs(np.sum(markers.data['Marker0']) - 172.3365) < tol)
@@ -37,7 +37,7 @@ def test_read_n3d_file():
 
     markers = ktk.kinematics.read_n3d_file(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_optotrak.n3d', labels=labels)
+        '/data/kinematics/sample_optotrak.n3d', labels=labels)
 
     assert(np.abs(np.sum(markers.data['Probe1']) - 172.3365) < tol)
     assert(np.abs(np.sum(markers.data['GantD3']) + 45.3753) < tol)
@@ -50,7 +50,7 @@ def test_read_c3d_file():
     # Regression tests for readc3dfile from OptiTrack Motive
     markers = ktk.kinematics.read_c3d_file(
         ktk.config.root_folder +
-        '/doc/data/kinematics/walkingOptiTrack.c3d')
+        '/data/kinematics/walkingOptiTrack.c3d')
 
     assert(np.abs(np.nanmean(markers.data['Foot_Marker1'][:, 0:3]) -
                   0.1098) < 0.0001)
@@ -101,7 +101,7 @@ def test_reconstruction():
     # Read the static trial
     markers = ktk.kinematics.read_n3d_file(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_static.n3d',
+        '/data/kinematics/sample_static.n3d',
         labels=marker_names)
 
     # Create the rigid body configurations
@@ -162,23 +162,23 @@ def test_reconstruction():
     """
     config['VirtualMarkers']['AcromionR'] = process_probing_acquisition(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_probing_acromion_R.n3d', 'ArmR')
+        '/data/kinematics/sample_probing_acromion_R.n3d', 'ArmR')
 
     config['VirtualMarkers']['MedialEpicondyleR'] = process_probing_acquisition(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_probing_medial_epicondyle_R.n3d', 'ArmR')
+        '/data/kinematics/sample_probing_medial_epicondyle_R.n3d', 'ArmR')
 
     config['VirtualMarkers']['OlecraneR'] = process_probing_acquisition(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_probing_olecrane_R.n3d', 'ForearmR')
+        '/data/kinematics/sample_probing_olecrane_R.n3d', 'ForearmR')
 
     config['VirtualMarkers']['RadialStyloidR'] = process_probing_acquisition(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_probing_radial_styloid_R.n3d', 'ForearmR')
+        '/data/kinematics/sample_probing_radial_styloid_R.n3d', 'ForearmR')
 
     config['VirtualMarkers']['UlnarStyloidR'] = process_probing_acquisition(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_probing_ulnar_styloid_R.n3d', 'ForearmR')
+        '/data/kinematics/sample_probing_ulnar_styloid_R.n3d', 'ForearmR')
 
     # %%
     """
@@ -221,7 +221,7 @@ def test_reconstruction():
     """
     markers = ktk.kinematics.read_n3d_file(
         ktk.config.root_folder +
-        '/doc/data/kinematics/sample_propulsion.n3d', labels=marker_names)
+        '/data/kinematics/sample_propulsion.n3d', labels=marker_names)
 
     # Show those markers in a player
     ktk.Player(markers, zoom=2, azimuth=0.8, elevation=0.16,

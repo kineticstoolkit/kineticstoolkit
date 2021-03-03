@@ -14,7 +14,7 @@ def test_instanciate():
     # Load markers
     kinematics = ktk.load(
         ktk.config.root_folder +
-        '/doc/data/inversedynamics/basketball_kinematics.ktk.zip')
+        '/data/inversedynamics/basketball_kinematics.ktk.zip')
 
     kinematics = kinematics['Kinematics']
 

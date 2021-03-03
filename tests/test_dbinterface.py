@@ -47,7 +47,7 @@ def test_connect():
     username = 'dummyUser'
     password = 'dummyPassword'
     root_folder = (ktk.config.root_folder +
-                   '/doc/data/dbinterface/FC_XX18A')
+                   '/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
     project = ktk.DBInterface(project_label, user=username, password=password,
@@ -73,7 +73,7 @@ def test_load_save():
     username = 'dummyUser'
     password = 'dummyPassword'
     root_folder = (ktk.config.root_folder +
-                   '/doc/data/dbinterface/FC_XX18A')
+                   '/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
     project = ktk.DBInterface(project_label, user=username, password=password,
@@ -103,7 +103,7 @@ def test_batch_fix_file_type():
     username = 'dummyUser'
     password = 'dummyPassword'
     root_folder = (ktk.config.root_folder +
-                   '/doc/data/dbinterface/FC_XX18A')
+                   '/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
     project = ktk.DBInterface(project_label, user=username, password=password,
@@ -153,7 +153,7 @@ def test_tag_files():
     username = 'dummyUser'
     password = 'dummyPassword'
     root_folder = (ktk.config.root_folder +
-                   '/doc/data/dbinterface/FC_XX18A')
+                   '/data/dbinterface/FC_XX18A')
     url = 'http://localhost/biomec'
 
     project = ktk.DBInterface(project_label, user=username, password=password,

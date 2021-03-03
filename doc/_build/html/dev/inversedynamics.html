@@ -12,9 +12,9 @@
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
   
@@ -26,23 +26,23 @@
 
   
   <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
+    <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
-    <script type="text/javascript" src="_static/js/theme.js"></script>
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="DBInterface" href="dbinterface.html" />
-    <link rel="prev" title="Wheelchair kinetics" href="pushrimkinetics.html" />
+    <link rel="prev" title="Tutorials for unreleased features" href="tutorials.html" />
 
 
  
@@ -59,12 +59,12 @@
           
 
           
-            <a href="index.html">
+            <a href="../index.html">
           
 
           
             
-            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -75,7 +75,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -93,53 +93,57 @@
               
             
             
-              <p class="caption"><span class="caption-text">THE BASICS</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry/geometry.html">Rigid body geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../geometry/geometry.html">Rigid body geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
-</ul>
-<p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Inverse Dynamics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Loading-sample-data">Loading sample data</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-COM-position-of-the-wheel-segment">Calculate the COM position of the wheel segment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-COM-acceleration-of-the-wheel-segment">Calculate the COM acceleration of the wheel segment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">Calculate the wheel segment’s angles around the global x, y and z axes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Finally,-calculate-the-proximal-forces-and-moments">Finally, calculate the proximal forces and moments</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">Add the calculated distal forces and moments to the ts_all TimeSeries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="website.html">Development website</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials for unreleased features</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Inverse Dynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Loading-sample-data">Loading sample data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries">Put everything relevant into one, synchronized TimeSeries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-wrist">Calculate the force and moments at the wrist</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Calculate-the-COM-position-of-the-wheel-segment">Calculate the COM position of the wheel segment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calculate-the-COM-acceleration-of-the-wheel-segment">Calculate the COM acceleration of the wheel segment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">Calculate the wheel segment’s angles around the global x, y and z axes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">Calculate the segment’s angular velocity and acceleration around the global x, y and z axes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Finally,-calculate-the-proximal-forces-and-moments">Finally, calculate the proximal forces and moments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">Add the calculated distal forces and moments to the ts_all TimeSeries</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Local-forces">Local forces</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Local-moments">Local moments</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Local-forces">Local forces</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Local-moments">Local moments</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">API REFERENCE</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a></li>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
 </ul>
 
             
@@ -155,7 +159,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Kinetics Toolkit</a>
+          <a href="../index.html">Kinetics Toolkit</a>
         
       </nav>
 
@@ -186,7 +190,9 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials for unreleased features</a> &raquo;</li>
         
       <li>Inverse Dynamics</li>
     
@@ -477,7 +483,7 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Inverse-Dynamics">
 <h1>Inverse Dynamics<a class="headerlink" href="#Inverse-Dynamics" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">inversedynamics</span></a> module calculates the proximal forces and moments based on the segment’s kinematics and distal forces and moments, based on the general method published in [1].</p>
+<p>The <a class="reference external" href="api/kineticstoolkit.inversedynamics.rst">inversedynamics</a> module calculates the proximal forces and moments based on the segment’s kinematics and distal forces and moments, based on the general method published in [1].</p>
 <p>The results are the forces and moments applied by the distal segment on the proximal articulation, in the global coordinates system.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -503,7 +509,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Load kinetics</span>
-<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinetics.ktk.zip&#39;</span><span class="p">)</span>
+<span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span> <span class="o">+</span>
+    <span class="s1">&#39;/data/inversedynamics/basketball_kinetics.ktk.zip&#39;</span><span class="p">)</span>
 
 <span class="c1"># Change some signs to match (locally): x anterior, # y up, z lateral (right)</span>
 <span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="n">kinetics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
@@ -527,7 +535,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_3_0.png" src="_images/inversedynamics_3_0.png" />
+<img alt="../_images/dev_inversedynamics_3_0.png" src="../_images/dev_inversedynamics_3_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -536,7 +544,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Load kinematics</span>
-<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;data/inversedynamics/basketball_kinematics.ktk.zip&#39;</span><span class="p">)[</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">]</span>
+<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span> <span class="o">+</span>
+    <span class="s1">&#39;/data/inversedynamics/basketball_kinematics.ktk.zip&#39;</span><span class="p">)[</span><span class="s1">&#39;Kinematics&#39;</span><span class="p">]</span>
 
 <span class="c1"># Extract markers</span>
 <span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;Markers&#39;</span><span class="p">]</span>
@@ -632,7 +642,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_4_1.png" src="_images/inversedynamics_4_1.png" />
+<img alt="../_images/dev_inversedynamics_4_1.png" src="../_images/dev_inversedynamics_4_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -964,7 +974,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_24_0.png" src="_images/inversedynamics_24_0.png" />
+<img alt="../_images/dev_inversedynamics_24_0.png" src="../_images/dev_inversedynamics_24_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -982,7 +992,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_25_0.png" src="_images/inversedynamics_25_0.png" />
+<img alt="../_images/dev_inversedynamics_25_0.png" src="../_images/dev_inversedynamics_25_0.png" />
 </div>
 </div>
 </div>
@@ -1060,7 +1070,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_28_0.png" src="_images/inversedynamics_28_0.png" />
+<img alt="../_images/dev_inversedynamics_28_0.png" src="../_images/dev_inversedynamics_28_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1077,7 +1087,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_29_0.png" src="_images/inversedynamics_29_0.png" />
+<img alt="../_images/dev_inversedynamics_29_0.png" src="../_images/dev_inversedynamics_29_0.png" />
 </div>
 </div>
 </div>
@@ -1154,7 +1164,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_32_0.png" src="_images/inversedynamics_32_0.png" />
+<img alt="../_images/dev_inversedynamics_32_0.png" src="../_images/dev_inversedynamics_32_0.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1171,7 +1181,7 @@ div.rendered_html tbody tr:hover {
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_33_0.png" src="_images/inversedynamics_33_0.png" />
+<img alt="../_images/dev_inversedynamics_33_0.png" src="../_images/dev_inversedynamics_33_0.png" />
 </div>
 </div>
 </div>
@@ -1229,7 +1239,7 @@ External forces in the trunk reference frame:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_37_1.png" src="_images/inversedynamics_37_1.png" />
+<img alt="../_images/dev_inversedynamics_37_1.png" src="../_images/dev_inversedynamics_37_1.png" />
 </div>
 </div>
 </div>
@@ -1258,10 +1268,10 @@ Net internal shoulder moments:
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/inversedynamics_39_1.png" src="_images/inversedynamics_39_1.png" />
+<img alt="../_images/dev_inversedynamics_39_1.png" src="../_images/dev_inversedynamics_39_1.png" />
 </div>
 </div>
-<p>For more information on inversedynamics, please check the <a class="reference internal" href="api/kineticstoolkit.inversedynamics.html"><span class="doc">API Reference for the inversedynamics module</span></a>.</p>
+<p>For more information on inversedynamics, please check the <a class="reference external" href="api/kineticstoolkit.inversedynamics.rst">API Reference for the inversedynamics module</a>.</p>
 </div>
 </div>
 </div>
@@ -1273,7 +1283,7 @@ Net internal shoulder moments:
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="dbinterface.html" class="btn btn-neutral float-right" title="DBInterface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="pushrimkinetics.html" class="btn btn-neutral float-left" title="Wheelchair kinetics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials.html" class="btn btn-neutral float-left" title="Tutorials for unreleased features" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
