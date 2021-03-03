@@ -81,55 +81,21 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints',
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-# html_theme = 'sphinx_material'
-
-'''
-# Material theme options (see theme.conf for more information)
-html_theme_options = {
-
-    # Set the name of the project to appear in the navigation.
-    'nav_title': 'Kinetics Toolkit',
-
-    # Specify a base_url used to generate sitemap.xml. If not
-    # specified, then no sitemap will be built.
-    'base_url': 'https://felixchenier.uqam.ca/kineticstoolkit',
-
-    # Set the color and the accent color
-    'color_primary': 'white',
-    'color_accent': 'orange',
-
-    # Set the repo location to get a badge with stats
-    'repo_url': 'https://github.com/felixchenier/kineticstoolkit/',
-    'repo_name': 'kineticstoolkit',
-    'repo_type': 'github',
-
-    # Visible levels of the global TOC; -1 means unlimited
-    'globaltoc_depth': 1,
-    # If False, expand all TOC entries
-    'globaltoc_collapse': True,
-    # If True, show hidden TOC entries
-    'globaltoc_includehidden': True,
-
-    # Hide master navigation bar
-    'master_doc': False,
-
-}
-'''
 
 # Read the docs theme configuration
 html_theme_options = {
     'logo_only': True,  # default False
-    'display_version': True,
-    'prev_next_buttons_location': 'bottom',
-    'style_external_links': True,  # default False
+    'display_version': False,
+    'prev_next_buttons_location': 'both',  # default 'bottom'
+    'style_external_links': False,
     'vcs_pageview_mode': '',
     'style_nav_header_background': 'black',
     # Toc options
     'collapse_navigation': True,
-    'sticky_navigation': False,  # default True
+    'sticky_navigation': True,
     'navigation_depth': 4,
     'includehidden': True,
-    'titles_only': False
+    'titles_only': False,
 }
 
 html_sidebars = {
@@ -145,3 +111,9 @@ html_css_files = ['css/custom.css']
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
+
+
+
+if release == 'master':
+    # Modify some parameters to distingate the development site
+    html_logo = '_static/logo_development.png'

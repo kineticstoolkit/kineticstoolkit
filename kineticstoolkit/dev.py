@@ -123,19 +123,19 @@ def build_tutorials() -> None:
 #    os.chdir(kineticstoolkit.config.root_folder + '/doc')
 
     files = []
-        
+
     for (dirpath, dirnames, filenames) in os.walk(
             kineticstoolkit.config.root_folder + '/doc'):
-            
+
         parent_dir = os.path.basename(dirpath)
-            
-        if not '_build' in dirpath and not parent_dir.startswith('.'):
-        
+
+        if '_build' not in dirpath and not parent_dir.startswith('.'):
+
             for file in filenames:
-            
+
                 if file.endswith('.ipynb'):
                     files.append(dirpath + '/' + file)
-                
+
     with multiprocessing.Pool() as pool:
         pool.map(_generate_tutorial, files)
 
