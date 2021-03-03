@@ -8,13 +8,13 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Dimension convention &mdash; Kinetics Toolkit master documentation</title>
+  <title>Creating and navigating between reference frames &mdash; Kinetics Toolkit master documentation</title>
   
 
   
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
   
@@ -26,23 +26,23 @@
 
   
   <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
+    <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
     
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     
-    <script type="text/javascript" src="_static/js/theme.js"></script>
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
-    <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TimeSeries" href="timeseries.html" />
-    <link rel="prev" title="Installing" href="install.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Converting between transformation matrices and Euler angles" href="euler_angles.html" />
+    <link rel="prev" title="Kinetics Toolkit’s dimension conventions" href="dimension_convention.html" />
 
 
  
@@ -59,12 +59,12 @@
           
 
           
-            <a href="index.html">
+            <a href="../index.html">
           
 
           
             
-            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -75,7 +75,7 @@
 
           
 <div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
@@ -94,40 +94,42 @@
             
             
               <p class="caption"><span class="caption-text">THE BASICS</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Dimension convention</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Series-of-scalars">Series of scalars</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Series-of-vectors-and-points">Series of vectors and points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Series-of-groups-of-vectors-or-points">Series of groups of vectors or points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Series-of-transformation-matrices">Series of transformation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Working-with-constants">Working with constants</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
-<li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
-<li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="geometry.html">Rigid body geometry</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="what_is_a_reference_frame.html">What is a reference frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html">Kinetics Toolkit’s dimension conventions</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Creating and navigating between referenceframes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Creating-reference-frames">Creating reference frames</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Calculating-local-and-global-coordinates">Calculating local and global coordinates</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="euler_angles.html">Converting between transformation matrices and Eulerangles</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
-<li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
 <p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../inversedynamics.html">Inverse Dynamics</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dbinterface.html">DBInterface</a></li>
 </ul>
 <p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a></li>
-<li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../labmode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
 </ul>
 
             
@@ -143,7 +145,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">Kinetics Toolkit</a>
+          <a href="../index.html">Kinetics Toolkit</a>
         
       </nav>
 
@@ -174,9 +176,11 @@
 
   <ul class="wy-breadcrumbs">
     
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-      <li>Dimension convention</li>
+          <li><a href="geometry.html">Rigid body geometry</a> &raquo;</li>
+        
+      <li>Creating and navigating between reference frames</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -463,86 +467,56 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Dimension-convention">
-<h1>Dimension convention<a class="headerlink" href="#Dimension-convention" title="Permalink to this headline">¶</a></h1>
-<p>Since most biomechanical analyses imply signals that vary in time, then time is a very important variable in Kinetics Toolkit. This is so true that the basic class for any operation is the TimeSeries, which will be defined in the next section. In the mean time, let introduce an important convention that is strictly followed by Kinetics Toolkit.</p>
-<p>Unless explicitely mentioned:</p>
-<ul class="simple">
-<li><p>Every point, vector or matrix, and in many case even scalar, is considered as a <strong>series</strong>.</p></li>
-<li><p>The first dimension of any series corresponds to <strong>time</strong>.</p></li>
-</ul>
-<p>To understand better how to express series of scalars, vectors, points, sets and matrices, please refer to the following pictures:</p>
-<div class="section" id="Series-of-scalars">
-<h2>Series of scalars<a class="headerlink" href="#Series-of-scalars" title="Permalink to this headline">¶</a></h2>
-<a class="reference internal image-reference" href="_images/series_of_m_scalars.png"><img alt="Series of m scalars" src="_images/series_of_m_scalars.png" style="width: 330px;" /></a>
-</div>
-<div class="section" id="Series-of-vectors-and-points">
-<h2>Series of vectors and points<a class="headerlink" href="#Series-of-vectors-and-points" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="_images/series_of_m_vectors.png"><img alt="Series of m vectors" src="_images/series_of_m_vectors.png" style="width: 330px;" /></a> <a class="reference internal" href="_images/series_of_m_points.png"><img alt="Series of m points" src="_images/series_of_m_points.png" style="width: 330px;" /></a></p>
-<p>Note the difference between vectors and points: vectors (e.g., forces, velocities) have zeros as their fourth coordinate while points (e.g., marker coordinates) have ones. This difference has an impact on algeabric calculation:</p>
-<ul class="simple">
-<li><p>A rigid transformation of a vector gives a new rotated vector expressed as a new orientation and amplitude.</p></li>
-<li><p>A rigid transformation on a point yields a translated point expressed as its new coordinates in the new reference frame.</p></li>
-</ul>
-</div>
-<div class="section" id="Series-of-groups-of-vectors-or-points">
-<h2>Series of groups of vectors or points<a class="headerlink" href="#Series-of-groups-of-vectors-or-points" title="Permalink to this headline">¶</a></h2>
-<p><a class="reference internal" href="_images/series_of_m_groups_of_n_vectors.png"><img alt="Series of m groups of n vectors" src="_images/series_of_m_groups_of_n_vectors.png" style="width: 330px;" /></a> <a class="reference internal" href="_images/series_of_m_groups_of_n_points.png"><img alt="Series of m groups of n points" src="_images/series_of_m_groups_of_n_points.png" style="width: 330px;" /></a></p>
-</div>
-<div class="section" id="Series-of-transformation-matrices">
-<h2>Series of transformation matrices<a class="headerlink" href="#Series-of-transformation-matrices" title="Permalink to this headline">¶</a></h2>
-<a class="reference internal image-reference" href="_images/series_of_m_transformation_matrices.png"><img alt="Series of m transformation matrices" src="_images/series_of_m_transformation_matrices.png" style="width: 350px;" /></a>
-</div>
-<div class="section" id="Working-with-constants">
-<h2>Working with constants<a class="headerlink" href="#Working-with-constants" title="Permalink to this headline">¶</a></h2>
-<p>Since most signals in Kinetics Toolkit as considered as a series, always ensure that the first dimension of any array is reserved to time. For example, the vector (x = 1, y = 2, z = 3) must be expressed as <code class="docutils literal notranslate"><span class="pre">np.array([[1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0]])</span></code> (note the double brackets). A common error would be to express it as <code class="docutils literal notranslate"><span class="pre">np.array([1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0])</span></code> (single brackets), which would mean a series of 4 floats instead of one constant vector.</p>
-<p>A quick way to convert a constant array to a series is to use numpy’s <code class="docutils literal notranslate"><span class="pre">newaxis</span></code>:</p>
-<div class="nbinput docutils container">
+<div class="section" id="Creating-and-navigating-between-reference-frames">
+<h1>Creating and navigating between reference frames<a class="headerlink" href="#Creating-and-navigating-between-reference-frames" title="Permalink to this headline">¶</a></h1>
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-
-<span class="n">one_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">one_matrix</span>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
-</pre></div>
+<div class="section" id="Creating-reference-frames">
+<h2>Creating reference frames<a class="headerlink" href="#Creating-reference-frames" title="Permalink to this headline">¶</a></h2>
+<p>One of the ways to create a reference frame is to use marker positions and create orthogonal vectors based on these positions.</p>
+<p>The <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides the <a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.create_reference_frames"><span class="std std-ref">create_reference_frames</span></a> function that performs such operation. This function requires a position for the origin, a vector for one of the axes (either x, y, or z), and another vector that creates a plane with the first vector (either xy, xz, or yz).</p>
+<p>Since this function is better understood using an example, we will use the recommendations of the International Society of Biomechanics [1] to create a reference frame for the right humerus, based on the known position of three markers:</p>
+<ul class="simple">
+<li><p>GH: the Nx4 trajectory of the gleno-humeral joint;</p></li>
+<li><p>EL: the Nx4 trajectory of the lateral elbow epicondyle;</p></li>
+<li><p>EM: the Nx4 trajectory of the medial elbow epicondyle.</p></li>
+</ul>
+<a class="reference internal image-reference" href="../_images/humerus_reference_frame.png"><img alt="Right humerus reference frame" src="../_images/humerus_reference_frame.png" style="width: 200px;" /></a>
+<p>Following the ISB [1]:</p>
+<ol class="arabic">
+<li><p><strong>The origin is GH</strong>;</p>
+<p><code class="docutils literal notranslate"><span class="pre">origin</span> <span class="pre">=</span> <span class="pre">GH</span></code></p>
+</li>
+<li><p><strong>The y axis is the line between GH and the midpoint of EL and EM, pointing to GH</strong>;</p>
+<p><code class="docutils literal notranslate"><span class="pre">y</span> <span class="pre">=</span> <span class="pre">GH</span> <span class="pre">-</span> <span class="pre">(EL</span> <span class="pre">+</span> <span class="pre">EM)</span> <span class="pre">/</span> <span class="pre">2</span></code></p>
+</li>
+<li><p><strong>The x axis is the normal to the GH-EL-EM plane, pointing forward</strong>;</p>
+<p>We define the yz plane (in yellow) by a second vector (in yellow) that is in this plane. The x axis will then be generated by the cross product of y and yz.</p>
+<p><code class="docutils literal notranslate"><span class="pre">yz</span> <span class="pre">=</span> <span class="pre">EL</span> <span class="pre">-</span> <span class="pre">EM</span></code></p>
+</li>
+<li><p><strong>The z axis is perpendicular to x and y, pointing to the right</strong>.</p>
+<p><code class="docutils literal notranslate"><span class="pre">reference_frames</span> <span class="pre">=</span> <span class="pre">ktk.geometry.create_reference_frames(origin=origin,</span> <span class="pre">y=y,</span> <span class="pre">yz=yz)</span></code></p>
+<p>This yields a series of rigid transformation matrices that express the humerus reference frame shown in the figure above.</p>
+</li>
+</ol>
+<p>[1] G. Wu et al., “ISB recommendation on definitions of joint coordinate systems of various joints for the reporting of human joint motion - Part II: shoulder, elbow, wrist and hand,” Journal of Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p>
 </div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[1., 0., 0., 0.],
-       [0., 1., 0., 0.],
-       [0., 0., 1., 0.],
-       [0., 0., 0., 1.]])
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">series_of_one_matrix</span> <span class="o">=</span> <span class="n">one_matrix</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
-<span class="n">series_of_one_matrix</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-array([[[1., 0., 0., 0.],
-        [0., 1., 0., 0.],
-        [0., 0., 1., 0.],
-        [0., 0., 0., 1.]]])
-</pre></div></div>
-</div>
+<div class="section" id="Calculating-local-and-global-coordinates">
+<h2>Calculating local and global coordinates<a class="headerlink" href="#Calculating-local-and-global-coordinates" title="Permalink to this headline">¶</a></h2>
+<p>Finally, the <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides function to change the reference frame used to express points, vectors and matrices from local to global coordinates and vice versa:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_local_coordinates"><span class="std std-ref">get_local_coordinates</span></a>: Express global coordinates inside a local reference frame;</p></li>
+<li><p><a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_global_coordinates"><span class="std std-ref">get_global_coordinates</span></a>: Express local coordinates in global coordinates.</p></li>
+</ul>
+<p>For more information on geometry, please check the <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">API Reference for the geometry module</span></a>.</p>
 </div>
 </div>
 
@@ -552,15 +526,15 @@ array([[[1., 0., 0., 0.],
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="timeseries.html" class="btn btn-neutral float-right" title="TimeSeries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="install.html" class="btn btn-neutral float-left" title="Installing" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="euler_angles.html" class="btn btn-neutral float-right" title="Converting between transformation matrices and Euler angles" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dimension_convention.html" class="btn btn-neutral float-left" title="Kinetics Toolkit’s dimension conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Félix Chénier.
+        &#169; Copyright 2020-2021, Félix Chénier.
 
     </p>
   </div>

@@ -95,19 +95,18 @@
               <p class="caption"><span class="caption-text">THE BASICS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry/geometry.html">Rigid body geometry</a></li>
 </ul>
 <p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
 <p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
@@ -256,14 +255,6 @@
 <p class="caption"><span class="caption-text">THE BASICS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-scalars">Series of scalars</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-vectors-and-points">Series of vectors and points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-groups-of-vectors-or-points">Series of groups of vectors or points</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Series-of-transformation-matrices">Series of transformation matrices</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_convention.html#Working-with-constants">Working with constants</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#TimeSeries-basics">TimeSeries basics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="timeseries.html#Exporting-and-importing-pandas-DataFrames">Exporting and importing pandas DataFrames</a></li>
@@ -285,13 +276,13 @@
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Derivating-using-a-differential-filter">Derivating using a differential filter</a></li>
-<li class="toctree-l2"><a class="reference internal" href="filters.html#Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="filters/filters.html#Filtering-a-TimeSeries-using-a-Butterworth-filter">Filtering a TimeSeries using a Butterworth filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/filters.html#Smoothing-a-TimeSeries-with-a-moving-average">Smoothing a TimeSeries with a moving average</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/filters.html#Smoothing-a-TimeSeries-using-a-Savitzky-Golay-filter">Smoothing a TimeSeries using a Savitzky-Golay filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/filters.html#Removing-artefacts-using-a-median-filter">Removing artefacts using a median filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/filters.html#Derivating-using-a-differential-filter">Derivating using a differential filter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="filters/filters.html#Derivating-using-a-Savitsky-Golay-filter">Derivating using a Savitsky-Golay filter</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a><ul>
@@ -301,11 +292,11 @@
 <li class="toctree-l2"><a class="reference internal" href="cycles.html#Finding-the-most-repeatable-cycles">Finding the most repeatable cycles</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Matrix-multiplication">Matrix multiplication</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Series-of-rotations">Series of rotations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Series-of-reference-frames">Series of reference frames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="geometry.html#Calculating-local-and-global-coordinates">Calculating local and global coordinates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry/geometry.html">Rigid body geometry</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="geometry/what_is_a_reference_frame.html">What is a reference frame</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry/dimension_convention.html">Kinetics Toolkit’s dimension conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry/reference_frame.html">Creating and navigating between referenceframes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="geometry/euler_angles.html">Converting between transformation matrices and Eulerangles</a></li>
 </ul>
 </li>
 </ul>
@@ -313,11 +304,11 @@
 <div class="toctree-wrapper compound">
 <p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Visualizing-the-markers">Visualizing the markers</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Reconstructing-kinematics">Reconstructing kinematics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kinematics.html#Processing-an-experimental-trial">Processing an experimental trial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="kinematics/kinematics.html#Loading-a-c3d-or-n3d-file">Loading a c3d or n3d file</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics/kinematics.html#Visualizing-the-markers">Visualizing the markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics/kinematics.html#Reconstructing-kinematics">Reconstructing kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kinematics/kinematics.html#Processing-an-experimental-trial">Processing an experimental trial</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a><ul>
@@ -370,12 +361,12 @@
 <p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="labmode.html">Lab mode</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="labmode.html#when-to-use-lab-mode">When to use lab mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="labmode.html#what-lab-mode-does">What lab mode does</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="labmode.html#modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="labmode.html#modification-to-warnings-format">Modification to warnings format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="labmode.html#modification-to-repr-of-numpy-s-floats">Modification to repr of numpy’s floats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="labmode.html#alternative-defaults-for-matplotlib">Alternative defaults for matplotlib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labmode.html#When-to-use-lab-mode">When to use lab mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="labmode.html#What-lab-mode-does">What lab mode does</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#Modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#Modification-to-warnings-format">Modification to warnings format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#Modification-to-repr-of-numpy’s-floats">Modification to repr of numpy’s floats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="labmode.html#Alternative-defaults-for-matplotlib">Alternative defaults for matplotlib</a></li>
 </ul>
 </li>
 </ul>
@@ -428,7 +419,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Félix Chénier.
+        &#169; Copyright 2020-2021, Félix Chénier.
 
     </p>
   </div>

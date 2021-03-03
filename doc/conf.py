@@ -17,7 +17,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'Kinetics Toolkit'
-copyright = '2020, Félix Chénier'
+copyright = '2020-2021, Félix Chénier'
 author = 'Félix Chénier'
 
 # The full version, including alpha/beta/rc tags
@@ -30,7 +30,6 @@ with open('../kineticstoolkit/VERSION', 'r') as fid:
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-#	'recommonmark',   # See workaround down there.
 	'sphinx.ext.autodoc',  # Document objects using docstrings in API
 	'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
 	'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
@@ -146,14 +145,3 @@ html_css_files = ['css/custom.css']
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-
-
-# Workaround https://github.com/readthedocs/recommonmark/issues/177
-from recommonmark.parser import CommonMarkParser
-class CustomCommonMarkParser(CommonMarkParser):
-    def visit_document(self, node):
-        pass
-
-def setup(app):
-    app.add_source_suffix('.md', 'markdown')
-    app.add_source_parser(CustomCommonMarkParser)

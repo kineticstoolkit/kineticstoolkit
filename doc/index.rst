@@ -70,23 +70,22 @@ Site map
     :maxdepth: 2
 
     install
-    dimension_convention
     timeseries
     loadsave
 
 .. toctree::
     :caption: SIMPLE OPERATIONS
     :maxdepth: 2
-    
-    filters
+
+    filters/filters
     cycles
-    geometry
+    geometry/geometry
 
 .. toctree::
     :caption: MORE COMPLEX ANALYSES
     :maxdepth: 2
 
-    kinematics
+    kinematics/kinematics
     pushrimkinetics
 
 .. toctree::

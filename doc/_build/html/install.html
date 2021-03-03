@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Dimension convention" href="dimension_convention.html" />
+    <link rel="next" title="TimeSeries" href="timeseries.html" />
     <link rel="prev" title="Kinetics Toolkit" href="index.html" />
 
 
@@ -96,19 +96,18 @@
               <p class="caption"><span class="caption-text">THE BASICS</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry/geometry.html">Rigid body geometry</a></li>
 </ul>
 <p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
 <p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
@@ -210,45 +209,55 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="installing">
-<h1>Installing<a class="headerlink" href="#installing" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Installing">
+<h1>Installing<a class="headerlink" href="#Installing" title="Permalink to this headline">¶</a></h1>
 <p>Kinetics Toolkit is distributed via both conda-forge and PyPi. The source code is hosted on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">git-hub</a>.</p>
 <p>Since reading c3d files relies on <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> which binaries are distributed only via conda-forge, the recommended installation method is therefore using conda-forge.</p>
-<ol>
+<ol class="arabic">
 <li><p>Download and install Anaconda or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> with python 3.8 or newer.</p></li>
 <li><p>Create a new environment (recommended): open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code class="docutils literal notranslate"><span class="pre">ktk</span></code> virtual environment and install Kinetics Toolkit in this environment.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span> <span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">ktk</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">ktk</span>
 
- <span class="n">conda</span> <span class="n">activate</span> <span class="n">ktk</span>
+<span class="n">conda</span> <span class="n">activate</span> <span class="n">ktk</span>
 </pre></div>
 </div>
 </li>
 <li><p>Install Kinetics Toolkit</p>
 <p>Stable version (recommended):</p>
-<p>a) Install:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span> <span class="n">ezc3d</span>
-</pre></div>
-</div>
-<p>b) To keep up to date:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">conda</span> <span class="n">update</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span>
-</pre></div>
-</div>
-<p>Development version (for programmers):</p>
-<p>a) Install the dependencies:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span> <span class="n">matplotlib</span> <span class="n">scipy</span> <span class="n">pandas</span> <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span> <span class="n">pyqt</span> <span class="n">ezc3d</span> <span class="n">limitedinteraction</span> <span class="n">git</span> <span class="n">pytest</span> <span class="n">mypy</span> <span class="n">coverage</span> <span class="n">jupyterlab</span> <span class="n">spyder</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">material</span> <span class="n">recommonmark</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">autodoc</span><span class="o">-</span><span class="n">typehints</span> <span class="n">autodocsumm</span> <span class="n">nbsphinx</span> <span class="n">twine</span>
-</pre></div>
-</div>
-<p>b) Clone the git repository:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">felixchenier</span><span class="o">/</span><span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">git</span> <span class="n">ktk_develop</span>
-</pre></div>
-</div>
-<p>c) Add ktk_develop to your PYTHON_PATH</p>
-<p>d) To keep up to date:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>     <span class="n">cd</span> <span class="n">ktk_develop</span><span class="p">;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+<ol class="loweralpha">
+<li><p>Install:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span> <span class="n">ezc3d</span>
 </pre></div>
 </div>
 </li>
-<li><p>Interactive functions can be tricky in Python. Kinetics Toolkit’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop, which is completely supported in Spyder IDE. Therefore I recommend using <a class="reference external" href="https://www.spyder-ide.org">Spyder</a> since it is so oriented towards science, but any IDE that uses IPython should also work well. Be sure to <a class="reference external" href="https://docs.spyder-ide.org/current/faq.html#using-existing-environment">configure Spyder</a> to use the ktk environment you just created.</p></li>
+<li><p>To keep up to date:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span>
+</pre></div>
+</div>
+</li>
+</ol>
+<p>Development version (for programmers):</p>
+<ol class="loweralpha">
+<li><p>Install the dependencies:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">python</span><span class="o">=</span><span class="mf">3.8</span> <span class="n">matplotlib</span> <span class="n">scipy</span> <span class="n">pandas</span> <span class="n">scikit</span><span class="o">-</span><span class="n">learn</span> <span class="n">pyqt</span> <span class="n">ezc3d</span> <span class="n">limitedinteraction</span> <span class="n">git</span> <span class="n">pytest</span> <span class="n">mypy</span> <span class="n">coverage</span> <span class="n">jupyterlab</span> <span class="n">spyder</span> <span class="n">sphinx</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">material</span> <span class="n">recommonmark</span> <span class="n">sphinx</span><span class="o">-</span><span class="n">autodoc</span><span class="o">-</span><span class="n">typehints</span> <span class="n">autodocsumm</span> <span class="n">nbsphinx</span> <span class="n">twine</span>
+</pre></div>
+</div>
+</li>
+<li><p>Clone the git repository:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">git</span> <span class="n">clone</span> <span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">felixchenier</span><span class="o">/</span><span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">git</span> <span class="n">ktk_develop</span>
+</pre></div>
+</div>
+</li>
+<li><p>Add ktk_develop to your PYTHON_PATH</p></li>
+<li><p>To keep up to date:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">cd</span> <span class="n">ktk_develop</span><span class="p">;</span> <span class="n">git</span> <span class="n">pull</span> <span class="n">origin</span> <span class="n">master</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</li>
+<li><p>Interactive functions can be tricky in Python. Kinetics Toolkit’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop, which is completely supported in Spyder IDE. Therefore I recommend using <a class="reference external" href="https://www.spyder-ide.org">Spyder</a> since it is so oriented towards science, but any IDE that uses IPython should also work well. Be sure to <a class="reference external" href="https://docs.spyder-ide.org/current/faq.html#using-existing-environment">configure Spyder</a> to use the ktk environment you
+just created.</p></li>
 <li><p>Choose the Qt5 backend for IPython.</p>
 <ul class="simple">
 <li><p>If you are using the Spyder IDE, go to the Spyder’s preferences, to the <strong>IPython console</strong> item, then to the <strong>Graphics</strong> pane. In the <strong>Graphics backend</strong> box, select <strong>Qt5</strong>. Restart Spyder.</p></li>
@@ -272,7 +281,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="dimension_convention.html" class="btn btn-neutral float-right" title="Dimension convention" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="timeseries.html" class="btn btn-neutral float-right" title="TimeSeries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="index.html" class="btn btn-neutral float-left" title="Kinetics Toolkit" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
@@ -280,7 +289,7 @@
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Félix Chénier.
+        &#169; Copyright 2020-2021, Félix Chénier.
 
     </p>
   </div>

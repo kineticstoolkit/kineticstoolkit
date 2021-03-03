@@ -96,19 +96,18 @@
               <p class="caption"><span class="caption-text">THE BASICS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dimension_convention.html">Dimension convention</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 </ul>
 <p class="caption"><span class="caption-text">SIMPLE OPERATIONS</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="filters.html">Filters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cycles.html">Detecting and normalizing cycles</a></li>
-<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid transformations, coordinates and reference frames</a></li>
+<li class="toctree-l1"><a class="reference internal" href="geometry/geometry.html">Rigid body geometry</a></li>
 </ul>
 <p class="caption"><span class="caption-text">MORE COMPLEX ANALYSES</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
 <p class="caption"><span class="caption-text">IN DEVELOPMENT</span></p>
@@ -119,12 +118,12 @@
 <p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lab mode</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#when-to-use-lab-mode">When to use lab mode</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#what-lab-mode-does">What lab mode does</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#modification-to-warnings-format">Modification to warnings format</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#modification-to-repr-of-numpy-s-floats">Modification to repr of numpy’s floats</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#alternative-defaults-for-matplotlib">Alternative defaults for matplotlib</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#When-to-use-lab-mode">When to use lab mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#What-lab-mode-does">What lab mode does</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Modification-to-repr-of-dictionaries">Modification to repr of dictionaries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Modification-to-warnings-format">Modification to warnings format</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Modification-to-repr-of-numpy’s-floats">Modification to repr of numpy’s floats</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Alternative-defaults-for-matplotlib">Alternative defaults for matplotlib</a></li>
 </ul>
 </li>
 </ul>
@@ -220,11 +219,11 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="lab-mode">
-<h1>Lab mode<a class="headerlink" href="#lab-mode" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="Lab-mode">
+<h1>Lab mode<a class="headerlink" href="#Lab-mode" title="Permalink to this headline">¶</a></h1>
 <p>Kinetics Toolkit includes a lab mode that changes some defaults so that doing scientific work in IPython-based environments is more enjoyable (at least for me). This mode does not affect anything besides visual representations and is completely facultative.</p>
-<div class="section" id="when-to-use-lab-mode">
-<h2>When to use lab mode<a class="headerlink" href="#when-to-use-lab-mode" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="When-to-use-lab-mode">
+<h2>When to use lab mode<a class="headerlink" href="#When-to-use-lab-mode" title="Permalink to this headline">¶</a></h2>
 <p><strong>Use it</strong> if you want to use Kinetics Toolkit as an integrated work environment using IPython based environments (Spyder, Jupyter) in a biomechanics research labs. If you’re not sure, use lab mode.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
 </pre></div>
@@ -234,10 +233,10 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="what-lab-mode-does">
-<h2>What lab mode does<a class="headerlink" href="#what-lab-mode-does" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="modification-to-repr-of-dictionaries">
-<h3>Modification to repr of dictionaries<a class="headerlink" href="#modification-to-repr-of-dictionaries" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="What-lab-mode-does">
+<h2>What lab mode does<a class="headerlink" href="#What-lab-mode-does" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Modification-to-repr-of-dictionaries">
+<h3>Modification to repr of dictionaries<a class="headerlink" href="#Modification-to-repr-of-dictionaries" title="Permalink to this headline">¶</a></h3>
 <p>Kinetics Toolkit often stores data as nested dictionaries, which can lead to very large printouts when we simply want to see the dictionary’s contents. Importing ktk changes the repr of dictionaries in IPython so that a summary of the dict’s content is shown, more like the representation of a Matlab struct.</p>
 <p>For example, let’s create a dummy dictionary:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -271,8 +270,8 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="modification-to-warnings-format">
-<h3>Modification to warnings format<a class="headerlink" href="#modification-to-warnings-format" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Modification-to-warnings-format">
+<h3>Modification to warnings format<a class="headerlink" href="#Modification-to-warnings-format" title="Permalink to this headline">¶</a></h3>
 <p>Kinetics Toolkit sometimes generates warnings when calculations are encountering unexpected data, when assumptions were made or to flag relevant suspicious informations to the user. Importing ktk in lab mode pretty-prints those warnings so they are clearer to see and understand.</p>
 <p>For example, a default user warning would print as:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">filename</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span><span class="p">:</span> <span class="ne">UserWarning</span><span class="p">:</span> <span class="n">Something</span> <span class="n">strange</span> <span class="n">happened</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">function</span>
@@ -284,23 +283,17 @@
 </pre></div>
 </div>
 </div>
-<div class="section" id="modification-to-repr-of-numpy-s-floats">
-<h3>Modification to repr of numpy’s floats<a class="headerlink" href="#modification-to-repr-of-numpy-s-floats" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="Modification-to-repr-of-numpy’s-floats">
+<h3>Modification to repr of numpy’s floats<a class="headerlink" href="#Modification-to-repr-of-numpy’s-floats" title="Permalink to this headline">¶</a></h3>
 <p>Numpy is set to display floats with floating point precision.</p>
 </div>
-<div class="section" id="alternative-defaults-for-matplotlib">
-<h3>Alternative defaults for matplotlib<a class="headerlink" href="#alternative-defaults-for-matplotlib" title="Permalink to this headline">¶</a></h3>
-<p>We assume that most work with figure is interactive, on screen. In that view,
-the following modifications are made to default matplotlib figures:</p>
+<div class="section" id="Alternative-defaults-for-matplotlib">
+<h3>Alternative defaults for matplotlib<a class="headerlink" href="#Alternative-defaults-for-matplotlib" title="Permalink to this headline">¶</a></h3>
+<p>We assume that most work with figure is interactive, on screen. In that view, the following modifications are made to default matplotlib figures:</p>
 <ul class="simple">
-<li><p>The standard dpi is changed to 75, which allows for more space to work by
-reducing the font size on screen.</p></li>
-<li><p>The standard figure size is changed to [10, 5], which is a little bigger
-than the default and is thus more practical for interactive navigation.</p></li>
-<li><p>The default color order is changed to (rgbcmyko) with o being orange. The
-first colors, red, green and blue, are consistent the colours assigned to
-x, y and z in most 3D visualization softwares, and the next colours are
-consistent with Matlab’s legacy color order.</p></li>
+<li><p>The standard dpi is changed to 75, which allows for more space to work by reducing the font size on screen.</p></li>
+<li><p>The standard figure size is changed to [10, 5], which is a little bigger than the default and is thus more practical for interactive navigation.</p></li>
+<li><p>The default color order is changed to (rgbcmyko) with o being orange. The first colors, red, green and blue, are consistent the colours assigned to x, y and z in most 3D visualization softwares, and the next colours are consistent with Matlab’s legacy color order.</p></li>
 </ul>
 </div>
 </div>
@@ -320,7 +313,7 @@ consistent with Matlab’s legacy color order.</p></li>
 
   <div role="contentinfo">
     <p>
-        &#169; Copyright 2020, Félix Chénier.
+        &#169; Copyright 2020-2021, Félix Chénier.
 
     </p>
   </div>

@@ -120,13 +120,28 @@ def build_tutorials() -> None:
     cwd = os.getcwd()
 
     # Run notebooks to generate the tutorials
-    os.chdir(kineticstoolkit.config.root_folder + '/doc')
-    files = [file for file in os.listdir() if file.endswith('.ipynb')]
+#    os.chdir(kineticstoolkit.config.root_folder + '/doc')
+
+    files = []
+        
+    for (dirpath, dirnames, filenames) in os.walk(
+            kineticstoolkit.config.root_folder + '/doc'):
+            
+        parent_dir = os.path.basename(dirpath)
+            
+        if not '_build' in dirpath and not parent_dir.startswith('.'):
+        
+            for file in filenames:
+            
+                if file.endswith('.ipynb'):
+                    files.append(dirpath + '/' + file)
+                
     with multiprocessing.Pool() as pool:
         pool.map(_generate_tutorial, files)
 
-    os.chdir(cwd)
+#    os.chdir(cwd)
     print(f'Done in {time.time() - now} seconds.')
+
 
 def build_website(clean: bool = False) -> None:
     """
