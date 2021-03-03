@@ -177,12 +177,14 @@ def build_website(clean: bool = False) -> None:
 
 def clean() -> None:
     """Remove outputs in jupyter notebooks (before committing to git)."""
-    subprocess.call(['jupyter-nbconvert',
-                     '--ClearOutputPreprocessor.enabled=True',
-                     '--log-level', 'WARN',
-                     '--inplace',
-                     kineticstoolkit.config.root_folder + '/doc/*.ipynb'],
-                    env=kineticstoolkit.config.env)
+    for (folder, _, files) in os.walk(kineticstoolkit.config.root_folder + '/doc'):
+        if any(['.ipynb' in file for file in files]):
+            subprocess.call(['jupyter-nbconvert',
+                             '--ClearOutputPreprocessor.enabled=True',
+                             '--log-level', 'WARN',
+                             '--inplace',
+                             f'{folder}/*.ipynb'],
+                            env=kineticstoolkit.config.env)
 
 
 def compile_for_pypi() -> None:

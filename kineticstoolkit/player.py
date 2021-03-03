@@ -31,6 +31,7 @@ __license__ = "Apache 2.0"
 from kineticstoolkit.timeseries import TimeSeries
 
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 from matplotlib import animation
 import numpy as np
 from numpy import sin, cos
@@ -172,7 +173,7 @@ class Player:
         self.track = track
         self.translation = translation
         self.perspective = perspective
-        self.playback_speed = 1.0
+        self.playback_speed = 1.0  # 0.0 to show all samples
         #  self.anim = None  # Will initialize in _create_figure
 
         self.objects = dict()  # type: Dict[str, Any]
@@ -806,3 +807,30 @@ class Player:
                 (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
 
+    def _to_notebook(self):
+        """
+        Create an html5 video for displaying in Jupyter notebooks.
+
+        Parameters
+        ----------
+        None
+
+        Returns
+        -------
+        A matplotlib animation object for displaying as html5.
+
+        Use
+        ------
+        Instanciate the player, then call this method on it:
+
+            ktk.Player(markers, [...]).to_notebook()
+
+        """
+        mpl.rcParams['animation.html'] = 'html5'
+        self.playback_speed = 0
+        self.objects['Figure'].set_size_inches(6, 4.5)  # Half size
+        self.running = True
+        self.anim.save_count = self.n_frames
+        self.anim.event_source.start()
+        plt.close(self.objects['Figure'])
+        return self.anim
