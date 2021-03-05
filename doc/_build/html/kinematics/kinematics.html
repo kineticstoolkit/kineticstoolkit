@@ -105,8 +105,8 @@
 <li class="toctree-l1"><a class="reference internal" href="../geometry/geometry.html">Rigid body geometry</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Kinematics analysis</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="load_visualize.html">Reading and visualizing marker trajectories</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html">Simple analysis</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="joint_angles.html">Calculating joint angles from a kinematic acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing virtual markers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
@@ -223,16 +223,7 @@
 </style>
 <div class="section" id="kinematics-analysis">
 <h1>Kinematics analysis<a class="headerlink" href="#kinematics-analysis" title="Permalink to this headline">¶</a></h1>
-<p>The <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">kinematics</span></a> module allows opening trajectories of markers from c3d or n3d
-files, and process those trajectory to:</p>
-<ul class="simple">
-<li><p>create rigid body configurations based on a static acquisitions;</p></li>
-<li><p>register the markers trajectories to rigid body trajectories;</p></li>
-<li><p>create virtual marker configuration based on probing acquisitions;</p></li>
-<li><p>reconstruct these virtual markers from rigid body trajectories;</p></li>
-<li><p>and other operations that will be implemented in the future.</p></li>
-</ul>
-<p>Here is a quick example of how to reconstruct complete kinematics during a task, based on a static acquisition and probing acquisitions.</p>
+<p>The <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">kinematics</span></a> module allows opening trajectories of markers from 3D acquisition files, then process those trajectory (e.g., reconstructing virtal markers, calculating joint angles).</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="load_visualize.html">Reading and visualizing marker trajectories</a><ul>
@@ -241,17 +232,20 @@ files, and process those trajectory to:</p>
 <li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Drawing-links-between-markers">Drawing links between markers</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="simple_analysis.html">Simple analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Read-marker-trajectories">Read marker trajectories</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Create-the-segments’-reference-frames">Create the segments’ reference frames</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Find-the-transformation-from-the-arm-to-the-forearm">Find the transformation from the arm to the forearm</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Extract-Euler-angles">Extract Euler angles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Plot-the-Euler-angles">Plot the Euler angles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="joint_angles.html">Calculating joint angles from a kinematic acquisition</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="joint_angles.html#Read-and-visualize-marker-trajectories">Read and visualize marker trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="joint_angles.html#Create-series-of-segments’-reference-frames">Create series of segments’ reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="joint_angles.html#Find-the-series-of-transformations-from-the-arm-to-the-forearm">Find the series of transformations from the arm to the forearm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="joint_angles.html#Extract-the-series-of-Euler-angles">Extract the series of Euler angles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="joint_angles.html#Plot-the-Euler-angles">Plot the Euler angles</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reconstruction.html">Reconstructing virtual markers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Read-and-visualize-marker-trajectories">Read and visualize marker trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Calibration:-Defining-rigid-body-configurations-using-a-static-acquisition">Calibration: Defining rigid body configurations using a static acquisition</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Calibration:-Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Calibration: Defining the virtual marker configurations based on probing acquisitions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Task-analysis:-Tracking-the-segments">Task analysis: Tracking the segments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Task-analysis:-Reconstructing-the-virtual-markers">Task analysis: Reconstructing the virtual markers</a></li>
 </ul>
 </li>
 </ul>

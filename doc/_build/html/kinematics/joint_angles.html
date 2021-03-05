@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Simple analysis &mdash; Kinetics Toolkit master documentation</title>
+  <title>Calculating joint angles from a kinematic acquisition &mdash; Kinetics Toolkit master documentation</title>
   
 
   
@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Reconstructing kinematics" href="reconstruction.html" />
+    <link rel="next" title="Reconstructing virtual markers" href="reconstruction.html" />
     <link rel="prev" title="Reading and visualizing marker trajectories" href="load_visualize.html" />
 
 
@@ -105,19 +105,19 @@
 <li class="toctree-l1"><a class="reference internal" href="../geometry/geometry.html">Rigid body geometry</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="kinematics.html">Kinematics analysis</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="load_visualize.html">Reading and visualizing marker trajectories</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Simple analysis</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#Read-marker-trajectories">Read marker trajectories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Create-the-segments’-reference-frames">Create the segments’ reference frames</a><ul>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Calculating joint angles from a kinematic acquisition</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Read-and-visualize-marker-trajectories">Read and visualize marker trajectories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Create-series-of-segments’-reference-frames">Create series of segments’ reference frames</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Arm-reference-frame">Arm reference frame</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Forearm-reference-frame">Forearm reference frame</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#Find-the-transformation-from-the-arm-to-the-forearm">Find the transformation from the arm to the forearm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Extract-Euler-angles">Extract Euler angles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Find-the-series-of-transformations-from-the-arm-to-the-forearm">Find the series of transformations from the arm to the forearm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Extract-the-series-of-Euler-angles">Extract the series of Euler angles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Plot-the-Euler-angles">Plot the Euler angles</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing virtual markers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
@@ -184,7 +184,7 @@
         
           <li><a href="kinematics.html">Kinematics analysis</a> &raquo;</li>
         
-      <li>Simple analysis</li>
+      <li>Calculating joint angles from a kinematic acquisition</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -198,7 +198,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="reconstruction.html" class="btn btn-neutral float-right" title="Reconstructing kinematics" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reconstruction.html" class="btn btn-neutral float-right" title="Reconstructing virtual markers" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="load_visualize.html" class="btn btn-neutral float-left" title="Reading and visualizing marker trajectories" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -480,9 +480,16 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Simple-analysis">
-<h1>Simple analysis<a class="headerlink" href="#Simple-analysis" title="Permalink to this headline">¶</a></h1>
-<p>In this tutorial, we will study the kinematics of the acquisition presented in the previous section. We want to plot curves of elbow flexion and pronation angles through the whole acquisition.</p>
+<div class="section" id="Calculating-joint-angles-from-a-kinematic-acquisition">
+<h1>Calculating joint angles from a kinematic acquisition<a class="headerlink" href="#Calculating-joint-angles-from-a-kinematic-acquisition" title="Permalink to this headline">¶</a></h1>
+<p>In this tutorial, we will calculate the elbow joint angles in the acquisition presented in the previous section. At the end of the tutorial, we will have plotted curves of elbow flexion and pronation angles during the complete acquisition.</p>
+<p>Such an analysis is composed of the following steps:</p>
+<p><strong>Step 1.</strong> Read the marker trajectories</p>
+<p>For each of the analyzed joint:</p>
+<p><strong>Step 2.</strong> We calculate series of reference frames for the two segments that compose this joint (how are both segments oriented in space);</p>
+<p><strong>Step 3.</strong> We express a series of rigid transformations from the proximal to the distal joint (how the distal segment is oriented in space compared to the proximal segment);</p>
+<p><strong>Step 4.</strong> We extract the series of Euler angles from these rigid transforms (what series of three angles allow such relative orientation);</p>
+<p><strong>Step 5.</strong> We interpret these Euler angle as rotations around anatomical axes.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -492,25 +499,19 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="section" id="Read-marker-trajectories">
-<h2>Read marker trajectories<a class="headerlink" href="#Read-marker-trajectories" title="Permalink to this headline">¶</a></h2>
-<div class="nbinput nblast docutils container">
+<div class="section" id="Read-and-visualize-marker-trajectories">
+<h2>Read and visualize marker trajectories<a class="headerlink" href="#Read-and-visualize-marker-trajectories" title="Permalink to this headline">¶</a></h2>
+<p>We proceed exactly as in the previous tutorial:</p>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span>
+<span></span><span class="c1"># Read the markers</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span>
     <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/data/kinematics/racing_full.c3d&#39;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<p>Let’s look again at this acquisition:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Set the point of view</span>
+
+<span class="c1"># Set the point of view for 3D visualization</span>
 <span class="n">viewing_options</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;zoom&#39;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>
     <span class="s1">&#39;azimuth&#39;</span><span class="p">:</span> <span class="mf">0.8</span><span class="p">,</span>
@@ -518,7 +519,7 @@ div.rendered_html tbody tr:hover {
     <span class="s1">&#39;translation&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.7</span><span class="p">)</span>
 <span class="p">}</span>
 
-<span class="c1"># Define the segments</span>
+<span class="c1"># Define the segments for easier visualization</span>
 <span class="n">segments</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s1">&#39;ArmR&#39;</span><span class="p">:</span> <span class="p">{</span>
         <span class="s1">&#39;Color&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
@@ -541,13 +542,13 @@ div.rendered_html tbody tr:hover {
 <span class="c1"># Create the player</span>
 <span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 
-<span class="c1"># Show one second in this Jupyter notebook</span>
+<span class="c1"># Show one second (only needed in Notebooks)</span>
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1925,8 +1926,8 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </video></div>
 </div>
 </div>
-<div class="section" id="Create-the-segments’-reference-frames">
-<h2>Create the segments’ reference frames<a class="headerlink" href="#Create-the-segments’-reference-frames" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Create-series-of-segments’-reference-frames">
+<h2>Create series of segments’ reference frames<a class="headerlink" href="#Create-series-of-segments’-reference-frames" title="Permalink to this headline">¶</a></h2>
 <p>To calculate the elbow angles, we need to create reference frames for the arm and forearm segments. The elbow angles will be extracted from the rigid transformation between the arm and forearm reference frames.</p>
 <p>We will use the recommendations of the International Society of Biomechanics [1] to define these reference frames.</p>
 <div class="section" id="Arm-reference-frame">
@@ -1935,7 +1936,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 <p><strong>1. The origin is GH (glenohumeral joint).</strong></p>
 <p>We don’t have a marker for the glenohumeral join, but we have one for the acromion. We will therefore approximate GH by the acromion.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1945,7 +1946,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </div>
 <p><strong>2. The y axis is the line between GH and the midpoint of EL (lateral elbow epicondyle) and EM (medial elbow epicondyle), pointing to GH</strong></p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1958,7 +1959,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 <p><strong>3. The x axis is the normal to the GH-EL-EM plane, pointing forward</strong></p>
 <p>Since x is normal to the GH-EL-EM plane, this plane is a yz plane. We need to define a second vector (other than y) to form this yz plane.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1972,7 +1973,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 <p>We have now defined everything to create the humerus reference frame.</p>
 <p>Let’s first create an empty TimeSeries for our new created reference frames:</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1982,7 +1983,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </div>
 <p>Now, we will create the <code class="docutils literal notranslate"><span class="pre">ArmR</span></code> reference frame.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -1993,7 +1994,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </div>
 <p>Let’s visualize it:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -2006,7 +2007,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -3492,7 +3493,7 @@ LjQ1LjEwMA==
 <p>We will now proceed with the exact same steps to create the forearm reference frame. From the ISB [1]:</p>
 <p><strong>1. The origin is US (ulnar styloid process).</strong></p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -3502,7 +3503,7 @@ LjQ1LjEwMA==
 </div>
 <p><strong>2. The y axis is the line between US and the midpoint between EL and EM, pointing proximally.</strong></p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -3516,7 +3517,7 @@ LjQ1LjEwMA==
 <p><strong>4. The z axis is perpendicular to x and y, pointing to the right.</strong></p>
 <p>This means that US, RS and the elbow center make an yz plane. Since z will point to the right in anatomical position, we will create a yz vector that points grossly to the right in anatomical position.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -3526,7 +3527,7 @@ LjQ1LjEwMA==
 </div>
 <p>We are now ready to create the <code class="docutils literal notranslate"><span class="pre">ForearmR</span></code> reference frame.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -3537,7 +3538,7 @@ LjQ1LjEwMA==
 </div>
 <p>Let’s visualize our markers with both new reference frames:</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -3550,7 +3551,7 @@ LjQ1LjEwMA==
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -5098,11 +5099,11 @@ YXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 </div>
 </div>
 </div>
-<div class="section" id="Find-the-transformation-from-the-arm-to-the-forearm">
-<h2>Find the transformation from the arm to the forearm<a class="headerlink" href="#Find-the-transformation-from-the-arm-to-the-forearm" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Find-the-series-of-transformations-from-the-arm-to-the-forearm">
+<h2>Find the series of transformations from the arm to the forearm<a class="headerlink" href="#Find-the-series-of-transformations-from-the-arm-to-the-forearm" title="Permalink to this headline">¶</a></h2>
 <p>Now that we have expressed the reference frames for both the arm and forearm, we can find the rigid transformation between both reference frames. This is equivalent to express the forearm reference frame in the local coordinates system of the arm.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -5110,12 +5111,53 @@ YXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
     <span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">],</span>
     <span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span>
 <span class="p">)</span>
+
+<span class="n">arm_to_forearm</span>
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
 </div>
-<div class="section" id="Extract-Euler-angles">
-<h2>Extract Euler angles<a class="headerlink" href="#Extract-Euler-angles" title="Permalink to this headline">¶</a></h2>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+array([[[-0.89251428, -0.28050878,  0.35317572,  0.07386483],
+        [-0.26421245,  0.95981064,  0.09463257, -0.51046091],
+        [-0.36552708, -0.0088525 , -0.93075861,  0.00233108],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[-0.86649378, -0.3588741 ,  0.34698403,  0.09357942],
+        [-0.29827222,  0.92958265,  0.21658664, -0.50065135],
+        [-0.40027767,  0.08417528, -0.91251976, -0.02194941],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[-0.83495161, -0.43573721,  0.3361382 ,  0.11295463],
+        [-0.32906148,  0.88488148,  0.32970184, -0.48806881],
+        [-0.44110583,  0.16467495, -0.88221755, -0.04268811],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       ...,
+
+       [[-0.01705025, -0.97173028, -0.23547728,  0.24257892],
+        [-0.65770179, -0.16648594,  0.73465011, -0.21229573],
+        [-0.75308542,  0.1673998 , -0.63627012, -0.04178903],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[-0.01973518, -0.98060388, -0.19500399,  0.24679806],
+        [-0.68758197, -0.12828502,  0.71468454, -0.22156369],
+        [-0.72583852,  0.14818566, -0.67171382, -0.03729532],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]],
+
+       [[-0.07302131, -0.99231565, -0.09988766,  0.25412338],
+        [-0.67941093, -0.02382633,  0.73337105, -0.2485821 ],
+        [-0.73011552,  0.12141649, -0.67245027, -0.0310937 ],
+        [ 0.        ,  0.        ,  0.        ,  1.        ]]])
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Extract-the-series-of-Euler-angles">
+<h2>Extract the series of Euler angles<a class="headerlink" href="#Extract-the-series-of-Euler-angles" title="Permalink to this headline">¶</a></h2>
 <p>We now have a series of transformation matrices, from which we will now extract Euler angles corresponding to flexion and pronation. We will use the <a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_euler_angles"><span class="std std-ref">get_euler_angles()</span></a> to extract these Euler angles. We however fist need to define the sequence of rotation for these angles. Still following the recommendations of the International Society of Biomechanics [1], we define the series of rotations from the arm to forearm
 as:</p>
 <p><strong>First rotation:</strong> Around the z axis of the humerus reference frame. Corresponds to a flexion (positive) or hyperextension (negative).</p>
@@ -5123,7 +5165,7 @@ as:</p>
 <p><strong>Third rotation:</strong> Around the rotated y axis of the forearm reference frame. Corresponds to a pronation (positive) or supination (negative).</p>
 <p>These rotations are relative to moving axes (every other rotation is performed around a new reference frame generated by the previous rotation). Therefore, we will use ‘ZXY’ (capital letters) as the sequence of rotations as defined in the function’s docstring.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -5134,7 +5176,7 @@ as:</p>
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
@@ -5153,7 +5195,7 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
 <h2>Plot the Euler angles<a class="headerlink" href="#Plot-the-Euler-angles" title="Permalink to this headline">¶</a></h2>
 <p>Now that we calculated the angles, it would be a good idea to create a last TimeSeries to keep track of the time and meaning of these angles.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -5169,7 +5211,7 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
 </div>
 <p>Now we plot it.</p>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -5181,7 +5223,7 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/kinematics_simple_analysis_36_0.png" src="../_images/kinematics_simple_analysis_36_0.png" />
+<img alt="../_images/kinematics_joint_angles_35_0.png" src="../_images/kinematics_joint_angles_35_0.png" />
 </div>
 </div>
 <p>From this curve, we can now see that the elbow goes from a total extension to a flexion of about 100 degrees, while the forearm stays in a pronated angle of about 125 to 170 degrees (defined from a fully supinated position in anatomical position).</p>
@@ -5202,7 +5244,7 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="reconstruction.html" class="btn btn-neutral float-right" title="Reconstructing kinematics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reconstruction.html" class="btn btn-neutral float-right" title="Reconstructing virtual markers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="load_visualize.html" class="btn btn-neutral float-left" title="Reading and visualizing marker trajectories" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
