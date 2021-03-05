@@ -41,7 +41,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Loading and visualizing markers" href="load_visualize.html" />
+    <link rel="next" title="Reading and visualizing marker trajectories" href="load_visualize.html" />
     <link rel="prev" title="Converting between transformation matrices and Euler angles" href="../geometry/euler_angles.html" />
 
 
@@ -92,6 +92,7 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
@@ -103,7 +104,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../geometry/geometry.html">Rigid body geometry</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Kinematics analysis</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="load_visualize.html">Loading and visualizing markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_visualize.html">Reading and visualizing marker trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="simple_analysis.html">Simple analysis</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a></li>
 </ul>
@@ -184,7 +185,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="load_visualize.html" class="btn btn-neutral float-right" title="Loading and visualizing markers" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="load_visualize.html" class="btn btn-neutral float-right" title="Reading and visualizing marker trajectories" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="../geometry/euler_angles.html" class="btn btn-neutral float-left" title="Converting between transformation matrices and Euler angles" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -234,12 +235,20 @@ files, and process those trajectory to:</p>
 <p>Here is a quick example of how to reconstruct complete kinematics during a task, based on a static acquisition and probing acquisitions.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="load_visualize.html">Loading and visualizing markers</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Loading">Loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="load_visualize.html">Reading and visualizing marker trajectories</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Reading-marker-trajectories">Reading marker trajectories</a></li>
 <li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Visualizing-the-markers">Visualizing the markers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="load_visualize.html#Drawing-links-between-markers">Drawing links between markers</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="simple_analysis.html">Simple analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="simple_analysis.html">Simple analysis</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Read-marker-trajectories">Read marker trajectories</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Create-the-segments’-reference-frames">Create the segments’ reference frames</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Find-the-transformation-from-the-arm-to-the-forearm">Find the transformation from the arm to the forearm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Extract-Euler-angles">Extract Euler angles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="simple_analysis.html#Plot-the-Euler-angles">Plot the Euler angles</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="reconstruction.html">Reconstructing kinematics</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Defining-rigid-body-configurations-using-a-static-acquisition">Defining rigid body configurations using a static acquisition</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reconstruction.html#Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">Defining the virtual marker configurations based on probing acquisitions</a></li>
@@ -255,7 +264,7 @@ files, and process those trajectory to:</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="load_visualize.html" class="btn btn-neutral float-right" title="Loading and visualizing markers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="load_visualize.html" class="btn btn-neutral float-right" title="Reading and visualizing marker trajectories" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="../geometry/euler_angles.html" class="btn btn-neutral float-left" title="Converting between transformation matrices and Euler angles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

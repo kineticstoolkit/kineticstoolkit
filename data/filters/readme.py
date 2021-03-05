@@ -34,15 +34,28 @@ for key in ts.data:
 ktk.save('sample_noisy.ktk.zip', ts)
 
 
-#%% Make a nice signal for moving average
-ts_ma = ktk.TimeSeries(time=np.arange(50))
-ts_ma.data['signal'] = np.round(
-    (np.sin(ts_ma.time / 7) +
-     ts_ma.time * np.sin(ts_ma.time / 2) / 30 +
-     np.mod(ts_ma.time, 5) / 10 +
-     noise[0:50]),
-    1)
-ts_ma.plot()
+#%% Make nice signal noises for moving average and savgol
+ts = ktk.TimeSeries(time=np.arange(50))
+ts.data['clean'] = (
+    np.sin(ts.time / 7) +
+    ts.time * np.sin(ts.time / 5) ** 2 / 50
+)
 
-ktk.save('sample_moving_average.ktk.zip', ts_ma)
+ts.data['periodic_noise'] = (
+    ts.data['clean'] +
+    (np.mod(ts.time, 5) - 2.5) / 10 +
+    noise[0:50])
+
+ts.data['quantized'] = np.round(3 * ts.data['clean']) / 3
+
+ts.data['artefacts'] = ts.data['clean'].copy()
+ts.data['artefacts'][10] = 3
+ts.data['artefacts'][14] = -2
+ts.data['artefacts'][30] = 0
+ts.data['artefacts'][31] = 1
+ts.data['artefacts'][40] = -1
+
+ts.plot(marker='.')
+
+ktk.save('sample_noises.ktk.zip', ts)
 

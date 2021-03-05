@@ -92,6 +92,7 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
@@ -256,7 +257,10 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.register_markers" title="kineticstoolkit.kinematics.register_markers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_markers</span></code></a>(markers, rigid_body_configs)</p></td>
 <td><p>Calculate the trajectory of rigid bodies.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.write_trc_file" title="kineticstoolkit.kinematics.write_trc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_trc_file</span></code></a>(markers, filename)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.write_c3d_file" title="kineticstoolkit.kinematics.write_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_c3d_file</span></code></a>(filename, markers)</p></td>
+<td><p>Write a markers TimeSeries to a C3D file.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.kinematics.write_trc_file" title="kineticstoolkit.kinematics.write_trc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_trc_file</span></code></a>(markers, filename)</p></td>
 <td><p>Export a markers TimeSeries to OpenSim’s TRC file format.</p></td>
 </tr>
 </tbody>
@@ -427,6 +431,43 @@ transformations.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.kinematics.write_c3d_file">
+<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">write_c3d_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">markers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.write_c3d_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write a markers TimeSeries to a C3D file.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped, tested or validated and has
+not been released yet. It may change signature and behaviour or even be
+deleted.</p>
+</div>
+<p>This is the mirror operation to read_c3d_file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path of the C3D file</p></li>
+<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories, following the same form as the TimeSeries
+read by read_c3d_file.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition-notes admonition">
+<p class="admonition-title">Notes</p>
+<ul class="simple">
+<li><p>This function relies on <cite>ezc3d</cite>, which is available on
+conda-forge and on git-hub. Please install ezc3d before using
+read_c3d_file. <a class="reference external" href="https://github.com/pyomeca/ezc3d">https://github.com/pyomeca/ezc3d</a></p></li>
+<li><p>The point unit in the output c3d is m.</p></li>
+</ul>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>

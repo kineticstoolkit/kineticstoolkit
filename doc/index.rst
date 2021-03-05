@@ -32,6 +32,7 @@ Site map
     :caption: GETTING STARTED
     :maxdepth: 2
 
+    what_is_kinetics_toolkit
     install
     conventions
     timeseries

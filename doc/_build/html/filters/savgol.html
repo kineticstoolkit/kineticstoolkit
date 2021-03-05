@@ -92,6 +92,7 @@
             
               <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
@@ -511,18 +512,18 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="section" id="Smoothing-using-a-Savitzky-Golay-filter">
 <h2>Smoothing using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
-<p>Let’s try to smooth the non-derived signal using a second-order Savitzky-Golay filter with a window length of 5.</p>
+<p>Let’s try to smooth the non-derived signal using a second-order Savitzky-Golay filter with a window length of 7.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">filtered</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+<span></span><span class="n">filtered</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
 
-<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="s1">&#39;quantized&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">)</span>
+<span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="s1">&#39;quantized&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
 <span class="n">filtered</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;quantized&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
 
-<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Smoothed signal using a Savitzky-Golay filter of order=2 and window_length=15&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Smoothed signal using a Savitzky-Golay filter of order=2 and window_length=7&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
@@ -568,11 +569,13 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Filter and derivate</span>
-<span class="n">derivate_savgol</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">15</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">derivate_savgol</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">filters</span><span class="o">.</span><span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">deriv</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
 <span class="c1"># Plot it</span>
-<span class="n">derivate</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
-<span class="n">derivate_savgol</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;quantized&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+<span class="n">derivate</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;clean&#39;</span><span class="p">,</span> <span class="s1">&#39;quantized&#39;</span><span class="p">],</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">)</span>
+<span class="n">derivate_savgol</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;quantized&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Derived signal using a Savitzky-Golay filter of order=2 and window_length=7 (black)&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
@@ -585,7 +588,7 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/filters_savgol_9_0.png" src="../_images/filters_savgol_9_0.png" />
 </div>
 </div>
-<p>As observed, the derivative of the highly-quantized signal is nearly identical to the derivative of the clean signal.</p>
+<p>As observed, the derivative of the highly-quantized signal is very similar to the derivative of the clean signal.</p>
 </div>
 </div>
 

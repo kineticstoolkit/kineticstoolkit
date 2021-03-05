@@ -35,7 +35,7 @@ import warnings
 import struct  # To unpack data from N3D files
 
 try:
-    from ezc3d import c3d as ezc3d
+    import ezc3d
 except ModuleNotFoundError:
     warnings.warn('Could not load ezc3d. Function kinematics.read_c3d_file '
                   'will not work.')
@@ -74,7 +74,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
     """
     # Create the reader
-    reader = ezc3d(filename)
+    reader = ezc3d.c3d(filename)
 
     # Create the output timeseries
     output = TimeSeries()
@@ -110,6 +110,59 @@ def read_c3d_file(filename: str) -> TimeSeries:
     output.time = np.arange(n_frames) / point_rate
 
     return output
+
+
+@unstable
+def write_c3d_file(filename: str, markers: TimeSeries) -> None:
+    """
+    Write a markers TimeSeries to a C3D file.
+
+    This is the mirror operation to read_c3d_file.
+
+    Parameters
+    ----------
+    filename
+        Path of the C3D file
+
+    markers
+        Markers trajectories, following the same form as the TimeSeries
+        read by read_c3d_file.
+
+    Notes
+    -----
+    - This function relies on `ezc3d`, which is available on
+      conda-forge and on git-hub. Please install ezc3d before using
+      read_c3d_file. https://github.com/pyomeca/ezc3d
+
+    - The point unit in the output c3d is m.
+
+    """
+    sample_rate = ((markers.time.shape[0] - 1) /
+                   (markers.time[-1] - markers.time[0]))
+
+    marker_list = []
+    marker_data = np.zeros((4, len(markers.data), len(markers.time)))
+
+    for i_marker, marker in enumerate(markers.data):
+        marker_list.append(marker)
+        marker_data[0, i_marker, :] = markers.data[marker][:, 0]
+        marker_data[1, i_marker, :] = markers.data[marker][:, 1]
+        marker_data[2, i_marker, :] = markers.data[marker][:, 2]
+        marker_data[3, i_marker, :] = markers.data[marker][:, 3]
+
+    # Load an empty c3d structure
+    c3d = ezc3d.c3d()
+
+    # Fill it with data
+    c3d['parameters']['POINT']['RATE']['value'] = [sample_rate]
+    c3d['parameters']['POINT']['LABELS']['value'] = tuple(marker_list)
+    c3d['data']['points'] = marker_data
+
+    # Add a custom parameter to the POINT group
+    c3d.add_parameter('POINT', 'UNITS', 'm')
+
+    # Write the data
+    c3d.write(filename)
 
 
 @stable

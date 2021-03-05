@@ -34,7 +34,7 @@ __license__ = "Apache 2.0"
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.decorators import stable, unstable, private, directory
+from kineticstoolkit.decorators import stable, experimental, unstable, private, directory
 from typing import Optional
 
 
@@ -158,8 +158,10 @@ def create_rotation_matrices(seq: str,
 
 
 @stable
-def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
-                     alt_angles=False) -> np.ndarray:
+def get_euler_angles(T: np.ndarray,
+                     seq: str,
+                     degrees: bool = False,
+                     flip: bool = False) -> np.ndarray:
     """
     Represent a series of transformation matrices as series of Euler angles.
 
@@ -187,7 +189,7 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
         Returned angles are in degrees if this flag is True, else they are in
         radians. Default is False.
 
-    alt_angles
+    flip
         Return an alternate sequence with the second angle inverted, that
         leads to the same rotation matrices. More specifically:
 
@@ -223,7 +225,7 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
 
     offset = 180 if degrees else np.pi
 
-    if alt_angles:
+    if flip:
         if seq[0] == seq[2]:  # Euler angles
             angles[:, 0] = np.mod(angles[:, 0], 2 * offset) - offset
             angles[:, 1] = -angles[:, 1]
@@ -237,7 +239,7 @@ def get_euler_angles(T: np.ndarray, seq: str, degrees=False,
     return angles
 
 
-@stable
+@experimental
 def create_reference_frames(
         origin: np.ndarray,
         x: Optional[np.ndarray] = None,
@@ -247,9 +249,9 @@ def create_reference_frames(
         xz: Optional[np.ndarray] = None,
         yz: Optional[np.ndarray] = None) -> np.ndarray:
     """
-    Create a Nx4x4 series of reference frames based on a point cloud series.
+    Create a Nx4x4 series of reference frames based on series of points.
 
-    Create reference frames based on points and vectors and returns this series
+    Create reference frames based on points and vectors and return this series
     of reference frames as a series of transformation matrices.
 
     This function's behaviour is better explained using an example. We will

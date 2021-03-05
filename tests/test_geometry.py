@@ -50,19 +50,18 @@ def test_matmul():
 
 
 def test_create_rotation_matrices():
-    """Test create_rotation_matrices function."""
+    """Test create_rotation_matrices."""
     # Identity matrix
     T = ktk.geometry.create_rotation_matrices('x', [0])
-    assert np.sum(np.abs(T[0] - np.eye(4))) < 1E-15
+    assert np.allclose(T[0], np.eye(4))
 
     # Rotation of 90 degrees around the x axis
-    T = ktk.geometry.create_rotation_matrices('x', [np.pi/2])
-    assert np.sum(np.abs(T[0] - np.array([
+    T = ktk.geometry.create_rotation_matrices('x', [np.pi / 2])
+    assert np.allclose(T[0], np.array([
         [1., 0., 0., 0.],
         [0., 0., -1., 0.],
         [0., 1., 0., 0.],
-        [0., 0., 0., 1.]]
-        ))) < 1E-15
+        [0., 0., 0., 1.]]))
 
     # Series of 100 rotation matrices around the z axis, from 0 to
     # 360 degrees
@@ -92,18 +91,18 @@ def test_create_reference_frames_get_local_global_coordinates():
 
     # Verify that the distances between markers are the same
     local_distance01 = np.sqrt(np.sum(
-            (local_markers[0, :, 0] - local_markers[0, :, 1]) ** 2))
+        (local_markers[0, :, 0] - local_markers[0, :, 1]) ** 2))
     local_distance12 = np.sqrt(np.sum(
-            (local_markers[0, :, 1] - local_markers[0, :, 2]) ** 2))
+        (local_markers[0, :, 1] - local_markers[0, :, 2]) ** 2))
     local_distance20 = np.sqrt(np.sum(
-            (local_markers[0, :, 2] - local_markers[0, :, 0]) ** 2))
+        (local_markers[0, :, 2] - local_markers[0, :, 0]) ** 2))
 
     global_distance01 = np.sqrt(np.sum(
-            (global_markers[0, :, 0] - global_markers[0, :, 1]) ** 2))
+        (global_markers[0, :, 0] - global_markers[0, :, 1]) ** 2))
     global_distance12 = np.sqrt(np.sum(
-            (global_markers[0, :, 1] - global_markers[0, :, 2]) ** 2))
+        (global_markers[0, :, 1] - global_markers[0, :, 2]) ** 2))
     global_distance20 = np.sqrt(np.sum(
-            (global_markers[0, :, 2] - global_markers[0, :, 0]) ** 2))
+        (global_markers[0, :, 2] - global_markers[0, :, 0]) ** 2))
 
     assert np.abs(local_distance01 - global_distance01) < 1E-10
     assert np.abs(local_distance12 - global_distance12) < 1E-10
@@ -134,16 +133,18 @@ def test_create_reference_frames():
         [[0, 0, 0, 1]],
         x=[[0, 0, -2, 0]],
         xy=[[0, 2, -2, 0]])
-    assert np.allclose(test,
-                       ktk.geometry.create_rotation_matrices('y', np.pi / 2))
+    assert np.allclose(
+        test,
+        ktk.geometry.create_rotation_matrices('y', np.pi / 2))
 
     # Rotate 90 degrees around z
     test = ktk.geometry.create_reference_frames(
         [[0, 0, 0, 1]],
         x=[[0, 2, 0, 0]],
         xy=[[-2, 2, 0, 0]])
-    assert np.allclose(test,
-                       ktk.geometry.create_rotation_matrices('z', np.pi / 2))
+    assert np.allclose(
+        test,
+        ktk.geometry.create_rotation_matrices('z', np.pi / 2))
 
     # Create identity using other vectors and planes
     test = ktk.geometry.create_reference_frames(
@@ -211,7 +212,7 @@ def test_get_euler_angles():
         T, 'XYX', degrees=True)
     assert np.allclose(angles, test_angles)
 
-    # Test alt_angles with tait-bryan
+    # Test flip with tait-bryan
     angles = np.zeros((10, 3))
     angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
     angles[:, 1] = np.random.rand(10) * 180 + 90
@@ -220,10 +221,10 @@ def test_get_euler_angles():
     T = ktk.geometry.create_rotation_matrices(
         'XYZ', angles, degrees=True)
     test_angles = ktk.geometry.get_euler_angles(
-        T, 'XYZ', degrees=True, alt_angles=True)
+        T, 'XYZ', degrees=True, flip=True)
     assert np.allclose(angles, test_angles)
 
-    # Test alt_angles with proper euler angles
+    # Test flip with proper euler angles
     angles = np.zeros((10, 3))
     angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
     angles[:, 1] = -np.random.rand(10) * 180
@@ -231,7 +232,7 @@ def test_get_euler_angles():
     T = ktk.geometry.create_rotation_matrices(
         'XYX', angles, degrees=True)
     test_angles = ktk.geometry.get_euler_angles(
-        T, 'XYX', degrees=True, alt_angles=True)
+        T, 'XYX', degrees=True, flip=True)
     assert np.allclose(angles, test_angles)
 
 

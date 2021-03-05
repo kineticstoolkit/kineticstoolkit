@@ -29,6 +29,7 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.decorators import stable, experimental, unstable, directory
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -233,6 +234,9 @@ class Player:
         self._create_markers()
         self._create_ground_plane()
         self._first_refresh()
+
+    def __dir__(self):
+        return directory(Player.__dict__)
 
     def _create_figure(self) -> None:
         """Create the player's figure."""
@@ -623,6 +627,7 @@ class Player:
                 except KeyError:
                     self.markers.add_data_info(marker, 'Color', 'w')
 
+    @stable
     def close(self) -> None:
         """Close the Player and its associated window."""
         plt.close(self.objects['Figure'])
@@ -807,13 +812,31 @@ class Player:
                 (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
 
-    def _to_notebook(self):
+    @experimental
+    def to_html5(self,
+                  start_frame: Optional[int] = None,
+                  stop_frame: Optional[int] = None,
+                  start_time: Optional[int] = None,
+                  stop_time: Optional[int] = None):
         """
         Create an html5 video for displaying in Jupyter notebooks.
 
         Parameters
         ----------
-        None
+        start_frame
+            Start frame in the exported video. Default is the beginning.
+
+        stop_frame
+            Stop frame in the exported video. Negative numbers to count from
+            the end. Default is the end.
+
+        start_time
+            Start time in the exported video. Default is the beginning.
+            Ignored if start_frame is set.
+
+        stop_time
+            Stop time in the exported video. Default is the end.
+            Ignored if stop_frame is set.
 
         Returns
         -------
@@ -827,10 +850,27 @@ class Player:
 
         """
         mpl.rcParams['animation.html'] = 'html5'
+
+        if start_frame is None:
+            if start_time is None:
+                start_frame = 0
+            else:
+                start_frame = np.argmin(np.abs(self.time - start_time))
+
+        if stop_frame is None:
+            if stop_time is None:
+                stop_frame = -1
+            else:
+                stop_frame = np.argmin(np.abs(self.time - stop_time))
+
+        if stop_frame < 0:
+            stop_frame = self.n_frames + stop_frame + 1
+
         self.playback_speed = 0
         self.objects['Figure'].set_size_inches(6, 4.5)  # Half size
+        self._set_frame(start_frame)
         self.running = True
-        self.anim.save_count = self.n_frames
+        self.anim.save_count = stop_frame - start_frame
         self.anim.event_source.start()
         plt.close(self.objects['Figure'])
         return self.anim
