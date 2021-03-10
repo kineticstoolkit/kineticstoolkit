@@ -43,8 +43,6 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Kinematics analysis" href="../kinematics/kinematics.html" />
-    <link rel="prev" title="Dimension conventions" href="dimension_conventions.html" />
 
 
  
@@ -100,16 +98,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
 <p class="caption"><span class="caption-text">TUTORIALS</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
-<li class="toctree-l1 current"><a class="reference internal" href="geometry.html">Rigid body geometry</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="basics.html">Basics of rigid body geometry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dimension_conventions.html">Dimension conventions</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">Converting between transformation matrices and Euler angles</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="geometry.html">Rigid body geometry</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
@@ -173,8 +166,6 @@
     
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
         
-          <li><a href="geometry.html">Rigid body geometry</a> &raquo;</li>
-        
       <li>Converting between transformation matrices and Euler angles</li>
     
     
@@ -186,15 +177,6 @@
     
   </ul>
 
-  
-  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="../kinematics/kinematics.html" class="btn btn-neutral float-right" title="Kinematics analysis" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-      
-      
-        <a href="dimension_conventions.html" class="btn btn-neutral float-left" title="Dimension conventions" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-      
-  </div>
   
   <hr/>
 </div>
@@ -229,8 +211,8 @@
 <h1>Converting between transformation matrices and Euler angles<a class="headerlink" href="#Converting-between-transformation-matrices-and-Euler-angles" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides two functions for manipulating series of rotations:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.create_rotation_matrices"><span class="std std-ref">create_rotation_matrices</span></a>: A wrapper to <code class="docutils literal notranslate"><span class="pre">scipy.transform.Rotation.from_euler</span></code> that creates Nx4x4 series rigid transformations based on rotation axes and angles.</p></li>
-<li><p><a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.create_rotation_matrices"><span class="std std-ref">get_euler_angles</span></a>: A wrapper to <code class="docutils literal notranslate"><span class="pre">scipy.transform.Rotation.as_euler</span></code> that extracts Euler angles from Nx4x4 series of rigid transformations.</p></li>
+<li><p>create_rotation_matrices: A wrapper to <code class="docutils literal notranslate"><span class="pre">scipy.transform.Rotation.from_euler</span></code> that creates Nx4x4 series rigid transformations based on rotation axes and angles.</p></li>
+<li><p>get_euler_angles: A wrapper to <code class="docutils literal notranslate"><span class="pre">scipy.transform.Rotation.as_euler</span></code> that extracts Euler angles from Nx4x4 series of rigid transformations.</p></li>
 </ul>
 <p>To be continued.</p>
 </div>
@@ -240,10 +222,6 @@
            
           </div>
           <footer>
-    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../kinematics/kinematics.html" class="btn btn-neutral float-right" title="Kinematics analysis" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="dimension_conventions.html" class="btn btn-neutral float-left" title="Dimension conventions" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
 
   <hr/>
 

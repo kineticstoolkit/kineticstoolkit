@@ -249,13 +249,13 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_reference_frames" title="kineticstoolkit.geometry.create_reference_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_reference_frames</span></code></a>(origin[, x, y, z, …])</p></td>
-<td><p>Create a Nx4x4 series of reference frames based on series of points.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_frames" title="kineticstoolkit.geometry.create_frames"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_frames</span></code></a>(origin[, x, y, z, xy, xz, yz])</p></td>
+<td><p>Create a Nx4x4 series of frames based on series of points and vectors.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_rotation_matrices" title="kineticstoolkit.geometry.create_rotation_matrices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_rotation_matrices</span></code></a>(seq, angles[, degrees])</p></td>
-<td><p>Create an Nx4x4 series of rotation matrices from Euler coordinates.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.create_transforms" title="kineticstoolkit.geometry.create_transforms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_transforms</span></code></a>([seq, angles, …])</p></td>
+<td><p>Create an Nx4x4 series of homogeneous transforms.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_euler_angles" title="kineticstoolkit.geometry.get_euler_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_euler_angles</span></code></a>(T, seq[, degrees, flip])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_angles" title="kineticstoolkit.geometry.get_angles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_angles</span></code></a>(T, seq[, degrees, flip])</p></td>
 <td><p>Represent a series of transformation matrices as series of Euler angles.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_global_coordinates" title="kineticstoolkit.geometry.get_global_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_global_coordinates</span></code></a>(local_coordinates, …)</p></td>
@@ -271,14 +271,14 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <td><p>Matrix multiplication between series of matrices.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
-<td><p>Find the rigid transformations between two series of point clouds.</p></td>
+<td><p>Find the homogeneous transforms between two series of point clouds.</p></td>
 </tr>
 </tbody>
 </table>
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.create_reference_frames">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_reference_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_reference_frames" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a Nx4x4 series of reference frames based on series of points.</p>
+<dt id="kineticstoolkit.geometry.create_frames">
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_frames" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a Nx4x4 series of frames based on series of points and vectors.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Experimental function.</p>
@@ -343,7 +343,7 @@ of the returned reference frames.</p></li>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">origin</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">xy</span> <span class="o">=</span> <span class="p">[[</span><span class="mf">10.</span><span class="p">,</span> <span class="mf">10.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">,</span> <span class="mf">0.</span><span class="p">]]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">rf</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rf</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_frames</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">xy</span><span class="o">=</span><span class="n">xy</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">rf</span>
 <span class="go">array([[[1., 0., 0., 2.],</span>
 <span class="go">        [0., 1., 0., 2.],</span>
@@ -363,54 +363,63 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.create_rotation_matrices">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_rotation_matrices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">angles</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_rotation_matrices" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an Nx4x4 series of rotation matrices from Euler coordinates.</p>
-<p>This function is a wrapper for scipy.transform.Rotation.from_euler.</p>
+<dt id="kineticstoolkit.geometry.create_transforms">
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_transforms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">angles</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">translations</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_transforms" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create an Nx4x4 series of homogeneous transforms.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>seq</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Specifies sequence of axes for rotations. Up to 3 characters belonging
-to the set {‘X’, ‘Y’, ‘Z’} for intrinsic rotations (moving axes), or
-{‘x’, ‘y’, ‘z’} for extrinsic rotations (fixed axes). Extrinsic and
-intrinsic rotations cannot be mixed in one function call.</p></li>
-<li><p><strong>angles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>float or array_like, shape (N,) or (N, [1 or 2 or 3]). Euler angles
-specified in radians (degrees is False) or degrees (degrees is True).
-For a single character seq, angles can be:</p>
+<li><p><strong>seq</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional. Specifies sequence of axes for rotations. Up to 3 characters
+belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic rotations (moving
+axes), or {‘x’, ‘y’, ‘z’} for extrinsic rotations (fixed axes).
+Extrinsic and intrinsic rotations cannot be mixed in one function call.
+Required if angles is specified.</p></li>
+<li><p><strong>angles</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – <p>Optional array_like, shape (N,) or (N, [1 or 2 or 3]).
+Angles are specified in radians (degrees is False) or degrees (degrees
+is True).</p>
+<p>For a single character seq, angles can be:</p>
 <blockquote>
 <div><ul>
-<li><p>a single value</p></li>
 <li><p>array_like with shape (N,), where each angle[i] corresponds to a
 single rotation</p></li>
 <li><p>array_like with shape (N, 1), where each angle[i, 0] corresponds
 to a single rotation</p></li>
 </ul>
 </div></blockquote>
-<dl class="simple">
-<dt>For 2- and 3-character wide seq, angles can be:</dt><dd><ul>
+<p>For 2- and 3-character wide seq, angles can be:</p>
+<blockquote>
+<div><ul>
 <li><p>array_like with shape (W,) where W is the width of seq, which
 corresponds to a single rotation with W axes</p></li>
 <li><p>array_like with shape (N, W) where each angle[i] corresponds to
 a sequence of Euler angles describing a single rotation</p></li>
 </ul>
-</dd>
-</dl>
+</div></blockquote>
 </p></li>
-<li><p><strong>degrees</strong> – If True, then the given angles are assumed to be in degrees. Default
-is False.</p></li>
+<li><p><strong>translations</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Optional float or array_like, shape (N, 3) or (N, 4). This corresponds
+to the translation part of the generated series of homogeneous
+transforms.</p></li>
+<li><p><strong>degrees</strong> – If True, then the given angles are in degrees. Default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An Nx4x4 series of rotation matrices.</p>
+<dd class="field-even"><p>An Nx4x4 series of homogeneous transforms.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>
 </dd>
 </dl>
 <p class="rubric">Example</p>
-<p>Create a rotation matrix that rotates 0, then 90 degrees around x:</p>
+<p>Create a series of two homogeneous transforms that rotates 0, then 90
+degrees around x:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_rotation_matrices</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_transforms</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="go">array([[[ 1.,  0.,  0.,  0.],</span>
 <span class="go">        [ 0.,  1.,  0.,  0.],</span>
 <span class="go">        [ 0.,  0.,  1.,  0.],</span>
@@ -425,9 +434,15 @@ is False.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.get_euler_angles">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_euler_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flip</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_euler_angles" title="Permalink to this definition">¶</a></dt>
+<dt id="kineticstoolkit.geometry.get_angles">
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flip</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represent a series of transformation matrices as series of Euler angles.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <p>This function is a wrapper for scipy.transform.Rotation.as_euler. Please
 consult scipy help for the complete docstring.</p>
 <p>Euler angles suffer from the problem of gimbal lock, where the
@@ -600,7 +615,13 @@ mismatch errors.</p>
 <dl class="py function">
 <dt id="kineticstoolkit.geometry.register_points">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">register_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_points</span></em>, <em class="sig-param"><span class="n">local_points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.register_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Find the rigid transformations between two series of point clouds.</p>
+<dd><p>Find the homogeneous transforms between two series of point clouds.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Experimental function.</p>
+<p>This function’s signature and default behaviour are not completely settled
+and may change slightly in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -610,8 +631,8 @@ global_points and local_points must have the same shape.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of shape Nx4x4, expressing a series of 4x4 rigid transformation
-matrices.</p>
+<dd class="field-even"><p>Array of shape Nx4x4, expressing a series of 4x4 homogeneous
+transforms.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>

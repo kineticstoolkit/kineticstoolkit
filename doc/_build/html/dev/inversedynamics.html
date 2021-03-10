@@ -128,7 +128,7 @@
 </li>
 <li class="toctree-l3"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-elbow">Calculate the force and moments at the elbow</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Calculate-the-force-and-moments-at-the-shoulder">Calculate the force and moments at the shoulder</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Get-the-forces-and-moments-in-the-correct-reference-frames">Get the forces and moments in the correct reference frames</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Get-the-forces-and-moments-in-the-local-coordinate-system">Get the forces and moments in the local coordinate system</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#Local-forces">Local forces</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#Local-moments">Local moments</a></li>
 </ul>
@@ -561,13 +561,13 @@ div.rendered_html tbody tr:hover {
 <span class="n">markers</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;Markers&#39;</span><span class="p">]</span>
 <span class="n">markers</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
 
-<span class="c1"># Extract reference frames</span>
-<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;ReferenceFrames&#39;</span><span class="p">]</span>
-<span class="n">reference_frames</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
+<span class="c1"># Extract frames</span>
+<span class="n">frames</span> <span class="o">=</span> <span class="n">kinematics</span><span class="p">[</span><span class="s1">&#39;ReferenceFrames&#39;</span><span class="p">]</span>
+<span class="n">frames</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">events</span>
 
 <span class="c1"># Keep everything between sync and stop recording events.</span>
 <span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">)</span>
-<span class="n">reference_frames</span> <span class="o">=</span> <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">)</span>
+<span class="n">frames</span> <span class="o">=</span> <span class="n">frames</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">,</span> <span class="s1">&#39;stop&#39;</span><span class="p">)</span>
 
 <span class="c1"># Plot one sample</span>
 <span class="n">markers</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">)</span>
@@ -659,8 +659,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Check what reference frames are available</span>
-<span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span>
+<span></span><span class="c1"># Check what frames are available</span>
+<span class="n">frames</span><span class="o">.</span><span class="n">data</span>
 </pre></div>
 </div>
 </div>
@@ -690,10 +690,10 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">ts_all</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">events</span><span class="o">=</span><span class="n">kinetics</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
 
-<span class="c1"># Add reference frames (to put pushrim kinetics in global coordinates,</span>
+<span class="c1"># Add frames (to put pushrim kinetics in global coordinates,</span>
 <span class="c1"># and at the end to express shoulder dynamics in local coordinates).</span>
 <span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-    <span class="n">reference_frames</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
+    <span class="n">frames</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
         <span class="p">[</span><span class="s1">&#39;WheelR&#39;</span><span class="p">,</span> <span class="s1">&#39;HumerusR&#39;</span><span class="p">,</span> <span class="s1">&#39;Trunk&#39;</span><span class="p">]),</span>
     <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -1194,9 +1194,9 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 </div>
-<div class="section" id="Get-the-forces-and-moments-in-the-correct-reference-frames">
-<h2>Get the forces and moments in the correct reference frames<a class="headerlink" href="#Get-the-forces-and-moments-in-the-correct-reference-frames" title="Permalink to this headline">¶</a></h2>
-<p>Please note that every force and moment we just calculated is expressed in the global reference frame, which is of limited value for interpretation. It is much more useful to express these data in local coordinates. Several conventions may be used, here we will express the shoulder forces in the trunk reference frame, and the shoulder moments in the humeral reference frame.</p>
+<div class="section" id="Get-the-forces-and-moments-in-the-local-coordinate-system">
+<h2>Get the forces and moments in the local coordinate system<a class="headerlink" href="#Get-the-forces-and-moments-in-the-local-coordinate-system" title="Permalink to this headline">¶</a></h2>
+<p>Please note that every force and moment we just calculated is expressed in global coordinates, which is of limited value for interpretation. It is much more useful to express these data in local coordinates. Several conventions may be used, here we will express the shoulder forces in the trunk coordinate system, and the shoulder moments in the humeral coordinate system.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
@@ -1232,7 +1232,7 @@ div.rendered_html tbody tr:hover {
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">local_joint_dynamics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">([</span><span class="s1">&#39;Anterior&#39;</span><span class="p">,</span> <span class="s1">&#39;Upward&#39;</span><span class="p">,</span> <span class="s1">&#39;Lateral&#39;</span><span class="p">])</span>
-<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;External forces in the trunk reference frame:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;External forces in the trunk coordinate system:&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1241,7 +1241,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-External forces in the trunk reference frame:
+External forces in the trunk coordinate system:
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">

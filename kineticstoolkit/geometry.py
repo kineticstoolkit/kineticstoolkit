@@ -84,55 +84,63 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return result
 
 
-@stable
-def create_rotation_matrices(seq: str,
-                             angles: np.ndarray,
-                             degrees=False) -> np.ndarray:
+@experimental
+def create_transforms(seq: Optional[str] = None,
+                      angles: Optional[np.ndarray] = None,
+                      translations: Optional[np.ndarray] = None,
+                      *,
+                      degrees=False) -> np.ndarray:
     """
-    Create an Nx4x4 series of rotation matrices from Euler coordinates.
-
-    This function is a wrapper for scipy.transform.Rotation.from_euler.
+    Create an Nx4x4 series of homogeneous transforms.
 
     Parameters
     ----------
     seq
-        Specifies sequence of axes for rotations. Up to 3 characters belonging
-        to the set {'X', 'Y', 'Z'} for intrinsic rotations (moving axes), or
-        {'x', 'y', 'z'} for extrinsic rotations (fixed axes). Extrinsic and
-        intrinsic rotations cannot be mixed in one function call.
+        Optional. Specifies sequence of axes for rotations. Up to 3 characters
+        belonging to the set {'X', 'Y', 'Z'} for intrinsic rotations (moving
+        axes), or {'x', 'y', 'z'} for extrinsic rotations (fixed axes).
+        Extrinsic and intrinsic rotations cannot be mixed in one function call.
+        Required if angles is specified.
 
     angles
-        float or array_like, shape (N,) or (N, [1 or 2 or 3]). Euler angles
-        specified in radians (degrees is False) or degrees (degrees is True).
+        Optional array_like, shape (N,) or (N, [1 or 2 or 3]).
+        Angles are specified in radians (degrees is False) or degrees (degrees
+        is True).
+
         For a single character seq, angles can be:
 
-            - a single value
             - array_like with shape (N,), where each angle[i] corresponds to a
               single rotation
             - array_like with shape (N, 1), where each angle[i, 0] corresponds
               to a single rotation
 
         For 2- and 3-character wide seq, angles can be:
+
             - array_like with shape (W,) where W is the width of seq, which
               corresponds to a single rotation with W axes
             - array_like with shape (N, W) where each angle[i] corresponds to
               a sequence of Euler angles describing a single rotation
 
+    translations
+        Optional float or array_like, shape (N, 3) or (N, 4). This corresponds
+        to the translation part of the generated series of homogeneous
+        transforms.
+
     degrees
-        If True, then the given angles are assumed to be in degrees. Default
-        is False.
+        If True, then the given angles are in degrees. Default is False.
 
     Returns
     -------
     np.ndarray
-        An Nx4x4 series of rotation matrices.
+        An Nx4x4 series of homogeneous transforms.
 
     Example
     -------
-    Create a rotation matrix that rotates 0, then 90 degrees around x:
+    Create a series of two homogeneous transforms that rotates 0, then 90
+    degrees around x:
 
         >>> import kineticstoolkit.lab as ktk
-        >>> ktk.geometry.create_rotation_matrices('x', [0, 90], degrees=True)
+        >>> ktk.geometry.create_transforms('x', [0, 90], degrees=True)
         array([[[ 1.,  0.,  0.,  0.],
                 [ 0.,  1.,  0.,  0.],
                 [ 0.,  0.,  1.,  0.],
@@ -144,24 +152,43 @@ def create_rotation_matrices(seq: str,
                 [ 0.,  0.,  0.,  1.]]])
 
     """
+    # Condition translations
+    if translations is None:
+        translations = np.zeros((1, 3))
+    else:
+        translations = np.array(translations)
+
+    # Condition angles
+    if angles is None:
+        angles = np.array([0])
+        seq = 'x'
+    else:
+        angles = np.array(angles)
+
+    # Match sizes
+    translations, angles = match_size(translations, angles)
+    n_samples = angles.shape[0]
+
+    # Create the rotation matrix
     rotation = transform.Rotation.from_euler(seq, angles, degrees)
     R = rotation.as_matrix()
     if len(R.shape) == 2:  # Single rotation: add the Time dimension.
         R = R[np.newaxis, ...]
-    n_samples = R.shape[0]
+
+    # Construct the final series of transforms
     T = np.empty((n_samples, 4, 4))
     T[:, 0:3, 0:3] = R
-    T[:, 0:3, 3] = 0  # No translation
+    T[:, 0:3, 3] = translations
     T[:, 3, 0:3] = 0
     T[:, 3, 3] = 1
     return T
 
 
-@stable
-def get_euler_angles(T: np.ndarray,
-                     seq: str,
-                     degrees: bool = False,
-                     flip: bool = False) -> np.ndarray:
+@experimental
+def get_angles(T: np.ndarray,
+               seq: str,
+               degrees: bool = False,
+               flip: bool = False) -> np.ndarray:
     """
     Represent a series of transformation matrices as series of Euler angles.
 
@@ -240,7 +267,7 @@ def get_euler_angles(T: np.ndarray,
 
 
 @experimental
-def create_reference_frames(
+def create_frames(
         origin: np.ndarray,
         x: Optional[np.ndarray] = None,
         y: Optional[np.ndarray] = None,
@@ -249,7 +276,7 @@ def create_reference_frames(
         xz: Optional[np.ndarray] = None,
         yz: Optional[np.ndarray] = None) -> np.ndarray:
     """
-    Create a Nx4x4 series of reference frames based on series of points.
+    Create a Nx4x4 series of frames based on series of points and vectors.
 
     Create reference frames based on points and vectors and return this series
     of reference frames as a series of transformation matrices.
@@ -310,7 +337,7 @@ def create_reference_frames(
         >>> origin = [[2., 2., 2., 1.]]
         >>> x = [[10., 0., 0., 0.]]
         >>> xy = [[10., 10., 0., 0.]]
-        >>> rf = ktk.geometry.create_reference_frames(origin, x=x, xy=xy)
+        >>> rf = ktk.geometry.create_frames(origin, x=x, xy=xy)
         >>> rf
         array([[[1., 0., 0., 2.],
                 [0., 1., 0., 2.],
@@ -520,11 +547,11 @@ def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return op1, op2
 
 
-@stable
+@experimental
 def register_points(global_points: np.ndarray,
                     local_points: np.ndarray) -> np.ndarray:
     """
-    Find the rigid transformations between two series of point clouds.
+    Find the homogeneous transforms between two series of point clouds.
 
     Parameters
     ----------
@@ -537,8 +564,8 @@ def register_points(global_points: np.ndarray,
     Returns
     -------
     np.ndarray
-        Array of shape Nx4x4, expressing a series of 4x4 rigid transformation
-        matrices.
+        Array of shape Nx4x4, expressing a series of 4x4 homogeneous
+        transforms.
 
     """
     n_samples = global_points.shape[0]
@@ -552,22 +579,22 @@ def register_points(global_points: np.ndarray,
         # Identify which global points are visible
         sample_global_points = global_points[i_sample]
         sample_global_points_missing = np.isnan(
-                np.sum(sample_global_points, axis=0))
+            np.sum(sample_global_points, axis=0))
 
         # Identify which local points are visible
         sample_local_points = local_points[i_sample]
         sample_local_points_missing = np.isnan(
-                np.sum(sample_local_points, axis=0))
+            np.sum(sample_local_points, axis=0))
 
         sample_points_missing = np.logical_or(
-                sample_global_points_missing, sample_local_points_missing)
+            sample_global_points_missing, sample_local_points_missing)
 
         # If at least 3 common points are visible between local and global
         # points, then we can regress the transformation.
         if sum(~sample_points_missing) >= 3:
             T[i_sample] = icp.best_fit_transform(
-                    sample_local_points[0:3, ~sample_points_missing].T,
-                    sample_global_points[0:3, ~sample_points_missing].T)[0]
+                sample_local_points[0:3, ~sample_points_missing].T,
+                sample_global_points[0:3, ~sample_points_missing].T)[0]
         else:
             T[i_sample] = np.nan
 

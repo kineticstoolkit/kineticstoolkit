@@ -12,5 +12,3 @@ In this tutorial, we will do a quick starter on rigid body basics (points, vecto
 
     basics
     dimension_conventions
-    reference_frame
-    euler_angles

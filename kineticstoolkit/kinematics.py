@@ -391,7 +391,7 @@ def create_rigid_body_config(
     # Remove samples where at least one marker is invisible
     global_points = global_points[~geometry.isnan(global_points)]
 
-    rigid_bodies = geometry.create_reference_frames(
+    rigid_bodies = geometry.create_frames(
         origin=global_points[:, :, 0],
         x=global_points[:, :, 1] - global_points[:, :, 0],
         xy=global_points[:, :, 2] - global_points[:, :, 0])

@@ -49,14 +49,14 @@ def test_matmul():
     assert np.sum(np.abs(result - np.array([3, 4, 5]))) < 1E-15
 
 
-def test_create_rotation_matrices():
-    """Test create_rotation_matrices."""
+def test_create_transforms():
+    """Test create_transforms."""
     # Identity matrix
-    T = ktk.geometry.create_rotation_matrices('x', [0])
+    T = ktk.geometry.create_transforms('x', [0])
     assert np.allclose(T[0], np.eye(4))
 
     # Rotation of 90 degrees around the x axis
-    T = ktk.geometry.create_rotation_matrices('x', [np.pi / 2])
+    T = ktk.geometry.create_transforms('x', [np.pi / 2])
     assert np.allclose(T[0], np.array([
         [1., 0., 0., 0.],
         [0., 0., -1., 0.],
@@ -64,14 +64,21 @@ def test_create_rotation_matrices():
         [0., 0., 0., 1.]]))
 
     # Series of 100 rotation matrices around the z axis, from 0 to
-    # 360 degrees
-    T = ktk.geometry.create_rotation_matrices(
-        'z', np.linspace(0, 2 * np.pi, 100))
+    # 360 degrees, with a series of translations of 2 to the right.
+    T = ktk.geometry.create_transforms(
+        'z', np.linspace(0, 2 * np.pi, 100),
+        translations=[[2, 0, 0]])
+    assert np.allclose(T[0], np.array([
+        [1, 0, 0, 2],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]]))
+    assert (T.shape[0] == 100)
 
 
-def test_create_reference_frames_get_local_global_coordinates():
+def test_create_frames_get_local_global_coordinates():
     """
-    Test create_reference_frames, get_local_coordinates and
+    Test create_frames, get_local_coordinates and
     get_global_coordinates.
     """
     global_marker1 = np.array([[0.0, 0.0, 0.0, 1]])
@@ -83,7 +90,7 @@ def test_create_reference_frames_get_local_global_coordinates():
     # Repeat for N=5
     global_markers = np.repeat(global_markers, 5, axis=0)
 
-    T = ktk.geometry.create_reference_frames(
+    T = ktk.geometry.create_frames(
         origin=global_marker1,
         x=global_marker2 - global_marker1,
         xy=global_marker3 - global_marker1)
@@ -119,74 +126,74 @@ def test_create_reference_frames_get_local_global_coordinates():
     assert np.sum(np.abs(test_global - global_markers)) < 1E-10
 
 
-def test_create_reference_frames():
-    """Test create_reference_frames."""
+def test_create_frames():
+    """Test create_frames."""
     # Create identity
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         x=[[2, 0, 0, 0]],
         xy=[[2, 2, 0, 0]])
     assert np.allclose(test, np.eye(4)[np.newaxis])
 
     # Rotate 90 degrees around y
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         x=[[0, 0, -2, 0]],
         xy=[[0, 2, -2, 0]])
     assert np.allclose(
         test,
-        ktk.geometry.create_rotation_matrices('y', np.pi / 2))
+        ktk.geometry.create_transforms('y', [np.pi / 2]))
 
     # Rotate 90 degrees around z
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         x=[[0, 2, 0, 0]],
         xy=[[-2, 2, 0, 0]])
     assert np.allclose(
         test,
-        ktk.geometry.create_rotation_matrices('z', np.pi / 2))
+        ktk.geometry.create_transforms('z', [np.pi / 2]))
 
     # Create identity using other vectors and planes
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         x=[[2, 0, 0, 0]],
         xz=[[2, 0, 2, 0]])
     assert np.allclose(test, np.eye(4)[np.newaxis])
 
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         y=[[0, 2, 0, 0]],
         xy=[[2, 2, 0, 0]])
     assert np.allclose(test, np.eye(4)[np.newaxis])
 
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         y=[[0, 2, 0, 0]],
         yz=[[0, 2, 2, 0]])
     assert np.allclose(test, np.eye(4)[np.newaxis])
 
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         z=[[0, 0, 2, 0]],
         xz=[[2, 0, 2, 0]])
     assert np.allclose(test, np.eye(4)[np.newaxis])
 
-    test = ktk.geometry.create_reference_frames(
+    test = ktk.geometry.create_frames(
         [[0, 0, 0, 1]],
         z=[[0, 0, 2, 0]],
         yz=[[0, 2, 2, 0]])
     assert np.allclose(test, np.eye(4)[np.newaxis])
 
 
-def test_get_euler_angles():
-    """Test get_euler_angles and create_rotation_matrices."""
+def test_get_angles():
+    """Test get_angles and create_transforms."""
     np.random.seed(0)
 
     # Test with only one angle
     angles = np.random.rand(10) * 2 * np.pi
-    T = ktk.geometry.create_rotation_matrices(
+    T = ktk.geometry.create_transforms(
         'X', angles)
-    test_angles = ktk.geometry.get_euler_angles(
+    test_angles = ktk.geometry.get_angles(
         T, 'XYZ')
     assert np.allclose(angles, np.mod(test_angles[:, 0], 2 * np.pi))
 
@@ -195,9 +202,9 @@ def test_get_euler_angles():
     angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
     angles[:, 1] = (np.random.rand(10) - 1) * 90
     angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
-    T = ktk.geometry.create_rotation_matrices(
+    T = ktk.geometry.create_transforms(
         'XYZ', angles, degrees=True)
-    test_angles = ktk.geometry.get_euler_angles(
+    test_angles = ktk.geometry.get_angles(
         T, 'XYZ', degrees=True)
     assert np.allclose(angles, test_angles)
 
@@ -206,9 +213,9 @@ def test_get_euler_angles():
     angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
     angles[:, 1] = np.random.rand(10) * 180
     angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
-    T = ktk.geometry.create_rotation_matrices(
+    T = ktk.geometry.create_transforms(
         'XYX', angles, degrees=True)
-    test_angles = ktk.geometry.get_euler_angles(
+    test_angles = ktk.geometry.get_angles(
         T, 'XYX', degrees=True)
     assert np.allclose(angles, test_angles)
 
@@ -218,9 +225,9 @@ def test_get_euler_angles():
     angles[:, 1] = np.random.rand(10) * 180 + 90
     angles[angles[:, 1] > 180, :] -= 360
     angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
-    T = ktk.geometry.create_rotation_matrices(
+    T = ktk.geometry.create_transforms(
         'XYZ', angles, degrees=True)
-    test_angles = ktk.geometry.get_euler_angles(
+    test_angles = ktk.geometry.get_angles(
         T, 'XYZ', degrees=True, flip=True)
     assert np.allclose(angles, test_angles)
 
@@ -229,9 +236,9 @@ def test_get_euler_angles():
     angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
     angles[:, 1] = -np.random.rand(10) * 180
     angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
-    T = ktk.geometry.create_rotation_matrices(
+    T = ktk.geometry.create_transforms(
         'XYX', angles, degrees=True)
-    test_angles = ktk.geometry.get_euler_angles(
+    test_angles = ktk.geometry.get_angles(
         T, 'XYX', degrees=True, flip=True)
     assert np.allclose(angles, test_angles)
 

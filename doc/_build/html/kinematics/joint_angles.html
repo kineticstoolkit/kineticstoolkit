@@ -109,12 +109,12 @@
 <li class="toctree-l2"><a class="reference internal" href="load_visualize.html">Reading and visualizing marker trajectories</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Calculating joint angles from a kinematic acquisition</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Read-and-visualize-marker-trajectories">Read and visualize marker trajectories</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#Create-series-of-segments’-reference-frames">Create series of segments’ reference frames</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#Arm-reference-frame">Arm reference frame</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#Forearm-reference-frame">Forearm reference frame</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Create-local-coordinate-systems">Create local coordinate systems</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Arm-coordinate-system">Arm coordinate system</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Forearm-frame">Forearm frame</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="#Find-the-series-of-transformations-from-the-arm-to-the-forearm">Find the series of transformations from the arm to the forearm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Find-the-series-of-homogeneous-transforms-between-both-segments">Find the series of homogeneous transforms between both segments</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Extract-the-series-of-Euler-angles">Extract the series of Euler angles</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Plot-the-Euler-angles">Plot the Euler angles</a></li>
 </ul>
@@ -488,9 +488,9 @@ div.rendered_html tbody tr:hover {
 <p>Such an analysis is composed of the following steps:</p>
 <p><strong>Step 1.</strong> Read the marker trajectories</p>
 <p>For each of the analyzed joint:</p>
-<p><strong>Step 2.</strong> We calculate series of reference frames for the two segments that compose this joint (how are both segments oriented in space);</p>
-<p><strong>Step 3.</strong> We express a series of rigid transformations from the proximal to the distal joint (how the distal segment is oriented in space compared to the proximal segment);</p>
-<p><strong>Step 4.</strong> We extract the series of Euler angles from these rigid transforms (what series of three angles allow such relative orientation);</p>
+<p><strong>Step 2.</strong> We calculate series of frames to express the orientation of the two segments that compose this joint (how are both segments oriented in space);</p>
+<p><strong>Step 3.</strong> We express a series of homogeneous transforms between the proximal and distal frames (how the distal segment is oriented in space compared to the proximal segment);</p>
+<p><strong>Step 4.</strong> We extract the series of Euler angles from these homogeneous transforms (what series of three angles allow such relative orientation);</p>
 <p><strong>Step 5.</strong> We interpret these Euler angle as rotations around anatomical axes.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -1928,13 +1928,13 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </video></div>
 </div>
 </div>
-<div class="section" id="Create-series-of-segments’-reference-frames">
-<h2>Create series of segments’ reference frames<a class="headerlink" href="#Create-series-of-segments’-reference-frames" title="Permalink to this headline">¶</a></h2>
-<p>To calculate the elbow angles, we need to create reference frames for the arm and forearm segments. The elbow angles will be extracted from the rigid transformation between the arm and forearm reference frames.</p>
-<p>We will use the recommendations of the International Society of Biomechanics [1] to define these reference frames.</p>
-<div class="section" id="Arm-reference-frame">
-<h3>Arm reference frame<a class="headerlink" href="#Arm-reference-frame" title="Permalink to this headline">¶</a></h3>
-<p>Following the ISB recommendations, the reference frame for the humerus is defined as follow:</p>
+<div class="section" id="Create-local-coordinate-systems">
+<h2>Create local coordinate systems<a class="headerlink" href="#Create-local-coordinate-systems" title="Permalink to this headline">¶</a></h2>
+<p>To calculate the elbow angles, we need to express frames for the arm and forearm segments. The elbow angles will be extracted from the homogeneous transform between both frames.</p>
+<p>We will use the recommendations of the International Society of Biomechanics [1] to define these local coordinate systems:</p>
+<div class="section" id="Arm-coordinate-system">
+<h3>Arm coordinate system<a class="headerlink" href="#Arm-coordinate-system" title="Permalink to this headline">¶</a></h3>
+<p>Following the ISB recommendations, the local coordinate system for the humerus is defined as follow:</p>
 <p><strong>1. The origin is GH (glenohumeral joint).</strong></p>
 <p>We don’t have a marker for the glenohumeral join, but we have one for the acromion. We will therefore approximate GH by the acromion.</p>
 <div class="nbinput nblast docutils container">
@@ -1972,24 +1972,24 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 <p>Note that the direction of the yz vector is important. For the plane normal to be forward, the cross product of y and yz must also point forward. In this case, following the <a class="reference external" href="https://en.wikipedia.org/wiki/Right-hand_rule">right-hand/screw rule</a>, y (upward) cross yz (right) effectively yields a forward vector.</p>
 <p>As an easier rule of thumb, look at the next definition: the z vector will point to right. Then just make the yz vector also point to (grossly) right.</p>
 <p><strong>4. The z axis is perpendicular to x and y, pointing to the right.</strong></p>
-<p>We have now defined everything to create the humerus reference frame.</p>
-<p>Let’s first create an empty TimeSeries for our new created reference frames:</p>
+<p>We have now defined everything to create the series of humerus frame.</p>
+<p>Let’s first create an empty TimeSeries for our new frames:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">reference_frames</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">markers</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+<span></span><span class="n">frames</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">markers</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>Now, we will create the <code class="docutils literal notranslate"><span class="pre">ArmR</span></code> reference frame.</p>
+<p>Now, we will create the <code class="docutils literal notranslate"><span class="pre">ArmR</span></code> frame series.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span>
+<span></span><span class="n">frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_frames</span><span class="p">(</span>
             <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">yz</span><span class="o">=</span><span class="n">yz</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2000,7 +2000,7 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">reference_frames</span><span class="p">,</span>
+<span></span><span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span>
                     <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 
 <span class="c1"># Show one second in this Jupyter notebook</span>
@@ -3490,9 +3490,9 @@ LjQ1LjEwMA==
 </video></div>
 </div>
 </div>
-<div class="section" id="Forearm-reference-frame">
-<h3>Forearm reference frame<a class="headerlink" href="#Forearm-reference-frame" title="Permalink to this headline">¶</a></h3>
-<p>We will now proceed with the exact same steps to create the forearm reference frame. From the ISB [1]:</p>
+<div class="section" id="Forearm-frame">
+<h3>Forearm frame<a class="headerlink" href="#Forearm-frame" title="Permalink to this headline">¶</a></h3>
+<p>We will now proceed with the exact same steps to create the forearm coordinate system. From the ISB [1]:</p>
 <p><strong>1. The origin is US (ulnar styloid process).</strong></p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -3527,24 +3527,24 @@ LjQ1LjEwMA==
 </pre></div>
 </div>
 </div>
-<p>We are now ready to create the <code class="docutils literal notranslate"><span class="pre">ForearmR</span></code> reference frame.</p>
+<p>We are now ready to create the <code class="docutils literal notranslate"><span class="pre">ForearmR</span></code> frame series.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_reference_frames</span><span class="p">(</span>
+<span></span><span class="n">frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_frames</span><span class="p">(</span>
             <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">yz</span><span class="o">=</span><span class="n">yz</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<p>Let’s visualize our markers with both new reference frames:</p>
+<p>Let’s visualize our markers with both new frames:</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">reference_frames</span><span class="p">,</span>
+<span></span><span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">frames</span><span class="p">,</span>
                     <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 
 <span class="c1"># Show one second in this Jupyter notebook</span>
@@ -5101,17 +5101,17 @@ YXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 </div>
 </div>
 </div>
-<div class="section" id="Find-the-series-of-transformations-from-the-arm-to-the-forearm">
-<h2>Find the series of transformations from the arm to the forearm<a class="headerlink" href="#Find-the-series-of-transformations-from-the-arm-to-the-forearm" title="Permalink to this headline">¶</a></h2>
-<p>Now that we have expressed the reference frames for both the arm and forearm, we can find the rigid transformation between both reference frames. This is equivalent to express the forearm reference frame in the local coordinates system of the arm.</p>
+<div class="section" id="Find-the-series-of-homogeneous-transforms-between-both-segments">
+<h2>Find the series of homogeneous transforms between both segments<a class="headerlink" href="#Find-the-series-of-homogeneous-transforms-between-both-segments" title="Permalink to this headline">¶</a></h2>
+<p>Now that we have expressed frames for both the arm and forearm, we can find the homogeneous transform between both frames. This is equivalent to expressing the forearm frame in the local coordinates system of the arm.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">arm_to_forearm</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_local_coordinates</span><span class="p">(</span>
-    <span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">],</span>
-    <span class="n">reference_frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span>
+    <span class="n">frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">],</span>
+    <span class="n">frames</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="n">arm_to_forearm</span>
@@ -5160,18 +5160,17 @@ array([[[-0.89251428, -0.28050878,  0.35317572,  0.07386483],
 </div>
 <div class="section" id="Extract-the-series-of-Euler-angles">
 <h2>Extract the series of Euler angles<a class="headerlink" href="#Extract-the-series-of-Euler-angles" title="Permalink to this headline">¶</a></h2>
-<p>We now have a series of transformation matrices, from which we will now extract Euler angles corresponding to flexion and pronation. We will use the <a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_euler_angles"><span class="std std-ref">get_euler_angles()</span></a> to extract these Euler angles. We however fist need to define the sequence of rotation for these angles. Still following the recommendations of the International Society of Biomechanics [1], we define the series of rotations from the arm to forearm
-as:</p>
-<p><strong>First rotation:</strong> Around the z axis of the humerus reference frame. Corresponds to a flexion (positive) or hyperextension (negative).</p>
-<p><strong>Second rotation:</strong> Around the rotated x axis of the forearm reference frame. Corresponds to a “carrying angle” due to a tilt in the humeral flexion/extension axis at the humero-ulnar joint and an angulation of the ulna itself.</p>
-<p><strong>Third rotation:</strong> Around the rotated y axis of the forearm reference frame. Corresponds to a pronation (positive) or supination (negative).</p>
-<p>These rotations are relative to moving axes (every other rotation is performed around a new reference frame generated by the previous rotation). Therefore, we will use ‘ZXY’ (capital letters) as the sequence of rotations as defined in the function’s docstring.</p>
+<p>We now have a series of homogeneous matrices, from which we will now extract Euler angles corresponding to flexion and pronation. We will use the <a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_angles"><span class="std std-ref">get_angles()</span></a> to extract these Euler angles. We however fist need to define the sequence of rotation for these angles. Still following the recommendations of the International Society of Biomechanics [1], we define the series of rotations from the arm to forearm as:</p>
+<p><strong>First rotation:</strong> Around the humerus’ z axis. Corresponds to a flexion (positive) or hyperextension (negative).</p>
+<p><strong>Second rotation:</strong> Around the forearm’s rotated x axis. Corresponds to a “carrying angle” due to a tilt in the humeral flexion/extension axis at the humero-ulnar joint and an angulation of the ulna itself.</p>
+<p><strong>Third rotation:</strong> Around the forearm’s rotated y axis. Corresponds to a pronation (positive) or supination (negative).</p>
+<p>These rotations are relative to moving axes (every other rotation is performed around a new frame generated by the previous rotation). Therefore, we will use ‘ZXY’ (capital letters) as the sequence of rotations.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">euler_angles</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_euler_angles</span><span class="p">(</span><span class="n">arm_to_forearm</span><span class="p">,</span> <span class="s1">&#39;ZXY&#39;</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span></span><span class="n">euler_angles</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_angles</span><span class="p">(</span><span class="n">arm_to_forearm</span><span class="p">,</span> <span class="s1">&#39;ZXY&#39;</span><span class="p">,</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="n">euler_angles</span>
 </pre></div>
