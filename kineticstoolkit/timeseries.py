@@ -1046,10 +1046,18 @@ class TimeSeries():
         >>> ts.get_index_before_time(1.1, inclusive=True)
         3
 
-        >>> ts.get_index_before_time(-1)
+        >>> ts.get_index_before_time(0)
         nan
 
+        >>> ts.get_index_before_time(0, inclusive=True)
+        0
+
         """
+        # Edge case
+        if inclusive and time == self.time[0]:
+            return 0
+
+        # Other cases
         diff = float(time) - self.time
         diff[diff <= 0] = np.nan
 
@@ -1101,10 +1109,18 @@ class TimeSeries():
         >>> ts.get_index_after_time(1, inclusive=True)
         2
 
-        >>> ts.get_index_after_time(13)
+        >>> ts.get_index_after_time(2)
         nan
 
+        >>> ts.get_index_after_time(2, inclusive=True)
+        4
+
         """
+        # Edge case
+        if inclusive and time == self.time[-1]:
+            return self.time.shape[0] - 1
+
+        # Other cases
         diff = self.time - float(time)
         diff[diff <= 0] = np.nan
 
@@ -1385,6 +1401,11 @@ class TimeSeries():
         array([0. , 0.1, 0.2, 0.3])
 
         """
+        #Edge case
+        if time > self.time[-1]:
+            return self.copy()
+
+        #Other cases
         index = self.get_index_before_time(time, inclusive=inclusive)
         return self.get_ts_before_index(index, inclusive=True)
 
@@ -1416,6 +1437,11 @@ class TimeSeries():
         >>> ts.get_ts_after_time(0.25, inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
+        #Edge case
+        if time < self.time[0]:
+            return self.copy()
+
+        #Other cases
         index = self.get_index_after_time(time, inclusive=inclusive)
         return self.get_ts_after_index(index, inclusive=True)
 
@@ -1729,6 +1755,10 @@ class TimeSeries():
         [[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
 
         """
+        if self.time.shape[0] == 0:  # no time, thus no event to keep.
+            self.events = []
+            return
+
         events = self.events
         self.events = []
         for event in events:
@@ -1975,7 +2005,7 @@ class TimeSeries():
 
             if sum(index) < 3:  # Only Nans, cannot interpolate.
                 warnings.warn(
-                    f'Warning: Almost only NaNs found in signal {key}.')
+                    f'Warning: Almost only NaNs found in signal "{key}.')
                 # We generate an array of nans of the expected size.
                 new_shape = [len(new_time)]
                 for i in range(1, len(self.data[key].shape)):

@@ -171,67 +171,70 @@ def test_time_normalize():
     ts.add_event(10.05, 'recovery')
 
     ts1 = ktk.cycles.time_normalize(ts, 'push', 'recovery')
-    assert len(ts1.events) == 10  # No missing events
+    assert len(ts1.events) == 10  # We got all events
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
     ts2 = ktk.cycles.time_normalize(ts1, 'push', '_')
     assert ts1 == ts2
 
     # Samething but with push to next push
-    ts1 = ktk.cycles.time_normalize(ts, 'push', '_')
-    assert len(ts1.events) == 12  # No missing events
-    assert ts1.events[0].name == 'push'
-    assert np.abs(ts1.events[0].time - 0) < 1E-12
-    assert ts1.events[1].name == 'recovery'
-    assert np.abs(ts1.events[1].time - 49.5) < 1E-12
-    assert ts1.events[2].name == '_'
-    assert np.abs(ts1.events[2].time - 99) < 1E-12
+    ts3 = ktk.cycles.time_normalize(ts, 'push', 'push')
+    assert len(ts3.events) == 12  # No missing events
+    assert ts3.events[0].name == 'push'
+    assert np.allclose(ts3.events[0].time, 0)
+    assert ts3.events[1].name == 'recovery'
+    assert np.allclose(ts3.events[1].time, 50)
+    assert ts3.events[2].name == '_'
+    assert np.allclose(ts3.events[2].time, 100)
+    assert ts3.events[3].name == 'push'
+    assert np.allclose(ts3.events[3].time, 100)
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
-    ts2 = ktk.cycles.time_normalize(ts1, 'push', '_')
-    assert ts1 == ts2
+    ts4 = ktk.cycles.time_normalize(ts3, 'push', '_')
+    assert ts3 == ts4
 
     # There should be no nan in ts2
     assert ~ts2.isnan('test').all()
 
     #Test with a wider range
-    ts3 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=100,
+    ts5 = ktk.cycles.time_normalize(ts, 'push', 'push', n_points=100,
                                     span=[-25, 125])
-    # plt.subplot(2,1,1)
-    # ts3.plot([], '.r')
+    # plt.subplot(2, 1, 1)
+    # ts5.plot([], '.r')
     # plt.grid(True)
-    # plt.subplot(2,1,2)
-    # ts1.plot([], '.b')
+    # plt.subplot(2, 1, 2)
+    # ts3.plot([], '.b')
 
-    assert np.all(np.abs(ts3.data['test'][25:125] -
-                         ts1.data['test'][0:100]) < 1E-12)
-    assert np.all(np.abs(ts3.data['test'][175:275] -
-                         ts1.data['test'][100:200]) < 1E-12)
-    assert np.all(np.abs(ts3.data['test'][325:425] -
-                         ts1.data['test'][200:300]) < 1E-12)
-    assert np.all(np.abs(ts3.data['test'][475:575] -
-                         ts1.data['test'][300:400]) < 1E-12)
+    assert np.allclose(ts5.data['test'][25:124],
+                       ts3.data['test'][0:99])
+    assert np.allclose(ts5.data['test'][175:274],
+                       ts3.data['test'][100:199])
+    assert np.allclose(ts5.data['test'][325:424],
+                       ts3.data['test'][200:299])
+    assert np.allclose(ts5.data['test'][475:574],
+                       ts3.data['test'][300:399])
 
-    assert ts3.events[0].name == 'push'
-    assert np.abs(ts3.events[0].time - (0 + 25)) < 1E-12
-    assert ts3.events[1].name == 'recovery'
-    assert np.abs(ts3.events[1].time - (0.5 * 99 + 25)) < 1E-12
-    assert ts3.events[2].name == '_'
-    assert np.abs(ts3.events[2].time - (99 + 25)) < 1E-12
+    assert ts5.events[0].name == 'push'
+    assert np.allclose(ts5.events[0].time, 25)
+    assert ts5.events[1].name == 'recovery'
+    assert np.allclose(ts5.events[1].time, 0.5 * 100 + 25)
+    assert ts5.events[2].name == '_'
+    assert np.allclose(ts5.events[2].time, 100 + 25)
 
-    assert ts3.events[3].name == 'push'
-    assert np.abs(ts3.events[3].time - (0 + 175)) < 1E-12
-    assert ts3.events[4].name == 'recovery'
-    assert np.abs(ts3.events[4].time - ((0.95/2) * 99 + 175)) < 1E-12
-    assert ts3.events[5].name == '_'
-    assert np.abs(ts3.events[5].time - (99 + 175)) < 1E-12
+    assert ts5.events[3].name == 'push'
+    assert np.allclose(ts5.events[3].time, 175)
+    assert ts5.events[4].name == 'recovery'
+    assert np.allclose(ts5.events[4].time, (0.95/2) * 100 + 175)
+    assert ts5.events[5].name == '_'
+    assert np.allclose(ts5.events[5].time, 100 + 175)
 
-    assert ts3.events[6].name == 'push'
-    assert np.abs(ts3.events[6].time - (0 + 325)) < 1E-12
-    assert ts3.events[7].name == 'recovery'
-    assert np.abs(ts3.events[7].time - ((1.05/2.05) * 99 + 325)) < 1E-12
-    assert ts3.events[8].name == '_'
-    assert np.abs(ts3.events[8].time - (99 + 325)) < 1E-12
+    assert ts5.events[6].name == 'push'
+    assert np.allclose(ts5.events[6].time, 325)
+    assert ts5.events[7].name == 'recovery'
+    assert np.allclose(ts5.events[7].time, (1.05/2.05) * 100 + 325)
+    assert ts5.events[8].name == '_'
+    assert np.allclose(ts5.events[8].time, 100 + 325)
+
 
 
 # def test_normalize_extended():

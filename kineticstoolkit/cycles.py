@@ -203,13 +203,8 @@ def time_normalize(
     event_name1 and event_name2 on n_points. The time-normalized cycles are
     put end to end. For example, for a TimeSeries that contains three
     cycles, a time normalization with 100 points will give a TimeSeries
-    of length 300. The TimeSeries' events are also time-normalized.
-
-    To time-normalize a cycle between two events of the same name, use '_' for
-    event_name2. For example, to time-normalize a TimeSeries between each
-    heel strike and the next heel strike:
-
-        kineticstoolkit.cycles.time_normalize(ts, 'heelstrike', '_')
+    of length 300. The TimeSeries' events are also time-normalized, including
+    event_name1 but with event_name2 renamed as '_'.
 
     Parameters
     ----------
@@ -236,7 +231,7 @@ def time_normalize(
     points to include in the output TimeSeries. For example, to normalize in
     percents and to include only data from 10 to 90% of each cycle, assign
     100 to n_points and [10, 90] to span. The resulting TimeSeries will then
-    be expressed in percents and wrap each 80 points. It is also possible to<
+    be expressed in percents and wrap each 80 points. It is also possible to
     include pre-cycle or post-cycle data. For example, to normalize in
     percents and to include 20% pre-cycle and 15% post-cycle, assign 100 to
     n_points and [-20, 15] to span. The resulting TimeSeries will then wrap
@@ -252,11 +247,6 @@ def time_normalize(
     if len(ts.events) < 2:
         raise(ValueError('No cycle can be defined from these event names.'))
 
-    if event_name1 == event_name2:
-        warnings.warn("It is better practice to use '_' as the second event "
-                      "name instead of repeating the same name twice.")
-        event_name2 = '_'
-
     i_cycle = 0
 
     # Initialize the destination TimeSeries
@@ -270,43 +260,63 @@ def time_normalize(
     dest_data = {}  # type: Dict[str, List[np.ndarray]]
     dest_data_shape = {}  # type: Dict[str, Tuple[int]]
 
+    # Go through all cycles
     while True:
-        # Get the begin and end times for this cycle
-        begin_time = ts.get_event_time(event_name1, i_cycle)
-        end_time = ts.get_event_time(event_name2, i_cycle)
-        if np.isnan(end_time) and event_name2 == '_':
-            end_time = ts.get_event_time(event_name1, i_cycle + 1)
 
+        # Get the begin time for this cycle
+        begin_time = ts.get_event_time(event_name1, i_cycle)
+
+        # Get the end time for this cycle
+        end_cycle = 0
+        end_time = ts.get_event_time(event_name2, end_cycle)
+        while end_time <= begin_time:
+            end_cycle += 1
+            end_time = ts.get_event_time(event_name2, end_cycle)
+
+        # We are done. Quit the loop.
         if np.isnan(begin_time) or np.isnan(end_time):
-            # We are done. Quit the loop.
             break
 
         # Get the extended begin and end times considering relative_span
         extended_begin_time = (begin_time +
-                               span[0] / (n_points - 1) *
+                               span[0] / n_points *
                                (end_time - begin_time))
         extended_end_time = (begin_time +
-                             (span[1] - 1) / (n_points - 1) *
+                             span[1] / n_points *
                              (end_time - begin_time))
 
-        # Resample this TimeSeries on n_points
-        subts = ts.copy()
+        # Extract this cycle
+        subts = ts.get_ts_between_times(
+            extended_begin_time, extended_end_time, inclusive=True)
+        subts_backup = subts.copy()
+
+        if subts.time.shape[0] == 0:
+            raise ValueError("")
+
+        # Resample this cycle on span + 1
+        # (and get the first points after)
         try:
             subts.resample(
                 np.linspace(extended_begin_time,
-                            extended_end_time, span[1] - span[0]))
+                            extended_end_time,
+                            span[1] - span[0] + 1))
         except ValueError:
-            subts = ts.copy()  # Recopy since we may have messed with subts
+            subts = subts_backup  # In case the try messed with subts
             subts.resample(
                 np.linspace(extended_begin_time,
-                            extended_end_time, span[1] - span[0]),
+                            extended_end_time,
+                            span[1] - span[0] + 1),
                 fill_value='extrapolate')
             warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
+
+        # Keep only the first points (the last one belongs to the next cycle)
+        subts = subts.get_ts_between_indexes(
+            0, span[1] - span[0] - 1, inclusive=True)
 
         # Keep only the events in the unextended span
         events = []
         for event in subts.events:
-            if event.time >= begin_time and event.time <= end_time:
+            if event.time >= begin_time and event.time < end_time:
                 events.append(event)
         subts.events = events
         subts.sort_events()
@@ -320,11 +330,12 @@ def time_normalize(
             else:
                 other_events.append(event)
 
-        # Add begin and end event
+        # Add event_name1 at the beginning and end (duplicates will be
+        # cancelled at the end)
         dest_ts.add_event(-span[0] +
                           i_cycle * (span[1] - span[0]),
                           event_name1)
-        dest_ts.add_event(-span[0] + n_points - 1 +
+        dest_ts.add_event(-span[0] + n_points +
                           i_cycle * (span[1] - span[0]),
                           '_')
 
@@ -333,7 +344,7 @@ def time_normalize(
             """Resample the events times."""
             return ((time - extended_begin_time) /
                     (extended_end_time - extended_begin_time) *
-                    (span[1] - span[0] - 1) + i_cycle * (span[1] - span[0]))
+                    (span[1] - span[0]) + i_cycle * (span[1] - span[0]))
 
         for i_event, event in enumerate(other_events):
 
@@ -353,7 +364,7 @@ def time_normalize(
     n_cycles = i_cycle
 
     # Put back dest_time and dest_data in dest_ts
-    dest_ts.time = np.arange(n_cycles * (span[1] - span[0]))
+    dest_ts.time = 1.0 * np.arange(n_cycles * (span[1] - span[0]))
     for key in ts.data:
         # Stack the data into a [cycle, percent, values] shape
         temp = np.array(dest_data[key])

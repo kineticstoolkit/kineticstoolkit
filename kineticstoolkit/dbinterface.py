@@ -172,26 +172,30 @@ class DBInterface():
             if len(files) > 0:
                 for file in files:
                     if 'dbfid' in file:
-                        dbfid = int(file.split('dbfid')[1].split('n')[0])
-                        if dbfid in dict_files['FileID']:
-                            # Duplicate file
+                        try:
+                            dbfid = int(file.split('dbfid')[1].split('n')[0])
+                            if dbfid in dict_files['FileID']:
+                                # Duplicate file
 
-                            if warned_once is False:
-                                warnings.warn('Duplicate file(s) found. See duplicates property.')
+                                if warned_once is False:
+                                    warnings.warn('Duplicate file(s) found. See duplicates property.')
 
-                                warned_once = True
-                                self.duplicates = []
+                                    warned_once = True
+                                    self.duplicates = []
 
-                            dup_index = dict_files['FileID'].index(dbfid)
-                            dup_file = dict_files['FileName'][dup_index]
+                                dup_index = dict_files['FileID'].index(dbfid)
+                                dup_file = dict_files['FileName'][dup_index]
 
-                            self.duplicates.append(
-                                (folder + '/' + file, dup_file))
+                                self.duplicates.append(
+                                    (folder + '/' + file, dup_file))
 
-                        else:
-                            dict_files['FileID'].append(dbfid)
-                            dict_files['FileName'].append(
-                                folder + '/' + file)
+                            else:
+                                dict_files['FileID'].append(dbfid)
+                                dict_files['FileName'].append(
+                                    folder + '/' + file)
+                        except ValueError:
+                            pass  # Could not extract an int. Maybe there was
+                                  # a dbfid string in the file name by chance.
 
         # Convert to a Pandas DataFrame
         return pd.DataFrame(dict_files)

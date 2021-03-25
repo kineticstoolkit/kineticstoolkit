@@ -676,8 +676,12 @@ specified time, a value of np.nan is returned.</p>
 <span class="go">2</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_index_after_time</span><span class="p">(</span><span class="mi">13</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_index_after_time</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="go">nan</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_index_after_time</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">4</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -754,8 +758,12 @@ time, a value of np.nan is returned.</p>
 <span class="go">3</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_index_before_time</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_index_before_time</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="go">nan</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_index_before_time</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">0</span>
 </pre></div>
 </div>
 </dd></dl>

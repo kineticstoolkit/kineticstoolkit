@@ -408,13 +408,8 @@ and may change slightly in the future.</p>
 event_name1 and event_name2 on n_points. The time-normalized cycles are
 put end to end. For example, for a TimeSeries that contains three
 cycles, a time normalization with 100 points will give a TimeSeries
-of length 300. The TimeSeries’ events are also time-normalized.</p>
-<p>To time-normalize a cycle between two events of the same name, use ‘_’ for
-event_name2. For example, to time-normalize a TimeSeries between each
-heel strike and the next heel strike:</p>
-<blockquote>
-<div><p>kineticstoolkit.cycles.time_normalize(ts, ‘heelstrike’, ‘_’)</p>
-</div></blockquote>
+of length 300. The TimeSeries’ events are also time-normalized, including
+event_name1 but with event_name2 renamed as ‘_’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -439,7 +434,7 @@ TimeSeries. See note below.</p></li>
 points to include in the output TimeSeries. For example, to normalize in
 percents and to include only data from 10 to 90% of each cycle, assign
 100 to n_points and [10, 90] to span. The resulting TimeSeries will then
-be expressed in percents and wrap each 80 points. It is also possible to&lt;
+be expressed in percents and wrap each 80 points. It is also possible to
 include pre-cycle or post-cycle data. For example, to normalize in
 percents and to include 20% pre-cycle and 15% post-cycle, assign 100 to
 n_points and [-20, 15] to span. The resulting TimeSeries will then wrap
