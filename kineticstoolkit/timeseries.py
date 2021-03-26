@@ -40,7 +40,7 @@ import pandas as pd
 import warnings
 from ast import literal_eval
 from copy import deepcopy
-from typing import Dict, List, Tuple, Any, Union
+from typing import Dict, List, Tuple, Any, Union, Optional
 
 import kineticstoolkit as ktk  # For doctests
 
@@ -680,11 +680,13 @@ class TimeSeries():
         """
         self.events.append(TimeSeriesEvent(time, name))
 
-    @stable
-    def remove_event(self,
-                     event_name: str, event_occurrence : int = 0, /) -> None:
+    @experimental
+    def rename_event(self,
+                     event_name: str,
+                     new_name: str,
+                     event_occurrence: Optional[int] = None, /) -> None:
         """
-        Remove an event.
+        Rename an event occurrence or all events of a same name.
 
         Parameters
         ----------
@@ -693,6 +695,59 @@ class TimeSeries():
         event_occurrence
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0, where the occurrences are sorted in time.
+            If None (default), all occurences of this event name or renamed.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts.add_event(5.5, 'event1')
+        >>> ts.add_event(10.8, 'event2')
+        >>> ts.add_event(2.3, 'event2')
+
+        >>> ts.events
+        [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
+
+        >>> ts.rename_event('event2', 'event3')
+        >>> ts.events
+        [[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event3']]
+
+        >>> ts.rename_event('event3', 'event4', 0)
+        >>> ts.events
+        [[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]
+
+        """
+        if event_name == new_name:
+            return  # Nothing to do.
+
+        if event_occurrence is None:
+            index = self.get_event_index(event_name, 0)
+            while ~np.isnan(index):
+                self.events[index].name = new_name
+                index = self.get_event_index(event_name, 0)
+
+        else:
+            index = self.get_event_index(event_name, event_occurrence)
+            if ~np.isnan(index):
+                self.events[index].name = new_name
+            else:
+                warnings.warn(f"The occurrence {event_occurrence} of event "
+                              f"{event_name} could not be found.")
+
+    @experimental
+    def remove_event(self,
+                     event_name: str,
+                     event_occurrence: Optional[int] = None, /) -> None:
+        """
+        Remove an event occurrence or all events of a same name.
+
+        Parameters
+        ----------
+        event_name
+            Name of the event to look for in the events list.
+        event_occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0, where the occurrences are sorted in time.
+            If None (default), all occurences of this event name or removed.
 
         Example
         -------
@@ -714,14 +769,16 @@ class TimeSeries():
         [[2.3, 'event2']]
 
         """
-        time_tolerance = 1E-15
-        event_time = self.get_event_time(event_name, event_occurrence)
-        new_events = []
-        for event in self.events:
-            if (np.abs(event.time - event_time) > time_tolerance or
-                    event.name != event_name):
-                new_events.append(event)
-        self.events = new_events
+        if event_occurrence is None:  # Remove all occurrences
+            event_index = self.get_event_index(event_name, 0)
+            while ~np.isnan(event_index):
+                self.events.pop(event_index)
+                event_index = self.get_event_index(event_name, 0)
+
+        else:  # Remove only the specified occurrence
+            event_index = self.get_event_index(event_name, event_occurrence)
+            if ~np.isnan(event_index):
+                self.events.pop(event_index)
 
     @stable
     def ui_add_event(self,
@@ -1137,6 +1194,52 @@ class TimeSeries():
         else:
             return np.nan
 
+    @experimental
+    def get_event_index(self,
+                        event_name: str,
+                        event_occurrence: int) -> int:
+        """
+        Get the index of a given occurrence of an event name.
+
+        Parameters
+        ----------
+        event_name
+            Name of the event to look for in the events list.
+        event_occurrence
+            i_th occurence of the event to look for in the events
+            list, starting at 0, where the occurrences are sorted in time.
+
+        Returns
+        -------
+        int
+            The index of the event.
+
+        """
+        event_occurrence = int(event_occurrence)
+
+        if event_occurrence < 0:
+            raise ValueError('event_occurrence must be positive')
+
+        # Make a list of event times, with NaNs for events whose name doesn't
+        # match what we're looking for.
+        event_times = (
+            [event.time if event.name == event_name else np.nan
+             for event in self.events])
+
+        # Sort in time
+        event_indexes = np.argsort(event_times)
+
+        # Remove indexes that correspond to nan time (wrong events)
+        clean_event_indexes = (
+            [index if ~np.isnan(event_times[index]) else np.nan
+             for index in event_indexes])
+
+        # Get the event occurrence
+        try:
+            return clean_event_indexes[event_occurrence]
+        except IndexError:
+            return np.nan
+
     @stable
     def get_event_time(self, event_name: str,
                        event_occurrence: int = 0, /) -> float:
@@ -1175,23 +1278,11 @@ class TimeSeries():
         10.8
 
         """
-        event_occurrence = int(event_occurrence)
-
-        if event_occurrence < 0:
-            raise ValueError('event_occurrence must be positive')
-
-        the_event_times = np.array([x.time for x in self.events])
-        the_event_indices = [(x.name == event_name) for x in self.events]
-
-        # Keep only the events with the specified name
-        the_event_times = np.array(the_event_times[the_event_indices])
-
-        n_events = len(the_event_times)
-        if n_events == 0 or event_occurrence >= n_events:
-            return np.nan
+        event_index = self.get_event_index(event_name, event_occurrence)
+        if np.isnan(event_index):
+            return np.isnan
         else:
-            the_event_times = np.sort(the_event_times)
-            return the_event_times[event_occurrence]
+            return self.events[event_index].time
 
     @stable
     def get_ts_at_time(self, time: float, /) -> 'TimeSeries':
