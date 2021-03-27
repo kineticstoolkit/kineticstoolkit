@@ -533,9 +533,9 @@ class TimeSeries():
         {'Color': [43, 2, 255]}
 
         """
-        if data_key in self.data_info:   # Assign the value
+        try:
             self.data_info[data_key][info_key] = value
-        else:  # Create and assign value
+        except KeyError:
             self.data_info[data_key] = {info_key: value}
 
     @stable
@@ -604,10 +604,15 @@ class TimeSeries():
         {'signal': {'Unit': 'm'}}
 
         """
-        if old_data_key in self.data:
+        try:
             self.data[new_data_key] = self.data.pop(old_data_key)
-        if old_data_key in self.data_info:
+        except KeyError:
+            pass
+
+        try:
             self.data_info[new_data_key] = self.data_info.pop(old_data_key)
+        except KeyError:
+            pass
 
     @stable
     def remove_data(self, data_key: str, /) -> None:
@@ -680,7 +685,7 @@ class TimeSeries():
         """
         self.events.append(TimeSeriesEvent(time, name))
 
-    @experimental
+    @stable
     def rename_event(self,
                      event_name: str,
                      new_name: str,
@@ -727,13 +732,13 @@ class TimeSeries():
 
         else:
             index = self.get_event_index(event_name, event_occurrence)
-            if ~np.isnan(index):
+            try:
                 self.events[index].name = new_name
-            else:
+            except TypeError:  # index was NaN
                 warnings.warn(f"The occurrence {event_occurrence} of event "
                               f"{event_name} could not be found.")
 
-    @experimental
+    @stable
     def remove_event(self,
                      event_name: str,
                      event_occurrence: Optional[int] = None, /) -> None:
@@ -777,8 +782,11 @@ class TimeSeries():
 
         else:  # Remove only the specified occurrence
             event_index = self.get_event_index(event_name, event_occurrence)
-            if ~np.isnan(event_index):
+            try:
                 self.events.pop(event_index)
+            except TypeError:
+                warnings.warn(f"The occurrence {event_occurrence} of event "
+                              f"{event_name} could not be found.")
 
     @stable
     def ui_add_event(self,
@@ -1194,7 +1202,7 @@ class TimeSeries():
         else:
             return np.nan
 
-    @experimental
+    @stable
     def get_event_index(self,
                         event_name: str,
                         event_occurrence: int) -> int:
@@ -1279,10 +1287,10 @@ class TimeSeries():
 
         """
         event_index = self.get_event_index(event_name, event_occurrence)
-        if np.isnan(event_index):
-            return np.isnan
-        else:
+        try:
             return self.events[event_index].time
+        except TypeError:
+            return np.nan
 
     @stable
     def get_ts_at_time(self, time: float, /) -> 'TimeSeries':
@@ -2034,10 +2042,15 @@ class TimeSeries():
         ts.events = deepcopy(self.events)
 
         for key in data_keys:
-            if key in self.data:
+            try:
                 ts.data[key] = self.data[key].copy()
-            if key in self.data_info:
+            except KeyError:
+                pass
+
+            try:
                 ts.data_info[key] = deepcopy(self.data_info[key])
+            except KeyError:
+                pass
 
         return ts
 
