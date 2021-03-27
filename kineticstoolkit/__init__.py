@@ -68,29 +68,21 @@ listing.append('cycles')
 from kineticstoolkit import _repr
 from kineticstoolkit import gui
 
-# --- Import unstable modules if we are on master
 from kineticstoolkit import config
+
+# --- Import unstable modules but append to listing only if we are on master
+from kineticstoolkit.dbinterface import DBInterface
+from kineticstoolkit import geometry
+from kineticstoolkit import inversedynamics
+from kineticstoolkit import emg
+from kineticstoolkit import dev
+
 if config.version == 'master':
-
-    from kineticstoolkit.dbinterface import DBInterface
     listing.append('DBInterface')
-
-    from kineticstoolkit import geometry
     listing.append('geometry')
-
-    from kineticstoolkit import inversedynamics
     listing.append('inversedynamics')
-
-    from kineticstoolkit import emg
     listing.append('emg')
-
-try:
-    from kineticstoolkit import dev
     listing.append('dev')
-except Exception:
-    pass
-
-
 
 def __dir__():
     return listing
