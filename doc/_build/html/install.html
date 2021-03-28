@@ -227,8 +227,8 @@
 </style>
 <div class="section" id="Installing">
 <h1>Installing<a class="headerlink" href="#Installing" title="Permalink to this headline">¶</a></h1>
-<p>Kinetics Toolkit is distributed via both conda-forge and PyPi. The source code is hosted on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">git-hub</a>.</p>
-<p>Since reading c3d files relies on <code class="docutils literal notranslate"><span class="pre">ezc3d</span></code> which binaries are distributed only via conda-forge, the recommended installation method is therefore using conda-forge.</p>
+<p>Kinetics Toolkit is distributed via both <a class="reference external" href="https://anaconda.org/conda-forge/kineticstoolkit">conda-forge</a> and <a class="reference external" href="https://pypi.org/project/kineticstoolkit">PyPi</a>. The source code is hosted on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">git-hub</a>.</p>
+<p>Since reading c3d files relies on <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> which binaries are distributed only via conda-forge, the recommended installation method is therefore using conda-forge.</p>
 <div class="section" id="Install-a-conda-distribution">
 <h2>Install a conda distribution<a class="headerlink" href="#Install-a-conda-distribution" title="Permalink to this headline">¶</a></h2>
 <p>Download and install Anaconda or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> with python 3.8 or newer.</p>
@@ -255,11 +255,11 @@
 </div>
 <div class="section" id="Configuring-Matplotlib-graphics-in-IPython/Spyder">
 <h2>Configuring Matplotlib graphics in IPython/Spyder<a class="headerlink" href="#Configuring-Matplotlib-graphics-in-IPython/Spyder" title="Permalink to this headline">¶</a></h2>
-<p>Kinetics Toolkit’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop. In IPython, type</p>
+<p>Kinetics Toolkit’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop. When you want to use interactive functions in IPython, type:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt5</span>
 </pre></div>
 </div>
-<p>when you want to use interactive functions in Kinetics Toolkit.</p>
+<p>beforehand.</p>
 <p>Alternatively, since the Spyder IDE is so oriented towards science and it uses IPython, I highly suggest using this development environment. To use Spyder and configure it for interactive graphics:</p>
 <ul class="simple">
 <li><p>Download and install the standalone version of <a class="reference external" href="https://www.spyder-ide.org">Spyder</a> (now recommended by Spyder’s developers over installing it from conda).</p></li>
