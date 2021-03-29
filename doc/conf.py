@@ -36,6 +36,7 @@ extensions = [
 	'sphinx_autodoc_typehints',  # Type hints in doc instead of signature (for autodoc)
     'matplotlib.sphinxext.plot_directive',
 	'autodocsumm',  # Add a summary table at the top of each API page
+    'sphinx.ext.ifconfig',
     'nbsphinx',
 ]
 
@@ -74,6 +75,8 @@ templates_path = ['_templates']
 exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', '.ipynb_checkpoints',
                     'api/external.*', 'api/kineticstoolkit.external.*', 'api/kineticstoolkit.cmdgui.*']
 
+if release not in ['master']:
+    exclude_patterns.append('dev/*')
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -112,8 +115,9 @@ html_css_files = ['css/custom.css']
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-
-
 if release == 'master':
     # Modify some parameters to distingate the development site
     html_logo = '_static/logo_development.png'
+
+def setup(app):
+    app.add_config_value('releaselevel', release, 'env')

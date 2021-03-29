@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Release Notes &mdash; Kinetics Toolkit 0.4 documentation</title>
+  <title>Release Notes &mdash; Kinetics Toolkit 0.4.2 documentation</title>
   
 
   
@@ -108,18 +108,11 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/website.html">Development website</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
-</ul>
-<p class="caption"><span class="caption-text">API REFERENCE</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Upcoming-release-(currently-in-Master)">Upcoming release (currently in Master)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.4-(April-2021)">Version 0.4 (April 2021)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#New-Features">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Improvements">Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Breaking-Changes">Breaking Changes</a></li>
@@ -144,6 +137,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
 
             
@@ -220,252 +215,6 @@
             
   
 <style>
-/* CSS for nbsphinx extension */
-
-/* remove conflicting styling from Sphinx themes */
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt *,
-div.nbinput.container div.input_area pre,
-div.nboutput.container div.output_area pre,
-div.nbinput.container div.input_area .highlight,
-div.nboutput.container div.output_area .highlight {
-    border: none;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-}
-
-div.nbinput.container > div[class*=highlight],
-div.nboutput.container > div[class*=highlight] {
-    margin: 0;
-}
-
-div.nbinput.container div.prompt *,
-div.nboutput.container div.prompt * {
-    background: none;
-}
-
-div.nboutput.container div.output_area .highlight,
-div.nboutput.container div.output_area pre {
-    background: unset;
-}
-
-div.nboutput.container div.output_area div.highlight {
-    color: unset;  /* override Pygments text color */
-}
-
-/* avoid gaps between output lines */
-div.nboutput.container div[class*=highlight] pre {
-    line-height: normal;
-}
-
-/* input/output containers */
-div.nbinput.container,
-div.nboutput.container {
-    display: -webkit-flex;
-    display: flex;
-    align-items: flex-start;
-    margin: 0;
-    width: 100%;
-}
-@media (max-width: 540px) {
-    div.nbinput.container,
-    div.nboutput.container {
-        flex-direction: column;
-    }
-}
-
-/* input container */
-div.nbinput.container {
-    padding-top: 5px;
-}
-
-/* last container */
-div.nblast.container {
-    padding-bottom: 5px;
-}
-
-/* input prompt */
-div.nbinput.container div.prompt pre {
-    color: #307FC1;
-}
-
-/* output prompt */
-div.nboutput.container div.prompt pre {
-    color: #BF5B3D;
-}
-
-/* all prompts */
-div.nbinput.container div.prompt,
-div.nboutput.container div.prompt {
-    width: 4.5ex;
-    padding-top: 5px;
-    position: relative;
-    user-select: none;
-}
-
-div.nbinput.container div.prompt > div,
-div.nboutput.container div.prompt > div {
-    position: absolute;
-    right: 0;
-    margin-right: 0.3ex;
-}
-
-@media (max-width: 540px) {
-    div.nbinput.container div.prompt,
-    div.nboutput.container div.prompt {
-        width: unset;
-        text-align: left;
-        padding: 0.4em;
-    }
-    div.nboutput.container div.prompt.empty {
-        padding: 0;
-    }
-
-    div.nbinput.container div.prompt > div,
-    div.nboutput.container div.prompt > div {
-        position: unset;
-    }
-}
-
-/* disable scrollbars on prompts */
-div.nbinput.container div.prompt pre,
-div.nboutput.container div.prompt pre {
-    overflow: hidden;
-}
-
-/* input/output area */
-div.nbinput.container div.input_area,
-div.nboutput.container div.output_area {
-    -webkit-flex: 1;
-    flex: 1;
-    overflow: auto;
-}
-@media (max-width: 540px) {
-    div.nbinput.container div.input_area,
-    div.nboutput.container div.output_area {
-        width: 100%;
-    }
-}
-
-/* input area */
-div.nbinput.container div.input_area {
-    border: 1px solid #e0e0e0;
-    border-radius: 2px;
-    /*background: #f5f5f5;*/
-}
-
-/* override MathJax center alignment in output cells */
-div.nboutput.container div[class*=MathJax] {
-    text-align: left !important;
-}
-
-/* override sphinx.ext.imgmath center alignment in output cells */
-div.nboutput.container div.math p {
-    text-align: left;
-}
-
-/* standard error */
-div.nboutput.container div.output_area.stderr {
-    background: #fdd;
-}
-
-/* ANSI colors */
-.ansi-black-fg { color: #3E424D; }
-.ansi-black-bg { background-color: #3E424D; }
-.ansi-black-intense-fg { color: #282C36; }
-.ansi-black-intense-bg { background-color: #282C36; }
-.ansi-red-fg { color: #E75C58; }
-.ansi-red-bg { background-color: #E75C58; }
-.ansi-red-intense-fg { color: #B22B31; }
-.ansi-red-intense-bg { background-color: #B22B31; }
-.ansi-green-fg { color: #00A250; }
-.ansi-green-bg { background-color: #00A250; }
-.ansi-green-intense-fg { color: #007427; }
-.ansi-green-intense-bg { background-color: #007427; }
-.ansi-yellow-fg { color: #DDB62B; }
-.ansi-yellow-bg { background-color: #DDB62B; }
-.ansi-yellow-intense-fg { color: #B27D12; }
-.ansi-yellow-intense-bg { background-color: #B27D12; }
-.ansi-blue-fg { color: #208FFB; }
-.ansi-blue-bg { background-color: #208FFB; }
-.ansi-blue-intense-fg { color: #0065CA; }
-.ansi-blue-intense-bg { background-color: #0065CA; }
-.ansi-magenta-fg { color: #D160C4; }
-.ansi-magenta-bg { background-color: #D160C4; }
-.ansi-magenta-intense-fg { color: #A03196; }
-.ansi-magenta-intense-bg { background-color: #A03196; }
-.ansi-cyan-fg { color: #60C6C8; }
-.ansi-cyan-bg { background-color: #60C6C8; }
-.ansi-cyan-intense-fg { color: #258F8F; }
-.ansi-cyan-intense-bg { background-color: #258F8F; }
-.ansi-white-fg { color: #C5C1B4; }
-.ansi-white-bg { background-color: #C5C1B4; }
-.ansi-white-intense-fg { color: #A1A6B2; }
-.ansi-white-intense-bg { background-color: #A1A6B2; }
-
-.ansi-default-inverse-fg { color: #FFFFFF; }
-.ansi-default-inverse-bg { background-color: #000000; }
-
-.ansi-bold { font-weight: bold; }
-.ansi-underline { text-decoration: underline; }
-
-
-div.nbinput.container div.input_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight] > pre,
-div.nboutput.container div.output_area div[class*=highlight].math,
-div.nboutput.container div.output_area.rendered_html,
-div.nboutput.container div.output_area > div.output_javascript,
-div.nboutput.container div.output_area:not(.rendered_html) > img{
-    padding: 5px;
-    margin: 0;
-}
-
-/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
-div.nbinput.container div.input_area > div[class^='highlight'],
-div.nboutput.container div.output_area > div[class^='highlight']{
-    overflow-y: hidden;
-}
-
-/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
-    display: none;
-}
-
-/* Some additional styling taken form the Jupyter notebook CSS */
-div.rendered_html table {
-  border: none;
-  border-collapse: collapse;
-  border-spacing: 0;
-  color: black;
-  font-size: 12px;
-  table-layout: fixed;
-}
-div.rendered_html thead {
-  border-bottom: 1px solid black;
-  vertical-align: bottom;
-}
-div.rendered_html tr,
-div.rendered_html th,
-div.rendered_html td {
-  text-align: right;
-  vertical-align: middle;
-  padding: 0.5em 0.5em;
-  line-height: normal;
-  white-space: normal;
-  max-width: none;
-  border: none;
-}
-div.rendered_html th {
-  font-weight: bold;
-}
-div.rendered_html tbody tr:nth-child(odd) {
-  background: #f5f5f5;
-}
-div.rendered_html tbody tr:hover {
-  background: rgba(66, 165, 245, 0.2);
-}
-
 /* CSS overrides for sphinx_rtd_theme */
 
 /* 24px margin */
@@ -490,24 +239,31 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Release-Notes">
 <h1>Release Notes<a class="headerlink" href="#Release-Notes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="Upcoming-release-(currently-in-Master)">
-<h2>Upcoming release (currently in Master)<a class="headerlink" href="#Upcoming-release-(currently-in-Master)" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Version-0.4-(April-2021)">
+<h2>Version 0.4 (April 2021)<a class="headerlink" href="#Version-0.4-(April-2021)" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="New-Features">
 <h3>New Features<a class="headerlink" href="#New-Features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Added <code class="docutils literal notranslate"><span class="pre">span</span></code> option to cycles.time_normalize, so that cycles can be normalized between other ranges than 0% to 100%. Both reducing span (e.g., 10% to 90%) and increasing span (e.g., -25 to 125%) work.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module to perform rigid body geometry operations such as creating frames, homogeneous transforms, multiplying series of matrices, converting from local to global coordinates and vice-versa, and extracting Euler angles from homogeneous transforms.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">span</span></code> option to <code class="docutils literal notranslate"><span class="pre">cycles.time_normalize</span></code>, so that cycles can be normalized between other ranges than 0% to 100%. Both reducing span (e.g., 10% to 90%) and increasing span (e.g., -25 to 125%) work.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">to_html5</span></code> method to <code class="docutils literal notranslate"><span class="pre">Player</span></code>, which allows visualizing 3d markers and bodies in Jupyter.</p></li>
+<li><p>Added the <code class="docutils literal notranslate"><span class="pre">rename_event</span></code> method to <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code>.</p></li>
 </ul>
 </div>
 <div class="section" id="Improvements">
 <h3>Improvements<a class="headerlink" href="#Improvements" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>In lab mode, Matplotlib figures now automatically adapt (tight_layout) to window resizes by default.</p></li>
 <li><p>Added test coverage measurement for continuous improvement of code robustness.</p></li>
 <li><p>Added warnings when using private or unstable functions.</p></li>
+<li><p>Changed the website to use the ReadTheDoc theme, and changed its structure to facilitate continuous improvements of the website without needing to wait for releases.</p></li>
 </ul>
 </div>
 <div class="section" id="Breaking-Changes">
 <h3>Breaking Changes<a class="headerlink" href="#Breaking-Changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>The default behaviour for <code class="docutils literal notranslate"><span class="pre">TimeSeries.remove_event</span></code> changed when no occurrence is defined. Previously, only the first occurrence was removed. Now every occurrence is removed.</p></li>
+<li><p>In <code class="docutils literal notranslate"><span class="pre">cycles.time_normalize</span></code>, the way to time-normalize between two events of the same name changed from <code class="docutils literal notranslate"><span class="pre">event_name,</span> <span class="pre">_</span></code> to <code class="docutils literal notranslate"><span class="pre">event_name,</span> <span class="pre">event_name</span></code>.</p></li>
+</ul>
 </div>
 </div>
 <div class="section" id="Version-0.3-(October-2020)">
@@ -577,15 +333,6 @@ div.rendered_html tbody tr:hover {
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">kinematics</span></code> module, to read c3d and n3d files.</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">Player</span></code> class, to view markers in 3d.</p></li>
 </ul>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span>
-</pre></div>
-</div>
-</div>
 </div>
 </div>
 </div>
