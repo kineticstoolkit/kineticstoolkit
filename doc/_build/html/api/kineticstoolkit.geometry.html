@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.geometry module &mdash; Kinetics Toolkit 0.4 documentation</title>
+  <title>kineticstoolkit.geometry module &mdash; Kinetics Toolkit master documentation</title>
   
 
   
@@ -66,7 +66,7 @@
 
           
             
-            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_development.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -108,14 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/website.html">Development website</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
-</ul>
-<p class="caption"><span class="caption-text">API REFERENCE</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -130,6 +123,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
             
@@ -264,10 +265,13 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.get_local_coordinates" title="kineticstoolkit.geometry.get_local_coordinates"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_local_coordinates</span></code></a>(global_coordinates, …)</p></td>
 <td><p>Express global coordinates in local reference frames.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.matmul" title="kineticstoolkit.geometry.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(op1, op2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.isnan" title="kineticstoolkit.geometry.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a>(input, /)</p></td>
+<td><p>Check which samples has at least one NaN.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.matmul" title="kineticstoolkit.geometry.matmul"><code class="xref py py-obj docutils literal notranslate"><span class="pre">matmul</span></code></a>(op1, op2)</p></td>
 <td><p>Matrix multiplication between series of matrices.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.geometry.register_points" title="kineticstoolkit.geometry.register_points"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_points</span></code></a>(global_points, local_points)</p></td>
 <td><p>Find the homogeneous transforms between two series of point clouds.</p></td>
 </tr>
 </tbody>
@@ -552,6 +556,31 @@ coordinates in.</p></li>
 <dt class="field-even">Returns</dt>
 <dd class="field-even"><p>Series of local coordinates in the same shape than
 <cite>global_coordinates</cite>.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.geometry.isnan">
+<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">isnan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.isnan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check which samples has at least one NaN.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped, tested or validated and has
+not been released yet. It may change signature and behaviour or even be
+deleted.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Array where the first dimension corresponds to time.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of bool that is the same size of input’s first dimension, with
+True for the samples that contain at least one NaN.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>

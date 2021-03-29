@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>DBInterface &mdash; Kinetics Toolkit 0.4 documentation</title>
+  <title>DBInterface &mdash; Kinetics Toolkit master documentation</title>
   
 
   
@@ -43,7 +43,6 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Lab mode" href="../lab_mode.html" />
     <link rel="prev" title="Reconstructing virtual markers (from kinematics module)" href="reconstruction.html" />
 
 
@@ -66,7 +65,7 @@
 
           
             
-            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_development.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -108,10 +107,17 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
+</ul>
 <p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="website.html">Development website</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions, testing and releasing</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials for unreleased features</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
@@ -127,12 +133,6 @@
 </li>
 </ul>
 </li>
-</ul>
-<p class="caption"><span class="caption-text">API REFERENCE</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
 </ul>
 
             
@@ -196,8 +196,6 @@
 
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="../lab_mode.html" class="btn btn-neutral float-right" title="Lab mode" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="reconstruction.html" class="btn btn-neutral float-left" title="Reconstructing virtual markers (from kinematics module)" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -510,7 +508,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <p>The constructor can also be run non-interactively:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
@@ -530,18 +528,6 @@ div.rendered_html tbody tr:hover {
                           <span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function __init__ is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 </div>
 <div class="section" id="Navigating-in-the-project">
@@ -594,18 +580,6 @@ files:
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -630,18 +604,6 @@ deleted.
 <span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
@@ -675,18 +637,6 @@ deleted.
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -704,18 +654,6 @@ deleted.
 <span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -745,18 +683,6 @@ deleted.
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -774,18 +700,6 @@ deleted.
 <span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -817,18 +731,6 @@ deleted.
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -846,18 +748,6 @@ deleted.
 <span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -890,18 +780,6 @@ deleted.
 <span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;Kinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -938,18 +816,6 @@ deleted.
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function save is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -969,18 +835,6 @@ deleted.
 <span></span><span class="n">project</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;P1&#39;</span><span class="p">,</span> <span class="s1">&#39;GymnaseN1&#39;</span><span class="p">,</span> <span class="s1">&#39;Run1&#39;</span><span class="p">,</span> <span class="s1">&#39;SyncedKinematics&#39;</span><span class="p">)[</span><span class="s1">&#39;FileName&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
@@ -1005,18 +859,6 @@ deleted.
 <span class="n">test</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function load is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -1057,33 +899,6 @@ deleted.
 <span class="n">file_list</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function get is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
@@ -1141,11 +956,6 @@ deleted.
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function refresh is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
 UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.py:181] Duplicate file(s) found. See duplicates property.
 </pre></div></div>
 </div>
@@ -1187,18 +997,6 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </pre></div>
 </div>
 </div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function batch_fix_file_type is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
@@ -1235,7 +1033,7 @@ deleted.
 </pre></div></div>
 </div>
 <p>The files’ dbfid have been updated so they now refer to <code class="docutils literal notranslate"><span class="pre">SyncedKinematics</span></code> and not to <code class="docutils literal notranslate"><span class="pre">Kinematics</span></code> anymore. Moreover, the project does not have duplicate dbfids anymore:</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
@@ -1244,20 +1042,8 @@ deleted.
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function refresh is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
 <p>Let’s do a little clean up before going on.</p>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
@@ -1266,18 +1052,6 @@ deleted.
 <span class="n">project</span><span class="o">.</span><span class="n">refresh</span><span class="p">()</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function refresh is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
 </div>
 </div>
 <div class="section" id="Including-information-in-file-names">
@@ -1323,18 +1097,6 @@ deleted.
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function tag_files is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Checking that the project is clean, without duplicates...
@@ -1373,18 +1135,6 @@ Refreshing project...
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-KTKUnstableWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/decorators.py:228]
-The function tag_files is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Checking that the project is clean, without duplicates...
@@ -1418,7 +1168,6 @@ Refreshing project...
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../lab_mode.html" class="btn btn-neutral float-right" title="Lab mode" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="reconstruction.html" class="btn btn-neutral float-left" title="Reconstructing virtual markers (from kinematics module)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

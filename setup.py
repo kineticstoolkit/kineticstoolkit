@@ -32,6 +32,7 @@ setuptools.setup(
                       'scipy',
                       'matplotlib',
                       'scikit-learn',
+                      'requests',
                       'limitedinteraction',
                       ],
     classifiers=[

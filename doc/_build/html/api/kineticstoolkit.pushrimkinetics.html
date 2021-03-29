@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.pushrimkinetics module &mdash; Kinetics Toolkit 0.4 documentation</title>
+  <title>kineticstoolkit.pushrimkinetics module &mdash; Kinetics Toolkit master documentation</title>
   
 
   
@@ -66,7 +66,7 @@
 
           
             
-            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_development.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -108,14 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/website.html">Development website</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
-</ul>
-<p class="caption"><span class="caption-text">API REFERENCE</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -130,6 +123,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
+</ul>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
             
@@ -253,10 +254,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.calculate_velocity" title="kineticstoolkit.pushrimkinetics.calculate_velocity"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_velocity</span></code></a>(tsin, /)</p></td>
 <td><p>Calculate velocity based on wheel angle.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.read_file" title="kineticstoolkit.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename, /[, file_format])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.find_recovery_indices" title="kineticstoolkit.pushrimkinetics.find_recovery_indices"><code class="xref py py-obj docutils literal notranslate"><span class="pre">find_recovery_indices</span></code></a>(Mz, /)</p></td>
+<td><p>Find recovery indices based on a vector of propulsion moments.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.read_file" title="kineticstoolkit.pushrimkinetics.read_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_file</span></code></a>(filename, /[, file_format])</p></td>
 <td><p>Read a file containing pushrim kinetics data.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.remove_offsets" title="kineticstoolkit.pushrimkinetics.remove_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_offsets</span></code></a>(kinetics[, baseline_kinetics])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.pushrimkinetics.remove_offsets" title="kineticstoolkit.pushrimkinetics.remove_offsets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_offsets</span></code></a>(kinetics[, baseline_kinetics])</p></td>
 <td><p>Remove dynamic offsets in forces and moments.</p></td>
 </tr>
 </tbody>
@@ -358,6 +362,42 @@ filter, please see the <code class="docutils literal notranslate"><span class="p
 <dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.filters.deriv</span></code></dt><dd><p>Derivative filter for TimeSeries</p>
 </dd>
 </dl>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.pushrimkinetics.find_recovery_indices">
+<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">find_recovery_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Mz</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.find_recovery_indices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find recovery indices based on a vector of propulsion moments.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Unreleased function.</p>
+<p>This function is currently being developped, tested or validated and has
+not been released yet. It may change signature and behaviour or even be
+deleted.</p>
+</div>
+<p>This function analyzes the Mz moments to find which data correspond to
+pushes and which data correspond to recoveries. The method is very
+conservative on what could be considered as a recovery, so that every
+index returned by this function is almost certain to correspond to a
+recovery. This function is used by <cite>pushrimkinetics.remove_sinusoids</cite>
+to identify the instants with no hand contact. It should not be used to
+isolate the push and recovery phases (use <cite>ktk.cycles.detect_cycles()</cite>
+instead).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>Mz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Array that contains the propulsion moments in Nm.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Array of bools where each True represents recovery.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles</span></code></p>
 </div>
 </dd></dl>
 
