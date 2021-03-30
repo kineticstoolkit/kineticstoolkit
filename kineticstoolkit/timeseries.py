@@ -30,12 +30,13 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import stable, experimental, unstable, directory
+from kineticstoolkit.decorators import stable, experimental, unstable, deprecated, directory
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 import pandas as pd
+import limitedinteraction as li
 
 import warnings
 from ast import literal_eval
@@ -788,7 +789,138 @@ class TimeSeries():
                 warnings.warn(f"The occurrence {event_occurrence} of event "
                               f"{event_name} could not be found.")
 
-    @stable
+    @unstable
+    def ui_manage_events(self,
+                         event_name: Union[str, List[str]] = [],
+                         plot: Union[str, List[str]] = [], /) -> bool:
+        """
+        Manage events interactively.
+
+        Parameters
+        ----------
+        event_name
+            Optional. The name of the event(s) to add. May be a string
+            or a list of strings. Event names can be selected interactively.
+        plot
+            Optional. A signal name of list of signal name to be plotted,
+            similar to the argument of ktk.TimeSeries.plot().
+
+        Returns
+        -------
+        bool
+            True if the TimeSeries has been modified, False if the operation
+            was cancelled by the user.
+
+        """
+        def add_this_event(ts, name: str) -> None:
+            kineticstoolkit.gui.message(
+                "Place the event on the figure.",
+                **window_placement)
+            this_time = plt.ginput(1)[0][0]
+            ts.add_event(this_time, name)
+            kineticstoolkit.gui.message("")
+
+        def get_event_index(ts) -> int:
+            kineticstoolkit.gui.message(
+                "Select an event on the figure.",
+                **window_placement)
+            this_time = plt.ginput(1)[0][0]
+            event_times = np.array([event.time for event in ts.events])
+            kineticstoolkit.gui.message("")
+            return np.argmin(np.abs(event_times - this_time))
+
+        ts = self.copy()
+
+        if isinstance(event_name, str):
+            event_name = [event_name]
+
+        fig = plt.figure()
+        ts.plot(plot)
+
+        while True:
+
+            # Populate the choices to the user
+            choices = [f"Add '{s}'" for s in event_name]
+
+            choice_index = {}
+            choice_index['add'] = len(choices)
+            if len(event_name) == 0:
+                choices.append("Add event")
+            else:
+                choices.append("Add event with another name")
+
+            if len(ts.events) > 0:
+                choice_index['remove'] = len(choices)
+                choices.append("Remove event")
+
+                choice_index['move'] = len(choices)
+                choices.append("Move event")
+
+            choice_index['close'] = len(choices)
+            choices.append("Save and close")
+
+            choice_index['cancel'] = len(choices)
+            choices.append("Cancel")
+
+            choice = kineticstoolkit.gui.button_dialog(
+                "Move and zoom on the figure,\n"
+                "then select an option below.",
+                choices,
+                **window_placement)
+
+            if choice < choice_index['add']:
+                add_this_event(ts, event_name[choice])
+
+            elif choice == choice_index['add']:
+                event_name.append(
+                    li.input_dialog(
+                        "Please enter the event name:",
+                        **window_placement)
+                )
+                if len(event_name) > 5:
+                    event_name = event_name[-5:]
+                add_this_event(ts, event_name[-1])
+
+            elif choice == choice_index['remove']:
+                event_index = get_event_index(ts)
+                try:
+                    ts.events.pop(event_index)
+                except IndexError:
+                    li.button_dialog(
+                        "No event was removed.",
+                        choices=['OK'],
+                        icon='error',
+                        **window_placement)
+
+            elif choice == choice_index['move']:
+                event_index = get_event_index(ts)
+                name = ts.events[event_index].name
+                try:
+                    ts.events.pop(event_index)
+                    add_this_event(ts, name)
+                except IndexError:
+                    li.button_dialog(
+                        "Could not move this event.",
+                        choices=['OK'],
+                        icon='error',
+                        **window_placement)
+
+            elif choice == choice_index['close']:
+                self.events = ts.events
+                plt.close(fig)
+                return True
+
+            elif choice in [choice_index['cancel'], -1]:
+                plt.close(fig)
+                return False
+
+            # Refresh
+            axes = plt.axis()
+            plt.cla()
+            ts.plot(plot)
+            plt.axis(axes)
+
+    @deprecated
     def ui_add_event(self,
                      name: str = 'event',
                      plot: Union[str, List[str]] = [], /, *,
@@ -813,65 +945,10 @@ class TimeSeries():
             True if the event was added, False if the operation was cancelled
             by the user.
         """
-        ts = self.copy()
-
-        fig = plt.figure()
-        ts.plot(plot)
-
-        finished = False
-
-        while finished is False:
-            finished = True  # Only one pass by default
-
-            button = kineticstoolkit.gui.button_dialog(
-                f'Adding the event "{name}".\n'
-                'Please zoom on the location to \n'
-                'add the event, then click Next.',
-                ['Cancel', 'Next'], **window_placement)
-
-            if button <= 0:  # Cancel
-                plt.close(fig)
-                return False
-
-            if multiple_events:
-                kineticstoolkit.gui.message(
-                    'Left-click to add events; \n'
-                    'Right-click to delete; \n'
-                    'ENTER to finish.', **window_placement)
-                plt.pause(0.001)  # Update the plot
-                coordinates = plt.ginput(99999)
-                kineticstoolkit.gui.message('')
-
-            else:
-                kineticstoolkit.gui.message(
-                    'Please left-click on the event to add.',
-                    **window_placement)
-                coordinates = plt.ginput(1)
-                kineticstoolkit.gui.message('')
-
-            # Add these events
-            for i in range(len(coordinates)):
-                ts.add_event(coordinates[i][0], name)
-
-            if multiple_events:
-                plt.cla()
-                ts.plot(plot)
-                button = kineticstoolkit.gui.button_dialog(
-                    f'Adding the event "{name}".\n'
-                    'Do you want to add more of these events?',
-                    ['Cancel', 'Add more', "Finished"], **window_placement)
-                if button <= 0:  # Cancel
-                    plt.close(fig)
-                    return False
-                elif button == 1:
-                    finished = False
-                elif button == 2:
-                    finished = True
-
-        kineticstoolkit.gui.message('')
-        plt.close(fig)
-        self.events = ts.events  # Add the events to self.
-        return True
+        print("Method TimeSeries.ui_add_event has been deprecated in April "
+              "2021. This call has been redirected to ui_manage_events, which "
+              "is the more powerful replacement.")
+        return self.ui_manage_events(name, plot)
 
     @stable
     def sort_events(self, *, unique: bool = True) -> None:
