@@ -26,6 +26,58 @@ These are the unit tests for the TimeSeries class.
 import kineticstoolkit as ktk
 import numpy as np
 import matplotlib.pyplot as plt
+import pandas as pd
+
+
+def test_TimeSeriesEvent():
+    """Test basic getters and setters."""
+    event = ktk.TimeSeriesEvent()
+    assert isinstance(dir(event), list)
+    event.time = 1
+    event.name = 'one'
+    assert event.time == 1
+    assert event.name == 'one'
+
+
+def test_TimeSeries():
+    """Test basic functions."""
+    ts = ktk.TimeSeries()
+    assert isinstance(dir(ts), list)
+    assert isinstance(repr(ts), str)
+    assert isinstance(str(ts), str)
+
+    # Test equality
+    ts2 = ktk.TimeSeries()
+    assert ts == ts2
+
+    ts2.time = np.arange(10)
+    assert ts != ts2
+    ts.time = np.arange(10)
+    assert ts == ts2
+
+    ts2.data['test'] = np.arange(10)
+    assert ts != ts2
+    ts.data['test'] = np.arange(10) + 1  # Different but same size
+    assert ts != ts2
+    ts.data['test'] = np.arange(20)  # Different sizes
+    assert ts != ts2
+    ts.data['test'] = np.arange(10)  # Now the samething
+    assert ts == ts2
+
+    ts2.time_info['info'] = 'test'
+    assert ts != ts2
+    ts.time_info['info'] = 'test'
+    assert ts == ts2
+
+    ts2.add_data_info('test', 'info', 'test')
+    assert ts != ts2
+    ts.add_data_info('test', 'info', 'test')
+    assert ts == ts2
+
+    ts2.add_event(1, 'one')
+    assert ts != ts2
+    ts.add_event(1, 'one')
+    assert ts == ts2
 
 
 def test_empty_constructor():
@@ -37,10 +89,119 @@ def test_empty_constructor():
     assert isinstance(ts.events, list)
     assert ts.time_info['Unit'] == 's'
 
-def test_add_data_info():
+
+def test_from_dataframe():
+    df = pd.DataFrame(columns=['Data0', 'Data1[0,0]', 'Data1[0,1]',
+                               'Data1[1,0]', 'Data1[1,1]'])
+    df['Data0'] = np.arange(2)
+    df['Data1[0,0]'] = np.arange(2) + 1
+    df['Data1[0,1]'] = np.arange(2) + 2
+    df['Data1[1,0]'] = np.arange(2) + 3
+    df['Data1[1,1]'] = np.arange(2) + 4
+    ts = ktk.TimeSeries.from_dataframe(df)
+    assert np.allclose(ts.data['Data0'], [0, 1])
+    assert np.allclose(ts.data['Data1'], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
+
+
+def test_add_remove_data_info():
     ts = ktk.TimeSeries()
     ts.add_data_info('Force', 'Unit', 'N')
+    ts.add_data_info('Force', 'Other', 'hello')
+
+    # Check that data_info was added
     assert ts.data_info['Force']['Unit'] == 'N'
+    assert ts.data_info['Force']['Other'] == 'hello'
+
+    # Test removing non-existing data_info
+    ts.remove_data_info('Nonexisting', 'Other')
+    assert len(ts.data_info['Force']) == 2
+
+    # Test removing existing data_info
+    ts.remove_data_info('Force', 'Other')
+    assert ts.data_info['Force']['Unit'] == 'N'
+    assert len(ts.data_info['Force']) == 1
+
+
+def test_rename_remove_data():
+    ts = ktk.TimeSeries()
+    ts.data['Force'] = np.arange(10)
+    ts.rename_data('Force', 'Moment')
+    assert np.allclose(ts.data['Moment'], np.arange(10))
+
+    # Same test but with data info
+    ts.add_data_info('Moment', 'Unit', 'Nm')
+    ts.rename_data('Moment', 'Power')
+    assert np.allclose(ts.data['Power'], np.arange(10))
+    assert ts.data_info['Power']['Unit'] == 'Nm'
+
+    # Rename inexistent data
+    ts.rename_data('NoKey', 'Anything')
+    assert np.allclose(ts.data['Power'], np.arange(10))
+    assert len(ts.data) == 1
+    assert len(ts.data_info) == 1
+
+    # Remove inexistent data
+    ts.remove_data('NoKey')
+    assert np.allclose(ts.data['Power'], np.arange(10))
+    assert len(ts.data) == 1
+    assert len(ts.data_info) == 1
+
+    # Remove data
+    ts.remove_data('Power')
+    assert len(ts.data) == 0
+    assert len(ts.data_info) == 0
+
+
+def test_rename_event():
+    # Original doctest
+    ts = ktk.TimeSeries()
+    ts.add_event(5.5, 'event1')
+    ts.add_event(10.8, 'event2')
+    ts.add_event(2.3, 'event2')
+
+    assert str(ts.events) == \
+        "[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]"
+
+    ts.rename_event('event2', 'event3')
+
+    assert str(ts.events) == \
+        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event3']]"
+
+    ts.rename_event('event3', 'event4', 0)
+
+    assert str(ts.events) == \
+        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
+
+    # Test renaming an event to a same name (dumb case but should pass)
+    ts.rename_event('event4', 'event4')
+    assert str(ts.events) == \
+        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
+
+    # Test renaming invalid occurrence
+    ts.rename_event('event4', 'event4', 10)
+    assert str(ts.events) == \
+        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
+
+
+def test_remove_event():
+    # Original doctest
+    ts = ktk.TimeSeries()
+    ts.add_event(5.5, 'event1')
+    ts.add_event(10.8, 'event2')
+    ts.add_event(2.3, 'event2')
+
+    assert str(ts.events) == \
+        "[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]"
+
+    ts.remove_event('event1')
+
+    assert str(ts.events) == \
+        "[[10.8, 'event2'], [2.3, 'event2']]"
+
+    ts.remove_event('event2', 1)
+
+    assert str(ts.events) == \
+        "[[2.3, 'event2']]"
 
 
 def test_get_event_time():
@@ -181,20 +342,6 @@ def test_merge_and_resample():
     assert ts1.data_info['signal4']['Unit'] == ts2.data_info['signal4']['Unit']
     assert ts1.data_info['signal5']['Unit'] == ts2.data_info['signal5']['Unit']
     assert ts1.data_info['signal6']['Unit'] == ts2.data_info['signal6']['Unit']
-
-
-def test_rename_data():
-    ts = ktk.TimeSeries(time=np.arange(100))
-    ts.data['data1'] = ts.time.copy()
-    ts.data['data2'] = ts.time.copy()
-    ts.add_data_info('data2', 'Unit', 'N')
-
-    ts.rename_data('data2', 'data3')
-
-    assert 'data2' not in ts.data
-    assert 'data2' not in ts.data_info
-    assert np.all(ts.data['data3'] == ts.time)
-    assert ts.data_info['data3']['Unit'] == 'N'
 
 
 def test_plot():

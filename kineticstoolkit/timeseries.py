@@ -49,22 +49,6 @@ import kineticstoolkit as ktk  # For doctests
 window_placement = {'top': 50, 'right': 0}
 
 
-def assert_time_not_empty(func):
-    """Decorate functions to assert time not empty."""
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Do the decorator job
-        try:
-            if args[0].time.shape[0] == 0:
-                raise ValueError("The TimeSeries time attribute is empty.")
-        except KeyError:
-            raise ValueError("Could not access the TimeSeries time attribute.")
-        # Call the function being decorated and return the result
-        return func(*args, **kwargs)
-    return wrapper
-
-
 def dataframe_to_dict_of_arrays(
         dataframe: pd.DataFrame) -> Dict[str, np.ndarray]:
     """
@@ -442,17 +426,20 @@ class TimeSeries():
             print('Time is not equal')
             return False
 
-        for one_data in self.data:
-            if not np.isclose(self.data[one_data], ts.data[one_data],
-                              rtol=1e-15).all():
-                print('%s is not equal' % one_data)
-                return False
-
-        for one_data in ts.data:
-            if not np.isclose(self.data[one_data], ts.data[one_data],
-                              rtol=1e-15).all():
-                print('%s is not equal' % one_data)
-                return False
+        for data in [self.data, ts.data]:
+            for one_data in data:
+                try:
+                    if not np.isclose(self.data[one_data], ts.data[one_data],
+                                      rtol=1e-15).all():
+                        print(f'{one_data} is not equal')
+                        return False
+                except KeyError:
+                    print(f'{one_data} is missing in one of the TimeSeries')
+                    return False
+                except ValueError:
+                    print(f'{one_data} does not have the same size in both '
+                          'TimeSeries')
+                    return False
 
         if self.time_info != ts.time_info:
             print('time_info is not equal')
@@ -809,7 +796,7 @@ class TimeSeries():
     def ui_add_event(self,
                      name: str = 'event',
                      plot: Union[str, List[str]] = [], /, *,
-                     multiple_events: bool = False) -> bool:
+                     multiple_events: bool = False) -> bool:  # pragma: no cover
         """
         Add one or many events interactively to the TimeSeries.
 
@@ -1732,7 +1719,7 @@ class TimeSeries():
     def ui_get_ts_between_clicks(
             self,
             data_keys: Union[str, List[str]] = [], /, *,
-            inclusive: bool = False) -> 'TimeSeries':
+            inclusive: bool = False) -> 'TimeSeries':  # pragma: no cover
         """
         Get a subset of the TimeSeries between two mouse clicks.
 
@@ -1897,7 +1884,7 @@ class TimeSeries():
     def ui_sync(self,
                 data_keys: Union[str, List[str]] = [],
                 ts2: Union['TimeSeries', None] = None,
-                data_keys2: Union[str, List[str]] = [], /) -> None:
+                data_keys2: Union[str, List[str]] = [], /) -> None:  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
 
@@ -2260,7 +2247,7 @@ class TimeSeries():
         self.sort_events()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import doctest
     import kineticstoolkit as ktk
     import numpy as np
