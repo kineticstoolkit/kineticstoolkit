@@ -481,8 +481,11 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
                                     poly_order=2, deriv=1)
     tsout = tsin.copy()
     tsout.data['Velocity'] = tsvelocity.data['Angle']
-    tsout.add_data_info('Velocity', 'Unit',
-                        tsout.data_info['Angle']['Unit'] + '/s')
+    try:
+        tsout.add_data_info('Velocity', 'Unit',
+                            tsout.data_info['Angle']['Unit'] + '/s')
+    except KeyError:
+        pass
     return tsout
 
 

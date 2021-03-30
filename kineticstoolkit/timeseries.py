@@ -41,11 +41,28 @@ import warnings
 from ast import literal_eval
 from copy import deepcopy
 from typing import Dict, List, Tuple, Any, Union, Optional
+from functools import wraps
 
 import kineticstoolkit as ktk  # For doctests
 
 
 window_placement = {'top': 50, 'right': 0}
+
+
+def assert_time_not_empty(func):
+    """Decorate functions to assert time not empty."""
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        # Do the decorator job
+        try:
+            if args[0].time.shape[0] == 0:
+                raise ValueError("The TimeSeries time attribute is empty.")
+        except KeyError:
+            raise ValueError("Could not access the TimeSeries time attribute.")
+        # Call the function being decorated and return the result
+        return func(*args, **kwargs)
+    return wrapper
 
 
 def dataframe_to_dict_of_arrays(
@@ -1119,8 +1136,11 @@ class TimeSeries():
 
         """
         # Edge case
-        if inclusive and time == self.time[0]:
-            return 0
+        try:
+            if inclusive and time == self.time[0]:
+                return 0
+        except IndexError:  # If time was empty
+            return np.nan
 
         # Other cases
         diff = float(time) - self.time
@@ -1182,8 +1202,11 @@ class TimeSeries():
 
         """
         # Edge case
-        if inclusive and time == self.time[-1]:
-            return self.time.shape[0] - 1
+        try:
+            if inclusive and time == self.time[-1]:
+                return self.time.shape[0] - 1
+        except IndexError:  # If time was empty
+            return np.nan
 
         # Other cases
         diff = self.time - float(time)
@@ -1501,7 +1524,10 @@ class TimeSeries():
 
         """
         #Edge case
-        if time > self.time[-1]:
+        try:
+            if time > self.time[-1]:
+                return self.copy()
+        except IndexError:  # If time was empty
             return self.copy()
 
         #Other cases
@@ -1537,7 +1563,10 @@ class TimeSeries():
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
         #Edge case
-        if time < self.time[0]:
+        try:
+            if time < self.time[0]:
+                return self.copy()
+        except IndexError:  # If time was empty
             return self.copy()
 
         #Other cases
