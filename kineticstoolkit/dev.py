@@ -43,7 +43,7 @@ import time
 import json
 
 
-def run_unit_tests() -> None:
+def run_unit_tests() -> None:  # pragma: no cover
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
@@ -53,8 +53,7 @@ def run_unit_tests() -> None:
     os.chdir(kineticstoolkit.config.root_folder + '/tests')
     subprocess.call(['coverage', 'run',
                      '--source', '../kineticstoolkit',
-                     '--omit', '../kineticstoolkit/dev.py',
-                     '--omit', '../kineticstoolkit/cmdgui.py',
+                     '--omit', '../kineticstoolkit/external/*',
                      '-m', 'pytest', '--ignore=interactive'],
                     env=kineticstoolkit.config.env)
     subprocess.call(['coverage', 'html'], env=kineticstoolkit.config.env)
@@ -64,7 +63,7 @@ def run_unit_tests() -> None:
     os.chdir(cwd)
 
 
-def run_static_type_checker() -> None:
+def run_static_type_checker() -> None:  # pragma: no cover
     """Run static typing checker (mypy)."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
@@ -77,7 +76,7 @@ def run_static_type_checker() -> None:
     os.chdir(cwd)
 
 
-def run_doc_tests() -> None:
+def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
     print('Running doc tests...')
     cwd = os.getcwd()
@@ -93,7 +92,7 @@ def run_doc_tests() -> None:
                 print(f'Could not run the doctest in file {file}.')
     os.chdir(cwd)
 
-def _generate_tutorial(file: str) -> None:
+def _generate_tutorial(file: str) -> None:  # pragma: no cover
     """Generate one tutorial."""
     print(file)
     subprocess.call(['jupyter-nbconvert', '--execute',
@@ -113,7 +112,7 @@ def _generate_tutorial(file: str) -> None:
         json.dump(contents, fid, indent=1)
 
 
-def build_tutorials() -> None:
+def build_tutorials() -> None:  # pragma: no cover
     """Build the markdown from notebooks tutorials."""
     print('Generating tutorials...')
     now = time.time()
@@ -143,7 +142,7 @@ def build_tutorials() -> None:
     print(f'Done in {time.time() - now} seconds.')
 
 
-def build_website(clean: bool = False) -> None:
+def build_website(clean: bool = False) -> None:  # pragma: no cover
     """
     Build the website using sphinx.
 
@@ -175,7 +174,7 @@ def build_website(clean: bool = False) -> None:
     os.chdir(cwd)
 
 
-def clean() -> None:
+def clean() -> None:  # pragma: no cover
     """Remove outputs in jupyter notebooks (before committing to git)."""
     for (folder, _, files) in os.walk(kineticstoolkit.config.root_folder + '/doc'):
         if any(['.ipynb' in file for file in files]):
@@ -187,7 +186,7 @@ def clean() -> None:
                             env=kineticstoolkit.config.env)
 
 
-def compile_for_pypi() -> None:
+def compile_for_pypi() -> None:  # pragma: no cover
     """Compile for PyPi."""
     shutil.rmtree(kineticstoolkit.config.root_folder + '/dist',
                   ignore_errors=True)
@@ -198,7 +197,7 @@ def compile_for_pypi() -> None:
                     env=kineticstoolkit.config.env)
 
 
-def upload_to_pypi() -> None:
+def upload_to_pypi() -> None:  # pragma: no cover
     """Upload to PyPi. Only works on macOS for now."""
     root_folder = kineticstoolkit.config.root_folder
     subprocess.call([
@@ -209,7 +208,7 @@ def upload_to_pypi() -> None:
         env=kineticstoolkit.config.env)
 
 
-def release() -> None:
+def release() -> None:  # pragma: no cover
     """Run all functions for release, without packaging and uploading."""
     run_doc_tests()
     run_static_type_checker()

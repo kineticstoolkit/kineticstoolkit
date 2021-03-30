@@ -42,6 +42,7 @@ import warnings
 from ast import literal_eval
 from copy import deepcopy
 from typing import Dict, List, Tuple, Any, Union, Optional
+from functools import wraps
 
 import kineticstoolkit as ktk  # For doctests
 
@@ -426,17 +427,20 @@ class TimeSeries():
             print('Time is not equal')
             return False
 
-        for one_data in self.data:
-            if not np.isclose(self.data[one_data], ts.data[one_data],
-                              rtol=1e-15).all():
-                print('%s is not equal' % one_data)
-                return False
-
-        for one_data in ts.data:
-            if not np.isclose(self.data[one_data], ts.data[one_data],
-                              rtol=1e-15).all():
-                print('%s is not equal' % one_data)
-                return False
+        for data in [self.data, ts.data]:
+            for one_data in data:
+                try:
+                    if not np.isclose(self.data[one_data], ts.data[one_data],
+                                      rtol=1e-15).all():
+                        print(f'{one_data} is not equal')
+                        return False
+                except KeyError:
+                    print(f'{one_data} is missing in one of the TimeSeries')
+                    return False
+                except ValueError:
+                    print(f'{one_data} does not have the same size in both '
+                          'TimeSeries')
+                    return False
 
         if self.time_info != ts.time_info:
             print('time_info is not equal')
@@ -792,7 +796,7 @@ class TimeSeries():
     @unstable
     def ui_manage_events(self,
                          event_name: Union[str, List[str]] = [],
-                         plot: Union[str, List[str]] = [], /) -> bool:
+                         plot: Union[str, List[str]] = [], /) -> bool:  # pragma: no cover
         """
         Manage events interactively.
 
@@ -1196,8 +1200,11 @@ class TimeSeries():
 
         """
         # Edge case
-        if inclusive and time == self.time[0]:
-            return 0
+        try:
+            if inclusive and time == self.time[0]:
+                return 0
+        except IndexError:  # If time was empty
+            return np.nan
 
         # Other cases
         diff = float(time) - self.time
@@ -1259,8 +1266,11 @@ class TimeSeries():
 
         """
         # Edge case
-        if inclusive and time == self.time[-1]:
-            return self.time.shape[0] - 1
+        try:
+            if inclusive and time == self.time[-1]:
+                return self.time.shape[0] - 1
+        except IndexError:  # If time was empty
+            return np.nan
 
         # Other cases
         diff = self.time - float(time)
@@ -1578,7 +1588,10 @@ class TimeSeries():
 
         """
         #Edge case
-        if time > self.time[-1]:
+        try:
+            if time > self.time[-1]:
+                return self.copy()
+        except IndexError:  # If time was empty
             return self.copy()
 
         #Other cases
@@ -1614,7 +1627,10 @@ class TimeSeries():
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
         #Edge case
-        if time < self.time[0]:
+        try:
+            if time < self.time[0]:
+                return self.copy()
+        except IndexError:  # If time was empty
             return self.copy()
 
         #Other cases
@@ -1780,7 +1796,7 @@ class TimeSeries():
     def ui_get_ts_between_clicks(
             self,
             data_keys: Union[str, List[str]] = [], /, *,
-            inclusive: bool = False) -> 'TimeSeries':
+            inclusive: bool = False) -> 'TimeSeries':  # pragma: no cover
         """
         Get a subset of the TimeSeries between two mouse clicks.
 
@@ -1945,7 +1961,7 @@ class TimeSeries():
     def ui_sync(self,
                 data_keys: Union[str, List[str]] = [],
                 ts2: Union['TimeSeries', None] = None,
-                data_keys2: Union[str, List[str]] = [], /) -> None:
+                data_keys2: Union[str, List[str]] = [], /) -> None:  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
 
@@ -2308,7 +2324,7 @@ class TimeSeries():
         self.sort_events()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import doctest
     import kineticstoolkit as ktk
     import numpy as np
