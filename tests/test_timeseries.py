@@ -178,7 +178,7 @@ def test_rename_event():
         "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
 
     # Test renaming invalid occurrence
-    ts.rename_event('event4', 'event4', 10)
+    ts.rename_event('event4', 'event5', 10)
     assert str(ts.events) == \
         "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
 
@@ -189,19 +189,36 @@ def test_remove_event():
     ts.add_event(5.5, 'event1')
     ts.add_event(10.8, 'event2')
     ts.add_event(2.3, 'event2')
-
     assert str(ts.events) == \
         "[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]"
 
     ts.remove_event('event1')
-
     assert str(ts.events) == \
         "[[10.8, 'event2'], [2.3, 'event2']]"
 
     ts.remove_event('event2', 1)
-
     assert str(ts.events) == \
         "[[2.3, 'event2']]"
+
+    # Test remove bad occurrence
+    ts.remove_event('event2', 10)
+    assert str(ts.events) == \
+        "[[2.3, 'event2']]"
+
+
+def test_sort_events():
+    # Original doctest
+    ts = ktk.TimeSeries(time=np.arange(100)/10)
+    ts.add_event(2, 'two')
+    ts.add_event(1, 'one')
+    ts.add_event(3, 'three')
+    ts.add_event(3, 'three')
+    ts.sort_events(unique=False)
+    assert str(ts.events) == \
+        "[[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]"
+    ts.sort_events()
+    assert str(ts.events) == \
+        "[[1.0, 'one'], [2.0, 'two'], [3.0, 'three']]"
 
 
 def test_get_event_time():
@@ -347,6 +364,11 @@ def test_merge_and_resample():
 def test_plot():
     """Test that many parameter combinations doesn't crash."""
     ts = ktk.TimeSeries(time=np.arange(100))
+
+    # Test a plot with no data
+    ts.plot()
+
+    # Add some data
     ts.data['data1'] = ts.time.copy()
     fig = plt.figure()
     ts.plot()
@@ -377,8 +399,8 @@ def test_plot():
     plt.close(fig)
 
     # Add events
-    ts.add_event(0)
-    ts.add_event(2)
+    ts.add_event(0, 'event')
+    ts.add_event(2, '_')
     ts.add_event(3)
     fig = plt.figure()
     ts.plot()

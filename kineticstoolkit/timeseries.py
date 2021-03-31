@@ -729,6 +729,7 @@ class TimeSeries():
             return  # Nothing to do.
 
         if event_occurrence is None:
+            # Rename every occurrence of this event
             index = self.get_event_index(event_name, 0)
             while ~np.isnan(index):
                 self.events[index].name = new_name
@@ -960,7 +961,8 @@ class TimeSeries():
             ts = self.get_subset(data_keys)
 
         if len(ts.data) == 0:
-            raise ValueError('There is no data to plot.')
+            warnings.warn('This TimeSeries has no data to plot.')
+            return
 
         # Sort events to help finding each event's occurrence
         ts.sort_events(unique=False)
