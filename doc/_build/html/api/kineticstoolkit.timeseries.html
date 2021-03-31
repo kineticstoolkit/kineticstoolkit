@@ -273,7 +273,8 @@ Kinetics Toolkit’s namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)</p>
 <dl class="py class">
 <dt id="kineticstoolkit.timeseries.TimeSeries">
 <em class="property">class </em><code class="sig-prename descclassname">kineticstoolkit.timeseries.</code><code class="sig-name descname">TimeSeries</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span><span class="o">=</span><span class="default_value">array([], dtype=float64)</span></em>, <em class="sig-param"><span class="n">time_info</span><span class="o">=</span><span class="default_value">{'Unit': 's'}</span></em>, <em class="sig-param"><span class="n">data</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">data_info</span><span class="o">=</span><span class="default_value">{}</span></em>, <em class="sig-param"><span class="n">events</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class that implements TimeSeries.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that implements TimeSeries.</p>
 <p>This class implements a Timeseries in a way that resembles the timeseries
 and tscollection found in Matlab.</p>
 <p><strong>Methods</strong></p>
@@ -394,11 +395,11 @@ and tscollection found in Matlab.</p>
 <tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
 <td><p>Add one or many events interactively to the TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
-<td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_edit_events" title="kineticstoolkit.timeseries.TimeSeries.ui_edit_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_edit_events</span></code></a>([event_name, plot])</p></td>
+<td><p>Edit events interactively.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_manage_events" title="kineticstoolkit.timeseries.TimeSeries.ui_manage_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_manage_events</span></code></a>([event_name, plot])</p></td>
-<td><p>Manage events interactively.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
+<td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
 <td><p>Synchronize one or two TimeSeries by shifting their time.</p></td>
@@ -1724,27 +1725,9 @@ by the user.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks">
-<code class="sig-name descname">ui_get_ts_between_clicks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_keys</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inclusive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries between two mouse clicks.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>data_keys</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Optional. String or list of strings corresponding to the signals
-to plot. See TimeSeries.plot() for more information.</p></li>
-<li><p><strong>inclusive</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to include the given time in the comparison.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="kineticstoolkit.timeseries.TimeSeries.ui_manage_events">
-<code class="sig-name descname">ui_manage_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event_name</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_manage_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Manage events interactively.</p>
+<dt id="kineticstoolkit.timeseries.TimeSeries.ui_edit_events">
+<code class="sig-name descname">ui_edit_events</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">event_name</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">plot</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_edit_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Edit events interactively.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>Unreleased function.</p>
@@ -1767,6 +1750,24 @@ was cancelled by the user.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks">
+<code class="sig-name descname">ui_get_ts_between_clicks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_keys</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">inclusive</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get a subset of the TimeSeries between two mouse clicks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_keys</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Optional. String or list of strings corresponding to the signals
+to plot. See TimeSeries.plot() for more information.</p></li>
+<li><p><strong>inclusive</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to include the given time in the comparison.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
@@ -1814,7 +1815,8 @@ modified by this method.</p>
 <dl class="py class">
 <dt id="kineticstoolkit.timeseries.TimeSeriesEvent">
 <em class="property">class </em><code class="sig-prename descclassname">kineticstoolkit.timeseries.</code><code class="sig-name descname">TimeSeriesEvent</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">time</span><span class="o">=</span><span class="default_value">0.0</span></em>, <em class="sig-param"><span class="n">name</span><span class="o">=</span><span class="default_value">'event'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeriesEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define an event in a timeseries.</p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<p>Define an event in a timeseries.</p>
 <p>This class derives from the list class. A TimeSeriesEvent is always a
 two-items list with the first item being the time and the second item
 being the name of the event.</p>

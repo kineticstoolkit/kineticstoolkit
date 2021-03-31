@@ -795,11 +795,12 @@ class TimeSeries():
                               f"{event_name} could not be found.")
 
     @unstable
-    def ui_manage_events(self,
-                         event_name: Union[str, List[str]] = [],
-                         plot: Union[str, List[str]] = [], /) -> bool:  # pragma: no cover
+    def ui_edit_events(
+            self,
+            event_name: Union[str, List[str]] = [],
+            plot: Union[str, List[str]] = [], /) -> bool:  # pragma: no cover
         """
-        Manage events interactively.
+        Edit events interactively.
 
         Parameters
         ----------
@@ -858,6 +859,10 @@ class TimeSeries():
                 choice_index['remove'] = len(choices)
                 choices.append("Remove event")
 
+            if len(ts.events) > 0:
+                choice_index['remove_all'] = len(choices)
+                choices.append("Remove all events")
+
                 choice_index['move'] = len(choices)
                 choices.append("Move event")
 
@@ -887,6 +892,25 @@ class TimeSeries():
                 add_this_event(ts, event_name[-1])
 
             elif choice == choice_index['remove']:
+                event_index = get_event_index(ts)
+                try:
+                    ts.events.pop(event_index)
+                except IndexError:
+                    li.button_dialog(
+                        "No event was removed.",
+                        choices=['OK'],
+                        icon='error',
+                        **window_placement)
+
+            elif choice == choice_index['remove_all']:
+                if li.button_dialog(
+                        "Do you really want to remove all events from this "
+                        "TimeSeries?",
+                        ['Yes, remove all events', 'No'],
+                        icon='alert',
+                        **window_placement) == 0:
+                    ts.events = []
+
                 event_index = get_event_index(ts)
                 try:
                     ts.events.pop(event_index)
@@ -951,9 +975,9 @@ class TimeSeries():
             by the user.
         """
         print("Method TimeSeries.ui_add_event has been deprecated in April "
-              "2021. This call has been redirected to ui_manage_events, which "
+              "2021. This call has been redirected to ui_edit_events, which "
               "is the more powerful replacement.")
-        return self.ui_manage_events(name, plot)
+        return self.ui_edit_events(name, plot)
 
     @stable
     def sort_events(self, *, unique: bool = True) -> None:
