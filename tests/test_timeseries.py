@@ -368,6 +368,9 @@ def test_plot():
     # Test a plot with no data
     ts.plot()
 
+    # Test a plot with empty data
+    ts.data['data1'] = np.array([])
+
     # Add some data
     ts.data['data1'] = ts.time.copy()
     fig = plt.figure()

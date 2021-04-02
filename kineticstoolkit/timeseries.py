@@ -238,55 +238,61 @@ def dict_of_arrays_to_dataframe(
 
         # Assign data
         original_data = dict_of_arrays[the_key]
-        original_data_shape = np.shape(original_data)
-        data_length = np.shape(original_data)[0]
 
-        reshaped_data = np.reshape(original_data, (data_length, -1))
-        reshaped_data_shape = np.shape(reshaped_data)
+        if original_data.shape[0] > 0:  # Not empty
 
-        df_data = pd.DataFrame(reshaped_data)
+            original_data_shape = np.shape(original_data)
+            data_length = np.shape(original_data)[0]
 
-        # Get the column names index from the shape of the original data
-        # The strategy here is to build matrices of indices, that have
-        # the same shape as the original data, then reshape these matrices
-        # the same way we reshaped the original data. Then we know where
-        # the original indices are in the new reshaped data.
-        original_indices = np.indices(original_data_shape[1:])
-        reshaped_indices = np.reshape(original_indices,
-                                      (-1, reshaped_data_shape[1]))
+            reshaped_data = np.reshape(original_data, (data_length, -1))
+            reshaped_data_shape = np.shape(reshaped_data)
 
-        # Hint for my future self:
-        # For a one-dimension series, reshaped_indices will be:
-        # [[0]].
-        # For a two-dimension series, reshaped_indices will be:
-        # [[0 1 2 ...]].
-        # For a three-dimension series, reshaped_indices will be:
-        # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
-        #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
-        # and so on.
+            df_data = pd.DataFrame(reshaped_data)
 
-        # Assign column names
-        column_names = []
-        for i_column in range(0, len(df_data.columns)):
-            this_column_name = the_key
-            n_indices = np.shape(reshaped_indices)[0]
-            if n_indices > 0:
-                # This data is expressed in more than one dimension.
-                # We must add brackets to the column names to specify
-                # the indices.
-                this_column_name += '['
+            # Get the column names index from the shape of the original data
+            # The strategy here is to build matrices of indices, that have
+            # the same shape as the original data, then reshape these matrices
+            # the same way we reshaped the original data. Then we know where
+            # the original indices are in the new reshaped data.
+            original_indices = np.indices(original_data_shape[1:])
+            reshaped_indices = np.reshape(original_indices,
+                                          (-1, reshaped_data_shape[1]))
 
-                for i_indice in range(0, n_indices):
-                    this_column_name += str(
-                            reshaped_indices[i_indice, i_column])
-                    if i_indice == n_indices-1:
-                        this_column_name += ']'
-                    else:
-                        this_column_name += ','
+            # Hint for my future self:
+            # For a one-dimension series, reshaped_indices will be:
+            # [[0]].
+            # For a two-dimension series, reshaped_indices will be:
+            # [[0 1 2 ...]].
+            # For a three-dimension series, reshaped_indices will be:
+            # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
+            #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
+            # and so on.
 
-            column_names.append(this_column_name)
+            # Assign column names
+            column_names = []
+            for i_column in range(0, len(df_data.columns)):
+                this_column_name = the_key
+                n_indices = np.shape(reshaped_indices)[0]
+                if n_indices > 0:
+                    # This data is expressed in more than one dimension.
+                    # We must add brackets to the column names to specify
+                    # the indices.
+                    this_column_name += '['
 
-        df_data.columns = column_names
+                    for i_indice in range(0, n_indices):
+                        this_column_name += str(
+                                reshaped_indices[i_indice, i_column])
+                        if i_indice == n_indices-1:
+                            this_column_name += ']'
+                        else:
+                            this_column_name += ','
+
+                column_names.append(this_column_name)
+
+            df_data.columns = column_names
+
+        else:  # empty data
+            df_data = pd.DataFrame(columns=[the_key])
 
         # Merge this dataframe with the output dataframe
         df_out = pd.concat([df_out, df_data], axis=1)
