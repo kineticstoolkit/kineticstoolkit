@@ -154,6 +154,8 @@ class DBInterface():
             return pd.read_csv(StringIO(csv_text),
                                comment='#',
                                delimiter='\t')
+        except pd.errors.EmptyDataError:
+            raise ValueError('No value returned for this project.')
         except Exception:
             print(csv_text)
             raise ValueError('Unknown exception, see above.')
