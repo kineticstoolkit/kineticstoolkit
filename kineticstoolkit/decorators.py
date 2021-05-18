@@ -182,7 +182,7 @@ def experimental(func):
     return wrapper
 
 
-def deprecated(func):
+def deprecated(since: str, removed: str, details: str):
     """
     Decorate deprecated Kinetics Toolkit's functions.
 
@@ -190,22 +190,25 @@ def deprecated(func):
     on use. Also adds a warning section to its docstring.
 
     """
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        warnings.warn("This function is deprecated and will be removed "
-                      "in a future version of Kinetics Toolkit. Please "
-                      "consult the API for replacement solutions.",
-                      FutureWarning)
-        # Call the function being decorated and return the result
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-            return func(*args, **kwargs)
-    wrapper.__doc__ = _inject_in_docstring(
-        func.__doc__, deprecated_docstring)
-    wrapper._include_in_dir = True
-    return wrapper
+    def real_decorator(func):
+        func_name = func.__name__
+        string = (f"The function {func_name} is deprecated since "
+                  f"Kinetics Toolkit {since} and will be removed "
+                  f"in version {removed}. {details}")
+        # Ensure the decorated function keeps its metadata
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.warn(string, FutureWarning)
+            # Call the function being decorated and return the result
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                return func(*args, **kwargs)
+        wrapper.__doc__ = _inject_in_docstring(
+            func.__doc__, f'\nWarning\n-------\n{string}\n')
+        wrapper._include_in_dir = True
+        return wrapper
+    return real_decorator
 
 
 def unstable(func):
