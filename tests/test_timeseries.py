@@ -252,17 +252,17 @@ def test_get_ts_at_event___get_ts_at_time():
 
 def test_get_ts_before_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-    new_ts = ts.get_ts_before_time(-2)
+    new_ts = ts.get_ts_before_time(0)
     assert new_ts.time.tolist() == []
-    new_ts = ts.get_ts_before_time(13)
-    assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
+    new_ts = ts.get_ts_before_time(5)
+    assert new_ts.time.tolist() == [0., 1., 2., 3., 4.]
 
 
 def test_get_ts_after_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-    new_ts = ts.get_ts_after_time(-2)
-    assert new_ts.time.tolist() == [0., 1., 2., 3., 4., 5., 6., 7., 8., 9.]
-    new_ts = ts.get_ts_after_time(13)
+    new_ts = ts.get_ts_after_time(4)
+    assert new_ts.time.tolist() == [5., 6., 7., 8., 9.]
+    new_ts = ts.get_ts_after_time(9)
     assert new_ts.time.tolist() == []
 
 

@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Smoothing and deriving using a Savitzky-Golay filter &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="filters.html">Filtering</a><ul class="current">
@@ -118,7 +119,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -477,7 +478,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Smoothing-and-deriving-using-a-Savitzky-Golay-filter">
+<section id="Smoothing-and-deriving-using-a-Savitzky-Golay-filter">
 <h1>Smoothing and deriving using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-and-deriving-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h1>
 <p>The Savitzky-Golay filter is a generalization of the moving average. Instead of taking the mean of the n points of a moving window, the Savitzky-Golay filter fits a polynomial over each window. It is a powerful filter for data that is heavily quantized, particularly if we want to derivate these data. In this tutorial, we will see how to apply Savitzky-Golay filters on TimeSeries data, using the <a class="reference internal" href="../api/kineticstoolkit.filters.html#kineticstoolkit.filters.savgol"><span class="std std-ref">filters.savgol()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
@@ -513,7 +514,7 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/filters_savgol_3_0.png" src="../_images/filters_savgol_3_0.png" />
 </div>
 </div>
-<div class="section" id="Smoothing-using-a-Savitzky-Golay-filter">
+<section id="Smoothing-using-a-Savitzky-Golay-filter">
 <h2>Smoothing using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
 <p>Let’s try to smooth the non-derived signal using a second-order Savitzky-Golay filter with a window length of 7.</p>
 <div class="nbinput docutils container">
@@ -539,8 +540,8 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/filters_savgol_5_0.png" src="../_images/filters_savgol_5_0.png" />
 </div>
 </div>
-</div>
-<div class="section" id="Deriving-using-a-Savitzky-Golay-filter">
+</section>
+<section id="Deriving-using-a-Savitzky-Golay-filter">
 <h2>Deriving using a Savitzky-Golay filter<a class="headerlink" href="#Deriving-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
 <p>This sort of signal that suffers from bad resolution is very difficult to derivate because it is filled with fast-changing plateaus:</p>
 <div class="nbinput docutils container">
@@ -592,8 +593,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>As observed, the derivative of the highly-quantized signal is very similar to the derivative of the clean signal.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

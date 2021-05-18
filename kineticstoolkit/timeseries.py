@@ -30,7 +30,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import stable, experimental, unstable, deprecated, directory
+from kineticstoolkit.decorators import unstable, deprecated, directory
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -145,7 +145,7 @@ def dataframe_to_dict_of_arrays(
     n_samples = len(dataframe)
 
     # Assign the columns to the output
-    out = dict()  # type: Dict[str, np.array]
+    out = dict()  # type: Dict[str, np.ndarray]
     for key in dimensions:
         if len(dimensions[key]) == 0:
             out[key] = dataframe[key].to_numpy()
@@ -462,7 +462,6 @@ class TimeSeries():
 
         return True
 
-    @stable
     def to_dataframe(self) -> pd.DataFrame:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
@@ -481,7 +480,6 @@ class TimeSeries():
         df.index = self.time
         return df
 
-    @stable
     def from_dataframe(dataframe: pd.DataFrame, /) -> 'TimeSeries':
         """
         Create a new TimeSeries from a Pandas Dataframe
@@ -509,7 +507,6 @@ class TimeSeries():
         ts.time = dataframe.index.to_numpy()
         return ts
 
-    @stable
     def add_data_info(self, data_key: str, info_key: str, value: Any) -> None:
         """
         Add metadata to TimeSeries' data.
@@ -549,7 +546,6 @@ class TimeSeries():
         except KeyError:
             self.data_info[data_key] = {info_key: value}
 
-    @stable
     def remove_data_info(self, data_key: str, info_key: str, /) -> None:
         """
         Remove metadata from a TimeSeries' data.
@@ -582,7 +578,6 @@ class TimeSeries():
         except KeyError:
             pass
 
-    @stable
     def rename_data(self, old_data_key: str, new_data_key: str, /) -> None:
         """
         Rename a key in data and data_info.
@@ -625,7 +620,6 @@ class TimeSeries():
         except KeyError:
             pass
 
-    @stable
     def remove_data(self, data_key: str, /) -> None:
         """
         Remove a data key and its associated metadata.
@@ -671,7 +665,6 @@ class TimeSeries():
         except KeyError:
             pass
 
-    @stable
     def add_event(self, time: float, name: str = 'event') -> None:
         """
         Add an event to the TimeSeries.
@@ -696,7 +689,6 @@ class TimeSeries():
         """
         self.events.append(TimeSeriesEvent(time, name))
 
-    @stable
     def rename_event(self,
                      event_name: str,
                      new_name: str,
@@ -739,18 +731,17 @@ class TimeSeries():
             # Rename every occurrence of this event
             index = self.get_event_index(event_name, 0)
             while ~np.isnan(index):
-                self.events[index].name = new_name
+                self.events[index].name = new_name  # type: ignore
                 index = self.get_event_index(event_name, 0)
 
         else:
             index = self.get_event_index(event_name, event_occurrence)
-            try:
-                self.events[index].name = new_name
-            except TypeError:  # index was NaN
+            if ~np.isnan(index):
+                self.events[int(index)].name = new_name  # type: ignore
+            else:
                 warnings.warn(f"The occurrence {event_occurrence} of event "
                               f"{event_name} could not be found.")
 
-    @stable
     def remove_event(self,
                      event_name: str,
                      event_occurrence: Optional[int] = None, /) -> None:
@@ -789,14 +780,14 @@ class TimeSeries():
         if event_occurrence is None:  # Remove all occurrences
             event_index = self.get_event_index(event_name, 0)
             while ~np.isnan(event_index):
-                self.events.pop(event_index)
+                self.events.pop(event_index)  # type: ignore
                 event_index = self.get_event_index(event_name, 0)
 
         else:  # Remove only the specified occurrence
             event_index = self.get_event_index(event_name, event_occurrence)
-            try:
-                self.events.pop(event_index)
-            except TypeError:
+            if ~np.isnan(event_index):
+                self.events.pop(event_index)  # type: ignore
+            else:
                 warnings.warn(f"The occurrence {event_occurrence} of event "
                               f"{event_name} could not be found.")
 
@@ -839,7 +830,7 @@ class TimeSeries():
             this_time = plt.ginput(1)[0][0]
             event_times = np.array([event.time for event in ts.events])
             kineticstoolkit.gui.message("")
-            return np.argmin(np.abs(event_times - this_time))
+            return int(np.argmin(np.abs(event_times - this_time)))
 
         ts = self.copy()
 
@@ -955,7 +946,9 @@ class TimeSeries():
             ts.plot(plot)
             plt.axis(axes)
 
-    @deprecated
+    @deprecated(since="0.5", until="0.7",
+                details=("Please use the ui_edit_events method, which is the "
+                         "more powerful replacement."))
     def ui_add_event(self,
                      name: str = 'event',
                      plot: Union[str, List[str]] = [], /, *,
@@ -980,12 +973,8 @@ class TimeSeries():
             True if the event was added, False if the operation was cancelled
             by the user.
         """
-        print("Method TimeSeries.ui_add_event has been deprecated in April "
-              "2021. This call has been redirected to ui_edit_events, which "
-              "is the more powerful replacement.")
         return self.ui_edit_events(name, plot)
 
-    @stable
     def sort_events(self, *, unique: bool = True) -> None:
         """
         Sorts the TimeSeries' events from the earliest to the latest.
@@ -1024,12 +1013,10 @@ class TimeSeries():
                         (self.events[i].name == self.events[i - 1].name)):
                     self.events.pop(i)
 
-    @stable
     def copy(self) -> 'TimeSeries':
         """Deep copy of a TimeSeries."""
         return deepcopy(self)
 
-    @stable
     def plot(self,
              data_keys: Union[str, List[str]] = [],
              /, *args,
@@ -1158,7 +1145,6 @@ class TimeSeries():
             axes.legend(loc=legend_location,
                        ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
-    @stable
     def get_index_at_time(self, time: float, /) -> int:
         """
         Get the time index that is the closest to the specified time.
@@ -1187,11 +1173,10 @@ class TimeSeries():
         2
 
         """
-        return np.argmin(np.abs(self.time - float(time)))
+        return int(np.argmin(np.abs(self.time - float(time))))
 
-    @stable
     def get_index_before_time(self, time: float, /, *,
-                              inclusive: bool = False) -> int:
+                              inclusive: bool = False) -> Union[int, float]:
         """
         Get the time index that is just before the specified time.
 
@@ -1255,9 +1240,8 @@ class TimeSeries():
         else:
             return np.nan
 
-    @stable
     def get_index_after_time(self, time: float, /, *,
-                             inclusive: bool = False) -> int:
+                             inclusive: bool = False) -> Union[int, float]:
         """
         Get the time index that is just after the specified time.
 
@@ -1321,10 +1305,9 @@ class TimeSeries():
         else:
             return np.nan
 
-    @stable
     def get_event_index(self,
                         event_name: str,
-                        event_occurrence: int) -> int:
+                        event_occurrence: int) -> Union[int, float]:
         """
         Get the index of a given occurrence of an event name.
 
@@ -1339,7 +1322,7 @@ class TimeSeries():
         Returns
         -------
         int
-            The index of the event.
+            The index of the event or np.nan if no event found.
 
         """
         event_occurrence = int(event_occurrence)
@@ -1367,7 +1350,6 @@ class TimeSeries():
         except IndexError:
             return np.nan
 
-    @stable
     def get_event_time(self, event_name: str,
                        event_occurrence: int = 0, /) -> float:
         """
@@ -1406,12 +1388,11 @@ class TimeSeries():
 
         """
         event_index = self.get_event_index(event_name, event_occurrence)
-        try:
-            return self.events[event_index].time
-        except TypeError:
+        if ~np.isnan(event_index):
+            return self.events[event_index].time  # type: ignore
+        else:
             return np.nan
 
-    @stable
     def get_ts_at_time(self, time: float, /) -> 'TimeSeries':
         """
         Get a one-data subset of the TimeSeries at the nearest time.
@@ -1450,7 +1431,6 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    @stable
     def get_ts_at_event(self, event_name: str,
                         event_occurrence: int = 0, /) -> 'TimeSeries':
         """
@@ -1473,7 +1453,6 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_at_time(time)
 
-    @stable
     def get_ts_before_index(self, index: int, /, *,
                             inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1500,6 +1479,10 @@ class TimeSeries():
 
         """
         out_ts = self.copy()
+
+        if index < 0:
+            index += len(self.time)
+
         if np.isnan(index):
             index_range = range(0)
         else:
@@ -1513,7 +1496,6 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    @stable
     def get_ts_after_index(self, index: int, /, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1540,20 +1522,20 @@ class TimeSeries():
 
         """
         out_ts = self.copy()
-        if np.isnan(index):
-            index_range = range(0)
+
+        if index < 0:
+            index += len(self.time)
+
+        if inclusive:
+            index_range = range(index, len(self.time))
         else:
-            if inclusive:
-                index_range = range(index, len(self.time))
-            else:
-                index_range = range(index + 1, len(self.time))
+            index_range = range(index + 1, len(self.time))
 
         out_ts.time = out_ts.time[index_range]
         for the_data in out_ts.data.keys():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    @stable
     def get_ts_between_indexes(self, index1: int, index2: int, /, *,
                                inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1593,7 +1575,6 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    @stable
     def get_ts_before_time(self, time: float, /, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1620,17 +1601,16 @@ class TimeSeries():
 
         """
         #Edge case
-        try:
-            if time > self.time[-1]:
-                return self.copy()
-        except IndexError:  # If time was empty
+        if self.time == [] or time > self.time[-1]:
             return self.copy()
 
         #Other cases
         index = self.get_index_before_time(time, inclusive=inclusive)
-        return self.get_ts_before_index(index, inclusive=True)
+        if ~np.isnan(index):
+            return self.get_ts_before_index(index, inclusive=True)  # type: ignore
+        else:
+            return self.get_ts_before_index(0, inclusive=False)
 
-    @stable
     def get_ts_after_time(self, time: float, /, *,
                           inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1659,17 +1639,16 @@ class TimeSeries():
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
         #Edge case
-        try:
-            if time < self.time[0]:
-                return self.copy()
-        except IndexError:  # If time was empty
+        if self.time == [] or time < self.time[0]:
             return self.copy()
 
         #Other cases
         index = self.get_index_after_time(time, inclusive=inclusive)
-        return self.get_ts_after_index(index, inclusive=True)
+        if ~np.isnan(index):
+            return self.get_ts_after_index(index, inclusive=True)  # type: ignore
+        else:
+            return self.get_ts_after_index(-1, inclusive=False)
 
-    @stable
     def get_ts_between_times(self, time1: float, time2: float, /, *,
                              inclusive: bool = False) -> 'TimeSeries':
         """
@@ -1702,7 +1681,6 @@ class TimeSeries():
                                            inclusive=inclusive)
         return new_ts
 
-    @stable
     def get_ts_before_event(self, event_name: str,
                             event_occurrence: int = 0, /, *,
                             inclusive: bool = False) -> 'TimeSeries':
@@ -1743,7 +1721,6 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_before_time(time, inclusive=inclusive)
 
-    @stable
     def get_ts_after_event(self, event_name: str,
                            event_occurrence: int = 0, /, *,
                            inclusive: bool = False) -> 'TimeSeries':
@@ -1784,7 +1761,6 @@ class TimeSeries():
         time = self.get_event_time(event_name, event_occurrence)
         return self.get_ts_after_time(time, inclusive=inclusive)
 
-    @stable
     def get_ts_between_events(self, event_name1: str, event_name2: str,
                               event_occurrence1: int = 0,
                               event_occurrence2: int = 0,
@@ -1824,7 +1800,6 @@ class TimeSeries():
                                     inclusive=inclusive)
         return ts
 
-    @stable
     def ui_get_ts_between_clicks(
             self,
             data_keys: Union[str, List[str]] = [], /, *,
@@ -1853,7 +1828,6 @@ class TimeSeries():
         return self.get_ts_between_times(min(times), max(times),
                                          inclusive=inclusive)
 
-    @stable
     def isnan(self, data_key: str, /) -> np.ndarray:
         """
         Return a boolean array of missing samples.
@@ -1872,11 +1846,10 @@ class TimeSeries():
         """
         values = self.data[data_key].copy()
         # Reduce the dimension of values while keeping the time dimension.
-        while len(np.shape(values)) > 1:
-            values = np.sum(values, 1)
+        while len(values.shape) > 1:
+            values = np.sum(values, 1)  # type: ignore
         return np.isnan(values)
 
-    @experimental
     def fill_missing_samples(self, max_missing_samples: int, *,
                              method: str = 'linear') -> None:
         """
@@ -1885,6 +1858,11 @@ class TimeSeries():
         Note
         ----
         The sample rate must be constant.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental and
+        may change signature or behaviour in the future.
 
         Parameters
         ----------
@@ -1924,7 +1902,6 @@ class TimeSeries():
 
             self.data[data] = ts.data[data]
 
-    @stable
     def shift(self, time: float, /) -> None:
         """
         Shift time and events.time.
@@ -1939,7 +1916,6 @@ class TimeSeries():
             event.time = event.time + time
         self.time = self.time + time
 
-    @stable
     def sync_event(self, event_name: str,
                    event_occurrence: int = 0, /) -> None:
         """
@@ -1955,7 +1931,6 @@ class TimeSeries():
         """
         self.shift(-self.get_event_time(event_name, event_occurrence))
 
-    @stable
     def trim_events(self) -> None:
         """
         Delete the events that are outside the TimeSeries' time vector.
@@ -1989,7 +1964,6 @@ class TimeSeries():
             if event.time >= self.time[0] and event.time <= self.time[-1]:
                 self.add_event(event.time, event.name)
 
-    @experimental
     def ui_sync(self,
                 data_keys: Union[str, List[str]] = [],
                 ts2: Union['TimeSeries', None] = None,
@@ -2002,6 +1976,11 @@ class TimeSeries():
 
         If another TimeSeries is given, an interactive interface allows
         synchronizing both TimeSeries together.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental and
+        may change signature or behaviour in the future.
 
         Parameters
         ----------
@@ -2125,7 +2104,6 @@ class TimeSeries():
                     plt.close(fig)
                     finished = True
 
-    @stable
     def get_subset(self, data_keys: Union[str, List[str]]) -> 'TimeSeries':
         """
         Return a subset of the TimeSeries.
@@ -2280,7 +2258,6 @@ class TimeSeries():
 
         self.time = new_time
 
-    @experimental
     def merge(self,
               ts: 'TimeSeries',
               data_keys: Union[str, List[str]] = [], /, *,
@@ -2291,6 +2268,11 @@ class TimeSeries():
 
         This method merges a TimeSeries into the current TimeSeries, copying
         the data, data_info and events.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.2, is still experimental and
+        may change signature or behaviour in the future.
 
         Parameters
         ----------

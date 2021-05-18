@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kineticstoolkit.timeseries module &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -235,7 +236,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.timeseries">
+<section id="module-kineticstoolkit.timeseries">
 <span id="kineticstoolkit-timeseries-module"></span><h1>kineticstoolkit.timeseries module<a class="headerlink" href="#module-kineticstoolkit.timeseries" title="Permalink to this headline">¶</a></h1>
 <p>Provide the TimeSeries and TimeSeriesEvent classes.</p>
 <p>The classes defined in this module are accessible directly from the toplevel
@@ -552,15 +553,14 @@ data_info attribute could indicate the unit of data[‘Forces’]:</p>
 <dt id="kineticstoolkit.timeseries.TimeSeries.fill_missing_samples">
 <code class="sig-name descname">fill_missing_samples</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">max_missing_samples</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">method</span><span class="o">=</span><span class="default_value">'linear'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.fill_missing_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fill missing samples with the given method.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The sample rate must be constant.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.1, is still experimental and
+may change signature or behaviour in the future.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -618,7 +618,7 @@ list, starting at 0, where the occurrences are sorted in time.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The index of the event.</p>
+<dd class="field-even"><p>The index of the event or np.nan if no event found.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>int</p>
@@ -1247,14 +1247,13 @@ one nan value).</p>
 <dt id="kineticstoolkit.timeseries.TimeSeries.merge">
 <code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_keys</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">resample</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">overwrite</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.merge" title="Permalink to this definition">¶</a></dt>
 <dd><p>Merge another TimeSeries into the current TimeSeries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
 <p>This method merges a TimeSeries into the current TimeSeries, copying
 the data, data_info and events.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.2, is still experimental and
+may change signature or behaviour in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -1521,10 +1520,7 @@ If None (default), all occurences of this event name or renamed.</p></li>
 <dd><p>Resample the TimeSeries.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
+<p>The function resample is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1700,9 +1696,7 @@ and data_info are not included in the resulting DataFrame.</p>
 <dd><p>Add one or many events interactively to the TimeSeries.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Deprecated function.</p>
-<p>This function will be removed in a future release. Please consult the
-function’s detailed help to see replacement options.</p>
+<p>The function ui_add_event is deprecated since 0.5 and is scheduled to be removed in 0.7. Please use the ui_edit_events method, which is the more powerful replacement.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1730,10 +1724,7 @@ by the user.</p>
 <dd><p>Edit events interactively.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
+<p>The function ui_edit_events is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -1776,16 +1767,15 @@ to plot. See TimeSeries.plot() for more information.</p></li>
 <dt id="kineticstoolkit.timeseries.TimeSeries.ui_sync">
 <code class="sig-name descname">ui_sync</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data_keys</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="n">ts2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">data_keys2</span><span class="o">=</span><span class="default_value">[]</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="Permalink to this definition">¶</a></dt>
 <dd><p>Synchronize one or two TimeSeries by shifting their time.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
 <p>If this method is called on only one TimeSeries, an interactive
 interface asks the user to click on the time to set to zero.</p>
 <p>If another TimeSeries is given, an interactive interface allows
 synchronizing both TimeSeries together.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.1, is still experimental and
+may change signature or behaviour in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -2003,7 +1993,7 @@ first dimension’s size.</p>
 </div>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

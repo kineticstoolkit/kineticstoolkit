@@ -25,7 +25,7 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.gui as gui
 from kineticstoolkit.loadsave import save, load
-from kineticstoolkit.decorators import unstable, private, directory
+from kineticstoolkit.decorators import unstable, directory
 
 import requests
 import os
@@ -135,7 +135,6 @@ class DBInterface():
         s += f'--------------------------------------------------\n'
         return s
 
-    @private
     def _fetch_table(self, table_name: str) -> pd.DataFrame:
         global _module_user, _module_password
         url = self.url + '/kineticstoolkit/dbinterface.php'
@@ -160,7 +159,6 @@ class DBInterface():
             print(csv_text)
             raise ValueError('Unknown exception, see above.')
 
-    @private
     def _scan_files(self):
 
         # Scan all files in root folder
@@ -202,7 +200,6 @@ class DBInterface():
         # Convert to a Pandas DataFrame
         return pd.DataFrame(dict_files)
 
-    @private
     def _filter_table(self,
                       table: pd.DataFrame,
                       filters: Dict[str, str]) -> pd.DataFrame:
@@ -312,7 +309,6 @@ class DBInterface():
 
         return dict_out
 
-    @private
     def _refresh_tables(self) -> None:
         """Fetch tables on BIOMEC and merge them in the class instance."""
 

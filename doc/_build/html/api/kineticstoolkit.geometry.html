@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kineticstoolkit.geometry module &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -235,7 +236,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.geometry">
+<section id="module-kineticstoolkit.geometry">
 <span id="kineticstoolkit-geometry-module"></span><h1>kineticstoolkit.geometry module<a class="headerlink" href="#module-kineticstoolkit.geometry" title="Permalink to this headline">¶</a></h1>
 <p>Provide 3d geometry and linear algebra functions related to biomechanics.</p>
 <div class="admonition note">
@@ -280,12 +281,6 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 <dt id="kineticstoolkit.geometry.create_frames">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Nx4x4 series of frames based on series of points and vectors.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
 <p>Create reference frames based on points and vectors and return this series
 of reference frames as a series of transformation matrices.</p>
 <p>This function’s behaviour is better explained using an example. We will
@@ -316,6 +311,11 @@ which means that GH-EL-EM is a yz plane.</p></li>
 </li>
 </ol>
 </div></blockquote>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.4, is still experimental and
+may change signature or behaviour in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -369,9 +369,8 @@ Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
 <dd><p>Create an Nx4x4 series of homogeneous transforms.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
+<p>This function, which has been introduced in 0.4, is still experimental and
+may change signature or behaviour in the future.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -438,12 +437,6 @@ degrees around x:</p>
 <dt id="kineticstoolkit.geometry.get_angles">
 <code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flip</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represent a series of transformation matrices as series of Euler angles.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
-</div>
 <p>This function is a wrapper for scipy.transform.Rotation.as_euler. Please
 consult scipy help for the complete docstring.</p>
 <p>Euler angles suffer from the problem of gimbal lock, where the
@@ -451,6 +444,11 @@ representation loses a degree of freedom and it is not possible to
 determine the first and third angles uniquely. In this case, a warning is
 raised, and the third angle is set to zero. Note however that the returned
 angles still represent the correct rotation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.4, is still experimental and
+may change signature or behaviour in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -569,10 +567,7 @@ coordinates in.</p></li>
 <dd><p>Check which samples has at least one NaN.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
+<p>The function isnan is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -619,9 +614,8 @@ mismatch errors.</p>
 <dd><p>Find the homogeneous transforms between two series of point clouds.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
+<p>This function, which has been introduced in 0.4, is still experimental and
+may change signature or behaviour in the future.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -641,7 +635,7 @@ transforms.</p>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

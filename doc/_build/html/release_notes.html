@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Release Notes &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
@@ -140,7 +141,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -243,11 +244,11 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="Release-Notes">
+<section id="Release-Notes">
 <h1>Release Notes<a class="headerlink" href="#Release-Notes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="Version-0.4-(April-2021)">
+<section id="Version-0.4-(April-2021)">
 <h2>Version 0.4 (April 2021)<a class="headerlink" href="#Version-0.4-(April-2021)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="New-Features">
+<section id="New-Features">
 <h3>New Features<a class="headerlink" href="#New-Features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module to perform rigid body geometry operations such as creating frames, homogeneous transforms, multiplying series of matrices, converting from local to global coordinates and vice-versa, and extracting Euler angles from homogeneous transforms.</p></li>
@@ -255,26 +256,26 @@
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">to_html5</span></code> method to <code class="docutils literal notranslate"><span class="pre">Player</span></code>, which allows visualizing 3d markers and bodies in Jupyter.</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">rename_event</span></code> method to <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code>.</p></li>
 </ul>
-</div>
-<div class="section" id="Improvements">
+</section>
+<section id="Improvements">
 <h3>Improvements<a class="headerlink" href="#Improvements" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added test coverage measurement for continuous improvement of code robustness.</p></li>
 <li><p>Added warnings when using private or unstable functions.</p></li>
 <li><p>Changed the website to use the ReadTheDoc theme, and changed its structure to facilitate continuous improvements of the website without needing to wait for releases.</p></li>
 </ul>
-</div>
-<div class="section" id="Breaking-Changes">
+</section>
+<section id="Breaking-Changes">
 <h3>Breaking Changes<a class="headerlink" href="#Breaking-Changes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The default behaviour for <code class="docutils literal notranslate"><span class="pre">TimeSeries.remove_event</span></code> changed when no occurrence is defined. Previously, only the first occurrence was removed. Now every occurrence is removed.</p></li>
 <li><p>In <code class="docutils literal notranslate"><span class="pre">cycles.time_normalize</span></code>, the way to time-normalize between two events of the same name changed from <code class="docutils literal notranslate"><span class="pre">event_name,</span> <span class="pre">_</span></code> to <code class="docutils literal notranslate"><span class="pre">event_name,</span> <span class="pre">event_name</span></code>.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="Version-0.3-(October-2020)">
+</section>
+</section>
+<section id="Version-0.3-(October-2020)">
 <h2>Version 0.3 (October 2020)<a class="headerlink" href="#Version-0.3-(October-2020)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features-1">
+<section id="new-features-1">
 <span id="id1"></span><h3>New Features<a class="headerlink" href="#new-features-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">cycles</span></code> module to detect, time-normalize and stack cycles (e.g., gait cycles, wheelchair propulsion cycles, etc.)</p></li>
@@ -283,26 +284,26 @@
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">ktk.filters.deriv()</span></code> to derivate TimeSeries.</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">ktk.filters.median()</span></code>, which is a running median filter function.</p></li>
 </ul>
-</div>
-<div class="section" id="improvements-1">
+</section>
+<section id="improvements-1">
 <span id="id2"></span><h3>Improvements<a class="headerlink" href="#improvements-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot()</span></code> now shows the event occurrences besides the event names.</p></li>
 <li><p>Nicer tutorial for the <code class="docutils literal notranslate"><span class="pre">filters</span></code> module.</p></li>
 <li><p>Improved unit tests for the <code class="docutils literal notranslate"><span class="pre">filters</span></code> module.</p></li>
 </ul>
-</div>
-<div class="section" id="breaking-changes-1">
+</section>
+<section id="breaking-changes-1">
 <span id="id3"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The module name has been changed from <code class="docutils literal notranslate"><span class="pre">ktk</span></code> to <code class="docutils literal notranslate"><span class="pre">kineticstoolkit</span></code>. Importing using <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">ktk</span></code> is now deprecated and the standard way to import is now either <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">kineticstoolkit</span> <span class="pre">as</span> <span class="pre">ktk</span></code> or <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">kineticstoolkit.lab</span> <span class="pre">as</span> <span class="pre">ktk</span></code>.</p></li>
 <li><p>Now importing Kinetics Toolkit does not change IPython’s representation of dicts or matplotlib’s defaults. This allows using ktk’s functions without modifying the current working environment. The old behaviour is now the lab mode and is the recommended way to import Kinetics Toolkit in an IPython-based environment: <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">kineticstoolkit.lab</span> <span class="pre">as</span> <span class="pre">ktk</span></code>.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="Version-0.2-(August-2020)">
+</section>
+</section>
+<section id="Version-0.2-(August-2020)">
 <h2>Version 0.2 (August 2020)<a class="headerlink" href="#Version-0.2-(August-2020)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features-2">
+<section id="new-features-2">
 <span id="id4"></span><h3>New Features<a class="headerlink" href="#new-features-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the functions <code class="docutils literal notranslate"><span class="pre">ktk.load</span></code> and <code class="docutils literal notranslate"><span class="pre">ktk.save</span></code>.</p></li>
@@ -313,35 +314,35 @@
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">TimeSeries.remove_event()</span></code> method.</p></li>
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">TimeSeries.resample()</span></code> (experimental).</p></li>
 </ul>
-</div>
-<div class="section" id="improvements-2">
+</section>
+<section id="improvements-2">
 <span id="id5"></span><h3>Improvements<a class="headerlink" href="#improvements-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Updated the documentation system using sphinx and jupyter-lab.</p></li>
 <li><p>Improved performance of <code class="docutils literal notranslate"><span class="pre">TimeSeries.from_dataframe()</span></code></p></li>
 <li><p>ktk is now typed.</p></li>
 </ul>
-</div>
-<div class="section" id="breaking-changes-2">
+</section>
+<section id="breaking-changes-2">
 <span id="id6"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TimeSeries.from_dataframe()</span></code> is now a class function and not an instance method anymore. Therefore we need to call <code class="docutils literal notranslate"><span class="pre">ktk.TimeSeries.from_dataframe(dataframe)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">ktk.TimeSeries().from_dataframe(dataframe)</span></code>.</p></li>
 <li><p>Now depends on python 3.8 instead of 3.7.</p></li>
 </ul>
-</div>
-</div>
-<div class="section" id="Version-0.1-(May-2020)">
+</section>
+</section>
+<section id="Version-0.1-(May-2020)">
 <h2>Version 0.1 (May 2020)<a class="headerlink" href="#Version-0.1-(May-2020)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features-3">
+<section id="new-features-3">
 <span id="id7"></span><h3>New Features<a class="headerlink" href="#new-features-3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class.</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">kinematics</span></code> module, to read c3d and n3d files.</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">Player</span></code> class, to view markers in 3d.</p></li>
 </ul>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>

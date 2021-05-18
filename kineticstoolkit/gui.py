@@ -36,10 +36,8 @@ import matplotlib.pyplot as plt
 import sys
 import os
 from typing import Sequence, Union, Tuple, Any, List
-from kineticstoolkit.decorators import unstable, directory, private
 
 
-@private
 def message(message: str = '', **kwargs) -> None:
     """
     Show a message window.
@@ -56,7 +54,6 @@ def message(message: str = '', **kwargs) -> None:
         **kwargs)
 
 
-@private
 def button_dialog(message: str = 'Please select an option.',
                   choices: Sequence[str] = ['Cancel', 'OK'],
                   **kwargs) -> int:
@@ -84,7 +81,6 @@ def button_dialog(message: str = 'Please select an option.',
         **kwargs)
 
 
-@private
 def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     """
     Define the standard color order for matplotlib.
@@ -123,7 +119,6 @@ def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
     mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=thelist)
 
 
-@private
 def get_credentials() -> Tuple[str, str]:
     """
     Ask the user's username and password.
@@ -141,7 +136,6 @@ def get_credentials() -> Tuple[str, str]:
                            icon='lock')
 
 
-@private
 def get_folder(initial_folder: str = '.') -> str:
     """
     Get folder interactively using a file dialog window.
@@ -164,7 +158,6 @@ def get_folder(initial_folder: str = '.') -> str:
               config.root_folder + '/kineticstoolkit/logo_hires.png'])
 
 
-@private
 def get_filename(initial_folder: str = '.') -> str:
     """
     Get file name interactively using a file dialog window.
@@ -184,10 +177,3 @@ def get_filename(initial_folder: str = '.') -> str:
         initial_folder,
         icon=[config.root_folder + '/kineticstoolkit/logo.png',
               config.root_folder + '/kineticstoolkit/logo_hires.png'])
-
-
-module_locals = locals()
-
-
-def __dir__():
-    return directory(module_locals)

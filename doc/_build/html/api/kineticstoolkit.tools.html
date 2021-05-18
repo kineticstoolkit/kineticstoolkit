@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kineticstoolkit.tools module &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -235,7 +236,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.tools">
+<section id="module-kineticstoolkit.tools">
 <span id="kineticstoolkit-tools-module"></span><h1>kineticstoolkit.tools module<a class="headerlink" href="#module-kineticstoolkit.tools" title="Permalink to this headline">¶</a></h1>
 <p>Provide miscelleanous helper functions to the user.</p>
 <p>These functions are accessible from Kinetics Toolkit’s toplevel namespace
@@ -336,13 +337,12 @@ current folder.</p>
 <dt id="kineticstoolkit.tools.tutorials">
 <code class="sig-prename descclassname">kineticstoolkit.tools.</code><code class="sig-name descname">tutorials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.tools.tutorials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Open the Kinetics Toolkits tutorials in a web browser.</p>
+<p>Usage: ktk.tutorials()</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Experimental function.</p>
-<p>This function’s signature and default behaviour are not completely settled
-and may change slightly in the future.</p>
+<p>This function, which has been introduced in 0.3, is still experimental and
+may change signature or behaviour in the future.</p>
 </div>
-<p>Usage: ktk.tutorials()</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -356,16 +356,13 @@ and may change slightly in the future.</p>
 <dd><p>Update Kinetics Toolkit to the latest master branch.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
+<p>The function update is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 <p>If Kinetics Toolkit was installed using pip (default when using the stable
 version), then update using pip instead:</p>
 <blockquote>
 <div><p>pip upgrade kineticstoolkit</p>
 </div></blockquote>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>None</strong> – </p>
@@ -379,7 +376,7 @@ version), then update using pip instead:</p>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

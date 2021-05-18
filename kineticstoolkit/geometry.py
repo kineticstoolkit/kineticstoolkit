@@ -34,11 +34,10 @@ __license__ = "Apache 2.0"
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.decorators import stable, experimental, unstable, private, directory
-from typing import Optional
+from kineticstoolkit.decorators import unstable, directory
+from typing import Optional, Tuple
 
 
-@stable
 def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
@@ -69,7 +68,7 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
         else:
             return op1 * op2  # In the case where we have a series of floats.
 
-    (op1, op2) = match_size(op1, op2)
+    (op1, op2) = _match_size(op1, op2)
 
     n_samples = op1.shape[0]
 
@@ -84,7 +83,6 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return result
 
 
-@experimental
 def create_transforms(seq: Optional[str] = None,
                       angles: Optional[np.ndarray] = None,
                       translations: Optional[np.ndarray] = None,
@@ -92,6 +90,11 @@ def create_transforms(seq: Optional[str] = None,
                       degrees=False) -> np.ndarray:
     """
     Create an Nx4x4 series of homogeneous transforms.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -166,7 +169,7 @@ def create_transforms(seq: Optional[str] = None,
         angles = np.array(angles)
 
     # Match sizes
-    translations, angles = match_size(translations, angles)
+    translations, angles = _match_size(translations, angles)
     n_samples = angles.shape[0]
 
     # Create the rotation matrix
@@ -184,7 +187,6 @@ def create_transforms(seq: Optional[str] = None,
     return T
 
 
-@experimental
 def get_angles(T: np.ndarray,
                seq: str,
                degrees: bool = False,
@@ -200,6 +202,11 @@ def get_angles(T: np.ndarray,
     determine the first and third angles uniquely. In this case, a warning is
     raised, and the third angle is set to zero. Note however that the returned
     angles still represent the correct rotation.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -266,7 +273,6 @@ def get_angles(T: np.ndarray,
     return angles
 
 
-@experimental
 def create_frames(
         origin: np.ndarray,
         x: Optional[np.ndarray] = None,
@@ -301,6 +307,11 @@ def create_frames(
         3. yz = EL - EM  # The x axis is formed by cross(y, yz)
         4. reference_frames = ktk.geometry.create_reference_frames(
             origin=origin, y=y, yz=yz)
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -404,7 +415,6 @@ def create_frames(
     return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
-@stable
 def get_local_coordinates(global_coordinates: np.ndarray,
                           reference_frames: np.ndarray) -> np.ndarray:
     """
@@ -463,7 +473,6 @@ def get_local_coordinates(global_coordinates: np.ndarray,
     return local_coordinates
 
 
-@stable
 def get_global_coordinates(local_coordinates: np.ndarray,
                            reference_frames: np.ndarray) -> np.ndarray:
     """
@@ -518,8 +527,8 @@ def isnan(input: np.ndarray, /) -> np.ndarray:
     return temp
 
 
-@private
-def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
+def _match_size(op1: np.ndarray, op2: np.ndarray
+                ) -> Tuple[np.ndarray, np.ndarray]:
     """
     Match the first dimension of op1 and op2.
 
@@ -547,11 +556,15 @@ def match_size(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return op1, op2
 
 
-@experimental
 def register_points(global_points: np.ndarray,
                     local_points: np.ndarray) -> np.ndarray:
     """
     Find the homogeneous transforms between two series of point clouds.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------

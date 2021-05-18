@@ -32,7 +32,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.filters
-from kineticstoolkit.decorators import unstable, private, directory
+from kineticstoolkit.decorators import unstable, directory
 
 import numpy as np
 from typing import Dict, List
@@ -524,7 +524,7 @@ def calculate_proximal_wrench(
         matrix_2 = np.block([a_i[i_frame] - g, alpha_i[i_frame]])
         matrix_2 = matrix_2[:, np.newaxis]  # Convert 1d to column vector
 
-        matrix_3 = np.block([
+        matrix_3 = np.hstack([
             np.zeros(3),
             np.cross(omega_i[i_frame], I_i[i_frame] @ omega_i[i_frame])])
         matrix_3 = matrix_3[:, np.newaxis]  # Convert 1d to column vector

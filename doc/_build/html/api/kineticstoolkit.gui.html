@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kineticstoolkit.gui module &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -235,7 +236,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.gui">
+<section id="module-kineticstoolkit.gui">
 <span id="kineticstoolkit-gui-module"></span><h1>kineticstoolkit.gui module<a class="headerlink" href="#module-kineticstoolkit.gui" title="Permalink to this headline">¶</a></h1>
 <p>Provide simple GUI functions.</p>
 <div class="admonition warning">
@@ -243,7 +244,154 @@
 <p>This module is private and should be considered only as helper functions
 for Kinetics Toolkit’s own use.</p>
 </div>
-</div>
+<p><strong>Functions</strong></p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.gui.button_dialog" title="kineticstoolkit.gui.button_dialog"><code class="xref py py-obj docutils literal notranslate"><span class="pre">button_dialog</span></code></a>([message, choices])</p></td>
+<td><p>Create a blocking dialog message window with a selection of buttons.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.gui.get_credentials" title="kineticstoolkit.gui.get_credentials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_credentials</span></code></a>()</p></td>
+<td><p>Ask the user’s username and password.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.gui.get_filename" title="kineticstoolkit.gui.get_filename"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_filename</span></code></a>([initial_folder])</p></td>
+<td><p>Get file name interactively using a file dialog window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.gui.get_folder" title="kineticstoolkit.gui.get_folder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_folder</span></code></a>([initial_folder])</p></td>
+<td><p>Get folder interactively using a file dialog window.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.gui.message" title="kineticstoolkit.gui.message"><code class="xref py py-obj docutils literal notranslate"><span class="pre">message</span></code></a>([message])</p></td>
+<td><p>Show a message window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.gui.set_color_order" title="kineticstoolkit.gui.set_color_order"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_color_order</span></code></a>(setting)</p></td>
+<td><p>Define the standard color order for matplotlib.</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py function">
+<dt id="kineticstoolkit.gui.button_dialog">
+<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">button_dialog</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">'Please select an option.'</span></em>, <em class="sig-param"><span class="n">choices</span><span class="o">=</span><span class="default_value">['Cancel', 'OK']</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.button_dialog" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a blocking dialog message window with a selection of buttons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>message</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Message that is presented to the user.</p></li>
+<li><p><strong>choices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – List of button text.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The button number (0 = First button, 1 = Second button, etc.) If the
+user closes the window instead of clicking a button, a value of -1 is
+returned.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.gui.get_credentials">
+<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">get_credentials</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.get_credentials" title="Permalink to this definition">¶</a></dt>
+<dd><p>Ask the user’s username and password.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A tuple of two strings containing the username and password,
+respectively, or an empty tuple if the user closed the window.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Tuple[str]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.gui.get_filename">
+<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">get_filename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial_folder</span><span class="o">=</span><span class="default_value">'.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.get_filename" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get file name interactively using a file dialog window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>initial_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The initial folder of the file dialog.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The full path of the selected file. An empty string is returned if the
+user cancelled.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.gui.get_folder">
+<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">get_folder</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">initial_folder</span><span class="o">=</span><span class="default_value">'.'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.get_folder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get folder interactively using a file dialog window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>initial_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. The initial folder of the file dialog.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The full path of the selected folder. An empty string is returned if
+the user cancelled.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.gui.message">
+<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">message</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">message</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.message" title="Permalink to this definition">¶</a></dt>
+<dd><p>Show a message window.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>message</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The message to show. Use ‘’ to close every message window.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="kineticstoolkit.gui.set_color_order">
+<code class="sig-prename descclassname">kineticstoolkit.gui.</code><code class="sig-name descname">set_color_order</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">setting</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.gui.set_color_order" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define the standard color order for matplotlib.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>setting</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>Either a string or a list of colors.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>If a string, it can be either:</dt><dd><ul>
+<li><p>’default’: Default v2.0 matplotlib colors.</p></li>
+<li><p>’classic’: Default classic Matlab colors (bgrcmyk).</p></li>
+<li><dl class="simple">
+<dt>’xyz’: Same as classic but begins with rgb instead of bgr to</dt><dd><p>be consistent with most 3d visualization softwares.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><p>If a list, it can be either a list of chars from [bgrcmyk], a list of
+hexadecimal color values, or any list supported by matplotlib’s
+axes.prop_cycle rcParam.</p></li>
+</ul>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 
 
            </div>

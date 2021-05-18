@@ -28,7 +28,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.filters as filters
 import kineticstoolkit.cycles as cycles
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import stable, unstable, private, dead, directory
+from kineticstoolkit.decorators import unstable, dead, directory
 
 import numpy as np
 from numpy import sin, cos, pi
@@ -38,7 +38,6 @@ import struct  # to unpack binary data from SmartWheels' txt files
 from typing import Union, Optional, List
 
 
-@stable
 def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
@@ -222,7 +221,6 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     return index
 
 
-@stable
 def remove_offsets(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -303,7 +301,6 @@ def remove_offsets(
     return kinetics
 
 
-@stable
 def calculate_forces_and_moments(
         kinetics: TimeSeries, /,
         gains: Union[np.ndarray, str],
@@ -370,7 +367,7 @@ def calculate_forces_and_moments(
 
         # Calculate the rotation angle to apply to the calculated kinetics
         if reference_frame == 'wheel':
-            theta = 0
+            theta = np.array([0.0])
         elif reference_frame == 'hub':
             theta = kinetics.data['Angle']
         else:
@@ -414,7 +411,7 @@ def calculate_forces_and_moments(
 
         # Calculate the rotation angle to apply to the calculated kinetics
         if reference_frame == 'wheel':
-            theta = 0
+            theta = np.array([0.0])
         elif reference_frame == 'hub':
             raise NotImplementedError("hub reference_frame not implemented yet"
                                       "for force_cell transducers.")
@@ -445,7 +442,6 @@ def calculate_forces_and_moments(
     return(kinetics)
 
 
-@stable
 def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate velocity based on wheel angle.
@@ -489,7 +485,6 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     return tsout
 
 
-@stable
 def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate power based on wheel velocity and moment.
@@ -514,7 +509,6 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
 
 
 #--- Deprecated functions ---#
-@private
 def _old_calculate_forces_and_moments(
         kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
     """
@@ -626,8 +620,8 @@ def _old_calculate_forces_and_moments(
     else:
         raise ValueError('This calibration ID is not available.')
 
-    gains = np.array(gains)
-    offsets = np.array(offsets)
+    gains_ = np.array(gains)
+    offsets_ = np.array(offsets)
 
     # Calculate the forces and moments and add to the output
     if forcecell == 'smartwheel':
@@ -637,29 +631,29 @@ def _old_calculate_forces_and_moments(
         theta = kinetics.data['Angle']
 
         # Calculate the forces and moments
-        Fx = gains[0] * (
+        Fx = gains_[0] * (
             ch[:, 0] * sin(theta) +
             ch[:, 2] * sin(theta + 2 * pi / 3) +
             ch[:, 4] * sin(theta + 4 * pi / 3)) + offsets[0]
 
-        Fy = gains[1] * (
+        Fy = gains_[1] * (
             ch[:, 0] * cos(theta) +
             ch[:, 2] * cos(theta + 2 * pi / 3) +
             ch[:, 4] * cos(theta + 4 * pi / 3)) + offsets[1]
 
-        Fz = gains[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
+        Fz = gains_[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
 
-        Mx = gains[3] * (
+        Mx = gains_[3] * (
             ch[:, 1] * sin(theta) +
             ch[:, 3] * sin(theta + 2 * pi / 3) +
             ch[:, 5] * sin(theta + 4 * pi / 3)) + offsets[3]
 
-        My = gains[4] * (
+        My = gains_[4] * (
             ch[:, 1] * cos(theta) +
             ch[:, 3] * cos(theta + 2 * pi / 3) +
             ch[:, 5] * cos(theta + 4 * pi / 3)) + offsets[4]
 
-        Mz = gains[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
+        Mz = gains_[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
         forces_moments = np.block([Fx[:, np.newaxis],
                                    Fy[:, np.newaxis],
                                    Fz[:, np.newaxis],
@@ -669,7 +663,7 @@ def _old_calculate_forces_and_moments(
 
     elif forcecell == 'forcecell':
 
-        forces_moments = gains * kinetics.data['Channels'] + offsets
+        forces_moments = gains_ * kinetics.data['Channels'] + offsets_
 
     elif forcecell == 'matrix':
 
@@ -677,9 +671,9 @@ def _old_calculate_forces_and_moments(
 
         forces_moments = np.empty((n_frames, 6))
         for i_frame in range(n_frames):
-            forces_moments[i_frame] = (gains @
+            forces_moments[i_frame] = (gains_ @
                                        kinetics.data['Channels'][i_frame] +
-                                       offsets)
+                                       offsets_)
 
     # Format these data in the output timeseries
     kinetics = kinetics.copy()
@@ -697,7 +691,9 @@ def _old_calculate_forces_and_moments(
     return(kinetics)
 
 
-@dead
+@dead(since="October 2020",
+      until="December 2021",
+      details="Please use ktk.cycles.detect_cycles instead.")
 def detect_pushes(
         tsin: TimeSeries, /, *,
         push_threshold: float = 5.0,
@@ -706,8 +702,6 @@ def detect_pushes(
         min_push_force: float = 30.0) -> TimeSeries:
     """
     Detect pushes and recoveries automatically.
-
-    Deprecated since October 2020. Please use ktk.cycles.detect_cycles instead.
 
     Parameters
     ----------
@@ -770,15 +764,13 @@ def detect_pushes(
     return tsout
 
 
-@dead
+@dead(since="October 2020",
+      until="December 2021",
+      details="Please use ktk.pushrimkinetics.remove_offsets instead.")
 def remove_sinusoids(
         kinetics: TimeSeries,
-        baseline_kinetics: Optional[TimeSeries] = None
-        ) -> TimeSeries:
-    """
-    Deprecated since October 2020. Please use
-    ktk.pushrimkinetics.remove_offsets instead.
-    """
+        baseline_kinetics: Optional[TimeSeries] = None) -> TimeSeries:
+    """Remove offsets."""
     return remove_offsets(kinetics, baseline_kinetics)
 
 

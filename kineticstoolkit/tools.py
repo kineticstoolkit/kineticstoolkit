@@ -31,7 +31,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
-from kineticstoolkit.decorators import stable, unstable, experimental, directory
+from kineticstoolkit.decorators import unstable, directory
 
 import os
 import sys
@@ -41,7 +41,6 @@ import warnings
 from typing import Dict, List
 
 
-@stable
 def explore(folder_name: str = '') -> None:
     """
     Open an Explorer window (on Windows) or a Finder window (on macOS)
@@ -67,7 +66,6 @@ def explore(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
-@stable
 def terminal(folder_name: str = '') -> None:
     """
     Open a terminal window.
@@ -103,7 +101,6 @@ def terminal(folder_name: str = '') -> None:
                                   'Windows and macOS.')
 
 
-@stable
 def start_lab_mode(*, config: Dict[str, bool] = {
         'change_ipython_dict_repr': True,
         'change_matplotlib_defaults': True,
@@ -209,12 +206,17 @@ def update() -> None:
              '\'; git pull origin master"')])
 
 
-@experimental
 def tutorials() -> None:
     """
     Open the Kinetics Toolkits tutorials in a web browser.
 
     Usage: ktk.tutorials()
+
+    Warning
+    -------
+    This function, which has been introduced in 0.3, is still experimental and
+    may change signature or behaviour in the future.    
+
     """
     _webbrowser.open('file:///' + kineticstoolkit.config.root_folder +
                      '/tutorials/index.html',

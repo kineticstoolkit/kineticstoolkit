@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kineticstoolkit.decorators module &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -235,25 +236,34 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.decorators">
+<section id="module-kineticstoolkit.decorators">
 <span id="kineticstoolkit-decorators-module"></span><h1>kineticstoolkit.decorators module<a class="headerlink" href="#module-kineticstoolkit.decorators" title="Permalink to this headline">¶</a></h1>
 <p>Provide decorators for Kinetics Toolkit’s functions.</p>
 <p>The following decorator can be used on each Kinetics Toolkit’s’s function:</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>&#64;stable: Documented, stable function in a release.</p></li>
-<li><p>&#64;experimental: Documented, experimental function in a release.</p></li>
-<li><p>&#64;deprecated: Documented but deprecated function in a release.</p></li>
-<li><p>&#64;unstable: Documented only in the development version.</p></li>
-<li><p>&#64;dead: Undocumented, deprecated function in the development version.</p></li>
-<li><p>&#64;private: Undocumented, for private use by the module only.</p></li>
+<li><dl class="simple">
+<dt>&#64;unstable:</dt><dd><p>Documented only in the development version.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>&#64;deprecated(since: str, until: str, details: str):</dt><dd><p>Documented but deprecated function in a release.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>&#64;dead:</dt><dd><p>Undocumented, deprecated function in the development version.</p>
+</dd>
+</dl>
+</li>
 </ul>
 <p>Each of these decorators add the _include_in_dir property to the decorated
 function. The provided function <code class="docutils literal notranslate"><span class="pre">directory</span></code> looks at these properties
 to return a custom __dir__ to Kinematics Toolkit’s classes. See such class
 for example.</p>
 </div></blockquote>
-</div>
+</section>
 
 
            </div>

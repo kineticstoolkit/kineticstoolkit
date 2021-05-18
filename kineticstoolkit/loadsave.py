@@ -30,7 +30,7 @@ __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.timeseries import dataframe_to_dict_of_arrays
-from kineticstoolkit.decorators import stable, private, directory
+from kineticstoolkit.decorators import directory
 import kineticstoolkit.config
 
 import scipy.io as spio
@@ -50,7 +50,6 @@ import zipfile
 from typing import Any, List
 
 
-@stable
 def save(filename: str, variable: Any) -> None:
     """
     Save a variable to a ktk.zip file.
@@ -171,7 +170,6 @@ def save(filename: str, variable: Any) -> None:
     shutil.rmtree(temp_folder)
 
 
-@private
 def _load(filename):
     """
     Load the contents of a folder or filename.
@@ -273,7 +271,6 @@ def _load(filename):
         return ('', None)
 
 
-@private
 def _load_object_hook(obj):
     if 'class__' in obj:
         to_class = obj['class__']
@@ -316,7 +313,6 @@ def _load_object_hook(obj):
         return obj
 
 
-@private
 def _load_ktk_zip(filename, include_metadata=False):
     """Read the ktk.zip file format."""
 
@@ -372,7 +368,6 @@ def _load_ktk_zip(filename, include_metadata=False):
                 return variable[key]
 
 
-@stable
 def load(filename: str) -> Any:
     """
     Load a ktk.zip file.
@@ -409,7 +404,6 @@ def load(filename: str) -> Any:
         raise ValueError('The file must be either zip or mat.')
 
 
-@private
 def _loadmat(filename):
     """
     Load a Matlab's MAT file.
@@ -444,7 +438,6 @@ def _loadmat(filename):
         return data
 
 
-@private
 def _convert_cell_arrays_to_lists(the_input):
     """
     Convert cell arrays to lists.
@@ -507,7 +500,6 @@ def _convert_cell_arrays_to_lists(the_input):
     return the_input
 
 
-@private
 def _convert_to_timeseries(the_input):
     """
     Convert dicts of Matlab timeseries to Kinetics Toolkit TimeSeries.
@@ -589,7 +581,6 @@ def _convert_to_timeseries(the_input):
         return the_input
 
 
-@private
 def _recursive_matstruct_to_dict(variable):
     """Recursively converts Mat-objects in dicts or arrays to nested dicts."""
     if isinstance(variable, spio.matlab.mio5_params.mat_struct):
@@ -604,7 +595,6 @@ def _recursive_matstruct_to_dict(variable):
     return variable
 
 
-@private
 def _todict(variable):
     """Construct dicts from Mat-objects."""
     dict = {}

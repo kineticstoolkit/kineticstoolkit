@@ -27,7 +27,7 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import stable, unstable, experimental, directory
+from kineticstoolkit.decorators import unstable, directory
 from typing import Sequence, Dict, Any
 
 import numpy as np
@@ -41,7 +41,6 @@ except ModuleNotFoundError:
                   'will not work.')
 
 
-@stable
 def read_c3d_file(filename: str) -> TimeSeries:
     """
     Read markers from a C3D file.
@@ -100,7 +99,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
         label_name = labels[i_label]
 
-        output.data[label_name] = (
+        output.data[label_name] = np.array(
             [point_factor, point_factor, point_factor, 1] *
             reader['data']['points'][:, i_label, :].T)
 
@@ -165,7 +164,6 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     c3d.write(filename)
 
 
-@stable
 def read_n3d_file(filename: str, labels: Sequence[str] = []):
     """
     Read markers from an NDI N3D file.
@@ -353,13 +351,17 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
-@experimental
 def create_rigid_body_config(
     markers: TimeSeries,
     marker_names: Sequence[str]
 ) -> Dict[str, Any]:
     """
     Create a rigid body configuration based on a static acquisition.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -399,7 +401,7 @@ def create_rigid_body_config(
             global_points, rigid_bodies)
 
     # Take the average
-    local_points = np.mean(local_points, axis=0)
+    local_points = np.array(np.mean(local_points, axis=0))
     local_points = local_points[np.newaxis]
 
     return {
@@ -408,7 +410,6 @@ def create_rigid_body_config(
             }
 
 
-@experimental
 def register_markers(
         markers: TimeSeries,
         rigid_body_configs: Dict[str, Dict[str, Any]],
@@ -419,6 +420,11 @@ def register_markers(
 
     Calculates the trajectory of rigid bodies using
     `ktk.geometry.register_points`.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -458,7 +464,7 @@ def register_markers(
             else:
                 global_points[:, :, i_marker] = np.nan
 
-        (local_points, global_points) = geometry.match_size(
+        (local_points, global_points) = geometry._match_size(
                 local_points, global_points)
 
         # Compute the rigid body trajectory
@@ -468,7 +474,6 @@ def register_markers(
     return rigid_bodies
 
 
-@experimental
 def create_virtual_marker_config(
         markers: TimeSeries,
         rigid_bodies: TimeSeries,
@@ -477,6 +482,11 @@ def create_virtual_marker_config(
         ) -> Dict[str, Any]:
     """
     Create a virtual marker configuration based on a probing acquisition.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------

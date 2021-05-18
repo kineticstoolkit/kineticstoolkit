@@ -20,17 +20,14 @@ Provide decorators for Kinetics Toolkit's functions.
 
 The following decorator can be used on each Kinetics Toolkit's's function:
 
-    - @stable: Documented, stable function in a release.
+    - @unstable:
+        Documented only in the development version.
 
-    - @experimental: Documented, experimental function in a release.
+    - @deprecated(since: str, until: str, details: str):
+        Documented but deprecated function in a release.
 
-    - @deprecated: Documented but deprecated function in a release.
-
-    - @unstable: Documented only in the development version.
-
-    - @dead: Undocumented, deprecated function in the development version.
-
-    - @private: Undocumented, for private use by the module only.
+    - @dead:
+        Undocumented, deprecated function in the development version.
 
     Each of these decorators add the _include_in_dir property to the decorated
     function. The provided function ``directory`` looks at these properties
@@ -52,70 +49,8 @@ import kineticstoolkit.config
 from typing import Dict, List, Any
 
 
-experimental_docstring = """
-Warning
--------
-Experimental function.
-
-This function's signature and default behaviour are not completely settled
-and may change slightly in the future.
-"""
-
-deprecated_docstring = """
-Warning
--------
-Deprecated function.
-
-This function will be removed in a future release. Please consult the
-function's detailed help to see replacement options.
-"""
-
-unstable_docstring = """
-Warning
--------
-Unreleased function.
-
-This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-"""
-
-unstable_warning = """
-The function {name} is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.
-"""
-
-dead_docstring = """
-Warning
--------
-Deprecated function.
-
-This function was removed from the documentation but is still temporarily
-accessible. Its code will be completely removed in a future release.
-"""
-
-private_docstring = """
-Warning
--------
-Private function.
-
-This function should be used by Kinetics Toolkit only. Do not base your work
-on this function.
-"""
-
-private_warning = """
-The function {name} should be used by Kinetics Toolkit only. Do not base
-your work on this function.
-"""
-
 class KTKUnstableWarning(UserWarning):
     """Warning raised when using an unstable Kinetics Toolkig function."""
-    pass
-
-
-class KTKPrivateWarning(UserWarning):
-    """Warning raised when using a private Kinetics Toolkig function."""
     pass
 
 
@@ -140,72 +75,31 @@ def _inject_in_docstring(docstring: str, text: str) -> str:
     return '\n'.join(result)
 
 
-def stable(func):
-    """
-    Decorate stable Kinetics Toolkit's functions.
-
-    Adds this function to the main documentation.
-
-    """
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Call the function being decorated and return the result
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-            return func(*args, **kwargs)
-    wrapper._include_in_dir = True
-    return wrapper
-
-
-def experimental(func):
-    """
-    Decorate experimental Kinetics Toolkit's functions.
-
-    Adds this function to the main documentation with no warning for the
-    moment. Also adds a warning section to its docstring.
-
-    """
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Call the function being decorated and return the result
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-            return func(*args, **kwargs)
-
-    wrapper.__doc__ = _inject_in_docstring(
-        func.__doc__, experimental_docstring)
-    wrapper._include_in_dir = True
-    return wrapper
-
-
-def deprecated(since: str, removed: str, details: str):
+def deprecated(since: str, until: str, details: str):
     """
     Decorate deprecated Kinetics Toolkit's functions.
 
-    Adds this function to the main documentation and generates a FutureWarning
-    on use. Also adds a warning section to its docstring.
+    Generates a FutureWarning and adds a warning section to its docstring.
+    These functions are included in API documentation.
 
     """
     def real_decorator(func):
         func_name = func.__name__
         string = (f"The function {func_name} is deprecated since "
-                  f"Kinetics Toolkit {since} and will be removed "
-                  f"in version {removed}. {details}")
+                  f"{since} and is scheduled to be removed "
+                  f"in {until}. {details}")
+
         # Ensure the decorated function keeps its metadata
         @wraps(func)
         def wrapper(*args, **kwargs):
-            warnings.warn(string, FutureWarning)
+            warnings.warn(string, category=FutureWarning, stacklevel=2)
             # Call the function being decorated and return the result
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-                warnings.filterwarnings("ignore", category=KTKPrivateWarning)
+                warnings.filterwarnings("ignore", category=FutureWarning)
                 return func(*args, **kwargs)
         wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, f'\nWarning\n-------\n{string}\n')
+            func.__doc__, f"\nWarning\n-------\n{string}")
         wrapper._include_in_dir = True
         return wrapper
     return real_decorator
@@ -223,17 +117,20 @@ def unstable(func):
     Also adds a warning section to its docstring.
 
     """
+    func_name = func.__name__
+    string = (f"The function {func_name} is unstable, which means it may not "
+              f"be tested or settled yet. Please avoid using this function "
+              f"in production code.")
+
     # Ensure the decorated function keeps its metadata
     @wraps(func)
     def wrapper(*args, **kwargs):
         # Call the function being decorated and return the result
         if kineticstoolkit.config.version != 'master':
-            warnings.warn(KTKUnstableWarning(
-                unstable_warning.format(name=func.__name__)))
+            warnings.warn(KTKUnstableWarning(string))
 
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
             return func(*args, **kwargs)
 
     if kineticstoolkit.config.version == 'master':
@@ -242,11 +139,11 @@ def unstable(func):
         wrapper._include_in_dir = False
 
     wrapper.__doc__ = _inject_in_docstring(
-        func.__doc__, unstable_docstring)
+        func.__doc__, f"\nWarning\n-------\n{string}")
     return wrapper
 
 
-def dead(func):
+def dead(since: str, until: str, details=''):
     """
     Decorate dead Kinetics Toolkit's functions.
 
@@ -256,47 +153,26 @@ def dead(func):
     Parameter listing is a list of attributes of the module that will be
     returned by the module's or class' __dir__ function.
     """
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        warnings.warn("This function is deprecated and will be removed "
-                      "in a future version of Kinetics Toolkit. Please "
-                      "consult the API for replacement solutions.",
-                      FutureWarning)
-        # Call the function being decorated and return the result
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-            warnings.filterwarnings("ignore", category=KTKPrivateWarning)
-            return func(*args, **kwargs)
+    def real_decorator(func):
+        func_name = func.__name__
+        string = (f"The function {func_name} is deprecated since "
+                  f"{since} and is scheduled to be removed "
+                  f"in {until}. {details}")
 
-    wrapper.__doc__ = _inject_in_docstring(
-        func.__doc__, dead_docstring)
-    wrapper._include_in_dir = False
-    return wrapper
-
-
-def private(func):
-    """
-    Decorate private Kinetics Toolkit's functions.
-
-    Does not add this function to the main documentation.
-    Also adds a warning section to its docstring.
-
-    Parameter listing is a list of attributes of the module that will be
-    returned by the module's or class' __dir__ function.
-
-    """
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        # Call the function being decorated and return the result
-        warnings.warn(KTKPrivateWarning(
-            private_warning.format(name=func.__name__)))
-        return func(*args, **kwargs)
-    wrapper.__doc__ = _inject_in_docstring(
-        func.__doc__, private_docstring)
-    wrapper._include_in_dir = False
-    return wrapper
+        # Ensure the decorated function keeps its metadata
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            warnings.warn(string, category=FutureWarning, stacklevel=2)
+            # Call the function being decorated and return the result
+            with warnings.catch_warnings():
+                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
+                warnings.filterwarnings("ignore", category=FutureWarning)
+                return func(*args, **kwargs)
+        wrapper.__doc__ = _inject_in_docstring(
+            func.__doc__, f"\nWarning\n-------\n{string}")
+        wrapper._include_in_dir = False
+        return wrapper
+    return real_decorator
 
 
 def directory(module_locals: Dict[str, Any]) -> List[str]:
@@ -319,7 +195,9 @@ def directory(module_locals: Dict[str, Any]) -> List[str]:
             if module_locals[key]._include_in_dir:
                 dir_.append(key)
         except AttributeError:
-            pass
+            if ~key.startswith('_'):
+                dir_.append(key)
+
     return dir_
 
 

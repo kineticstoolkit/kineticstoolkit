@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Creating and navigating between reference frames &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -90,14 +91,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -106,7 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -114,7 +115,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -454,7 +455,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Creating-and-navigating-between-reference-frames">
+<section id="Creating-and-navigating-between-reference-frames">
 <h1>Creating and navigating between reference frames<a class="headerlink" href="#Creating-and-navigating-between-reference-frames" title="Permalink to this headline">¶</a></h1>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -466,7 +467,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="section" id="Creating-reference-frames">
+<section id="Creating-reference-frames">
 <h2>Creating reference frames<a class="headerlink" href="#Creating-reference-frames" title="Permalink to this headline">¶</a></h2>
 <p>One of the ways to create a reference frame is to use marker positions and create orthogonal vectors based on these positions.</p>
 <p>The <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides the create_reference_frames function that performs such operation. This function requires a position for the origin, a vector for one of the axes (either x, y, or z), and another vector that creates a plane with the first vector (either xy, xz, or yz).</p>
@@ -495,8 +496,8 @@ div.rendered_html tbody tr:hover {
 </li>
 </ol>
 <p>[1] G. Wu et al., “ISB recommendation on definitions of joint coordinate systems of various joints for the reporting of human joint motion - Part II: shoulder, elbow, wrist and hand,” Journal of Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p>
-</div>
-<div class="section" id="Calculating-local-and-global-coordinates">
+</section>
+<section id="Calculating-local-and-global-coordinates">
 <h2>Calculating local and global coordinates<a class="headerlink" href="#Calculating-local-and-global-coordinates" title="Permalink to this headline">¶</a></h2>
 <p>Finally, the <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module provides function to change the reference frame used to express points, vectors and matrices from local to global coordinates and vice versa:</p>
 <ul class="simple">
@@ -504,8 +505,8 @@ div.rendered_html tbody tr:hover {
 <li><p><a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_global_coordinates"><span class="std std-ref">get_global_coordinates</span></a>: Express local coordinates in global coordinates.</p></li>
 </ul>
 <p>For more information on geometry, please check the <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">API Reference for the geometry module</span></a>.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

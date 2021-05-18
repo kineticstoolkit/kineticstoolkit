@@ -90,14 +90,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -106,7 +106,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -114,7 +114,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -233,6 +233,8 @@
 </li>
       <li><a href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.butter">butter() (in module kineticstoolkit.filters)</a>
 </li>
+      <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.button_dialog">button_dialog() (in module kineticstoolkit.gui)</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -337,9 +339,15 @@
 </li>
       <li><a href="api/kineticstoolkit.inversedynamics.html#kineticstoolkit.inversedynamics.get_anthropometrics">get_anthropometrics() (in module kineticstoolkit.inversedynamics)</a>
 </li>
+      <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.get_credentials">get_credentials() (in module kineticstoolkit.gui)</a>
+</li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_event_index">get_event_index() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_event_time">get_event_time() (kineticstoolkit.timeseries.TimeSeries method)</a>
+</li>
+      <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.get_filename">get_filename() (in module kineticstoolkit.gui)</a>
+</li>
+      <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.get_folder">get_folder() (in module kineticstoolkit.gui)</a>
 </li>
       <li><a href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_global_coordinates">get_global_coordinates() (in module kineticstoolkit.geometry)</a>
 </li>
@@ -349,12 +357,12 @@
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_index_before_time">get_index_before_time() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_local_coordinates">get_local_coordinates() (in module kineticstoolkit.geometry)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_subset">get_subset() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event">get_ts_after_event() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_after_index">get_ts_after_index() (kineticstoolkit.timeseries.TimeSeries method)</a>
@@ -547,6 +555,8 @@
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.merge">merge() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
+      <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.message">message() (in module kineticstoolkit.gui)</a>
+</li>
       <li>
     module
 
@@ -676,10 +686,12 @@
 </li>
       <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.sessions">sessions() (kineticstoolkit.dbinterface.DBInterface property)</a>
 </li>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.shift">shift() (kineticstoolkit.timeseries.TimeSeries method)</a>
+      <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.set_color_order">set_color_order() (in module kineticstoolkit.gui)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.shift">shift() (kineticstoolkit.timeseries.TimeSeries method)</a>
+</li>
       <li><a href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.smooth">smooth() (in module kineticstoolkit.filters)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.sort_events">sort_events() (kineticstoolkit.timeseries.TimeSeries method)</a>

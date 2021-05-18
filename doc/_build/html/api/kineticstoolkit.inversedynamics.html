@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>kineticstoolkit.inversedynamics module &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -235,7 +236,7 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.inversedynamics">
+<section id="module-kineticstoolkit.inversedynamics">
 <span id="kineticstoolkit-inversedynamics-module"></span><h1>kineticstoolkit.inversedynamics module<a class="headerlink" href="#module-kineticstoolkit.inversedynamics" title="Permalink to this headline">¶</a></h1>
 <p>Provide functions to calculate inverse dynamics.</p>
 <div class="admonition warning">
@@ -276,13 +277,10 @@ modified in the future.</p>
 <dd><p>Calculate the acceleration of the segment’s center of mass.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
+<p>The function calculate_com_acceleration is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 <p>Adds the data key ‘COMAcceleration’ to the TimeSeries based on the
 specified filter function.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -318,13 +316,10 @@ key.</p>
 <dd><p>Calculate the position of the segment’s center of mass.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
+<p>The function calculate_com_position is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 <p>Adds the data key ‘COMPosition’ to the TimeSeries based on the
 ‘COMProximalRatio’ key of the dict inertial_constants.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -355,14 +350,11 @@ key.</p>
 <dd><p>Calculate the proximal wrench based on a TimeSeries.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
+<p>The function calculate_proximal_wrench is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 <p>This function is based on R. Dumas, R. Aissaoui, and J. A. De Guise,
 “A 3D generic inverse dynamic method using wrench notation and quaternion
 algebra,” Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -413,10 +405,7 @@ both joints.</p></li>
 <dd><p>Calculate the segment’s projection angles in the three axes.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
+<p>The function calculate_segment_angles is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -443,10 +432,7 @@ key, represented as an Nx3 numpy array.</p>
 <dd><p>Calculate the segments’ projected angular velocities and accelerations.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
+<p>The function calculate_segment_rotation_rates is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -483,15 +469,12 @@ Optional. Order of the filter. The default is 2.</p></li>
 <dd><p>Get anthropometric values for a given segment name.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Unreleased function.</p>
-<p>This function is currently being developped, tested or validated and has
-not been released yet. It may change signature and behaviour or even be
-deleted.</p>
-</div>
+<p>The function get_anthropometrics is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 <p>For the moment, only this table is available:</p>
 <p>D. A. Winter, Biomechanics and Motor Control of Human Movement,
 4th ed. University of Waterloo, Waterloo, Ontario, Canada,
 John Wiley &amp; Sons, 2009.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -545,7 +528,7 @@ of mass, as a ratio of the distance between both joints.</p></li>
 </dl>
 </dd></dl>
 
-</div>
+</section>
 
 
            </div>

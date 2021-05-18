@@ -29,7 +29,7 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.decorators import stable, experimental, unstable, directory
+from kineticstoolkit.decorators import unstable, directory
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -613,7 +613,7 @@ class Player:
 
     def _set_time(self, time: float) -> None:
         """Set current frame to a given time and update plots."""
-        index = np.argmin(np.abs(self.time - time))
+        index = int(np.argmin(np.abs(self.time - time)))
         self._set_frame(index)
 
     def _select_none(self) -> None:
@@ -627,7 +627,6 @@ class Player:
                 except KeyError:
                     self.markers.add_data_info(marker, 'Color', 'w')
 
-    @stable
     def close(self) -> None:
         """Close the Player and its associated window."""
         plt.close(self.objects['Figure'])
@@ -812,7 +811,6 @@ class Player:
                 (event.y - self.state['MousePositionOnPress'][1]) / 250
             self._update_plots()
 
-    @experimental
     def to_html5(self,
                   start_frame: Optional[int] = None,
                   stop_frame: Optional[int] = None,
@@ -820,6 +818,11 @@ class Player:
                   stop_time: Optional[int] = None):
         """
         Create an html5 video for displaying in Jupyter notebooks.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.4, is still experimental and
+        may change signature or behaviour in the future.
 
         Parameters
         ----------
@@ -855,13 +858,13 @@ class Player:
             if start_time is None:
                 start_frame = 0
             else:
-                start_frame = np.argmin(np.abs(self.time - start_time))
+                start_frame = int(np.argmin(np.abs(self.time - start_time)))
 
         if stop_frame is None:
             if stop_time is None:
                 stop_frame = -1
             else:
-                stop_frame = np.argmin(np.abs(self.time - stop_time))
+                stop_frame = int(np.argmin(np.abs(self.time - stop_time)))
 
         if stop_frame < 0:
             stop_frame = self.n_frames + stop_frame + 1

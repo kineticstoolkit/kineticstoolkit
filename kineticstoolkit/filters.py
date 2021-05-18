@@ -30,14 +30,13 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import stable, private, directory
+from kineticstoolkit.decorators import directory
 from typing import Tuple, Union, Sequence, List
 
 import kineticstoolkit as ktk  # for doctests
 
 
-@private
-def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.array]:
+def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.ndarray]:
     """Interpolate a given data key in a TimeSeries."""
     ts = ts.get_subset(key)
     nan_index = ts.isnan(key)
@@ -51,7 +50,6 @@ def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.array]:
     return (ts, nan_index)
 
 
-@stable
 def savgol(ts: TimeSeries, /, *, window_length: int, poly_order: int,
            deriv: int = 0) -> TimeSeries:
     """
@@ -111,7 +109,6 @@ def savgol(ts: TimeSeries, /, *, window_length: int, poly_order: int,
     return tsout
 
 
-@stable
 def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
@@ -138,7 +135,6 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     return tsout
 
 
-@stable
 def butter(ts: TimeSeries, /, fc: Union[float, Sequence], *, order: int = 2,
            btype: str = 'lowpass', filtfilt: bool = True) -> TimeSeries:
     """
@@ -202,7 +198,6 @@ def butter(ts: TimeSeries, /, fc: Union[float, Sequence], *, order: int = 2,
     return ts
 
 
-@stable
 def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
@@ -267,7 +262,6 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     return out_ts
 
 
-@stable
 def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.

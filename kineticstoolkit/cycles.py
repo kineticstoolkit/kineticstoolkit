@@ -28,12 +28,11 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.decorators import stable, experimental, directory
+from kineticstoolkit.decorators import directory
 import warnings
 from typing import List, Dict, Tuple, Sequence, Optional
 
 
-@stable
 def detect_cycles(ts: TimeSeries,
                   data_key: str, /,
                   event_name1: str,
@@ -188,7 +187,6 @@ def detect_cycles(ts: TimeSeries,
     return tsout
 
 
-@experimental
 def time_normalize(
         ts: TimeSeries, /,
         event_name1: str,
@@ -227,16 +225,17 @@ def time_normalize(
 
     Notes
     -----
-    The span argument is experimental. Use it to define which normalized
-    points to include in the output TimeSeries. For example, to normalize in
-    percents and to include only data from 10 to 90% of each cycle, assign
-    100 to n_points and [10, 90] to span. The resulting TimeSeries will then
-    be expressed in percents and wrap each 80 points. It is also possible to
-    include pre-cycle or post-cycle data. For example, to normalize in
-    percents and to include 20% pre-cycle and 15% post-cycle, assign 100 to
-    n_points and [-20, 15] to span. The resulting TimeSeries will then wrap
-    each 135 points with the cycles starting at 20, 155, etc. and ending at
-    119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.
+    The span argument is experimental and has been introduced in version 0.4.
+    Use it to define which normalized points to include in the output
+    TimeSeries. For example, to normalize in percents and to include only data
+    from 10 to 90% of each cycle, assign 100 to n_points and [10, 90] to span.
+    The resulting TimeSeries will then be expressed in percents and wrap each
+    80 points. It is also possible to include pre-cycle or post-cycle data.
+    For example, to normalize in percents and to include 20% pre-cycle and 15%
+    post-cycle, assign 100 to n_points and [-20, 15] to span. The resulting
+    TimeSeries will then wrap each 135 points with the cycles starting at 20,
+    155, etc. and ending at 119, 254, etc. For each cycle, events outside the
+    0-100% spans are ignored.
 
     """
     # Optional span
@@ -258,7 +257,7 @@ def time_normalize(
         dest_ts.time_info['Unit'] = f"1/{n_points}"
 
     dest_data = {}  # type: Dict[str, List[np.ndarray]]
-    dest_data_shape = {}  # type: Dict[str, Tuple[int]]
+    dest_data_shape = {}  # type: Dict[str, Tuple[int, ...]]
 
     # Go through all cycles
     while True:
@@ -377,7 +376,6 @@ def time_normalize(
     return dest_ts
 
 
-@stable
 def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
@@ -418,7 +416,6 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     return data
 
 
-@stable
 def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
@@ -521,7 +518,6 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
 #     return out
 
 
-@stable
 def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.

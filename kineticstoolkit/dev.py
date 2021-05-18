@@ -70,8 +70,8 @@ def run_static_type_checker() -> None:  # pragma: no cover
     print('Running mypy...')
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder)
-    subprocess.call(['mypy', '--ignore-missing-imports', '-p',
-                     'kineticstoolkit'],
+    subprocess.call(['mypy', '--config-file', 'kineticstoolkit/mypy.ini',
+                     '-p', 'kineticstoolkit'],
                     env=kineticstoolkit.config.env)
     os.chdir(cwd)
 

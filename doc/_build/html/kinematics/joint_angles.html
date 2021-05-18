@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Calculating joint angles from a kinematic acquisition &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -123,7 +124,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -131,7 +132,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -482,7 +483,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Calculating-joint-angles-from-a-kinematic-acquisition">
+<section id="Calculating-joint-angles-from-a-kinematic-acquisition">
 <h1>Calculating joint angles from a kinematic acquisition<a class="headerlink" href="#Calculating-joint-angles-from-a-kinematic-acquisition" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial, we will calculate the elbow joint angles in the acquisition presented in the previous section. At the end of the tutorial, we will have plotted curves of elbow flexion and pronation angles during the complete acquisition.</p>
 <p>Such an analysis is composed of the following steps:</p>
@@ -501,7 +502,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="section" id="Read-and-visualize-marker-trajectories">
+<section id="Read-and-visualize-marker-trajectories">
 <h2>Read and visualize marker trajectories<a class="headerlink" href="#Read-and-visualize-marker-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>We proceed exactly as in the previous tutorial:</p>
 <div class="nbinput docutils container">
@@ -1927,12 +1928,12 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
   Your browser does not support the video tag.
 </video></div>
 </div>
-</div>
-<div class="section" id="Create-local-coordinate-systems">
+</section>
+<section id="Create-local-coordinate-systems">
 <h2>Create local coordinate systems<a class="headerlink" href="#Create-local-coordinate-systems" title="Permalink to this headline">¶</a></h2>
 <p>To calculate the elbow angles, we need to express frames for the arm and forearm segments. The elbow angles will be extracted from the homogeneous transform between both frames.</p>
 <p>We will use the recommendations of the International Society of Biomechanics [1] to define these local coordinate systems:</p>
-<div class="section" id="Arm-coordinate-system">
+<section id="Arm-coordinate-system">
 <h3>Arm coordinate system<a class="headerlink" href="#Arm-coordinate-system" title="Permalink to this headline">¶</a></h3>
 <p>Following the ISB recommendations, the local coordinate system for the humerus is defined as follow:</p>
 <p><strong>1. The origin is GH (glenohumeral joint).</strong></p>
@@ -3489,8 +3490,8 @@ LjQ1LjEwMA==
   Your browser does not support the video tag.
 </video></div>
 </div>
-</div>
-<div class="section" id="Forearm-frame">
+</section>
+<section id="Forearm-frame">
 <h3>Forearm frame<a class="headerlink" href="#Forearm-frame" title="Permalink to this headline">¶</a></h3>
 <p>We will now proceed with the exact same steps to create the forearm coordinate system. From the ISB [1]:</p>
 <p><strong>1. The origin is US (ulnar styloid process).</strong></p>
@@ -5099,9 +5100,9 @@ YXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
   Your browser does not support the video tag.
 </video></div>
 </div>
-</div>
-</div>
-<div class="section" id="Find-the-series-of-homogeneous-transforms-between-both-segments">
+</section>
+</section>
+<section id="Find-the-series-of-homogeneous-transforms-between-both-segments">
 <h2>Find the series of homogeneous transforms between both segments<a class="headerlink" href="#Find-the-series-of-homogeneous-transforms-between-both-segments" title="Permalink to this headline">¶</a></h2>
 <p>Now that we have expressed frames for both the arm and forearm, we can find the homogeneous transform between both frames. This is equivalent to expressing the forearm frame in the local coordinates system of the arm.</p>
 <div class="nbinput docutils container">
@@ -5157,8 +5158,8 @@ array([[[-0.89251428, -0.28050878,  0.35317572,  0.07386483],
         [ 0.        ,  0.        ,  0.        ,  1.        ]]])
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Extract-the-series-of-Euler-angles">
+</section>
+<section id="Extract-the-series-of-Euler-angles">
 <h2>Extract the series of Euler angles<a class="headerlink" href="#Extract-the-series-of-Euler-angles" title="Permalink to this headline">¶</a></h2>
 <p>We now have a series of homogeneous matrices, from which we will now extract Euler angles corresponding to flexion and pronation. We will use the <a class="reference internal" href="../api/kineticstoolkit.geometry.html#kineticstoolkit.geometry.get_angles"><span class="std std-ref">get_angles()</span></a> to extract these Euler angles. We however fist need to define the sequence of rotation for these angles. Still following the recommendations of the International Society of Biomechanics [1], we define the series of rotations from the arm to forearm as:</p>
 <p><strong>First rotation:</strong> Around the humerus’ z axis. Corresponds to a flexion (positive) or hyperextension (negative).</p>
@@ -5191,8 +5192,8 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
        [ 91.37545539,   6.97385903, 132.64566069]])
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Plot-the-Euler-angles">
+</section>
+<section id="Plot-the-Euler-angles">
 <h2>Plot the Euler angles<a class="headerlink" href="#Plot-the-Euler-angles" title="Permalink to this headline">¶</a></h2>
 <p>Now that we calculated the angles, it would be a good idea to create a last TimeSeries to keep track of the time and meaning of these angles.</p>
 <div class="nbinput nblast docutils container">
@@ -5236,8 +5237,8 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
 <li><p>Interpret these Euler angle as anatomical rotation.</p></li>
 </ol>
 <p>[1] G. Wu et al., “ISB recommendation on definitions of joint coordinate systems of various joints for the reporting of human joint motion - Part II: shoulder, elbow, wrist and hand,” Journal of Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

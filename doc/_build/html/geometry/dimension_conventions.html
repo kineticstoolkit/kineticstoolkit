@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Dimension conventions and first example &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -120,7 +121,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -128,7 +129,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -479,7 +480,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<div class="section" id="Dimension-conventions-and-first-example">
+<section id="Dimension-conventions-and-first-example">
 <h1>Dimension conventions and first example<a class="headerlink" href="#Dimension-conventions-and-first-example" title="Permalink to this headline">¶</a></h1>
 <p>In the <a class="reference internal" href="../api/kineticstoolkit.geometry.html"><span class="doc">geometry</span></a> module and in most of Kinetics Toolkit’s module:</p>
 <ul class="simple">
@@ -487,23 +488,23 @@ div.rendered_html tbody tr:hover {
 <li><p>The first dimension of any series corresponds to <strong>time</strong>.</p></li>
 </ul>
 <p>To understand better how to express scalars, coordinates (points, vectors, frames) and homogeneous transforms as series, please refer to the following pictures:</p>
-<div class="section" id="Series-of-scalars">
+<section id="Series-of-scalars">
 <h2>Series of scalars<a class="headerlink" href="#Series-of-scalars" title="Permalink to this headline">¶</a></h2>
 <a class="reference internal image-reference" href="../_images/series_of_m_scalars.png"><img alt="Series of m scalars" src="../_images/series_of_m_scalars.png" style="width: 330px;" /></a>
-</div>
-<div class="section" id="Series-of-points,-series-of-vectors">
+</section>
+<section id="Series-of-points,-series-of-vectors">
 <h2>Series of points, series of vectors<a class="headerlink" href="#Series-of-points,-series-of-vectors" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../_images/series_of_m_points.png"><img alt="Series of m points" src="../_images/series_of_m_points.png" style="width: 330px;" /></a> <a class="reference internal" href="../_images/series_of_m_vectors.png"><img alt="Series of m vectors" src="../_images/series_of_m_vectors.png" style="width: 330px;" /></a></p>
-</div>
-<div class="section" id="Series-of-groups-of-points,-series-of-groups-of-vectors">
+</section>
+<section id="Series-of-groups-of-points,-series-of-groups-of-vectors">
 <h2>Series of groups of points, series of groups of vectors<a class="headerlink" href="#Series-of-groups-of-points,-series-of-groups-of-vectors" title="Permalink to this headline">¶</a></h2>
 <p><a class="reference internal" href="../_images/series_of_m_groups_of_n_points.png"><img alt="Series of m groups of n points" src="../_images/series_of_m_groups_of_n_points.png" style="width: 330px;" /></a> <a class="reference internal" href="../_images/series_of_m_groups_of_n_vectors.png"><img alt="Series of m groups of n vectors" src="../_images/series_of_m_groups_of_n_vectors.png" style="width: 330px;" /></a></p>
-</div>
-<div class="section" id="Series-of-frames/homogeneous-transforms">
+</section>
+<section id="Series-of-frames/homogeneous-transforms">
 <h2>Series of frames/homogeneous transforms<a class="headerlink" href="#Series-of-frames/homogeneous-transforms" title="Permalink to this headline">¶</a></h2>
 <a class="reference internal image-reference" href="../_images/series_of_m_transformation_matrices.png"><img alt="Series of m transformation matrices" src="../_images/series_of_m_transformation_matrices.png" style="width: 350px;" /></a>
-</div>
-<div class="section" id="Working-with-constants">
+</section>
+<section id="Working-with-constants">
 <h2>Working with constants<a class="headerlink" href="#Working-with-constants" title="Permalink to this headline">¶</a></h2>
 <p>Since most signals in Kinetics Toolkit as considered as a series, always ensure that the first dimension of any array is reserved to time. For example, the vector (x = 1, y = 2, z = 3) must be expressed as <code class="docutils literal notranslate"><span class="pre">np.array([[1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0]])</span></code> (note the double brackets). A common error would be to express it as <code class="docutils literal notranslate"><span class="pre">np.array([1.0,</span> <span class="pre">2.0,</span> <span class="pre">3.0,</span> <span class="pre">0.0])</span></code> (single brackets), which would mean a series of 4 floats instead of one constant vector.</p>
 <p>A quick way to convert a constant array to a series is to use numpy’s <code class="docutils literal notranslate"><span class="pre">newaxis</span></code>:</p>
@@ -553,8 +554,8 @@ array([[[1., 0., 0., 0.],
         [0., 0., 0., 1.]]])
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="First-example-with-the-geometry-module">
+</section>
+<section id="First-example-with-the-geometry-module">
 <h2>First example with the geometry module<a class="headerlink" href="#First-example-with-the-geometry-module" title="Permalink to this headline">¶</a></h2>
 <p>Now that we presented the conventions for expressing coordinates and transforms as series, we are ready to redo the last example from the last section, this time using Kinetics Toolkit.</p>
 <hr class="docutils" />
@@ -631,8 +632,8 @@ array([[[ 0.8660254, -0.5      ,  0.       ,  0.15     ],
 array([[0.34      , 0.37091035, 0.        , 1.        ]])
 </pre></div></div>
 </div>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

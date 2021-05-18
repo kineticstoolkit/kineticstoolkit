@@ -5,7 +5,8 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  
+  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Lab mode &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -92,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -108,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Lab mode</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#When-to-use-lab-mode">When to use lab mode</a></li>
@@ -126,7 +127,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
@@ -229,10 +230,10 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="Lab-mode">
+<section id="Lab-mode">
 <h1>Lab mode<a class="headerlink" href="#Lab-mode" title="Permalink to this headline">¶</a></h1>
 <p>Kinetics Toolkit includes a lab mode that changes some defaults so that doing scientific work in IPython-based environments is more enjoyable (at least for me). This mode does not affect anything besides visual representations and is completely facultative.</p>
-<div class="section" id="When-to-use-lab-mode">
+<section id="When-to-use-lab-mode">
 <h2>When to use lab mode<a class="headerlink" href="#When-to-use-lab-mode" title="Permalink to this headline">¶</a></h2>
 <p><strong>Use it</strong> if you want to use Kinetics Toolkit as an integrated work environment using IPython based environments (Spyder, Jupyter) in a biomechanics research labs. If you’re not sure, use lab mode.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
@@ -242,10 +243,10 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit</span> <span class="k">as</span> <span class="nn">ktk</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="What-lab-mode-does">
+</section>
+<section id="What-lab-mode-does">
 <h2>What lab mode does<a class="headerlink" href="#What-lab-mode-does" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="Modification-to-repr-of-dictionaries">
+<section id="Modification-to-repr-of-dictionaries">
 <h3>Modification to repr of dictionaries<a class="headerlink" href="#Modification-to-repr-of-dictionaries" title="Permalink to this headline">¶</a></h3>
 <p>Kinetics Toolkit often stores data as nested dictionaries, which can lead to very large printouts when we simply want to see the dictionary’s contents. Importing ktk changes the repr of dictionaries in IPython so that a summary of the dict’s content is shown, more like the representation of a Matlab struct.</p>
 <p>For example, let’s create a dummy dictionary:</p>
@@ -279,8 +280,8 @@
 <span class="go">}</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="Modification-to-warnings-format">
+</section>
+<section id="Modification-to-warnings-format">
 <h3>Modification to warnings format<a class="headerlink" href="#Modification-to-warnings-format" title="Permalink to this headline">¶</a></h3>
 <p>Kinetics Toolkit sometimes generates warnings when calculations are encountering unexpected data, when assumptions were made or to flag relevant suspicious informations to the user. Importing ktk in lab mode pretty-prints those warnings so they are clearer to see and understand.</p>
 <p>For example, a default user warning would print as:</p>
@@ -292,12 +293,12 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">UserWarning</span> <span class="p">[</span><span class="n">path</span><span class="o">/</span><span class="n">to</span><span class="o">/</span><span class="n">filename</span><span class="o">.</span><span class="n">py</span><span class="p">:</span><span class="mi">1</span><span class="p">]</span> <span class="n">Something</span> <span class="n">strange</span> <span class="n">happened</span> <span class="ow">in</span> <span class="n">this</span> <span class="n">function</span>
 </pre></div>
 </div>
-</div>
-<div class="section" id="Modification-to-repr-of-numpy’s-floats">
+</section>
+<section id="Modification-to-repr-of-numpy’s-floats">
 <h3>Modification to repr of numpy’s floats<a class="headerlink" href="#Modification-to-repr-of-numpy’s-floats" title="Permalink to this headline">¶</a></h3>
 <p>Numpy is set to display floats with floating point precision.</p>
-</div>
-<div class="section" id="Alternative-defaults-for-matplotlib">
+</section>
+<section id="Alternative-defaults-for-matplotlib">
 <h3>Alternative defaults for matplotlib<a class="headerlink" href="#Alternative-defaults-for-matplotlib" title="Permalink to this headline">¶</a></h3>
 <p>We assume that most work with figure is interactive, on screen. In that view, the following modifications are made to default matplotlib figures:</p>
 <ul class="simple">
@@ -305,9 +306,9 @@
 <li><p>The standard figure size is changed to [10, 5], which is a little bigger than the default and is thus more practical for interactive navigation.</p></li>
 <li><p>The default color order is changed to (rgbcmyko) with o being orange. The first colors, red, green and blue, are consistent the colours assigned to x, y and z in most 3D visualization softwares, and the next colours are consistent with Matlab’s legacy color order.</p></li>
 </ul>
-</div>
-</div>
-</div>
+</section>
+</section>
+</section>
 
 
            </div>
