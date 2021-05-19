@@ -148,7 +148,7 @@ def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
         angle = angle_ticks / 4096 * 2 * np.pi
 
         ts = TimeSeries(
-            time=np.linspace(0, (length - 1) / 240, length))
+            time=np.linspace(0, (length - 1) / 240, length - 1))
         ts.data['Channels'] = np.concatenate(
             [ch1[:, np.newaxis],
              ch2[:, np.newaxis],

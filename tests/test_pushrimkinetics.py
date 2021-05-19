@@ -42,8 +42,14 @@ def test_read_csv_txt_file():
     kinetics_txt = ktk.pushrimkinetics.read_file(
         filename_txt, file_format='smartwheeltxt')
 
-    assert np.all(np.abs(kinetics_csv.data['Channels'] -
-                         kinetics_csv.data['Channels']) < 1E-10)
+    smaller = min(kinetics_csv.time.shape[0],
+                  kinetics_txt.time.shape[0])
+
+    assert np.allclose(kinetics_csv.data['Channels'][0:smaller],
+                       kinetics_txt.data['Channels'][0:smaller])
+    assert np.std(kinetics_csv.data['Angle'][0:smaller] -
+                  kinetics_txt.data['Angle'][0:smaller]) < 1E-4
+
 
 
 def test_remove_offsets():
@@ -70,6 +76,34 @@ def test_remove_offsets():
     # Assert that all moment differences are within 0.1 Nm
     assert np.all(np.abs(no_offsets1.data['Moments'] -
                          no_offsets2.data['Moments']) < 0.1)
+
+
+def test_calculate_forces_and_moments():
+    """Test that force calculation is similar to precalculated forces."""
+    kinetics = ktk.pushrimkinetics.read_file(
+        ktk.config.root_folder +
+        '/data/pushrimkinetics/' +
+        'sample_swl_overground_propulsion_withrubber.csv',
+        file_format='smartwheel')
+
+    test = kinetics.copy()
+    test = ktk.pushrimkinetics.calculate_forces_and_moments(
+        test,
+        **ktk.pushrimkinetics.CALIBRATION_MATRICES['SmartWheel_123'],
+        reference_frame='hub')
+
+    assert np.allclose(np.mean(np.abs(test.data['Forces']), axis=0),
+                       np.mean(np.abs(kinetics.data['Forces']), axis=0),
+                       atol=2)
+    assert np.allclose(np.std(np.abs(test.data['Forces']), axis=0),
+                       np.std(np.abs(kinetics.data['Forces']), axis=0),
+                       atol=2)
+    assert np.allclose(np.mean(np.abs(test.data['Moments']), axis=0),
+                       np.mean(np.abs(kinetics.data['Moments']), axis=0),
+                       atol=2)
+    assert np.allclose(np.std(np.abs(test.data['Moments']), axis=0),
+                       np.std(np.abs(kinetics.data['Moments']), axis=0),
+                       atol=2)
 
 
 if __name__ == "__main__":
