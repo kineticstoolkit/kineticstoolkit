@@ -12,6 +12,7 @@ import ktk
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def test_uisync():
     """Test the uisync method of TimeSeries."""
     ts = ktk.TimeSeries(time=np.arange(100))

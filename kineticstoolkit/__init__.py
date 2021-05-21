@@ -31,51 +31,51 @@ __license__ = "Apache 2.0"
 
 
 listing = []
-import kineticstoolkit.config
+import kineticstoolkit.config  # noqa
 
 # --- Import released modules and functions
-from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
+from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
 listing.append('TimeSeries')
 listing.append('TimeSeriesEvent')
 
-from kineticstoolkit.tools import explore, terminal, update, tutorials
+from kineticstoolkit.tools import explore, terminal, update, tutorials  # noqa
 listing.append('explore')
 listing.append('terminal')
 listing.append('update')
 listing.append('tutorials')
 
-from kineticstoolkit.tools import start_lab_mode  # Keep this one hidden.
+from kineticstoolkit.tools import start_lab_mode  # noqa
 
-from kineticstoolkit.player import Player
+from kineticstoolkit.player import Player  # noqa
 listing.append('Player')
 
-from kineticstoolkit.loadsave import load, save
+from kineticstoolkit.loadsave import load, save  # noqa
 listing.append('load')
 listing.append('save')
 
-from kineticstoolkit import filters
+from kineticstoolkit import filters  # noqa
 listing.append('filters')
 
-from kineticstoolkit import kinematics
+from kineticstoolkit import kinematics  # noqa
 listing.append('kinematics')
 
-from kineticstoolkit import pushrimkinetics
+from kineticstoolkit import pushrimkinetics  # noqa
 listing.append('pushrimkinetics')
 
-from kineticstoolkit import cycles
+from kineticstoolkit import cycles  # noqa
 listing.append('cycles')
 
-from kineticstoolkit import _repr
-from kineticstoolkit import gui
+from kineticstoolkit import _repr  # noqa
+from kineticstoolkit import gui  # noqa
 
-from kineticstoolkit import config
+from kineticstoolkit import config  # noqa
 
 # --- Import unstable modules but append to listing only if we are on master
-from kineticstoolkit.dbinterface import DBInterface
-from kineticstoolkit import geometry
-from kineticstoolkit import inversedynamics
-from kineticstoolkit import emg
-from kineticstoolkit import dev
+from kineticstoolkit.dbinterface import DBInterface  # noqa
+from kineticstoolkit import geometry  # noqa
+from kineticstoolkit import inversedynamics  # noqa
+from kineticstoolkit import emg  # noqa
+from kineticstoolkit import dev  # noqa
 
 if config.version == 'master':
     listing.append('DBInterface')
@@ -83,6 +83,7 @@ if config.version == 'master':
     listing.append('inversedynamics')
     listing.append('emg')
     listing.append('dev')
+
 
 def __dir__():
     return listing

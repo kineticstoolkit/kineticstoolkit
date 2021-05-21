@@ -8,6 +8,7 @@ Tests for ktk.Player
 import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
 
+
 def test_instanciate():
     """Test that instanciating a Player does not crash."""
 
@@ -25,14 +26,14 @@ def test_instanciate():
 
     # The player can be instanciated to show rigid bodies
     pl = ktk.Player(kinematics['ReferenceFrames'],
-        target=[-5, 0, 0])
+                    target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 
     # Or the player can be instanciated to show both markers and rigid bodies
     pl = ktk.Player(kinematics['Markers'],
-        kinematics['ReferenceFrames'],
-        target=[-5, 0, 0])
+                    kinematics['ReferenceFrames'],
+                    target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 

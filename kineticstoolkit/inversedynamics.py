@@ -40,9 +40,9 @@ from kineticstoolkit import TimeSeries
 
 import warnings
 
-
 default_filter_fc = 10  # Hz
 default_filter_order = 2
+
 
 @unstable
 def get_anthropometrics(segment_name: str,

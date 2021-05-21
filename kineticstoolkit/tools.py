@@ -88,14 +88,14 @@ def terminal(folder_name: str = '') -> None:
 
     elif kineticstoolkit.config.is_mac is True:
         subprocess.call([
-                'osascript',
-                '-e',
-                """tell application "Terminal" to do script "cd '""" +
-                    str(folder_name) + """'" """])
+            'osascript',
+            '-e',
+            """tell application "Terminal" to do script "cd '""" +
+            str(folder_name) + """'" """])
         subprocess.call([
-                'osascript',
-                '-e',
-                'tell application "Terminal" to activate'])
+            'osascript',
+            '-e',
+            'tell application "Terminal" to activate'])
     else:
         raise NotImplementedError('This function is only implemented on'
                                   'Windows and macOS.')
@@ -106,7 +106,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         'change_matplotlib_defaults': True,
         'change_numpy_print_options': True,
         'change_warnings_format': True,
-        }) -> None:
+}) -> None:
     """
     Set Kinetics Toolkit to lab mode.
 
@@ -165,7 +165,6 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         def formatwarning(message, category, filename, lineno, line=None):
             return f'{category.__name__} [{filename}:{lineno}] {message}\n'
         warnings.formatwarning = formatwarning
-
 
 
 @unstable

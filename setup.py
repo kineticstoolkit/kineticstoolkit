@@ -17,7 +17,7 @@ setuptools.setup(
     author='Félix Chénier',
     author_email='chenier.felix@uqam.ca',
     license='Apache',
-	license_files=['LICENSE.txt', 'NOTICE.txt'],
+        license_files=['LICENSE.txt', 'NOTICE.txt'],
     packages=setuptools.find_packages(),
     package_data={
         'kineticstoolkit': ['VERSION', 'logo.png', 'logo_hires.png'],

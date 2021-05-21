@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Inverse Dynamics &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -35,6 +34,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
@@ -93,14 +93,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -109,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -117,10 +117,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Developer manual</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials for unreleased features</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Inverse Dynamics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#Loading-sample-data">Loading sample data</a></li>
@@ -493,7 +493,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Inverse-Dynamics">
+<div class="section" id="Inverse-Dynamics">
 <h1>Inverse Dynamics<a class="headerlink" href="#Inverse-Dynamics" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="../api/kineticstoolkit.inversedynamics.html"><span class="doc">inversedynamics</span></a> module calculates the proximal forces and moments based on the segment’s kinematics and distal forces and moments, based on the general method published in [1].</p>
 <p>The results are the forces and moments applied by the distal segment on the proximal articulation, in the global coordinates system.</p>
@@ -512,7 +512,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<section id="Loading-sample-data">
+<div class="section" id="Loading-sample-data">
 <h2>Loading sample data<a class="headerlink" href="#Loading-sample-data" title="Permalink to this headline">¶</a></h2>
 <p>In this tutorial, we will load propulsion data from a sprint in Wheelchair Basketball. Kinetics were recorded using an instrumented wheel (SmartWheel) and kinematics were recorded using an optoelectronic system (Optitrack). Both are synchronized.</p>
 <div class="nbinput docutils container">
@@ -682,8 +682,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Put-everything-relevant-into-one,-synchronized-TimeSeries">
+</div>
+<div class="section" id="Put-everything-relevant-into-one,-synchronized-TimeSeries">
 <h2>Put everything relevant into one, synchronized TimeSeries<a class="headerlink" href="#Put-everything-relevant-into-one,-synchronized-TimeSeries" title="Permalink to this headline">¶</a></h2>
 <p>We will now create a single TimeSeries with every relevant signal. Note that for kinematics, we use <code class="docutils literal notranslate"><span class="pre">merge</span></code> instead of simply copying the data, because kinetics and kinematics have different sampling rate and therefore the data have different lengths. Merging takes care of resampling.</p>
 <div class="nbinput docutils container">
@@ -741,8 +741,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Calculate-the-force-and-moments-at-the-wrist">
+</div>
+<div class="section" id="Calculate-the-force-and-moments-at-the-wrist">
 <h2>Calculate the force and moments at the wrist<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-wrist" title="Permalink to this headline">¶</a></h2>
 <p>The same calculation is done on every segment, from distal to proximal. We begin with the segment ‘Wheel’ with the point of force application at the hub (since the measured values are referred at the hub).</p>
 <div class="nbinput docutils container">
@@ -795,7 +795,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<section id="Calculate-the-COM-position-of-the-wheel-segment">
+<div class="section" id="Calculate-the-COM-position-of-the-wheel-segment">
 <h3>Calculate the COM position of the wheel segment<a class="headerlink" href="#Calculate-the-COM-position-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -824,8 +824,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Calculate-the-COM-acceleration-of-the-wheel-segment">
+</div>
+<div class="section" id="Calculate-the-COM-acceleration-of-the-wheel-segment">
 <h3>Calculate the COM acceleration of the wheel segment<a class="headerlink" href="#Calculate-the-COM-acceleration-of-the-wheel-segment" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
@@ -855,8 +855,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">
+</div>
+<div class="section" id="Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes">
 <h3>Calculate the wheel segment’s angles around the global x, y and z axes<a class="headerlink" href="#Calculate-the-wheel-segment’s-angles-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
@@ -887,8 +887,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">
+</div>
+<div class="section" id="Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes">
 <h3>Calculate the segment’s angular velocity and acceleration around the global x, y and z axes<a class="headerlink" href="#Calculate-the-segment’s-angular-velocity-and-acceleration-around-the-global-x,-y-and-z-axes" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
@@ -921,8 +921,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Finally,-calculate-the-proximal-forces-and-moments">
+</div>
+<div class="section" id="Finally,-calculate-the-proximal-forces-and-moments">
 <h3>Finally, calculate the proximal forces and moments<a class="headerlink" href="#Finally,-calculate-the-proximal-forces-and-moments" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
@@ -958,8 +958,8 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">
+</div>
+<div class="section" id="Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries">
 <h3>Add the calculated distal forces and moments to the ts_all TimeSeries<a class="headerlink" href="#Add-the-calculated-distal-forces-and-moments-to-the-ts_all-TimeSeries" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
@@ -1007,9 +1007,9 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/dev_inversedynamics_25_0.png" src="../_images/dev_inversedynamics_25_0.png" />
 </div>
 </div>
-</section>
-</section>
-<section id="Calculate-the-force-and-moments-at-the-elbow">
+</div>
+</div>
+<div class="section" id="Calculate-the-force-and-moments-at-the-elbow">
 <h2>Calculate the force and moments at the elbow<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-elbow" title="Permalink to this headline">¶</a></h2>
 <p>The method is identical for the other segments. However, for these segments, we will define inertial constants based on anthropometric tables.</p>
 <div class="nbinput docutils container">
@@ -1102,8 +1102,8 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/dev_inversedynamics_29_0.png" src="../_images/dev_inversedynamics_29_0.png" />
 </div>
 </div>
-</section>
-<section id="Calculate-the-force-and-moments-at-the-shoulder">
+</div>
+<div class="section" id="Calculate-the-force-and-moments-at-the-shoulder">
 <h2>Calculate the force and moments at the shoulder<a class="headerlink" href="#Calculate-the-force-and-moments-at-the-shoulder" title="Permalink to this headline">¶</a></h2>
 <p>We proceed exactly as for the elbow.</p>
 <div class="nbinput docutils container">
@@ -1196,8 +1196,8 @@ div.rendered_html tbody tr:hover {
 <img alt="../_images/dev_inversedynamics_33_0.png" src="../_images/dev_inversedynamics_33_0.png" />
 </div>
 </div>
-</section>
-<section id="Get-the-forces-and-moments-in-the-local-coordinate-system">
+</div>
+<div class="section" id="Get-the-forces-and-moments-in-the-local-coordinate-system">
 <h2>Get the forces and moments in the local coordinate system<a class="headerlink" href="#Get-the-forces-and-moments-in-the-local-coordinate-system" title="Permalink to this headline">¶</a></h2>
 <p>Please note that every force and moment we just calculated is expressed in global coordinates, which is of limited value for interpretation. It is much more useful to express these data in local coordinates. Several conventions may be used, here we will express the shoulder forces in the trunk coordinate system, and the shoulder moments in the humeral coordinate system.</p>
 <div class="nbinput nblast docutils container">
@@ -1225,7 +1225,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<section id="Local-forces">
+<div class="section" id="Local-forces">
 <h3>Local forces<a class="headerlink" href="#Local-forces" title="Permalink to this headline">¶</a></h3>
 <p>Let’s plot the shoulder forces in the trunk reference frame:</p>
 <div class="nbinput docutils container">
@@ -1254,8 +1254,8 @@ External forces in the trunk coordinate system:
 <img alt="../_images/dev_inversedynamics_37_1.png" src="../_images/dev_inversedynamics_37_1.png" />
 </div>
 </div>
-</section>
-<section id="Local-moments">
+</div>
+<div class="section" id="Local-moments">
 <h3>Local moments<a class="headerlink" href="#Local-moments" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
@@ -1284,9 +1284,9 @@ Net internal shoulder moments:
 </div>
 </div>
 <p>For more information on inversedynamics, please check the <a class="reference internal" href="../api/kineticstoolkit.inversedynamics.html"><span class="doc">API Reference for the inversedynamics module</span></a>.</p>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

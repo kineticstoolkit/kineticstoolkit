@@ -33,15 +33,15 @@ def test_detect_cycles():
     # Create a timeseries with one frame per seconds.
     t = np.arange(40)
     d = np.array([0, 0,
-                 1, 1, 1, 1,
-                 0, 0, 0, 0,
-                 1, 1, 1,
-                 0, 0, 0, 0, 0,
-                 1,
-                 0, 0, 0,
-                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                 0, 0, 0, 0, 0, 0, 0, 0,
-                 1])
+                  1, 1, 1, 1,
+                  0, 0, 0, 0,
+                  1, 1, 1,
+                  0, 0, 0, 0, 0,
+                  1,
+                  0, 0, 0,
+                  1, 1, 1, 1, 1, 1, 1, 1, 1,
+                  0, 0, 0, 0, 0, 0, 0, 0,
+                  1])
     ts = ktk.TimeSeries(time=t, data={'data': d})
 
     # Detect all cycles
@@ -86,7 +86,6 @@ def test_detect_cycles():
     assert ts2.events[10].name == 'stop'
     assert ts2.events[10].time == 39
 
-
     # With minimal cycles
     ts3 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
                                    0.5, 0.5,
@@ -129,15 +128,15 @@ def test_detect_cycles():
     # With target heights
     t = np.arange(40)
     d = np.array([0, 0,
-                 1, 1, 2, 1,
-                 0, 0, -1, 0,
-                 1, 1, 1,
-                 0, 0, 0, 0, 0,
-                 1,
-                 0, 0, 0,
-                 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                 0, 0, 0, 0, 0, 0, 0, 0,
-                 1])
+                  1, 1, 2, 1,
+                  0, 0, -1, 0,
+                  1, 1, 1,
+                  0, 0, 0, 0, 0,
+                  1,
+                  0, 0, 0,
+                  1, 1, 1, 1, 1, 1, 1, 1, 1,
+                  0, 0, 0, 0, 0, 0, 0, 0,
+                  1])
     ts = ktk.TimeSeries(time=t, data={'data': d})
 
     ts5 = ktk.cycles.detect_cycles(ts, 'data', 'start', 'stop',
@@ -196,7 +195,7 @@ def test_time_normalize():
     # There should be no nan in ts2
     assert ~ts2.isnan('test').all()
 
-    #Test with a wider range
+    # Test with a wider range
     ts5 = ktk.cycles.time_normalize(ts, 'push', 'push', n_points=100,
                                     span=[-25, 125])
     # plt.subplot(2, 1, 1)
@@ -236,7 +235,6 @@ def test_time_normalize():
     assert np.allclose(ts5.events[8].time, 100 + 325)
 
 
-
 # def test_normalize_extended():
 #     """
 #     Test normalize with extended_span.
@@ -262,7 +260,6 @@ def test_time_normalize():
 #     plt.subplot(3,1,3)
 #     ts2.plot([], '.g')
 #     plt.grid(True)
-
 
 
 def test_most_repeatable_cycles():
@@ -306,7 +303,6 @@ def test_stack_unstack():
     assert np.all(np.abs(ts2.time - ts.time) < 1E-10)
 
 
-
 # Commented since stack_events is also commented for now.
 #
 # def test_stack_events():
@@ -323,7 +319,6 @@ def test_stack_unstack():
 #     events = ktk.cycles.stack_events(ts)
 #     assert events['event1'] == [[9.0], [10.0], [], [12.0, 82.0]]
 #     assert events['event2'] == [[1.0, 5.0], [], [], []]
-
 
 if __name__ == "__main__":
     import pytest

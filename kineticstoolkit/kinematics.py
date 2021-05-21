@@ -221,8 +221,8 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 
         # Transformation to a TimeSeries
         ts = TimeSeries(
-                time=np.linspace(0, n_frames / collection_frame_frequency,
-                                 n_frames))
+            time=np.linspace(0, n_frames / collection_frame_frequency,
+                             n_frames))
 
         for i_marker in range(n_markers):
             if labels != []:
@@ -231,8 +231,8 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
                 label = f'Marker{i_marker}'
 
             ts.data[label] = np.block([[
-                    ndi_array[:, 3*i_marker:3*i_marker+3],
-                    np.ones((n_frames, 1))]])
+                ndi_array[:, 3*i_marker:3*i_marker+3],
+                np.ones((n_frames, 1))]])
             ts.add_data_info(label, 'Unit', 'm')
 
     return ts
@@ -388,7 +388,7 @@ def create_rigid_body_config(
 
     for i_marker, marker in enumerate(marker_names):
         global_points[:, :, i_marker] = \
-                markers.data[marker][:, :]
+            markers.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
     global_points = global_points[~geometry.isnan(global_points)]
@@ -398,23 +398,23 @@ def create_rigid_body_config(
         x=global_points[:, :, 1] - global_points[:, :, 0],
         xy=global_points[:, :, 2] - global_points[:, :, 0])
     local_points = geometry.get_local_coordinates(
-            global_points, rigid_bodies)
+        global_points, rigid_bodies)
 
     # Take the average
     local_points = np.array(np.mean(local_points, axis=0))
     local_points = local_points[np.newaxis]
 
     return {
-            'LocalPoints' : local_points,
-            'MarkerNames' : marker_names
-            }
+        'LocalPoints': local_points,
+        'MarkerNames': marker_names
+    }
 
 
 def register_markers(
         markers: TimeSeries,
         rigid_body_configs: Dict[str, Dict[str, Any]],
         verbose: bool = False
-        ) -> TimeSeries:
+) -> TimeSeries:
     """
     Calculate the trajectory of rigid bodies.
 
@@ -444,8 +444,8 @@ def register_markers(
         transformations.
     """
     rigid_bodies = TimeSeries(time=markers.time,
-                                  time_info=markers.time_info,
-                                  events=markers.events)
+                              time_info=markers.time_info,
+                              events=markers.events)
 
     for rigid_body_name in rigid_body_configs:
         if verbose is True:
@@ -455,21 +455,21 @@ def register_markers(
         local_points = rigid_body_configs[rigid_body_name]['LocalPoints']
 
         global_points = np.empty(
-                (len(markers.time), 4, local_points.shape[2]))
+            (len(markers.time), 4, local_points.shape[2]))
         for i_marker in range(global_points.shape[2]):
             marker_name = rigid_body_configs[
-                    rigid_body_name]['MarkerNames'][i_marker]
+                rigid_body_name]['MarkerNames'][i_marker]
             if marker_name in markers.data:
                 global_points[:, :, i_marker] = markers.data[marker_name]
             else:
                 global_points[:, :, i_marker] = np.nan
 
         (local_points, global_points) = geometry._match_size(
-                local_points, global_points)
+            local_points, global_points)
 
         # Compute the rigid body trajectory
         rigid_bodies.data[rigid_body_name] = geometry.register_points(
-                global_points, local_points)
+            global_points, local_points)
 
     return rigid_bodies
 
@@ -479,7 +479,7 @@ def create_virtual_marker_config(
         rigid_bodies: TimeSeries,
         marker_name: str,
         rigid_body_name: str
-        ) -> Dict[str, Any]:
+) -> Dict[str, Any]:
     """
     Create a virtual marker configuration based on a probing acquisition.
 
@@ -551,7 +551,6 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
     data_rate = n_frames / (markers.time[1] - markers.time[0])
     camera_rate = data_rate
     units = 'm'
-
 
     # Open file
     with open(filename, 'w') as fid:

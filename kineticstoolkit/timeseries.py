@@ -42,12 +42,11 @@ import warnings
 from ast import literal_eval
 from copy import deepcopy
 from typing import Dict, List, Tuple, Any, Union, Optional
-from functools import wraps
 
 import kineticstoolkit as ktk  # For doctests
 
 
-window_placement = {'top': 50, 'right': 0}
+WINDOW_PLACEMENT = {'top': 50, 'right': 0}
 
 
 def dataframe_to_dict_of_arrays(
@@ -162,7 +161,7 @@ def dataframe_to_dict_of_arrays(
 
 
 def dict_of_arrays_to_dataframe(
-        dict_of_arrays : Dict[str, np.ndarray]) -> pd.DataFrame:
+        dict_of_arrays: Dict[str, np.ndarray]) -> pd.DataFrame:
     """
     Convert a dict of ndarray of any dimension to a pandas DataFrame.
 
@@ -281,7 +280,7 @@ def dict_of_arrays_to_dataframe(
 
                     for i_indice in range(0, n_indices):
                         this_column_name += str(
-                                reshaped_indices[i_indice, i_column])
+                            reshaped_indices[i_indice, i_column])
                         if i_indice == n_indices-1:
                             this_column_name += ']'
                         else:
@@ -387,6 +386,7 @@ class TimeSeries():
         >>> ts = ktk.TimeSeries(time=np.arange(0,100))
 
     """
+
     def __init__(
             self,
             time: np.ndarray = np.array([]),
@@ -818,7 +818,7 @@ class TimeSeries():
         def add_this_event(ts, name: str) -> None:
             kineticstoolkit.gui.message(
                 "Place the event on the figure.",
-                **window_placement)
+                **WINDOW_PLACEMENT)
             this_time = plt.ginput(1)[0][0]
             ts.add_event(this_time, name)
             kineticstoolkit.gui.message("")
@@ -826,7 +826,7 @@ class TimeSeries():
         def get_event_index(ts) -> int:
             kineticstoolkit.gui.message(
                 "Select an event on the figure.",
-                **window_placement)
+                **WINDOW_PLACEMENT)
             this_time = plt.ginput(1)[0][0]
             event_times = np.array([event.time for event in ts.events])
             kineticstoolkit.gui.message("")
@@ -873,7 +873,7 @@ class TimeSeries():
                 "Move and zoom on the figure,\n"
                 "then select an option below.",
                 choices,
-                **window_placement)
+                **WINDOW_PLACEMENT)
 
             if choice < choice_index['add']:
                 add_this_event(ts, event_name[choice])
@@ -882,7 +882,7 @@ class TimeSeries():
                 event_name.append(
                     li.input_dialog(
                         "Please enter the event name:",
-                        **window_placement)
+                        **WINDOW_PLACEMENT)
                 )
                 if len(event_name) > 5:
                     event_name = event_name[-5:]
@@ -897,7 +897,7 @@ class TimeSeries():
                         "No event was removed.",
                         choices=['OK'],
                         icon='error',
-                        **window_placement)
+                        **WINDOW_PLACEMENT)
 
             elif choice == choice_index['remove_all']:
                 if li.button_dialog(
@@ -905,7 +905,7 @@ class TimeSeries():
                         "TimeSeries?",
                         ['Yes, remove all events', 'No'],
                         icon='alert',
-                        **window_placement) == 0:
+                        **WINDOW_PLACEMENT) == 0:
                     ts.events = []
 
                 event_index = get_event_index(ts)
@@ -916,7 +916,7 @@ class TimeSeries():
                         "No event was removed.",
                         choices=['OK'],
                         icon='error',
-                        **window_placement)
+                        **WINDOW_PLACEMENT)
 
             elif choice == choice_index['move']:
                 event_index = get_event_index(ts)
@@ -929,7 +929,7 @@ class TimeSeries():
                         "Could not move this event.",
                         choices=['OK'],
                         icon='error',
-                        **window_placement)
+                        **WINDOW_PLACEMENT)
 
             elif choice == choice_index['close']:
                 self.events = ts.events
@@ -1143,7 +1143,7 @@ class TimeSeries():
                 legend_location = 'upper right'
 
             axes.legend(loc=legend_location,
-                       ncol=1 + int(len(labels) / 40))  # Max 40 items per line
+                        ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
     def get_index_at_time(self, time: float, /) -> int:
         """
@@ -1600,14 +1600,14 @@ class TimeSeries():
         array([0. , 0.1, 0.2, 0.3])
 
         """
-        #Edge case
+        # Edge case
         if self.time == [] or time > self.time[-1]:
             return self.copy()
 
-        #Other cases
+        # Other cases
         index = self.get_index_before_time(time, inclusive=inclusive)
         if ~np.isnan(index):
-            return self.get_ts_before_index(index, inclusive=True)  # type: ignore
+            return self.get_ts_before_index(index, inclusive=True)  # type: ignore # noqa
         else:
             return self.get_ts_before_index(0, inclusive=False)
 
@@ -1638,14 +1638,14 @@ class TimeSeries():
         >>> ts.get_ts_after_time(0.25, inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
-        #Edge case
+        # Edge case
         if self.time == [] or time < self.time[0]:
             return self.copy()
 
-        #Other cases
+        # Other cases
         index = self.get_index_after_time(time, inclusive=inclusive)
         if ~np.isnan(index):
-            return self.get_ts_after_index(index, inclusive=True)  # type: ignore
+            return self.get_ts_after_index(index, inclusive=True)  # type: ignore # noqa
         else:
             return self.get_ts_after_index(-1, inclusive=False)
 
@@ -1819,7 +1819,7 @@ class TimeSeries():
         fig = plt.figure()
         self.plot(data_keys)
         kineticstoolkit.gui.message(
-            'Click on both sides of the portion to keep.', **window_placement)
+            'Click on both sides of the portion to keep.', **WINDOW_PLACEMENT)
         plt.pause(0.001)  # Redraw
         points = plt.ginput(2)
         kineticstoolkit.gui.message('')
@@ -2007,13 +2007,13 @@ class TimeSeries():
             self.plot(data_keys)
             choice = kineticstoolkit.gui.button_dialog(
                 'Please zoom on the time zero and press Next.',
-                ['Cancel', 'Next'], **window_placement)
+                ['Cancel', 'Next'], **WINDOW_PLACEMENT)
             if choice != 1:
                 plt.close(fig)
                 return
 
             kineticstoolkit.gui.message('Click on the sync event.',
-                                        **window_placement)
+                                        **WINDOW_PLACEMENT)
             click = plt.ginput(1)
             kineticstoolkit.gui.message('')
             plt.close(fig)
@@ -2051,11 +2051,11 @@ class TimeSeries():
                              'Zero both TimeSeries, using ts1',
                              'Zero both TimeSeries, using ts2',
                              'Sync both TimeSeries on a common event',
-                             'Finished'], **window_placement)
+                             'Finished'], **WINDOW_PLACEMENT)
 
                 if choice == 0:  # Zero ts1 only
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts1.', **window_placement)
+                        'Click on the time zero in ts1.', **WINDOW_PLACEMENT)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -2063,7 +2063,7 @@ class TimeSeries():
 
                 elif choice == 1:  # Zero ts2 only
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts2.', **window_placement)
+                        'Click on the time zero in ts2.', **WINDOW_PLACEMENT)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -2071,7 +2071,7 @@ class TimeSeries():
 
                 elif choice == 2:  # Zero ts1 and ts2 using ts1
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts1.', **window_placement)
+                        'Click on the time zero in ts1.', **WINDOW_PLACEMENT)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -2080,7 +2080,7 @@ class TimeSeries():
 
                 elif choice == 3:  # Zero ts1 and ts2 using ts2
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts2.', **window_placement)
+                        'Click on the time zero in ts2.', **WINDOW_PLACEMENT)
                     click_2 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -2089,11 +2089,11 @@ class TimeSeries():
 
                 elif choice == 4:  # Sync on a common event
                     kineticstoolkit.gui.message(
-                        'Click on the sync event in ts1.', **window_placement)
+                        'Click on the sync event in ts1.', **WINDOW_PLACEMENT)
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message(
                         'Now click on the same event in ts2.',
-                        **window_placement)
+                        **WINDOW_PLACEMENT)
                     click_2 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
@@ -2228,7 +2228,7 @@ class TimeSeries():
                 time_ranges_to_remove = []  # type: List[Tuple[int, int]]
                 length = self.time.shape[0]
                 for i in nan_indexes:
-                    if i > 0 and i < length -1:
+                    if i > 0 and i < length - 1:
                         time_range = (self.time[i-1], self.time[i+1])
                     elif i == 0:
                         time_range = (-np.inf, self.time[i+1])

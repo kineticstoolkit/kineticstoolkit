@@ -44,6 +44,7 @@ def __dir__() -> List[str]:
         'pythonpath',
     ]
 
+
 # Root folder (kineticstoolkit installation)
 root_folder = os.path.dirname(os.path.dirname(__file__))
 

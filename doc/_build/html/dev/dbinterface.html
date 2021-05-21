@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>DBInterface &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -35,6 +34,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
@@ -92,14 +92,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -108,7 +108,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -116,10 +116,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Developer manual</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials for unreleased features</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing virtual markers (from kinematics module)</a></li>
@@ -478,7 +478,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="DBInterface">
+<div class="section" id="DBInterface">
 <h1>DBInterface<a class="headerlink" href="#DBInterface" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -498,14 +498,14 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<section id="Connecting-to-a-BIOMEC-project">
+<div class="section" id="Connecting-to-a-BIOMEC-project">
 <h2>Connecting to a BIOMEC project<a class="headerlink" href="#Connecting-to-a-BIOMEC-project" title="Permalink to this headline">¶</a></h2>
 <p>The class constructor connects to the project and asks the user’s credentials and the folder where the data files are stored.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="n">project_label</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project = ktk.DBInterface(project_label)
 </pre></div>
 </div>
 <p>For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">project</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">DBInterface</span><span class="p">(</span><span class="s1">&#39;FC_XX18A&#39;</span><span class="p">)</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>project = ktk.DBInterface(&#39;FC_XX18A&#39;)
 </pre></div>
 </div>
 <p>The constructor can also be run non-interactively:</p>
@@ -530,8 +530,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Navigating-in-the-project">
+</div>
+<div class="section" id="Navigating-in-the-project">
 <h2>Navigating in the project<a class="headerlink" href="#Navigating-in-the-project" title="Permalink to this headline">¶</a></h2>
 <p>Just typing <code class="docutils literal notranslate"><span class="pre">project</span></code> gives an overview of the project’s content.</p>
 <div class="nbinput docutils container">
@@ -791,8 +791,8 @@ files:
 &#39;/Users/felix/Documents/git/ktk_develop/data/dbinterface/FC_XX18A/kinematics1_dbfid6681n.c3d&#39;
 </pre></div></div>
 </div>
-</section>
-<section id="Saving-data-to-a-BIOMEC-referenced-file">
+</div>
+<div class="section" id="Saving-data-to-a-BIOMEC-referenced-file">
 <h2>Saving data to a BIOMEC referenced file<a class="headerlink" href="#Saving-data-to-a-BIOMEC-referenced-file" title="Permalink to this headline">¶</a></h2>
 <p>The ktk library provides the function ktk.save to save a variable to a JSON file. The ktk.save function is helpful to save temporary results.</p>
 <p>However, sometimes we need to save results to BIOMEC so that these results become new inputs for subsequent work. In these case, we use the ktk.DBInterface’s <code class="docutils literal notranslate"><span class="pre">save</span></code> method.</p>
@@ -846,8 +846,8 @@ files:
 &#39;/Users/felix/Documents/git/ktk_develop/data/dbinterface/FC_XX18A/SyncedKinematics/P1/GymnaseN1/dbfid11524n_{Run1}.ktk.zip&#39;
 </pre></div></div>
 </div>
-</section>
-<section id="Loading-data-from-a-BIOMEC-referenced-file">
+</div>
+<div class="section" id="Loading-data-from-a-BIOMEC-referenced-file">
 <h2>Loading data from a BIOMEC referenced file<a class="headerlink" href="#Loading-data-from-a-BIOMEC-referenced-file" title="Permalink to this headline">¶</a></h2>
 <p>To load back data saved to BIOMEC, we use the ktk.DBInterface’s <code class="docutils literal notranslate"><span class="pre">load</span></code> method.</p>
 <div class="nbinput docutils container">
@@ -882,8 +882,8 @@ files:
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Dealing-with-external-software">
+</div>
+<div class="section" id="Dealing-with-external-software">
 <h2>Dealing with external software<a class="headerlink" href="#Dealing-with-external-software" title="Permalink to this headline">¶</a></h2>
 <p>The DBInterface’s <code class="docutils literal notranslate"><span class="pre">save</span></code> and <code class="docutils literal notranslate"><span class="pre">load</span></code> methods work very well for data that were processed in Python using ktk. However, things may get complicated when using external software to process data.</p>
 <p>In this example, we will synchronize the kinematics using an external synchronizing tool, then enter the resulting files into BIOMEC. We will work with these files:</p>
@@ -1054,8 +1054,8 @@ UserWarning [/Users/felix/Documents/git/ktk_develop/kineticstoolkit/dbinterface.
 </pre></div>
 </div>
 </div>
-</section>
-<section id="Including-information-in-file-names">
+</div>
+<div class="section" id="Including-information-in-file-names">
 <h2>Including information in file names<a class="headerlink" href="#Including-information-in-file-names" title="Permalink to this headline">¶</a></h2>
 <p>It can be difficult to deal with a bunch of numbered files without knowing their signification without looking in BIOMEC. The <code class="docutils literal notranslate"><span class="pre">tag_files</span></code> method allows adding the trial name to the file names, so that their context is a bit clearer and less error-prone.</p>
 <div class="nbinput docutils container">
@@ -1160,8 +1160,8 @@ Refreshing project...
 </pre></div></div>
 </div>
 <p>For more information on DBInterface, please check the <a class="reference internal" href="../api/kineticstoolkit.dbinterface.html"><span class="doc">API Reference</span></a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

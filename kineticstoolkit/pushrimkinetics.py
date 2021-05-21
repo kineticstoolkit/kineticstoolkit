@@ -211,7 +211,7 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
 
         # Remove the 1% upper.
         index_to_remove = index_to_remove[
-                int(0.99*len(index_to_remove))-1:]
+            int(0.99*len(index_to_remove))-1:]
 
         # Assign nan to these data
         Mz[index_to_remove] = np.nan
@@ -224,7 +224,7 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
 def remove_offsets(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
-        ) -> TimeSeries:
+) -> TimeSeries:
     """
     Remove dynamic offsets in forces and moments.
 
@@ -272,10 +272,10 @@ def remove_offsets(
     # Do the regression
     theta_baseline = theta_baseline[:, np.newaxis]
     q = np.hstack((
-            np.sin(theta_baseline),
-            np.cos(theta_baseline),
-            np.ones((len(theta_baseline), 1))
-            ))
+        np.sin(theta_baseline),
+        np.cos(theta_baseline),
+        np.ones((len(theta_baseline), 1))
+    ))
     A = np.linalg.lstsq(q, f_ofs, rcond=None)
     A = A[0]
 
@@ -287,10 +287,10 @@ def remove_offsets(
                    kinetics.data['Moments'][:, 0:3]))
 
     q = np.hstack((
-            np.sin(theta),
-            np.cos(theta),
-            np.ones((len(theta), 1))
-            ))
+        np.sin(theta),
+        np.cos(theta),
+        np.ones((len(theta), 1))
+    ))
 
     f = f - q @ A
 
@@ -461,7 +461,7 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     Returns
     -------
     TimeSeries
-        	A copy of the TimeSeries with the added data key 'Velocity'.
+                A copy of the TimeSeries with the added data key 'Velocity'.
 
     See Also
     --------
@@ -474,7 +474,7 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     tsangle.time = tsin.time
     tsangle.data['Angle'] = tsin.data['Angle']
     tsvelocity = filters.savgol(tsangle, window_length=21,
-                                    poly_order=2, deriv=1)
+                                poly_order=2, deriv=1)
     tsout = tsin.copy()
     tsout.data['Velocity'] = tsvelocity.data['Angle']
     try:
@@ -503,7 +503,7 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     tsout = tsin.copy()
     tsout.data['Power'] = (tsout.data['Velocity'] *
-              tsout.data['Moments'][:,2])
+                           tsout.data['Moments'][:, 2])
     tsout.add_data_info('Power', 'Unit', 'W')
     return tsout
 
@@ -540,8 +540,8 @@ def _old_calculate_forces_and_moments(
     Returns
     -------
     TimeSeries
-		A copy of the input TimeSeries, with the added 'Forces'
-		and 'Moments' data keys.
+                A copy of the input TimeSeries, with the added 'Forces'
+                and 'Moments' data keys.
 
     """
 
@@ -745,7 +745,7 @@ def detect_pushes(
 
     # Remove the median if it existed
     ts_force.data['Ftot'] = \
-            ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
+        ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
 
     # Find the pushes
     ts_force = cycles.detect_cycles(
@@ -780,52 +780,52 @@ CALIBRATION_MATRICES['SmartWheel_93'] = {
     'gains': np.array([-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_94'] = {
     'gains': np.array([-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_123'] = {
     'gains': np.array([-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_124'] = {
     'gains': np.array([-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_125'] = {
     'gains': np.array([-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_126'] = {
     'gains': np.array([-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_126_S18'] = {
     'gains': np.array([-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_179_S18'] = {
     'gains': np.array([-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_180_S18'] = {
     'gains': np.array([-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
     'gains': np.array([-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
-    }
+}
 CALIBRATION_MATRICES['MSA_Racing_1'] = {
     'gains': (np.array([
         [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
@@ -836,10 +836,10 @@ CALIBRATION_MATRICES['MSA_Racing_1'] = {
         [0.016, -0.015, 0.046, -0.099, -0.076, 25.206]])  # Cell calibration
         / (2.**15) / 10  # ADC gains
         / np.array([-2., -2., -2., -2., -4., -4.])  # Board gains
-        ),
+    ),
     'offsets': [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869],
     'transducer': 'force_cell',
-    }
+}
 
 
 module_locals = locals()

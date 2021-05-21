@@ -151,7 +151,8 @@ def save(filename: str, variable: Any) -> None:
     }
 
     # Save
-    temp_folder = kineticstoolkit.config.temp_folder + '/save' + str(time.time())
+    temp_folder = kineticstoolkit.config.temp_folder + \
+        '/save' + str(time.time())
 
     try:
         shutil.rmtree(temp_folder)
@@ -329,7 +330,6 @@ def _load_ktk_zip(filename, include_metadata=False):
         else:
             return data
 
-
     except Exception:
         # No data.json. It seems to be the old format.
 
@@ -457,7 +457,7 @@ def _convert_cell_arrays_to_lists(the_input):
                 the_list = []
                 for i_cell in range(length):
                     the_list.append(_convert_cell_arrays_to_lists(
-                            the_input[f'cell{i_cell+1}']))
+                        the_input[f'cell{i_cell+1}']))
                 the_input = the_list
 
             except KeyError:
@@ -480,13 +480,13 @@ def _convert_cell_arrays_to_lists(the_input):
 
                 # Create and populate the list
                 the_list = [
-                        [None for i_col in range(n_cols)]
-                        for i_row in range(n_rows)]
+                    [None for i_col in range(n_cols)]
+                    for i_row in range(n_rows)]
                 for cell in the_input.keys():
                     address = extract_address(cell)
                     if address is not None:
                         the_list[int(address[0])-1][int(address[1])-1] = \
-                                _convert_cell_arrays_to_lists(the_input[cell])
+                            _convert_cell_arrays_to_lists(the_input[cell])
 
                 the_input = the_list
 

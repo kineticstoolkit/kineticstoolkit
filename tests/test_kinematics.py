@@ -106,10 +106,10 @@ def test_reconstruction():
 
     # Create the rigid body configurations
     config['RigidBodies']['ArmR'] = ktk.kinematics.create_rigid_body_config(
-            markers, ['ArmR1', 'ArmR2', 'ArmR3'])
+        markers, ['ArmR1', 'ArmR2', 'ArmR3'])
 
     config['RigidBodies']['ForearmR'] = ktk.kinematics.create_rigid_body_config(
-            markers, ['ForearmR1', 'ForearmR2', 'ForearmR3'])
+        markers, ['ForearmR1', 'ForearmR2', 'ForearmR3'])
 
     """
     The rigid body configuration will be created manually as we already have
@@ -118,15 +118,15 @@ def test_reconstruction():
     """
 
     config['RigidBodies']['Probe'] = {
-            'MarkerNames': ['Probe1', 'Probe2', 'Probe3',
-                            'Probe4', 'Probe5', 'Probe6'],
-            'LocalPoints': np.array([[
-                    [2.1213,   2.1213,  2.0575,   2.1213,   1.7070,   1.7762],
-                    [-15.8328, 15.8508, 16.0096,  16.1204,  -15.5780, -15.6057],
-                    [86.4285,  86.4285, 130.9445, 175.4395, 175.3805, 130.8888],
-                    [1000,     1000,    1000,     1000,     1000,     1000]]]
-                    ) / 1000
-            }
+        'MarkerNames': ['Probe1', 'Probe2', 'Probe3',
+                        'Probe4', 'Probe5', 'Probe6'],
+        'LocalPoints': np.array([[
+            [2.1213,   2.1213,  2.0575,   2.1213,   1.7070,   1.7762],
+            [-15.8328, 15.8508, 16.0096,  16.1204,  -15.5780, -15.6057],
+            [86.4285,  86.4285, 130.9445, 175.4395, 175.3805, 130.8888],
+            [1000,     1000,    1000,     1000,     1000,     1000]]]
+        ) / 1000
+    }
 
     # %%
     """
@@ -155,7 +155,7 @@ def test_reconstruction():
 
         # Create the marker configuration
         return ktk.kinematics.create_virtual_marker_config(
-                markers, rigid_bodies, 'ProbeTip', rigid_body_name)
+            markers, rigid_bodies, 'ProbeTip', rigid_body_name)
 
     """
     Now, we can process every probing acquisition.
@@ -190,22 +190,22 @@ def test_reconstruction():
     config['Segments'] = dict()
 
     config['Segments']['ArmR'] = {
-            'Color': [1, 0.25, 0],
-            'Links': [['AcromionR', 'MedialEpicondyleR'],
-                      ['AcromionR', 'LateralEpicondyleR'],
-                      ['AcromionR', 'OlecraneR']]
-            }
+        'Color': [1, 0.25, 0],
+        'Links': [['AcromionR', 'MedialEpicondyleR'],
+                  ['AcromionR', 'LateralEpicondyleR'],
+                  ['AcromionR', 'OlecraneR']]
+    }
 
     config['Segments']['ForearmR'] = {
-            'Color': [1, 0.5, 0],
-            'Links': [['MedialEpicondyleR', 'RadialStyloidR'],
-                      ['MedialEpicondyleR', 'UlnarStyloidR'],
-                      ['LateralEpicondyleR', 'RadialStyloidR'],
-                      ['LateralEpicondyleR', 'UlnarStyloidR'],
-                      ['OlecraneR', 'RadialStyloidR'],
-                      ['OlecraneR', 'UlnarStyloidR'],
-                      ['UlnarStyloidR', 'RadialStyloidR']]
-            }
+        'Color': [1, 0.5, 0],
+        'Links': [['MedialEpicondyleR', 'RadialStyloidR'],
+                  ['MedialEpicondyleR', 'UlnarStyloidR'],
+                  ['LateralEpicondyleR', 'RadialStyloidR'],
+                  ['LateralEpicondyleR', 'UlnarStyloidR'],
+                  ['OlecraneR', 'RadialStyloidR'],
+                  ['OlecraneR', 'UlnarStyloidR'],
+                  ['UlnarStyloidR', 'RadialStyloidR']]
+    }
 
     # %%
     """
@@ -232,7 +232,8 @@ def test_reconstruction():
     Compute the rigid body trajectories
     -----------------------------------
     """
-    rigid_bodies = ktk.kinematics.register_markers(markers, config['RigidBodies'])
+    rigid_bodies = ktk.kinematics.register_markers(
+        markers, config['RigidBodies'])
 
     # Show those rigid bodies and markers in a player
     ktk.Player(markers, rigid_bodies,
@@ -249,7 +250,7 @@ def test_reconstruction():
         reference_frame = rigid_bodies.data[rigid_body_name]
 
         markers.data[virtual_marker] = ktk.geometry.get_global_coordinates(
-                local_coordinates, reference_frame)
+            local_coordinates, reference_frame)
         # Assign a color for these virtual markers
         markers.add_data_info(virtual_marker, 'Color', 'c')
 

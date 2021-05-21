@@ -193,7 +193,7 @@ def time_normalize(
         event_name2: str, *,
         n_points: int = 100,
         span: Optional[Sequence[int]] = None,
-        ) -> TimeSeries:
+) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
 
@@ -404,7 +404,7 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
     """
     if np.mod(len(ts.time), n_points) != 0:
         raise(ValueError(
-                'It seems that this TimeSeries is not time-normalized.'))
+            'It seems that this TimeSeries is not time-normalized.'))
 
     data = dict()
     for key in ts.data.keys():

@@ -29,18 +29,18 @@ copyright = '2020-2021, Félix Chénier'
 author = 'Félix Chénier'
 
 
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-	'sphinx.ext.autodoc',  # Document objects using docstrings in API
-	'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
-	'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
-	'sphinx_autodoc_typehints',  # Type hints in doc instead of signature (for autodoc)
-	'autodocsumm',  # Add a summary table at the top of each API page
+    'sphinx.ext.autodoc',  # Document objects using docstrings in API
+    'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
+    'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
+    # Type hints in doc instead of signature (for autodoc)
+    'sphinx_autodoc_typehints',
+    'autodocsumm',  # Add a summary table at the top of each API page
     'sphinx.ext.ifconfig',  # Allow conditional contents for master vs stable versions
     'nbsphinx',
 ]

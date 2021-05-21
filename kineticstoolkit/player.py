@@ -676,7 +676,7 @@ class Player:
             self._set_new_target(
                 self.markers.data[selected_marker][self.current_frame])
             marker_position = self.markers.data[selected_marker][
-            self.current_frame]
+                self.current_frame]
 
             self._update_plots()
 
@@ -812,10 +812,10 @@ class Player:
             self._update_plots()
 
     def to_html5(self,
-                  start_frame: Optional[int] = None,
-                  stop_frame: Optional[int] = None,
-                  start_time: Optional[int] = None,
-                  stop_time: Optional[int] = None):
+                 start_frame: Optional[int] = None,
+                 stop_frame: Optional[int] = None,
+                 start_time: Optional[int] = None,
+                 stop_time: Optional[int] = None):
         """
         Create an html5 video for displaying in Jupyter notebooks.
 

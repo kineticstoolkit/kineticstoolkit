@@ -101,7 +101,7 @@ class DBInterface():
         # Assign root folder
         if root_folder == '':
             gui.message('Please select the folder that contains the '
-                            'project data.')
+                        'project data.')
             self.root_folder = gui.get_folder()
             gui.message('')
         else:
@@ -178,7 +178,8 @@ class DBInterface():
                                 # Duplicate file
 
                                 if warned_once is False:
-                                    warnings.warn('Duplicate file(s) found. See duplicates property.')
+                                    warnings.warn(
+                                        'Duplicate file(s) found. See duplicates property.')
 
                                     warned_once = True
                                     self.duplicates = []
@@ -195,7 +196,7 @@ class DBInterface():
                                     folder + '/' + file)
                         except ValueError:
                             pass  # Could not extract an int. Maybe there was
-                                  # a dbfid string in the file name by chance.
+                            # a dbfid string in the file name by chance.
 
         # Convert to a Pandas DataFrame
         return pd.DataFrame(dict_files)
@@ -211,7 +212,7 @@ class DBInterface():
 
     @unstable
     def get(self, participant: str = '', session: str = '',
-            trial : str = '', file: str = '') -> Dict[str, Any]:
+            trial: str = '', file: str = '') -> Dict[str, Any]:
         """
         Extract information from a project.
 
@@ -359,7 +360,7 @@ class DBInterface():
                 'TrialID', 'TrialLabel', 'SessionLabel',
                 'ParticipantLabel']], how='left')
         self.tables['Files']['dbfid'] = ('dbfid' +
-            self.tables['Files']['FileID'].apply(str) + 'n')
+                                         self.tables['Files']['FileID'].apply(str) + 'n')
         self.tables['Files']['FileLabel'] = \
             self.tables['Files']['FileTypeLabel']
 

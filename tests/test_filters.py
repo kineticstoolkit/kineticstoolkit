@@ -29,7 +29,7 @@ def test_savgol():
     ddoty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=2)
 
     tol = 5E-3  # Numerical tolerance (large because I compare a filtered
-                # signal with a non-filtered signal).
+    # signal with a non-filtered signal).
 
     assert np.max(np.abs(y.data['data1'][1:-2] - time[1:-2] ** 2)) < tol
     assert np.max(np.abs(doty.data['data1'][1:-2] - 2 * time[1:-2])) < tol
@@ -52,7 +52,8 @@ def test_savgol():
         warnings.simplefilter("ignore")
         y = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=0)
         doty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=1)
-        ddoty = ktk.filters.savgol(tsin, window_length=3, poly_order=2, deriv=2)
+        ddoty = ktk.filters.savgol(
+            tsin, window_length=3, poly_order=2, deriv=2)
 
     # Remove points that I don't want to compare because they can't be valid
     # (begin and end points, plus points around the original nan)
@@ -67,7 +68,8 @@ def test_savgol():
     assert np.all(np.abs(ddoty.data['data1'][tokeep] - 2) < tol)
 
     assert np.all(np.abs(y.data['data2'][tokeep, 0] - time[tokeep] ** 2) < tol)
-    assert np.all(np.abs(doty.data['data2'][tokeep, 0] - 2 * time[tokeep]) < tol)
+    assert np.all(
+        np.abs(doty.data['data2'][tokeep, 0] - 2 * time[tokeep]) < tol)
     assert np.all(np.abs(ddoty.data['data2'][tokeep, 0] - 2) < tol)
 
     assert np.all(np.abs(y.data['data2'][tokeep, 1] - time[tokeep] ** 4) < tol)

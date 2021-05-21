@@ -43,8 +43,8 @@ def test_save_load():
 #    a['TestTuple'] = (1, 'test2', False)
     a['TestBigList'] = np.arange(-1, 1, 1E-4).tolist()
     a['TestDict'] = {'key1': 'value1',
-                      'key2': 10,
-                      'key3': True}
+                     'key2': 10,
+                     'key3': True}
     a['TestComplexDict'] = {'key1': 'value1',
                             'key2': 10,
                             'key3': None}
@@ -53,8 +53,8 @@ def test_save_load():
                             True, np.pi, (34.05+2j),
                             [1, 2, 3, 4], [1, 2, 3, 4],
                             {'key1': 'value1',
-                              'key2': 10,
-                              'key3': ts.copy()}
+                             'key2': 10,
+                             'key3': ts.copy()}
                             ]
     a['TestComplexTuple'] = tuple(a['TestComplexList'])
     a['TestDataFrame'] = ts.to_dataframe()
@@ -62,7 +62,7 @@ def test_save_load():
 
     ktk.save('test.ktk.zip', a)
     b = ktk.load('test.ktk.zip')
-    #os.remove('test.mat')
+    # os.remove('test.mat')
 
     assert a['TestTimeSeries'] == b['TestTimeSeries']
     assert a['TestInt'] == b['TestInt']

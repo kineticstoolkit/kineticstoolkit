@@ -63,11 +63,19 @@ def run_unit_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
+def run_style_formatter() -> None:  # pragma: no cover
+    """Run style formatter (autopep8)."""
+    print("Running autopep8...")
+    subprocess.call(['autopep8', '-r', '-i',
+                     kineticstoolkit.config.root_folder],
+                    env=kineticstoolkit.config.env)
+
+
 def run_static_type_checker() -> None:  # pragma: no cover
     """Run static typing checker (mypy)."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
-    print('Running mypy...')
+    print("Running mypy...")
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder)
     subprocess.call(['mypy', '--config-file', 'kineticstoolkit/mypy.ini',
@@ -78,7 +86,7 @@ def run_static_type_checker() -> None:  # pragma: no cover
 
 def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
-    print('Running doc tests...')
+    print("Running doc tests...")
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder + '/kineticstoolkit')
     for file in os.listdir():
@@ -89,8 +97,9 @@ def run_doc_tests() -> None:  # pragma: no cover
                                 optionflags=doctest.NORMALIZE_WHITESPACE)
                 print(f"Doctests passed in file {file}.")
             except Exception:
-                print(f'Could not run the doctest in file {file}.')
+                print(f"Could not run the doctest in file {file}.")
     os.chdir(cwd)
+
 
 def _generate_tutorial(file: str) -> None:  # pragma: no cover
     """Generate one tutorial."""
@@ -160,8 +169,8 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
     os.environ['SPHINX_APIDOC_OPTIONS'] = \
         'members,undoc-members,autosummary'
     subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
-                      '-o', 'api', '../kineticstoolkit',
-                      'external'],
+                     '-o', 'api', '../kineticstoolkit',
+                     'external'],
                     env=kineticstoolkit.config.env)
 
     # Generate site
@@ -170,13 +179,16 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
 
     # Open site
     webbrowser.open_new_tab(
-        'file://' + kineticstoolkit.config.root_folder + '/doc/_build/html/index.html')
+        'file://' + kineticstoolkit.config.root_folder +
+        '/doc/_build/html/index.html')
     os.chdir(cwd)
 
 
 def clean() -> None:  # pragma: no cover
     """Remove outputs in jupyter notebooks (before committing to git)."""
-    for (folder, _, files) in os.walk(kineticstoolkit.config.root_folder + '/doc'):
+    for (folder, _, files) in os.walk(
+            kineticstoolkit.config.root_folder + '/doc'):
+
         if any(['.ipynb' in file for file in files]):
             subprocess.call(['jupyter-nbconvert',
                              '--ClearOutputPreprocessor.enabled=True',
@@ -210,6 +222,7 @@ def upload_to_pypi() -> None:  # pragma: no cover
 
 def release() -> None:  # pragma: no cover
     """Run all functions for release, without packaging and uploading."""
+    run_style_formatter()
     run_doc_tests()
     run_static_type_checker()
     run_unit_tests()

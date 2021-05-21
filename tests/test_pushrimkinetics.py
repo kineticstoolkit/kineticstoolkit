@@ -51,7 +51,6 @@ def test_read_csv_txt_file():
                   kinetics_txt.data['Angle'][0:smaller]) < 1E-4
 
 
-
 def test_remove_offsets():
     """Test that remove_offsets works with and without a baseline."""
     kinetics = ktk.pushrimkinetics.read_file(

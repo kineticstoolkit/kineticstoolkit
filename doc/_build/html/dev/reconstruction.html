@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Reconstructing virtual markers (from kinematics module) &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -35,6 +34,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
@@ -93,14 +93,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -109,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -117,10 +117,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Developer manual</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials for unreleased features</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
 <li class="toctree-l2 current"><a class="current reference internal" href="#">Reconstructing virtual markers (from kinematics module)</a><ul>
@@ -480,7 +480,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Reconstructing-virtual-markers-(from-kinematics-module)">
+<div class="section" id="Reconstructing-virtual-markers-(from-kinematics-module)">
 <h1>Reconstructing virtual markers (from kinematics module)<a class="headerlink" href="#Reconstructing-virtual-markers-(from-kinematics-module)" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -509,7 +509,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<section id="Read-and-visualize-marker-trajectories">
+<div class="section" id="Read-and-visualize-marker-trajectories">
 <h2>Read and visualize marker trajectories<a class="headerlink" href="#Read-and-visualize-marker-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>We proceed exactly as in the previous tutorials, but this time we will perform the analysis based on a minimal set of markers. For the right arm and forearm, all we have is one real marker on the lateral epicondyle, and three markers on two rigid bodies affixed to the arm and forearm segments (we will show every other in blue for easier visualization).</p>
 <div class="nbinput docutils container">
@@ -1474,8 +1474,8 @@ AAABAAAAAExhdmY1OC40NS4xMDA=
   Your browser does not support the video tag.
 </video></div>
 </div>
-</section>
-<section id="Calibration:-Defining-rigid-body-configurations-using-a-static-acquisition">
+</div>
+<div class="section" id="Calibration:-Defining-rigid-body-configurations-using-a-static-acquisition">
 <h2>Calibration: Defining rigid body configurations using a static acquisition<a class="headerlink" href="#Calibration:-Defining-rigid-body-configurations-using-a-static-acquisition" title="Permalink to this headline">¶</a></h2>
 <p>One of the aims of the static trial is to have a sample where every marker is visible. We use this trial to define the rigid body configuration. A rigid body configuration is a list of markers that form a rigid body, along with their local position in the rigid body’s reference frame.</p>
 <p>For this example, we will create reference frames for the rigid bodies ‘ArmR’ and ‘ForearmR’.</p>
@@ -2316,8 +2316,8 @@ aWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
   Your browser does not support the video tag.
 </video></div>
 </div>
-</section>
-<section id="Calibration:-Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">
+</div>
+<div class="section" id="Calibration:-Defining-the-virtual-marker-configurations-based-on-probing-acquisitions">
 <h2>Calibration: Defining the virtual marker configurations based on probing acquisitions<a class="headerlink" href="#Calibration:-Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" title="Permalink to this headline">¶</a></h2>
 <p>Now we will go though every probing acquisition and apply the same process on each acquisition:</p>
 <ol class="arabic simple">
@@ -2406,8 +2406,8 @@ aWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </pre></div></div>
 </div>
 <p>This is simply the position of the virtual marker in the <code class="docutils literal notranslate"><span class="pre">RigidBodyName</span></code> coordinate system.</p>
-</section>
-<section id="Task-analysis:-Tracking-the-segments">
+</div>
+<div class="section" id="Task-analysis:-Tracking-the-segments">
 <h2>Task analysis: Tracking the segments<a class="headerlink" href="#Task-analysis:-Tracking-the-segments" title="Permalink to this headline">¶</a></h2>
 <p>Now that we configured the rigid bodies and the virtual markers, we are ready to track the segments in the experimental trial we loaded at the beginning of this tutorial. To this effect, we will once again use the <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.register_markers"><span class="std std-ref">kinematics.register_markers()</span></a> function.</p>
 <div class="nbinput docutils container">
@@ -3592,8 +3592,8 @@ AC1pbHN0AAAAJal0b28AAAAdZGF0YQAAAAEAAAAATGF2ZjU4LjQ1LjEwMA==
   Your browser does not support the video tag.
 </video></div>
 </div>
-</section>
-<section id="Task-analysis:-Reconstructing-the-virtual-markers">
+</div>
+<div class="section" id="Task-analysis:-Reconstructing-the-virtual-markers">
 <h2>Task analysis: Reconstructing the virtual markers<a class="headerlink" href="#Task-analysis:-Reconstructing-the-virtual-markers" title="Permalink to this headline">¶</a></h2>
 <p>Now that we reconstructed the rigid bodies’ coordinate systems during the whole acquisition, we will use these coordinate systems to reconstruct the virtual markers. We will show these virtual markers in cyan.</p>
 <div class="nbinput docutils container">
@@ -6274,8 +6274,8 @@ YXZmNTguNDUuMTAw
 </video></div>
 </div>
 <p>For more information on kinematics, please check the <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">API Reference for the kinematics module</span></a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

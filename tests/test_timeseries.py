@@ -236,9 +236,9 @@ def test_get_ts_at_event___get_ts_at_time():
     ts.time = np.linspace(0, 99, 100)
     time_as_column = np.reshape(ts.time, (-1, 1))
     ts.data['Forces'] = np.block(
-            [time_as_column, time_as_column**2, time_as_column**3])
+        [time_as_column, time_as_column**2, time_as_column**3])
     ts.data['Moments'] = np.block(
-            [time_as_column**2, time_as_column**3, time_as_column**4])
+        [time_as_column**2, time_as_column**3, time_as_column**4])
     ts.add_event(5.5, 'event1')
     ts.add_event(10.8, 'event2')
     ts.add_event(2.3, 'event2')
@@ -418,4 +418,3 @@ def test_plot():
 if __name__ == "__main__":
     import pytest
     pytest.main([__file__])
-

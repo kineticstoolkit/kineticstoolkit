@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Reading and visualizing marker trajectories &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -35,6 +34,7 @@
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
         <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
@@ -93,14 +93,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -118,7 +118,7 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -126,10 +126,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -477,7 +477,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Reading-and-visualizing-marker-trajectories">
+<div class="section" id="Reading-and-visualizing-marker-trajectories">
 <h1>Reading and visualizing marker trajectories<a class="headerlink" href="#Reading-and-visualizing-marker-trajectories" title="Permalink to this headline">¶</a></h1>
 <p>In this tutorial, we will visualize the kinematics of an athlete who propelled a racing wheelchair on a training roller during 10 seconds. In this acquisition, the marker trajectories were saved as a <code class="docutils literal notranslate"><span class="pre">c3d</span></code> file.</p>
 <div class="nbinput nblast docutils container">
@@ -489,7 +489,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<section id="Reading-marker-trajectories">
+<div class="section" id="Reading-marker-trajectories">
 <h2>Reading marker trajectories<a class="headerlink" href="#Reading-marker-trajectories" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="../api/kineticstoolkit.kinematics.html"><span class="doc">kinematics</span></a> module provide the functions <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.read_c3d_file"><span class="std std-ref">read_c3d_file()</span></a> and <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.read_n3d_file"><span class="std std-ref">read_n3d_file()</span></a> to read files generated by common motion capture devices. Reading c3d files is provided by the external <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> package; see the “Installing” section for information on
 how to install it.</p>
@@ -586,8 +586,8 @@ TimeSeries with attributes:
 }
 </pre></div></div>
 </div>
-</section>
-<section id="Visualizing-the-markers">
+</div>
+<div class="section" id="Visualizing-the-markers">
 <h2>Visualizing the markers<a class="headerlink" href="#Visualizing-the-markers" title="Permalink to this headline">¶</a></h2>
 <p>Now we’ll take a look at this acquisition using <a class="reference internal" href="../api/kineticstoolkit.player.html#kineticstoolkit.player.Player"><span class="std std-ref">ktk.Player</span></a>, a matplotlib-based interactive user interface aimed at visualizing markers, rigid bodies and segments in three dimensions.</p>
 <p>For the <code class="docutils literal notranslate"><span class="pre">Player</span></code> class to be interactive, you must select an interactive backend for IPython. See the “Installing” section for more information. It is also possible to set a point of view and generate a fixed animation in inline matplotlib environments such as Jupyter notebooks. This is what we will do in these tutorials.</p>
@@ -1611,8 +1611,8 @@ OC40NS4xMDA=
 <li><p>y = Green</p></li>
 <li><p>z = Blue</p></li>
 </ul>
-</section>
-<section id="Drawing-links-between-markers">
+</div>
+<div class="section" id="Drawing-links-between-markers">
 <h2>Drawing links between markers<a class="headerlink" href="#Drawing-links-between-markers" title="Permalink to this headline">¶</a></h2>
 <p>To ease the visualization, it is often practical to create segments by linking markers with lines. Here, we will create links between the right arm markers and between the right forearm markers.</p>
 <div class="nbinput nblast docutils container">
@@ -3038,8 +3038,8 @@ AAEAAAAATGF2ZjU4LjQ1LjEwMA==
   Your browser does not support the video tag.
 </video></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
