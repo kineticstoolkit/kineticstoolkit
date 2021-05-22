@@ -8,12 +8,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.dbinterface module &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.dbinterface &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -31,21 +33,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.decorators module" href="kineticstoolkit.decorators.html" />
-    <link rel="prev" title="kineticstoolkit.cycles module" href="kineticstoolkit.cycles.html" />
+    <link rel="next" title="kineticstoolkit.decorators" href="kineticstoolkit.decorators.html" />
+    <link rel="prev" title="kineticstoolkit.cycles" href="kineticstoolkit.cycles.html" />
 
 
  
@@ -114,14 +114,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="modules.html">kineticstoolkit</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="kineticstoolkit.html">kineticstoolkit package</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.dbinterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -182,11 +191,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="modules.html">kineticstoolkit</a> &raquo;</li>
-        
-          <li><a href="kineticstoolkit.html">kineticstoolkit package</a> &raquo;</li>
-        
-      <li>kineticstoolkit.dbinterface module</li>
+      <li>kineticstoolkit.dbinterface</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -200,10 +205,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.decorators.html" class="btn btn-neutral float-right" title="kineticstoolkit.decorators module" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.decorators.html" class="btn btn-neutral float-right" title="kineticstoolkit.decorators" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.cycles.html" class="btn btn-neutral float-left" title="kineticstoolkit.cycles module" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.cycles.html" class="btn btn-neutral float-left" title="kineticstoolkit.cycles" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -237,9 +242,9 @@
 }
 </style>
 <div class="section" id="module-kineticstoolkit.dbinterface">
-<span id="kineticstoolkit-dbinterface-module"></span><h1>kineticstoolkit.dbinterface module<a class="headerlink" href="#module-kineticstoolkit.dbinterface" title="Permalink to this headline">¶</a></h1>
+<span id="kineticstoolkit-dbinterface"></span><h1>kineticstoolkit.dbinterface<a class="headerlink" href="#module-kineticstoolkit.dbinterface" title="Permalink to this headline">¶</a></h1>
 <p>Provide the DBInterface class.</p>
-<p><strong>Classes</strong></p>
+<p class="rubric">Classes</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -252,24 +257,40 @@
 </tbody>
 </table>
 <dl class="py class">
-<dt id="kineticstoolkit.dbinterface.DBInterface">
-<em class="property">class </em><code class="sig-prename descclassname">kineticstoolkit.dbinterface.</code><code class="sig-name descname">DBInterface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">project_label</span></em>, <em class="sig-param"><span class="n">user</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">password</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">root_folder</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">url</span><span class="o">=</span><span class="default_value">'https://felixchenier.uqam.ca/biomec'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
-<p>Interface for Felix Chenier’s BIOMEC database.</p>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.dbinterface.</span></span><span class="sig-name descname"><span class="pre">DBInterface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">project_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">user</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">password</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'https://felixchenier.uqam.ca/biomec'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Interface for Felix Chenier’s BIOMEC database.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>project_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Project label, for example ‘FC_XX16E’.</p></li>
-<li><p><strong>user</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Username on BIOMEC. If none is supplied, a dialog box asks
-the user for his/her credentials.</p></li>
-<li><p><strong>password</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Password on BIOMEC.</p></li>
-<li><p><strong>root_folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Project’s root folder, where all data files are stored. If
-none is given, a dialog box asks the user to point to this folder.</p></li>
-<li><p><strong>url</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. BIOMEC’s url.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>project_label</strong></dt><dd><p>Project label, for example ‘FC_XX16E’.</p>
+</dd>
+<dt><strong>user</strong></dt><dd><p>Optional. Username on BIOMEC. If none is supplied, a dialog box asks
+the user for his/her credentials.</p>
+</dd>
+<dt><strong>password</strong></dt><dd><p>Optional. Password on BIOMEC.</p>
+</dd>
+<dt><strong>root_folder</strong></dt><dd><p>Optional. Project’s root folder, where all data files are stored. If
+none is given, a dialog box asks the user to point to this folder.</p>
+</dd>
+<dt><strong>url</strong></dt><dd><p>Optional. BIOMEC’s url.</p>
 </dd>
 </dl>
-<p><strong>Methods</strong></p>
+</dd>
+<dt class="field-even">Attributes</dt>
+<dd class="field-even"><dl class="simple">
+<dt><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.files" title="kineticstoolkit.dbinterface.DBInterface.files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">files</span></code></a></dt><dd><p>Return a list of all file labels in the project.</p>
+</dd>
+<dt><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.participants" title="kineticstoolkit.dbinterface.DBInterface.participants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">participants</span></code></a></dt><dd><p>Return a list of all participant labels in the project.</p>
+</dd>
+<dt><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.sessions" title="kineticstoolkit.dbinterface.DBInterface.sessions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sessions</span></code></a></dt><dd><p>Return a list of all session labels in the project.</p>
+</dd>
+<dt><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.trials" title="kineticstoolkit.dbinterface.DBInterface.trials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trials</span></code></a></dt><dd><p>Return a list of all trial labels in the project.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -302,109 +323,74 @@ none is given, a dialog box asks the user to point to this folder.</p></li>
 </tr>
 </tbody>
 </table>
-<p><strong>Attributes</strong></p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.files" title="kineticstoolkit.dbinterface.DBInterface.files"><code class="xref py py-obj docutils literal notranslate"><span class="pre">files</span></code></a></p></td>
-<td><p>Return a list of all file labels in the project.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.participants" title="kineticstoolkit.dbinterface.DBInterface.participants"><code class="xref py py-obj docutils literal notranslate"><span class="pre">participants</span></code></a></p></td>
-<td><p>Return a list of all participant labels in the project.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.sessions" title="kineticstoolkit.dbinterface.DBInterface.sessions"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sessions</span></code></a></p></td>
-<td><p>Return a list of all session labels in the project.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.dbinterface.DBInterface.trials" title="kineticstoolkit.dbinterface.DBInterface.trials"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trials</span></code></a></p></td>
-<td><p>Return a list of all trial labels in the project.</p></td>
-</tr>
-</tbody>
-</table>
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.batch_fix_file_type">
-<code class="sig-name descname">batch_fix_file_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">folder</span></em>, <em class="sig-param"><span class="n">new_file_type_label</span></em>, <em class="sig-param"><span class="n">create_file_entries</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.batch_fix_file_type" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.batch_fix_file_type">
+<span class="sig-name descname"><span class="pre">batch_fix_file_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">folder</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_file_type_label</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_file_entries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.batch_fix_file_type" title="Permalink to this definition">¶</a></dt>
 <dd><p>Batch-rename files in a folder to their new corresponding dbfid.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function batch_fix_file_type is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This function is helpful to quickly assign new dbfids to a batch
-of processed file based on files that are already referenced in the
-database.</p>
-<p>As a practical example, let’s say we have a folder full of raw
-kinematics take files, and we batch-export those files to a new
-folder of c3d files. Both the raw take files and the c3d files share
-the same name, apart from the extension.</p>
-<p>Now, let say a project contains these filetypes:</p>
-<ul class="simple">
-<li><p>‘RawKinematics’: raw kinematic take files;</p></li>
-<li><p>‘LabelledKinematics’: c3d files with labelled markers.</p></li>
-</ul>
-<p>If the raw kinematics files were correctly assigned to database entries
-before batch-exporting, then the exported c3d files contain the
-original (incorrect) dbfid entry in their file names.</p>
-<p>This function changes the file names of the exported files so that
-they match their correct entry in the database.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>folder</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Folder that contains the set of files to rename. These files must
+<dd class="field-odd"><dl class="simple">
+<dt><strong>folder</strong></dt><dd><p>Folder that contains the set of files to rename. These files must
 have the original dbfid in their name, to identify the trial they
-belong to.</p></li>
-<li><p><strong>new_file_type_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – FileTypeLabel as set in the database. For example:
-‘LabelledKinematics’.</p></li>
-<li><p><strong>create_file_entries</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. When True and if a file entry for the specified file type
+belong to.</p>
+</dd>
+<dt><strong>new_file_type_label</strong></dt><dd><p>FileTypeLabel as set in the database. For example:
+‘LabelledKinematics’.</p>
+</dd>
+<dt><strong>create_file_entries</strong></dt><dd><p>Optional. When True and if a file entry for the specified file type
 ID does not exist in the found trial, create the file entry in the
-database, then rename the file accordingly.</p></li>
-<li><p><strong>dry_run</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. When True, the list of file renames is returned, but no
-action is actually taken.</p></li>
-</ul>
+database, then rename the file accordingly.</p>
+</dd>
+<dt><strong>dry_run</strong></dt><dd><p>Optional. When True, the list of file renames is returned, but no
+action is actually taken.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A dictionary with the following keys:</p>
+<dd class="field-even"><dl class="simple">
+<dt>Dict[str, List[Any]]</dt><dd><p>A dictionary with the following keys:</p>
 <ul class="simple">
-<li><p>’Rename’ : list of tuples (old_file_name, new_file_name).</p></li>
-<li><p>’Ignore’ : list of files without a dbfid.</p></li>
-<li><p>’NoFileTypeLabel’ : list of files which associated trial does not
+<li><p>‘Rename’ : list of tuples (old_file_name, new_file_name).</p></li>
+<li><p>‘Ignore’ : list of files without a dbfid.</p></li>
+<li><p>‘NoFileTypeLabel’ : list of files which associated trial does not
 contain the specified FileTypeLabel</p></li>
 </ul>
-</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, List[Any]]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.create_file_entry">
-<code class="sig-name descname">create_file_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">trial_id</span></em>, <em class="sig-param"><span class="n">file_type_label</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.create_file_entry" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.create_file_entry">
+<span class="sig-name descname"><span class="pre">create_file_entry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">trial_id</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_type_label</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.create_file_entry" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a file entry in the database.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function create_file_entry is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>The project’s tables are updated after adding the file entry.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>trial_id</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Trial identifier in the database. Can be obtained using
-get(participant, session, trial)[‘TrialID’].</p></li>
-<li><p><strong>file_type_label</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – File type label.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>trial_id</strong></dt><dd><p>Trial identifier in the database. Can be obtained using
+get(participant, session, trial)[‘TrialID’].</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt><strong>file_type_label</strong></dt><dd><p>File type label.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.files">
-<em class="property">property </em><code class="sig-name descname">files</code><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.files" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.files">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">files</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of all file labels in the project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -414,69 +400,70 @@ get(participant, session, trial)[‘TrialID’].</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.get">
-<code class="sig-name descname">get</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">session</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">trial</span><span class="o">=</span><span class="default_value">''</span></em>, <em class="sig-param"><span class="n">file</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.get" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.get">
+<span class="sig-name descname"><span class="pre">get</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">participant</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.get" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extract information from a project.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function get is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>participant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Participant label (for example, ‘P01’).</p></li>
-<li><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Session label (for example, ‘SB4320’).</p></li>
-<li><p><strong>trial</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Trial label (for example, ‘Static’).</p></li>
-<li><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. File label (for example, ‘Kinematics’).</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>participant</strong></dt><dd><p>Optional. Participant label (for example, ‘P01’).</p>
+</dd>
+<dt><strong>session :</strong></dt><dd><p>Optional. Session label (for example, ‘SB4320’).</p>
+</dd>
+<dt><strong>trial :</strong></dt><dd><p>Optional. Trial label (for example, ‘Static’).</p>
+</dd>
+<dt><strong>file :</strong></dt><dd><p>Optional. File label (for example, ‘Kinematics’).</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>A former parameter could not be empty while a latter parameters is not.
-For example, <cite>participant</cite> could not be ‘’ if <cite>session</cite> is ‘SB4320’.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A record of the specified information.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Dict[str, Any]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.load">
-<code class="sig-name descname">load</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span></em>, <em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">trial</span></em>, <em class="sig-param"><span class="n">file</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.load" title="Permalink to this definition">¶</a></dt>
-<dd><p>Load a variable from a BIOMEC referenced file.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function load is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This method load the ktk.zip file associated to a participant,
-session, trial and file type.</p>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>participant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Participant label. For example, ‘P01’</p></li>
-<li><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Session label. For example, ‘SB4320’</p></li>
-<li><p><strong>trial</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Trial label. For example, ‘StaticR1’</p></li>
-<li><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – File type label. For example, ‘SyncedMarkers’</p></li>
-</ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The file’s content.</p>
+<dd class="field-even"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>A record of the specified information.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Any</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.participants">
-<em class="property">property </em><code class="sig-name descname">participants</code><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.participants" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">participant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.load" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load a variable from a BIOMEC referenced file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>participant</strong></dt><dd><p>Participant label. For example, ‘P01’</p>
+</dd>
+<dt><strong>session</strong></dt><dd><p>Session label. For example, ‘SB4320’</p>
+</dd>
+<dt><strong>trial</strong></dt><dd><p>Trial label. For example, ‘StaticR1’</p>
+</dd>
+<dt><strong>file</strong></dt><dd><p>File type label. For example, ‘SyncedMarkers’</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>Any</dt><dd><p>The file’s content.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.participants">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">participants</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.participants" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of all participant labels in the project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -486,13 +473,9 @@ session, trial and file type.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.refresh">
-<code class="sig-name descname">refresh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.refresh" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.refresh">
+<span class="sig-name descname"><span class="pre">refresh</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.refresh" title="Permalink to this definition">¶</a></dt>
 <dd><p>Update from database and reindex files.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function refresh is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -501,69 +484,62 @@ session, trial and file type.</p>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.rename">
-<code class="sig-name descname">rename</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">dbfid</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.rename" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.rename">
+<span class="sig-name descname"><span class="pre">rename</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dbfid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.rename" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename a file to include or modify a dbfid code in its filename.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function rename is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the file to rename</p></li>
-<li><p><strong>dbfid</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – FileID in database</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong></dt><dd><p>Name of the file to rename</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt><strong>dbfid</strong></dt><dd><p>FileID in database</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.save">
-<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">participant</span></em>, <em class="sig-param"><span class="n">session</span></em>, <em class="sig-param"><span class="n">trial</span></em>, <em class="sig-param"><span class="n">file</span></em>, <em class="sig-param"><span class="n">variable</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.save" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">participant</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">session</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trial</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.save" title="Permalink to this definition">¶</a></dt>
 <dd><p>Save a variable to a BIOMEC referenced file.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function save is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This method saves the specified variable following either of these
-cases:</p>
-<ul class="simple">
-<li><p>If the participant, session, trial and file labels are already
-associated to a file on disk, the file is overwritten.</p></li>
-<li><p>If the participant, session, trial and file labels are associated to
-a file entry but no file exists on disk, the file is created and
-saved in <cite>root_folder/file_label/participant/session</cite> as
-<cite>dbfidxxxxn_{trial}.ktk.zip</cite>.</p></li>
-<li><p>If the participant, session, trial and file labels do not correspond
-to a file entry in the database, a file entry is created in the
-database, then the file is saved as in 2nd case.</p></li>
-</ul>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>participant</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Participant label. For example, ‘P01’</p></li>
-<li><p><strong>session</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Session label. For example, ‘SB4320’</p></li>
-<li><p><strong>trial</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Trial label. For example, ‘StaticR1’</p></li>
-<li><p><strong>file</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – File type label. For example, ‘SyncedMarkers’</p></li>
-<li><p><strong>variable</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>) – Any variable that is supported by ktk.save</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>participant</strong></dt><dd><p>Participant label. For example, ‘P01’</p>
+</dd>
+<dt><strong>session</strong></dt><dd><p>Session label. For example, ‘SB4320’</p>
+</dd>
+<dt><strong>trial</strong></dt><dd><p>Trial label. For example, ‘StaticR1’</p>
+</dd>
+<dt><strong>file</strong></dt><dd><p>File type label. For example, ‘SyncedMarkers’</p>
+</dd>
+<dt><strong>variable</strong></dt><dd><p>Any variable that is supported by ktk.save</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The file path</p>
+<dd class="field-even"><dl class="simple">
+<dt>str</dt><dd><p>The file path</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>str</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.sessions">
-<em class="property">property </em><code class="sig-name descname">sessions</code><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.sessions" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.sessions">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">sessions</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.sessions" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of all session labels in the project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -573,35 +549,29 @@ database, then the file is saved as in 2nd case.</p></li>
 </dd></dl>
 
 <dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.tag_files">
-<code class="sig-name descname">tag_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">include_trial_name</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">dry_run</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.tag_files" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.tag_files">
+<span class="sig-name descname"><span class="pre">tag_files</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">include_trial_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dry_run</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.tag_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Rename all files to include tags in file names.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function tag_files is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This method renames all the files referenced by the project following
-the given specifications. The resulting file can be either:</p>
-<ul class="simple">
-<li><p>ORIGINALNAME_dbfidXXXXn.EXT</p></li>
-<li><p>ORIGINALNAME_dbfidXXXXn_{TRIALNAME}.EXT</p></li>
-</ul>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>include_trial_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to include the trial name from the file name.</p></li>
-<li><p><strong>dry_run</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. Set to False to actually perform the rename.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>include_trial_name</strong></dt><dd><p>Optional. True to include the trial name from the file name.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt><strong>dry_run</strong></dt><dd><p>Optional. Set to False to actually perform the rename.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
-<dl class="py method">
-<dt id="kineticstoolkit.dbinterface.DBInterface.trials">
-<em class="property">property </em><code class="sig-name descname">trials</code><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.trials" title="Permalink to this definition">¶</a></dt>
+<dl class="py property">
+<dt class="sig sig-object py" id="kineticstoolkit.dbinterface.DBInterface.trials">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">trials</span></span><em class="property"><span class="pre">:</span> <span class="pre">List[str]</span></em><a class="headerlink" href="#kineticstoolkit.dbinterface.DBInterface.trials" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a list of all trial labels in the project.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
@@ -620,8 +590,8 @@ the given specifications. The resulting file can be either:</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.decorators.html" class="btn btn-neutral float-right" title="kineticstoolkit.decorators module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.cycles.html" class="btn btn-neutral float-left" title="kineticstoolkit.cycles module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.decorators.html" class="btn btn-neutral float-right" title="kineticstoolkit.decorators" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.cycles.html" class="btn btn-neutral float-left" title="kineticstoolkit.cycles" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

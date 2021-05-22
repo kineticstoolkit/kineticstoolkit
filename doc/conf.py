@@ -35,24 +35,26 @@ author = 'Félix Chénier'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx.ext.autodoc',  # Document objects using docstrings in API
-    'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
-    'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
+#    'sphinx.ext.autodoc',  # Document objects using docstrings in API
+#    'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
+#    'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
     # Type hints in doc instead of signature (for autodoc)
-    'sphinx_autodoc_typehints',
-    'autodocsumm',  # Add a summary table at the top of each API page
+#    'autodocsumm',  # Add a summary table at the top of each API page
     'sphinx.ext.ifconfig',  # Allow conditional contents for master vs stable versions
     'nbsphinx',
+    'numpydoc',
+    'sphinx_autodoc_typehints',
 ]
 
 autodoc_default_options = {
     'autosummary': True,
     'autodoc_typehints': 'description',
-    'autosummary-imported-members': False,
+    'recursive': True,
+    'members': True,
+    'undoc_members': True,
 }
 
 nbsphinx_execute = 'never'
-
 
 # Napoleon settings
 napoleon_google_docstring = False
@@ -102,7 +104,7 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 4,
+    'navigation_depth': 8,
     'includehidden': True,
     'titles_only': False,
 }

@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Coding style for Kinetics Toolkit &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -15,6 +14,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -32,12 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -91,14 +93,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -107,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -115,10 +117,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -455,10 +457,10 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Coding-style-for-Kinetics-Toolkit">
+<div class="section" id="Coding-style-for-Kinetics-Toolkit">
 <h1>Coding style for Kinetics Toolkit<a class="headerlink" href="#Coding-style-for-Kinetics-Toolkit" title="Permalink to this headline">¶</a></h1>
 <p>This is a draft for an upcoming coding style for Kinetics Toolkit and other projects at the Research Lab on Mobility in Adaptive Sports.</p>
-<section id="Standard-Python-conventions">
+<div class="section" id="Standard-Python-conventions">
 <h2>Standard Python conventions<a class="headerlink" href="#Standard-Python-conventions" title="Permalink to this headline">¶</a></h2>
 <p>We try, when possible, to match the guidelines presented in these documents: - <a class="reference external" href="https://pep8.org">Style Guide for Python Code (PEP8)</a>; - <a class="reference external" href="https://numpydoc.readthedocs.io/en/latest/format.html">Numpy Docstring</a>.</p>
 <p>Those are precious references and all other sections are additions to these references. Integrated desktop environments may help programmers to follow these conventions. For example, in Spyder, one could enable:</p>
@@ -466,30 +468,30 @@ div.rendered_html tbody tr:hover {
 <li><p><code class="docutils literal notranslate"><span class="pre">Preferences</span> <span class="pre">:</span> <span class="pre">Completion</span> <span class="pre">in</span> <span class="pre">linting</span> <span class="pre">:</span> <span class="pre">Code</span> <span class="pre">style</span> <span class="pre">and</span> <span class="pre">formatting</span></code> to enable PEP8 linting;</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">Preferences</span> <span class="pre">:</span> <span class="pre">Completion</span> <span class="pre">in</span> <span class="pre">linting</span> <span class="pre">:</span> <span class="pre">Docstring</span> <span class="pre">style</span></code> to enable docstring linting.</p></li>
 </ul>
-</section>
-<section id="Function-life-sequence">
+</div>
+<div class="section" id="Function-life-sequence">
 <h2>Function life sequence<a class="headerlink" href="#Function-life-sequence" title="Permalink to this headline">¶</a></h2>
 <p>New public functions appear and live in the following order:</p>
-<section id="1.-Unstable">
+<div class="section" id="1.-Unstable">
 <h3>1. Unstable<a class="headerlink" href="#1.-Unstable" title="Permalink to this headline">¶</a></h3>
 <p>These functions are currently being developed. They are considered public in the development API, and private in the stable API. They are decorated by the <code class="docutils literal notranslate"><span class="pre">&#64;unstable</span></code> decorator, which automates the documentation of their unstable status both in their doctring and in the API documentation. They are included in the development website’s API, but not in the stable API.</p>
-</section>
-<section id="2.-Experimental">
+</div>
+<div class="section" id="2.-Experimental">
 <h3>2. Experimental<a class="headerlink" href="#2.-Experimental" title="Permalink to this headline">¶</a></h3>
 <p>These objects are part of the API but are not considered stable yet. They are documented accordingly in their docstring, with the following text just before the parameters section (with correct version numbers):</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="ne">Warning</span>
-<span class="o">-------</span>
-<span class="n">This</span> <span class="n">function</span><span class="p">,</span> <span class="n">which</span> <span class="n">has</span> <span class="n">been</span> <span class="n">introduced</span> <span class="ow">in</span> <span class="mf">0.4</span><span class="p">,</span> <span class="ow">is</span> <span class="n">still</span> <span class="n">experimental</span> <span class="ow">and</span>
-<span class="n">may</span> <span class="n">change</span> <span class="n">signature</span> <span class="ow">or</span> <span class="n">behaviour</span> <span class="ow">in</span> <span class="n">the</span> <span class="n">future</span><span class="o">.</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Warning
+-------
+This function, which has been introduced in 0.4, is still experimental and
+may change signature or behaviour in the future.
 </pre></div>
 </div>
 <p>They don’t have a decorator.</p>
-</section>
-<section id="3.-Stable">
+</div>
+<div class="section" id="3.-Stable">
 <h3>3. Stable<a class="headerlink" href="#3.-Stable" title="Permalink to this headline">¶</a></h3>
 <p>Standard production function, without specific decorator or warning.</p>
-</section>
-<section id="4.-Deprecated">
+</div>
+<div class="section" id="4.-Deprecated">
 <h3>4. Deprecated<a class="headerlink" href="#4.-Deprecated" title="Permalink to this headline">¶</a></h3>
 <p>Standard function, but decorated with the <code class="docutils literal notranslate"><span class="pre">&#64;deprecated</span></code> decorator:</p>
 <div class="nbinput nblast docutils container">
@@ -517,9 +519,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-</section>
-</section>
-</section>
+</div>
+</div>
+</div>
 
 
            </div>

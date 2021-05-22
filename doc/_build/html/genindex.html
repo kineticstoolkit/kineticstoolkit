@@ -14,6 +14,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -31,12 +33,11 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -90,14 +91,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -106,7 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -114,10 +115,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -283,16 +284,12 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.data">data (kineticstoolkit.timeseries.TimeSeries attribute)</a>
-</li>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.data_info">data_info (kineticstoolkit.timeseries.TimeSeries attribute)</a>
-</li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.dataframe_to_dict_of_arrays">dataframe_to_dict_of_arrays() (in module kineticstoolkit.timeseries)</a>
+</li>
+      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface">DBInterface (class in kineticstoolkit.dbinterface)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface">DBInterface (class in kineticstoolkit.dbinterface)</a>
-</li>
       <li><a href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.deriv">deriv() (in module kineticstoolkit.filters)</a>
 </li>
       <li><a href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.detect_cycles">detect_cycles() (in module kineticstoolkit.cycles)</a>
@@ -305,10 +302,6 @@
 <h2 id="E">E</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.events">events (kineticstoolkit.timeseries.TimeSeries attribute)</a>
-</li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.tools.html#kineticstoolkit.tools.explore">explore() (in module kineticstoolkit.tools)</a>
 </li>
   </ul></td>
@@ -317,7 +310,7 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.files">files() (kineticstoolkit.dbinterface.DBInterface property)</a>
+      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.files">files (kineticstoolkit.dbinterface.DBInterface property)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.fill_missing_samples">fill_missing_samples() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
@@ -404,13 +397,6 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li>
-    kineticstoolkit
-
-      <ul>
-        <li><a href="api/kineticstoolkit.html#module-kineticstoolkit">module</a>
-</li>
-      </ul></li>
-      <li>
     kineticstoolkit.config
 
       <ul>
@@ -466,8 +452,6 @@
         <li><a href="api/kineticstoolkit.geometry.html#module-kineticstoolkit.geometry">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kineticstoolkit.gui
 
@@ -475,6 +459,8 @@
         <li><a href="api/kineticstoolkit.gui.html#module-kineticstoolkit.gui">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     kineticstoolkit.inversedynamics
 
@@ -561,8 +547,6 @@
     module
 
       <ul>
-        <li><a href="api/kineticstoolkit.html#module-kineticstoolkit">kineticstoolkit</a>
-</li>
         <li><a href="api/kineticstoolkit.config.html#module-kineticstoolkit.config">kineticstoolkit.config</a>
 </li>
         <li><a href="api/kineticstoolkit.cycles.html#module-kineticstoolkit.cycles">kineticstoolkit.cycles</a>
@@ -608,7 +592,7 @@
 <h2 id="N">N</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeriesEvent.name">name() (kineticstoolkit.timeseries.TimeSeriesEvent property)</a>
+      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeriesEvent.name">name (kineticstoolkit.timeseries.TimeSeriesEvent property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -616,7 +600,7 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.participants">participants() (kineticstoolkit.dbinterface.DBInterface property)</a>
+      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.participants">participants (kineticstoolkit.dbinterface.DBInterface property)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -648,10 +632,10 @@
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.remove_data">remove_data() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.remove_data_info">remove_data_info() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.remove_event">remove_event() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
       <li><a href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.remove_offsets">remove_offsets() (in module kineticstoolkit.pushrimkinetics)</a>
@@ -667,6 +651,8 @@
       <li><a href="api/kineticstoolkit.dev.html#kineticstoolkit.dev.run_doc_tests">run_doc_tests() (in module kineticstoolkit.dev)</a>
 </li>
       <li><a href="api/kineticstoolkit.dev.html#kineticstoolkit.dev.run_static_type_checker">run_static_type_checker() (in module kineticstoolkit.dev)</a>
+</li>
+      <li><a href="api/kineticstoolkit.dev.html#kineticstoolkit.dev.run_style_formatter">run_style_formatter() (in module kineticstoolkit.dev)</a>
 </li>
       <li><a href="api/kineticstoolkit.dev.html#kineticstoolkit.dev.run_unit_tests">run_unit_tests() (in module kineticstoolkit.dev)</a>
 </li>
@@ -684,7 +670,7 @@
       </ul></li>
       <li><a href="api/kineticstoolkit.filters.html#kineticstoolkit.filters.savgol">savgol() (in module kineticstoolkit.filters)</a>
 </li>
-      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.sessions">sessions() (kineticstoolkit.dbinterface.DBInterface property)</a>
+      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.sessions">sessions (kineticstoolkit.dbinterface.DBInterface property)</a>
 </li>
       <li><a href="api/kineticstoolkit.gui.html#kineticstoolkit.gui.set_color_order">set_color_order() (in module kineticstoolkit.gui)</a>
 </li>
@@ -712,25 +698,21 @@
 </li>
       <li><a href="api/kineticstoolkit.tools.html#kineticstoolkit.tools.terminal">terminal() (in module kineticstoolkit.tools)</a>
 </li>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.time">time (kineticstoolkit.timeseries.TimeSeries attribute)</a>
-</li>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeriesEvent.time">time() (kineticstoolkit.timeseries.TimeSeriesEvent property)</a>
-</li>
-      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.time_info">time_info (kineticstoolkit.timeseries.TimeSeries attribute)</a>
+      <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeriesEvent.time">time (kineticstoolkit.timeseries.TimeSeriesEvent property)</a>
 </li>
       <li><a href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.time_normalize">time_normalize() (in module kineticstoolkit.cycles)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries">TimeSeries (class in kineticstoolkit.timeseries)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeriesEvent">TimeSeriesEvent (class in kineticstoolkit.timeseries)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.to_dataframe">to_dataframe() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>
       <li><a href="api/kineticstoolkit.player.html#kineticstoolkit.player.Player.to_html5">to_html5() (kineticstoolkit.player.Player method)</a>
 </li>
-      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.trials">trials() (kineticstoolkit.dbinterface.DBInterface property)</a>
+      <li><a href="api/kineticstoolkit.dbinterface.html#kineticstoolkit.dbinterface.DBInterface.trials">trials (kineticstoolkit.dbinterface.DBInterface property)</a>
 </li>
       <li><a href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.trim_events">trim_events() (kineticstoolkit.timeseries.TimeSeries method)</a>
 </li>

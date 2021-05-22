@@ -8,12 +8,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.cycles module &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.cycles &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -31,21 +33,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.dbinterface module" href="kineticstoolkit.dbinterface.html" />
-    <link rel="prev" title="kineticstoolkit.config module" href="kineticstoolkit.config.html" />
+    <link rel="next" title="kineticstoolkit.dbinterface" href="kineticstoolkit.dbinterface.html" />
+    <link rel="prev" title="kineticstoolkit.config" href="kineticstoolkit.config.html" />
 
 
  
@@ -114,14 +114,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="modules.html">kineticstoolkit</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="kineticstoolkit.html">kineticstoolkit package</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -182,11 +191,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="modules.html">kineticstoolkit</a> &raquo;</li>
-        
-          <li><a href="kineticstoolkit.html">kineticstoolkit package</a> &raquo;</li>
-        
-      <li>kineticstoolkit.cycles module</li>
+      <li>kineticstoolkit.cycles</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -200,10 +205,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.dbinterface.html" class="btn btn-neutral float-right" title="kineticstoolkit.dbinterface module" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.dbinterface.html" class="btn btn-neutral float-right" title="kineticstoolkit.dbinterface" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.config.html" class="btn btn-neutral float-left" title="kineticstoolkit.config module" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.config.html" class="btn btn-neutral float-left" title="kineticstoolkit.config" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -237,9 +242,9 @@
 }
 </style>
 <div class="section" id="module-kineticstoolkit.cycles">
-<span id="kineticstoolkit-cycles-module"></span><h1>kineticstoolkit.cycles module<a class="headerlink" href="#module-kineticstoolkit.cycles" title="Permalink to this headline">¶</a></h1>
+<span id="kineticstoolkit-cycles"></span><h1>kineticstoolkit.cycles<a class="headerlink" href="#module-kineticstoolkit.cycles" title="Permalink to this headline">¶</a></h1>
 <p>Identify cycles and time-normalize data.</p>
-<p><strong>Functions</strong></p>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -264,8 +269,8 @@
 </tbody>
 </table>
 <dl class="py function">
-<dt id="kineticstoolkit.cycles.detect_cycles">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">detect_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">data_key</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="n">threshold1</span></em>, <em class="sig-param"><span class="n">threshold2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">direction1</span><span class="o">=</span><span class="default_value">'rising'</span></em>, <em class="sig-param"><span class="n">min_duration1</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">min_duration2</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">max_duration1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_duration2</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">min_peak_height1</span><span class="o">=</span><span class="default_value">- inf</span></em>, <em class="sig-param"><span class="n">min_peak_height2</span><span class="o">=</span><span class="default_value">- inf</span></em>, <em class="sig-param"><span class="n">max_peak_height1</span><span class="o">=</span><span class="default_value">inf</span></em>, <em class="sig-param"><span class="n">max_peak_height2</span><span class="o">=</span><span class="default_value">inf</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.cycles.detect_cycles">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">detect_cycles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rising'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_duration1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_duration2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_peak_height1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_peak_height2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_peak_height1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_peak_height2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect cycles in a TimeSeries based on a dual threshold approach.</p>
 <p>This function detects biphasic cycles and identifies the transitions as
 new events in the output TimeSeries. These new events are named:</p>
@@ -279,53 +284,52 @@ corresponds to the end of the cycle.</p></li>
 </ul>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries to analyze.</p></li>
-<li><p><strong>data_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the data key to analyze in the TimeSeries. This signal must be
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>TimeSeries to analyze.</p>
+</dd>
+<dt><strong>data_key</strong></dt><dd><p>Name of the data key to analyze in the TimeSeries. This signal must be
 high during phase 1, and low during phase 2. For example, one could
 use the absolute ground reaction force to detect stance (phase 1) and
-swing (phase 2).</p></li>
-<li><p><strong>event_name1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the events in the output TimeSeries that corresponds to the
-start of phase 1.</p></li>
-<li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the events in the output TimeSeries that corresponds to the
-start of phase 2.</p></li>
-<li><p><strong>threshold1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1 and phase 2.</p></li>
-<li><p><strong>threshold2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1 and phase 2.</p></li>
-<li><p><strong>direction1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘rising’ to cross threshold1 upward, ‘falling’ to cross
-threshold1 downward.</p></li>
-<li><p><strong>min_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>min_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>max_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>max_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>min_peak_height1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimum peak value for phase 1 and phase 2.</p></li>
-<li><p><strong>min_peak_height2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimum peak value for phase 1 and phase 2.</p></li>
-<li><p><strong>max_peak_height1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal peak value for phase 1 and phase 2.</p></li>
-<li><p><strong>max_peak_height2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal peak value for phase 1 and phase 2.</p></li>
-</ul>
+swing (phase 2).</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of ts with the events added.</p>
+<dt><strong>event_name1</strong></dt><dd><p>Name of the events in the output TimeSeries that corresponds to the
+start of phase 1.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dt><strong>event_name2</strong></dt><dd><p>Name of the events in the output TimeSeries that corresponds to the
+start of phase 2.</p>
+</dd>
+<dt><strong>threshold1, threshold2</strong></dt><dd><p>Value to cross to register the start of phase 1 and phase 2.</p>
+</dd>
+<dt><strong>direction1:</strong></dt><dd><p>Optional. ‘rising’ to cross threshold1 upward, ‘falling’ to cross
+threshold1 downward.</p>
+</dd>
+<dt><strong>min_duration1, min_duration2</strong></dt><dd><p>Optional. Minimal duration of phase 1 and phase 2 in seconds.</p>
+</dd>
+<dt><strong>max_duration1, max_duration2</strong></dt><dd><p>Optional. Maximal duration of phase 1 and phase 2 in seconds.</p>
+</dd>
+<dt><strong>min_peak_height1, min_peak_height2</strong></dt><dd><p>Optional. Minimum peak value for phase 1 and phase 2.</p>
+</dd>
+<dt><strong>max_peak_height1, max_peak_height2</strong></dt><dd><p>Optional. Maximal peak value for phase 1 and phase 2.</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When using min_peak_height1, min_peak_height1, max_peak_height1 and
-max_peak_height2:</p>
-<ul class="simple">
-<li><p>If direction1 is ‘rising’, then the peak value is the maximum during
-phase 1 and the minimum during phase 2.</p></li>
-<li><p>If direction1 is ‘falling’, then the peak value is the minimum
-during phase 1 and the maximum during phase 2.</p></li>
-</ul>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of ts with the events added.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.cycles.most_repeatable_cycles">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">most_repeatable_cycles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.most_repeatable_cycles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.cycles.most_repeatable_cycles">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">most_repeatable_cycles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.most_repeatable_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get the indexes of the most repeatable cycles in TimeSeries or array.</p>
 <p>This function returns an ordered list of the most repeatable to the least
 repeatable cycles.</p>
@@ -335,41 +339,32 @@ remaining cycle, until there are only two cycles remaining. The function
 returns a list that is the reverse order of cycle removal: first the two
 last cycles, then the last-removed cycle, and so on. If two cycles are as
 equivalently repeatable, they are returned in order of appearance.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Cycles that include at least one NaN are excluded.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Stacked time-normalized data to analyze, in the shape
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong></dt><dd><p>Stacked time-normalized data to analyze, in the shape
 (n_cycles, n_points).</p>
 </dd>
+</dl>
+</dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>List of indexes corresponding to the cycles in most to least
+<dd class="field-even"><dl class="simple">
+<dt>List[int]</dt><dd><p>List of indexes corresponding to the cycles in most to least
 repeatable order.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>List[int]</p>
+</dl>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Create a data sample with four different cycles, the most different</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="c1"># begin cycle 2 (cos instead of sin), then cycle 0.</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">)</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)],</span>         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.14</span><span class="p">],</span>         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.14</span><span class="p">],</span>         <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.15</span><span class="p">]])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">most_repeatable_cycles</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="go">[1, 3, 0, 2]</span>
-</pre></div>
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.cycles.stack">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">stack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.stack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.cycles.stack">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">stack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.stack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Stack time-normalized TimeSeries’ data into a dict of arrays.</p>
 <p>This methods returns the data of a time-normalized TimeSeries as a dict
 where each key corresponds to a TimeSeries’ data, and contains a numpy
@@ -377,28 +372,36 @@ array where the first dimension is the cycle, the second dimension is the
 percentage of cycle, and the other dimensions are the data itself.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The time-normalized TimeSeries.</p></li>
-<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points the TimeSeries has been time-normalized
-on.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>The time-normalized TimeSeries.</p>
+</dd>
+<dt><strong>n_points</strong></dt><dd><p>Optional. The number of points the TimeSeries has been time-normalized
+on.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, np.ndarray]</p>
+<dd class="field-even"><dl class="simple">
+<dt>Dict[str, np.ndarray]</dt><dd></dd>
+</dl>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.unstack</span></code></p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.unstack</span></code></dt><dd></dd>
+</dl>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.cycles.time_normalize">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">time_normalize</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">event_name1</span></em>, <em class="sig-param"><span class="n">event_name2</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">n_points</span><span class="o">=</span><span class="default_value">100</span></em>, <em class="sig-param"><span class="n">span</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.cycles.time_normalize">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">time_normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">span</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.time_normalize" title="Permalink to this definition">¶</a></dt>
 <dd><p>Time-normalize cycles in a TimeSeries.</p>
 <p>This method time-normalizes the TimeSeries at each cycle defined by
 event_name1 and event_name2 on n_points. The time-normalized cycles are
@@ -408,24 +411,28 @@ of length 300. The TimeSeries’ events are also time-normalized, including
 event_name1 but with event_name2 renamed as ‘_’.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – The TimeSeries to analyze.</p></li>
-<li><p><strong>event_name1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the begin of a cycle.</p></li>
-<li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – The event name that correspond to the end of a cycle.</p></li>
-<li><p><strong>n_points</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. The number of points of the output TimeSeries.</p></li>
-<li><p><strong>span</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>]]) – Optional. Specifies which normalized points to include in the output
-TimeSeries. See note below.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>The TimeSeries to analyze.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A new TimeSeries where each cycle has been time-normalized.</p>
+<dt><strong>event_name1</strong></dt><dd><p>The event name that correspond to the begin of a cycle.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dt><strong>event_name2</strong></dt><dd><p>The event name that correspond to the end of a cycle.</p>
+</dd>
+<dt><strong>n_points</strong></dt><dd><p>Optional. The number of points of the output TimeSeries.</p>
+</dd>
+<dt><strong>span</strong></dt><dd><p>Optional. Specifies which normalized points to include in the output
+TimeSeries. See note below.</p>
 </dd>
 </dl>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A new TimeSeries where each cycle has been time-normalized.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
 <p>The span argument is experimental and has been introduced in version 0.4.
 Use it to define which normalized points to include in the output
 TimeSeries. For example, to normalize in percents and to include only data
@@ -437,32 +444,45 @@ post-cycle, assign 100 to n_points and [-20, 15] to span. The resulting
 TimeSeries will then wrap each 135 points with the cycles starting at 20,
 155, etc. and ending at 119, 254, etc. For each cycle, events outside the
 0-100% spans are ignored.</p>
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.cycles.unstack">
-<code class="sig-prename descclassname">kineticstoolkit.cycles.</code><code class="sig-name descname">unstack</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.unstack" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.cycles.unstack">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">unstack</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.unstack" title="Permalink to this definition">¶</a></dt>
 <dd><p>Unstack time-normalized data from a dict of arrays to a TimeSeries.</p>
 <p>This methods creates a time-normalized TimeSeries by putting each cycle
 from the provided data dictionary end to end.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>data</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A dict where each key contains a numpy array where the first dimension
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong></dt><dd><p>A dict where each key contains a numpy array where the first dimension
 is the cycle, the second dimension is the percentage of cycle, and
 the other dimensions are the data itself.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+</dl>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd></dd>
+</dl>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.stack</span></code></p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.stack</span></code></dt><dd></dd>
+</dl>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -473,8 +493,8 @@ the other dimensions are the data itself.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.dbinterface.html" class="btn btn-neutral float-right" title="kineticstoolkit.dbinterface module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.config.html" class="btn btn-neutral float-left" title="kineticstoolkit.config module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.dbinterface.html" class="btn btn-neutral float-right" title="kineticstoolkit.dbinterface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.config.html" class="btn btn-neutral float-left" title="kineticstoolkit.config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

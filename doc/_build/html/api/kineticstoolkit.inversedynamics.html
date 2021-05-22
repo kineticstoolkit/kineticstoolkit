@@ -8,12 +8,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.inversedynamics module &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.inversedynamics &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -31,21 +33,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.kinematics module" href="kineticstoolkit.kinematics.html" />
-    <link rel="prev" title="kineticstoolkit.gui module" href="kineticstoolkit.gui.html" />
+    <link rel="next" title="kineticstoolkit.kinematics" href="kineticstoolkit.kinematics.html" />
+    <link rel="prev" title="kineticstoolkit.gui" href="kineticstoolkit.gui.html" />
 
 
  
@@ -114,14 +114,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="modules.html">kineticstoolkit</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="kineticstoolkit.html">kineticstoolkit package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.inversedynamics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#warning">Warning</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -182,11 +194,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="modules.html">kineticstoolkit</a> &raquo;</li>
-        
-          <li><a href="kineticstoolkit.html">kineticstoolkit package</a> &raquo;</li>
-        
-      <li>kineticstoolkit.inversedynamics module</li>
+      <li>kineticstoolkit.inversedynamics</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -200,10 +208,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.kinematics.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics module" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-left" title="kineticstoolkit.gui module" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-left" title="kineticstoolkit.gui" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -237,14 +245,13 @@
 }
 </style>
 <div class="section" id="module-kineticstoolkit.inversedynamics">
-<span id="kineticstoolkit-inversedynamics-module"></span><h1>kineticstoolkit.inversedynamics module<a class="headerlink" href="#module-kineticstoolkit.inversedynamics" title="Permalink to this headline">¶</a></h1>
+<span id="kineticstoolkit-inversedynamics"></span><h1>kineticstoolkit.inversedynamics<a class="headerlink" href="#module-kineticstoolkit.inversedynamics" title="Permalink to this headline">¶</a></h1>
 <p>Provide functions to calculate inverse dynamics.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
+<div class="section" id="warning">
+<h2>Warning<a class="headerlink" href="#warning" title="Permalink to this headline">¶</a></h2>
 <p>This module is currently experimental and its API and behaviour could be
 modified in the future.</p>
-</div>
-<p><strong>Functions</strong></p>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -272,94 +279,92 @@ modified in the future.</p>
 </tbody>
 </table>
 <dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.calculate_com_acceleration">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">calculate_com_acceleration</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">filter_func</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_com_acceleration" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.calculate_com_acceleration">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">calculate_com_acceleration</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_com_acceleration" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the acceleration of the segment’s center of mass.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function calculate_com_acceleration is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>Adds the data key ‘COMAcceleration’ to the TimeSeries based on the
-specified filter function.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – A TimeSeries with the at least a ‘COMPosition’ data key.</p></li>
-<li><p><strong>filter_func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – ‘savgol’: calculate the acceleration using the 2nd order coefficient
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>A TimeSeries with the at least a ‘COMPosition’ data key.</p>
+</dd>
+<dt><strong>filter_func</strong></dt><dd><p>‘savgol’: calculate the acceleration using the 2nd order coefficient
 of a moving polynomial.
-‘butter’: no-lag 2nd order filter followed by a centered derivate.</p></li>
-<li><p><strong>window_length</strong> – Only for Savistky-Golay filters (savgol).
+‘butter’: no-lag 2nd order filter followed by a centered derivate.</p>
+</dd>
+<dt><strong>window_length</strong></dt><dd><p>Only for Savistky-Golay filters (savgol).
 The length of the filter window. window_length must be a positive
-odd integer less or equal than the length of the TimeSeries.</p></li>
-<li><p><strong>poly_order</strong> – Only for Savistky-Golay filters (savgol).
+odd integer less or equal than the length of the TimeSeries.</p>
+</dd>
+<dt><strong>poly_order</strong></dt><dd><p>Only for Savistky-Golay filters (savgol).
 Optional. The order of the polynomial used to fit the samples.
-polyorder must be less than window_length. The default is 2.</p></li>
-<li><p><strong>fc</strong> – Only for Butterworth filters (butter).
-Cut-off frequency in Hz.</p></li>
-<li><p><strong>order</strong> – Only for Butterworth filters (butter).
-Optional. Order of the filter. The default is 2.</p></li>
-</ul>
+polyorder must be less than window_length. The default is 2.</p>
+</dd>
+<dt><strong>fc</strong></dt><dd><p>Only for Butterworth filters (butter).
+Cut-off frequency in Hz.</p>
+</dd>
+<dt><strong>order</strong></dt><dd><p>Only for Butterworth filters (butter).
+Optional. Order of the filter. The default is 2.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input timeseries plus the ‘COMAcceleration’ data
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input timeseries plus the ‘COMAcceleration’ data
 key.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.calculate_com_position">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">calculate_com_position</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">inertial_constants</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_com_position" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.calculate_com_position">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">calculate_com_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inertial_constants</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_com_position" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the position of the segment’s center of mass.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function calculate_com_position is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>Adds the data key ‘COMPosition’ to the TimeSeries based on the
-‘COMProximalRatio’ key of the dict inertial_constants.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>A TimeSeries with the following data keys:</p>
-<ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>A TimeSeries with the following data keys:</p>
+<ul class="simple">
 <li><p>ProximalJointPosition (Nx4)</p></li>
 <li><p>DistalJointPosition (Nx4)</p></li>
 </ul>
-</p></li>
-<li><p><strong>inertial_constants</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – A dict with at least a ‘COMProximalRatio’ key, which is the distance
+</dd>
+<dt><strong>inertial_constants</strong></dt><dd><p>A dict with at least a ‘COMProximalRatio’ key, which is the distance
 between the segment’s center of mass and the proximal joint, as a
-ratio of the distance between both joints.</p></li>
-</ul>
+ratio of the distance between both joints.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input timeseries plus the ‘COMPosition’ data
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input timeseries plus the ‘COMPosition’ data
 key.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.calculate_proximal_wrench">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">calculate_proximal_wrench</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">inertial_constants</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_proximal_wrench" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.calculate_proximal_wrench">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">calculate_proximal_wrench</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inertial_constants</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_proximal_wrench" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the proximal wrench based on a TimeSeries.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function calculate_proximal_wrench is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This function is based on R. Dumas, R. Aissaoui, and J. A. De Guise,
-“A 3D generic inverse dynamic method using wrench notation and quaternion
-algebra,” Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.</p>
-</div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>A TimeSeries with the following data keys:</p>
-<ul>
+<dd class="field-odd"><dl>
+<dt><strong>ts</strong></dt><dd><p>A TimeSeries with the following data keys:</p>
+<ul class="simple">
 <li><p>ProximalJointPosition (Nx4)</p></li>
 <li><p>DistalJointPosition (Nx4)</p></li>
 <li><p>ForceApplicationPosition (Nx4)</p></li>
@@ -368,166 +373,178 @@ algebra,” Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.<
 </ul>
 <p>and these ones (although they can be reconstructed automatically by
 the function, in which case warnings are issued):</p>
-<ul>
+<ul class="simple">
 <li><p>COMPosition (Nx4)</p></li>
 <li><p>COMAcceleration (Nx4)</p></li>
 <li><p>SegmentAngles (Nx3)</p></li>
 </ul>
-</p></li>
-<li><p><strong>inertial_constants</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – <p>A dict that contains the following keys:</p>
-<ul>
-<li><p>’Mass’: Mass of the segment, in kg.</p></li>
-<li><p>’GyrationCOMRatio’: Radius of gyration around the segment’s
+</dd>
+<dt><strong>inertial_constants</strong></dt><dd><p>A dict that contains the following keys:</p>
+<ul class="simple">
+<li><p>‘Mass’: Mass of the segment, in kg.</p></li>
+<li><p>‘GyrationCOMRatio’: Radius of gyration around the segment’s
 center of mass, as a ratio of the distance between
 both joints.</p></li>
 </ul>
 <p>This dict may be generated using the get_anthropometrics function.</p>
-</p></li>
-</ul>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A copy of the input timeseries plus these extra data keys:</p>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input timeseries plus these extra data keys:</p>
 <ul class="simple">
-<li><p>’ProximalForces’ (Nx4)</p></li>
-<li><p>’ProximalMoments’ (Nx4)</p></li>
+<li><p>‘ProximalForces’ (Nx4)</p></li>
+<li><p>‘ProximalMoments’ (Nx4)</p></li>
 </ul>
-</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.calculate_segment_angles">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">calculate_segment_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_segment_angles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.calculate_segment_angles">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">calculate_segment_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_segment_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the segment’s projection angles in the three axes.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function calculate_segment_angles is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>A TimeSeries with the following data keys:</p>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>A TimeSeries with the following data keys:</p>
 <ul class="simple">
 <li><p>ProximalJointPosition (Nx4)</p></li>
 <li><p>DistalJointPosition (Nx4)</p></li>
 </ul>
-</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input timeseries plus the ‘SegmentAngles’ data
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input timeseries plus the ‘SegmentAngles’ data
 key, represented as an Nx3 numpy array.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">calculate_segment_rotation_rates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ts</span></em>, <em class="sig-param"><span class="n">filter_func</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_segment_rotation_rates" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">calculate_segment_rotation_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filter_func</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_segment_rotation_rates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the segments’ projected angular velocities and accelerations.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function calculate_segment_rotation_rates is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – A TimeSeries with at least the ‘SegmentAngles’ key (Nx3).</p></li>
-<li><p><strong>filter_func</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – ‘savgol’: calculate the velocity and acceleration using the 1st and
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ts</strong></dt><dd><p>A TimeSeries with at least the ‘SegmentAngles’ key (Nx3).</p>
+</dd>
+<dt><strong>filter_func</strong></dt><dd><p>‘savgol’: calculate the velocity and acceleration using the 1st and
 2nd order coefficients of a moving polynomial.
-‘butter’: no-lag 2nd order filter followed by centered derivates.</p></li>
-<li><p><strong>window_length</strong> – Only for Savitzky-Golay filters (savgol).
+‘butter’: no-lag 2nd order filter followed by centered derivates.</p>
+</dd>
+<dt><strong>window_length</strong></dt><dd><p>Only for Savitzky-Golay filters (savgol).
 The length of the filter window. window_length must be a positive
-odd integer less or equal than the length of the TimeSeries.</p></li>
-<li><p><strong>poly_order</strong> – Only for Savitzky-Golay filters (savgol).
+odd integer less or equal than the length of the TimeSeries.</p>
+</dd>
+<dt><strong>poly_order</strong></dt><dd><p>Only for Savitzky-Golay filters (savgol).
 Optional. The order of the polynomial used to fit the samples.
-polyorder must be less than window_length. The default is 2.</p></li>
-<li><p><strong>fc</strong> – Only for Butterworth filters (butter).
-Cut-off frequency in Hz.</p></li>
-<li><p><strong>order</strong> – Only for Butterworth filters (butter).
-Optional. Order of the filter. The default is 2.</p></li>
-</ul>
+polyorder must be less than window_length. The default is 2.</p>
+</dd>
+<dt><strong>fc</strong></dt><dd><p>Only for Butterworth filters (butter).
+Cut-off frequency in Hz.</p>
+</dd>
+<dt><strong>order</strong></dt><dd><p>Only for Butterworth filters (butter).
+Optional. Order of the filter. The default is 2.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input timeseries plus the ‘AngularVelocity’ and
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input timeseries plus the ‘AngularVelocity’ and
 ‘AngularAcceleration’ data keys (each Nx3).</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.inversedynamics.get_anthropometrics">
-<code class="sig-prename descclassname">kineticstoolkit.inversedynamics.</code><code class="sig-name descname">get_anthropometrics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">segment_name</span></em>, <em class="sig-param"><span class="n">total_mass</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.get_anthropometrics" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.get_anthropometrics">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">get_anthropometrics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">segment_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total_mass</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.get_anthropometrics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Get anthropometric values for a given segment name.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function get_anthropometrics is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>For the moment, only this table is available:</p>
-<p>D. A. Winter, Biomechanics and Motor Control of Human Movement,
-4th ed. University of Waterloo, Waterloo, Ontario, Canada,
-John Wiley &amp; Sons, 2009.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>segment_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>The name of the segment, either:</p>
-<ul>
-<li><p>’Hand’ (wrist axis to knuckle II of middle finger)</p></li>
-<li><p>’Forearm’ (elbow axis to ulnar styloid)</p></li>
-<li><p>’UpperArm’ (glenohumeral axis to elbow axis)</p></li>
-<li><p>’ForearmHand’ (elbow axis to ulnar styloid)</p></li>
-<li><p>’TotalArm’ (glenohumeral joint to ulnar styloid)</p></li>
-<li><p>’Foot’ (lateral malleolus to head metatarsal II)</p></li>
-<li><p>’Leg’ (femoral condyles to medial malleolus)</p></li>
-<li><p>’Thigh’ (greater trochanter to femoral condyles)</p></li>
-<li><p>’FootLeg’ (fomeral condyles to medial malleolus)</p></li>
-<li><p>’TotalLeg’ (greater trochanter to medial malleolus)</p></li>
-<li><p>’TrunkHeadNeck’ (greater trochanter to glenohumeral joint)</p></li>
-<li><p>’HeadArmsTrunk’ (greater trochanter to glenohumeral joint)</p></li>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>segment_name</strong></dt><dd><p>The name of the segment, either:</p>
+<ul class="simple">
+<li><p>‘Hand’ (wrist axis to knuckle II of middle finger)</p></li>
+<li><p>‘Forearm’ (elbow axis to ulnar styloid)</p></li>
+<li><p>‘UpperArm’ (glenohumeral axis to elbow axis)</p></li>
+<li><p>‘ForearmHand’ (elbow axis to ulnar styloid)</p></li>
+<li><p>‘TotalArm’ (glenohumeral joint to ulnar styloid)</p></li>
+<li><p>‘Foot’ (lateral malleolus to head metatarsal II)</p></li>
+<li><p>‘Leg’ (femoral condyles to medial malleolus)</p></li>
+<li><p>‘Thigh’ (greater trochanter to femoral condyles)</p></li>
+<li><p>‘FootLeg’ (fomeral condyles to medial malleolus)</p></li>
+<li><p>‘TotalLeg’ (greater trochanter to medial malleolus)</p></li>
+<li><p>‘TrunkHeadNeck’ (greater trochanter to glenohumeral joint)</p></li>
+<li><p>‘HeadArmsTrunk’ (greater trochanter to glenohumeral joint)</p></li>
 </ul>
-</p></li>
-<li><p><strong>total_mass</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – The total mass of the person, in kg.</p></li>
-</ul>
+</dd>
+<dt><strong>total_mass</strong></dt><dd><p>The total mass of the person, in kg.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A dict with the following keys:</p>
+<dd class="field-even"><dl class="simple">
+<dt>Dict[str, float]</dt><dd><p>A dict with the following keys:</p>
 <ul class="simple">
-<li><p>’Mass’ : Mass of the segment, in kg.</p></li>
-<li><p>’COMProximalRatio’ : Distance between the segment’s center of
+<li><p>‘Mass’ : Mass of the segment, in kg.</p></li>
+<li><p>‘COMProximalRatio’ : Distance between the segment’s center of
 mass and the proximal joint, as a ratio of the distance between
 both joints.</p></li>
-<li><p>’COMDistalRatio’ : Distance between the segment’s center of mass
+<li><p>‘COMDistalRatio’ : Distance between the segment’s center of mass
 and the distal joint, as a ratio of the distance between
 both joints.</p></li>
-<li><p>’GyrationCOMRatio’: Radius of gyration around the segment’s center
+<li><p>‘GyrationCOMRatio’: Radius of gyration around the segment’s center
 of mass, as a ratio of the distance between both joints.</p></li>
 <li><dl class="simple">
-<dt>’GyrationProximalRatio’: Radius of gyration around the segment’s</dt><dd><p>proximal joint, as a ratio of the distance between both joints.</p>
+<dt>‘GyrationProximalRatio’: Radius of gyration around the segment’s</dt><dd><p>proximal joint, as a ratio of the distance between both joints.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="simple">
-<dt>’GyrationDistalRatio’: Radius of gyration around the segment’s</dt><dd><p>distal joint, as a ratio of the distance between both joints.</p>
+<dt>‘GyrationDistalRatio’: Radius of gyration around the segment’s</dt><dd><p>distal joint, as a ratio of the distance between both joints.</p>
 </dd>
 </dl>
 </li>
 </ul>
-</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, float]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -536,8 +553,8 @@ of mass, as a ratio of the distance between both joints.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.kinematics.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-left" title="kineticstoolkit.gui module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-left" title="kineticstoolkit.gui" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

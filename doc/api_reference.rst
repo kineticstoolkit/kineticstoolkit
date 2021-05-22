@@ -2,38 +2,24 @@ API Reference
 =============
 
 
-Classes
--------------
-
 .. autosummary::
-
-   kineticstoolkit.timeseries.TimeSeries
-   kineticstoolkit.timeseries.TimeSeriesEvent
-   kineticstoolkit.player.Player
-   kineticstoolkit.dbinterface.DBInterface
-
-
-Modules
--------------
-
-
-.. autosummary::
+   :toctree: api
 
    kineticstoolkit.config
    kineticstoolkit.cycles
+   kineticstoolkit.dbinterface
+   kineticstoolkit.decorators
    kineticstoolkit.dev
    kineticstoolkit.emg
+   kineticstoolkit.external
    kineticstoolkit.filters
    kineticstoolkit.geometry
    kineticstoolkit.gui
    kineticstoolkit.inversedynamics
    kineticstoolkit.kinematics
+   kineticstoolkit.lab
    kineticstoolkit.loadsave
+   kineticstoolkit.player
    kineticstoolkit.pushrimkinetics
+   kineticstoolkit.timeseries
    kineticstoolkit.tools
-
-
-.. toctree::
-   :hidden:
-
-   api/modules

@@ -8,12 +8,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.geometry module &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.geometry &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -31,21 +33,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.gui module" href="kineticstoolkit.gui.html" />
-    <link rel="prev" title="kineticstoolkit.filters module" href="kineticstoolkit.filters.html" />
+    <link rel="next" title="kineticstoolkit.gui" href="kineticstoolkit.gui.html" />
+    <link rel="prev" title="kineticstoolkit.filters" href="kineticstoolkit.filters.html" />
 
 
  
@@ -114,14 +114,26 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="modules.html">kineticstoolkit</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="kineticstoolkit.html">kineticstoolkit package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.geometry</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#note">Note</a></li>
 </ul>
 </li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -182,11 +194,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="modules.html">kineticstoolkit</a> &raquo;</li>
-        
-          <li><a href="kineticstoolkit.html">kineticstoolkit package</a> &raquo;</li>
-        
-      <li>kineticstoolkit.geometry module</li>
+      <li>kineticstoolkit.geometry</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -200,10 +208,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-right" title="kineticstoolkit.gui module" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-right" title="kineticstoolkit.gui" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.filters.html" class="btn btn-neutral float-left" title="kineticstoolkit.filters module" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.filters.html" class="btn btn-neutral float-left" title="kineticstoolkit.filters" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -237,14 +245,13 @@
 }
 </style>
 <div class="section" id="module-kineticstoolkit.geometry">
-<span id="kineticstoolkit-geometry-module"></span><h1>kineticstoolkit.geometry module<a class="headerlink" href="#module-kineticstoolkit.geometry" title="Permalink to this headline">¶</a></h1>
+<span id="kineticstoolkit-geometry"></span><h1>kineticstoolkit.geometry<a class="headerlink" href="#module-kineticstoolkit.geometry" title="Permalink to this headline">¶</a></h1>
 <p>Provide 3d geometry and linear algebra functions related to biomechanics.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
+<div class="section" id="note">
+<h2>Note<a class="headerlink" href="#note" title="Permalink to this headline">¶</a></h2>
 <p>As a convention, the first dimension of every array is always N and corresponds
 to time. For constants, use a length of 1 as the first dimension.</p>
-</div>
-<p><strong>Functions</strong></p>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -278,8 +285,8 @@ to time. For constants, use a length of 1 as the first dimension.</p>
 </tbody>
 </table>
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.create_frames">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_frames</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">origin</span></em>, <em class="sig-param"><span class="n">x</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xy</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">xz</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">yz</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_frames" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.create_frames">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">create_frames</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">origin</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xy</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">yz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_frames" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a Nx4x4 series of frames based on series of points and vectors.</p>
 <p>Create reference frames based on points and vectors and return this series
 of reference frames as a series of transformation matrices.</p>
@@ -311,33 +318,40 @@ which means that GH-EL-EM is a yz plane.</p></li>
 </li>
 </ol>
 </div></blockquote>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>origin</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A series of N points (Nx4) that corresponds to the origin of the
-returned reference frames.</p></li>
-<li><p><strong>x|y|z</strong> – A series of N vectors (Nx4) that are aligned toward the {x|y|z}
-axis of the returned reference frames.</p></li>
-<li><p><strong>xy|xz</strong> – When x is specified, a series of N vectors (Nx4) in the {xy|xz} plane
-of the returned reference frames.</p></li>
-<li><p><strong>xy|yz</strong> – When y is specified, a series of N vectors (Nx4) in the {xy|yz} plane
-of the returned reference frames.</p></li>
-<li><p><strong>xz|yz</strong> – When z is specified, a series of N vectors (Nx4) in the {xz|yz} plane
-of the returned reference frames.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>origin</strong></dt><dd><p>A series of N points (Nx4) that corresponds to the origin of the
+returned reference frames.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Series of transformation matrices (Nx4x4).</p>
+<dt><strong>x|y|z</strong></dt><dd><p>A series of N vectors (Nx4) that are aligned toward the {x|y|z}
+axis of the returned reference frames.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dt><strong>xy|xz</strong></dt><dd><p>When x is specified, a series of N vectors (Nx4) in the {xy|xz} plane
+of the returned reference frames.</p>
+</dd>
+<dt><strong>xy|yz</strong></dt><dd><p>When y is specified, a series of N vectors (Nx4) in the {xy|yz} plane
+of the returned reference frames.</p>
+</dd>
+<dt><strong>xz|yz</strong></dt><dd><p>When z is specified, a series of N vectors (Nx4) in the {xz|yz} plane
+of the returned reference frames.</p>
 </dd>
 </dl>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Series of transformation matrices (Nx4x4).</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<ol class="arabic simple">
+<li><p>G. Wu et al., “ISB recommendation on definitions of joint
+coordinate systems of various joints for the reporting of human joint
+motion - Part II: shoulder, elbow, wrist and hand,” Journal of
+Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
+</ol>
 <p class="rubric">Examples</p>
 <p>Create a translated reference frame using 3 points:</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
@@ -352,40 +366,32 @@ of the returned reference frames.</p></li>
 <span class="go">        [0., 0., 0., 1.]]])</span>
 </pre></div>
 </div>
-<div class="admonition-references admonition">
-<p class="admonition-title">References</p>
-<ol class="arabic simple">
-<li><p>G. Wu et al., “ISB recommendation on definitions of joint
-coordinate systems of various joints for the reporting of human joint
-motion - Part II: shoulder, elbow, wrist and hand,” Journal of
-Biomechanics, vol. 38, no. 5, pp. 981–992, 2005.</p></li>
-</ol>
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.create_transforms">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">create_transforms</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seq</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">angles</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">translations</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_transforms" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.create_transforms">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">create_transforms</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seq</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">angles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.create_transforms" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create an Nx4x4 series of homogeneous transforms.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>seq</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional. Specifies sequence of axes for rotations. Up to 3 characters
+<dd class="field-odd"><dl>
+<dt><strong>seq</strong></dt><dd><p>Optional. Specifies sequence of axes for rotations. Up to 3 characters
 belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic rotations (moving
 axes), or {‘x’, ‘y’, ‘z’} for extrinsic rotations (fixed axes).
 Extrinsic and intrinsic rotations cannot be mixed in one function call.
-Required if angles is specified.</p></li>
-<li><p><strong>angles</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – <p>Optional array_like, shape (N,) or (N, [1 or 2 or 3]).
+Required if angles is specified.</p>
+</dd>
+<dt><strong>angles</strong></dt><dd><p>Optional array_like, shape (N,) or (N, [1 or 2 or 3]).
 Angles are specified in radians (degrees is False) or degrees (degrees
 is True).</p>
 <p>For a single character seq, angles can be:</p>
 <blockquote>
-<div><ul>
+<div><ul class="simple">
 <li><p>array_like with shape (N,), where each angle[i] corresponds to a
 single rotation</p></li>
 <li><p>array_like with shape (N, 1), where each angle[i, 0] corresponds
@@ -394,48 +400,39 @@ to a single rotation</p></li>
 </div></blockquote>
 <p>For 2- and 3-character wide seq, angles can be:</p>
 <blockquote>
-<div><ul>
+<div><ul class="simple">
 <li><p>array_like with shape (W,) where W is the width of seq, which
 corresponds to a single rotation with W axes</p></li>
 <li><p>array_like with shape (N, W) where each angle[i] corresponds to
 a sequence of Euler angles describing a single rotation</p></li>
 </ul>
 </div></blockquote>
-</p></li>
-<li><p><strong>translations</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Optional float or array_like, shape (N, 3) or (N, 4). This corresponds
+</dd>
+<dt><strong>translations</strong></dt><dd><p>Optional float or array_like, shape (N, 3) or (N, 4). This corresponds
 to the translation part of the generated series of homogeneous
-transforms.</p></li>
-<li><p><strong>degrees</strong> – If True, then the given angles are in degrees. Default is False.</p></li>
-</ul>
+transforms.</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An Nx4x4 series of homogeneous transforms.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dt><strong>degrees</strong></dt><dd><p>If True, then the given angles are in degrees. Default is False.</p>
 </dd>
 </dl>
-<p class="rubric">Example</p>
-<p>Create a series of two homogeneous transforms that rotates 0, then 90
-degrees around x:</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">create_transforms</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">90</span><span class="p">],</span> <span class="n">degrees</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="go">array([[[ 1.,  0.,  0.,  0.],</span>
-<span class="go">        [ 0.,  1.,  0.,  0.],</span>
-<span class="go">        [ 0.,  0.,  1.,  0.],</span>
-<span class="go">        [ 0.,  0.,  0.,  1.]],</span>
-
-<span class="go">       [[ 1.,  0.,  0.,  0.],</span>
-<span class="go">        [ 0.,  0., -1.,  0.],</span>
-<span class="go">        [ 0.,  1.,  0.,  0.],</span>
-<span class="go">        [ 0.,  0.,  0.,  1.]]])</span>
-</pre></div>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>An Nx4x4 series of homogeneous transforms.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.get_angles">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_angles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">T</span></em>, <em class="sig-param"><span class="n">seq</span></em>, <em class="sig-param"><span class="n">degrees</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">flip</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_angles" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.get_angles">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">get_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seq</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">degrees</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_angles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Represent a series of transformation matrices as series of Euler angles.</p>
 <p>This function is a wrapper for scipy.transform.Rotation.as_euler. Please
 consult scipy help for the complete docstring.</p>
@@ -444,26 +441,24 @@ representation loses a degree of freedom and it is not possible to
 determine the first and third angles uniquely. In this case, a warning is
 raised, and the third angle is set to zero. Note however that the returned
 angles still represent the correct rotation.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
-<dl class="field-list simple">
+<dl class="field-list">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>T</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – An Nx4x4 series of transformation matrices.</p></li>
-<li><p><strong>seq</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – 3 characters belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic
+<dd class="field-odd"><dl>
+<dt><strong>T</strong></dt><dd><p>An Nx4x4 series of transformation matrices.</p>
+</dd>
+<dt><strong>seq</strong></dt><dd><p>3 characters belonging to the set {‘X’, ‘Y’, ‘Z’} for intrinsic
 rotations (moving axes), or {‘x’, ‘y’, ‘z’} for extrinsic rotations
 (fixed axes). Adjacent axes cannot be the same. Extrinsic and
-intrinsic rotations cannot be mixed in one function call.</p></li>
-<li><p><strong>degrees</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Returned angles are in degrees if this flag is True, else they are in
-radians. Default is False.</p></li>
-<li><p><strong>flip</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – <p>Return an alternate sequence with the second angle inverted, that
+intrinsic rotations cannot be mixed in one function call.</p>
+</dd>
+<dt><strong>degrees</strong></dt><dd><p>Returned angles are in degrees if this flag is True, else they are in
+radians. Default is False.</p>
+</dd>
+<dt><strong>flip</strong></dt><dd><p>Return an alternate sequence with the second angle inverted, that
 leads to the same rotation matrices. More specifically:</p>
 <p>First angle belongs to [-180, 180] degrees (both inclusive)</p>
 <dl class="simple">
-<dt>Second angle belongs to:</dt><dd><ul>
+<dt>Second angle belongs to:</dt><dd><ul class="simple">
 <li><dl class="simple">
 <dt>Default case (alt_angles = False):</dt><dd><ul>
 <li><p>[-90, 90] degrees if all axes are different (like xyz)</p></li>
@@ -491,101 +486,122 @@ leads to the same rotation matrices. More specifically:</p>
 of shoulder angles: when following the ISB recommendation (YXY), X
 corresponds to the negative elevation and thus we expect to get
 negative values for Y. In this case, just use alt_angles = True.</p>
-</p></li>
-</ul>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A Tx3 array of Euler angles.</p>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>A Tx3 array of Euler angles.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.get_global_coordinates">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_global_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_coordinates</span></em>, <em class="sig-param"><span class="n">reference_frames</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_global_coordinates" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.get_global_coordinates">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">get_global_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">local_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_frames</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_global_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Express local coordinates in the global reference frame.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>local_coordinates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>The local coordinates, as a series of N points, vectors or matrices.
+<dd class="field-odd"><dl class="simple">
+<dt><strong>local_coordinates</strong></dt><dd><p>The local coordinates, as a series of N points, vectors or matrices.
 For example:</p>
-<ul>
+<ul class="simple">
 <li><p>A series of N points or vectors : Nx4</p></li>
 <li><p>A series of N set of M points or vectors : Nx4xM</p></li>
 <li><p>A series of N 4x4 transformation matrices : Nx4x4</p></li>
 </ul>
-</p></li>
-<li><p><strong>reference_frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A series of N reference frames (Nx4x4) the local coordinates are
-expressed in.</p></li>
-</ul>
+</dd>
+<dt><strong>reference_frames</strong></dt><dd><p>A series of N reference frames (Nx4x4) the local coordinates are
+expressed in.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Series of global coordinates in the same shape than
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Series of global coordinates in the same shape than
 <cite>local_coordinates</cite>.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.get_local_coordinates">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">get_local_coordinates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_coordinates</span></em>, <em class="sig-param"><span class="n">reference_frames</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_local_coordinates" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.get_local_coordinates">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">get_local_coordinates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_coordinates</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_frames</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.get_local_coordinates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Express global coordinates in local reference frames.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>global_coordinates</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – <p>The global coordinates, as a series of N points, vectors or matrices.
+<dd class="field-odd"><dl class="simple">
+<dt><strong>global_coordinates</strong></dt><dd><p>The global coordinates, as a series of N points, vectors or matrices.
 For example:</p>
-<ul>
+<ul class="simple">
 <li><p>A series of N points or vectors : Nx4</p></li>
 <li><p>A series of N set of M points or vectors : Nx4xM</p></li>
 <li><p>A series of N 4x4 transformation matrices : Nx4x4</p></li>
 </ul>
-</p></li>
-<li><p><strong>reference_frames</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – A series of N reference frames (Nx4x4) to express the global
-coordinates in.</p></li>
-</ul>
+</dd>
+<dt><strong>reference_frames</strong></dt><dd><p>A series of N reference frames (Nx4x4) to express the global
+coordinates in.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Series of local coordinates in the same shape than
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Series of local coordinates in the same shape than
 <cite>global_coordinates</cite>.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.isnan">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">isnan</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.isnan" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.isnan">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">isnan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.isnan" title="Permalink to this definition">¶</a></dt>
 <dd><p>Check which samples has at least one NaN.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function isnan is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>input</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Array where the first dimension corresponds to time.</p>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>input</strong></dt><dd><p>Array where the first dimension corresponds to time.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of bool that is the same size of input’s first dimension, with
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Array of bool that is the same size of input’s first dimension, with
 True for the samples that contain at least one NaN.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.matmul">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">matmul</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">op1</span></em>, <em class="sig-param"><span class="n">op2</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.matmul" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.matmul">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">matmul</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">op1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">op2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.matmul" title="Permalink to this definition">¶</a></dt>
 <dd><p>Matrix multiplication between series of matrices.</p>
 <p>This function is a wrapper for numpy’s matmul function (operator &#64;), that
 helps numpy to understand Kinetics Toolkit’s convention that the first
@@ -594,47 +610,57 @@ dimension always corresponds to time.</p>
 mismatch errors.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>op1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Series of floats, vectors or matrices.</p></li>
-<li><p><strong>op2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Series of floats, vectors or matrices.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>op1</strong></dt><dd><p>Series of floats, vectors or matrices.</p>
+</dd>
+<dt><strong>op2</strong></dt><dd><p>Series of floats, vectors or matrices.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The product, as a series of Nx4 or Nx4xM matrices.</p>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>The product, as a series of Nx4 or Nx4xM matrices.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.geometry.register_points">
-<code class="sig-prename descclassname">kineticstoolkit.geometry.</code><code class="sig-name descname">register_points</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">global_points</span></em>, <em class="sig-param"><span class="n">local_points</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.register_points" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.geometry.register_points">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.geometry.</span></span><span class="sig-name descname"><span class="pre">register_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">global_points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">local_points</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.geometry.register_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find the homogeneous transforms between two series of point clouds.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>global_points</strong> (<em>array of shape Nx4xM</em>) – Destination points as a series of N sets of M points.</p></li>
-<li><p><strong>local_points</strong> (<em>array of shape Nx4xM</em>) – Local points as a series of N sets of M points.
-global_points and local_points must have the same shape.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>global_points</strong><span class="classifier">array of shape Nx4xM</span></dt><dd><p>Destination points as a series of N sets of M points.</p>
+</dd>
+<dt><strong>local_points</strong><span class="classifier">array of shape Nx4xM</span></dt><dd><p>Local points as a series of N sets of M points.
+global_points and local_points must have the same shape.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of shape Nx4x4, expressing a series of 4x4 homogeneous
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Array of shape Nx4x4, expressing a series of 4x4 homogeneous
 transforms.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
+</div>
 </div>
 
 
@@ -643,8 +669,8 @@ transforms.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-right" title="kineticstoolkit.gui module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.filters.html" class="btn btn-neutral float-left" title="kineticstoolkit.filters module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.gui.html" class="btn btn-neutral float-right" title="kineticstoolkit.gui" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.filters.html" class="btn btn-neutral float-left" title="kineticstoolkit.filters" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

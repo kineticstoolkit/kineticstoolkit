@@ -8,12 +8,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.kinematics module &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.kinematics &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -31,21 +33,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.lab module" href="kineticstoolkit.lab.html" />
-    <link rel="prev" title="kineticstoolkit.inversedynamics module" href="kineticstoolkit.inversedynamics.html" />
+    <link rel="next" title="kineticstoolkit.lab" href="kineticstoolkit.lab.html" />
+    <link rel="prev" title="kineticstoolkit.inversedynamics" href="kineticstoolkit.inversedynamics.html" />
 
 
  
@@ -114,14 +114,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="modules.html">kineticstoolkit</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="kineticstoolkit.html">kineticstoolkit package</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -182,11 +191,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="modules.html">kineticstoolkit</a> &raquo;</li>
-        
-          <li><a href="kineticstoolkit.html">kineticstoolkit package</a> &raquo;</li>
-        
-      <li>kineticstoolkit.kinematics module</li>
+      <li>kineticstoolkit.kinematics</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -200,10 +205,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.lab.html" class="btn btn-neutral float-right" title="kineticstoolkit.lab module" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.lab.html" class="btn btn-neutral float-right" title="kineticstoolkit.lab" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.inversedynamics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics module" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.inversedynamics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -237,9 +242,9 @@
 }
 </style>
 <div class="section" id="module-kineticstoolkit.kinematics">
-<span id="kineticstoolkit-kinematics-module"></span><h1>kineticstoolkit.kinematics module<a class="headerlink" href="#module-kineticstoolkit.kinematics" title="Permalink to this headline">¶</a></h1>
+<span id="kineticstoolkit-kinematics"></span><h1>kineticstoolkit.kinematics<a class="headerlink" href="#module-kineticstoolkit.kinematics" title="Permalink to this headline">¶</a></h1>
 <p>Provide functions related to kinematics analysis.</p>
-<p><strong>Functions</strong></p>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -270,75 +275,79 @@
 </tbody>
 </table>
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.create_rigid_body_config">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">create_rigid_body_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">marker_names</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.create_rigid_body_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.create_rigid_body_config">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">create_rigid_body_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.create_rigid_body_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a rigid body configuration based on a static acquisition.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories during the static acquisition.</p></li>
-<li><p><strong>marker_names</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The markers that define the rigid body.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>markers</strong></dt><dd><p>Markers trajectories during the static acquisition.</p>
+</dd>
+<dt><strong>marker_names</strong></dt><dd><p>The markers that define the rigid body.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Dictionary with the following keys:</p>
+<dd class="field-even"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>Dictionary with the following keys:</p>
 <ul class="simple">
 <li><p>MarkerNames : the same as marker_names</p></li>
 <li><p>LocalPoints : a 1x4xM array that indicates the local position of
 each M marker in the created rigid body config.</p></li>
 </ul>
-</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.create_virtual_marker_config">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">create_virtual_marker_config</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">rigid_bodies</span></em>, <em class="sig-param"><span class="n">marker_name</span></em>, <em class="sig-param"><span class="n">rigid_body_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.create_virtual_marker_config" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.create_virtual_marker_config">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">create_virtual_marker_config</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_bodies</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.create_virtual_marker_config" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a virtual marker configuration based on a probing acquisition.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories during the probing acquisition. This
-TimeSeries must have at least marker_name in its data keys.</p></li>
-<li><p><strong>rigid_bodies</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Rigid body trajectories during this probing acquisition. This
-TimeSeries must have at least rigid_body_name in its data keys.</p></li>
-<li><p><strong>marker_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the marker to express in local coordinates.</p></li>
-<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body to express marker_name in relation to.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>markers</strong></dt><dd><p>Markers trajectories during the probing acquisition. This
+TimeSeries must have at least marker_name in its data keys.</p>
+</dd>
+<dt><strong>rigid_bodies</strong></dt><dd><p>Rigid body trajectories during this probing acquisition. This
+TimeSeries must have at least rigid_body_name in its data keys.</p>
+</dd>
+<dt><strong>marker_name</strong></dt><dd><p>Name of the marker to express in local coordinates.</p>
+</dd>
+<dt><strong>rigid_body_name</strong></dt><dd><p>Name of the rigid body to express marker_name in relation to.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Dictionary with the following keys:</p>
+<dd class="field-even"><dl class="simple">
+<dt>Dict[str, Any]</dt><dd><p>Dictionary with the following keys:</p>
 <ul class="simple">
 <li><p>RigidBodyName : Name of the virtual marker’s rigid body</p></li>
 <li><p>LocalPoint : Local position of this marker in the reference frame
 defined by the rigid body RigidBodyName. LocalPoint is expressed as
 a 1x4 array.</p></li>
 </ul>
-</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.read_c3d_file">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">read_c3d_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.read_c3d_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.read_c3d_file">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">read_c3d_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.read_c3d_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read markers from a C3D file.</p>
 <p>The markers positions are returned in a TimeSeries where each marker
 corresponds to a data key. Each marker position is expressed in this form:</p>
@@ -352,11 +361,13 @@ corresponds to a data key. Each marker position is expressed in this form:</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path of the C3D file</p>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong></dt><dd><p>Path of the C3D file</p>
 </dd>
 </dl>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>This function relies on <cite>ezc3d</cite>, which is available on
 conda-forge and on git-hub. Please install ezc3d before using
@@ -367,7 +378,6 @@ returned in the output TimeSeries is m.</p></li>
 your first use (e.g., sampling frequency, position unit). It is
 possible that read_c3d_file misses some corner cases.</p></li>
 </ul>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
@@ -376,8 +386,8 @@ possible that read_c3d_file misses some corner cases.</p></li>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.read_n3d_file">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">read_n3d_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">labels</span><span class="o">=</span><span class="default_value">[]</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.read_n3d_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.read_n3d_file">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">read_n3d_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.read_n3d_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read markers from an NDI N3D file.</p>
 <p>The markers positions are returned in a TimeSeries where each marker
 corresponds to a data key. Each marker position is expressed in this form:</p>
@@ -391,78 +401,77 @@ corresponds to a data key. Each marker position is expressed in this form:</p>
 </div></blockquote>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<em>str</em>) – Path of the N3D file.</p></li>
-<li><p><strong>labels</strong> (<em>list of str</em><em> (</em><em>optional</em><em>)</em>) – Marker names</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Path of the N3D file.</p>
+</dd>
+<dt><strong>labels</strong><span class="classifier">list of str (optional)</span></dt><dd><p>Marker names</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd></dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.register_markers">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">register_markers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">rigid_body_configs</span></em>, <em class="sig-param"><span class="n">verbose</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.register_markers" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.register_markers">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">register_markers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_configs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.register_markers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the trajectory of rigid bodies.</p>
 <p>Calculates the trajectory of rigid bodies using
 <cite>ktk.geometry.register_points</cite>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories to calculate the rigid body trajectories on.</p></li>
-<li><p><strong>rigid_body_configs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A dict where each key is a rigid body configuration, and where
+<dd class="field-odd"><dl class="simple">
+<dt><strong>markers</strong></dt><dd><p>Markers trajectories to calculate the rigid body trajectories on.</p>
+</dd>
+<dt><strong>rigid_body_configs</strong></dt><dd><p>A dict where each key is a rigid body configuration, and where
 each rigid body configuration is a dict with the following
-keys: ‘MarkerNames’ and ‘LocalPoints’.</p></li>
-<li><p><strong>verbose</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. Set to True to print the rigid body being computed.</p></li>
-</ul>
+keys: ‘MarkerNames’ and ‘LocalPoints’.</p>
+</dd>
+<dt><strong>verbose</strong></dt><dd><p>Optional. Set to True to print the rigid body being computed.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>TimeSeries where each data key is a Nx4x4 series of rigid
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>TimeSeries where each data key is a Nx4x4 series of rigid
 transformations.</p>
 </dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.write_c3d_file">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">write_c3d_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">markers</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.write_c3d_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.write_c3d_file">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">write_c3d_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markers</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.write_c3d_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Write a markers TimeSeries to a C3D file.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function write_c3d_file is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This is the mirror operation to read_c3d_file.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path of the C3D file</p></li>
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories, following the same form as the TimeSeries
-read by read_c3d_file.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong></dt><dd><p>Path of the C3D file</p>
+</dd>
+<dt><strong>markers</strong></dt><dd><p>Markers trajectories, following the same form as the TimeSeries
+read by read_c3d_file.</p>
 </dd>
 </dl>
-<div class="admonition-notes admonition">
-<p class="admonition-title">Notes</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
 <ul class="simple">
 <li><p>This function relies on <cite>ezc3d</cite>, which is available on
 conda-forge and on git-hub. Please install ezc3d before using
 read_c3d_file. <a class="reference external" href="https://github.com/pyomeca/ezc3d">https://github.com/pyomeca/ezc3d</a></p></li>
 <li><p>The point unit in the output c3d is m.</p></li>
 </ul>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
@@ -471,22 +480,22 @@ read_c3d_file. <a class="reference external" href="https://github.com/pyomeca/ez
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.kinematics.write_trc_file">
-<code class="sig-prename descclassname">kineticstoolkit.kinematics.</code><code class="sig-name descname">write_trc_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">markers</span></em>, <em class="sig-param"><span class="n">filename</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.write_trc_file" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.write_trc_file">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">write_trc_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.write_trc_file" title="Permalink to this definition">¶</a></dt>
 <dd><p>Export a markers TimeSeries to OpenSim’s TRC file format.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function write_trc_file is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><em>TimeSeries</em></a>) – Markers trajectories.</p></li>
-<li><p><strong>filename</strong> (<em>str</em>) – Name of the trc file to create.</p></li>
-</ul>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>markers</strong><span class="classifier">TimeSeries</span></dt><dd><p>Markers trajectories.</p>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
+<dt><strong>filename</strong><span class="classifier">str</span></dt><dd><p>Name of the trc file to create.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
 </dd>
 </dl>
 </dd></dl>
@@ -499,8 +508,8 @@ read_c3d_file. <a class="reference external" href="https://github.com/pyomeca/ez
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.lab.html" class="btn btn-neutral float-right" title="kineticstoolkit.lab module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.inversedynamics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.lab.html" class="btn btn-neutral float-right" title="kineticstoolkit.lab" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.inversedynamics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

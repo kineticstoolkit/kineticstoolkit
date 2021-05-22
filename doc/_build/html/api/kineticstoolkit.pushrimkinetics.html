@@ -8,12 +8,14 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.pushrimkinetics module &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.pushrimkinetics &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
   <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
 
   
@@ -31,21 +33,19 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/jquery.js"></script>
         <script src="../_static/underscore.js"></script>
         <script src="../_static/doctools.js"></script>
-        <script src="../_static/language_data.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
     
     <script type="text/javascript" src="../_static/js/theme.js"></script>
 
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.timeseries module" href="kineticstoolkit.timeseries.html" />
-    <link rel="prev" title="kineticstoolkit.player module" href="kineticstoolkit.player.html" />
+    <link rel="next" title="kineticstoolkit.timeseries" href="kineticstoolkit.timeseries.html" />
+    <link rel="prev" title="kineticstoolkit.player" href="kineticstoolkit.player.html" />
 
 
  
@@ -114,14 +114,23 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#modules">Modules</a><ul class="current">
-<li class="toctree-l3 current"><a class="reference internal" href="modules.html">kineticstoolkit</a><ul class="current">
-<li class="toctree-l4 current"><a class="reference internal" href="kineticstoolkit.html">kineticstoolkit package</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.pushrimkinetics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -182,11 +191,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="modules.html">kineticstoolkit</a> &raquo;</li>
-        
-          <li><a href="kineticstoolkit.html">kineticstoolkit package</a> &raquo;</li>
-        
-      <li>kineticstoolkit.pushrimkinetics module</li>
+      <li>kineticstoolkit.pushrimkinetics</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -200,10 +205,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.timeseries.html" class="btn btn-neutral float-right" title="kineticstoolkit.timeseries module" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.timeseries.html" class="btn btn-neutral float-right" title="kineticstoolkit.timeseries" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.player.html" class="btn btn-neutral float-left" title="kineticstoolkit.player module" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.player.html" class="btn btn-neutral float-left" title="kineticstoolkit.player" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -237,9 +242,9 @@
 }
 </style>
 <div class="section" id="module-kineticstoolkit.pushrimkinetics">
-<span id="kineticstoolkit-pushrimkinetics-module"></span><h1>kineticstoolkit.pushrimkinetics module<a class="headerlink" href="#module-kineticstoolkit.pushrimkinetics" title="Permalink to this headline">¶</a></h1>
+<span id="kineticstoolkit-pushrimkinetics"></span><h1>kineticstoolkit.pushrimkinetics<a class="headerlink" href="#module-kineticstoolkit.pushrimkinetics" title="Permalink to this headline">¶</a></h1>
 <p>Provide functions to process kinetic data from instrumented wheelchair wheels.</p>
-<p><strong>Functions</strong></p>
+<p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -267,8 +272,8 @@
 </tbody>
 </table>
 <dl class="py function">
-<dt id="kineticstoolkit.pushrimkinetics.calculate_forces_and_moments">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_forces_and_moments</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">gains</span></em>, <em class="sig-param"><span class="n">offsets</span><span class="o">=</span><span class="default_value">array([0., 0., 0., 0., 0., 0.])</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">transducer</span><span class="o">=</span><span class="default_value">'force_cell'</span></em>, <em class="sig-param"><span class="n">reference_frame</span><span class="o">=</span><span class="default_value">'wheel'</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.pushrimkinetics.calculate_forces_and_moments">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.pushrimkinetics.</span></span><span class="sig-name descname"><span class="pre">calculate_forces_and_moments</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinetics</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gains</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offsets</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([0.,</span> <span class="pre">0.,</span> <span class="pre">0.,</span> <span class="pre">0.,</span> <span class="pre">0.,</span> <span class="pre">0.])</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">transducer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'force_cell'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wheel'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate pushrim forces and moments based on raw channel values.</p>
 <p>For standard force cells (with each channel being a raw value
 corresponding to Fx, Fy, Fz, Mx, My, Mz, respectively), calculates
@@ -279,62 +284,67 @@ offset vector (offsets):</p>
 vector (gains) and an offset vector (offsets).</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>kinetics</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Input TimeSeries that must contain a ‘Channels’ key in its data dict.</p></li>
-<li><p><strong>gains</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – 6x6 gain matrix (force_cell) or gain vector of length 6 (smartwheel).</p></li>
-<li><p><strong>offsets</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Optional. Offset vector of length 6.</p></li>
-<li><p><strong>transducer</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘force_cell’ or ‘smartwheel’.</p></li>
-<li><p><strong>reference_frame</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘wheel’ or ‘hub’. ‘wheel’ to report the forces and moments
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kinetics</strong></dt><dd><p>Input TimeSeries that must contain a ‘Channels’ key in its data dict.</p>
+</dd>
+<dt><strong>gains</strong></dt><dd><p>6x6 gain matrix (force_cell) or gain vector of length 6 (smartwheel).</p>
+</dd>
+<dt><strong>offsets</strong></dt><dd><p>Optional. Offset vector of length 6.</p>
+</dd>
+<dt><strong>transducer</strong></dt><dd><p>Optional. ‘force_cell’ or ‘smartwheel’.</p>
+</dd>
+<dt><strong>reference_frame</strong></dt><dd><p>Optional. ‘wheel’ or ‘hub’. ‘wheel’ to report the forces and moments
 into the local wheel’s reference frame; ‘hub’ to compensate for the
 wheel rotation and match the reference frame used by the SmartWheel:
 x anteroposterior, y in the wheel plane, upward for non-camberred
-wheels, and z perpendicular to the wheel plane, outward.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input TimeSeries, with the added ‘Forces’
-and ‘Moments’ data keys.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+wheels, and z perpendicular to the wheel plane, outward.</p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Some calibration matrices are provided as examples in the
-<code class="docutils literal notranslate"><span class="pre">pushrimkinetics.CALIBRATION_MATRICES</span></code> dictionary. This dictionary can
-be used directly using dict unpacking. For example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">calculate_force_and_moments</span><span class="p">(</span>
-    <span class="n">kinetics</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">ktk</span><span class="o">.</span><span class="n">pushrimkinetics</span><span class="o">.</span><span class="n">CALIBRATION_MATRICES</span><span class="p">[</span><span class="s1">&#39;SmartWheel_123&#39;</span><span class="p">],</span>
-    <span class="n">reference_frame</span><span class="o">=</span><span class="s1">&#39;level&#39;</span>
-<span class="p">)</span>
-</pre></div>
-</div>
-</div>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input TimeSeries, with the added ‘Forces’
+and ‘Moments’ data keys.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.pushrimkinetics.calculate_power">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_power" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.pushrimkinetics.calculate_power">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.pushrimkinetics.</span></span><span class="sig-name descname"><span class="pre">calculate_power</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsin</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_power" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate power based on wheel velocity and moment.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tsin</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the data keys ‘Velocity’ and
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tsin</strong></dt><dd><p>TimeSeries that contains at least the data keys ‘Velocity’ and
 ‘Moments’. The units must be consistent (e.g., rad/s and Nm)</p>
 </dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the TimeSeries with the added data key ‘Power’.</p>
+</dl>
 </dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the TimeSeries with the added data key ‘Power’.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.pushrimkinetics.calculate_velocity">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">calculate_velocity</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">tsin</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_velocity" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.pushrimkinetics.calculate_velocity">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.pushrimkinetics.</span></span><span class="sig-name descname"><span class="pre">calculate_velocity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tsin</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.calculate_velocity" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate velocity based on wheel angle.</p>
 <p>The velocity is calculated by deriving the angle using a 2nd order
 Savitzky-Golay filter of length 21. This filter has been experimentally
@@ -344,13 +354,16 @@ other filtering options. To manually get the velocity using a custom
 filter, please see the <code class="docutils literal notranslate"><span class="pre">ktk.filters</span></code> module.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>tsin</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the data key ‘Angle’.</p>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>tsin</strong></dt><dd><p>TimeSeries that contains at least the data key ‘Angle’.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the TimeSeries with the added data key ‘Velocity’.</p>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the TimeSeries with the added data key ‘Velocity’.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+</dl>
 </dd>
 </dl>
 <div class="admonition seealso">
@@ -364,95 +377,106 @@ filter, please see the <code class="docutils literal notranslate"><span class="p
 </dd>
 </dl>
 </div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.pushrimkinetics.find_recovery_indices">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">find_recovery_indices</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Mz</span></em>, <em class="sig-param"><span class="o">/</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.find_recovery_indices" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.pushrimkinetics.find_recovery_indices">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.pushrimkinetics.</span></span><span class="sig-name descname"><span class="pre">find_recovery_indices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Mz</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.find_recovery_indices" title="Permalink to this definition">¶</a></dt>
 <dd><p>Find recovery indices based on a vector of propulsion moments.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>The function find_recovery_indices is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
-<p>This function analyzes the Mz moments to find which data correspond to
-pushes and which data correspond to recoveries. The method is very
-conservative on what could be considered as a recovery, so that every
-index returned by this function is almost certain to correspond to a
-recovery. This function is used by <cite>pushrimkinetics.remove_sinusoids</cite>
-to identify the instants with no hand contact. It should not be used to
-isolate the push and recovery phases (use <cite>ktk.cycles.detect_cycles()</cite>
-instead).</p>
-</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>Mz</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>) – Array that contains the propulsion moments in Nm.</p>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>Mz</strong></dt><dd><p>Array that contains the propulsion moments in Nm.</p>
+</dd>
+</dl>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Array of bools where each True represents recovery.</p>
+<dd class="field-even"><dl class="simple">
+<dt>np.ndarray</dt><dd><p>Array of bools where each True represents recovery.</p>
 </dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>np.ndarray</p>
+</dl>
 </dd>
 </dl>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
-<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles</span></code></p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.cycles.detect_cycles</span></code></dt><dd></dd>
+</dl>
 </div>
-</dd></dl>
-
-<dl class="py function">
-<dt id="kineticstoolkit.pushrimkinetics.read_file">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">read_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="o">/</span></em>, <em class="sig-param"><span class="n">file_format</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.read_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read a file containing pushrim kinetics data.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the file to open</p></li>
-<li><p><strong>file_format</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – <p>Format of the file. Can be either:</p>
-<ul>
-<li><p>’smartwheel’ (SmartWheel CSV file)</p></li>
-<li><p>’smartwheeltxt’ (SmartWheel SD-Card TXT file)</p></li>
-<li><p>’racingwheel’ (will change)</p></li>
-</ul>
-</p></li>
-</ul>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
 </dd>
 </dl>
 </dd></dl>
 
 <dl class="py function">
-<dt id="kineticstoolkit.pushrimkinetics.remove_offsets">
-<code class="sig-prename descclassname">kineticstoolkit.pushrimkinetics.</code><code class="sig-name descname">remove_offsets</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">kinetics</span></em>, <em class="sig-param"><span class="n">baseline_kinetics</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.remove_offsets" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="kineticstoolkit.pushrimkinetics.read_file">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.pushrimkinetics.</span></span><span class="sig-name descname"><span class="pre">read_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.read_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read a file containing pushrim kinetics data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>filename</strong></dt><dd><p>Name of the file to open</p>
+</dd>
+<dt><strong>file_format</strong></dt><dd><p>Format of the file. Can be either:</p>
+<ul class="simple">
+<li><p>‘smartwheel’ (SmartWheel CSV file)</p></li>
+<li><p>‘smartwheeltxt’ (SmartWheel SD-Card TXT file)</p></li>
+<li><p>‘racingwheel’ (will change)</p></li>
+</ul>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="kineticstoolkit.pushrimkinetics.remove_offsets">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.pushrimkinetics.</span></span><span class="sig-name descname"><span class="pre">remove_offsets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinetics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">baseline_kinetics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.pushrimkinetics.remove_offsets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Remove dynamic offsets in forces and moments.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>kinetics</strong> (<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least Forces, Moments and Angle data.</p></li>
-<li><p><strong>baseline_kinetics</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code>[<a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>]) – Optional. TimeSeries that contains at least Forces and Moments data.
+<dd class="field-odd"><dl class="simple">
+<dt><strong>kinetics</strong></dt><dd><p>TimeSeries that contains at least Forces, Moments and Angle data.</p>
+</dd>
+<dt><strong>baseline_kinetics</strong></dt><dd><p>Optional. TimeSeries that contains at least Forces and Moments data.
 This TimeSeries contains a baseline trial, where the wheelchair must be
 pushed by an operator and where no external force must be applied on
 the pushrims. If no baseline is provided, the baseline is calculated
 based on a detection of recoveries in the supplied kinetics
-TimeSeries.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input TimeSeries, where sinusoids are removed from
-Forces and Moments data.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries">TimeSeries</a></p>
+TimeSeries.</p>
 </dd>
 </dl>
-<div class="admonition-references admonition">
-<p class="admonition-title">References</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><dl class="simple">
+<dt>TimeSeries</dt><dd><p>A copy of the input TimeSeries, where sinusoids are removed from
+Forces and Moments data.</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<p class="rubric">References</p>
 <p>F. Chénier, R. Aissaoui, C. Gauthier, and D. H. Gagnon,
 “Wheelchair pushrim kinetics measurement: A method to cancel
 inaccuracies due to pushrim weight and wheel camber,” Medical
 Engineering and Physics, vol. 40, pp. 75–86, 2017.</p>
-</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -463,8 +487,8 @@ Engineering and Physics, vol. 40, pp. 75–86, 2017.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.timeseries.html" class="btn btn-neutral float-right" title="kineticstoolkit.timeseries module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.player.html" class="btn btn-neutral float-left" title="kineticstoolkit.player module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.timeseries.html" class="btn btn-neutral float-right" title="kineticstoolkit.timeseries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.player.html" class="btn btn-neutral float-left" title="kineticstoolkit.player" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

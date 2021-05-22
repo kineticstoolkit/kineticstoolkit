@@ -164,14 +164,15 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
     if clean:
         subprocess.call(['make', 'clean'], env=kineticstoolkit.config.env)
 
+
     # Generate API
-    print('Generating API...')
-    os.environ['SPHINX_APIDOC_OPTIONS'] = \
-        'members,undoc-members,autosummary'
-    subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
-                     '-o', 'api', '../kineticstoolkit',
-                     'external'],
-                    env=kineticstoolkit.config.env)
+#    print('Generating API...')
+#     os.environ['SPHINX_APIDOC_OPTIONS'] = (
+# #        'members,undoc-members,autosummary'
+#         'members,undoc-members,autosummary')
+#     subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
+#                       '-o', 'api', '../kineticstoolkit',
+#                       'external'])
 
     # Generate site
     print('Generating site...')

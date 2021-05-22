@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>What is Kinetics Toolkit &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -15,6 +14,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -32,12 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,7 +95,7 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">What is Kinetics Toolkit</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#Statement-of-need">Statement of need</a></li>
@@ -105,7 +107,7 @@
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -114,7 +116,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -122,10 +124,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -225,10 +227,10 @@
     text-align: unset;
 }
 </style>
-<section id="What-is-Kinetics-Toolkit">
+<div class="section" id="What-is-Kinetics-Toolkit">
 <h1>What is Kinetics Toolkit<a class="headerlink" href="#What-is-Kinetics-Toolkit" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk)</a> is an open-source, pure-python package of integrated classes and functions that aims to facilitate research in biomechanics using python.</p>
-<section id="Statement-of-need">
+<div class="section" id="Statement-of-need">
 <h2>Statement of need<a class="headerlink" href="#Statement-of-need" title="Permalink to this headline">¶</a></h2>
 <p>I often witness students who rely on programmers to develop all the algorithmes they need to complete their projects. In my view, this strategy can undermine the student’s formation and understanding of their data. I strongly believe that students and researchers in biomechanics do have the capability to program and perform biomechanical analyses by themselves. This may be even truer these days, when programming and biomechanics are more accessible than ever. They however need adequate
 resources.</p>
@@ -239,8 +241,8 @@ resources.</p>
 <li><p>generic enough for basic analysis of human motion biomechanics but powerful enough to leverage the power of other, specialized biomechanical softwares;</p></li>
 <li><p>easy to learn by untrained programmers, but also elegant and fun to use by experienced programmers.</p></li>
 </ul>
-</section>
-<section id="Objectives-of-this-project">
+</div>
+<div class="section" id="Objectives-of-this-project">
 <h2>Objectives of this project<a class="headerlink" href="#Objectives-of-this-project" title="Permalink to this headline">¶</a></h2>
 <ul class="simple">
 <li><p>Build an intuitive and elegant python package that leverages the power of biomechanical analysis to people who are not formed in programming or engineering;</p></li>
@@ -252,8 +254,8 @@ resources.</p>
 </ul>
 </li>
 </ul>
-</section>
-<section id="How-to-contribute">
+</div>
+<div class="section" id="How-to-contribute">
 <h2>How to contribute<a class="headerlink" href="#How-to-contribute" title="Permalink to this headline">¶</a></h2>
 <p>At the moment, I think Kinetics Toolkit has made a moderate way into its first objective. There is however still much to do. If you are find this long-term project appealing and want to contribute, here are different ways to help:</p>
 <ul class="simple">
@@ -265,8 +267,8 @@ resources.</p>
 </ul>
 <p>A good start would be to check out the <a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">development website</a> or fork the repository on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a>.</p>
 <p>I hope Kinetics Toolkit may help you in your biomechanical analyses; have a good read!</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

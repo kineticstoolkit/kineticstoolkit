@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Saving and loading &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -15,6 +14,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -32,12 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,14 +95,14 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Saving and loading</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#File-format-and-supported-types">File format and supported types</a></li>
@@ -113,7 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -121,10 +123,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -470,7 +472,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="Saving-and-loading">
+<div class="section" id="Saving-and-loading">
 <h1>Saving and loading<a class="headerlink" href="#Saving-and-loading" title="Permalink to this headline">¶</a></h1>
 <p>Contrarily to Matlab with its <code class="docutils literal notranslate"><span class="pre">.mat</span></code> file, python does not come with a single standard way to save data. To ease saving and sharing data, Kinetics Toolkit provides <a class="reference internal" href="api/kineticstoolkit.loadsave.html"><span class="doc">two functions</span></a> that load and save its own <code class="docutils literal notranslate"><span class="pre">.ktk.zip</span></code> format:</p>
 <ul class="simple">
@@ -527,7 +529,7 @@ div.rendered_html tbody tr:hover {
 }
 </pre></div></div>
 </div>
-<section id="File-format-and-supported-types">
+<div class="section" id="File-format-and-supported-types">
 <h2>File format and supported types<a class="headerlink" href="#File-format-and-supported-types" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">ktk.zip</span></code> file format is built to be as portable and simple as possible. It is a standard zip file that contains two JSON files:</p>
 <ul class="simple">
@@ -567,16 +569,16 @@ div.rendered_html tbody tr:hover {
 </tbody>
 </table>
 <p>Tuples can also be saved but will be loaded back as lists.</p>
-</section>
-<section id="Loading-a-ktk.zip-file-in-Matlab">
+</div>
+<div class="section" id="Loading-a-ktk.zip-file-in-Matlab">
 <h2>Loading a ktk.zip file in Matlab<a class="headerlink" href="#Loading-a-ktk.zip-file-in-Matlab" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span> <span class="n">Create</span> <span class="n">a</span> <span class="n">temporary</span> <span class="n">folder</span> <span class="n">to</span> <span class="n">unzip</span> <span class="n">to</span>
-<span class="n">mkdir</span><span class="p">(</span><span class="s1">&#39;temp&#39;</span><span class="p">);</span>
-<span class="n">unzip</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s1">&#39;temp&#39;</span><span class="p">);</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>% Create a temporary folder to unzip to
+mkdir(&#39;temp&#39;);
+unzip(filename, &#39;temp&#39;);
 
-<span class="o">%</span> <span class="n">Load</span> <span class="n">the</span> <span class="n">file</span> <span class="n">contents</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">jsondecode</span><span class="p">(</span><span class="n">fileread</span><span class="p">(</span><span class="s1">&#39;temp/data.json&#39;</span><span class="p">));</span>
-<span class="n">metadata</span> <span class="o">=</span> <span class="n">jsondecode</span><span class="p">(</span><span class="n">fileread</span><span class="p">(</span><span class="s1">&#39;temp/metadata.json&#39;</span><span class="p">));</span>
+% Load the file contents
+data = jsondecode(fileread(&#39;temp/data.json&#39;));
+metadata = jsondecode(fileread(&#39;temp/metadata.json&#39;));
 </pre></div>
 </div>
 <p>Since the types are not the same between python, JSON and Matlab, here is how Matlab will reconstruct the following python types:</p>
@@ -637,8 +639,8 @@ div.rendered_html tbody tr:hover {
 </table>
 <p>*tuples are saved as lists in JSON.</p>
 <p>For more information on saving and loading, please check the <a class="reference internal" href="api/kineticstoolkit.loadsave.html"><span class="doc">API Reference for the loadsave module</span></a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

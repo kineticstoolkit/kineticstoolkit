@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>Installing &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -15,6 +14,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -32,12 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,7 +95,7 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Installing</a><ul>
@@ -107,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries.html">TimeSeries</a></li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -116,7 +118,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -124,10 +126,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -227,38 +229,38 @@
     text-align: unset;
 }
 </style>
-<section id="Installing">
+<div class="section" id="Installing">
 <h1>Installing<a class="headerlink" href="#Installing" title="Permalink to this headline">¶</a></h1>
 <p>Kinetics Toolkit is distributed via both <a class="reference external" href="https://anaconda.org/conda-forge/kineticstoolkit">conda-forge</a> and <a class="reference external" href="https://pypi.org/project/kineticstoolkit">PyPi</a>. The source code is hosted on <a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">git-hub</a>.</p>
 <p>Since reading c3d files relies on <a class="reference external" href="https://github.com/pyomeca/ezc3d">ezc3d</a> which binaries are distributed only via conda-forge, the recommended installation method is therefore using conda-forge.</p>
-<section id="Install-a-conda-distribution">
+<div class="section" id="Install-a-conda-distribution">
 <h2>Install a conda distribution<a class="headerlink" href="#Install-a-conda-distribution" title="Permalink to this headline">¶</a></h2>
 <p>Download and install Anaconda or <a class="reference external" href="https://docs.conda.io/en/latest/miniconda.html">Miniconda</a> with python 3.8 or newer.</p>
-</section>
-<section id="Create-a-ktk-environment">
+</div>
+<div class="section" id="Create-a-ktk-environment">
 <h2>Create a ktk environment<a class="headerlink" href="#Create-a-ktk-environment" title="Permalink to this headline">¶</a></h2>
 <p>It is recommended to create a separate environment, at least for testing Kinetics Toolkit. Open an Anaconda Prompt (on Windows) or a terminal (on macOS and Linux) and type these commands one by one to create a <code class="docutils literal notranslate"><span class="pre">ktk</span></code> virtual environment and install Kinetics Toolkit in this environment.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">ktk</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda create -n ktk
 
-<span class="n">conda</span> <span class="n">activate</span> <span class="n">ktk</span>
+conda activate ktk
 </pre></div>
 </div>
-</section>
-<section id="Install-and-update-Kinetics-Toolkit">
+</div>
+<div class="section" id="Install-and-update-Kinetics-Toolkit">
 <h2>Install and update Kinetics Toolkit<a class="headerlink" href="#Install-and-update-Kinetics-Toolkit" title="Permalink to this headline">¶</a></h2>
 <p>Still in the prompt/terminal:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">install</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span> <span class="n">ezc3d</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda install -c conda-forge kineticstoolkit ezc3d
 </pre></div>
 </div>
 <p>You can keep Kinetics Toolkit up to date by typing this command regularly:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">conda</span> <span class="n">update</span> <span class="o">-</span><span class="n">c</span> <span class="n">conda</span><span class="o">-</span><span class="n">forge</span> <span class="n">kineticstoolkit</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>conda update -c conda-forge kineticstoolkit
 </pre></div>
 </div>
-</section>
-<section id="Configuring-Matplotlib-graphics-in-IPython/Spyder">
+</div>
+<div class="section" id="Configuring-Matplotlib-graphics-in-IPython/Spyder">
 <h2>Configuring Matplotlib graphics in IPython/Spyder<a class="headerlink" href="#Configuring-Matplotlib-graphics-in-IPython/Spyder" title="Permalink to this headline">¶</a></h2>
 <p>Kinetics Toolkit’s interactive functions make use of IPython’s integration of Matplotlib/Qt5’s event loop. When you want to use interactive functions in IPython, type:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="o">%</span><span class="n">matplotlib</span> <span class="n">qt5</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>%matplotlib qt5
 </pre></div>
 </div>
 <p>beforehand.</p>
@@ -273,19 +275,19 @@
 </ul>
 </li>
 </ul>
-</section>
-<section id="Check-that-Kinetics-Toolkit-loads">
+</div>
+<div class="section" id="Check-that-Kinetics-Toolkit-loads">
 <h2>Check that Kinetics Toolkit loads<a class="headerlink" href="#Check-that-Kinetics-Toolkit-loads" title="Permalink to this headline">¶</a></h2>
 <p>The last step is to verify that you are able to import Kinetics Toolkit in an interactive IPython console. This should work without error:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit</span>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; import kineticstoolkit
 
-<span class="go">or</span>
+or
 
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+&gt;&gt;&gt; import kineticstoolkit.lab as ktk
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>

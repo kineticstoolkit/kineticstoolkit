@@ -5,8 +5,7 @@
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.17: http://docutils.sourceforge.net/" />
-
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
   <title>TimeSeries &mdash; Kinetics Toolkit (dev) master documentation</title>
@@ -15,6 +14,8 @@
   
   <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
 
   
@@ -32,12 +33,13 @@
   
     
       <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
-        <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "document", "processClass": "math|output_area"}})</script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
     
     <script type="text/javascript" src="_static/js/theme.js"></script>
 
@@ -93,7 +95,7 @@
               
             
             
-              <p><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
@@ -111,7 +113,7 @@
 </ul>
 </li>
 </ul>
-<p><span class="caption-text">TUTORIALS</span></p>
+<p class="caption"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -120,7 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p><span class="caption-text">IN DEPTH</span></p>
+<p class="caption"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -128,10 +130,10 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Conventions, testing and releasing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
@@ -477,7 +479,7 @@ div.rendered_html tbody tr:hover {
     text-align: unset;
 }
 </style>
-<section id="TimeSeries">
+<div class="section" id="TimeSeries">
 <h1>TimeSeries<a class="headerlink" href="#TimeSeries" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.timeseries.html"><span class="doc">TimeSeries</span></a> class is the basis of most Kinetic Toolkit’s modules and is the only class that users have to learn after python standard types and numpy arrays.</p>
 <hr class="docutils" />
@@ -489,7 +491,7 @@ div.rendered_html tbody tr:hover {
 </ol>
 <hr class="docutils" />
 <p>TimeSeries are largely inspired by Matlab’s <code class="docutils literal notranslate"><span class="pre">timeseries</span></code> and <code class="docutils literal notranslate"><span class="pre">tscollection</span></code>.</p>
-<section id="TimeSeries-basics">
+<div class="section" id="TimeSeries-basics">
 <h2>TimeSeries basics<a class="headerlink" href="#TimeSeries-basics" title="Permalink to this headline">¶</a></h2>
 <p>Every TimeSeries contains the following attributes:</p>
 <ul class="simple">
@@ -679,8 +681,8 @@ TimeSeries with attributes:
 <img alt="_images/timeseries_12_0.png" src="_images/timeseries_12_0.png" />
 </div>
 </div>
-</section>
-<section id="Exporting-and-importing-pandas-DataFrames">
+</div>
+<div class="section" id="Exporting-and-importing-pandas-DataFrames">
 <h2>Exporting and importing pandas DataFrames<a class="headerlink" href="#Exporting-and-importing-pandas-DataFrames" title="Permalink to this headline">¶</a></h2>
 <p>TimeSeries integrate well with pandas DataFrames and therefore with a plethora or data analysis softwares, using the <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.to_dataframe"><span class="std std-ref">TimeSeries.to_dataframe()</span></a> and <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.from_dataframe"><span class="std std-ref">TimeSeries.from_dataframe()</span></a> methods. For example, exporting the previous TimeSeries to a DataFrame gives:</p>
 <div class="nbinput docutils container">
@@ -1070,8 +1072,8 @@ TimeSeries with attributes:
 <img alt="_images/timeseries_22_0.png" src="_images/timeseries_22_0.png" />
 </div>
 </div>
-</section>
-<section id="Metadata">
+</div>
+<div class="section" id="Metadata">
 <h2>Metadata<a class="headerlink" href="#Metadata" title="Permalink to this headline">¶</a></h2>
 <p>The <code class="docutils literal notranslate"><span class="pre">time_info</span></code> property associates metadata to the time vector. It is a dictionary where each key is the name of one metadata. By default, <code class="docutils literal notranslate"><span class="pre">time_info</span></code> includes the <code class="docutils literal notranslate"><span class="pre">Unit</span></code> metadata, which corresponds to <code class="docutils literal notranslate"><span class="pre">s</span></code>. Any other metadata can be added by adding new keys in <code class="docutils literal notranslate"><span class="pre">time_info</span></code>.</p>
 <div class="nbinput docutils container">
@@ -1122,8 +1124,8 @@ TimeSeries with attributes:
 <img alt="_images/timeseries_28_0.png" src="_images/timeseries_28_0.png" />
 </div>
 </div>
-</section>
-<section id="Events">
+</div>
+<div class="section" id="Events">
 <h2>Events<a class="headerlink" href="#Events" title="Permalink to this headline">¶</a></h2>
 <p>In the figure above, we see that the TimeSeries contains cyclic data that could be characterized by events. A first spike was generated at about 4 seconds: this event corresponds to a synchronization signal that we generated by gently impacting the instrumented pushrim. Thereafter, we see a series of pushes and recoveries.</p>
 <p>We will add these events to the TimeSeries by hand using <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.add_event"><span class="std std-ref">TimeSeries.add_event()</span></a>. It is also possible to add events interactively using <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.ui_add_event"><span class="std std-ref">TimeSeries.ui_add_event()</span></a>. Please see the tutorial on the <a class="reference internal" href="cycles.html"><span class="doc">cycles</span></a> module to learn how to detect cycles automatically.</p>
@@ -1215,7 +1217,7 @@ TimeSeries with attributes:
 <img alt="_images/timeseries_35_0.png" src="_images/timeseries_35_0.png" />
 </div>
 </div>
-<section id="Using-events-to-synchronize-TimeSeries">
+<div class="section" id="Using-events-to-synchronize-TimeSeries">
 <h3>Using events to synchronize TimeSeries<a class="headerlink" href="#Using-events-to-synchronize-TimeSeries" title="Permalink to this headline">¶</a></h3>
 <p>Let’s see how we can make use of these events. First, the <code class="docutils literal notranslate"><span class="pre">sync</span></code> event can be used to set the zero-time. This would be useful to sync this TimeSeries with data from another wheel, or with any another instrument that also has such synchronization event. The <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.sync_event"><span class="std std-ref">TimeSeries.sync_event()</span></a> shifts the TimeSeries’ time and every event’s time so that the sync event becomes the new “zero-time”.</p>
 <div class="nbinput docutils container">
@@ -1235,8 +1237,8 @@ TimeSeries with attributes:
 <img alt="_images/timeseries_37_0.png" src="_images/timeseries_37_0.png" />
 </div>
 </div>
-</section>
-<section id="Using-events-to-extract-shorter-TimeSeries">
+</div>
+<div class="section" id="Using-events-to-extract-shorter-TimeSeries">
 <h3>Using events to extract shorter TimeSeries<a class="headerlink" href="#Using-events-to-extract-shorter-TimeSeries" title="Permalink to this headline">¶</a></h3>
 <p>The <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class comes with a myriad of methods such as <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event"><span class="std std-ref">TimeSeries.get_ts_after_event()</span></a>, <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_ts_between_events"><span class="std std-ref">TimeSeries.get_ts_between_events()</span></a>, etc. For example, if we want to analyze data of the four first pushes and get rid of any other data, we could extract a new TimeSeries that contains only these data:</p>
 <div class="nbinput docutils container">
@@ -1261,9 +1263,9 @@ TimeSeries with attributes:
 <img alt="_images/timeseries_39_0.png" src="_images/timeseries_39_0.png" />
 </div>
 </div>
-</section>
-</section>
-<section id="Subsetting-and-merging-timeseries">
+</div>
+</div>
+<div class="section" id="Subsetting-and-merging-timeseries">
 <h2>Subsetting and merging timeseries<a class="headerlink" href="#Subsetting-and-merging-timeseries" title="Permalink to this headline">¶</a></h2>
 <p>We can use the <a class="reference internal" href="api/kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries.get_subset"><span class="std std-ref">TimeSeries.get_subset()</span></a> method to extract some signals from a TimeSeries. For example, if we only want to keep force information and get rid of the moments:</p>
 <div class="nbinput docutils container">
@@ -1305,8 +1307,8 @@ TimeSeries with attributes:
 </div>
 </div>
 <p>For more information, please refer to the <a class="reference internal" href="api/kineticstoolkit.timeseries.html"><span class="doc">API reference for the TimeSeries class</span></a>.</p>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
