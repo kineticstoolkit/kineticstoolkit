@@ -2,24 +2,42 @@ API Reference
 =============
 
 
+Classes
+-------
+
 .. autosummary::
    :toctree: api
+   :template: custom_class_template.rst
+   :recursive:
 
-   kineticstoolkit.config
+   kineticstoolkit.TimeSeries
+   kineticstoolkit.TimeSeriesEvent
+   kineticstoolkit.Player
+
+
+Functions
+---------
+
+.. autosummary::
+   :toctree: api
+   :template: function.rst
+
+   kineticstoolkit.load
+   kineticstoolkit.save
+
+
+Submodules
+----------
+
+.. autosummary::
+   :toctree: api
+   :template: custom_module_template.rst
+   :recursive:
+
    kineticstoolkit.cycles
-   kineticstoolkit.dbinterface
-   kineticstoolkit.decorators
-   kineticstoolkit.dev
    kineticstoolkit.emg
-   kineticstoolkit.external
    kineticstoolkit.filters
    kineticstoolkit.geometry
-   kineticstoolkit.gui
    kineticstoolkit.inversedynamics
    kineticstoolkit.kinematics
-   kineticstoolkit.lab
-   kineticstoolkit.loadsave
-   kineticstoolkit.player
    kineticstoolkit.pushrimkinetics
-   kineticstoolkit.timeseries
-   kineticstoolkit.tools

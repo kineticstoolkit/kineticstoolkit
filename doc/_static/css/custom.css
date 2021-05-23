@@ -19,3 +19,7 @@ div.figure {
 	max-height: 250px;
 	max-width: 250px;
 }
+
+.wy-nav-content {
+max-width: 1000px !important;
+}

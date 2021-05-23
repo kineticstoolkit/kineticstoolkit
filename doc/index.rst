@@ -2,14 +2,14 @@ Kinetics Toolkit
 ================
 
 .. ifconfig:: release in ['master']
-    
+
     .. warning::
     	You are currently on Kinetics Toolkit's development website. This
     	website may refer to unreleased and unstable material. Please click here_ to
     	consult the standard website that refers to the current version.
-    
+
     .. _here: https://felixchenier.uqam.ca/kineticstoolkit
-    
+
 
 `Kinetics Toolkit (ktk)`_ is an open-source, pure-python package of integrated classes and functions that aims to facilitate research in biomechanics using python. It is mainly addressed to researchers and students in biomechanics with minimal experience in programming, who want to learn processing and controlling their research data using python. A special attention is made on documentation and interoperability with other environments (using pandas Dataframes and JSON files as intermediate data containers).
 
