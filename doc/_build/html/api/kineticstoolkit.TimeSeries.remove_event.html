@@ -301,17 +301,20 @@ If None (default), all occurences of this event name or removed.</p></li>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
-<span class="go">[[5.5, &#39;event1&#39;], [10.8, &#39;event2&#39;], [2.3, &#39;event2&#39;]]</span>
+<span class="go">[TimeSeriesEvent(time=5.5, name=&#39;event1&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=10.8, name=&#39;event2&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=2.3, name=&#39;event2&#39;)]</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">remove_event</span><span class="p">(</span><span class="s1">&#39;event1&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
-<span class="go">[[10.8, &#39;event2&#39;], [2.3, &#39;event2&#39;]]</span>
+<span class="go">[TimeSeriesEvent(time=10.8, name=&#39;event2&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=2.3, name=&#39;event2&#39;)]</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">remove_event</span><span class="p">(</span><span class="s1">&#39;event2&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
-<span class="go">[[2.3, &#39;event2&#39;]]</span>
+<span class="go">[TimeSeriesEvent(time=2.3, name=&#39;event2&#39;)]</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

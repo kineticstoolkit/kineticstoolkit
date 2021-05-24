@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.TimeSeriesEvent.append" href="kineticstoolkit.TimeSeriesEvent.append.html" />
+    <link rel="next" title="kineticstoolkit.Player" href="kineticstoolkit.Player.html" />
     <link rel="prev" title="kineticstoolkit.TimeSeries.ui_sync" href="kineticstoolkit.TimeSeries.ui_sync.html" />
 
 
@@ -116,20 +116,7 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#classes">Classes</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.TimeSeries.html">kineticstoolkit.TimeSeries</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.TimeSeriesEvent</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.append.html">kineticstoolkit.TimeSeriesEvent.append</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.clear.html">kineticstoolkit.TimeSeriesEvent.clear</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.copy.html">kineticstoolkit.TimeSeriesEvent.copy</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.count.html">kineticstoolkit.TimeSeriesEvent.count</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.extend.html">kineticstoolkit.TimeSeriesEvent.extend</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.index.html">kineticstoolkit.TimeSeriesEvent.index</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.insert.html">kineticstoolkit.TimeSeriesEvent.insert</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.pop.html">kineticstoolkit.TimeSeriesEvent.pop</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.remove.html">kineticstoolkit.TimeSeriesEvent.remove</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.reverse.html">kineticstoolkit.TimeSeriesEvent.reverse</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.sort.html">kineticstoolkit.TimeSeriesEvent.sort</a></li>
-</ul>
-</li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.TimeSeriesEvent</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.Player.html">kineticstoolkit.Player</a></li>
 </ul>
 </li>
@@ -209,7 +196,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.TimeSeriesEvent.append.html" class="btn btn-neutral float-right" title="kineticstoolkit.TimeSeriesEvent.append" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.Player.html" class="btn btn-neutral float-right" title="kineticstoolkit.Player" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="kineticstoolkit.TimeSeries.ui_sync.html" class="btn btn-neutral float-left" title="kineticstoolkit.TimeSeries.ui_sync" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -250,21 +237,14 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="kineticstoolkit.TimeSeriesEvent">
 <em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'event'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.TimeSeriesEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></p>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>Define an event in a timeseries.</p>
-<p>This class derives from the list class. A TimeSeriesEvent is always a
-two-items list with the first item being the time and the second item
-being the name of the event.</p>
-<p>The dependent properties <cite>time</cite> and <cite>name</cite> can be used both in read and
-write for convenience.</p>
 <p>This class is rarely used by itself, it is easier to use the <cite>TimeSeries`</cite>
 methods to deal with events.</p>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">event</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeriesEvent</span><span class="p">()</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">event</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="mf">1.5</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">event</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;event_name&#39;</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">event</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeriesEvent</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">&#39;event_name&#39;</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">event</span>
-<span class="go">[1.5, &#39;event_name&#39;]</span>
+<span class="go">TimeSeriesEvent(time=1.5, name=&#39;event_name&#39;)</span>
 </pre></div>
 </div>
 <p class="rubric">Methods</p>
@@ -274,39 +254,6 @@ methods to deal with events.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.append.html#kineticstoolkit.TimeSeriesEvent.append" title="kineticstoolkit.TimeSeriesEvent.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a></p></td>
-<td><p>Append object to the end of the list.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.clear.html#kineticstoolkit.TimeSeriesEvent.clear" title="kineticstoolkit.TimeSeriesEvent.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a></p></td>
-<td><p>Remove all items from list.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.copy.html#kineticstoolkit.TimeSeriesEvent.copy" title="kineticstoolkit.TimeSeriesEvent.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
-<td><p>Return a shallow copy of the list.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.count.html#kineticstoolkit.TimeSeriesEvent.count" title="kineticstoolkit.TimeSeriesEvent.count"><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code></a></p></td>
-<td><p>Return number of occurrences of value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.extend.html#kineticstoolkit.TimeSeriesEvent.extend" title="kineticstoolkit.TimeSeriesEvent.extend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code></a></p></td>
-<td><p>Extend list by appending elements from the iterable.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.index.html#kineticstoolkit.TimeSeriesEvent.index" title="kineticstoolkit.TimeSeriesEvent.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></p></td>
-<td><p>Return first index of value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.insert.html#kineticstoolkit.TimeSeriesEvent.insert" title="kineticstoolkit.TimeSeriesEvent.insert"><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code></a></p></td>
-<td><p>Insert object before index.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.pop.html#kineticstoolkit.TimeSeriesEvent.pop" title="kineticstoolkit.TimeSeriesEvent.pop"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code></a></p></td>
-<td><p>Remove and return item at index (default last).</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.remove.html#kineticstoolkit.TimeSeriesEvent.remove" title="kineticstoolkit.TimeSeriesEvent.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></p></td>
-<td><p>Remove first occurrence of value.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.reverse.html#kineticstoolkit.TimeSeriesEvent.reverse" title="kineticstoolkit.TimeSeriesEvent.reverse"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code></a></p></td>
-<td><p>Reverse <em>IN PLACE</em>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.sort.html#kineticstoolkit.TimeSeriesEvent.sort" title="kineticstoolkit.TimeSeriesEvent.sort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code></a></p></td>
-<td><p>Sort the list in ascending order and return None.</p></td>
-</tr>
 </tbody>
 </table>
 <p class="rubric">Attributes</p>
@@ -317,10 +264,10 @@ methods to deal with events.</p>
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></p></td>
-<td><p>The name of the event.</p></td>
+<td><p></p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></p></td>
-<td><p>The time at which the event happened.</p></td>
+<td><p></p></td>
 </tr>
 </tbody>
 </table>
@@ -334,7 +281,7 @@ methods to deal with events.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.TimeSeriesEvent.append.html" class="btn btn-neutral float-right" title="kineticstoolkit.TimeSeriesEvent.append" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.Player.html" class="btn btn-neutral float-right" title="kineticstoolkit.Player" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kineticstoolkit.TimeSeries.ui_sync.html" class="btn btn-neutral float-left" title="kineticstoolkit.TimeSeries.ui_sync" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

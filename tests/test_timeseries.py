@@ -27,12 +27,12 @@ import kineticstoolkit as ktk
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
+import warnings
 
 
 def test_TimeSeriesEvent():
     """Test basic getters and setters."""
     event = ktk.TimeSeriesEvent()
-    assert isinstance(dir(event), list)
     event.time = 1
     event.name = 'one'
     assert event.time == 1
@@ -159,28 +159,45 @@ def test_rename_event():
     ts.add_event(10.8, 'event2')
     ts.add_event(2.3, 'event2')
 
-    assert str(ts.events) == \
-        "[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=5.5, name='event1'), "
+        "TimeSeriesEvent(time=10.8, name='event2'), "
+        "TimeSeriesEvent(time=2.3, name='event2')]"
+    )
 
     ts.rename_event('event2', 'event3')
 
-    assert str(ts.events) == \
-        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event3']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=5.5, name='event1'), "
+        "TimeSeriesEvent(time=10.8, name='event3'), "
+        "TimeSeriesEvent(time=2.3, name='event3')]"
+    )
 
     ts.rename_event('event3', 'event4', 0)
 
-    assert str(ts.events) == \
-        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=5.5, name='event1'), "
+        "TimeSeriesEvent(time=10.8, name='event3'), "
+        "TimeSeriesEvent(time=2.3, name='event4')]"
+    )
 
     # Test renaming an event to a same name (dumb case but should pass)
     ts.rename_event('event4', 'event4')
-    assert str(ts.events) == \
-        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=5.5, name='event1'), "
+        "TimeSeriesEvent(time=10.8, name='event3'), "
+        "TimeSeriesEvent(time=2.3, name='event4')]"
+    )
 
     # Test renaming invalid occurrence
-    ts.rename_event('event4', 'event5', 10)
-    assert str(ts.events) == \
-        "[[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]"
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ts.rename_event('event4', 'event5', 10)
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=5.5, name='event1'), "
+        "TimeSeriesEvent(time=10.8, name='event3'), "
+        "TimeSeriesEvent(time=2.3, name='event4')]"
+    )
 
 
 def test_remove_event():
@@ -189,21 +206,26 @@ def test_remove_event():
     ts.add_event(5.5, 'event1')
     ts.add_event(10.8, 'event2')
     ts.add_event(2.3, 'event2')
-    assert str(ts.events) == \
-        "[[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=5.5, name='event1'), "
+        "TimeSeriesEvent(time=10.8, name='event2'), "
+        "TimeSeriesEvent(time=2.3, name='event2')]"
+    )
 
     ts.remove_event('event1')
-    assert str(ts.events) == \
-        "[[10.8, 'event2'], [2.3, 'event2']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=10.8, name='event2'), "
+        "TimeSeriesEvent(time=2.3, name='event2')]"
+    )
 
     ts.remove_event('event2', 1)
-    assert str(ts.events) == \
-        "[[2.3, 'event2']]"
+    assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
 
     # Test remove bad occurrence
-    ts.remove_event('event2', 10)
-    assert str(ts.events) == \
-        "[[2.3, 'event2']]"
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ts.remove_event('event2', 10)
+    assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
 
 
 def test_sort_events():
@@ -214,11 +236,18 @@ def test_sort_events():
     ts.add_event(3, 'three')
     ts.add_event(3, 'three')
     ts.sort_events(unique=False)
-    assert str(ts.events) == \
-        "[[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=1, name='one'), "
+        "TimeSeriesEvent(time=2, name='two'), "
+        "TimeSeriesEvent(time=3, name='three'), "
+        "TimeSeriesEvent(time=3, name='three')]"
+    )
     ts.sort_events()
-    assert str(ts.events) == \
-        "[[1.0, 'one'], [2.0, 'two'], [3.0, 'three']]"
+    assert str(ts.events) == (
+        "[TimeSeriesEvent(time=1, name='one'), "
+        "TimeSeriesEvent(time=2, name='two'), "
+        "TimeSeriesEvent(time=3, name='three')]"
+    )
 
 
 def test_get_event_time():
@@ -366,7 +395,9 @@ def test_plot():
     ts = ktk.TimeSeries(time=np.arange(100))
 
     # Test a plot with no data
-    ts.plot()
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ts.plot()
 
     # Test a plot with empty data
     ts.data['data1'] = np.array([])

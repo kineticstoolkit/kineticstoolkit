@@ -37,6 +37,8 @@ import numpy as np
 import scipy as sp
 import pandas as pd
 import limitedinteraction as li
+from dataclasses import dataclass
+from collections.abc import MutableMapping
 
 import warnings
 from ast import literal_eval
@@ -299,55 +301,66 @@ def dict_of_arrays_to_dataframe(
     return df_out
 
 
-class TimeSeriesEvent(list):
+@dataclass
+class TimeSeriesEvent():
     """
     Define an event in a timeseries.
-
-    This class derives from the list class. A TimeSeriesEvent is always a
-    two-items list with the first item being the time and the second item
-    being the name of the event.
-
-    The dependent properties `time` and `name` can be used both in read and
-    write for convenience.
 
     This class is rarely used by itself, it is easier to use the `TimeSeries``
     methods to deal with events.
 
     Example
     -------
-    >>> event = ktk.TimeSeriesEvent()
-    >>> event.time = 1.5
-    >>> event.name = 'event_name'
+    >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
     >>> event
-    [1.5, 'event_name']
+    TimeSeriesEvent(time=1.5, name='event_name')
 
     """
 
-    def __dir__(self) -> List[str]:
-        return ['time', 'name']
+    time: float = 0.0
+    name: str = 'event'
 
-    def __init__(self, time: float = 0., name: str = 'event'):
-        list.__init__(self)
-        self.append(float(time))
-        self.append(str(name))
+    def __lt__(self, other):
+        """Define < operator."""
+        return self.time < other.time
 
-    @property
-    def time(self):
-        """The time at which the event happened."""
-        return self[0]
+    def __le__(self, other):
+        """Define <= operator."""
+        return self.time <= other.time
 
-    @time.setter
-    def time(self, time):
-        self[0] = float(time)
+    def __gt__(self, other):
+        """Define > operator."""
+        return self.time > other.time
 
-    @property
-    def name(self):
-        """The name of the event."""
-        return self[1]
+    def __ge__(self, other):
+        """Define >= operator."""
+        return self.time >= other.time
 
-    @name.setter
-    def name(self, name):
-        self[1] = str(name)
+    def _to_list(self):
+        """
+        Convert a TimeSeriesEvent to a list.
+
+        Example
+        -------
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event.to_list()
+        [1.5, 'event_name']
+
+        """
+        return [self.time, self.name]
+
+    def _to_dict(self):
+        """
+        Convert a TimeSeriesEvent to a dict.
+
+        Example
+        -------
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event.to_dict()
+        {'Time': 1.5, 'Name': 'event_name'}
+
+        """
+        return {'Time': self.time, 'Name': self.name}
 
 
 class TimeSeries():
@@ -684,7 +697,9 @@ class TimeSeries():
             >>> ts.add_event(2.3, 'event2')
 
             >>> ts.events
-            [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
+            [TimeSeriesEvent(time=5.5, name='event1'),
+             TimeSeriesEvent(time=10.8, name='event2'),
+             TimeSeriesEvent(time=2.3, name='event2')]
 
         """
         self.events.append(TimeSeriesEvent(time, name))
@@ -713,15 +728,21 @@ class TimeSeries():
         >>> ts.add_event(2.3, 'event2')
 
         >>> ts.events
-        [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=2.3, name='event2')]
 
         >>> ts.rename_event('event2', 'event3')
         >>> ts.events
-        [[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event3']]
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event3'),
+         TimeSeriesEvent(time=2.3, name='event3')]
 
         >>> ts.rename_event('event3', 'event4', 0)
         >>> ts.events
-        [[5.5, 'event1'], [10.8, 'event3'], [2.3, 'event4']]
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event3'),
+         TimeSeriesEvent(time=2.3, name='event4')]
 
         """
         if event_name == new_name:
@@ -766,15 +787,18 @@ class TimeSeries():
         >>> ts.add_event(2.3, 'event2')
 
         >>> ts.events
-        [[5.5, 'event1'], [10.8, 'event2'], [2.3, 'event2']]
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=2.3, name='event2')]
 
         >>> ts.remove_event('event1')
         >>> ts.events
-        [[10.8, 'event2'], [2.3, 'event2']]
+        [TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=2.3, name='event2')]
 
         >>> ts.remove_event('event2', 1)
         >>> ts.events
-        [[2.3, 'event2']]
+        [TimeSeriesEvent(time=2.3, name='event2')]
 
         """
         if event_occurrence is None:  # Remove all occurrences
@@ -994,15 +1018,23 @@ class TimeSeries():
         >>> ts.add_event(3, 'three')
 
         >>> ts.events
-        [[2.0, 'two'], [1.0, 'one'], [3.0, 'three'], [3.0, 'three']]
+        [TimeSeriesEvent(time=2, name='two'),
+         TimeSeriesEvent(time=1, name='one'),
+         TimeSeriesEvent(time=3, name='three'),
+         TimeSeriesEvent(time=3, name='three')]
 
         >>> ts.sort_events(unique=False)
         >>> ts.events
-        [[1.0, 'one'], [2.0, 'two'], [3.0, 'three'], [3.0, 'three']]
+        [TimeSeriesEvent(time=1, name='one'),
+         TimeSeriesEvent(time=2, name='two'),
+         TimeSeriesEvent(time=3, name='three'),
+         TimeSeriesEvent(time=3, name='three')]
 
         >>> ts.sort_events()
         >>> ts.events
-        [[1.0, 'one'], [2.0, 'two'], [3.0, 'three']]
+        [TimeSeriesEvent(time=1, name='one'),
+         TimeSeriesEvent(time=2, name='two'),
+         TimeSeriesEvent(time=3, name='three')]
 
         """
         self.events = sorted(self.events)
@@ -1601,7 +1633,7 @@ class TimeSeries():
 
         """
         # Edge case
-        if self.time == [] or time > self.time[-1]:
+        if len(self.time) == 0 or time > self.time[-1]:
             return self.copy()
 
         # Other cases
@@ -1639,7 +1671,7 @@ class TimeSeries():
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
         # Edge case
-        if self.time == [] or time < self.time[0]:
+        if len(self.time) == 0 or time < self.time[0]:
             return self.copy()
 
         # Other cases
@@ -1947,11 +1979,17 @@ class TimeSeries():
         >>> ts.add_event(9)
         >>> ts.add_event(10)
         >>> ts.events
-        [[-2.0, 'event'], [0.0, 'event'], [5.0, 'event'], [9.0, 'event'], [10.0, 'event']]
+        [TimeSeriesEvent(time=-2, name='event'),
+         TimeSeriesEvent(time=0, name='event'),
+         TimeSeriesEvent(time=5, name='event'),
+         TimeSeriesEvent(time=9, name='event'),
+         TimeSeriesEvent(time=10, name='event')]
 
         >>> ts.trim_events()
         >>> ts.events
-        [[0.0, 'event'], [5.0, 'event'], [9.0, 'event']]
+        [TimeSeriesEvent(time=0, name='event'),
+         TimeSeriesEvent(time=5, name='event'),
+         TimeSeriesEvent(time=9, name='event')]
 
         """
         if self.time.shape[0] == 0:  # no time, thus no event to keep.

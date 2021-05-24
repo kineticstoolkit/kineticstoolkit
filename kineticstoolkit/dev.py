@@ -162,7 +162,7 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
     os.chdir(kineticstoolkit.config.root_folder + '/doc')
 
     if clean:
-        shutil.rmtree(kineticstoolkit.config.root_folder + '/doc/api/*',
+        shutil.rmtree(kineticstoolkit.config.root_folder + '/doc/api',
                       ignore_errors=True)
         subprocess.call(['make', 'clean'],
                         env=kineticstoolkit.config.env)

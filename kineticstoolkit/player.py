@@ -29,7 +29,7 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.decorators import unstable, directory
+from kineticstoolkit.decorators import directory
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -38,7 +38,7 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-from typing import *
+from typing import Union, Sequence, Dict, Any, Optional
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
@@ -546,9 +546,12 @@ class Player:
                 rbz_data[:, 0], rbz_data[:, 1])
 
         # Update the window title
-        self.objects['Figure'].canvas.set_window_title(
-            f'Frame {self.current_frame}, ' +
-            '%2.2f s.' % self.time[self.current_frame])
+        try:
+            self.objects['Figure'].canvas.manager.set_window_title(
+                f'Frame {self.current_frame}, ' +
+                '%2.2f s.' % self.time[self.current_frame])
+        except AttributeError:
+            pass
 
         self.objects['Figure'].canvas.draw()
 

@@ -297,17 +297,25 @@ have both the same name and the same time.</p>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
-<span class="go">[[2.0, &#39;two&#39;], [1.0, &#39;one&#39;], [3.0, &#39;three&#39;], [3.0, &#39;three&#39;]]</span>
+<span class="go">[TimeSeriesEvent(time=2, name=&#39;two&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=1, name=&#39;one&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=3, name=&#39;three&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=3, name=&#39;three&#39;)]</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">sort_events</span><span class="p">(</span><span class="n">unique</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
-<span class="go">[[1.0, &#39;one&#39;], [2.0, &#39;two&#39;], [3.0, &#39;three&#39;], [3.0, &#39;three&#39;]]</span>
+<span class="go">[TimeSeriesEvent(time=1, name=&#39;one&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=2, name=&#39;two&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=3, name=&#39;three&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=3, name=&#39;three&#39;)]</span>
 </pre></div>
 </div>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">sort_events</span><span class="p">()</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
-<span class="go">[[1.0, &#39;one&#39;], [2.0, &#39;two&#39;], [3.0, &#39;three&#39;]]</span>
+<span class="go">[TimeSeriesEvent(time=1, name=&#39;one&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=2, name=&#39;two&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=3, name=&#39;three&#39;)]</span>
 </pre></div>
 </div>
 <dl class="field-list simple">

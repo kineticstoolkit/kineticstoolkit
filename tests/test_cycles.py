@@ -25,7 +25,7 @@ Unit tests for the cycles module.
 """
 import kineticstoolkit as ktk
 import numpy as np
-import matplotlib.pyplot as plt
+import warnings
 
 
 def test_detect_cycles():
@@ -173,7 +173,9 @@ def test_time_normalize():
     assert len(ts1.events) == 10  # We got all events
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
-    ts2 = ktk.cycles.time_normalize(ts1, 'push', '_')
+    with warnings.catch_warnings():  # Ignore extrapol warning (last point)
+        warnings.simplefilter("ignore")
+        ts2 = ktk.cycles.time_normalize(ts1, 'push', '_')
     assert ts1 == ts2
 
     # Samething but with push to next push
@@ -189,7 +191,9 @@ def test_time_normalize():
     assert np.allclose(ts3.events[3].time, 100)
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
-    ts4 = ktk.cycles.time_normalize(ts3, 'push', '_')
+    with warnings.catch_warnings():  # Ignore extrapol warning (last point)
+        warnings.simplefilter("ignore")
+        ts4 = ktk.cycles.time_normalize(ts3, 'push', '_')
     assert ts3 == ts4
 
     # There should be no nan in ts2
@@ -322,4 +326,5 @@ def test_stack_unstack():
 
 if __name__ == "__main__":
     import pytest
+    pytest.main([__file__])
     pytest.main([__file__])
