@@ -35,49 +35,40 @@ author = 'Félix Chénier'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-#    'sphinx.ext.autodoc',  # Document objects using docstrings in API
-#    'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
-#    'sphinx.ext.napoleon',  # Parse numpy-style docstrings (for autodoc)
-    # Type hints in doc instead of signature (for autodoc)
-#    'autodocsumm',  # Add a summary table at the top of each API page
-    'sphinx.ext.ifconfig',  # Allow conditional contents for master vs stable versions
+    'sphinx.ext.autodoc',      # Document objects using docstrings in API
+    'sphinx.ext.autosummary',  # Generate summary table pages (for autodoc)
+    'sphinx.ext.napoleon',     # Parse numpy-style docstrings (for autodoc)
+
+    # Allow conditional contents for master vs stable versions
+    'sphinx.ext.ifconfig',
+
     'nbsphinx',
-    'numpydoc',
-#    'sphinx_autodoc_typehints',
+    'sphinx_autodoc_typehints',
 ]
 
-# autodoc_default_options = {
-#     'autosummary': True,
-#     'autodoc_typehints': 'description',
-#     'recursive': True,
-# #    'members': True,
-# #    'undoc_members': True,
-# }
+autodoc_default_options = {
+    'autosummary': True,
+    'autodoc_typehints': 'description',
+    'recursive': True,
+}
 
 nbsphinx_execute = 'never'
-numpydoc_show_class_members = False
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
-autoclass_content = "both"  # Add __init__ doc (ie. params) to class summaries
-html_show_sourcelink = False  # Remove 'view source code' from top of page (for html, not python)
-autodoc_inherit_docstrings = True  # If no docstring, inherit from base class
-set_type_checking_flag = True  # Enable 'expensive' imports for sphinx_autodoc_typehints
-add_module_names = False # Remove namespaces from class/method signatures
 
 
-
-# # Napoleon settings
-# napoleon_google_docstring = False
-# napoleon_numpy_docstring = True
-# napoleon_include_init_with_doc = False
-# napoleon_include_private_with_doc = False
-# napoleon_include_special_with_doc = False
-# napoleon_use_admonition_for_examples = False
-# napoleon_use_admonition_for_notes = True
-# napoleon_use_admonition_for_references = True
-# napoleon_use_ivar = False
-# napoleon_use_param = True
-# napoleon_use_rtype = True
+# Napoleon settings
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_include_init_with_doc = False
+napoleon_include_private_with_doc = False
+napoleon_include_special_with_doc = False
+napoleon_use_admonition_for_examples = False
+napoleon_use_admonition_for_notes = True
+napoleon_use_admonition_for_references = True
+napoleon_use_ivar = False
+napoleon_use_param = True
+napoleon_use_rtype = True
 
 # Matplotlib settings
 plot_html_show_source_link = False
@@ -114,7 +105,7 @@ html_theme_options = {
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,
-    'navigation_depth': 3,
+    'navigation_depth': 4,
     'includehidden': True,
     'titles_only': False,
 }

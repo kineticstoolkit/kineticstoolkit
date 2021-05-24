@@ -351,41 +351,138 @@ consult the standard website that refers to the current version.</p>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.config.html">kineticstoolkit.config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.dev.html">kineticstoolkit.dev</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.dev.html#note">Note</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.html">kineticstoolkit.TimeSeries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.add_data_info.html">kineticstoolkit.TimeSeries.add_data_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.add_event.html">kineticstoolkit.TimeSeries.add_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.copy.html">kineticstoolkit.TimeSeries.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.fill_missing_samples.html">kineticstoolkit.TimeSeries.fill_missing_samples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.from_dataframe.html">kineticstoolkit.TimeSeries.from_dataframe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_event_index.html">kineticstoolkit.TimeSeries.get_event_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_event_time.html">kineticstoolkit.TimeSeries.get_event_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_index_after_time.html">kineticstoolkit.TimeSeries.get_index_after_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_index_at_time.html">kineticstoolkit.TimeSeries.get_index_at_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_index_before_time.html">kineticstoolkit.TimeSeries.get_index_before_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_subset.html">kineticstoolkit.TimeSeries.get_subset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_after_event.html">kineticstoolkit.TimeSeries.get_ts_after_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_after_index.html">kineticstoolkit.TimeSeries.get_ts_after_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_after_time.html">kineticstoolkit.TimeSeries.get_ts_after_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_at_event.html">kineticstoolkit.TimeSeries.get_ts_at_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_at_time.html">kineticstoolkit.TimeSeries.get_ts_at_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_before_event.html">kineticstoolkit.TimeSeries.get_ts_before_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_before_index.html">kineticstoolkit.TimeSeries.get_ts_before_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_before_time.html">kineticstoolkit.TimeSeries.get_ts_before_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_between_events.html">kineticstoolkit.TimeSeries.get_ts_between_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_between_indexes.html">kineticstoolkit.TimeSeries.get_ts_between_indexes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.get_ts_between_times.html">kineticstoolkit.TimeSeries.get_ts_between_times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.isnan.html">kineticstoolkit.TimeSeries.isnan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.merge.html">kineticstoolkit.TimeSeries.merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.plot.html">kineticstoolkit.TimeSeries.plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.remove_data.html">kineticstoolkit.TimeSeries.remove_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.remove_data_info.html">kineticstoolkit.TimeSeries.remove_data_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.remove_event.html">kineticstoolkit.TimeSeries.remove_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.rename_data.html">kineticstoolkit.TimeSeries.rename_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.rename_event.html">kineticstoolkit.TimeSeries.rename_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.resample.html">kineticstoolkit.TimeSeries.resample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.shift.html">kineticstoolkit.TimeSeries.shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.sort_events.html">kineticstoolkit.TimeSeries.sort_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.sync_event.html">kineticstoolkit.TimeSeries.sync_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.to_dataframe.html">kineticstoolkit.TimeSeries.to_dataframe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.trim_events.html">kineticstoolkit.TimeSeries.trim_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.ui_add_event.html">kineticstoolkit.TimeSeries.ui_add_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.ui_edit_events.html">kineticstoolkit.TimeSeries.ui_edit_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.ui_get_ts_between_clicks.html">kineticstoolkit.TimeSeries.ui_get_ts_between_clicks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.ui_sync.html">kineticstoolkit.TimeSeries.ui_sync</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.emg.html">kineticstoolkit.emg</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.emg.html#warning">Warning</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.html">kineticstoolkit.TimeSeriesEvent</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.append.html">kineticstoolkit.TimeSeriesEvent.append</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.clear.html">kineticstoolkit.TimeSeriesEvent.clear</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.copy.html">kineticstoolkit.TimeSeriesEvent.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.count.html">kineticstoolkit.TimeSeriesEvent.count</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.extend.html">kineticstoolkit.TimeSeriesEvent.extend</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.index.html">kineticstoolkit.TimeSeriesEvent.index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.insert.html">kineticstoolkit.TimeSeriesEvent.insert</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.pop.html">kineticstoolkit.TimeSeriesEvent.pop</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.remove.html">kineticstoolkit.TimeSeriesEvent.remove</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.reverse.html">kineticstoolkit.TimeSeriesEvent.reverse</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.sort.html">kineticstoolkit.TimeSeriesEvent.sort</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.geometry.html">kineticstoolkit.geometry</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.geometry.html#note">Note</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.Player.html">kineticstoolkit.Player</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.Player.close.html">kineticstoolkit.Player.close</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.Player.to_html5.html">kineticstoolkit.Player.to_html5</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.gui.html">kineticstoolkit.gui</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.gui.html#warning">Warning</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html#warning">Warning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.load.html">kineticstoolkit.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.save.html">kineticstoolkit.save</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.lab.html">kineticstoolkit.lab</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.lab.html#kinetics-toolkit-lab-mode">Kinetics Toolkit - Lab mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="api_reference.html#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.cycles.html">kineticstoolkit.cycles</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.cycles.detect_cycles.html">kineticstoolkit.cycles.detect_cycles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.cycles.most_repeatable_cycles.html">kineticstoolkit.cycles.most_repeatable_cycles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.cycles.stack.html">kineticstoolkit.cycles.stack</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.cycles.time_normalize.html">kineticstoolkit.cycles.time_normalize</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.cycles.unstack.html">kineticstoolkit.cycles.unstack</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.player.html">kineticstoolkit.player</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.emg.html">kineticstoolkit.emg</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.emg.read_delsys_csv.html">kineticstoolkit.emg.read_delsys_csv</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.filters.html">kineticstoolkit.filters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.butter.html">kineticstoolkit.filters.butter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.deriv.html">kineticstoolkit.filters.deriv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.median.html">kineticstoolkit.filters.median</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.savgol.html">kineticstoolkit.filters.savgol</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.smooth.html">kineticstoolkit.filters.smooth</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.geometry.html">kineticstoolkit.geometry</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.create_frames.html">kineticstoolkit.geometry.create_frames</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.create_transforms.html">kineticstoolkit.geometry.create_transforms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.get_angles.html">kineticstoolkit.geometry.get_angles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.get_global_coordinates.html">kineticstoolkit.geometry.get_global_coordinates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.get_local_coordinates.html">kineticstoolkit.geometry.get_local_coordinates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.isnan.html">kineticstoolkit.geometry.isnan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.matmul.html">kineticstoolkit.geometry.matmul</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.register_points.html">kineticstoolkit.geometry.register_points</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_com_acceleration.html">kineticstoolkit.inversedynamics.calculate_com_acceleration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_com_position.html">kineticstoolkit.inversedynamics.calculate_com_position</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_proximal_wrench.html">kineticstoolkit.inversedynamics.calculate_proximal_wrench</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_segment_angles.html">kineticstoolkit.inversedynamics.calculate_segment_angles</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_segment_rotation_rates.html">kineticstoolkit.inversedynamics.calculate_segment_rotation_rates</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.get_anthropometrics.html">kineticstoolkit.inversedynamics.get_anthropometrics</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.create_rigid_body_config.html">kineticstoolkit.kinematics.create_rigid_body_config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.create_virtual_marker_config.html">kineticstoolkit.kinematics.create_virtual_marker_config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.register_markers.html">kineticstoolkit.kinematics.register_markers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_forces_and_moments.html">kineticstoolkit.pushrimkinetics.calculate_forces_and_moments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_power.html">kineticstoolkit.pushrimkinetics.calculate_power</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_velocity.html">kineticstoolkit.pushrimkinetics.calculate_velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.find_recovery_indices.html">kineticstoolkit.pushrimkinetics.find_recovery_indices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.read_file.html">kineticstoolkit.pushrimkinetics.read_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.remove_offsets.html">kineticstoolkit.pushrimkinetics.remove_offsets</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -405,7 +502,6 @@ consult the standard website that refers to the current version.</p>
 <li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="dev/inversedynamics.html">Inverse Dynamics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="dev/reconstruction.html">Reconstructing virtual markers (from kinematics module)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev/dbinterface.html">DBInterface</a></li>
 </ul>
 </li>
 </ul>

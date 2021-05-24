@@ -399,7 +399,7 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
 
     See Also
     --------
-    ktk.cycles.unstack
+    kineticstoolkit.cycles.unstack
 
     """
     if np.mod(len(ts.time), n_points) != 0:

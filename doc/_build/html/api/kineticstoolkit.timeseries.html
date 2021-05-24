@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.timeseries &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.TimeSeries &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.tools" href="kineticstoolkit.tools.html" />
-    <link rel="prev" title="kineticstoolkit.pushrimkinetics" href="kineticstoolkit.pushrimkinetics.html" />
+    <link rel="next" title="kineticstoolkit.TimeSeries.add_data_info" href="kineticstoolkit.TimeSeries.add_data_info.html" />
+    <link rel="prev" title="API Reference" href="../api_reference.html" />
 
 
  
@@ -114,23 +114,56 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.TimeSeries</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.add_data_info.html">kineticstoolkit.TimeSeries.add_data_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.add_event.html">kineticstoolkit.TimeSeries.add_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.copy.html">kineticstoolkit.TimeSeries.copy</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.fill_missing_samples.html">kineticstoolkit.TimeSeries.fill_missing_samples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.from_dataframe.html">kineticstoolkit.TimeSeries.from_dataframe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_event_index.html">kineticstoolkit.TimeSeries.get_event_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_event_time.html">kineticstoolkit.TimeSeries.get_event_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_index_after_time.html">kineticstoolkit.TimeSeries.get_index_after_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_index_at_time.html">kineticstoolkit.TimeSeries.get_index_at_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_index_before_time.html">kineticstoolkit.TimeSeries.get_index_before_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_subset.html">kineticstoolkit.TimeSeries.get_subset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_after_event.html">kineticstoolkit.TimeSeries.get_ts_after_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_after_index.html">kineticstoolkit.TimeSeries.get_ts_after_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_after_time.html">kineticstoolkit.TimeSeries.get_ts_after_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_at_event.html">kineticstoolkit.TimeSeries.get_ts_at_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_at_time.html">kineticstoolkit.TimeSeries.get_ts_at_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_before_event.html">kineticstoolkit.TimeSeries.get_ts_before_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_before_index.html">kineticstoolkit.TimeSeries.get_ts_before_index</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_before_time.html">kineticstoolkit.TimeSeries.get_ts_before_time</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_between_events.html">kineticstoolkit.TimeSeries.get_ts_between_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_between_indexes.html">kineticstoolkit.TimeSeries.get_ts_between_indexes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_between_times.html">kineticstoolkit.TimeSeries.get_ts_between_times</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.isnan.html">kineticstoolkit.TimeSeries.isnan</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.merge.html">kineticstoolkit.TimeSeries.merge</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.plot.html">kineticstoolkit.TimeSeries.plot</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.remove_data.html">kineticstoolkit.TimeSeries.remove_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.remove_data_info.html">kineticstoolkit.TimeSeries.remove_data_info</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.remove_event.html">kineticstoolkit.TimeSeries.remove_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.rename_data.html">kineticstoolkit.TimeSeries.rename_data</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.rename_event.html">kineticstoolkit.TimeSeries.rename_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.resample.html">kineticstoolkit.TimeSeries.resample</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.shift.html">kineticstoolkit.TimeSeries.shift</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.sort_events.html">kineticstoolkit.TimeSeries.sort_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.sync_event.html">kineticstoolkit.TimeSeries.sync_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.to_dataframe.html">kineticstoolkit.TimeSeries.to_dataframe</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.trim_events.html">kineticstoolkit.TimeSeries.trim_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_add_event.html">kineticstoolkit.TimeSeries.ui_add_event</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_edit_events.html">kineticstoolkit.TimeSeries.ui_edit_events</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_get_ts_between_clicks.html">kineticstoolkit.TimeSeries.ui_get_ts_between_clicks</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_sync.html">kineticstoolkit.TimeSeries.ui_sync</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.html">kineticstoolkit.TimeSeriesEvent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.Player.html">kineticstoolkit.Player</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#submodules">Submodules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -191,7 +224,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-      <li>kineticstoolkit.timeseries</li>
+      <li>kineticstoolkit.TimeSeries</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -205,10 +238,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.tools.html" class="btn btn-neutral float-right" title="kineticstoolkit.tools" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.TimeSeries.add_data_info.html" class="btn btn-neutral float-right" title="kineticstoolkit.TimeSeries.add_data_info" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.pushrimkinetics.html" class="btn btn-neutral float-left" title="kineticstoolkit.pushrimkinetics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api_reference.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -241,68 +274,79 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.timeseries">
-<span id="kineticstoolkit-timeseries"></span><h1>kineticstoolkit.timeseries<a class="headerlink" href="#module-kineticstoolkit.timeseries" title="Permalink to this headline">¶</a></h1>
-<p>Provide the TimeSeries and TimeSeriesEvent classes.</p>
-<p>The classes defined in this module are accessible directly from the toplevel
-Kinetics Toolkit’s namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)</p>
-<p class="rubric">Functions</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.dataframe_to_dict_of_arrays" title="kineticstoolkit.timeseries.dataframe_to_dict_of_arrays"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataframe_to_dict_of_arrays</span></code></a>(dataframe)</p></td>
-<td><p>Convert a pandas DataFrame to a dict of numpy ndarrays.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.dict_of_arrays_to_dataframe" title="kineticstoolkit.timeseries.dict_of_arrays_to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dict_of_arrays_to_dataframe</span></code></a>(dict_of_arrays)</p></td>
-<td><p>Convert a dict of ndarray of any dimension to a pandas DataFrame.</p></td>
-</tr>
-</tbody>
-</table>
-<p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>([time, time_info, data, …])</p></td>
-<td><p>A class that implements TimeSeries.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeriesEvent" title="kineticstoolkit.timeseries.TimeSeriesEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesEvent</span></code></a>([time, name])</p></td>
-<td><p>Define an event in a timeseries.</p></td>
-</tr>
-</tbody>
-</table>
+<div class="section" id="kineticstoolkit-timeseries">
+<h1>kineticstoolkit.TimeSeries<a class="headerlink" href="#kineticstoolkit-timeseries" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.timeseries.</span></span><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([],</span> <span class="pre">dtype=float64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'Unit':</span> <span class="pre">'s'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class that implements TimeSeries.</p>
+<dt class="sig sig-object py" id="kineticstoolkit.TimeSeries">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.</span></span><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">array([],</span> <span class="pre">dtype=float64)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'Unit':</span> <span class="pre">'s'}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.TimeSeries" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that implements TimeSeries.</p>
 <p>This class implements a Timeseries in a way that resembles the timeseries
 and tscollection found in Matlab.</p>
-<dl class="field-list">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl>
-<dt><strong>time</strong><span class="classifier">np.ndarray</span></dt><dd><p>Time vector as 1-dimension np.array.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.time">
+<span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#kineticstoolkit.TimeSeries.time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Time vector as 1-dimension np.array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>np.ndarray</p>
 </dd>
-<dt><strong>data</strong><span class="classifier">Dict[str, np.ndarray]</span></dt><dd><p>Contains the data, where each element contains a np.array
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.data">
+<span class="sig-name descname"><span class="pre">data</span></span><a class="headerlink" href="#kineticstoolkit.TimeSeries.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains the data, where each element contains a np.array
 which first dimension corresponds to time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[str, np.ndarray]</p>
 </dd>
-<dt><strong>time_info</strong><span class="classifier">Dict[str, Any]</span></dt><dd><p>Contains metadata relative to time. The default is {‘Unit’: ‘s’}</p>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.time_info">
+<span class="sig-name descname"><span class="pre">time_info</span></span><a class="headerlink" href="#kineticstoolkit.TimeSeries.time_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains metadata relative to time. The default is {‘Unit’: ‘s’}</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[str, Any]</p>
 </dd>
-<dt><strong>data_info</strong><span class="classifier">Dict[str, Dict[str, Any]]</span></dt><dd><p>Contains facultative metadata relative to data. For example, the
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.data_info">
+<span class="sig-name descname"><span class="pre">data_info</span></span><a class="headerlink" href="#kineticstoolkit.TimeSeries.data_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Contains facultative metadata relative to data. For example, the
 data_info attribute could indicate the unit of data[‘Forces’]:</p>
 <p>data[‘Forces’] = {‘Unit’: ‘N’}.</p>
 <p>To facilitate the management of data_info, please use
 <cite>ktk.TimeSeries.add_data_info</cite>.</p>
-</dd>
-<dt><strong>events</strong><span class="classifier">List[TimeSeriesEvent]</span></dt><dd><p>List of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Dict[str, Dict[str, Any]]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.events">
+<span class="sig-name descname"><span class="pre">events</span></span><a class="headerlink" href="#kineticstoolkit.TimeSeries.events" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of events.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>List[<a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.html#kineticstoolkit.TimeSeriesEvent" title="kineticstoolkit.TimeSeriesEvent">TimeSeriesEvent</a>]</p>
 </dd>
 </dl>
+</dd></dl>
+
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">100</span><span class="p">))</span>
+</pre></div>
+</div>
 <p class="rubric">Methods</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -310,1270 +354,128 @@ data_info attribute could indicate the unit of data[‘Forces’]:</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.add_data_info" title="kineticstoolkit.timeseries.TimeSeries.add_data_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_data_info</span></code></a>(data_key, info_key, value)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.add_data_info.html#kineticstoolkit.TimeSeries.add_data_info" title="kineticstoolkit.TimeSeries.add_data_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_data_info</span></code></a></p></td>
 <td><p>Add metadata to TimeSeries’ data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.add_event" title="kineticstoolkit.timeseries.TimeSeries.add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_event</span></code></a>(time[, name])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.add_event.html#kineticstoolkit.TimeSeries.add_event" title="kineticstoolkit.TimeSeries.add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_event</span></code></a></p></td>
 <td><p>Add an event to the TimeSeries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.copy" title="kineticstoolkit.timeseries.TimeSeries.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.copy.html#kineticstoolkit.TimeSeries.copy" title="kineticstoolkit.TimeSeries.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></p></td>
 <td><p>Deep copy of a TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.fill_missing_samples" title="kineticstoolkit.timeseries.TimeSeries.fill_missing_samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_missing_samples</span></code></a>(max_missing_samples, *)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.fill_missing_samples.html#kineticstoolkit.TimeSeries.fill_missing_samples" title="kineticstoolkit.TimeSeries.fill_missing_samples"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill_missing_samples</span></code></a></p></td>
 <td><p>Fill missing samples with the given method.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.from_dataframe" title="kineticstoolkit.timeseries.TimeSeries.from_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.from_dataframe.html#kineticstoolkit.TimeSeries.from_dataframe" title="kineticstoolkit.TimeSeries.from_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">from_dataframe</span></code></a></p></td>
 <td><p>Create a new TimeSeries from a Pandas Dataframe</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_event_index" title="kineticstoolkit.timeseries.TimeSeries.get_event_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_event_index</span></code></a>(event_name, event_occurrence)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_event_index.html#kineticstoolkit.TimeSeries.get_event_index" title="kineticstoolkit.TimeSeries.get_event_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_event_index</span></code></a></p></td>
 <td><p>Get the index of a given occurrence of an event name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_event_time" title="kineticstoolkit.timeseries.TimeSeries.get_event_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_event_time</span></code></a>(event_name[, event_occurrence])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_event_time.html#kineticstoolkit.TimeSeries.get_event_time" title="kineticstoolkit.TimeSeries.get_event_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_event_time</span></code></a></p></td>
 <td><p>Get the time of the specified event.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_index_after_time" title="kineticstoolkit.timeseries.TimeSeries.get_index_after_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_after_time</span></code></a>(time, /, *[, inclusive])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_index_after_time.html#kineticstoolkit.TimeSeries.get_index_after_time" title="kineticstoolkit.TimeSeries.get_index_after_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_after_time</span></code></a></p></td>
 <td><p>Get the time index that is just after the specified time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_index_at_time" title="kineticstoolkit.timeseries.TimeSeries.get_index_at_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_at_time</span></code></a>(time, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_index_at_time.html#kineticstoolkit.TimeSeries.get_index_at_time" title="kineticstoolkit.TimeSeries.get_index_at_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_at_time</span></code></a></p></td>
 <td><p>Get the time index that is the closest to the specified time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_index_before_time" title="kineticstoolkit.timeseries.TimeSeries.get_index_before_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_before_time</span></code></a>(time, /, *[, inclusive])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_index_before_time.html#kineticstoolkit.TimeSeries.get_index_before_time" title="kineticstoolkit.TimeSeries.get_index_before_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_index_before_time</span></code></a></p></td>
 <td><p>Get the time index that is just before the specified time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_subset" title="kineticstoolkit.timeseries.TimeSeries.get_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_subset</span></code></a>(data_keys)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_subset.html#kineticstoolkit.TimeSeries.get_subset" title="kineticstoolkit.TimeSeries.get_subset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_subset</span></code></a></p></td>
 <td><p>Return a subset of the TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event" title="kineticstoolkit.timeseries.TimeSeries.get_ts_after_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_event</span></code></a>(event_name[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_after_event.html#kineticstoolkit.TimeSeries.get_ts_after_event" title="kineticstoolkit.TimeSeries.get_ts_after_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_event</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries after the specified event.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_index" title="kineticstoolkit.timeseries.TimeSeries.get_ts_after_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_index</span></code></a>(index, /, *[, inclusive])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_after_index.html#kineticstoolkit.TimeSeries.get_ts_after_index" title="kineticstoolkit.TimeSeries.get_ts_after_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_index</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries after the specified time index.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_time" title="kineticstoolkit.timeseries.TimeSeries.get_ts_after_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_time</span></code></a>(time, /, *[, inclusive])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_after_time.html#kineticstoolkit.TimeSeries.get_ts_after_time" title="kineticstoolkit.TimeSeries.get_ts_after_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_after_time</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries after the specified time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_at_event" title="kineticstoolkit.timeseries.TimeSeries.get_ts_at_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_event</span></code></a>(event_name[, event_occurrence])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_at_event.html#kineticstoolkit.TimeSeries.get_ts_at_event" title="kineticstoolkit.TimeSeries.get_ts_at_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_event</span></code></a></p></td>
 <td><p>Get a one-data subset of the TimeSeries at the event’s nearest time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_at_time" title="kineticstoolkit.timeseries.TimeSeries.get_ts_at_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_time</span></code></a>(time, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_at_time.html#kineticstoolkit.TimeSeries.get_ts_at_time" title="kineticstoolkit.TimeSeries.get_ts_at_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_at_time</span></code></a></p></td>
 <td><p>Get a one-data subset of the TimeSeries at the nearest time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_event" title="kineticstoolkit.timeseries.TimeSeries.get_ts_before_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_event</span></code></a>(event_name[, …])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_before_event.html#kineticstoolkit.TimeSeries.get_ts_before_event" title="kineticstoolkit.TimeSeries.get_ts_before_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_event</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries before the specified event.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_index" title="kineticstoolkit.timeseries.TimeSeries.get_ts_before_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_index</span></code></a>(index, /, *[, inclusive])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_before_index.html#kineticstoolkit.TimeSeries.get_ts_before_index" title="kineticstoolkit.TimeSeries.get_ts_before_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_index</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries before the specified time index.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_time" title="kineticstoolkit.timeseries.TimeSeries.get_ts_before_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_time</span></code></a>(time, /, *[, inclusive])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_before_time.html#kineticstoolkit.TimeSeries.get_ts_before_time" title="kineticstoolkit.TimeSeries.get_ts_before_time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_before_time</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries before the specified time.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_events" title="kineticstoolkit.timeseries.TimeSeries.get_ts_between_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_events</span></code></a>(event_name1, event_name2)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_between_events.html#kineticstoolkit.TimeSeries.get_ts_between_events" title="kineticstoolkit.TimeSeries.get_ts_between_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_events</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries between two specified events.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_indexes" title="kineticstoolkit.timeseries.TimeSeries.get_ts_between_indexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_indexes</span></code></a>(index1, index2, /, *)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_between_indexes.html#kineticstoolkit.TimeSeries.get_ts_between_indexes" title="kineticstoolkit.TimeSeries.get_ts_between_indexes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_indexes</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries before two specified time indexes.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_times" title="kineticstoolkit.timeseries.TimeSeries.get_ts_between_times"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_times</span></code></a>(time1, time2, /, *[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.get_ts_between_times.html#kineticstoolkit.TimeSeries.get_ts_between_times" title="kineticstoolkit.TimeSeries.get_ts_between_times"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_ts_between_times</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries between two specified times.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.isnan" title="kineticstoolkit.timeseries.TimeSeries.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a>(data_key, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.isnan.html#kineticstoolkit.TimeSeries.isnan" title="kineticstoolkit.TimeSeries.isnan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isnan</span></code></a></p></td>
 <td><p>Return a boolean array of missing samples.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.merge" title="kineticstoolkit.timeseries.TimeSeries.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a>(ts[, data_keys, resample, overwrite])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.merge.html#kineticstoolkit.TimeSeries.merge" title="kineticstoolkit.TimeSeries.merge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">merge</span></code></a></p></td>
 <td><p>Merge another TimeSeries into the current TimeSeries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.plot" title="kineticstoolkit.timeseries.TimeSeries.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a>([data_keys, event_names, legend])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.plot.html#kineticstoolkit.TimeSeries.plot" title="kineticstoolkit.TimeSeries.plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot</span></code></a></p></td>
 <td><p>Plot the TimeSeries using matplotlib.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.remove_data" title="kineticstoolkit.timeseries.TimeSeries.remove_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data</span></code></a>(data_key, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.remove_data.html#kineticstoolkit.TimeSeries.remove_data" title="kineticstoolkit.TimeSeries.remove_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data</span></code></a></p></td>
 <td><p>Remove a data key and its associated metadata.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.remove_data_info" title="kineticstoolkit.timeseries.TimeSeries.remove_data_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data_info</span></code></a>(data_key, info_key, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.remove_data_info.html#kineticstoolkit.TimeSeries.remove_data_info" title="kineticstoolkit.TimeSeries.remove_data_info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_data_info</span></code></a></p></td>
 <td><p>Remove metadata from a TimeSeries’ data.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.remove_event" title="kineticstoolkit.timeseries.TimeSeries.remove_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_event</span></code></a>(event_name[, event_occurrence])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.remove_event.html#kineticstoolkit.TimeSeries.remove_event" title="kineticstoolkit.TimeSeries.remove_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_event</span></code></a></p></td>
 <td><p>Remove an event occurrence or all events of a same name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.rename_data" title="kineticstoolkit.timeseries.TimeSeries.rename_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_data</span></code></a>(old_data_key, new_data_key, /)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.rename_data.html#kineticstoolkit.TimeSeries.rename_data" title="kineticstoolkit.TimeSeries.rename_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_data</span></code></a></p></td>
 <td><p>Rename a key in data and data_info.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.rename_event" title="kineticstoolkit.timeseries.TimeSeries.rename_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_event</span></code></a>(event_name, new_name[, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.rename_event.html#kineticstoolkit.TimeSeries.rename_event" title="kineticstoolkit.TimeSeries.rename_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rename_event</span></code></a></p></td>
 <td><p>Rename an event occurrence or all events of a same name.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.resample" title="kineticstoolkit.timeseries.TimeSeries.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code></a>(new_time[, kind, fill_value])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.resample.html#kineticstoolkit.TimeSeries.resample" title="kineticstoolkit.TimeSeries.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">resample</span></code></a></p></td>
 <td><p>Resample the TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.shift" title="kineticstoolkit.timeseries.TimeSeries.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a>(time, /)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.shift.html#kineticstoolkit.TimeSeries.shift" title="kineticstoolkit.TimeSeries.shift"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shift</span></code></a></p></td>
 <td><p>Shift time and events.time.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.sort_events" title="kineticstoolkit.timeseries.TimeSeries.sort_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_events</span></code></a>(*[, unique])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.sort_events.html#kineticstoolkit.TimeSeries.sort_events" title="kineticstoolkit.TimeSeries.sort_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort_events</span></code></a></p></td>
 <td><p>Sorts the TimeSeries’ events from the earliest to the latest.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.sync_event" title="kineticstoolkit.timeseries.TimeSeries.sync_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_event</span></code></a>(event_name[, event_occurrence])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.sync_event.html#kineticstoolkit.TimeSeries.sync_event" title="kineticstoolkit.TimeSeries.sync_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sync_event</span></code></a></p></td>
 <td><p>Shift time and events.time so that event_name is the new time zero.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.to_dataframe" title="kineticstoolkit.timeseries.TimeSeries.to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.to_dataframe.html#kineticstoolkit.TimeSeries.to_dataframe" title="kineticstoolkit.TimeSeries.to_dataframe"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_dataframe</span></code></a></p></td>
 <td><p>Create a DataFrame by reshaping all data to one bidimensional table.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="kineticstoolkit.timeseries.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a>()</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.trim_events.html#kineticstoolkit.TimeSeries.trim_events" title="kineticstoolkit.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">trim_events</span></code></a></p></td>
 <td><p>Delete the events that are outside the TimeSeries’ time vector.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="kineticstoolkit.timeseries.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a>([name, plot, multiple_events])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_add_event.html#kineticstoolkit.TimeSeries.ui_add_event" title="kineticstoolkit.TimeSeries.ui_add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_add_event</span></code></a></p></td>
 <td><p>Add one or many events interactively to the TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_edit_events" title="kineticstoolkit.timeseries.TimeSeries.ui_edit_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_edit_events</span></code></a>([event_name, plot])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_edit_events.html#kineticstoolkit.TimeSeries.ui_edit_events" title="kineticstoolkit.TimeSeries.ui_edit_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_edit_events</span></code></a></p></td>
 <td><p>Edit events interactively.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a>([data_keys, inclusive])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_get_ts_between_clicks.html#kineticstoolkit.TimeSeries.ui_get_ts_between_clicks" title="kineticstoolkit.TimeSeries.ui_get_ts_between_clicks"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_get_ts_between_clicks</span></code></a></p></td>
 <td><p>Get a subset of the TimeSeries between two mouse clicks.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="kineticstoolkit.timeseries.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a>([data_keys, ts2, data_keys2])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.TimeSeries.ui_sync.html#kineticstoolkit.TimeSeries.ui_sync" title="kineticstoolkit.TimeSeries.ui_sync"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ui_sync</span></code></a></p></td>
 <td><p>Synchronize one or two TimeSeries by shifting their time.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.add_data_info">
-<span class="sig-name descname"><span class="pre">add_data_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.add_data_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add metadata to TimeSeries’ data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_key</strong></dt><dd><p>The data key the info corresponds to.</p>
-</dd>
-<dt><strong>info_key</strong></dt><dd><p>The key of the info dict.</p>
-</dd>
-<dt><strong>value</strong></dt><dd><p>The info.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>None.</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.add_event">
-<span class="sig-name descname"><span class="pre">add_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'event'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.add_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add an event to the TimeSeries.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>The time of the event, in the same unit as <cite>time_info[‘Unit’]</cite>.</p>
-</dd>
-<dt><strong>name</strong></dt><dd><p>Optional. The name of the event.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.copy">
-<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.copy" title="Permalink to this definition">¶</a></dt>
-<dd><p>Deep copy of a TimeSeries.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.fill_missing_samples">
-<span class="sig-name descname"><span class="pre">fill_missing_samples</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">max_missing_samples</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.fill_missing_samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fill missing samples with the given method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>max_missing_samples</strong></dt><dd><p>Maximal number of consecutive missing samples to fill. Set to
-zero to fill all missing samples.</p>
-</dd>
-<dt><strong>method</strong></dt><dd><p>Optional. The interpolation method. This input may take any value
-supported by scipy.interpolate.interp1d, such as ‘linear’,
-‘nearest’, ‘zero’, ‘slinear’, ‘quadratic’, ‘cubic’, ‘previous’ or
-‘next’.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.from_dataframe">
-<span class="sig-name descname"><span class="pre">from_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.from_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a new TimeSeries from a Pandas Dataframe</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>dataframe</strong></dt><dd><p>A Pandas DataFrame where the index corresponds to time, and
-where each column corresponds to a data key. As special cases,
-data in column which names end with bracketed indices such as
-[0], [1], [0,0], [0,1], etc. are converted to multidimensional
-arrays. For example, if a DataFrame has these column names:
-[‘Forces[0]’, ‘Forces[1]’, ‘Forces[2]’, ‘Forces[3]’],
-then a single data key is created (Forces) and the data itself
-will be of shape Nx4, N being the number of samples (the length
-of the DataFrame).</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_event_index">
-<span class="sig-name descname"><span class="pre">get_event_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_event_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the index of a given occurrence of an event name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>i_th occurence of the event to look for in the events
-list, starting at 0, where the occurrences are sorted in time.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>int</dt><dd><p>The index of the event or np.nan if no event found.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_event_time">
-<span class="sig-name descname"><span class="pre">get_event_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_event_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the time of the specified event.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>float</dt><dd><p>The time of the specified event. If no corresponding event is
-found, then np.nan is returned.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_index_after_time">
-<span class="sig-name descname"><span class="pre">get_index_after_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_index_after_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the time index that is just after the specified time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>Time to look for in the TimeSeries’ time vector.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>int</dt><dd><p>The index in the time vector. If no value is after the
-specified time, a value of np.nan is returned.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_index_at_time">
-<span class="sig-name descname"><span class="pre">get_index_at_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_index_at_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the time index that is the closest to the specified time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>Time to look for in the TimeSeries’ time vector.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>int</dt><dd><p>The index in the time vector.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_index_before_time">
-<span class="sig-name descname"><span class="pre">get_index_before_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_index_before_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the time index that is just before the specified time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>Time to look for in the TimeSeries’ time vector.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>int</dt><dd><p>The index in the time vector. If no value is before the specified
-time, a value of np.nan is returned.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_subset">
-<span class="sig-name descname"><span class="pre">get_subset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_subset" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a subset of the TimeSeries.</p>
-<p>This method returns a TimeSeries that contains only selected data
-keys. The corresponding data_info keys are copied in the new
-TimeSeries. All events are also copied in the new TimeSeries.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_keys</strong></dt><dd><p>The data keys to extract from the timeseries.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>TimeSeries</dt><dd><p>A copy of the TimeSeries, minus the unspecified data keys.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_after_event">
-<span class="sig-name descname"><span class="pre">get_ts_after_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries after the specified event.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given event in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_after_index">
-<span class="sig-name descname"><span class="pre">get_ts_after_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries after the specified time index.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>index</strong></dt><dd><p>Time index</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time index.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_after_time">
-<span class="sig-name descname"><span class="pre">get_ts_after_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_after_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries after the specified time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>Time to look for in the TimeSeries’ time vector.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_at_event">
-<span class="sig-name descname"><span class="pre">get_ts_at_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_at_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a one-data subset of the TimeSeries at the event’s nearest time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>TimeSeries</dt><dd><p>A TimeSeries of length 1, at the event’s nearest time.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_at_time">
-<span class="sig-name descname"><span class="pre">get_ts_at_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_at_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a one-data subset of the TimeSeries at the nearest time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>Time to look for in the TimeSeries’ time vector.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>TimeSeries</dt><dd><p>A TimeSeries of length 1, at the time neasest to the specified
-time.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_before_event">
-<span class="sig-name descname"><span class="pre">get_ts_before_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries before the specified event.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_before_index">
-<span class="sig-name descname"><span class="pre">get_ts_before_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries before the specified time index.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>index</strong></dt><dd><p>Time index</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time index.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_before_time">
-<span class="sig-name descname"><span class="pre">get_ts_before_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_before_time" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries before the specified time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time</strong></dt><dd><p>Time to look for in the TimeSeries’ time vector.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_between_events">
-<span class="sig-name descname"><span class="pre">get_ts_between_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries between two specified events.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name1, event_name2</strong></dt><dd><p>Name of the events to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence1, event_occurrence2</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_between_indexes">
-<span class="sig-name descname"><span class="pre">get_ts_between_indexes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_indexes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries before two specified time indexes.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>index1, index2</strong></dt><dd><p>Time indexes</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time indexes.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.get_ts_between_times">
-<span class="sig-name descname"><span class="pre">get_ts_between_times</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.get_ts_between_times" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries between two specified times.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time1, time2</strong></dt><dd><p>Times to look for in the TimeSeries’ time vector.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.isnan">
-<span class="sig-name descname"><span class="pre">isnan</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.isnan" title="Permalink to this definition">¶</a></dt>
-<dd><p>Return a boolean array of missing samples.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_key</strong></dt><dd><p>Key value of the data signal to analyze.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt><strong>nans</strong><span class="classifier">array</span></dt><dd><p>A boolean array of the same size as the time vector, where True
-values represent missing samples (samples that contain at least
-one nan value).</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.merge">
-<span class="sig-name descname"><span class="pre">merge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">overwrite</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.merge" title="Permalink to this definition">¶</a></dt>
-<dd><p>Merge another TimeSeries into the current TimeSeries.</p>
-<p>This method merges a TimeSeries into the current TimeSeries, copying
-the data, data_info and events.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>ts</strong></dt><dd><p>The TimeSeries to merge into the current TimeSeries.</p>
-</dd>
-<dt><strong>data_keys</strong></dt><dd><p>Optional. The data keys to merge from ts. If left empty, all the
-data keys are merged.</p>
-</dd>
-<dt><strong>resample</strong></dt><dd><p>Optional. Set to True to resample the source TimeSeries, in case
-the time vectors are not matched. If the time vectors are not
-matched and resample is False, an exception is raised.</p>
-</dd>
-<dt><strong>overwrite</strong></dt><dd><p>Optional. If duplicates are found and overwrite is True, then the
-source (ts) overwrites the destination. Otherwise (overwrite is
-False), the duplicate data in ts is ignored.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the TimeSeries using matplotlib.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_keys</strong></dt><dd><p>The data keys to plot. If left empty, all data is plotted.</p>
-</dd>
-<dt><strong>event_names</strong></dt><dd><p>Optional. True to plot the event names on top of the event lines.</p>
-</dd>
-<dt><strong>legend</strong></dt><dd><p>Optional. True to plot a legend, False otherwise.</p>
-</dd>
-<dt><strong>Additional positional and keyboard arguments are passed to the</strong></dt><dd></dd>
-<dt><strong>pyplot’s plot function.</strong></dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.remove_data">
-<span class="sig-name descname"><span class="pre">remove_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.remove_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove a data key and its associated metadata.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_key</strong></dt><dd><p>Name of the data key.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.remove_data_info">
-<span class="sig-name descname"><span class="pre">remove_data_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.remove_data_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove metadata from a TimeSeries’ data.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_key</strong></dt><dd><p>The data key the info corresponds to.</p>
-</dd>
-<dt><strong>info_key</strong></dt><dd><p>The key of the info dict.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.remove_event">
-<span class="sig-name descname"><span class="pre">remove_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.remove_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Remove an event occurrence or all events of a same name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0, where the occurrences are sorted in time.
-If None (default), all occurences of this event name or removed.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.rename_data">
-<span class="sig-name descname"><span class="pre">rename_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_data_key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_data_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.rename_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rename a key in data and data_info.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>old_data_key</strong></dt><dd><p>Name of the current data key.</p>
-</dd>
-<dt><strong>new_data_key</strong></dt><dd><p>New name of the data key.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.rename_event">
-<span class="sig-name descname"><span class="pre">rename_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.rename_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Rename an event occurrence or all events of a same name.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to look for in the events list.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. i_th occurence of the event to look for in the events
-list, starting at 0, where the occurrences are sorted in time.
-If None (default), all occurences of this event name or renamed.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.resample">
-<span class="sig-name descname"><span class="pre">resample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kind</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'linear'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.resample" title="Permalink to this definition">¶</a></dt>
-<dd><p>Resample the TimeSeries.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>new_time</strong></dt><dd><p>The new time vector to resample the TimeSeries to.</p>
-</dd>
-<dt><strong>kind</strong></dt><dd><p>Optional. The interpolation method. This input may take any value
-supported by scipy.interpolate.interp1d, such as ‘linear’,
-‘nearest’, ‘zero’, ‘slinear’, ‘quadratic’, ‘cubic’, ‘previous’,
-‘next’. Additionally, kind can be ‘pchip’.</p>
-</dd>
-<dt><strong>fill_value</strong></dt><dd><p>Optional. The fill value to use if new_time vector contains point
-outside the current TimeSeries’ time vector. Use ‘extrapolate’ to
-extrapolate.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.shift">
-<span class="sig-name descname"><span class="pre">shift</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.shift" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shift time and events.time.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>time_shift</strong></dt><dd><p>Time to be added to time and events.time.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.sort_events">
-<span class="sig-name descname"><span class="pre">sort_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.sort_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Sorts the TimeSeries’ events from the earliest to the latest.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>unique</strong></dt><dd><p>Optional. True to make events unique so that no two events can
-have both the same name and the same time.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.sync_event">
-<span class="sig-name descname"><span class="pre">sync_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.sync_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shift time and events.time so that event_name is the new time zero.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Name of the event to sync on.</p>
-</dd>
-<dt><strong>event_occurrence</strong></dt><dd><p>Optional. Occurrence of the event to sync on, starting with 0.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.to_dataframe">
-<span class="sig-name descname"><span class="pre">to_dataframe</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.to_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a DataFrame by reshaping all data to one bidimensional table.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><dl class="simple">
-<dt>DataFrame</dt><dd><p>DataFrame with the index as the TimeSeries’ time. Vector data are
-converted to single columns, and two-dimensional (or more) data are
-converted to multiple columns with the additional dimensions in
-brackets. The TimeSeries’s events and metadata such as time_info
-and data_info are not included in the resulting DataFrame.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.trim_events">
-<span class="sig-name descname"><span class="pre">trim_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.trim_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Delete the events that are outside the TimeSeries’ time vector.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.ui_add_event">
-<span class="sig-name descname"><span class="pre">ui_add_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'event'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">multiple_events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_add_event" title="Permalink to this definition">¶</a></dt>
-<dd><p>Add one or many events interactively to the TimeSeries.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>name</strong></dt><dd><p>Optional. The name of the event.</p>
-</dd>
-<dt><strong>plot</strong></dt><dd><p>Optional. A signal name of list of signal name to be plotted,
-similar to the argument of ktk.TimeSeries.plot().</p>
-</dd>
-<dt><strong>multiple_events</strong></dt><dd><p>Optional. False to add only one event, True to add multiple events
-with the same name.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>bool</dt><dd><p>True if the event was added, False if the operation was cancelled
-by the user.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.ui_edit_events">
-<span class="sig-name descname"><span class="pre">ui_edit_events</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_edit_events" title="Permalink to this definition">¶</a></dt>
-<dd><p>Edit events interactively.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>event_name</strong></dt><dd><p>Optional. The name of the event(s) to add. May be a string
-or a list of strings. Event names can be selected interactively.</p>
-</dd>
-<dt><strong>plot</strong></dt><dd><p>Optional. A signal name of list of signal name to be plotted,
-similar to the argument of ktk.TimeSeries.plot().</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>bool</dt><dd><p>True if the TimeSeries has been modified, False if the operation
-was cancelled by the user.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks">
-<span class="sig-name descname"><span class="pre">ui_get_ts_between_clicks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inclusive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_get_ts_between_clicks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get a subset of the TimeSeries between two mouse clicks.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_keys</strong></dt><dd><p>Optional. String or list of strings corresponding to the signals
-to plot. See TimeSeries.plot() for more information.</p>
-</dd>
-<dt><strong>inclusive</strong></dt><dd><p>Optional. True to include the given time in the comparison.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeries.ui_sync">
-<span class="sig-name descname"><span class="pre">ui_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_keys2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeries.ui_sync" title="Permalink to this definition">¶</a></dt>
-<dd><p>Synchronize one or two TimeSeries by shifting their time.</p>
-<p>If this method is called on only one TimeSeries, an interactive
-interface asks the user to click on the time to set to zero.</p>
-<p>If another TimeSeries is given, an interactive interface allows
-synchronizing both TimeSeries together.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>data_keys</strong></dt><dd><p>Optional. The data keys to plot. If kept tempy, all data is
-plotted.</p>
-</dd>
-<dt><strong>ts2</strong></dt><dd><p>Optional. A second TimeSeries that contains both a recognizable
-zero-time event and a common event with the first TimeSeries.</p>
-</dd>
-<dt><strong>data_keys2</strong></dt><dd><p>Optional. The data keys from the second TimeSeries to plot. If
-kept tempy, all data is plotted.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py class">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeriesEvent">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.timeseries.</span></span><span class="sig-name descname"><span class="pre">TimeSeriesEvent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'event'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeriesEvent" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define an event in a timeseries.</p>
-<p>This class derives from the list class. A TimeSeriesEvent is always a
-two-items list with the first item being the time and the second item
-being the name of the event.</p>
-<p>The dependent properties <cite>time</cite> and <cite>name</cite> can be used both in read and
-write for convenience.</p>
-<p>This class is rarely used by itself, it is easier to use the <cite>TimeSeries`</cite>
-methods to deal with events.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Attributes</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeriesEvent.name" title="kineticstoolkit.timeseries.TimeSeriesEvent.name"><code class="xref py py-obj docutils literal notranslate"><span class="pre">name</span></code></a></dt><dd><p>The name of the event.</p>
-</dd>
-<dt><a class="reference internal" href="#kineticstoolkit.timeseries.TimeSeriesEvent.time" title="kineticstoolkit.timeseries.TimeSeriesEvent.time"><code class="xref py py-obj docutils literal notranslate"><span class="pre">time</span></code></a></dt><dd><p>The time at which the event happened.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Methods</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code>(object, /)</p></td>
-<td><p>Append object to the end of the list.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code>(/)</p></td>
-<td><p>Remove all items from list.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code>(/)</p></td>
-<td><p>Return a shallow copy of the list.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">count</span></code>(value, /)</p></td>
-<td><p>Return number of occurrences of value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">extend</span></code>(iterable, /)</p></td>
-<td><p>Extend list by appending elements from the iterable.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code>(value[, start, stop])</p></td>
-<td><p>Return first index of value.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">insert</span></code>(index, object, /)</p></td>
-<td><p>Insert object before index.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pop</span></code>([index])</p></td>
-<td><p>Remove and return item at index (default last).</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code>(value, /)</p></td>
-<td><p>Remove first occurrence of value.</p></td>
-</tr>
-<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">reverse</span></code>(/)</p></td>
-<td><p>Reverse <em>IN PLACE</em>.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">sort</span></code>(*[, key, reverse])</p></td>
-<td><p>Sort the list in ascending order and return None.</p></td>
-</tr>
-</tbody>
-</table>
-<dl class="py property">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeriesEvent.name">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeriesEvent.name" title="Permalink to this definition">¶</a></dt>
-<dd><p>The name of the event.</p>
-</dd></dl>
-
-<dl class="py property">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.TimeSeriesEvent.time">
-<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#kineticstoolkit.timeseries.TimeSeriesEvent.time" title="Permalink to this definition">¶</a></dt>
-<dd><p>The time at which the event happened.</p>
-</dd></dl>
-
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.dataframe_to_dict_of_arrays">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.timeseries.</span></span><span class="sig-name descname"><span class="pre">dataframe_to_dict_of_arrays</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataframe</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.dataframe_to_dict_of_arrays" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a pandas DataFrame to a dict of numpy ndarrays.</p>
-<p>This function mirrors the dict_of_arrays_to_dataframe function. It is
-mainly used by the TimeSeries.from_dataframe method.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>pd_dataframe</strong></dt><dd><p>The dataframe to be converted.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>Dict[str, np.ndarray]</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Examples</p>
-<p>In the simplest case, each dataframe column becomes a dict key.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;column1&#39;</span><span class="p">,</span> <span class="s1">&#39;column2&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span>
-<span class="go">   column1  column2</span>
-<span class="go">0        0        3</span>
-<span class="go">1        1        4</span>
-<span class="go">2        2        5</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">dataframe_to_dict_of_arrays</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;column1&#39;</span><span class="p">]</span>
-<span class="go">array([0, 1, 2])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;column2&#39;</span><span class="p">]</span>
-<span class="go">array([3, 4, 5])</span>
-</pre></div>
-</div>
-<p>If the dataframe contains similar column names with indices in brackets
-(for example, Forces[0], Forces[1], Forces[2]), then these columns are
-combined in a single array.</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">]])</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Forces[0]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[1]&#39;</span><span class="p">,</span> <span class="s1">&#39;Forces[2]&#39;</span><span class="p">,</span> <span class="s1">&#39;Other&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df</span>
-<span class="go">   Forces[0]  Forces[1]  Forces[2]  Other</span>
-<span class="go">0          0          3          6      9</span>
-<span class="go">1          1          4          7     10</span>
-<span class="go">2          2          5          8     11</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span> <span class="o">=</span> <span class="n">dataframe_to_dict_of_arrays</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Forces&#39;</span><span class="p">]</span>
-<span class="go">array([[0, 3, 6],</span>
-<span class="go">       [1, 4, 7],</span>
-<span class="go">       [2, 5, 8]])</span>
-</pre></div>
-</div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Other&#39;</span><span class="p">]</span>
-<span class="go">array([ 9, 10, 11])</span>
-</pre></div>
-</div>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]</p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.timeseries.dict_of_arrays_to_dataframe">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.timeseries.</span></span><span class="sig-name descname"><span class="pre">dict_of_arrays_to_dataframe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict_of_arrays</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.timeseries.dict_of_arrays_to_dataframe" title="Permalink to this definition">¶</a></dt>
-<dd><p>Convert a dict of ndarray of any dimension to a pandas DataFrame.</p>
-<p>This function mirrors the dataframe_to_dict_of_arrays function. It is
-mainly used by the TimeSeries.to_dataframe method.</p>
-<p>The rows in the output DataFrame correspond to the first dimension of the
-numpy arrays.</p>
-<ul class="simple">
-<li><p>Vectors are converted to single-column DataFrames.</p></li>
-<li><p>2-dimensional arrays are converted to multi-columns DataFrames.</p></li>
-<li><p>3-dimensional (or more) arrays are also converted to DataFrames, but
-indices in brackets are added to the column names.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>dict_of_array</strong></dt><dd><p>A dict that contains numpy arrays. Each array must have the same
-first dimension’s size.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>DataFrame</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></p>
-</dd>
-</dl>
 </dd></dl>
 
 </div>
@@ -1584,8 +486,8 @@ first dimension’s size.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.tools.html" class="btn btn-neutral float-right" title="kineticstoolkit.tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.pushrimkinetics.html" class="btn btn-neutral float-left" title="kineticstoolkit.pushrimkinetics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.TimeSeries.add_data_info.html" class="btn btn-neutral float-right" title="kineticstoolkit.TimeSeries.add_data_info" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../api_reference.html" class="btn btn-neutral float-left" title="API Reference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

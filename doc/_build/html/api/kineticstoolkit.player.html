@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.player &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.Player &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.pushrimkinetics" href="kineticstoolkit.pushrimkinetics.html" />
-    <link rel="prev" title="kineticstoolkit.loadsave" href="kineticstoolkit.loadsave.html" />
+    <link rel="next" title="kineticstoolkit.Player.close" href="kineticstoolkit.Player.close.html" />
+    <link rel="prev" title="kineticstoolkit.TimeSeriesEvent.sort" href="kineticstoolkit.TimeSeriesEvent.sort.html" />
 
 
  
@@ -114,23 +114,18 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.player</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#classes">Classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.TimeSeries.html">kineticstoolkit.TimeSeries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.TimeSeriesEvent.html">kineticstoolkit.TimeSeriesEvent</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.Player</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.Player.close.html">kineticstoolkit.Player.close</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.Player.to_html5.html">kineticstoolkit.Player.to_html5</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#submodules">Submodules</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -191,7 +186,7 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-      <li>kineticstoolkit.player</li>
+      <li>kineticstoolkit.Player</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -205,10 +200,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.pushrimkinetics.html" class="btn btn-neutral float-right" title="kineticstoolkit.pushrimkinetics" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.Player.close.html" class="btn btn-neutral float-right" title="kineticstoolkit.Player.close" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.loadsave.html" class="btn btn-neutral float-left" title="kineticstoolkit.loadsave" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.TimeSeriesEvent.sort.html" class="btn btn-neutral float-left" title="kineticstoolkit.TimeSeriesEvent.sort" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -241,40 +236,25 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.player">
-<span id="kineticstoolkit-player"></span><h1>kineticstoolkit.player<a class="headerlink" href="#module-kineticstoolkit.player" title="Permalink to this headline">¶</a></h1>
-<p>Provides the Player class to visualize markers and rigid bodies in 3d.</p>
-<p>The Player class is accessible directly from the toplevel Kinetics Toolkit
-namespace (i.e., ktk.Player).</p>
-<p class="rubric">Classes</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.player.Player" title="kineticstoolkit.player.Player"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Player</span></code></a>(*ts[, segments, current_frame, …])</p></td>
-<td><p>A class that allows visualizing markers and rigid bodies in 3D.</p></td>
-</tr>
-</tbody>
-</table>
+<div class="section" id="kineticstoolkit-player">
+<h1>kineticstoolkit.Player<a class="headerlink" href="#kineticstoolkit-player" title="Permalink to this headline">¶</a></h1>
 <dl class="py class">
-<dt class="sig sig-object py" id="kineticstoolkit.player.Player">
-<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.player.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.008</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zoom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perspective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.player.Player" title="Permalink to this definition">¶</a></dt>
-<dd><p>A class that allows visualizing markers and rigid bodies in 3D.</p>
+<dt class="sig sig-object py" id="kineticstoolkit.Player">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">kineticstoolkit.</span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.008</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zoom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perspective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.Player" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that allows visualizing markers and rigid bodies in 3D.</p>
 <p>player = ktk.Player(parameters) creates and launches a Player
 instance.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>*ts</strong></dt><dd><p>Contains the markers and rigid bodies to visualize, where each data
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*ts</strong> – Contains the markers and rigid bodies to visualize, where each data
 key is either a marker position expressed as Nx4 array (N=time),
 or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
-can be provided, e.g., ktk.Player(markers, rigid_bodies)</p>
-</dd>
-<dt><strong>segments</strong></dt><dd><p>Optional. Used to draw lines between markers. Each key corresponds to a
+can be provided, e.g., ktk.Player(markers, rigid_bodies)</p></li>
+<li><p><strong>segments</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – <p>Optional. Used to draw lines between markers. Each key corresponds to a
 segment, where a segment is another dict with the following keys:</p>
-<ul class="simple">
+<ul>
 <li><p>Links: list of list of 2 str, where each str is a marker
 name. For example, to link Marker1 to Marker2 and
 Marker1 to Marker3, Links would be:
@@ -283,30 +263,20 @@ Marker1 to Marker3, Links would be:
 link. Color must be a valid value for matplotlib’s
 plots.</p></li>
 </ul>
-</dd>
-<dt><strong>current_frame</strong></dt><dd><p>Optional. Sets the inital frame number to show.</p>
-</dd>
-<dt><strong>marker_radius</strong></dt><dd><p>Optional. Sets the marker radius as defined by matplotlib.</p>
-</dd>
-<dt><strong>axis_length</strong></dt><dd><p>Optional. Sets the rigid body size in meters.</p>
-</dd>
-<dt><strong>zoom</strong></dt><dd><p>Optional. Sets the initial camera zoom.</p>
-</dd>
-<dt><strong>azimuth</strong></dt><dd><p>Optional. Sets the initial camera azimuth in radians.</p>
-</dd>
-<dt><strong>elevation</strong></dt><dd><p>Optional. Sets the initial camera elevation in radians.</p>
-</dd>
-<dt><strong>translation</strong></dt><dd><p>Optional. Sets the initial camera translation (panning).</p>
-</dd>
-<dt><strong>target</strong></dt><dd><p>Optional. Sets the camera target in meters.</p>
-</dd>
-<dt><strong>track</strong></dt><dd><p>Optional. False to keep the scene static, True to track the last
-selected marker when changing frame.</p>
-</dd>
-<dt><strong>perspective</strong></dt><dd><p>Optional. True to draw the scene using perspective, False to draw the
-scene orthogonally.</p>
-</dd>
-</dl>
+</p></li>
+<li><p><strong>current_frame</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. Sets the inital frame number to show.</p></li>
+<li><p><strong>marker_radius</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Sets the marker radius as defined by matplotlib.</p></li>
+<li><p><strong>axis_length</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Sets the rigid body size in meters.</p></li>
+<li><p><strong>zoom</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Sets the initial camera zoom.</p></li>
+<li><p><strong>azimuth</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Sets the initial camera azimuth in radians.</p></li>
+<li><p><strong>elevation</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Sets the initial camera elevation in radians.</p></li>
+<li><p><strong>translation</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Optional. Sets the initial camera translation (panning).</p></li>
+<li><p><strong>target</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>], <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – Optional. Sets the camera target in meters.</p></li>
+<li><p><strong>track</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. False to keep the scene static, True to track the last
+selected marker when changing frame.</p></li>
+<li><p><strong>perspective</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to draw the scene using perspective, False to draw the
+scene orthogonally.</p></li>
+</ul>
 </dd>
 </dl>
 <p class="rubric">Methods</p>
@@ -316,53 +286,14 @@ scene orthogonally.</p>
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.player.Player.close" title="kineticstoolkit.player.Player.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.Player.close.html#kineticstoolkit.Player.close" title="kineticstoolkit.Player.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a></p></td>
 <td><p>Close the Player and its associated window.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.player.Player.to_html5" title="kineticstoolkit.player.Player.to_html5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_html5</span></code></a>([start_frame, stop_frame, …])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.Player.to_html5.html#kineticstoolkit.Player.to_html5" title="kineticstoolkit.Player.to_html5"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_html5</span></code></a></p></td>
 <td><p>Create an html5 video for displaying in Jupyter notebooks.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.player.Player.close">
-<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.player.Player.close" title="Permalink to this definition">¶</a></dt>
-<dd><p>Close the Player and its associated window.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py method">
-<dt class="sig sig-object py" id="kineticstoolkit.player.Player.to_html5">
-<span class="sig-name descname"><span class="pre">to_html5</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">start_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_frame</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stop_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.player.Player.to_html5" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create an html5 video for displaying in Jupyter notebooks.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>start_frame</strong></dt><dd><p>Start frame in the exported video. Default is the beginning.</p>
-</dd>
-<dt><strong>stop_frame</strong></dt><dd><p>Stop frame in the exported video. Negative numbers to count from
-the end. Default is the end.</p>
-</dd>
-<dt><strong>start_time</strong></dt><dd><p>Start time in the exported video. Default is the beginning.
-Ignored if start_frame is set.</p>
-</dd>
-<dt><strong>stop_time</strong></dt><dd><p>Stop time in the exported video. Default is the end.
-Ignored if stop_frame is set.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>A matplotlib animation object for displaying as html5.</dt><dd></dd>
-</dl>
-</dd>
-</dl>
-</dd></dl>
-
 </dd></dl>
 
 </div>
@@ -373,8 +304,8 @@ Ignored if stop_frame is set.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.pushrimkinetics.html" class="btn btn-neutral float-right" title="kineticstoolkit.pushrimkinetics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.loadsave.html" class="btn btn-neutral float-left" title="kineticstoolkit.loadsave" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.Player.close.html" class="btn btn-neutral float-right" title="kineticstoolkit.Player.close" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.TimeSeriesEvent.sort.html" class="btn btn-neutral float-left" title="kineticstoolkit.TimeSeriesEvent.sort" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.geometry" href="kineticstoolkit.geometry.html" />
-    <link rel="prev" title="kineticstoolkit.emg" href="kineticstoolkit.emg.html" />
+    <link rel="next" title="kineticstoolkit.filters.butter" href="kineticstoolkit.filters.butter.html" />
+    <link rel="prev" title="kineticstoolkit.emg.read_delsys_csv" href="kineticstoolkit.emg.read_delsys_csv.html" />
 
 
  
@@ -114,23 +114,25 @@
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../api_reference.html">API Reference</a><ul class="current">
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.config.html">kineticstoolkit.config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
-<li class="toctree-l2 current"><a class="current reference internal" href="#">kineticstoolkit.filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.player.html">kineticstoolkit.player</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../api_reference.html#functions">Functions</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../api_reference.html#submodules">Submodules</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.filters</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.filters.butter.html">kineticstoolkit.filters.butter</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.filters.deriv.html">kineticstoolkit.filters.deriv</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.filters.median.html">kineticstoolkit.filters.median</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.filters.savgol.html">kineticstoolkit.filters.savgol</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.filters.smooth.html">kineticstoolkit.filters.smooth</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -205,10 +207,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.geometry.html" class="btn btn-neutral float-right" title="kineticstoolkit.geometry" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.filters.butter.html" class="btn btn-neutral float-right" title="kineticstoolkit.filters.butter" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.emg.html" class="btn btn-neutral float-left" title="kineticstoolkit.emg" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.emg.read_delsys_csv.html" class="btn btn-neutral float-left" title="kineticstoolkit.emg.read_delsys_csv" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -251,176 +253,23 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.filters.butter" title="kineticstoolkit.filters.butter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">butter</span></code></a>(ts, /, fc, *[, order, btype, filtfilt])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.filters.butter.html#kineticstoolkit.filters.butter" title="kineticstoolkit.filters.butter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">butter</span></code></a></p></td>
 <td><p>Apply a Butterworth filter to a TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.filters.deriv" title="kineticstoolkit.filters.deriv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deriv</span></code></a>(ts, /[, n])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.filters.deriv.html#kineticstoolkit.filters.deriv" title="kineticstoolkit.filters.deriv"><code class="xref py py-obj docutils literal notranslate"><span class="pre">deriv</span></code></a></p></td>
 <td><p>Calculate the nth numerical derivative.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.filters.median" title="kineticstoolkit.filters.median"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median</span></code></a>(ts, /[, window_length])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.filters.median.html#kineticstoolkit.filters.median" title="kineticstoolkit.filters.median"><code class="xref py py-obj docutils literal notranslate"><span class="pre">median</span></code></a></p></td>
 <td><p>Calculate a moving median.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#kineticstoolkit.filters.savgol" title="kineticstoolkit.filters.savgol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savgol</span></code></a>(ts, /, *, window_length, poly_order)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.filters.savgol.html#kineticstoolkit.filters.savgol" title="kineticstoolkit.filters.savgol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">savgol</span></code></a></p></td>
 <td><p>Apply a Savitzky-Golay filter on a TimeSeries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#kineticstoolkit.filters.smooth" title="kineticstoolkit.filters.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>(ts, /, window_length)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.filters.smooth.html#kineticstoolkit.filters.smooth" title="kineticstoolkit.filters.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a></p></td>
 <td><p>Apply a smoothing (moving average) filter on a TimeSeries.</p></td>
 </tr>
 </tbody>
 </table>
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.filters.butter">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.filters.</span></span><span class="sig-name descname"><span class="pre">butter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fc</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">btype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'lowpass'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtfilt</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.butter" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply a Butterworth filter to a TimeSeries.</p>
-<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>ts</strong></dt><dd><p>Input TimeSeries.</p>
-</dd>
-<dt><strong>fc</strong></dt><dd><p>Cut-off frequency in Hz. This is a float for single-frequency filters
-(lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
-for two-frequency filters (bandpass, bandstop).</p>
-</dd>
-<dt><strong>order</strong></dt><dd><p>Optional. Order of the filter.</p>
-</dd>
-<dt><strong>btype</strong></dt><dd><p>Optional. {‘lowpass’, ‘highpass’, ‘bandpass’, ‘bandstop’}.</p>
-</dd>
-<dt><strong>filtfilt</strong></dt><dd><p>Optional. If True, the filter is applied two times in reverse direction
-to eliminate time lag. If False, the filter is applied only in forward
-direction.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.filters.deriv">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.filters.</span></span><span class="sig-name descname"><span class="pre">deriv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.deriv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the nth numerical derivative.</p>
-<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>ts</strong></dt><dd><p>Input timeseries</p>
-</dd>
-<dt><strong>n</strong></dt><dd><p>Order of the derivative.</p>
-</dd>
-</dl>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><dl class="simple">
-<dt>TimeSeries</dt><dd><p>A copy of the input TimeSeries, with n less points than the original
-one.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>The sample rate must be constant.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.filters.median">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.filters.</span></span><span class="sig-name descname"><span class="pre">median</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.median" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate a moving median.</p>
-<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>ts</strong></dt><dd><p>Input TimeSeries</p>
-</dd>
-<dt><strong>window_length</strong></dt><dd><p>Optional. Kernel size, must be odd. The default is 3.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.filters.savgol">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.filters.</span></span><span class="sig-name descname"><span class="pre">savgol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">poly_order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deriv</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.savgol" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply a Savitzky-Golay filter on a TimeSeries.</p>
-<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>ts</strong></dt><dd><p>Input TimeSeries</p>
-</dd>
-<dt><strong>window_length</strong></dt><dd><p>The length of the filter window. window_length must be a positive
-odd integer less or equal than the length of the TimeSeries.</p>
-</dd>
-<dt><strong>poly_order</strong></dt><dd><p>The order of the polynomial used to fit the samples. polyorder must be
-less than window_length.</p>
-</dd>
-<dt><strong>deriv</strong></dt><dd><p>Optional. The order of the derivative to compute. The default is 0,
-which means to filter the data without differentiating.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>The sampling rate must be constant.</p></li>
-<li><p>If the TimeSeries contains missing samples, a warning is issued, missing
-samples are interpolated using a first-order interpolation before
-filtering, and then replaced by NaNs in the filtered signal.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.filters.smooth">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.filters.</span></span><span class="sig-name descname"><span class="pre">smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">window_length</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.filters.smooth" title="Permalink to this definition">¶</a></dt>
-<dd><p>Apply a smoothing (moving average) filter on a TimeSeries.</p>
-<p>On n-dimensional data, filtering occurs on the first axis (time).</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><dl class="simple">
-<dt><strong>ts</strong></dt><dd><p>Input TimeSeries.</p>
-</dd>
-<dt><strong>window_length</strong></dt><dd><p>The length of the filter window. window_length must be a positive
-odd integer less or equal than the length of the TimeSeries.</p>
-</dd>
-</dl>
-</dd>
-</dl>
-<p class="rubric">Notes</p>
-<ul class="simple">
-<li><p>The sampling rate must be constant.</p></li>
-<li><p>If the TimeSeries contains missing samples, a warning is issued, missing
-samples are interpolated using a first-order interpolation before
-filtering, and then replaced by NaNs in the filtered signal.</p></li>
-</ul>
-<dl class="field-list simple">
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.timeseries.html#kineticstoolkit.timeseries.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
-</dd>
-</dl>
-</dd></dl>
-
 </div>
 
 
@@ -429,8 +278,8 @@ filtering, and then replaced by NaNs in the filtered signal.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.geometry.html" class="btn btn-neutral float-right" title="kineticstoolkit.geometry" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.emg.html" class="btn btn-neutral float-left" title="kineticstoolkit.emg" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.filters.butter.html" class="btn btn-neutral float-right" title="kineticstoolkit.filters.butter" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.emg.read_delsys_csv.html" class="btn btn-neutral float-left" title="kineticstoolkit.emg.read_delsys_csv" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

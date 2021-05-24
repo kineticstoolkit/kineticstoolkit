@@ -493,7 +493,7 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="section" id="Read-data-from-file">
 <h2>Read data from file<a class="headerlink" href="#Read-data-from-file" title="Permalink to this headline">¶</a></h2>
-<p>The first step is to load data from a file, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.read_file"><span class="std std-ref">ktk.pushrimkinetics.read_file()</span></a> function.</p>
+<p>The first step is to load data from a file, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.read_file.html"><span class="doc">pushrimkinetics.read_file()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
@@ -578,8 +578,8 @@ TimeSeries with attributes:
 </div>
 <div class="section" id="Calculate-forces-and-moments">
 <h2>Calculate forces and moments<a class="headerlink" href="#Calculate-forces-and-moments" title="Permalink to this headline">¶</a></h2>
-<p>If the loaded data doesn’t include forces and moments but only raw data (for exemple, when loading data from a SmartWheel’s SD card), we must calculate the forces and moments based on a calibration matrix. The function <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.calculate_forces_and_moments"><span class="std std-ref">ktk.pushrimkinetics.calculate_forces_and_moments()</span></a> performs this calculation. In this example, we use a calibration matrix that is included in
-<code class="docutils literal notranslate"><span class="pre">ktk.pushrimkinetics.CALIBRATION_MATRICES</span></code>, and we express the calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel’s angular encoder).</p>
+<p>If the loaded data doesn’t include forces and moments but only raw data (for exemple, when loading data from a SmartWheel’s SD card), we must calculate the forces and moments based on a calibration matrix. The function <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_forces_and_moments.html"><span class="doc">pushrimkinetics.calculate_forces_and_moments()</span></a> performs this calculation. In this example, we use a calibration matrix that is included in <code class="docutils literal notranslate"><span class="pre">ktk.pushrimkinetics.CALIBRATION_MATRICES</span></code>, and we express the
+calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel’s angular encoder).</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -634,7 +634,7 @@ TimeSeries with attributes:
 </div>
 <div class="section" id="Removing-dynamic-offsets-in-forces-and-moments">
 <h2>Removing dynamic offsets in forces and moments<a class="headerlink" href="#Removing-dynamic-offsets-in-forces-and-moments" title="Permalink to this headline">¶</a></h2>
-<p>We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets()</span></a>.</p>
+<p>We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.remove_offsets.html"><span class="doc">pushrimkinetics.remove_offsets()</span></a>.</p>
 <p>Let’s apply this function on the data we just loaded.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -676,12 +676,11 @@ TimeSeries with attributes:
 <img alt="_images/pushrimkinetics_14_0.png" src="_images/pushrimkinetics_14_0.png" />
 </div>
 </div>
-<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.remove_offsets"><span class="std std-ref">ktk.pushrimkinetics.remove_offsets</span></a> help for more information.</p>
+<p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.remove_offsets.html"><span class="doc">pushrimkinetics.remove_offsets()</span></a> function help for more information.</p>
 </div>
 <div class="section" id="Calculate-velocity-and-power">
 <h2>Calculate velocity and power<a class="headerlink" href="#Calculate-velocity-and-power" title="Permalink to this headline">¶</a></h2>
-<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.calculate_velocity"><span class="std std-ref">ktk.pushrimkinetics.calculate_velocity()</span></a> function. Once the velocity has been calculated, the output power can also be calculated by multiplying the velocity by the propulsion moment, using the
-<a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#kineticstoolkit.pushrimkinetics.calculate_power"><span class="std std-ref">ktk.pushrimkinetics.calculate_power()</span></a> function.</p>
+<p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_velocity.html"><span class="doc">pushrimkinetics.calculate_velocity()</span></a> function. Once the velocity has been calculated, the output power can also be calculated by multiplying the velocity by the propulsion moment, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_power.html"><span class="doc">pushrimkinetics.calculate_power()</span></a> function.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -708,7 +707,7 @@ TimeSeries with attributes:
 </div>
 <div class="section" id="Detecting-the-pushes">
 <h2>Detecting the pushes<a class="headerlink" href="#Detecting-the-pushes" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="cycles.html"><span class="doc">kineticstoolkit.cycles</span></a> module provides powerful tools to detect and manage cycles. Here we use <a class="reference internal" href="api/kineticstoolkit.cycles.html#kineticstoolkit.cycles.detect_cycles"><span class="std std-ref">ktk.cycles.detect_cycles</span></a> to detect the pushes using these specifications: - a push starts when the total force crosses 5 N upward; - a push ends when the total force crosses 2 N downward; - for a push to be valid, it must last at least 100 ms; - to be valid, the total force must reach 25 N.</p>
+<p>The <a class="reference internal" href="cycles.html"><span class="doc">cycles</span></a> module provides powerful tools to detect and manage cycles. Here we use <a class="reference internal" href="api/kineticstoolkit.cycles.detect_cycles.html"><span class="doc">cycles.detect_cycles()</span></a> to detect the pushes using these specifications: - a push starts when the total force crosses 5 N upward; - a push ends when the total force crosses 2 N downward; - for a push to be valid, it must last at least 100 ms; - to be valid, the total force must reach 25 N.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>

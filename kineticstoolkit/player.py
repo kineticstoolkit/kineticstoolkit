@@ -819,11 +819,6 @@ class Player:
         """
         Create an html5 video for displaying in Jupyter notebooks.
 
-        Warning
-        -------
-        This function, which has been introduced in 0.4, is still experimental and
-        may change signature or behaviour in the future.
-
         Parameters
         ----------
         start_frame
@@ -845,11 +840,10 @@ class Player:
         -------
         A matplotlib animation object for displaying as html5.
 
-        Use
-        ------
-        Instanciate the player, then call this method on it:
-
-            ktk.Player(markers, [...]).to_notebook()
+        Warnings
+        --------
+        This function, which has been introduced in 0.4, is still experimental
+        and may change signature or behaviour in the future.
 
         """
         mpl.rcParams['animation.html'] = 'html5'

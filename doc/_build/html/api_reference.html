@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="kineticstoolkit.config" href="api/kineticstoolkit.config.html" />
+    <link rel="next" title="kineticstoolkit.TimeSeries" href="api/kineticstoolkit.TimeSeries.html" />
     <link rel="prev" title="Release Notes" href="release_notes.html" />
 
 
@@ -114,23 +114,27 @@
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.config.html">kineticstoolkit.config</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.dbinterface.html">kineticstoolkit.dbinterface</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.decorators.html">kineticstoolkit.decorators</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.dev.html">kineticstoolkit.dev</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.gui.html">kineticstoolkit.gui</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.lab.html">kineticstoolkit.lab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.loadsave.html">kineticstoolkit.loadsave</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.player.html">kineticstoolkit.player</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.timeseries.html">kineticstoolkit.timeseries</a></li>
-<li class="toctree-l2"><a class="reference internal" href="api/kineticstoolkit.tools.html">kineticstoolkit.tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.TimeSeries.html">kineticstoolkit.TimeSeries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.html">kineticstoolkit.TimeSeriesEvent</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.Player.html">kineticstoolkit.Player</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.load.html">kineticstoolkit.load</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.save.html">kineticstoolkit.save</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#submodules">Submodules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.cycles.html">kineticstoolkit.cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
@@ -203,7 +207,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="api/kineticstoolkit.config.html" class="btn btn-neutral float-right" title="kineticstoolkit.config" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="api/kineticstoolkit.TimeSeries.html" class="btn btn-neutral float-right" title="kineticstoolkit.TimeSeries" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="release_notes.html" class="btn btn-neutral float-left" title="Release Notes" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -241,68 +245,75 @@
 </style>
 <div class="section" id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline">¶</a></h2>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.config.html#module-kineticstoolkit.config" title="kineticstoolkit.config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.config</span></code></a></p></td>
-<td><p>Provide configuration values for Kinetics Toolkit’s inner working.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>([time, time_info, data, …])</p></td>
+<td><p>A class that implements TimeSeries.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.cycles.html#module-kineticstoolkit.cycles" title="kineticstoolkit.cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.cycles</span></code></a></p></td>
-<td><p>Identify cycles and time-normalize data.</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.TimeSeriesEvent.html#kineticstoolkit.TimeSeriesEvent" title="kineticstoolkit.TimeSeriesEvent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">TimeSeriesEvent</span></code></a>([time, name])</p></td>
+<td><p>Define an event in a timeseries.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.dbinterface.html#module-kineticstoolkit.dbinterface" title="kineticstoolkit.dbinterface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.dbinterface</span></code></a></p></td>
-<td><p>Provide the DBInterface class.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.decorators.html#module-kineticstoolkit.decorators" title="kineticstoolkit.decorators"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.decorators</span></code></a></p></td>
-<td><p>Provide decorators for Kinetics Toolkit’s functions.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.dev.html#module-kineticstoolkit.dev" title="kineticstoolkit.dev"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.dev</span></code></a></p></td>
-<td><p>Provide fonctions related to development, tests and release of Kinetics Toolkit.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.emg.html#module-kineticstoolkit.emg" title="kineticstoolkit.emg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.emg</span></code></a></p></td>
-<td><p>Provide some tools to analyze EMG.</p></td>
-</tr>
-<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.external</span></code></p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.filters.html#module-kineticstoolkit.filters" title="kineticstoolkit.filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.filters</span></code></a></p></td>
-<td><p>Provide standard filters for TimeSeries.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.geometry.html#module-kineticstoolkit.geometry" title="kineticstoolkit.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.geometry</span></code></a></p></td>
-<td><p>Provide 3d geometry and linear algebra functions related to biomechanics.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.gui.html#module-kineticstoolkit.gui" title="kineticstoolkit.gui"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.gui</span></code></a></p></td>
-<td><p>Provide simple GUI functions.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html#module-kineticstoolkit.inversedynamics" title="kineticstoolkit.inversedynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.inversedynamics</span></code></a></p></td>
-<td><p>Provide functions to calculate inverse dynamics.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.kinematics.html#module-kineticstoolkit.kinematics" title="kineticstoolkit.kinematics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.kinematics</span></code></a></p></td>
-<td><p>Provide functions related to kinematics analysis.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.lab.html#module-kineticstoolkit.lab" title="kineticstoolkit.lab"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.lab</span></code></a></p></td>
-<td><p>Kinetics Toolkit - Lab mode</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.loadsave.html#module-kineticstoolkit.loadsave" title="kineticstoolkit.loadsave"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.loadsave</span></code></a></p></td>
-<td><p>Provide functions to load and save data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.player.html#module-kineticstoolkit.player" title="kineticstoolkit.player"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.player</span></code></a></p></td>
-<td><p>Provides the Player class to visualize markers and rigid bodies in 3d.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#module-kineticstoolkit.pushrimkinetics" title="kineticstoolkit.pushrimkinetics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.pushrimkinetics</span></code></a></p></td>
-<td><p>Provide functions to process kinetic data from instrumented wheelchair wheels.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.timeseries.html#module-kineticstoolkit.timeseries" title="kineticstoolkit.timeseries"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.timeseries</span></code></a></p></td>
-<td><p>Provide the TimeSeries and TimeSeriesEvent classes.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.tools.html#module-kineticstoolkit.tools" title="kineticstoolkit.tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kineticstoolkit.tools</span></code></a></p></td>
-<td><p>Provide miscelleanous helper functions to the user.</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.Player.html#kineticstoolkit.Player" title="kineticstoolkit.Player"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Player</span></code></a>(*ts[, segments, current_frame, …])</p></td>
+<td><p>A class that allows visualizing markers and rigid bodies in 3D.</p></td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section" id="functions">
+<h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.load.html#kineticstoolkit.load" title="kineticstoolkit.load"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load</span></code></a>(filename)</p></td>
+<td><p>Load a ktk.zip file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.save.html#kineticstoolkit.save" title="kineticstoolkit.save"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save</span></code></a>(filename, variable)</p></td>
+<td><p>Save a variable to a ktk.zip file.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.cycles.html#module-kineticstoolkit.cycles" title="kineticstoolkit.cycles"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cycles</span></code></a></p></td>
+<td><p>Identify cycles and time-normalize data.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.emg.html#module-kineticstoolkit.emg" title="kineticstoolkit.emg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">emg</span></code></a></p></td>
+<td><p>Provide some tools to analyze EMG.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.filters.html#module-kineticstoolkit.filters" title="kineticstoolkit.filters"><code class="xref py py-obj docutils literal notranslate"><span class="pre">filters</span></code></a></p></td>
+<td><p>Provide standard filters for TimeSeries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.geometry.html#module-kineticstoolkit.geometry" title="kineticstoolkit.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code></a></p></td>
+<td><p>Provide 3d geometry and linear algebra functions related to biomechanics.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html#module-kineticstoolkit.inversedynamics" title="kineticstoolkit.inversedynamics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inversedynamics</span></code></a></p></td>
+<td><p>Provide functions to calculate inverse dynamics.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="api/kineticstoolkit.kinematics.html#module-kineticstoolkit.kinematics" title="kineticstoolkit.kinematics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kinematics</span></code></a></p></td>
+<td><p>Provide functions related to kinematics analysis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html#module-kineticstoolkit.pushrimkinetics" title="kineticstoolkit.pushrimkinetics"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pushrimkinetics</span></code></a></p></td>
+<td><p>Provide functions to process kinetic data from instrumented wheelchair wheels.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 
 
@@ -311,7 +322,7 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="api/kineticstoolkit.config.html" class="btn btn-neutral float-right" title="kineticstoolkit.config" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="api/kineticstoolkit.TimeSeries.html" class="btn btn-neutral float-right" title="kineticstoolkit.TimeSeries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="release_notes.html" class="btn btn-neutral float-left" title="Release Notes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

@@ -46,7 +46,6 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="DBInterface" href="dbinterface.html" />
     <link rel="prev" title="Inverse Dynamics" href="inversedynamics.html" />
 
 
@@ -133,7 +132,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#Task-analysis:-Reconstructing-the-virtual-markers">Task analysis: Reconstructing the virtual markers</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dbinterface.html">DBInterface</a></li>
 </ul>
 </li>
 </ul>
@@ -199,8 +197,6 @@
 
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
-      
-        <a href="dbinterface.html" class="btn btn-neutral float-right" title="DBInterface" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="inversedynamics.html" class="btn btn-neutral float-left" title="Inverse Dynamics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -486,7 +482,7 @@ div.rendered_html tbody tr:hover {
 <h1>Reconstructing virtual markers (from kinematics module)<a class="headerlink" href="#Reconstructing-virtual-markers-(from-kinematics-module)" title="Permalink to this headline">¶</a></h1>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This is an experimental , its API and behaviour will change in the future.</p>
+<p>These features are experimental and will change names and signatures in the future.</p>
 </div>
 <p>In this tutorial, we will reconstruct virtual markers for anatomic landmarks that were not physically instrumented during the movement acquisition. We usually do this kind of reconstruction when it is not practical or feasible to stick a marker on an anatomical landmark. Instead, we track a rigid body affixed to the whole segment, and express the position of this virtual marker relative to this rigid body.</p>
 <p>This is a relatively complex process that requires these additional “calibration” acquisitions:</p>
@@ -1946,7 +1942,7 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </pre></div>
 </div>
 </div>
-<p>Now that we created these rigid body configurations, we will be able to track the position and orientation of these segments and probe in every other acquisition. This process can be done using the <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.register_markers"><span class="std std-ref">kinematics.register_markers()</span></a> function.</p>
+<p>Now that we created these rigid body configurations, we will be able to track the position and orientation of these segments and probe in every other acquisition. This process can be done using the <a class="reference internal" href="../api/kineticstoolkit.kinematics.register_markers.html"><span class="doc">kinematics.register_markers()</span></a> function.</p>
 <p>Although it is not necessary, let’s see its action on the static acquisition we just processed.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -2356,9 +2352,9 @@ aWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 <h2>Calibration: Defining the virtual marker configurations based on probing acquisitions<a class="headerlink" href="#Calibration:-Defining-the-virtual-marker-configurations-based-on-probing-acquisitions" title="Permalink to this headline">¶</a></h2>
 <p>Now we will go though every probing acquisition and apply the same process on each acquisition:</p>
 <ol class="arabic simple">
-<li><p>Locate the probe and the segment’s rigid body using <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.register_markers"><span class="std std-ref">kinematics.register_markers()</span></a> and the rigid body configurations we just created;</p></li>
+<li><p>Locate the probe and the segment’s rigid body using <a class="reference internal" href="../api/kineticstoolkit.kinematics.register_markers.html"><span class="doc">kinematics.register_markers()</span></a> and the rigid body configurations we just created;</p></li>
 <li><p>Express the tip of the probe in the segment’s local coordinate system;</p></li>
-<li><p>Create a virtual marker configuration using the probe tip’s local position. For this step, we will be helped by the <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.create_virtual_marker_config"><span class="std std-ref">kinematics.create_virtual_marker_config()</span></a> function.</p></li>
+<li><p>Create a virtual marker configuration using the probe tip’s local position. For this step, we will be helped by the <a class="reference internal" href="../api/kineticstoolkit.kinematics.create_virtual_marker_config.html"><span class="doc">kinematics.create_virtual_marker_config()</span></a> function.</p></li>
 </ol>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
@@ -2444,7 +2440,7 @@ aWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </div>
 <div class="section" id="Task-analysis:-Tracking-the-segments">
 <h2>Task analysis: Tracking the segments<a class="headerlink" href="#Task-analysis:-Tracking-the-segments" title="Permalink to this headline">¶</a></h2>
-<p>Now that we configured the rigid bodies and the virtual markers, we are ready to track the segments in the experimental trial we loaded at the beginning of this tutorial. To this effect, we will once again use the <a class="reference internal" href="../api/kineticstoolkit.kinematics.html#kineticstoolkit.kinematics.register_markers"><span class="std std-ref">kinematics.register_markers()</span></a> function.</p>
+<p>Now that we configured the rigid bodies and the virtual markers, we are ready to track the segments in the experimental trial we loaded at the beginning of this tutorial. To this effect, we will once again use the <a class="reference internal" href="../api/kineticstoolkit.kinematics.register_markers.html"><span class="doc">kinematics.register_markers()</span></a> function.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -6351,7 +6347,6 @@ YXZmNTguNDUuMTAw
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="dbinterface.html" class="btn btn-neutral float-right" title="DBInterface" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="inversedynamics.html" class="btn btn-neutral float-left" title="Inverse Dynamics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

@@ -6,4 +6,3 @@ Tutorials for unreleased features
 
     inversedynamics
     reconstruction
-    dbinterface

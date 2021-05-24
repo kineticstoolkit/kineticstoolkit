@@ -474,10 +474,10 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Saving-and-loading">
 <h1>Saving and loading<a class="headerlink" href="#Saving-and-loading" title="Permalink to this headline">¶</a></h1>
-<p>Contrarily to Matlab with its <code class="docutils literal notranslate"><span class="pre">.mat</span></code> file, python does not come with a single standard way to save data. To ease saving and sharing data, Kinetics Toolkit provides <a class="reference internal" href="api/kineticstoolkit.loadsave.html"><span class="doc">two functions</span></a> that load and save its own <code class="docutils literal notranslate"><span class="pre">.ktk.zip</span></code> format:</p>
+<p>Contrarily to Matlab with its <code class="docutils literal notranslate"><span class="pre">.mat</span></code> file, python does not come with a single standard way to save data. To ease saving and sharing data, Kinetics Toolkit provides two functions that load and save its own <code class="docutils literal notranslate"><span class="pre">.ktk.zip</span></code> format:</p>
 <ul class="simple">
-<li><p><a class="reference internal" href="api/kineticstoolkit.loadsave.html#kineticstoolkit.loadsave.save"><span class="std std-ref">save()</span></a></p></li>
-<li><p><a class="reference internal" href="api/kineticstoolkit.loadsave.html#kineticstoolkit.loadsave.load"><span class="std std-ref">load()</span></a></p></li>
+<li><p><a class="reference internal" href="api/kineticstoolkit.save.html"><span class="doc">save()</span></a></p></li>
+<li><p><a class="reference internal" href="api/kineticstoolkit.load.html"><span class="doc">load()</span></a></p></li>
 </ul>
 <p>These functions are straightforward to use:</p>
 <div class="nbinput nblast docutils container">
@@ -638,7 +638,6 @@ metadata = jsondecode(fileread(&#39;temp/metadata.json&#39;));
 </tbody>
 </table>
 <p>*tuples are saved as lists in JSON.</p>
-<p>For more information on saving and loading, please check the <a class="reference internal" href="api/kineticstoolkit.loadsave.html"><span class="doc">API Reference for the loadsave module</span></a>.</p>
 </div>
 </div>
 

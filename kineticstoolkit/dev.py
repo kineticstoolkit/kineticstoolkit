@@ -162,8 +162,10 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
     os.chdir(kineticstoolkit.config.root_folder + '/doc')
 
     if clean:
-        subprocess.call(['make', 'clean'], env=kineticstoolkit.config.env)
-
+        shutil.rmtree(kineticstoolkit.config.root_folder + '/doc/api/*',
+                      ignore_errors=True)
+        subprocess.call(['make', 'clean'],
+                        env=kineticstoolkit.config.env)
 
     # Generate API
 #    print('Generating API...')
@@ -221,8 +223,8 @@ def upload_to_pypi() -> None:  # pragma: no cover
         env=kineticstoolkit.config.env)
 
 
-def release() -> None:  # pragma: no cover
-    """Run all functions for release, without packaging and uploading."""
+def build() -> None:  # pragma: no cover
+    """Run all testing and building functions."""
     run_style_formatter()
     run_doc_tests()
     run_static_type_checker()
