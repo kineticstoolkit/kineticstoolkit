@@ -280,16 +280,14 @@
 <h1>kineticstoolkit.TimeSeries.plot<a class="headerlink" href="#kineticstoolkit-timeseries-plot" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.plot">
-<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.TimeSeries.plot" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the TimeSeries using matplotlib.</p>
+<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.TimeSeries.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the TimeSeries in the current matplotlib figure.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>data_keys</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – The data keys to plot. If left empty, all data is plotted.</p></li>
 <li><p><strong>event_names</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to plot the event names on top of the event lines.</p></li>
 <li><p><strong>legend</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. True to plot a legend, False otherwise.</p></li>
-<li><p><strong>positional and keyboard arguments are passed to the</strong> (<em>Additional</em>) – </p></li>
-<li><p><strong>plot function.</strong> (<em>pyplot's</em>) – </p></li>
 </ul>
 </dd>
 </dl>
@@ -297,9 +295,19 @@
 <p>If a TimeSeries <cite>ts</cite>’ data attribute as keys ‘Forces’, ‘Moments’ and
 ‘Angle’, then:</p>
 <blockquote>
+<div><p>ts.plot()</p>
+</div></blockquote>
+<p>plots all data (Forces, Moments and Angle), whereas:</p>
+<blockquote>
 <div><p>ts.plot([‘Forces’, ‘Moments’])</p>
 </div></blockquote>
 <p>plots only the forces and moments, without plotting the angle.</p>
+<p>Additional positional and keyboard arguments are passed to
+matplotlib’s pyplot.plot function:</p>
+<blockquote>
+<div><p>ts.plot([‘Forces’], ‘–’)</p>
+</div></blockquote>
+<p>plots the forces using a dashed line style.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></p>

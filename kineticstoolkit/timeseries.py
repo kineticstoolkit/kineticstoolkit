@@ -343,7 +343,7 @@ class TimeSeriesEvent():
         Example
         -------
         >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
-        >>> event.to_list()
+        >>> event._to_list()
         [1.5, 'event_name']
 
         """
@@ -356,7 +356,7 @@ class TimeSeriesEvent():
         Example
         -------
         >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
-        >>> event.to_dict()
+        >>> event._to_dict()
         {'Time': 1.5, 'Name': 'event_name'}
 
         """
@@ -415,6 +415,7 @@ class TimeSeries():
         self.events = events.copy()
 
     def __dir__(self):
+        """Generate the class directory."""
         return directory(TimeSeries.__dict__)
 
     def __str__(self):
@@ -431,6 +432,7 @@ class TimeSeries():
         return kineticstoolkit._repr._format_class_attributes(self)
 
     def __repr__(self):
+        """Generate the class representation."""
         return kineticstoolkit._repr._format_class_attributes(self)
 
     def __eq__(self, ts):
@@ -495,7 +497,7 @@ class TimeSeries():
 
     def from_dataframe(dataframe: pd.DataFrame, /) -> 'TimeSeries':
         """
-        Create a new TimeSeries from a Pandas Dataframe
+        Create a new TimeSeries from a Pandas Dataframe.
 
         Parameters
         ----------
@@ -559,7 +561,7 @@ class TimeSeries():
         except KeyError:
             self.data_info[data_key] = {info_key: value}
 
-    def remove_data_info(self, data_key: str, info_key: str, /) -> None:
+    def remove_data_info(self, data_key: str, info_key: str) -> None:
         """
         Remove metadata from a TimeSeries' data.
 
@@ -591,7 +593,7 @@ class TimeSeries():
         except KeyError:
             pass
 
-    def rename_data(self, old_data_key: str, new_data_key: str, /) -> None:
+    def rename_data(self, old_data_key: str, new_data_key: str) -> None:
         """
         Rename a key in data and data_info.
 
@@ -633,7 +635,7 @@ class TimeSeries():
         except KeyError:
             pass
 
-    def remove_data(self, data_key: str, /) -> None:
+    def remove_data(self, data_key: str) -> None:
         """
         Remove a data key and its associated metadata.
 
@@ -705,20 +707,22 @@ class TimeSeries():
         self.events.append(TimeSeriesEvent(time, name))
 
     def rename_event(self,
-                     event_name: str,
+                     old_name: str,
                      new_name: str,
-                     event_occurrence: Optional[int] = None, /) -> None:
+                     occurrence: Optional[int] = None) -> None:
         """
         Rename an event occurrence or all events of a same name.
 
         Parameters
         ----------
-        event_name
+        old_name
             Name of the event to look for in the events list.
-        event_occurrence
+        new_name
+            New event name
+        occurrence
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0, where the occurrences are sorted in time.
-            If None (default), all occurences of this event name or renamed.
+            If None (default), all occurences of this event name are renamed.
 
         Example
         -------
@@ -745,35 +749,35 @@ class TimeSeries():
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
-        if event_name == new_name:
+        if old_name == new_name:
             return  # Nothing to do.
 
-        if event_occurrence is None:
+        if occurrence is None:
             # Rename every occurrence of this event
-            index = self.get_event_index(event_name, 0)
+            index = self.get_event_index(old_name, 0)
             while ~np.isnan(index):
                 self.events[index].name = new_name  # type: ignore
-                index = self.get_event_index(event_name, 0)
+                index = self.get_event_index(old_name, 0)
 
         else:
-            index = self.get_event_index(event_name, event_occurrence)
+            index = self.get_event_index(old_name, occurrence)
             if ~np.isnan(index):
                 self.events[int(index)].name = new_name  # type: ignore
             else:
-                warnings.warn(f"The occurrence {event_occurrence} of event "
-                              f"{event_name} could not be found.")
+                warnings.warn(f"The occurrence {occurrence} of event "
+                              f"{old_name} could not be found.")
 
     def remove_event(self,
-                     event_name: str,
-                     event_occurrence: Optional[int] = None, /) -> None:
+                     name: str,
+                     occurrence: Optional[int] = None) -> None:
         """
         Remove an event occurrence or all events of a same name.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to look for in the events list.
-        event_occurrence
+        occurrence
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0, where the occurrences are sorted in time.
             If None (default), all occurences of this event name or removed.
@@ -801,34 +805,34 @@ class TimeSeries():
         [TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        if event_occurrence is None:  # Remove all occurrences
-            event_index = self.get_event_index(event_name, 0)
+        if occurrence is None:  # Remove all occurrences
+            event_index = self.get_event_index(name, 0)
             while ~np.isnan(event_index):
                 self.events.pop(event_index)  # type: ignore
-                event_index = self.get_event_index(event_name, 0)
+                event_index = self.get_event_index(name, 0)
 
         else:  # Remove only the specified occurrence
-            event_index = self.get_event_index(event_name, event_occurrence)
+            event_index = self.get_event_index(name, occurrence)
             if ~np.isnan(event_index):
                 self.events.pop(event_index)  # type: ignore
             else:
-                warnings.warn(f"The occurrence {event_occurrence} of event "
-                              f"{event_name} could not be found.")
+                warnings.warn(f"The occurrence {occurrence} of event "
+                              f"{name} could not be found.")
 
     @unstable
     def ui_edit_events(
             self,
-            event_name: Union[str, List[str]] = [],
-            plot: Union[str, List[str]] = [], /) -> bool:  # pragma: no cover
+            name: Union[str, List[str]] = [],
+            data_key: Union[str, List[str]] = []) -> bool:  # pragma: no cover
         """
         Edit events interactively.
 
         Parameters
         ----------
-        event_name
+        name
             Optional. The name of the event(s) to add. May be a string
             or a list of strings. Event names can be selected interactively.
-        plot
+        data_key
             Optional. A signal name of list of signal name to be plotted,
             similar to the argument of ktk.TimeSeries.plot().
 
@@ -858,20 +862,22 @@ class TimeSeries():
 
         ts = self.copy()
 
-        if isinstance(event_name, str):
-            event_name = [event_name]
+        if isinstance(name, str):
+            event_names = [name]
+        else:
+            event_names = name
 
         fig = plt.figure()
-        ts.plot(plot)
+        ts.plot(data_key, _raise_on_no_data=True)
 
         while True:
 
             # Populate the choices to the user
-            choices = [f"Add '{s}'" for s in event_name]
+            choices = [f"Add '{s}'" for s in event_names]
 
             choice_index = {}
             choice_index['add'] = len(choices)
-            if len(event_name) == 0:
+            if len(event_names) == 0:
                 choices.append("Add event")
             else:
                 choices.append("Add event with another name")
@@ -900,17 +906,17 @@ class TimeSeries():
                 **WINDOW_PLACEMENT)
 
             if choice < choice_index['add']:
-                add_this_event(ts, event_name[choice])
+                add_this_event(ts, event_names[choice])
 
             elif choice == choice_index['add']:
-                event_name.append(
+                event_names.append(
                     li.input_dialog(
                         "Please enter the event name:",
                         **WINDOW_PLACEMENT)
                 )
-                if len(event_name) > 5:
-                    event_name = event_name[-5:]
-                add_this_event(ts, event_name[-1])
+                if len(event_names) > 5:
+                    event_names = event_names[-5:]
+                add_this_event(ts, event_names[-1])
 
             elif choice == choice_index['remove']:
                 event_index = get_event_index(ts)
@@ -944,10 +950,10 @@ class TimeSeries():
 
             elif choice == choice_index['move']:
                 event_index = get_event_index(ts)
-                name = ts.events[event_index].name
+                event_name = ts.events[event_index].name
                 try:
                     ts.events.pop(event_index)
-                    add_this_event(ts, name)
+                    add_this_event(ts, event_name)
                 except IndexError:
                     li.button_dialog(
                         "Could not move this event.",
@@ -967,7 +973,7 @@ class TimeSeries():
             # Refresh
             axes = plt.axis()
             plt.cla()
-            ts.plot(plot)
+            ts.plot(data_key, _raise_on_no_data=True)
             plt.axis(axes)
 
     @deprecated(since="0.5", until="0.7",
@@ -975,7 +981,7 @@ class TimeSeries():
                          "more powerful replacement."))
     def ui_add_event(self,
                      name: str = 'event',
-                     plot: Union[str, List[str]] = [], /, *,
+                     data_key: Union[str, List[str]] = [], *,
                      multiple_events: bool = False) -> bool:
         """
         Add one or many events interactively to the TimeSeries.
@@ -984,7 +990,7 @@ class TimeSeries():
         ----------
         name
             Optional. The name of the event.
-        plot
+        data_key
             Optional. A signal name of list of signal name to be plotted,
             similar to the argument of ktk.TimeSeries.plot().
         multiple_events
@@ -997,7 +1003,7 @@ class TimeSeries():
             True if the event was added, False if the operation was cancelled
             by the user.
         """
-        return self.ui_edit_events(name, plot)
+        return self.ui_edit_events(name, data_key)
 
     def sort_events(self, *, unique: bool = True) -> None:
         """
@@ -1051,12 +1057,12 @@ class TimeSeries():
 
     def plot(self,
              data_keys: Union[str, List[str]] = [],
-             /, *args,
+             *args,
              event_names: bool = True,
              legend: bool = True,
              **kwargs) -> None:
         """
-        Plot the TimeSeries using matplotlib.
+        Plot the TimeSeries in the current matplotlib figure.
 
         Parameters
         ----------
@@ -1067,19 +1073,34 @@ class TimeSeries():
         legend
             Optional. True to plot a legend, False otherwise.
 
-        Additional positional and keyboard arguments are passed to the
-        pyplot's plot function.
-
         Example
         -------
         If a TimeSeries `ts`' data attribute as keys 'Forces', 'Moments' and
         'Angle', then:
 
+            ts.plot()
+
+        plots all data (Forces, Moments and Angle), whereas:
+
             ts.plot(['Forces', 'Moments'])
 
         plots only the forces and moments, without plotting the angle.
 
+        Additional positional and keyboard arguments are passed to
+        matplotlib's pyplot.plot function:
+
+            ts.plot(['Forces'], '--')
+
+        plots the forces using a dashed line style.
+
         """
+        # Private argument _raise_on_no_data: Raise a ValueError instead of
+        # warning when no data is available to plot.
+        if '_raise_on_no_data' in kwargs:
+            raise_on_no_data = kwargs.pop('_raise_on_no_data')
+        else:
+            raise_on_no_data = False
+
         if data_keys is None or len(data_keys) == 0:
             # Plot all
             ts = self.copy()
@@ -1087,7 +1108,10 @@ class TimeSeries():
             ts = self.get_subset(data_keys)
 
         if len(ts.data) == 0:
-            warnings.warn('This TimeSeries has no data to plot.')
+            if raise_on_no_data:
+                raise ValueError("No data available to plot.")
+            else:
+                warnings.warn("No data available to plot.")
             return
 
         # Sort events to help finding each event's occurrence
@@ -1177,7 +1201,7 @@ class TimeSeries():
             axes.legend(loc=legend_location,
                         ncol=1 + int(len(labels) / 40))  # Max 40 items per line
 
-    def get_index_at_time(self, time: float, /) -> int:
+    def get_index_at_time(self, time: float) -> int:
         """
         Get the time index that is the closest to the specified time.
 
@@ -1207,7 +1231,7 @@ class TimeSeries():
         """
         return int(np.argmin(np.abs(self.time - float(time))))
 
-    def get_index_before_time(self, time: float, /, *,
+    def get_index_before_time(self, time: float, *,
                               inclusive: bool = False) -> Union[int, float]:
         """
         Get the time index that is just before the specified time.
@@ -1272,7 +1296,7 @@ class TimeSeries():
         else:
             return np.nan
 
-    def get_index_after_time(self, time: float, /, *,
+    def get_index_after_time(self, time: float, *,
                              inclusive: bool = False) -> Union[int, float]:
         """
         Get the time index that is just after the specified time.
@@ -1338,16 +1362,16 @@ class TimeSeries():
             return np.nan
 
     def get_event_index(self,
-                        event_name: str,
-                        event_occurrence: int) -> Union[int, float]:
+                        name: str,
+                        occurrence: int) -> Union[int, float]:
         """
         Get the index of a given occurrence of an event name.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to look for in the events list.
-        event_occurrence
+        occurrence
             i_th occurence of the event to look for in the events
             list, starting at 0, where the occurrences are sorted in time.
 
@@ -1357,15 +1381,15 @@ class TimeSeries():
             The index of the event or np.nan if no event found.
 
         """
-        event_occurrence = int(event_occurrence)
+        occurrence = int(occurrence)
 
-        if event_occurrence < 0:
-            raise ValueError('event_occurrence must be positive')
+        if occurrence < 0:
+            raise ValueError('occurrence must be positive')
 
         # Make a list of event times, with NaNs for events whose name doesn't
         # match what we're looking for.
         event_times = (
-            [event.time if event.name == event_name else np.nan
+            [event.time if event.name == name else np.nan
              for event in self.events])
 
         # Sort in time
@@ -1378,20 +1402,20 @@ class TimeSeries():
 
         # Get the event occurrence
         try:
-            return clean_event_indexes[event_occurrence]
+            return clean_event_indexes[occurrence]
         except IndexError:
             return np.nan
 
-    def get_event_time(self, event_name: str,
-                       event_occurrence: int = 0, /) -> float:
+    def get_event_time(self, name: str,
+                       occurrence: int = 0) -> float:
         """
         Get the time of the specified event.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to look for in the events list.
-        event_occurrence
+        occurrence
              Optional. i_th occurence of the event to look for in the events
              list, starting at 0.
 
@@ -1419,13 +1443,13 @@ class TimeSeries():
         10.8
 
         """
-        event_index = self.get_event_index(event_name, event_occurrence)
+        event_index = self.get_event_index(name, occurrence)
         if ~np.isnan(event_index):
             return self.events[event_index].time  # type: ignore
         else:
             return np.nan
 
-    def get_ts_at_time(self, time: float, /) -> 'TimeSeries':
+    def get_ts_at_time(self, time: float) -> 'TimeSeries':
         """
         Get a one-data subset of the TimeSeries at the nearest time.
 
@@ -1463,16 +1487,16 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    def get_ts_at_event(self, event_name: str,
-                        event_occurrence: int = 0, /) -> 'TimeSeries':
+    def get_ts_at_event(self, name: str,
+                        occurrence: int = 0) -> 'TimeSeries':
         """
         Get a one-data subset of the TimeSeries at the event's nearest time.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to look for in the events list.
-        event_occurrence
+        occurrence
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0.
 
@@ -1482,10 +1506,10 @@ class TimeSeries():
             A TimeSeries of length 1, at the event's nearest time.
 
         """
-        time = self.get_event_time(event_name, event_occurrence)
+        time = self.get_event_time(name, occurrence)
         return self.get_ts_at_time(time)
 
-    def get_ts_before_index(self, index: int, /, *,
+    def get_ts_before_index(self, index: int, *,
                             inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries before the specified time index.
@@ -1528,7 +1552,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_after_index(self, index: int, /, *,
+    def get_ts_after_index(self, index: int, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries after the specified time index.
@@ -1568,7 +1592,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_between_indexes(self, index1: int, index2: int, /, *,
+    def get_ts_between_indexes(self, index1: int, index2: int, *,
                                inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries before two specified time indexes.
@@ -1607,7 +1631,7 @@ class TimeSeries():
             out_ts.data[the_data] = out_ts.data[the_data][index_range]
         return out_ts
 
-    def get_ts_before_time(self, time: float, /, *,
+    def get_ts_before_time(self, time: float, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries before the specified time.
@@ -1643,7 +1667,7 @@ class TimeSeries():
         else:
             return self.get_ts_before_index(0, inclusive=False)
 
-    def get_ts_after_time(self, time: float, /, *,
+    def get_ts_after_time(self, time: float, *,
                           inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries after the specified time.
@@ -1681,7 +1705,7 @@ class TimeSeries():
         else:
             return self.get_ts_after_index(-1, inclusive=False)
 
-    def get_ts_between_times(self, time1: float, time2: float, /, *,
+    def get_ts_between_times(self, time1: float, time2: float, *,
                              inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries between two specified times.
@@ -1713,17 +1737,17 @@ class TimeSeries():
                                            inclusive=inclusive)
         return new_ts
 
-    def get_ts_before_event(self, event_name: str,
-                            event_occurrence: int = 0, /, *,
+    def get_ts_before_event(self, name: str,
+                            occurrence: int = 0, *,
                             inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries before the specified event.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to look for in the events list.
-        event_occurrence
+        occurrence
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0.
         inclusive
@@ -1750,20 +1774,20 @@ class TimeSeries():
         array([0. , 0.1, 0.2, 0.3, 0.4])
 
         """
-        time = self.get_event_time(event_name, event_occurrence)
+        time = self.get_event_time(name, occurrence)
         return self.get_ts_before_time(time, inclusive=inclusive)
 
-    def get_ts_after_event(self, event_name: str,
-                           event_occurrence: int = 0, /, *,
+    def get_ts_after_event(self, name: str,
+                           occurrence: int = 0, *,
                            inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries after the specified event.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to look for in the events list.
-        event_occurrence
+        occurrence
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0.
         inclusive
@@ -1790,21 +1814,21 @@ class TimeSeries():
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
-        time = self.get_event_time(event_name, event_occurrence)
+        time = self.get_event_time(name, occurrence)
         return self.get_ts_after_time(time, inclusive=inclusive)
 
-    def get_ts_between_events(self, event_name1: str, event_name2: str,
-                              event_occurrence1: int = 0,
-                              event_occurrence2: int = 0,
-                              /, *, inclusive: bool = False) -> 'TimeSeries':
+    def get_ts_between_events(self, name1: str, name2: str,
+                              occurrence1: int = 0,
+                              occurrence2: int = 0,
+                              *, inclusive: bool = False) -> 'TimeSeries':
         """
         Get a subset of the TimeSeries between two specified events.
 
         Parameters
         ----------
-        event_name1, event_name2
+        name1, name2
             Name of the events to look for in the events list.
-        event_occurrence1, event_occurrence2
+        occurrence1, occurrence2
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0.
         inclusive
@@ -1826,15 +1850,15 @@ class TimeSeries():
         array([0.2, 0.3, 0.4, 0.5, 0.6])
 
         """
-        ts = self.get_ts_after_event(event_name1, event_occurrence1,
+        ts = self.get_ts_after_event(name1, occurrence1,
                                      inclusive=inclusive)
-        ts = ts.get_ts_before_event(event_name2, event_occurrence2,
+        ts = ts.get_ts_before_event(name2, occurrence2,
                                     inclusive=inclusive)
         return ts
 
     def ui_get_ts_between_clicks(
             self,
-            data_keys: Union[str, List[str]] = [], /, *,
+            data_keys: Union[str, List[str]] = [], *,
             inclusive: bool = False) -> 'TimeSeries':  # pragma: no cover
         """
         Get a subset of the TimeSeries between two mouse clicks.
@@ -1860,7 +1884,7 @@ class TimeSeries():
         return self.get_ts_between_times(min(times), max(times),
                                          inclusive=inclusive)
 
-    def isnan(self, data_key: str, /) -> np.ndarray:
+    def isnan(self, data_key: str) -> np.ndarray:
         """
         Return a boolean array of missing samples.
 
@@ -1887,14 +1911,12 @@ class TimeSeries():
         """
         Fill missing samples with the given method.
 
-        Note
-        ----
         The sample rate must be constant.
 
         Warning
         -------
-        This function, which has been introduced in 0.1, is still experimental and
-        may change signature or behaviour in the future.
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future.
 
         Parameters
         ----------
@@ -1934,7 +1956,7 @@ class TimeSeries():
 
             self.data[data] = ts.data[data]
 
-    def shift(self, time: float, /) -> None:
+    def shift(self, time: float) -> None:
         """
         Shift time and events.time.
 
@@ -1948,20 +1970,20 @@ class TimeSeries():
             event.time = event.time + time
         self.time = self.time + time
 
-    def sync_event(self, event_name: str,
-                   event_occurrence: int = 0, /) -> None:
+    def sync_event(self, name: str,
+                   occurrence: int = 0) -> None:
         """
-        Shift time and events.time so that event_name is the new time zero.
+        Shift time and events.time so that this event is at the new time zero.
 
         Parameters
         ----------
-        event_name
+        name
             Name of the event to sync on.
-        event_occurrence
+        occurrence
             Optional. Occurrence of the event to sync on, starting with 0.
 
         """
-        self.shift(-self.get_event_time(event_name, event_occurrence))
+        self.shift(-self.get_event_time(name, occurrence))
 
     def trim_events(self) -> None:
         """
@@ -2002,10 +2024,12 @@ class TimeSeries():
             if event.time >= self.time[0] and event.time <= self.time[-1]:
                 self.add_event(event.time, event.name)
 
-    def ui_sync(self,
-                data_keys: Union[str, List[str]] = [],
-                ts2: Union['TimeSeries', None] = None,
-                data_keys2: Union[str, List[str]] = [], /) -> None:  # pragma: no cover
+    def ui_sync(
+        self,
+        data_keys: Union[str, List[str]] = [],
+        ts2: Union['TimeSeries', None] = None,
+        data_keys2: Union[str, List[str]] = []
+    ) -> None:  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
 
@@ -2017,8 +2041,8 @@ class TimeSeries():
 
         Warning
         -------
-        This function, which has been introduced in 0.1, is still experimental and
-        may change signature or behaviour in the future.
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future.
 
         Parameters
         ----------
@@ -2298,7 +2322,7 @@ class TimeSeries():
 
     def merge(self,
               ts: 'TimeSeries',
-              data_keys: Union[str, List[str]] = [], /, *,
+              data_keys: Union[str, List[str]] = [], *,
               resample: bool = False,
               overwrite: bool = True) -> None:
         """
