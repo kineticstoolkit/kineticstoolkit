@@ -718,12 +718,10 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 
 <span class="n">kinetics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span>
     <span class="n">kinetics</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">,</span>
-    <span class="n">event_name1</span><span class="o">=</span><span class="s1">&#39;push&#39;</span><span class="p">,</span>
-    <span class="n">event_name2</span><span class="o">=</span><span class="s1">&#39;recovery&#39;</span><span class="p">,</span>
-    <span class="n">threshold1</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span>
-    <span class="n">threshold2</span><span class="o">=</span><span class="mf">2.0</span><span class="p">,</span>
-    <span class="n">min_duration1</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
-    <span class="n">min_peak_height1</span><span class="o">=</span><span class="mf">25.0</span>
+    <span class="n">event_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">],</span>
+    <span class="n">thresholds</span><span class="o">=</span><span class="p">[</span><span class="mf">5.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">],</span>
+    <span class="n">min_durations</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span>
+    <span class="n">min_peak_heights</span><span class="o">=</span><span class="p">[</span><span class="mf">25.0</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">]</span>
 <span class="p">)</span>
 
 <span class="n">kinetics</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">)</span>

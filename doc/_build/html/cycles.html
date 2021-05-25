@@ -561,10 +561,8 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">test</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">,</span>
-                                <span class="n">event_name1</span><span class="o">=</span><span class="s1">&#39;push&#39;</span><span class="p">,</span>
-                                <span class="n">event_name2</span><span class="o">=</span><span class="s1">&#39;recovery&#39;</span><span class="p">,</span>
-                                <span class="n">threshold1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                <span class="n">threshold2</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+                                <span class="n">event_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">],</span>
+                                <span class="n">thresholds</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">])</span>
 <span class="n">test</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
@@ -584,12 +582,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">test</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">,</span>
-                                <span class="n">event_name1</span><span class="o">=</span><span class="s1">&#39;push&#39;</span><span class="p">,</span>
-                                <span class="n">event_name2</span><span class="o">=</span><span class="s1">&#39;recovery&#39;</span><span class="p">,</span>
-                                <span class="n">threshold1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                <span class="n">threshold2</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                <span class="n">min_duration1</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-                                <span class="n">min_duration2</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+                                <span class="n">event_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">],</span>
+                                <span class="n">thresholds</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                                <span class="n">min_durations</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
 <span class="n">test</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
@@ -609,13 +604,10 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">ts_with_events</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">cycles</span><span class="o">.</span><span class="n">detect_cycles</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">,</span>
-                                          <span class="n">event_name1</span><span class="o">=</span><span class="s1">&#39;push&#39;</span><span class="p">,</span>
-                                          <span class="n">event_name2</span><span class="o">=</span><span class="s1">&#39;recovery&#39;</span><span class="p">,</span>
-                                          <span class="n">threshold1</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                                          <span class="n">threshold2</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-                                          <span class="n">min_duration1</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-                                          <span class="n">min_duration2</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span>
-                                          <span class="n">min_peak_height1</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+                                          <span class="n">event_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">],</span>
+                                          <span class="n">thresholds</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                                          <span class="n">min_durations</span><span class="o">=</span><span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                                          <span class="n">min_peak_heights</span><span class="o">=</span><span class="p">[</span><span class="mi">50</span><span class="p">,</span> <span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">Inf</span><span class="p">])</span>
 <span class="n">ts_with_events</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Ftot&#39;</span><span class="p">])</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>

@@ -34,20 +34,15 @@ from typing import List, Dict, Tuple, Sequence, Optional
 
 
 def detect_cycles(ts: TimeSeries,
-                  data_key: str, /,
-                  event_name1: str,
-                  event_name2: str,
-                  threshold1: float,
-                  threshold2: float, *,
-                  direction1: str = 'rising',
-                  min_duration1: float = 0,
-                  min_duration2: float = 0,
-                  max_duration1: float = np.Inf,
-                  max_duration2: float = np.Inf,
-                  min_peak_height1: float = -np.Inf,
-                  min_peak_height2: float = -np.Inf,
-                  max_peak_height1: float = np.Inf,
-                  max_peak_height2: float = np.Inf,
+                  data_key: str, *,
+                  event_names: Sequence[str] = ['phase1', 'phase2'],
+                  thresholds: Sequence[float] = [0., 1.],
+                  directions: Sequence[str] = ['rising', 'falling'],
+                  min_durations: Sequence[float] = [0., 0.],
+                  max_durations: Sequence[float] = [np.Inf, np.Inf],
+                  min_peak_heights: Sequence[float] = [-np.Inf, -np.Inf],
+                  max_peak_heights: Sequence[float] = [np.Inf, np.Inf],
+                  **kwargs,
                   ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -62,55 +57,49 @@ def detect_cycles(ts: TimeSeries,
     - '_':
       corresponds to the end of the cycle.
 
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future.
+
     Parameters
     ----------
     ts
         TimeSeries to analyze.
     data_key
-        Name of the data key to analyze in the TimeSeries. This signal must be
-        high during phase 1, and low during phase 2. For example, one could
-        use the absolute ground reaction force to detect stance (phase 1) and
-        swing (phase 2).
-    event_name1
-        Name of the events in the output TimeSeries that corresponds to the
-        start of phase 1.
-    event_name2
-        Name of the events in the output TimeSeries that corresponds to the
-        start of phase 2.
-    threshold1, threshold2
-        Value to cross to register the start of phase 1 and phase 2.
-    direction1:
-        Optional. 'rising' to cross threshold1 upward, 'falling' to cross
-        threshold1 downward.
-    min_duration1, min_duration2
-        Optional. Minimal duration of phase 1 and phase 2 in seconds.
-    max_duration1, max_duration2
-        Optional. Maximal duration of phase 1 and phase 2 in seconds.
-    min_peak_height1, min_peak_height2
-        Optional. Minimum peak value for phase 1 and phase 2.
-    max_peak_height1, max_peak_height2
-        Optional. Maximal peak value for phase 1 and phase 2.
+        Name of the data key to analyze in the TimeSeries.
+    event_names
+        Optional. Name of the events to add in the output TimeSeries. Default
+        is ['phase1', 'phase2'].
+    thresholds
+        Optional. Value to cross to register phase changes. Default is
+        [0., 1.].
+    directions
+        Optional. Direction to cross thresholds to register phase changes.
+        Either ['rising', 'falling'] or ['falling', 'rising']. Default is
+        ['rising', 'falling'].
+    min_durations
+        Optional. Minimal phase durations in seconds. Default is [0., 0.].
+    max_durations
+        Optional. Maximal phase durations in seconds. Default is
+        [np.Inf, np.Inf]
+    min_peak_heights
+        Optional. Minimal peak values to be reached in both phases. Default is
+        [-np.Inf, -np.Inf].
+    max_peak_heights
+        Optional. Maximal peak values to be reached in both phases. Default is
+        [np.Inf, np.Inf].
 
     Returns
     -------
     TimeSeries
         A copy of ts with the events added.
 
-    Note
-    ----
-    When using min_peak_height1, min_peak_height1, max_peak_height1 and
-    max_peak_height2:
-
-    - If direction1 is 'rising', then the peak value is the maximum during
-      phase 1 and the minimum during phase 2.
-    - If direction1 is 'falling', then the peak value is the minimum
-      during phase 1 and the maximum during phase 2.
-
     """
-    # lowercase direction1 once
-    direction1 = direction1.lower()
-    if direction1 != 'rising' and direction1 != 'falling':
-        raise ValueError("direction1 must be 'rising' or 'falling'")
+    # lowercase directions[0] once
+    directions[0] = directions[0].lower()
+    if directions[0] != 'rising' and directions[0] != 'falling':
+        raise ValueError("directions[0] must be 'rising' or 'falling'")
 
     # Find the pushes
     time = ts.time
@@ -122,25 +111,25 @@ def detect_cycles(ts: TimeSeries,
 
     for i in range(time.shape[0]):
 
-        if direction1 == 'rising':
-            crossing1 = data[i] >= threshold1
-            crossing2 = data[i] <= threshold2
+        if directions[0] == 'rising':
+            crossing1 = data[i] >= thresholds[0]
+            crossing2 = data[i] <= thresholds[1]
         else:
-            crossing1 = data[i] <= threshold1
-            crossing2 = data[i] >= threshold2
+            crossing1 = data[i] <= thresholds[0]
+            crossing2 = data[i] >= thresholds[1]
 
         if is_phase1 and crossing1:
 
             is_phase1 = False
-            events.append(TimeSeriesEvent(time[i], event_name1))
+            events.append(TimeSeriesEvent(time[i], event_names[0]))
 
         elif (not is_phase1) and crossing2:
 
             is_phase1 = True
-            events.append(TimeSeriesEvent(time[i], event_name2))
+            events.append(TimeSeriesEvent(time[i], event_names[1]))
 
     # Ensure that we start with event_name1 and that it's not on time0
-    while (events[0].name != event_name1) or (events[0].time == time[0]):
+    while (events[0].name != event_names[0]) or (events[0].time == time[0]):
         events = events[1:]
 
     # Remove cycles where criteria are not reached.
@@ -157,21 +146,21 @@ def detect_cycles(ts: TimeSeries,
         sub_ts1 = ts.get_ts_between_times(time1, time2, inclusive=True)
         sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
 
-        if direction1 == 'rising':
+        if directions[0] == 'rising':
             the_peak1 = np.max(sub_ts1.data[data_key])
             the_peak2 = np.min(sub_ts2.data[data_key])
         else:
             the_peak1 = np.min(sub_ts1.data[data_key])
             the_peak2 = np.max(sub_ts2.data[data_key])
 
-        if (time2 - time1 >= min_duration1 and
-                time2 - time1 <= max_duration1 and
-                time3 - time2 >= min_duration2 and
-                time3 - time2 <= max_duration2 and
-                the_peak1 >= min_peak_height1 and
-                the_peak1 <= max_peak_height1 and
-                the_peak2 >= min_peak_height2 and
-                the_peak2 <= max_peak_height2):
+        if (time2 - time1 >= min_durations[0] and
+                time2 - time1 <= max_durations[0] and
+                time3 - time2 >= min_durations[1] and
+                time3 - time2 <= max_durations[1] and
+                the_peak1 >= min_peak_heights[0] and
+                the_peak1 <= max_peak_heights[0] and
+                the_peak2 >= min_peak_heights[1] and
+                the_peak2 <= max_peak_heights[1]):
             # Save it.
             valid_events.append(events[i_event])
             valid_events.append(events[i_event + 1])

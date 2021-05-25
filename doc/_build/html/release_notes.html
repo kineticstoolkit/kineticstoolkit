@@ -115,26 +115,32 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Version-0.4-(April-2021)">Version 0.4 (April 2021)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.5-(to-be-released-in-June-2021)">Version 0.5 (to be released in June 2021)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#New-Features">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Improvements">Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Breaking-Changes">Breaking Changes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Version-0.3-(October-2020)">Version 0.3 (October 2020)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.4-(April-2021)">Version 0.4 (April 2021)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#new-features-1">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#improvements-1">Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#breaking-changes-1">Breaking Changes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Version-0.2-(August-2020)">Version 0.2 (August 2020)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.3-(October-2020)">Version 0.3 (October 2020)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#new-features-2">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#improvements-2">Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#breaking-changes-2">Breaking Changes</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#Version-0.1-(May-2020)">Version 0.1 (May 2020)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.2-(August-2020)">Version 0.2 (August 2020)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#new-features-3">New Features</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#improvements-3">Improvements</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#breaking-changes-3">Breaking Changes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.1-(May-2020)">Version 0.1 (May 2020)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#new-features-4">New Features</a></li>
 </ul>
 </li>
 </ul>
@@ -248,10 +254,31 @@
 </style>
 <div class="section" id="Release-Notes">
 <h1>Release Notes<a class="headerlink" href="#Release-Notes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="Version-0.4-(April-2021)">
-<h2>Version 0.4 (April 2021)<a class="headerlink" href="#Version-0.4-(April-2021)" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Version-0.5-(to-be-released-in-June-2021)">
+<h2>Version 0.5 (to be released in June 2021)<a class="headerlink" href="#Version-0.5-(to-be-released-in-June-2021)" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="New-Features">
 <h3>New Features<a class="headerlink" href="#New-Features" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>No new feature for the moment, except from small API fixes.</p></li>
+</ul>
+</div>
+<div class="section" id="Improvements">
+<h3>Improvements<a class="headerlink" href="#Improvements" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p>Most TimeSeries arguments can now be used either by position or keyword (removed superflous slash operators in signatures).</p></li>
+</ul>
+</div>
+<div class="section" id="Breaking-Changes">
+<h3>Breaking Changes<a class="headerlink" href="#Breaking-Changes" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">cycle.detect_cycles</span></code> was changed to experimental. Its argument pairs xxxx1, xxxx2 have been changed to sequences [xxxx1, xxxx2] in prevision of possible cycle detections with more than 2 phases, or even only one phase. This method is now experimental because it may be separated into different functions (one to detect cycles, another to search cycles with given criteria, and another to remove found cycles).</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="Version-0.4-(April-2021)">
+<h2>Version 0.4 (April 2021)<a class="headerlink" href="#Version-0.4-(April-2021)" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="new-features-1">
+<span id="id1"></span><h3>New Features<a class="headerlink" href="#new-features-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">geometry</span></code> module to perform rigid body geometry operations such as creating frames, homogeneous transforms, multiplying series of matrices, converting from local to global coordinates and vice-versa, and extracting Euler angles from homogeneous transforms.</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">span</span></code> option to <code class="docutils literal notranslate"><span class="pre">cycles.time_normalize</span></code>, so that cycles can be normalized between other ranges than 0% to 100%. Both reducing span (e.g., 10% to 90%) and increasing span (e.g., -25 to 125%) work.</p></li>
@@ -259,16 +286,16 @@
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">rename_event</span></code> method to <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code>.</p></li>
 </ul>
 </div>
-<div class="section" id="Improvements">
-<h3>Improvements<a class="headerlink" href="#Improvements" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="improvements-1">
+<span id="id2"></span><h3>Improvements<a class="headerlink" href="#improvements-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added test coverage measurement for continuous improvement of code robustness.</p></li>
 <li><p>Added warnings when using private or unstable functions.</p></li>
 <li><p>Changed the website to use the ReadTheDoc theme, and changed its structure to facilitate continuous improvements of the website without needing to wait for releases.</p></li>
 </ul>
 </div>
-<div class="section" id="Breaking-Changes">
-<h3>Breaking Changes<a class="headerlink" href="#Breaking-Changes" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="breaking-changes-1">
+<span id="id3"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-1" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The default behaviour for <code class="docutils literal notranslate"><span class="pre">TimeSeries.remove_event</span></code> changed when no occurrence is defined. Previously, only the first occurrence was removed. Now every occurrence is removed.</p></li>
 <li><p>In <code class="docutils literal notranslate"><span class="pre">cycles.time_normalize</span></code>, the way to time-normalize between two events of the same name changed from <code class="docutils literal notranslate"><span class="pre">event_name,</span> <span class="pre">_</span></code> to <code class="docutils literal notranslate"><span class="pre">event_name,</span> <span class="pre">event_name</span></code>.</p></li>
@@ -277,8 +304,8 @@
 </div>
 <div class="section" id="Version-0.3-(October-2020)">
 <h2>Version 0.3 (October 2020)<a class="headerlink" href="#Version-0.3-(October-2020)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features-1">
-<span id="id1"></span><h3>New Features<a class="headerlink" href="#new-features-1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="new-features-2">
+<span id="id4"></span><h3>New Features<a class="headerlink" href="#new-features-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">cycles</span></code> module to detect, time-normalize and stack cycles (e.g., gait cycles, wheelchair propulsion cycles, etc.)</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">pushrimkinetics</span></code> module to read files from instrumented wheelchair wheels, reconstruct the pushrim kinetics, remove dynamic offsets in kinetic signals, and perform speed and power calculation for analysing spatiotemporal and kinetic parameters of wheelchair propulsion.</p></li>
@@ -287,16 +314,16 @@
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">ktk.filters.median()</span></code>, which is a running median filter function.</p></li>
 </ul>
 </div>
-<div class="section" id="improvements-1">
-<span id="id2"></span><h3>Improvements<a class="headerlink" href="#improvements-1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="improvements-2">
+<span id="id5"></span><h3>Improvements<a class="headerlink" href="#improvements-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TimeSeries.plot()</span></code> now shows the event occurrences besides the event names.</p></li>
 <li><p>Nicer tutorial for the <code class="docutils literal notranslate"><span class="pre">filters</span></code> module.</p></li>
 <li><p>Improved unit tests for the <code class="docutils literal notranslate"><span class="pre">filters</span></code> module.</p></li>
 </ul>
 </div>
-<div class="section" id="breaking-changes-1">
-<span id="id3"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-1" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="breaking-changes-2">
+<span id="id6"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-2" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>The module name has been changed from <code class="docutils literal notranslate"><span class="pre">ktk</span></code> to <code class="docutils literal notranslate"><span class="pre">kineticstoolkit</span></code>. Importing using <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">ktk</span></code> is now deprecated and the standard way to import is now either <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">kineticstoolkit</span> <span class="pre">as</span> <span class="pre">ktk</span></code> or <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">kineticstoolkit.lab</span> <span class="pre">as</span> <span class="pre">ktk</span></code>.</p></li>
 <li><p>Now importing Kinetics Toolkit does not change IPython’s representation of dicts or matplotlib’s defaults. This allows using ktk’s functions without modifying the current working environment. The old behaviour is now the lab mode and is the recommended way to import Kinetics Toolkit in an IPython-based environment: <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">kineticstoolkit.lab</span> <span class="pre">as</span> <span class="pre">ktk</span></code>.</p></li>
@@ -305,8 +332,8 @@
 </div>
 <div class="section" id="Version-0.2-(August-2020)">
 <h2>Version 0.2 (August 2020)<a class="headerlink" href="#Version-0.2-(August-2020)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features-2">
-<span id="id4"></span><h3>New Features<a class="headerlink" href="#new-features-2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="new-features-3">
+<span id="id7"></span><h3>New Features<a class="headerlink" href="#new-features-3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the functions <code class="docutils literal notranslate"><span class="pre">ktk.load</span></code> and <code class="docutils literal notranslate"><span class="pre">ktk.save</span></code>.</p></li>
 <li><p>Introduced the <code class="docutils literal notranslate"><span class="pre">ktk.zip</span></code> file format.</p></li>
@@ -317,16 +344,16 @@
 <li><p>Added <code class="docutils literal notranslate"><span class="pre">TimeSeries.resample()</span></code> (experimental).</p></li>
 </ul>
 </div>
-<div class="section" id="improvements-2">
-<span id="id5"></span><h3>Improvements<a class="headerlink" href="#improvements-2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="improvements-3">
+<span id="id8"></span><h3>Improvements<a class="headerlink" href="#improvements-3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Updated the documentation system using sphinx and jupyter-lab.</p></li>
 <li><p>Improved performance of <code class="docutils literal notranslate"><span class="pre">TimeSeries.from_dataframe()</span></code></p></li>
 <li><p>ktk is now typed.</p></li>
 </ul>
 </div>
-<div class="section" id="breaking-changes-2">
-<span id="id6"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-2" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="breaking-changes-3">
+<span id="id9"></span><h3>Breaking Changes<a class="headerlink" href="#breaking-changes-3" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">TimeSeries.from_dataframe()</span></code> is now a class function and not an instance method anymore. Therefore we need to call <code class="docutils literal notranslate"><span class="pre">ktk.TimeSeries.from_dataframe(dataframe)</span></code> instead of <code class="docutils literal notranslate"><span class="pre">ktk.TimeSeries().from_dataframe(dataframe)</span></code>.</p></li>
 <li><p>Now depends on python 3.8 instead of 3.7.</p></li>
@@ -335,8 +362,8 @@
 </div>
 <div class="section" id="Version-0.1-(May-2020)">
 <h2>Version 0.1 (May 2020)<a class="headerlink" href="#Version-0.1-(May-2020)" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="new-features-3">
-<span id="id7"></span><h3>New Features<a class="headerlink" href="#new-features-3" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="new-features-4">
+<span id="id10"></span><h3>New Features<a class="headerlink" href="#new-features-4" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> class.</p></li>
 <li><p>Added the <code class="docutils literal notranslate"><span class="pre">kinematics</span></code> module, to read c3d and n3d files.</p></li>

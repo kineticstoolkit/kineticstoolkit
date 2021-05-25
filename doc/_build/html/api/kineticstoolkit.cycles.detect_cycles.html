@@ -249,7 +249,7 @@
 <h1>kineticstoolkit.cycles.detect_cycles<a class="headerlink" href="#kineticstoolkit-cycles-detect-cycles" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kineticstoolkit.cycles.detect_cycles">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">detect_cycles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_name2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold2</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rising'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_duration2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_duration1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_duration2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_peak_height1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_peak_height2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_peak_height1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_peak_height2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.cycles.</span></span><span class="sig-name descname"><span class="pre">detect_cycles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">event_names</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['phase1',</span> <span class="pre">'phase2']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">thresholds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.0,</span> <span class="pre">1.0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">directions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">['rising',</span> <span class="pre">'falling']</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_durations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[0.0,</span> <span class="pre">0.0]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_durations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[inf,</span> <span class="pre">inf]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_peak_heights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[-</span> <span class="pre">inf,</span> <span class="pre">-</span> <span class="pre">inf]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_peak_heights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[inf,</span> <span class="pre">inf]</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.cycles.detect_cycles" title="Permalink to this definition">¶</a></dt>
 <dd><p>Detect cycles in a TimeSeries based on a dual threshold approach.</p>
 <p>This function detects biphasic cycles and identifies the transitions as
 new events in the output TimeSeries. These new events are named:</p>
@@ -261,30 +261,30 @@ corresponds to the start of phase 2</p></li>
 <li><p>‘_’:
 corresponds to the end of the cycle.</p></li>
 </ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.4, is still experimental and
+may change signature or behaviour in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries to analyze.</p></li>
-<li><p><strong>data_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the data key to analyze in the TimeSeries. This signal must be
-high during phase 1, and low during phase 2. For example, one could
-use the absolute ground reaction force to detect stance (phase 1) and
-swing (phase 2).</p></li>
-<li><p><strong>event_name1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the events in the output TimeSeries that corresponds to the
-start of phase 1.</p></li>
-<li><p><strong>event_name2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the events in the output TimeSeries that corresponds to the
-start of phase 2.</p></li>
-<li><p><strong>threshold1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1 and phase 2.</p></li>
-<li><p><strong>threshold2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Value to cross to register the start of phase 1 and phase 2.</p></li>
-<li><p><strong>direction1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘rising’ to cross threshold1 upward, ‘falling’ to cross
-threshold1 downward.</p></li>
-<li><p><strong>min_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>min_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>max_duration1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>max_duration2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal duration of phase 1 and phase 2 in seconds.</p></li>
-<li><p><strong>min_peak_height1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimum peak value for phase 1 and phase 2.</p></li>
-<li><p><strong>min_peak_height2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Minimum peak value for phase 1 and phase 2.</p></li>
-<li><p><strong>max_peak_height1</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal peak value for phase 1 and phase 2.</p></li>
-<li><p><strong>max_peak_height2</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>) – Optional. Maximal peak value for phase 1 and phase 2.</p></li>
+<li><p><strong>data_key</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the data key to analyze in the TimeSeries.</p></li>
+<li><p><strong>event_names</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional. Name of the events to add in the output TimeSeries. Default
+is [‘phase1’, ‘phase2’].</p></li>
+<li><p><strong>thresholds</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Value to cross to register phase changes. Default is
+[0., 1.].</p></li>
+<li><p><strong>directions</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – Optional. Direction to cross thresholds to register phase changes.
+Either [‘rising’, ‘falling’] or [‘falling’, ‘rising’]. Default is
+[‘rising’, ‘falling’].</p></li>
+<li><p><strong>min_durations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Minimal phase durations in seconds. Default is [0., 0.].</p></li>
+<li><p><strong>max_durations</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Maximal phase durations in seconds. Default is
+[np.Inf, np.Inf]</p></li>
+<li><p><strong>min_peak_heights</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Minimal peak values to be reached in both phases. Default is
+[-np.Inf, -np.Inf].</p></li>
+<li><p><strong>max_peak_heights</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code>]) – Optional. Maximal peak values to be reached in both phases. Default is
+[np.Inf, np.Inf].</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -294,17 +294,6 @@ threshold1 downward.</p></li>
 <dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>When using min_peak_height1, min_peak_height1, max_peak_height1 and
-max_peak_height2:</p>
-<ul class="simple">
-<li><p>If direction1 is ‘rising’, then the peak value is the maximum during
-phase 1 and the minimum during phase 2.</p></li>
-<li><p>If direction1 is ‘falling’, then the peak value is the minimum
-during phase 1 and the maximum during phase 2.</p></li>
-</ul>
-</div>
 </dd></dl>
 
 </div>
