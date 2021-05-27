@@ -13,4 +13,4 @@ jobs:
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         project: 'Kinetics Toolkit'
-        column: 'To do'
+        column: 'New issues'
