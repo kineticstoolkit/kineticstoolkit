@@ -97,7 +97,7 @@ def detect_cycles(ts: TimeSeries,
 
     """
     # lowercase directions[0] once
-    directions[0] = directions[0].lower()
+    directions[0] = directions[0].lower()  # type: ignore
     if directions[0] != 'rising' and directions[0] != 'falling':
         raise ValueError("directions[0] must be 'rising' or 'falling'")
 

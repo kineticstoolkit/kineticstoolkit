@@ -15,12 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-Provide miscelleanous helper functions to the user.
-
-These functions are accessible from Kinetics Toolkit's toplevel namespace
-(i.e., ktk.explore).
-"""
+"""Provide miscelleanous helper functions."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -31,74 +26,11 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
-from kineticstoolkit.decorators import unstable, directory
+from kineticstoolkit.decorators import directory
 
-import os
-import sys
-import subprocess
 import webbrowser as _webbrowser
 import warnings
-from typing import Dict, List
-
-
-def explore(folder_name: str = '') -> None:
-    """
-    Open an Explorer window (on Windows) or a Finder window (on macOS)
-
-    Parameters
-    ----------
-    folder_name
-        Optional. The name of the folder to open the window in. Default is the
-        current folder.
-
-    """
-    if not folder_name:
-        folder_name = os.getcwd()
-
-    if kineticstoolkit.config.is_pc is True:
-        os.system(f'start explorer {folder_name}')
-
-    elif kineticstoolkit.config.is_mac is True:
-        subprocess.call(['open', folder_name])
-
-    else:
-        raise NotImplementedError('This function is only implemented on'
-                                  'Windows and macOS.')
-
-
-def terminal(folder_name: str = '') -> None:
-    """
-    Open a terminal window.
-
-    Parameters
-    ----------
-    folder_name
-        The name of the folder to open the terminal window in. Default is the
-        current folder.
-
-    Returns
-    -------
-    None.
-    """
-    if not folder_name:
-        folder_name = os.getcwd()
-
-    if kineticstoolkit.config.is_pc is True:
-        os.system(f'cmd /c start /D {folder_name} cmd')
-
-    elif kineticstoolkit.config.is_mac is True:
-        subprocess.call([
-            'osascript',
-            '-e',
-            """tell application "Terminal" to do script "cd '""" +
-            str(folder_name) + """'" """])
-        subprocess.call([
-            'osascript',
-            '-e',
-            'tell application "Terminal" to activate'])
-    else:
-        raise NotImplementedError('This function is only implemented on'
-                                  'Windows and macOS.')
+from typing import Dict
 
 
 def start_lab_mode(*, config: Dict[str, bool] = {
@@ -167,44 +99,6 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         warnings.formatwarning = formatwarning
 
 
-@unstable
-def update() -> None:
-    """
-    Update Kinetics Toolkit to the latest master branch.
-
-    If Kinetics Toolkit was installed using pip (default when using the stable
-    version), then update using pip instead:
-
-        pip upgrade kineticstoolkit
-
-    Parameters
-    ----------
-    None
-
-    Returns
-    -------
-    None
-    """
-    if kineticstoolkit.config.is_pc:
-        current_dir = os.getcwd()
-        os.chdir(kineticstoolkit.config.root_folder)
-        print(subprocess.check_output(
-            ['git', 'pull', 'origin', 'master']).decode(sys.getdefaultencoding()))
-        os.chdir(current_dir)
-
-    if kineticstoolkit.config.is_mac:
-        subprocess.call([
-            'osascript',
-            '-e',
-            'tell application "Terminal" to activate'])
-        subprocess.call([
-            'osascript',
-            '-e',
-            ('tell application "Terminal" to do script "cd \'' +
-             kineticstoolkit.config.root_folder +
-             '\'; git pull origin master"')])
-
-
 def tutorials() -> None:
     """
     Open the Kinetics Toolkits tutorials in a web browser.
@@ -214,7 +108,7 @@ def tutorials() -> None:
     Warning
     -------
     This function, which has been introduced in 0.3, is still experimental and
-    may change signature or behaviour in the future.    
+    may change signature or behaviour in the future.
 
     """
     _webbrowser.open('file:///' + kineticstoolkit.config.root_folder +

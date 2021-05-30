@@ -22,6 +22,8 @@ Kinetics Toolkit
 To get started, please consult Kinetics Toolkit's
 [website](https://felixchenier.uqam.ca/kineticstoolkit)
 
+>>> import kineticstoolkit as ktk
+
 """
 
 __author__ = "Félix Chénier"
@@ -38,10 +40,7 @@ from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
 listing.append('TimeSeries')
 listing.append('TimeSeriesEvent')
 
-from kineticstoolkit.tools import explore, terminal, update, tutorials  # noqa
-listing.append('explore')
-listing.append('terminal')
-listing.append('update')
+from kineticstoolkit.tools import tutorials  # noqa
 listing.append('tutorials')
 
 from kineticstoolkit.tools import start_lab_mode  # noqa
@@ -68,22 +67,27 @@ listing.append('cycles')
 from kineticstoolkit import _repr  # noqa
 from kineticstoolkit import gui  # noqa
 
+from kineticstoolkit import geometry  # noqa
+listing.append('geometry')
+
 from kineticstoolkit import config  # noqa
 
 # --- Import unstable modules but append to listing only if we are on master
-from kineticstoolkit.dbinterface import DBInterface  # noqa
-from kineticstoolkit import geometry  # noqa
+
 from kineticstoolkit import inversedynamics  # noqa
 from kineticstoolkit import emg  # noqa
-from kineticstoolkit import dev  # noqa
 
 if config.version == 'master':
-    listing.append('DBInterface')
-    listing.append('geometry')
+    from kineticstoolkit import dev  # noqa
+    listing.append('dev')
     listing.append('inversedynamics')
     listing.append('emg')
-    listing.append('dev')
 
 
 def __dir__():
     return listing
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

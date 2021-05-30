@@ -609,3 +609,10 @@ module_locals = locals()
 
 def __dir__():
     return directory(module_locals)
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+    import kineticstoolkit as ktk
+    import numpy as np
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
