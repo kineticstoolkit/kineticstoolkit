@@ -71,6 +71,11 @@ try:
     else:
         temp_folder = os.environ['HOME'] + '/.kineticstoolkit'
 
+    try:
+        os.mkdir(temp_folder)
+    except FileExistsError:
+        pass
+
 except Exception:
     warnings.warn('Could not set temporary folder.')
     temp_folder = '.'
