@@ -62,16 +62,14 @@ is_linux = True if platform.system() == 'Linux' else False
 
 # Temporary folder
 try:
-    if is_pc:
+    if is_pc and 'TEMP' in os.environ:
         _base_temp_folder = os.environ['TEMP']
-    elif is_mac or is_linux:
+        temp_folder = _base_temp_folder + '/kineticstoolkit'
+    elif is_mac and 'TMPDIR' in os.environ:
         _base_temp_folder = os.environ['TMPDIR']
-
-    temp_folder = _base_temp_folder + '/kineticstoolkit'
-    try:
-        os.mkdir(temp_folder)
-    except FileExistsError:
-        pass
+        temp_folder = _base_temp_folder + '/kineticstoolkit'
+    else:
+        temp_folder = os.environ['HOME'] + '/.kineticstoolkit'
 
 except Exception:
     warnings.warn('Could not set temporary folder.')
