@@ -141,10 +141,20 @@ class Player:
                         self.markers.data_info[key] = one_ts.data_info[key]
 
                 elif one_ts.data[key].shape[1:] == (4, 4):
+
+                    # Add the frames
                     self.rigid_bodies.data[key] = one_ts.data[key]
                     if key in one_ts.data_info:
                         self.rigid_bodies.data_info[key] = \
                             one_ts.data_info[key]
+
+                    # Add the frame origins as "markers"
+                    key_label = f'[{key}] origin'
+                    self.markers.data[key_label] = one_ts.data[key][:, :, 3]
+                    if key in one_ts.data_info:
+                        self.markers.data_info[key_label] = (
+                            one_ts.data_info[key]
+                        )
 
                 else:
                     raise ValueError('TimeSeries data must be of shape Nx4 '

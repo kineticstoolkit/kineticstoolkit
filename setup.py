@@ -34,6 +34,7 @@ setuptools.setup(
                       'scikit-learn',
                       'requests',
                       'limitedinteraction',
+                      'ffmpeg',  # for matplotlib html5 animations
                       ],
     classifiers=[
         'Development Status :: 3 - Alpha',
