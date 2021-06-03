@@ -38,26 +38,27 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
+from typing import Dict, Any
 
 
-def _format_dict_entries(value, quotes=True):
+def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
     """
     Format a dict nicely on screen.
 
     This function makes every element of a dict appear on a separate line,
     with each keys right aligned:
         {
-           'key1' : value1
-           'key2' : value2
-        'longkey' : value3
+           'key1': value1
+           'key2': value2
+        'longkey': value3
         }
 
     Parameters
     ----------
-    value : dict
-        The dict that we want to show on screen.
-    quotes : bool (optional)
-        Indicated if the keys must be surrounded by quotes. The default is
+    the_dict:
+        The input dictionary
+    quotes:
+        False to remove quotes from keys when they are strings. Default is
         True.
 
     Returns
@@ -65,50 +66,49 @@ def _format_dict_entries(value, quotes=True):
     A string that should be shown by the __repr__ method.
 
     """
+    max_width = 79  # How many characters should we print
     out = ''
 
-    the_keys = value.keys()
-    if len(the_keys) > 0:
+    widest = 0
+    # Find the widest key name
+    for key in the_dict:
+        key_label = repr(key)
+        if quotes is False and isinstance(key_label, str):
+            key_label = key_label[1:-1]
+        widest = max(widest, len(key_label))
 
-        # Find the widest field name
-        the_max_length = 0
-        for the_key in the_keys:
-            the_max_length = max(the_max_length, len(repr(the_key)))
+    # Print each key value
+    for key in the_dict:
 
-        max_length_to_show = 77 - the_max_length
+        key_label = repr(key)
+        if quotes is False and isinstance(key_label, str):
+            key_label = key_label[1:-1]
+        key_label = (' ' * (widest - len(key_label))
+                     + key_label)
 
-        for the_key in sorted(the_keys):
+        value = the_dict[key]
 
-            # Print the key
-            if quotes is False and isinstance(the_key, str):
-                to_show = repr(the_key)[1:-1]  # Remove quotes
-            else:
-                to_show = repr(the_key)
+        # Print the value
+        if isinstance(value, dict):
+            value_label = '<dict with ' + str(len(value)) + ' entries>'
+        elif isinstance(value, list):
+            value_label = '<list of ' + str(len(value)) + ' items>'
+        elif isinstance(value, np.ndarray):
+            value_label = '<array of shape ' + str(np.shape(value)) + '>'
+        else:
+            value_label = repr(value)
 
-            out += (to_show.rjust(the_max_length + 6) + ': ')  # +6 to tab
+        # Remove line breaks and multiple-spaces
+        value_label = ' '.join(value_label.split())
 
-            # Print the value
-            if isinstance(value[the_key], dict):
-                out += '<dict with ' + str(len(value[the_key])) + ' entries>'
-            elif isinstance(value[the_key], list):
-                out += '<list of ' + str(len(value[the_key])) + ' items>'
-            elif isinstance(value[the_key], np.ndarray):
-                out += '<array of shape ' + str(np.shape(value[the_key])) + '>'
-            else:
-                to_show = repr(value[the_key])
+        # Printout
+        to_print = f"    {key_label}: {value_label}"
 
-                # Remove line breaks and multiple-spaces
-                to_show = ' '.join(to_show.split())
-                if len(to_show) <= max_length_to_show:
-                    out += to_show
-                else:
-                    out += (to_show[0:max_length_to_show - 3] + '...')
+        if len(to_print) > max_width:
+            to_print = to_print[0:max_width - 3] + '...'
 
-            if the_key != sorted(the_keys)[-1]:
-                out += ','
-
-            # Print the ending } if needed
-            out += '\n'
+        out += to_print
+        out += '\n'
 
     return out
 
