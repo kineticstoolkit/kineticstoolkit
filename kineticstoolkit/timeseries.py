@@ -1141,12 +1141,11 @@ class TimeSeries():
                 if info == 'Unit':
                     unit_set.add(ts.data_info[data][info])
         # Plot this list
-        unit_str = '('
+        unit_str = ''
         for unit in unit_set:
             if len(unit_str) > 1:
                 unit_str += ', '
             unit_str += unit
-        unit_str += ')'
 
         plt.ylabel(unit_str)
 

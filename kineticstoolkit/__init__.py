@@ -77,8 +77,12 @@ from kineticstoolkit import config  # noqa
 from kineticstoolkit import inversedynamics  # noqa
 from kineticstoolkit import emg  # noqa
 
-if config.version == 'master':
+try:
     from kineticstoolkit import dev  # noqa
+except:
+    pass
+
+if config.version == 'master':
     listing.append('dev')
     listing.append('inversedynamics')
     listing.append('emg')

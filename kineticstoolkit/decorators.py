@@ -49,11 +49,6 @@ import kineticstoolkit.config
 from typing import Dict, List, Any
 
 
-class KTKUnstableWarning(UserWarning):
-    """Warning raised when using an unstable Kinetics Toolkig function."""
-    pass
-
-
 def _inject_in_docstring(docstring: str, text: str) -> str:
     """Inject a string into the top of a docstring, after line 1."""
     if docstring == '' or docstring is None:
@@ -95,7 +90,6 @@ def deprecated(since: str, until: str, details: str):
             warnings.warn(string, category=FutureWarning, stacklevel=2)
             # Call the function being decorated and return the result
             with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
                 warnings.filterwarnings("ignore", category=FutureWarning)
                 return func(*args, **kwargs)
         wrapper.__doc__ = _inject_in_docstring(
@@ -126,12 +120,7 @@ def unstable(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         # Call the function being decorated and return the result
-        if kineticstoolkit.config.version != 'master':
-            warnings.warn(KTKUnstableWarning(string))
-
-        with warnings.catch_warnings():
-            warnings.filterwarnings("ignore", category=KTKUnstableWarning)
-            return func(*args, **kwargs)
+        return func(*args, **kwargs)
 
     if kineticstoolkit.config.version == 'master':
         wrapper._include_in_dir = True
@@ -165,7 +154,6 @@ def dead(since: str, until: str, details=''):
             warnings.warn(string, category=FutureWarning, stacklevel=2)
             # Call the function being decorated and return the result
             with warnings.catch_warnings():
-                warnings.filterwarnings("ignore", category=KTKUnstableWarning)
                 warnings.filterwarnings("ignore", category=FutureWarning)
                 return func(*args, **kwargs)
         wrapper.__doc__ = _inject_in_docstring(
@@ -191,12 +179,19 @@ def directory(module_locals: Dict[str, Any]) -> List[str]:
     """
     dir_ = []
     for key in module_locals:
+
+        if key.startswith('_'):
+            continue
+
         try:
-            if module_locals[key]._include_in_dir:
-                dir_.append(key)
+            include_in_dir = module_locals[key].__dict__['_include_in_dir']
+        except KeyError:
+            include_in_dir = True
         except AttributeError:
-            if ~key.startswith('_'):
-                dir_.append(key)
+            include_in_dir = False
+
+        if include_in_dir:
+            dir_.append(key)
 
     return dir_
 
