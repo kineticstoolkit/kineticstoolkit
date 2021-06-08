@@ -1,10 +1,3 @@
-kineticstoolkit_joss
-====================
-
-This is the repository for the manuscript entitled "Kinetics Toolkit, an open-source python package to facilitate research in biomechanics", for publication in Journal of Open Source Software.
-
-Author: Félix Chénier
-
 Some review criteria (to help the reviewers)
 --------------------------------------------
 
