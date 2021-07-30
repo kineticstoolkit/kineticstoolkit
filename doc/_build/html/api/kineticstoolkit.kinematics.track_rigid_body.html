@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.kinematics.track_body &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.kinematics.track_rigid_body &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -125,12 +125,12 @@
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_rigid_body_config.html">kineticstoolkit.kinematics.create_rigid_body_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_virtual_marker_config.html">kineticstoolkit.kinematics.create_virtual_marker_config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_body.html">kineticstoolkit.kinematics.define_body</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.register_markers.html">kineticstoolkit.kinematics.register_markers</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.track_body</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.track_rigid_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
@@ -200,7 +200,7 @@
         
           <li><a href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a> &raquo;</li>
         
-      <li>kineticstoolkit.kinematics.track_body</li>
+      <li>kineticstoolkit.kinematics.track_rigid_body</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -250,25 +250,24 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="kineticstoolkit-kinematics-track-body">
-<h1>kineticstoolkit.kinematics.track_body<a class="headerlink" href="#kineticstoolkit-kinematics-track-body" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="kineticstoolkit-kinematics-track-rigid-body">
+<h1>kineticstoolkit.kinematics.track_rigid_body<a class="headerlink" href="#kineticstoolkit-kinematics-track-rigid-body" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.kinematics.track_body">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">body_definition</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_body" title="Permalink to this definition">¶</a></dt>
-<dd><p>Track the trajectory of rigid bodies as a series of frames.</p>
-<p>Calculates the trajectory of rigid bodies using
-<cite>ktk.geometry.register_points</cite>.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
-</div>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.track_rigid_body">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_definition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_rigid_body" title="Permalink to this definition">¶</a></dt>
+<dd><p>Track a rigid body from markers trajectories.</p>
+<p>This function tracks the specified rigid body in a TimeSeries that
+contains the required markers, and adds the tracked rigid body to a copy
+of the input TimeSeries as a Nx4x4 series of frames.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories to calculate the rigid body trajectories on.</p></li>
-<li><p><strong>body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – A dict with the following keys: ‘MarkerNames’ and ‘LocalPoints’ as
-returned by <cite>ktk.kinematics.define_body()</cite>.</p></li>
+<li><p><strong>kinematics</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the trajectories of the markers
+specified in rigid_body_definition[‘MarkerNames’].</p></li>
+<li><p><strong>rigid_body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – A dict with the following keys: ‘MarkerNames’ and ‘LocalPoints’ as
+returned by <cite>ktk.kinematics.define_rgid_body()</cite>.</p></li>
+<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body, that is the new data key in the output
+TimeSeries.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
