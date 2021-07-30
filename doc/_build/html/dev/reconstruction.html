@@ -94,14 +94,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -110,7 +110,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p class="caption" role="heading"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -118,7 +118,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="conventions.html">Developer manual</a></li>
@@ -1878,6 +1878,14 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/2657051500.py:1] The function create_rigid_body_config is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `define_body` because the latter has a clearer name.
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -1891,7 +1899,7 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </pre></div></div>
 </div>
 <p>We proceed the same way for the forearm:</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
@@ -1900,6 +1908,14 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
     <span class="n">static_markers</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;ForearmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR3&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/1622214841.py:1] The function create_rigid_body_config is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `define_body` because the latter has a clearer name.
+</pre></div></div>
 </div>
 <p>For the probe, we will create its rigid body configuration manually from its known specifications. Every 6 local point is expressed relative to a reference frame that is centered at the probe’s tip:</p>
 <div class="nbinput nblast docutils container">
@@ -1935,6 +1951,14 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/3985578117.py:1] The function register_markers is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `track_body` because the latter has a shorter name and performs only one action (which is good).
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -2358,7 +2382,7 @@ bwAAAB1kYXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 </div>
 </div>
 <p>Now, we can process every probing acquisition.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
@@ -2380,6 +2404,21 @@ bwAAAB1kYXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
     <span class="s1">&#39;/data/kinematics/sample_probing_ulnar_styloid_R.c3d&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:7] The function register_markers is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `track_body` because the latter has a shorter name and performs only one action (which is good).
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:15] The function create_virtual_marker_config is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `define_virtual_marker` because the latter has a shorter name and its signature is clearer.
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:7] The function register_markers is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `track_body` because the latter has a shorter name and performs only one action (which is good).
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:15] The function create_virtual_marker_config is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `define_virtual_marker` because the latter has a shorter name and its signature is clearer.
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:7] The function register_markers is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `track_body` because the latter has a shorter name and performs only one action (which is good).
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:15] The function create_virtual_marker_config is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `define_virtual_marker` because the latter has a shorter name and its signature is clearer.
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:7] The function register_markers is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `track_body` because the latter has a shorter name and performs only one action (which is good).
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/609695206.py:15] The function create_virtual_marker_config is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `define_virtual_marker` because the latter has a shorter name and its signature is clearer.
+</pre></div></div>
 </div>
 <p>For curiosity, let’s see what is inside a virtual marker configuration:</p>
 <div class="nbinput docutils container">
@@ -2422,6 +2461,14 @@ bwAAAB1kYXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+FutureWarning [/var/folders/7v/g5_ntzfx35v4ck07wflynw640000gp/T/ipykernel_74568/2839763859.py:2] The function register_markers is deprecated since 0.5.2 and is scheduled to be removed in 1.0. It has been replaced by `track_body` because the latter has a shorter name and performs only one action (which is good).
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:

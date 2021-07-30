@@ -93,14 +93,14 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
@@ -109,7 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p class="caption" role="heading"><span class="caption-text">IN DEPTH</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
@@ -125,9 +125,12 @@
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_rigid_body_config.html">kineticstoolkit.kinematics.create_rigid_body_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_virtual_marker_config.html">kineticstoolkit.kinematics.create_virtual_marker_config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_body.html">kineticstoolkit.kinematics.define_body</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.register_markers.html">kineticstoolkit.kinematics.register_markers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_body.html">kineticstoolkit.kinematics.track_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
@@ -140,7 +143,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Developer manual</a></li>
@@ -261,6 +264,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.create_virtual_marker_config.html#kineticstoolkit.kinematics.create_virtual_marker_config" title="kineticstoolkit.kinematics.create_virtual_marker_config"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_virtual_marker_config</span></code></a></p></td>
 <td><p>Create a virtual marker configuration based on a probing acquisition.</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.define_body.html#kineticstoolkit.kinematics.define_body" title="kineticstoolkit.kinematics.define_body"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_body</span></code></a></p></td>
+<td><p>Create a generic rigid body definition based on a static acquisition.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html#kineticstoolkit.kinematics.define_virtual_marker" title="kineticstoolkit.kinematics.define_virtual_marker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_virtual_marker</span></code></a></p></td>
+<td><p>Define a virtual marker based on a probing acquisition.</p></td>
+</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html#kineticstoolkit.kinematics.read_c3d_file" title="kineticstoolkit.kinematics.read_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_c3d_file</span></code></a></p></td>
 <td><p>Read markers from a C3D file.</p></td>
 </tr>
@@ -270,10 +279,13 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.register_markers.html#kineticstoolkit.kinematics.register_markers" title="kineticstoolkit.kinematics.register_markers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">register_markers</span></code></a></p></td>
 <td><p>Calculate the trajectory of rigid bodies.</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html#kineticstoolkit.kinematics.write_c3d_file" title="kineticstoolkit.kinematics.write_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_c3d_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.track_body.html#kineticstoolkit.kinematics.track_body" title="kineticstoolkit.kinematics.track_body"><code class="xref py py-obj docutils literal notranslate"><span class="pre">track_body</span></code></a></p></td>
+<td><p>Track the trajectory of rigid bodies as a series of frames.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html#kineticstoolkit.kinematics.write_c3d_file" title="kineticstoolkit.kinematics.write_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_c3d_file</span></code></a></p></td>
 <td><p>Write a markers TimeSeries to a C3D file.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html#kineticstoolkit.kinematics.write_trc_file" title="kineticstoolkit.kinematics.write_trc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_trc_file</span></code></a></p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html#kineticstoolkit.kinematics.write_trc_file" title="kineticstoolkit.kinematics.write_trc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_trc_file</span></code></a></p></td>
 <td><p>Export a markers TimeSeries to OpenSim’s TRC file format.</p></td>
 </tr>
 </tbody>

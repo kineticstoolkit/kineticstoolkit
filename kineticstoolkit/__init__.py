@@ -76,6 +76,7 @@ from kineticstoolkit import config  # noqa
 
 from kineticstoolkit import inversedynamics  # noqa
 from kineticstoolkit import emg  # noqa
+from kineticstoolkit import anthropometry  # noqa
 
 try:
     from kineticstoolkit import dev  # noqa
