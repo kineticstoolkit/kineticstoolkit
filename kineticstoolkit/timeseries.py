@@ -522,7 +522,11 @@ class TimeSeries():
         ts.time = dataframe.index.to_numpy()
         return ts
 
-    def add_data_info(self, data_key: str, info_key: str, value: Any) -> None:
+    def add_data_info(
+            self,
+            data_key: str,
+            info_key: str,
+            value: Any) -> 'TimeSeries':
         """
         Add metadata to TimeSeries' data.
 
@@ -537,15 +541,15 @@ class TimeSeries():
 
         Returns
         -------
-        None.
+        A copy of the TimeSeries with the added data info.
 
         Example
         -------
         We create a TimeSeries with some data info:
 
         >>> ts = ktk.TimeSeries()
-        >>> ts.add_data_info('Forces', 'Unit', 'N')
-        >>> ts.add_data_info('Marker1', 'Color', [43, 2, 255])
+        >>> ts = ts.add_data_info('Forces', 'Unit', 'N')
+        >>> ts = ts.add_data_info('Marker1', 'Color', [43, 2, 255])
 
         Let's see the result:
 
@@ -556,12 +560,17 @@ class TimeSeries():
         {'Color': [43, 2, 255]}
 
         """
+        ts = self.copy()
         try:
-            self.data_info[data_key][info_key] = value
+            ts.data_info[data_key][info_key] = value
         except KeyError:
-            self.data_info[data_key] = {info_key: value}
+            ts.data_info[data_key] = {info_key: value}
+        return ts
 
-    def remove_data_info(self, data_key: str, info_key: str) -> None:
+    def remove_data_info(
+            self,
+            data_key: str,
+            info_key: str) -> 'TimeSeries':
         """
         Remove metadata from a TimeSeries' data.
 
@@ -572,6 +581,10 @@ class TimeSeries():
         info_key
             The key of the info dict.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the removed data info.
+
         Note
         ----
         No warning or exception is raised if the data key does not exist.
@@ -579,21 +592,26 @@ class TimeSeries():
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts.add_data_info('Forces', 'Unit', 'N')
+        >>> ts = ts.add_data_info('Forces', 'Unit', 'N')
         >>> ts.data_info['Forces']
         {'Unit': 'N'}
 
-        >>> ts.remove_data_info('Forces', 'Unit')
+        >>> ts = ts.remove_data_info('Forces', 'Unit')
         >>> ts.data_info['Forces']
         {}
 
         """
+        ts = self.copy()
         try:
-            self.data_info[data_key].pop(info_key)
+            ts.data_info[data_key].pop(info_key)
         except KeyError:
             pass
+        return ts
 
-    def rename_data(self, old_data_key: str, new_data_key: str) -> None:
+    def rename_data(
+            self,
+            old_data_key: str,
+            new_data_key: str) -> 'TimeSeries':
         """
         Rename a key in data and data_info.
 
@@ -604,11 +622,15 @@ class TimeSeries():
         new_data_key
             New name of the data key.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the renamed data.
+
         Example
         -------
         >>> ts = ktk.TimeSeries()
         >>> ts.data['test'] = np.arange(10)
-        >>> ts.add_data_info('test', 'Unit', 'm')
+        >>> ts = ts.add_data_info('test', 'Unit', 'm')
 
         >>> ts.data
         {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -616,7 +638,7 @@ class TimeSeries():
         >>> ts.data_info
         {'test': {'Unit': 'm'}}
 
-        >>> ts.rename_data('test', 'signal')
+        >>> ts = ts.rename_data('test', 'signal')
 
         >>> ts.data
         {'signal': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -625,17 +647,18 @@ class TimeSeries():
         {'signal': {'Unit': 'm'}}
 
         """
+        ts= self.copy()
         try:
-            self.data[new_data_key] = self.data.pop(old_data_key)
+            ts.data[new_data_key] = ts.data.pop(old_data_key)
         except KeyError:
             pass
-
         try:
-            self.data_info[new_data_key] = self.data_info.pop(old_data_key)
+            ts.data_info[new_data_key] = ts.data_info.pop(old_data_key)
         except KeyError:
             pass
+        return ts
 
-    def remove_data(self, data_key: str) -> None:
+    def remove_data(self, data_key: str) -> 'TimeSeries':
         """
         Remove a data key and its associated metadata.
 
@@ -643,6 +666,10 @@ class TimeSeries():
         ----------
         data_key
             Name of the data key.
+
+        Returns
+        -------
+        A copy of the TimeSeries with the removed data.
 
         Note
         ----
@@ -653,7 +680,7 @@ class TimeSeries():
         >>> # Prepare a test TimeSeries with data 'test'
         >>> ts = ktk.TimeSeries()
         >>> ts.data['test'] = np.arange(10)
-        >>> ts.add_data_info('test', 'Unit', 'm')
+        >>> ts = ts.add_data_info('test', 'Unit', 'm')
 
         >>> ts.data
         {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -662,7 +689,7 @@ class TimeSeries():
         {'test': {'Unit': 'm'}}
 
         >>> # Now remove data 'test'
-        >>> ts.remove_data('test')
+        >>> ts = ts.remove_data('test')
 
         >>> ts.data
         {}
@@ -671,16 +698,18 @@ class TimeSeries():
         {}
 
         """
+        ts = self.copy()
         try:
-            self.data.pop(data_key)
+            ts.data.pop(data_key)
         except KeyError:
             pass
         try:
-            self.data_info.pop(data_key)
+            ts.data_info.pop(data_key)
         except KeyError:
             pass
+        return ts
 
-    def add_event(self, time: float, name: str = 'event') -> None:
+    def add_event(self, time: float, name: str = 'event') -> 'TimeSeries':
         """
         Add an event to the TimeSeries.
 
@@ -691,25 +720,31 @@ class TimeSeries():
         name
             Optional. The name of the event.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the added event.
+
         Example
         -------
-            >>> ts = ktk.TimeSeries()
-            >>> ts.add_event(5.5, 'event1')
-            >>> ts.add_event(10.8, 'event2')
-            >>> ts.add_event(2.3, 'event2')
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, 'event1')
+        >>> ts = ts.add_event(10.8, 'event2')
+        >>> ts = ts.add_event(2.3, 'event2')
 
-            >>> ts.events
-            [TimeSeriesEvent(time=5.5, name='event1'),
-             TimeSeriesEvent(time=10.8, name='event2'),
-             TimeSeriesEvent(time=2.3, name='event2')]
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        self.events.append(TimeSeriesEvent(time, name))
+        ts = self.copy()
+        ts.events.append(TimeSeriesEvent(time, name))
+        return ts
 
     def rename_event(self,
                      old_name: str,
                      new_name: str,
-                     occurrence: Optional[int] = None) -> None:
+                     occurrence: Optional[int] = None) -> 'TimeSeries':
         """
         Rename an event occurrence or all events of a same name.
 
@@ -724,52 +759,59 @@ class TimeSeries():
             list, starting at 0, where the occurrences are sorted in time.
             If None (default), all occurences of this event name are renamed.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the renamed event.
+
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts.add_event(5.5, 'event1')
-        >>> ts.add_event(10.8, 'event2')
-        >>> ts.add_event(2.3, 'event2')
+        >>> ts = ts.add_event(5.5, 'event1')
+        >>> ts = ts.add_event(10.8, 'event2')
+        >>> ts = ts.add_event(2.3, 'event2')
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
          TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts.rename_event('event2', 'event3')
+        >>> ts = ts.rename_event('event2', 'event3')
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event3'),
          TimeSeriesEvent(time=2.3, name='event3')]
 
-        >>> ts.rename_event('event3', 'event4', 0)
+        >>> ts = ts.rename_event('event3', 'event4', 0)
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event3'),
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
+        ts = self.copy()
+
         if old_name == new_name:
-            return  # Nothing to do.
+            return ts # Nothing to do.
 
         if occurrence is None:
             # Rename every occurrence of this event
-            index = self.get_event_index(old_name, 0)
+            index = ts.get_event_index(old_name, 0)
             while ~np.isnan(index):
-                self.events[index].name = new_name  # type: ignore
-                index = self.get_event_index(old_name, 0)
+                ts.events[index].name = new_name  # type: ignore
+                index = ts.get_event_index(old_name, 0)
 
         else:
-            index = self.get_event_index(old_name, occurrence)
+            index = ts.get_event_index(old_name, occurrence)
             if ~np.isnan(index):
-                self.events[int(index)].name = new_name  # type: ignore
+                ts.events[int(index)].name = new_name  # type: ignore
             else:
                 warnings.warn(f"The occurrence {occurrence} of event "
                               f"{old_name} could not be found.")
+        return ts
 
     def remove_event(self,
                      name: str,
-                     occurrence: Optional[int] = None) -> None:
+                     occurrence: Optional[int] = None) -> 'TimeSeries':
         """
         Remove an event occurrence or all events of a same name.
 
@@ -782,42 +824,49 @@ class TimeSeries():
             list, starting at 0, where the occurrences are sorted in time.
             If None (default), all occurences of this event name or removed.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the removed event.
+
         Example
         -------
         >>> # Instanciate a timeseries with some events
         >>> ts = ktk.TimeSeries()
-        >>> ts.add_event(5.5, 'event1')
-        >>> ts.add_event(10.8, 'event2')
-        >>> ts.add_event(2.3, 'event2')
+        >>> ts = ts.add_event(5.5, 'event1')
+        >>> ts = ts.add_event(10.8, 'event2')
+        >>> ts = ts.add_event(2.3, 'event2')
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
          TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts.remove_event('event1')
+        >>> ts = ts.remove_event('event1')
         >>> ts.events
         [TimeSeriesEvent(time=10.8, name='event2'),
          TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts.remove_event('event2', 1)
+        >>> ts = ts.remove_event('event2', 1)
         >>> ts.events
         [TimeSeriesEvent(time=2.3, name='event2')]
 
         """
+        ts = self.copy()
+
         if occurrence is None:  # Remove all occurrences
-            event_index = self.get_event_index(name, 0)
+            event_index = ts.get_event_index(name, 0)
             while ~np.isnan(event_index):
-                self.events.pop(event_index)  # type: ignore
-                event_index = self.get_event_index(name, 0)
+                ts.events.pop(event_index)  # type: ignore
+                event_index = ts.get_event_index(name, 0)
 
         else:  # Remove only the specified occurrence
-            event_index = self.get_event_index(name, occurrence)
+            event_index = ts.get_event_index(name, occurrence)
             if ~np.isnan(event_index):
-                self.events.pop(event_index)  # type: ignore
+                ts.events.pop(event_index)  # type: ignore
             else:
                 warnings.warn(f"The occurrence {occurrence} of event "
                               f"{name} could not be found.")
+        return ts
 
     @unstable
     def ui_edit_events(
@@ -1005,7 +1054,7 @@ class TimeSeries():
         """
         return self.ui_edit_events(name, data_key)
 
-    def sort_events(self, *, unique: bool = True) -> None:
+    def sort_events(self, *, unique: bool = True) -> 'TimeSeries':
         """
         Sorts the TimeSeries' events from the earliest to the latest.
 
@@ -1015,13 +1064,17 @@ class TimeSeries():
             Optional. True to make events unique so that no two events can
             have both the same name and the same time.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the sorted events.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(100)/10)
-        >>> ts.add_event(2, 'two')
-        >>> ts.add_event(1, 'one')
-        >>> ts.add_event(3, 'three')
-        >>> ts.add_event(3, 'three')
+        >>> ts = ts.add_event(2, 'two')
+        >>> ts = ts.add_event(1, 'one')
+        >>> ts = ts.add_event(3, 'three')
+        >>> ts = ts.add_event(3, 'three')
 
         >>> ts.events
         [TimeSeriesEvent(time=2, name='two'),
@@ -1029,27 +1082,31 @@ class TimeSeries():
          TimeSeriesEvent(time=3, name='three'),
          TimeSeriesEvent(time=3, name='three')]
 
-        >>> ts.sort_events(unique=False)
+        >>> ts = ts.sort_events(unique=False)
         >>> ts.events
         [TimeSeriesEvent(time=1, name='one'),
          TimeSeriesEvent(time=2, name='two'),
          TimeSeriesEvent(time=3, name='three'),
          TimeSeriesEvent(time=3, name='three')]
 
-        >>> ts.sort_events()
+        >>> ts = ts.sort_events()
         >>> ts.events
         [TimeSeriesEvent(time=1, name='one'),
          TimeSeriesEvent(time=2, name='two'),
          TimeSeriesEvent(time=3, name='three')]
 
         """
-        self.events = sorted(self.events)
+        ts = self.copy()
+
+        ts.events = sorted(ts.events)
 
         if unique is True:
-            for i in range(len(self.events) - 1, 0, -1):
-                if ((self.events[i].time == self.events[i - 1].time) and
-                        (self.events[i].name == self.events[i - 1].name)):
-                    self.events.pop(i)
+            for i in range(len(ts.events) - 1, 0, -1):
+                if ((ts.events[i].time == ts.events[i - 1].time) and
+                        (ts.events[i].name == ts.events[i - 1].name)):
+                    ts.events.pop(i)
+
+        return ts
 
     def copy(self) -> 'TimeSeries':
         """Deep copy of a TimeSeries."""
@@ -1211,8 +1268,7 @@ class TimeSeries():
 
         Returns
         -------
-        int
-            The index in the time vector.
+        The index in the time vector.
 
         Example
         -------
@@ -1244,9 +1300,8 @@ class TimeSeries():
 
         Returns
         -------
-        int
-            The index in the time vector. If no value is before the specified
-            time, a value of np.nan is returned.
+        The index in the time vector. If no value is before the specified
+        time, a value of np.nan is returned.
 
         Example
         -------
@@ -1309,9 +1364,8 @@ class TimeSeries():
 
         Returns
         -------
-        int
-            The index in the time vector. If no value is after the
-            specified time, a value of np.nan is returned.
+        The index in the time vector. If no value is after the
+        specified time, a value of np.nan is returned.
 
         Example
         -------
@@ -1376,8 +1430,7 @@ class TimeSeries():
 
         Returns
         -------
-        int
-            The index of the event or np.nan if no event found.
+        The index of the event or np.nan if no event found.
 
         """
         occurrence = int(occurrence)
@@ -1420,17 +1473,16 @@ class TimeSeries():
 
         Returns
         -------
-        float
-            The time of the specified event. If no corresponding event is
-            found, then np.nan is returned.
+        The time of the specified event. If no corresponding event is
+        found, then np.nan is returned.
 
         Example
         -------
         >>> # Instanciate a timeseries with some events
         >>> ts = ktk.TimeSeries()
-        >>> ts.add_event(5.5, 'event1')
-        >>> ts.add_event(10.8, 'event2')
-        >>> ts.add_event(2.3, 'event2')
+        >>> ts = ts.add_event(5.5, 'event1')
+        >>> ts = ts.add_event(10.8, 'event2')
+        >>> ts = ts.add_event(2.3, 'event2')
 
         >>> ts.get_event_time('event1')
         5.5
@@ -1459,9 +1511,8 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
-            A TimeSeries of length 1, at the time neasest to the specified
-            time.
+        A TimeSeries of length 1, at the time neasest to the specified
+        time.
 
         Example
         -------
@@ -1501,8 +1552,7 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
-            A TimeSeries of length 1, at the event's nearest time.
+        A TimeSeries of length 1, at the event's nearest time.
 
         """
         time = self.get_event_time(name, occurrence)
@@ -1519,6 +1569,10 @@ class TimeSeries():
             Time index
         inclusive
             Optional. True to include the given time index.
+
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1563,6 +1617,10 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time index.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
@@ -1603,6 +1661,10 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time indexes.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
@@ -1642,6 +1704,10 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time in the comparison.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
@@ -1677,6 +1743,10 @@ class TimeSeries():
             Time to look for in the TimeSeries' time vector.
         inclusive
             Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1716,6 +1786,10 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time in the comparison.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
@@ -1752,11 +1826,15 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time in the comparison.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts.add_event(0.2, 'event')
-        >>> ts.add_event(0.35, 'event')
+        >>> ts = ts.add_event(0.2, 'event')
+        >>> ts = ts.add_event(0.35, 'event')
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -1792,11 +1870,15 @@ class TimeSeries():
         inclusive
             Optional. True to include the given event in the comparison.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts.add_event(0.2, 'event')
-        >>> ts.add_event(0.35, 'event')
+        >>> ts = ts.add_event(0.2, 'event')
+        >>> ts = ts.add_event(0.35, 'event')
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -1833,11 +1915,15 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time in the comparison.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts.add_event(0.2, 'event')
-        >>> ts.add_event(0.55, 'event')
+        >>> ts = ts.add_event(0.2, 'event')
+        >>> ts = ts.add_event(0.55, 'event')
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -1870,6 +1956,10 @@ class TimeSeries():
         inclusive
             Optional. True to include the given time in the comparison.
 
+        Returns
+        -------
+        A new TimeSeries that fulfils the specified conditions.
+
         """
         fig = plt.figure()
         self.plot(data_keys)
@@ -1894,10 +1984,9 @@ class TimeSeries():
 
         Returns
         -------
-        nans : array
-            A boolean array of the same size as the time vector, where True
-            values represent missing samples (samples that contain at least
-            one nan value).
+        A boolean array of the same size as the time vector, where True
+        values represent missing samples (samples that contain at least
+        one nan value).
         """
         values = self.data[data_key].copy()
         # Reduce the dimension of values while keeping the time dimension.
@@ -1906,7 +1995,7 @@ class TimeSeries():
         return np.isnan(values)
 
     def fill_missing_samples(self, max_missing_samples: int, *,
-                             method: str = 'linear') -> None:
+                             method: str = 'linear') -> 'TimeSeries':
         """
         Fill missing samples with the given method.
 
@@ -1928,17 +2017,22 @@ class TimeSeries():
             'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous' or
             'next'.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the missing samples filled.
+
         """
+        ts_out = self.copy()
         max_missing_samples = int(max_missing_samples)
 
-        for data in self.data:
+        for data in ts_out.data:
 
             # Fill missing samples
-            is_visible = ~self.isnan(data)
-            ts = self.get_subset(data)
+            is_visible = ~ts_out.isnan(data)
+            ts = ts_out.get_subset(data)
             ts.data[data] = ts.data[data][is_visible]
             ts.time = ts.time[is_visible]
-            ts.resample(self.time, method, fill_value='extrapolate')
+            ts.resample(ts_out.time, method, fill_value='extrapolate')
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:
@@ -1953,7 +2047,9 @@ class TimeSeries():
 
                 ts.data[data][to_keep == 0] = np.nan
 
-            self.data[data] = ts.data[data]
+            ts_out.data[data] = ts.data[data]
+
+        return ts_out
 
     def shift(self, time: float) -> None:
         """
@@ -1964,10 +2060,15 @@ class TimeSeries():
         time_shift
             Time to be added to time and events.time.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the time being shifted.
+
         """
-        for event in self.events:
+        ts = self.copy()
+        for event in ts.events:
             event.time = event.time + time
-        self.time = self.time + time
+        ts.time = ts.time + time
 
     def sync_event(self, name: str,
                    occurrence: int = 0) -> None:
@@ -1981,12 +2082,22 @@ class TimeSeries():
         occurrence
             Optional. Occurrence of the event to sync on, starting with 0.
 
+        Returns
+        -------
+        A copy of the TimeSeries with the time being shifted.
+
         """
-        self.shift(-self.get_event_time(name, occurrence))
+        ts = self.copy()
+        ts.shift(-ts.get_event_time(name, occurrence))
+        return ts
 
     def trim_events(self) -> None:
         """
         Delete the events that are outside the TimeSeries' time vector.
+
+        Returns
+        -------
+        A copy of the TimeSeries without the trimmed events.
 
         Example
         -------
@@ -1994,11 +2105,11 @@ class TimeSeries():
         >>> ts.time
         array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
-        >>> ts.add_event(-2)
-        >>> ts.add_event(0)
-        >>> ts.add_event(5)
-        >>> ts.add_event(9)
-        >>> ts.add_event(10)
+        >>> ts = ts.add_event(-2)
+        >>> ts = ts.add_event(0)
+        >>> ts = ts.add_event(5)
+        >>> ts = ts.add_event(9)
+        >>> ts = ts.add_event(10)
         >>> ts.events
         [TimeSeriesEvent(time=-2, name='event'),
          TimeSeriesEvent(time=0, name='event'),
@@ -2006,29 +2117,31 @@ class TimeSeries():
          TimeSeriesEvent(time=9, name='event'),
          TimeSeriesEvent(time=10, name='event')]
 
-        >>> ts.trim_events()
+        >>> ts = ts.trim_events()
         >>> ts.events
         [TimeSeriesEvent(time=0, name='event'),
          TimeSeriesEvent(time=5, name='event'),
          TimeSeriesEvent(time=9, name='event')]
 
         """
-        if self.time.shape[0] == 0:  # no time, thus no event to keep.
-            self.events = []
-            return
+        ts = self.copy()
+        if ts.time.shape[0] == 0:  # no time, thus no event to keep.
+            ts.events = []
+            return ts
 
-        events = self.events
-        self.events = []
+        events = deepcopy(ts.events)
+        ts.events = []
         for event in events:
-            if event.time >= self.time[0] and event.time <= self.time[-1]:
-                self.add_event(event.time, event.name)
+            if event.time >= ts.time[0] and event.time <= ts.time[-1]:
+                ts = ts.add_event(event.time, event.name)
+        return ts
 
     def ui_sync(
         self,
         data_keys: Union[str, List[str]] = [],
         ts2: Union['TimeSeries', None] = None,
         data_keys2: Union[str, List[str]] = []
-    ) -> None:  # pragma: no cover
+    ) -> 'TimeSeries':  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
 
@@ -2055,17 +2168,22 @@ class TimeSeries():
             Optional. The data keys from the second TimeSeries to plot. If
             kept tempy, all data is plotted.
 
+        Returns
+        -------
+        A copy of the TimeSeries after synchronization.
+
         Note
         ----
-        Although this method does not return anything, the TimeSeries ts2 is
-        modified by this method.
+        The TimeSeries ts2 is modified by this method.
 
         """
+        ts1 = self.copy()
+
         fig = plt.figure('ktk.TimeSeries.ui_sync')
 
         if ts2 is None:
             # Synchronize ts1 only
-            self.plot(data_keys)
+            ts1.plot(data_keys)
             choice = kineticstoolkit.gui.button_dialog(
                 'Please zoom on the time zero and press Next.',
                 ['Cancel', 'Next'], **WINDOW_PLACEMENT)
@@ -2078,7 +2196,7 @@ class TimeSeries():
             click = plt.ginput(1)
             kineticstoolkit.gui.message('')
             plt.close(fig)
-            self.shift(-click[0][0])
+            ts1 = ts1.shift(-click[0][0])
 
         else:  # Sync two TimeSeries together
 
@@ -2093,7 +2211,7 @@ class TimeSeries():
 
                 plt.sca(axes[0])
                 axes[0].cla()
-                self.plot(data_keys)
+                ts1.plot(data_keys)
                 plt.title('First TimeSeries (ts1)')
                 plt.grid(True)
                 plt.tight_layout()
@@ -2120,7 +2238,7 @@ class TimeSeries():
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
-                    self.shift(-click_1[0][0])
+                    ts1 = ts1.shift(-click_1[0][0])
 
                 elif choice == 1:  # Zero ts2 only
                     kineticstoolkit.gui.message(
@@ -2128,7 +2246,7 @@ class TimeSeries():
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
-                    ts2.shift(-click_1[0][0])
+                    ts2 = ts2.shift(-click_1[0][0])
 
                 elif choice == 2:  # Zero ts1 and ts2 using ts1
                     kineticstoolkit.gui.message(
@@ -2136,8 +2254,8 @@ class TimeSeries():
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
-                    self.shift(-click_1[0][0])
-                    ts2.shift(-click_1[0][0])
+                    ts1 = ts1.shift(-click_1[0][0])
+                    ts2 = ts2.shift(-click_1[0][0])
 
                 elif choice == 3:  # Zero ts1 and ts2 using ts2
                     kineticstoolkit.gui.message(
@@ -2145,8 +2263,8 @@ class TimeSeries():
                     click_2 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
-                    self.shift(-click_2[0][0])
-                    ts2.shift(-click_2[0][0])
+                    ts1 = ts1.shift(-click_2[0][0])
+                    ts2 = ts2.shift(-click_2[0][0])
 
                 elif choice == 4:  # Sync on a common event
                     kineticstoolkit.gui.message(
@@ -2158,12 +2276,14 @@ class TimeSeries():
                     click_2 = plt.ginput(1)
                     kineticstoolkit.gui.message('')
 
-                    self.shift(-click_1[0][0])
-                    ts2.shift(-click_2[0][0])
+                    ts1 = ts1.shift(-click_1[0][0])
+                    ts2 = ts2.shift(-click_2[0][0])
 
                 elif choice == 5 or choice < -1:  # OK or closed figure, quit.
                     plt.close(fig)
                     finished = True
+
+        return ts1
 
     def get_subset(self, data_keys: Union[str, List[str]]) -> 'TimeSeries':
         """
@@ -2180,8 +2300,7 @@ class TimeSeries():
 
         Returns
         -------
-        TimeSeries
-            A copy of the TimeSeries, minus the unspecified data keys.
+        A copy of the TimeSeries, minus the unspecified data keys.
 
         Example
         -------
@@ -2219,10 +2338,11 @@ class TimeSeries():
         return ts
 
     @unstable
-    def resample(self,
-                 new_time: np.ndarray,
-                 kind: str = 'linear', *,
-                 fill_value: Union[np.ndarray, str, None] = None) -> None:
+    def resample(
+            self,
+            new_time: np.ndarray,
+            kind: str = 'linear', *,
+            fill_value: Union[np.ndarray, str, None] = None) -> 'TimeSeries':
         """
         Resample the TimeSeries.
 
@@ -2240,6 +2360,10 @@ class TimeSeries():
             outside the current TimeSeries' time vector. Use 'extrapolate' to
             extrapolate.
 
+        Returns
+        -------
+        A copy of the TimeSeries with a new sample rate.
+
         Example
         --------
         >>> ts = ktk.TimeSeries(time=np.arange(6.))
@@ -2253,7 +2377,7 @@ class TimeSeries():
         >>> ts.data['data_with_nans']
         array([ 0.,  1.,  4., nan, 16., 25.])
 
-        >>> ts.resample(np.arange(0, 5.5, 0.5))
+        >>> ts = ts.resample(np.arange(0, 5.5, 0.5))
 
         >>> ts.time
         array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. ])
@@ -2265,11 +2389,13 @@ class TimeSeries():
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  nan,  nan,  nan, 16. , 20.5, 25. ])
 
         """
+        ts = self.copy()
+
         if np.any(np.isnan(new_time)):
             raise ValueError('new_time must not contain nans')
 
-        for key in self.data.keys():
-            index = ~self.isnan(key)
+        for key in ts.data.keys():
+            index = ~ts.isnan(key)
 
             if sum(index) < 3:  # Only Nans, cannot interpolate.
                 warnings.warn(
@@ -2278,8 +2404,8 @@ class TimeSeries():
                 new_shape = [len(new_time)]
                 for i in range(1, len(self.data[key].shape)):
                     new_shape.append(self.data[key].shape[i])
-                self.data[key] = np.empty(new_shape)
-                self.data[key][:] = np.nan
+                ts.data[key] = np.empty(new_shape)
+                ts.data[key][:] = np.nan
 
             else:  # Interpolate.
 
@@ -2287,48 +2413,46 @@ class TimeSeries():
                 # remove from the final, interpolated timeseries
                 nan_indexes = np.argwhere(~index)
                 time_ranges_to_remove = []  # type: List[Tuple[int, int]]
-                length = self.time.shape[0]
+                length = ts.time.shape[0]
                 for i in nan_indexes:
                     if i > 0 and i < length - 1:
-                        time_range = (self.time[i-1], self.time[i+1])
+                        time_range = (ts.time[i-1], ts.time[i+1])
                     elif i == 0:
-                        time_range = (-np.inf, self.time[i+1])
+                        time_range = (-np.inf, ts.time[i+1])
                     else:
-                        time_range = (self.time[i-1], np.inf)
+                        time_range = (ts.time[i-1], np.inf)
                     time_ranges_to_remove.append(time_range)
 
                 if kind == 'pchip':
                     P = sp.interpolate.PchipInterpolator(
-                        self.time[index],
-                        self.data[key][index],
+                        ts.time[index],
+                        ts.data[key][index],
                         axis=0,
                         extrapolate=(
                             True if fill_value == 'extrapolate' else False))
-                    self.data[key] = P(new_time)
+                    ts.data[key] = P(new_time)
                 else:
-                    f = sp.interpolate.interp1d(self.time[index],
-                                                self.data[key][index],
+                    f = sp.interpolate.interp1d(ts.time[index],
+                                                ts.data[key][index],
                                                 axis=0, fill_value=fill_value,
                                                 kind=kind)
-                    self.data[key] = f(new_time)
+                    ts.data[key] = f(new_time)
 
                 # Put back nans
                 for j in time_ranges_to_remove:
-                    self.data[key][
+                    ts.data[key][
                         (new_time > j[0]) & (new_time < j[1])] = np.nan
 
-        self.time = new_time
+        ts.time = new_time
+        return ts
 
     def merge(self,
               ts: 'TimeSeries',
               data_keys: Union[str, List[str]] = [], *,
               resample: bool = False,
-              overwrite: bool = True) -> None:
+              overwrite: bool = True) -> 'TimeSeries':
         """
-        Merge another TimeSeries into the current TimeSeries.
-
-        This method merges a TimeSeries into the current TimeSeries, copying
-        the data, data_info and events.
+        Merge the TimeSeries with another TimeSeries.
 
         Warning
         -------
@@ -2351,7 +2475,12 @@ class TimeSeries():
             source (ts) overwrites the destination. Otherwise (overwrite is
             False), the duplicate data in ts is ignored.
 
+        Returns
+        -------
+        A new, merged TimeSeries
+
         """
+        ts_out = self.copy()
         ts = ts.copy()
         if len(data_keys) == 0:
             data_keys = list(ts.data.keys())
@@ -2365,7 +2494,7 @@ class TimeSeries():
                     'data_keys must be a string or list of strings')
 
         # Check if resampling is needed
-        if ((self.time.shape == ts.time.shape) and
+        if ((ts_out.time.shape == ts.time.shape) and
                 np.all(self.time == ts.time)):
             must_resample = False
         else:
@@ -2376,27 +2505,31 @@ class TimeSeries():
                 'Time vectors do not match, resampling is required.')
 
         if must_resample is True:
-            ts.resample(self.time, fill_value='extrapolate')
+            ts = ts.resample(ts_out.time, fill_value='extrapolate')
 
         for key in data_keys:
 
             # Check if this key is a duplicate, then continue to next key if
             # required.
-            if (key in self.data) and (key in ts.data) and overwrite is False:
+            if (
+                    (key in ts_out.data)
+                    and (key in ts.data)
+                    and overwrite is False):
                 continue
 
             # Add this data
-            self.data[key] = ts.data[key]
+            ts_out.data[key] = ts.data[key]
 
             if key in ts.data_info:
                 for info_key in ts.data_info[key].keys():
-                    self.add_data_info(key, info_key,
-                                       ts.data_info[key][info_key])
+                    ts_out = ts_out.add_data_info(
+                        key, info_key, ts.data_info[key][info_key])
 
         # Merge events
         for event in ts.events:
-            self.events.append(event)
-        self.sort_events()
+            ts_out.events.append(event)
+        ts_out = ts_out.sort_events()
+        return ts_out
 
 
 if __name__ == "__main__":  # pragma: no cover
