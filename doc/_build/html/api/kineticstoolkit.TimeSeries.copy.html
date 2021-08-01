@@ -280,11 +280,26 @@
 <h1>kineticstoolkit.TimeSeries.copy<a class="headerlink" href="#kineticstoolkit-timeseries-copy" title="Permalink to this headline">¶</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="kineticstoolkit.TimeSeries.copy">
-<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.TimeSeries.copy" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_time_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_data_info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">copy_events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.TimeSeries.copy" title="Permalink to this definition">¶</a></dt>
 <dd><p>Deep copy of a TimeSeries.</p>
 <dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>copy_data</strong> – Optional. True to copy data to the new TimeSeries,
+False to keep the data attribute empty. Default is True.</p></li>
+<li><p><strong>copy_time_info</strong> – Optional. True to copy time_info to the new TimeSeries,
+False to keep the time_info attribute empty. Default is True.</p></li>
+<li><p><strong>copy_data_info</strong> – Optional. True to copy data_into to the new TimeSeries,
+False to keep the data_info attribute empty. Default is True.</p></li>
+<li><p><strong>copy_events</strong> – Optional. True to copy events to the new TimeSeries,
+False to keep the events attribute empty. Default is True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A deep copy of the TimeSeries.</p>
+</dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a></p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
 </dd></dl>

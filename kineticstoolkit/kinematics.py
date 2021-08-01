@@ -405,7 +405,7 @@ def define_rigid_body(
 
 
 def track_rigid_body(
-        kinematics: TimeSeries,
+        kinematics: TimeSeries, /,
         rigid_body_definition: Dict[str, Any],
         rigid_body_name: str
 ) -> TimeSeries:
@@ -425,15 +425,16 @@ def track_rigid_body(
         A dict with the following keys: 'MarkerNames' and 'LocalPoints' as
         returned by `ktk.kinematics.define_rgid_body()`.
     rigid_body_name
-        Name of the rigid body, that is the new data key in the output
+        Name of the rigid body, that will be the data key in the output
         TimeSeries.
 
     Returns
     -------
-    Nx4x4 series of frames.
+    TimeSeries
+        A TimeSeries that contains the trajectory of the tracked rigid body.
     """
     # Create output TimeSeries
-    ts = kinematics.copy()
+    ts = kinematics.copy(copy_data=False, copy_data_info=False)
 
     # Set local and global points
     local_points = rigid_body_definition['LocalPoints']
@@ -442,8 +443,8 @@ def track_rigid_body(
         (len(ts.time), 4, local_points.shape[2]))
     for i_marker in range(global_points.shape[2]):
         marker_name = rigid_body_definition['MarkerNames'][i_marker]
-        if marker_name in ts.data:
-            global_points[:, :, i_marker] = ts.data[marker_name]
+        if marker_name in kinematics.data:
+            global_points[:, :, i_marker] = kinematics.data[marker_name]
         else:
             global_points[:, :, i_marker] = np.nan
 

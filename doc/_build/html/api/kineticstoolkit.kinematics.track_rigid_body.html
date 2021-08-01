@@ -254,7 +254,7 @@
 <h1>kineticstoolkit.kinematics.track_rigid_body<a class="headerlink" href="#kineticstoolkit-kinematics-track-rigid-body" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kineticstoolkit.kinematics.track_rigid_body">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_definition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_rigid_body" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_definition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_rigid_body" title="Permalink to this definition">¶</a></dt>
 <dd><p>Track a rigid body from markers trajectories.</p>
 <p>This function tracks the specified rigid body in a TimeSeries that
 contains the required markers, and adds the tracked rigid body to a copy
@@ -266,15 +266,15 @@ of the input TimeSeries as a Nx4x4 series of frames.</p>
 specified in rigid_body_definition[‘MarkerNames’].</p></li>
 <li><p><strong>rigid_body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – A dict with the following keys: ‘MarkerNames’ and ‘LocalPoints’ as
 returned by <cite>ktk.kinematics.define_rgid_body()</cite>.</p></li>
-<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body, that is the new data key in the output
+<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body, that will be the data key in the output
 TimeSeries.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p></p>
+<dd class="field-even"><p>A TimeSeries that contains the trajectory of the tracked rigid body.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Nx4x4 series of frames.</p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
 </dd></dl>

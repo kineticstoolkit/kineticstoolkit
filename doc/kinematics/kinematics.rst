@@ -10,3 +10,4 @@ The kinematics_ module allows opening trajectories of markers from 3D acquisitio
 
     load_visualize
     joint_angles
+    reconstruction
