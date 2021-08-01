@@ -2032,7 +2032,7 @@ class TimeSeries():
             ts = ts_out.get_subset(data)
             ts.data[data] = ts.data[data][is_visible]
             ts.time = ts.time[is_visible]
-            ts.resample(ts_out.time, method, fill_value='extrapolate')
+            ts = ts.resample(ts_out.time, method, fill_value='extrapolate')
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:
@@ -2051,7 +2051,7 @@ class TimeSeries():
 
         return ts_out
 
-    def shift(self, time: float) -> None:
+    def shift(self, time: float) -> 'TimeSeries':
         """
         Shift time and events.time.
 
@@ -2069,9 +2069,10 @@ class TimeSeries():
         for event in ts.events:
             event.time = event.time + time
         ts.time = ts.time + time
+        return ts
 
     def sync_event(self, name: str,
-                   occurrence: int = 0) -> None:
+                   occurrence: int = 0) -> 'TimeSeries':
         """
         Shift time and events.time so that this event is at the new time zero.
 
@@ -2091,7 +2092,7 @@ class TimeSeries():
         ts.shift(-ts.get_event_time(name, occurrence))
         return ts
 
-    def trim_events(self) -> None:
+    def trim_events(self) -> 'TimeSeries':
         """
         Delete the events that are outside the TimeSeries' time vector.
 
@@ -2189,7 +2190,7 @@ class TimeSeries():
                 ['Cancel', 'Next'], **WINDOW_PLACEMENT)
             if choice != 1:
                 plt.close(fig)
-                return
+                return ts1
 
             kineticstoolkit.gui.message('Click on the sync event.',
                                         **WINDOW_PLACEMENT)

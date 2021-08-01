@@ -103,7 +103,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
             [point_factor, point_factor, point_factor, 1] *
             reader['data']['points'][:, i_label, :].T)
 
-        output.add_data_info(label_name, 'Unit', 'm')
+        output = output.add_data_info(label_name, 'Unit', 'm')
 
     # Create the timeseries time vector
     output.time = np.arange(n_frames) / point_rate
@@ -233,7 +233,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
             ts.data[label] = np.block([[
                 ndi_array[:, 3*i_marker:3*i_marker+3],
                 np.ones((n_frames, 1))]])
-            ts.add_data_info(label, 'Unit', 'm')
+            ts = ts.add_data_info(label, 'Unit', 'm')
 
     return ts
 
