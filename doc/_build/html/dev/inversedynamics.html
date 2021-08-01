@@ -696,7 +696,7 @@ div.rendered_html tbody tr:hover {
 
 <span class="c1"># Add frames (to put pushrim kinetics in global coordinates,</span>
 <span class="c1"># and at the end to express shoulder dynamics in local coordinates).</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+<span class="n">ts_all</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
     <span class="n">frames</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
         <span class="p">[</span><span class="s1">&#39;WheelR&#39;</span><span class="p">,</span> <span class="s1">&#39;HumerusR&#39;</span><span class="p">,</span> <span class="s1">&#39;Trunk&#39;</span><span class="p">]),</span>
     <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -713,7 +713,7 @@ div.rendered_html tbody tr:hover {
     <span class="p">)</span>
 
 <span class="c1"># Add relevant markers</span>
-<span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+<span class="n">ts_all</span> <span class="o">=</span> <span class="n">ts_all</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
     <span class="n">markers</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span>
         <span class="p">[</span><span class="s1">&#39;RearWheelCenterR&#39;</span><span class="p">,</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">,</span> <span class="s1">&#39;ElbowR&#39;</span><span class="p">,</span> <span class="s1">&#39;Body_AcromionR&#39;</span><span class="p">]),</span>
     <span class="n">resample</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>

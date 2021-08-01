@@ -234,9 +234,9 @@ def calculate_com_acceleration(
             order=kwargs['order'])
 
         ts_acc = kineticstoolkit.filters.deriv(ts_acc, n=2)
-        ts_acc.rename_data('COMPosition', 'COMAcceleration')
+        ts_acc = ts_acc.rename_data('COMPosition', 'COMAcceleration')
 
-        ts.merge(ts_acc, resample=True)
+        ts = ts.merge(ts_acc, resample=True)
 
         return ts
 
@@ -363,13 +363,13 @@ def calculate_segment_rotation_rates(
             order=kwargs['order'])
 
         ts_vel = kineticstoolkit.filters.deriv(ts_filt, n=1)
-        ts_vel.rename_data('SegmentAngles', 'AngularVelocity')
+        ts_vel = ts_vel.rename_data('SegmentAngles', 'AngularVelocity')
 
         ts_acc = kineticstoolkit.filters.deriv(ts_filt, n=2)
-        ts_acc.rename_data('SegmentAngles', 'AngularAcceleration')
+        ts_acc = ts_acc.rename_data('SegmentAngles', 'AngularAcceleration')
 
-        ts.merge(ts_vel, resample=True)
-        ts.merge(ts_acc, resample=True)
+        ts = ts.merge(ts_vel, resample=True)
+        ts = ts.merge(ts_acc, resample=True)
 
         return ts
 

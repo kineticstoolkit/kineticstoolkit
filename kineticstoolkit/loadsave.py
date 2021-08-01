@@ -175,8 +175,6 @@ def _load(filename):
     """
     Load the contents of a folder or filename.
 
-    This is a deprecated function as ktk.zip is to be removed soon.
-
     Returns a tuple where the first element is the suffix
     (.eval.txt, .dict, etc) and the second element is the contents.
     """
@@ -286,7 +284,7 @@ def _load_object_hook(obj):
             for key in obj['data']:
                 out.data[key] = np.array(obj['data'][key])
             for event in obj['events']:
-                out.add_event(event['time'], event['name'])
+                out = out.add_event(event['time'], event['name'])
             return out
 
         elif to_class == 'pandas.DataFrame':

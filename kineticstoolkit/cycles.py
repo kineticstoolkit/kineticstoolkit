@@ -170,7 +170,7 @@ def detect_cycles(ts: TimeSeries,
     # Form the output timeseries
     tsout = ts.copy()
     for event in valid_events:
-        tsout.add_event(event.time, event.name)
+        tsout = tsout.add_event(event.time, event.name)
     tsout.sort_events()
 
     return tsout
@@ -284,13 +284,13 @@ def time_normalize(
         # Resample this cycle on span + 1
         # (and get the first points after)
         try:
-            subts.resample(
+            subts = subts.resample(
                 np.linspace(extended_begin_time,
                             extended_end_time,
                             span[1] - span[0] + 1))
         except ValueError:
             subts = subts_backup  # In case the try messed with subts
-            subts.resample(
+            subts = subts.resample(
                 np.linspace(extended_begin_time,
                             extended_end_time,
                             span[1] - span[0] + 1),
@@ -307,7 +307,7 @@ def time_normalize(
             if event.time >= begin_time and event.time < end_time:
                 events.append(event)
         subts.events = events
-        subts.sort_events()
+        subts = subts.sort_events()
 
         # Separate start/end events from the other
         start_end_events = []
@@ -320,12 +320,14 @@ def time_normalize(
 
         # Add event_name1 at the beginning and end (duplicates will be
         # cancelled at the end)
-        dest_ts.add_event(-span[0] +
-                          i_cycle * (span[1] - span[0]),
-                          event_name1)
-        dest_ts.add_event(-span[0] + n_points +
-                          i_cycle * (span[1] - span[0]),
-                          '_')
+        dest_ts = dest_ts.add_event(
+            -span[0] + i_cycle * (span[1] - span[0]),
+            event_name1
+        )
+        dest_ts = dest_ts.add_event(
+            -span[0] + n_points + i_cycle * (span[1] - span[0]),
+            '_'
+        )
 
         # Add the other events
         def time_to_normalized_time(time):
@@ -338,7 +340,7 @@ def time_normalize(
 
             # Resample
             new_time = time_to_normalized_time(event.time)
-            dest_ts.add_event(new_time, event.name)
+            dest_ts = dest_ts.add_event(new_time, event.name)
 
         # Add this cycle to dest_time and dest_data
         for key in subts.data:
@@ -361,7 +363,7 @@ def time_normalize(
         new_shape[0] = n_cycles * (span[1] - span[0])
         dest_ts.data[key] = np.reshape(temp, new_shape)
 
-    dest_ts.sort_events()
+    dest_ts = dest_ts.sort_events()
     return dest_ts
 
 
@@ -477,10 +479,10 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
 #     >>> import kineticstoolkit.lab as ktk
 #     >>> # Create a TimeSeries with different time-normalized events
 #     >>> ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
-#     >>> ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
-#     >>> ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
-#     >>> ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
-#     >>> ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
+#     >>> ts = ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
+#     >>> ts = ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
+#     >>> ts = ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
+#     >>> ts = ts.add_event(382, 'event1')  # 2nd occ. event1 at 82% of cycle 3
 
 #     >>> # Stack these events
 #     >>> events = ktk.cycles.stack_events(ts)

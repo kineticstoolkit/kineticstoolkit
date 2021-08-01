@@ -151,7 +151,7 @@ def test_reconstruction():
         # Add the marker 'ProbeTip' in markers. This is the origin of the Probe
         # rigid body.
         markers.data['ProbeTip'] = rigid_bodies.data['Probe'][:, :, 3]
-        markers.add_data_info('ProbeTip', 'Color', 'r')
+        markers = markers.add_data_info('ProbeTip', 'Color', 'r')
 
         # Create the marker configuration
         return ktk.kinematics.create_virtual_marker_config(
@@ -252,7 +252,7 @@ def test_reconstruction():
         markers.data[virtual_marker] = ktk.geometry.get_global_coordinates(
             local_coordinates, reference_frame)
         # Assign a color for these virtual markers
-        markers.add_data_info(virtual_marker, 'Color', 'c')
+        markers = markers.add_data_info(virtual_marker, 'Color', 'c')
 
     # Show the markers and rigid bodies in a player
     ktk.Player(markers, rigid_bodies,

@@ -5193,7 +5193,7 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
 <div class="section" id="Plot-the-Euler-angles">
 <h2>Plot the Euler angles<a class="headerlink" href="#Plot-the-Euler-angles" title="Permalink to this headline">¶</a></h2>
 <p>Now that we calculated the angles, it would be a good idea to create a last TimeSeries to keep track of the time and meaning of these angles.</p>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
@@ -5207,6 +5207,20 @@ array([[ 16.29122882,  -0.50721766, 158.55909435],
 <span class="n">angles</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forearm pronation&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;deg&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+TimeSeries with attributes:
+         time: &lt;array of shape (700,)&gt;
+         data: &lt;dict with 2 entries&gt;
+    time_info: &lt;dict with 1 entries&gt;
+    data_info: &lt;dict with 1 entries&gt;
+       events: &lt;list of 0 items&gt;
+</pre></div></div>
 </div>
 <p>Now we plot it.</p>
 <div class="nbinput docutils container">
