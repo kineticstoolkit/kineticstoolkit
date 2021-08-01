@@ -95,7 +95,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">GETTING STARTED</span></p>
+              <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installing</a></li>
@@ -113,7 +113,7 @@
 </ul>
 </li>
 </ul>
-<p class="caption"><span class="caption-text">TUTORIALS</span></p>
+<p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="loadsave.html">Saving and loading</a></li>
 <li class="toctree-l1"><a class="reference internal" href="filters/filters.html">Filtering</a></li>
@@ -122,7 +122,7 @@
 <li class="toctree-l1"><a class="reference internal" href="kinematics/kinematics.html">Kinematics analysis</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pushrimkinetics.html">Wheelchair kinetics</a></li>
 </ul>
-<p class="caption"><span class="caption-text">IN DEPTH</span></p>
+<p class="caption" role="heading"><span class="caption-text">IN DEPTH</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1"><a class="reference internal" href="release_notes.html">Release Notes</a></li>
@@ -130,7 +130,7 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption"><span class="caption-text">FOR DEVELOPERS</span></p>
+<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
 <li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
@@ -1102,8 +1102,8 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Nm&#39;</span><span class="p">)</span>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Forces&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;N&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="s1">&#39;Moments&#39;</span><span class="p">,</span> <span class="s1">&#39;Unit&#39;</span><span class="p">,</span> <span class="s1">&#39;Nm&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1134,17 +1134,17 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">4.35</span><span class="p">,</span> <span class="s1">&#39;sync&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">8.56</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">9.93</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">10.50</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.12</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.78</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">12.33</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.39</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.88</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">14.86</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
-<span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">15.30</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">4.35</span><span class="p">,</span> <span class="s1">&#39;sync&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">8.56</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">9.93</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">10.50</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.12</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">11.78</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">12.33</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.39</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">13.88</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">14.86</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">)</span>
+<span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">15.30</span><span class="p">,</span> <span class="s1">&#39;recovery&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -1225,7 +1225,7 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">ts</span><span class="o">.</span><span class="n">sync_event</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">)</span>
+<span></span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">sync_event</span><span class="p">(</span><span class="s1">&#39;sync&#39;</span><span class="p">)</span>
 <span class="n">ts</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>
 </div>
@@ -1250,7 +1250,7 @@ TimeSeries with attributes:
 <span class="n">ts2</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_ts_between_events</span><span class="p">(</span><span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="s1">&#39;push&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">inclusive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># Remove the events that are not contained into the new time range.</span>
-<span class="n">ts2</span><span class="o">.</span><span class="n">trim_events</span><span class="p">()</span>
+<span class="n">ts2</span> <span class="o">=</span> <span class="n">ts2</span><span class="o">.</span><span class="n">trim_events</span><span class="p">()</span>
 
 <span class="n">ts2</span><span class="o">.</span><span class="n">plot</span><span class="p">()</span>
 </pre></div>

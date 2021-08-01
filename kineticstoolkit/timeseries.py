@@ -541,7 +541,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the added data info.
+        TimeSeries
+            A copy of the TimeSeries with the added data info.
 
         Example
         -------
@@ -583,7 +584,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the removed data info.
+        TimeSeries
+            A copy of the TimeSeries with the removed data info.
 
         Note
         ----
@@ -624,7 +626,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the renamed data.
+        TimeSeries
+            A copy of the TimeSeries with the renamed data.
 
         Example
         -------
@@ -647,7 +650,7 @@ class TimeSeries():
         {'signal': {'Unit': 'm'}}
 
         """
-        ts= self.copy()
+        ts = self.copy()
         try:
             ts.data[new_data_key] = ts.data.pop(old_data_key)
         except KeyError:
@@ -669,7 +672,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the removed data.
+        TimeSeries
+            A copy of the TimeSeries with the removed data.
 
         Note
         ----
@@ -722,7 +726,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the added event.
+        TimeSeries
+            A copy of the TimeSeries with the added event.
 
         Example
         -------
@@ -761,7 +766,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the renamed event.
+        TimeSeries
+            A copy of the TimeSeries with the renamed event.
 
         Example
         -------
@@ -791,7 +797,7 @@ class TimeSeries():
         ts = self.copy()
 
         if old_name == new_name:
-            return ts # Nothing to do.
+            return ts  # Nothing to do.
 
         if occurrence is None:
             # Rename every occurrence of this event
@@ -826,7 +832,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the removed event.
+        TimeSeries
+            A copy of the TimeSeries with the removed event.
 
         Example
         -------
@@ -1066,7 +1073,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the sorted events.
+        TimeSeries
+            A copy of the TimeSeries with the sorted events.
 
         Example
         -------
@@ -1268,7 +1276,8 @@ class TimeSeries():
 
         Returns
         -------
-        The index in the time vector.
+        int
+            The index in the time vector.
 
         Example
         -------
@@ -1300,8 +1309,9 @@ class TimeSeries():
 
         Returns
         -------
-        The index in the time vector. If no value is before the specified
-        time, a value of np.nan is returned.
+        int
+            The index in the time vector. If no value is before the specified
+            time, a value of np.nan is returned.
 
         Example
         -------
@@ -1364,8 +1374,9 @@ class TimeSeries():
 
         Returns
         -------
-        The index in the time vector. If no value is after the
-        specified time, a value of np.nan is returned.
+        int
+            The index in the time vector. If no value is after the
+            specified time, a value of np.nan is returned.
 
         Example
         -------
@@ -1430,7 +1441,8 @@ class TimeSeries():
 
         Returns
         -------
-        The index of the event or np.nan if no event found.
+        int
+            The index of the event or np.nan if no event found.
 
         """
         occurrence = int(occurrence)
@@ -1473,8 +1485,9 @@ class TimeSeries():
 
         Returns
         -------
-        The time of the specified event. If no corresponding event is
-        found, then np.nan is returned.
+        float
+            The time of the specified event. If no corresponding event is
+            found, then np.nan is returned.
 
         Example
         -------
@@ -1511,8 +1524,9 @@ class TimeSeries():
 
         Returns
         -------
-        A TimeSeries of length 1, at the time neasest to the specified
-        time.
+        TimeSeries
+            A TimeSeries of length 1, at the time neasest to the specified
+            time.
 
         Example
         -------
@@ -1552,7 +1566,8 @@ class TimeSeries():
 
         Returns
         -------
-        A TimeSeries of length 1, at the event's nearest time.
+        TimeSeries
+            A TimeSeries of length 1, at the event's nearest time.
 
         """
         time = self.get_event_time(name, occurrence)
@@ -1572,7 +1587,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1619,7 +1635,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1663,7 +1680,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1706,7 +1724,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1746,7 +1765,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1788,7 +1808,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1828,7 +1849,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1872,7 +1894,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1917,7 +1940,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         Example
         -------
@@ -1958,7 +1982,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new TimeSeries that fulfils the specified conditions.
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
 
         """
         fig = plt.figure()
@@ -1984,9 +2009,10 @@ class TimeSeries():
 
         Returns
         -------
-        A boolean array of the same size as the time vector, where True
-        values represent missing samples (samples that contain at least
-        one nan value).
+        np.ndarray
+            A boolean array of the same size as the time vector, where True
+            values represent missing samples (samples that contain at least
+            one nan value).
         """
         values = self.data[data_key].copy()
         # Reduce the dimension of values while keeping the time dimension.
@@ -2019,7 +2045,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the missing samples filled.
+        TimeSeries
+            A copy of the TimeSeries with the missing samples filled.
 
         """
         ts_out = self.copy()
@@ -2062,7 +2089,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the time being shifted.
+        TimeSeries
+            A copy of the TimeSeries with the time being shifted.
 
         """
         ts = self.copy()
@@ -2085,7 +2113,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with the time being shifted.
+        TimeSeries
+            A copy of the TimeSeries with the time being shifted.
 
         """
         ts = self.copy()
@@ -2098,7 +2127,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries without the trimmed events.
+        TimeSeries
+            A copy of the TimeSeries without the trimmed events.
 
         Example
         -------
@@ -2171,11 +2201,12 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries after synchronization.
+        TimeSeries
+            A copy of the TimeSeries after synchronization.
 
         Note
         ----
-        The TimeSeries ts2 is modified by this method.
+        The TimeSeries ts2 is modified in place.
 
         """
         ts1 = self.copy()
@@ -2301,7 +2332,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries, minus the unspecified data keys.
+        TimeSeries
+            A copy of the TimeSeries, minus the unspecified data keys.
 
         Example
         -------
@@ -2363,7 +2395,8 @@ class TimeSeries():
 
         Returns
         -------
-        A copy of the TimeSeries with a new sample rate.
+        TimeSeries
+            A copy of the TimeSeries with a new sample rate.
 
         Example
         --------
@@ -2478,7 +2511,8 @@ class TimeSeries():
 
         Returns
         -------
-        A new, merged TimeSeries
+        TimeSeries
+            A new, merged TimeSeries.
 
         """
         ts_out = self.copy()
