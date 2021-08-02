@@ -516,16 +516,16 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Read the markers</span>
-<span class="n">kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span>
     <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_propulsion.c3d&#39;</span><span class="p">)</span>
 
 <span class="c1"># Set every unnecessary markers to blue</span>
 <span class="n">keep_white</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;LateralEpicondyleR&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR3&#39;</span><span class="p">,</span>
         <span class="s1">&#39;ForearmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR3&#39;</span><span class="p">]</span>
 
-<span class="k">for</span> <span class="n">marker_name</span> <span class="ow">in</span> <span class="n">kinematics</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+<span class="k">for</span> <span class="n">marker_name</span> <span class="ow">in</span> <span class="n">markers</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
     <span class="k">if</span> <span class="n">marker_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">keep_white</span><span class="p">:</span>
-        <span class="n">kinematics</span> <span class="o">=</span> <span class="n">kinematics</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="n">marker_name</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
+        <span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="n">marker_name</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">)</span>
 
 <span class="c1"># Set the point of view for 3D visualization</span>
 <span class="n">viewing_options</span> <span class="o">=</span> <span class="p">{</span>
@@ -536,7 +536,7 @@ div.rendered_html tbody tr:hover {
 <span class="p">}</span>
 
 <span class="c1"># Create the player</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">kinematics</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1486,11 +1486,11 @@ AAABAAAAAExhdmY1OC40NS4xMDA=
 <span></span><span class="n">rigid_body_definitions</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
 
 <span class="c1"># Read the static trial</span>
-<span class="n">static_kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span>
+<span class="n">markers_static</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span>
     <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_static.c3d&#39;</span><span class="p">)</span>
 
 <span class="c1"># Show this trial, just to inspect it</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">static_kinematics</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers_static</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -1873,7 +1873,7 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">define_rigid_body</span><span class="p">(</span>
-    <span class="n">static_kinematics</span><span class="p">,</span>
+    <span class="n">markers_static</span><span class="p">,</span>
     <span class="n">marker_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ArmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ArmR3&#39;</span><span class="p">])</span>
 
 <span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span>
@@ -1899,7 +1899,7 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">define_rigid_body</span><span class="p">(</span>
-    <span class="n">static_kinematics</span><span class="p">,</span>
+    <span class="n">markers_static</span><span class="p">,</span>
     <span class="n">marker_names</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ForearmR1&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR2&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR3&#39;</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -1930,19 +1930,22 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">rigid_body_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">]:</span>
+<span></span><span class="c1"># Create a target TimeSeries</span>
+<span class="n">rigid_bodies_static</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">rigid_body_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">]:</span>
 
     <span class="c1"># Track this rigid body</span>
     <span class="n">trajectory</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">track_rigid_body</span><span class="p">(</span>
-        <span class="n">static_kinematics</span><span class="p">,</span>
+        <span class="n">markers_static</span><span class="p">,</span>
         <span class="n">rigid_body_definition</span><span class="o">=</span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="n">rigid_body_name</span><span class="p">],</span>
         <span class="n">rigid_body_name</span><span class="o">=</span><span class="n">rigid_body_name</span>
     <span class="p">)</span>
 
-    <span class="c1"># Add it to the static_kinematics TimeSeries</span>
-    <span class="n">static_kinematics</span> <span class="o">=</span> <span class="n">static_kinematics</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
+    <span class="c1"># Add it to the target TimeSeries</span>
+    <span class="n">rigid_bodies_static</span> <span class="o">=</span> <span class="n">rigid_bodies_static</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">trajectory</span><span class="p">)</span>
 
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">static_kinematics</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers_static</span><span class="p">,</span> <span class="n">rigid_bodies_static</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -2352,28 +2355,29 @@ bwAAAB1kYXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 <span></span><span class="k">def</span> <span class="nf">process_probing_acquisition</span><span class="p">(</span><span class="n">file_name</span><span class="p">,</span> <span class="n">rigid_body_name</span><span class="p">):</span>
 
     <span class="c1"># Load the markers</span>
-    <span class="n">probing_kinematics</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+    <span class="n">markers_probing</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">read_c3d_file</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
 
-    <span class="c1"># Track the rigid body and the probe</span>
-    <span class="n">probing_kinematics</span> <span class="o">=</span> <span class="n">probing_kinematics</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="c1"># Track the rigid body</span>
+    <span class="n">rigid_bodies_probing</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">track_rigid_body</span><span class="p">(</span>
-            <span class="n">probing_kinematics</span><span class="p">,</span>
+            <span class="n">markers_probing</span><span class="p">,</span>
             <span class="n">rigid_body_definition</span><span class="o">=</span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="n">rigid_body_name</span><span class="p">],</span>
             <span class="n">rigid_body_name</span><span class="o">=</span><span class="n">rigid_body_name</span>
         <span class="p">)</span>
     <span class="p">)</span>
 
-    <span class="n">probing_kinematics</span> <span class="o">=</span> <span class="n">probing_kinematics</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="c1"># Track the probe</span>
+    <span class="n">rigid_bodies_probing</span> <span class="o">=</span> <span class="n">rigid_bodies_probing</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
         <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">track_rigid_body</span><span class="p">(</span>
-            <span class="n">probing_kinematics</span><span class="p">,</span>
+            <span class="n">markers_probing</span><span class="p">,</span>
             <span class="n">rigid_body_definition</span><span class="o">=</span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;Probe&#39;</span><span class="p">],</span>
             <span class="n">rigid_body_name</span><span class="o">=</span><span class="s1">&#39;Probe&#39;</span>
         <span class="p">)</span>
     <span class="p">)</span>
 
-    <span class="c1"># Define a virtual marker located at the probe tip</span>
+    <span class="c1"># Return a definition for a virtual marker located at the probe tip</span>
     <span class="k">return</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">define_virtual_marker</span><span class="p">(</span>
-        <span class="n">probing_kinematics</span><span class="p">,</span>
+        <span class="n">rigid_bodies_probing</span><span class="p">,</span>
         <span class="n">source_name</span><span class="o">=</span><span class="s1">&#39;Probe&#39;</span><span class="p">,</span>
         <span class="n">rigid_body_name</span><span class="o">=</span><span class="n">rigid_body_name</span>
     <span class="p">)</span>
@@ -2436,17 +2440,19 @@ bwAAAB1kYXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">rigid_body_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">]:</span>
-    <span class="n">kinematics</span> <span class="o">=</span> <span class="n">kinematics</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+<span></span><span class="n">rigid_bodies</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span>
+
+<span class="k">for</span> <span class="n">rigid_body_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">,</span> <span class="s1">&#39;ForearmR&#39;</span><span class="p">]:</span>
+    <span class="n">rigid_bodies</span> <span class="o">=</span> <span class="n">rigid_bodies</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
         <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">track_rigid_body</span><span class="p">(</span>
-            <span class="n">kinematics</span><span class="p">,</span>
+            <span class="n">markers</span><span class="p">,</span>
             <span class="n">rigid_body_definition</span><span class="o">=</span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="n">rigid_body_name</span><span class="p">],</span>
             <span class="n">rigid_body_name</span><span class="o">=</span><span class="n">rigid_body_name</span>
         <span class="p">)</span>
     <span class="p">)</span>
 
 <span class="c1"># Show those rigid bodies and markers in a player</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">kinematics</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
@@ -3635,19 +3641,19 @@ dGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 
     <span class="c1"># Extract the coordinates system for its associate rigid body</span>
     <span class="n">rigid_body_name</span> <span class="o">=</span> <span class="n">virtual_marker_definitions</span><span class="p">[</span><span class="n">virtual_marker</span><span class="p">][</span><span class="s1">&#39;RigidBodyName&#39;</span><span class="p">]</span>
-    <span class="n">reference_frame</span> <span class="o">=</span> <span class="n">kinematics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">rigid_body_name</span><span class="p">]</span>
+    <span class="n">reference_frame</span> <span class="o">=</span> <span class="n">rigid_bodies</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">rigid_body_name</span><span class="p">]</span>
 
     <span class="c1"># Get the global trajectory of this virtual marker</span>
     <span class="n">global_coordinates</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">get_global_coordinates</span><span class="p">(</span>
         <span class="n">local_coordinates</span><span class="p">,</span> <span class="n">reference_frame</span><span class="p">)</span>
 
     <span class="c1"># Add this trajectory to the markers TimeSeries and color it cyan.</span>
-    <span class="n">kinematics</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">virtual_marker</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_coordinates</span>
-    <span class="n">kinematics</span> <span class="o">=</span> <span class="n">kinematics</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="n">virtual_marker</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
+    <span class="n">markers</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">virtual_marker</span><span class="p">]</span> <span class="o">=</span> <span class="n">global_coordinates</span>
+    <span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="n">virtual_marker</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
 
 
 <span class="c1"># Show the markers and rigid bodies in a player</span>
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">kinematics</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -4936,7 +4942,7 @@ cGwAAAAAAAAAAAAAAAAtaWxzdAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
     <span class="p">}</span>
 <span class="p">}</span>
 
-<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">kinematics</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span><span class="n">markers</span><span class="p">,</span> <span class="n">rigid_bodies</span><span class="p">,</span> <span class="n">segments</span><span class="o">=</span><span class="n">segments</span><span class="p">,</span> <span class="o">**</span><span class="n">viewing_options</span><span class="p">)</span>
 <span class="n">player</span><span class="o">.</span><span class="n">to_html5</span><span class="p">(</span><span class="n">start_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">stop_time</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>

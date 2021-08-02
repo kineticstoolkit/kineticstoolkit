@@ -28,6 +28,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.decorators import unstable, directory, deprecated
+from os.path import exists
 from typing import Sequence, Dict, Any
 
 import numpy as np
@@ -73,7 +74,10 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
     """
     # Create the reader
-    reader = ezc3d.c3d(filename)
+    if isinstance(filename, str) and exists(filename):
+        reader = ezc3d.c3d(filename)
+    else:
+        raise FileNotFoundError(f"File {filename} was not found.")
 
     # Create the output timeseries
     output = TimeSeries()

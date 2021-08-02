@@ -2570,8 +2570,11 @@ class TimeSeries():
                     'data_keys must be a string or list of strings')
 
         # Check if resampling is needed
+        if len(ts_out.time) == 0:
+            ts_out.time = deepcopy(ts.time)
+
         if ((ts_out.time.shape == ts.time.shape) and
-                np.all(self.time == ts.time)):
+                np.all(ts_out.time == ts.time)):
             must_resample = False
         else:
             must_resample = True
