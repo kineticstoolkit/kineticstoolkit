@@ -90,7 +90,8 @@ def test_empty_constructor():
     assert ts.time_info['Unit'] == 's'
 
 
-def test_from_dataframe():
+def test_from_to_dataframe():
+    # from_dataframe
     df = pd.DataFrame(columns=['Data0', 'Data1[0,0]', 'Data1[0,1]',
                                'Data1[1,0]', 'Data1[1,1]'])
     df['Data0'] = np.arange(2)
@@ -101,6 +102,27 @@ def test_from_dataframe():
     ts = ktk.TimeSeries.from_dataframe(df)
     assert np.allclose(ts.data['Data0'], [0, 1])
     assert np.allclose(ts.data['Data1'], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
+
+    # to_dataframe
+    df2 = ts.to_dataframe()
+    assert np.all(df2 == df)
+
+    # Do the same with empty data
+    df = pd.DataFrame(columns=['Data0', 'Data1[0,0]', 'Data1[0,1]',
+                               'Data1[1,0]', 'Data1[1,1]'])
+    df['Data0'] = np.array([])
+    df['Data1[0,0]'] = np.array([])
+    df['Data1[0,1]'] = np.array([])
+    df['Data1[1,0]'] = np.array([])
+    df['Data1[1,1]'] = np.array([])
+
+    ts = ktk.TimeSeries.from_dataframe(df)
+    assert ts.data['Data0'].shape == (0,)
+    assert ts.data['Data1'].shape == (0, 2, 2)
+
+    # # This test should pass after solving issue #59
+    # df2 = ts.to_dataframe()
+    # assert np.all(df == df2)
 
 
 def test_add_remove_data_info():
