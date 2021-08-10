@@ -90,7 +90,8 @@ def test_empty_constructor():
     assert ts.time_info['Unit'] == 's'
 
 
-def test_from_dataframe():
+def test_from_to_dataframe():
+    # from_dataframe
     df = pd.DataFrame(columns=['Data0', 'Data1[0,0]', 'Data1[0,1]',
                                'Data1[1,0]', 'Data1[1,1]'])
     df['Data0'] = np.arange(2)
@@ -101,6 +102,27 @@ def test_from_dataframe():
     ts = ktk.TimeSeries.from_dataframe(df)
     assert np.allclose(ts.data['Data0'], [0, 1])
     assert np.allclose(ts.data['Data1'], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
+
+    # to_dataframe
+    df2 = ts.to_dataframe()
+    assert np.all(df2 == df)
+
+    # Do the same with empty data
+    df = pd.DataFrame(columns=['Data0', 'Data1[0,0]', 'Data1[0,1]',
+                               'Data1[1,0]', 'Data1[1,1]'])
+    df['Data0'] = np.array([])
+    df['Data1[0,0]'] = np.array([])
+    df['Data1[0,1]'] = np.array([])
+    df['Data1[1,0]'] = np.array([])
+    df['Data1[1,1]'] = np.array([])
+
+    ts = ktk.TimeSeries.from_dataframe(df)
+    assert ts.data['Data0'].shape == (0,)
+    assert ts.data['Data1'].shape == (0, 2, 2)
+
+    # # This test should pass after solving issue #59
+    # df2 = ts.to_dataframe()
+    # assert np.all(df == df2)
 
 
 def test_add_remove_data_info():
@@ -444,6 +466,47 @@ def test_plot():
     fig = plt.figure()
     ts.plot(['data1'], event_names=False, legend=False)
     plt.close(fig)
+
+
+def test_copy():
+    """Test the copy method."""
+    ts1 = ktk.TimeSeries()
+    ts1.time = np.linspace(0, 99, 100, endpoint=False)
+    ts1.data['signal1'] = np.random.rand(100, 2)
+    ts1.data['signal2'] = np.random.rand(100, 2)
+    ts1.data['signal3'] = np.random.rand(100, 2)
+    ts1 = ts1.add_data_info('signal1', 'Unit', 'Unit1')
+    ts1 = ts1.add_data_info('signal2', 'Unit', 'Unit2')
+    ts1 = ts1.add_data_info('signal3', 'Unit', 'Unit3')
+    ts1 = ts1.add_event(1.54, 'test_event1')
+    ts1 = ts1.add_event(10.2, 'test_event2')
+    ts1 = ts1.add_event(100, 'test_event3')
+
+    # Standard deep copy
+    ts2 = ts1.copy()
+    assert ts1 == ts2
+
+    # A deep copy without data
+    ts2 = ts1.copy(copy_data=False)
+    assert ts1 != ts2
+    assert np.all(ts2.time == ts1.time)
+    assert ts2.data_info['signal1']['Unit'] == 'Unit1'
+    assert ts2.data_info['signal2']['Unit'] == 'Unit2'
+    assert ts2.data_info['signal3']['Unit'] == 'Unit3'
+    assert ts2.events[0].time == 1.54
+    assert ts2.events[1].time == 10.2
+    assert ts2.events[2].time == 100
+
+    # A deep copy without data_info
+    ts2 = ts1.copy(copy_data_info=False)
+    assert ts1 != ts2
+    assert np.all(ts2.time == ts1.time)
+    assert np.all(ts2.data['signal1'] == ts1.data['signal1'])
+    assert np.all(ts2.data['signal2'] == ts1.data['signal2'])
+    assert np.all(ts2.data['signal3'] == ts1.data['signal3'])
+    assert ts2.events[0].time == 1.54
+    assert ts2.events[1].time == 10.2
+    assert ts2.events[2].time == 100
 
 
 if __name__ == "__main__":

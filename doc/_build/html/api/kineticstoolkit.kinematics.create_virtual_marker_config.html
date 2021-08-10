@@ -44,7 +44,7 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.kinematics.read_c3d_file" href="kineticstoolkit.kinematics.read_c3d_file.html" />
+    <link rel="next" title="kineticstoolkit.kinematics.define_rigid_body" href="kineticstoolkit.kinematics.define_rigid_body.html" />
     <link rel="prev" title="kineticstoolkit.kinematics.create_rigid_body_config" href="kineticstoolkit.kinematics.create_rigid_body_config.html" />
 
 
@@ -125,9 +125,12 @@
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_rigid_body_config.html">kineticstoolkit.kinematics.create_rigid_body_config</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.create_virtual_marker_config</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.register_markers.html">kineticstoolkit.kinematics.register_markers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_body.html">kineticstoolkit.kinematics.track_rigid_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
@@ -211,7 +214,7 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.kinematics.read_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.read_c3d_file" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
         <a href="kineticstoolkit.kinematics.create_rigid_body_config.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.create_rigid_body_config" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
@@ -255,32 +258,11 @@
 <dd><p>Create a virtual marker configuration based on a probing acquisition.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.4, is still experimental and
-may change signature or behaviour in the future.</p>
+<p>The function create_virtual_marker_config is deprecated since 0.6 and is scheduled to be removed in 1.0. It has been replaced by <cite>define_virtual_marker</cite>.</p>
 </div>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Markers trajectories during the probing acquisition. This
-TimeSeries must have at least marker_name in its data keys.</p></li>
-<li><p><strong>rigid_bodies</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – Rigid body trajectories during this probing acquisition. This
-TimeSeries must have at least rigid_body_name in its data keys.</p></li>
-<li><p><strong>marker_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the marker to express in local coordinates.</p></li>
-<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body to express marker_name in relation to.</p></li>
-</ul>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>Dictionary with the following keys:</p>
-<ul class="simple">
-<li><p>RigidBodyName : Name of the virtual marker’s rigid body</p></li>
-<li><p>LocalPoint : Local position of this marker in the reference frame
-defined by the rigid body RigidBodyName. LocalPoint is expressed as
-a 1x4 array.</p></li>
-</ul>
-</p>
-</dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, Any]</p>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]</p>
 </dd>
 </dl>
 </dd></dl>
@@ -293,7 +275,7 @@ a 1x4 array.</p></li>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.kinematics.read_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.read_c3d_file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
         <a href="kineticstoolkit.kinematics.create_rigid_body_config.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.create_rigid_body_config" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 

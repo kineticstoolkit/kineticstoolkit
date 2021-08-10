@@ -1116,9 +1116,50 @@ class TimeSeries():
 
         return ts
 
-    def copy(self) -> 'TimeSeries':
-        """Deep copy of a TimeSeries."""
-        return deepcopy(self)
+    def copy(self, *,
+             copy_data=True,
+             copy_time_info=True,
+             copy_data_info=True,
+             copy_events=True) -> 'TimeSeries':
+        """
+        Deep copy of a TimeSeries.
+
+        Parameters
+        ----------
+        copy_data
+            Optional. True to copy data to the new TimeSeries,
+            False to keep the data attribute empty. Default is True.
+        copy_time_info
+            Optional. True to copy time_info to the new TimeSeries,
+            False to keep the time_info attribute empty. Default is True.
+        copy_data_info
+            Optional. True to copy data_into to the new TimeSeries,
+            False to keep the data_info attribute empty. Default is True.
+        copy_events
+            Optional. True to copy events to the new TimeSeries,
+            False to keep the events attribute empty. Default is True.
+
+        Returns
+        -------
+        TimeSeries
+            A deep copy of the TimeSeries.
+
+        """
+        if copy_data and copy_time_info and copy_data_info and copy_events:
+            # General case
+            return deepcopy(self)
+        else:
+            # Specific cases
+            ts = ktk.TimeSeries(time=self.time)
+            if copy_data:
+                ts.data = deepcopy(self.data)
+            if copy_time_info:
+                ts.time_info = deepcopy(self.time_info)
+            if copy_data_info:
+                ts.data_info = deepcopy(self.data_info)
+            if copy_events:
+                ts.events = deepcopy(self.events)
+            return ts
 
     def plot(self,
              data_keys: Union[str, List[str]] = [],
@@ -2529,8 +2570,11 @@ class TimeSeries():
                     'data_keys must be a string or list of strings')
 
         # Check if resampling is needed
+        if len(ts_out.time) == 0:
+            ts_out.time = deepcopy(ts.time)
+
         if ((ts_out.time.shape == ts.time.shape) and
-                np.all(self.time == ts.time)):
+                np.all(ts_out.time == ts.time)):
             must_resample = False
         else:
             must_resample = True

@@ -27,7 +27,8 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import unstable, directory
+from kineticstoolkit.decorators import unstable, directory, deprecated
+from os.path import exists
 from typing import Sequence, Dict, Any
 
 import numpy as np
@@ -73,7 +74,10 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
     """
     # Create the reader
-    reader = ezc3d.c3d(filename)
+    if isinstance(filename, str) and exists(filename):
+        reader = ezc3d.c3d(filename)
+    else:
+        raise FileNotFoundError(f"File {filename} was not found.")
 
     # Create the output timeseries
     output = TimeSeries()
@@ -351,36 +355,30 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
-def create_rigid_body_config(
-    markers: TimeSeries,
+def define_rigid_body(
+    kinematics: TimeSeries,
     marker_names: Sequence[str]
 ) -> Dict[str, Any]:
     """
-    Create a rigid body configuration based on a static acquisition.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    Create a generic rigid body definition based on a static acquisition.
 
     Parameters
     ----------
-    markers
-        Markers trajectories during the static acquisition.
+    kinematics
+        Markers trajectories during a static acquisition.
     marker_names
         The markers that define the rigid body.
 
     Returns
     -------
-    Dict[str, Any]
-        Dictionary with the following keys:
+    Dictionary with the following keys:
 
         - MarkerNames : the same as marker_names
         - LocalPoints : a 1x4xM array that indicates the local position of
           each M marker in the created rigid body config.
 
     """
-    n_samples = len(markers.time)
+    n_samples = len(kinematics.time)
     n_markers = len(marker_names)
 
     # Construct the global points array
@@ -388,7 +386,7 @@ def create_rigid_body_config(
 
     for i_marker, marker in enumerate(marker_names):
         global_points[:, :, i_marker] = \
-            markers.data[marker][:, :]
+            kinematics.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
     global_points = global_points[~geometry.isnan(global_points)]
@@ -410,117 +408,107 @@ def create_rigid_body_config(
     }
 
 
-def register_markers(
-        markers: TimeSeries,
-        rigid_body_configs: Dict[str, Dict[str, Any]],
-        verbose: bool = False
+def track_rigid_body(
+        kinematics: TimeSeries, /,
+        rigid_body_definition: Dict[str, Any],
+        rigid_body_name: str
 ) -> TimeSeries:
     """
-    Calculate the trajectory of rigid bodies.
+    Track a rigid body from markers trajectories.
 
-    Calculates the trajectory of rigid bodies using
-    `ktk.geometry.register_points`.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    This function tracks the specified rigid body in a TimeSeries that
+    contains the required markers, and adds the tracked rigid body to a copy
+    of the input TimeSeries as a Nx4x4 series of frames.
 
     Parameters
     ----------
-    markers
-        Markers trajectories to calculate the rigid body trajectories on.
-    rigid_body_configs
-        A dict where each key is a rigid body configuration, and where
-        each rigid body configuration is a dict with the following
-        keys: 'MarkerNames' and 'LocalPoints'.
-    verbose
-        Optional. Set to True to print the rigid body being computed.
+    kinematics
+        TimeSeries that contains at least the trajectories of the markers
+        specified in rigid_body_definition['MarkerNames'].
+    rigid_body_definition
+        A dict with the following keys: 'MarkerNames' and 'LocalPoints' as
+        returned by `ktk.kinematics.define_rgid_body()`.
+    rigid_body_name
+        Name of the rigid body, that will be the data key in the output
+        TimeSeries.
 
     Returns
     -------
     TimeSeries
-        TimeSeries where each data key is a Nx4x4 series of rigid
-        transformations.
+        A TimeSeries that contains the trajectory of the tracked rigid body.
     """
-    rigid_bodies = TimeSeries(time=markers.time,
-                              time_info=markers.time_info,
-                              events=markers.events)
+    # Create output TimeSeries
+    ts = kinematics.copy(copy_data=False, copy_data_info=False)
 
-    for rigid_body_name in rigid_body_configs:
-        if verbose is True:
-            print(f'Computing trajectory of rigid body {rigid_body_name}...')
+    # Set local and global points
+    local_points = rigid_body_definition['LocalPoints']
 
-        # Set local and global points
-        local_points = rigid_body_configs[rigid_body_name]['LocalPoints']
+    global_points = np.empty(
+        (len(ts.time), 4, local_points.shape[2]))
+    for i_marker in range(global_points.shape[2]):
+        marker_name = rigid_body_definition['MarkerNames'][i_marker]
+        if marker_name in kinematics.data:
+            global_points[:, :, i_marker] = kinematics.data[marker_name]
+        else:
+            global_points[:, :, i_marker] = np.nan
 
-        global_points = np.empty(
-            (len(markers.time), 4, local_points.shape[2]))
-        for i_marker in range(global_points.shape[2]):
-            marker_name = rigid_body_configs[
-                rigid_body_name]['MarkerNames'][i_marker]
-            if marker_name in markers.data:
-                global_points[:, :, i_marker] = markers.data[marker_name]
-            else:
-                global_points[:, :, i_marker] = np.nan
+    (local_points, global_points) = geometry._match_size(
+        local_points, global_points)
 
-        (local_points, global_points) = geometry._match_size(
-            local_points, global_points)
-
-        # Compute the rigid body trajectory
-        rigid_bodies.data[rigid_body_name] = geometry.register_points(
-            global_points, local_points)
-
-    return rigid_bodies
+    # Track rigid body and add it to the output TimeSeries
+    ts.data[rigid_body_name] = geometry.register_points(
+        global_points, local_points)
+    return ts
 
 
-def create_virtual_marker_config(
-        markers: TimeSeries,
-        rigid_bodies: TimeSeries,
-        marker_name: str,
+def define_virtual_marker(
+        kinematics: TimeSeries,
+        source_name: str,
         rigid_body_name: str
 ) -> Dict[str, Any]:
     """
-    Create a virtual marker configuration based on a probing acquisition.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    Define a virtual marker based on a probing acquisition.
 
     Parameters
     ----------
-    markers
-        Markers trajectories during the probing acquisition. This
-        TimeSeries must have at least marker_name in its data keys.
-    rigid_bodies
-        Rigid body trajectories during this probing acquisition. This
-        TimeSeries must have at least rigid_body_name in its data keys.
-    marker_name
-        Name of the marker to express in local coordinates.
+    kinematics
+        TimeSeries that contains at least the trajectory of the marker or
+        of the probe frame (source name) and the trajectory of its reference
+        rigid body (rigid_body_name).
+    source_name
+        Key name of the source object. If the object is a marker (Nx4 array),
+        its position is expressed in the local coordinate system of the
+        specified rigid body. If the object is a frame (Nx4x4 array) such as
+        a probe, the position of its origin is expressed in the local
+        coordinate system of the specified rigid body.
     rigid_body_name
-        Name of the rigid body to express marker_name in relation to.
+        Name of the reference rigid body.
 
     Returns
     -------
     Dict[str, Any]
         Dictionary with the following keys:
 
-        - RigidBodyName : Name of the virtual marker's rigid body
-        - LocalPoint : Local position of this marker in the reference frame
-          defined by the rigid body RigidBodyName. LocalPoint is expressed as
-          a 1x4 array.
+        - RigidBodyName : body_name
+        - LocalPoint : Local position of this marker in the body's local
+          coordinate system. LocalPoint is expressed as a 1x4 array.
 
     """
-    marker = markers.data[marker_name]
-    rigid_body = rigid_bodies.data[rigid_body_name]
+    marker_trajectory = kinematics.data[source_name]
+    if marker_trajectory.shape[1:] == (4,):
+        pass  # Marker trajectory
+    elif marker_trajectory.shape[1:] == (4, 4):
+        marker_trajectory = marker_trajectory[:, :, 3]  # frame trajectory
 
-    local_points = geometry.get_local_coordinates(marker, rigid_body)
+    rigid_body_trajectory = kinematics.data[rigid_body_name]
+
+    local_points = geometry.get_local_coordinates(
+        marker_trajectory, rigid_body_trajectory)
     to_keep = ~geometry.isnan(local_points)
 
     if np.all(to_keep is False):
-        warnings.warn(f'There are no frame where both {marker_name} and'
-                      f'{rigid_body_name} are visible at the same time.')
+        warnings.warn('There are no frame where both the marker and body '
+                      'are visible at the same time.')
 
     local_points = local_points[to_keep]
     local_points = np.mean(local_points, axis=0)[np.newaxis]
@@ -536,10 +524,10 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
     Parameters
     ----------
-    markers : TimeSeries
+    markers
         Markers trajectories.
 
-    filename : str
+    filename
         Name of the trc file to create.
 
     """
@@ -583,6 +571,51 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
                     '\t{:.5f}'.format(markers.data[key][i_frame, 2]))
             fid.write('\n')
 
+
+# %% Deprecated functions
+
+@deprecated(since='0.6', until='1.0',
+            details='It has been replaced by `define_rigid_body`.')
+def create_rigid_body_config(markers, marker_names):
+    """Create a rigid body configuration based on a static acquisition."""
+    return define_rigid_body(markers, marker_names)
+
+
+@deprecated(since='0.6', until='1.0',
+            details='It has been replaced by `track_rigid_body`.')
+def register_markers(markers, rigid_body_configs, verbose=False):
+    """Calculate the trajectory of rigid bodies."""
+    rigid_bodies = TimeSeries(time=markers.time,
+                              time_info=markers.time_info,
+                              events=markers.events)
+    for rigid_body_name in rigid_body_configs:
+        if verbose is True:
+            print(f'Computing trajectory of rigid body {rigid_body_name}...')
+        rigid_bodies.data[rigid_body_name] = track_rigid_body(
+            markers,
+            rigid_body_configs[rigid_body_name],
+            rigid_body_name).data[rigid_body_name]
+    return rigid_bodies
+
+
+@deprecated(since='0.6', until='1.0',
+            details='It has been replaced by `define_virtual_marker`.')
+def create_virtual_marker_config(
+        markers: TimeSeries,
+        rigid_bodies: TimeSeries,
+        marker_name: str,
+        rigid_body_name: str
+) -> Dict[str, Any]:
+    """Create a virtual marker configuration based on a probing acquisition."""
+    ts = markers.copy()
+    ts = ts.merge(rigid_bodies)
+    return define_virtual_marker(
+        ts,
+        marker_name,
+        rigid_body_name)
+
+
+# %% Footer
 
 module_locals = locals()
 

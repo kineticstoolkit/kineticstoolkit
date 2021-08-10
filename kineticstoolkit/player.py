@@ -638,7 +638,8 @@ class Player:
                     self.markers.data_info[marker]['Color'] = \
                         self.markers.data_info[marker]['Color'][0]
                 except KeyError:
-                    self.markers.add_data_info(marker, 'Color', 'w')
+                    self.markers = self.markers.add_data_info(
+                        marker, 'Color', 'w')
 
     def close(self) -> None:
         """Close the Player and its associated window."""
