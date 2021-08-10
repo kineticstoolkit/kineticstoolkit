@@ -49,9 +49,9 @@ as one article, without deconstructing into many functions?
 
 
 @unstable
-def dumas2007(kinematics: TimeSeries) -> TimeSeries:
+def dumas2007(markers: TimeSeries) -> TimeSeries:
     """
-    Create COM points and frames using Dumas (2007).
+    Create segment frame series and COM point series using Dumas (2007).
 
     At the moment, this function follows the method described in
     Dumas, R., Chèze, L., Verriest, J.-P., 2007. Adjustments to McConville
@@ -60,28 +60,28 @@ def dumas2007(kinematics: TimeSeries) -> TimeSeries:
 
     Parameters
     ----------
-    kinematics:
-        A TimeSeries that contains the following markers:
-            Toe3EndL/R, LateralMalleolusL/R, MedialMalleolusL/R,
-            LateralFemoralEpicondyleL/R, MedialFemoralEpicondyleL/R,
-            AnteriorIliacSpineL/R, PosteriorIliacSpineL/R, PubicSymphysis,
-            GlenohumeralJointL/R,
-            LateralHumeralEpicondyleL/R, MedialHumeralEpicondyleL/R,
-            RadialStyloidL/R, UlnarStyloidL/R,
-            HandMeta2L/R, HandMeta5L/R,
-            C7, JugularNotch, HeadVertex, Sellion.
+    kinematics: A TimeSeries that contains a mix of the following markers:
+        Toe3EndL/R, LateralMalleolusL/R, MedialMalleolusL/R,
+        LateralFemoralEpicondyleL/R, MedialFemoralEpicondyleL/R,
+        AnteriorIliacSpineL/R, PosteriorIliacSpineL/R, PubicSymphysis,
+        GlenohumeralJointL/R,
+        LateralHumeralEpicondyleL/R, MedialHumeralEpicondyleL/R,
+        RadialStyloidL/R, UlnarStyloidL/R,
+        HandMeta2L/R, HandMeta5L/R,
+        C7, JugularNotch, HeadVertex, Sellion.
 
     Returns
     -------
-    A copy of the input TimeSeries, with additional points and frames:
-        Centres of mass (Nx4 series):
-            ComPelvis, ComTorso, ComHeadNeck, ComArmL, ComArmR,
-            ComForearmL, ComForearmR, ComHandL, ComHandR,
-            ComThighL, ComThighR, ComLegL, ComLegR, ComFootL, ComFootR
-        Frames (Nx4x4 series):
-            Pelvis, Torso, HeadNeck, ArmL, ArmR,
-            ForearmL, ForearmR, HandL, HandR,
-            ThighL, ThighR, LegL, LegR, FootL, FootR
+    TimeSeries
+        A TimeSeries that contains these data:
+            Centres of mass (Nx4 series):
+                ComPelvis, ComTorso, ComHeadNeck, ComArmL, ComArmR,
+                ComForearmL, ComForearmR, ComHandL, ComHandR,
+                ComThighL, ComThighR, ComLegL, ComLegR, ComFootL, ComFootR
+            Frames (Nx4x4 series):
+                Pelvis, Torso, HeadNeck, ArmL, ArmR,
+                ForearmL, ForearmR, HandL, HandR,
+                ThighL, ThighR, LegL, LegR, FootL, FootR
 
     Notes
     -----
@@ -89,7 +89,7 @@ def dumas2007(kinematics: TimeSeries) -> TimeSeries:
     corresponding segments's anthropometrics are ignored.
 
     """
-    return kinematics
+    return markers
     # --- Pelvis
 
     # if segment == 'Pelvis':
