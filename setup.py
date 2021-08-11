@@ -32,7 +32,6 @@ setuptools.setup(
                       'scipy',
                       'matplotlib',
                       'scikit-learn',
-                      'requests',
                       'limitedinteraction',
                       # 'ffmpeg',  # Facultative, for matplotlib html5 animations
                       ],
