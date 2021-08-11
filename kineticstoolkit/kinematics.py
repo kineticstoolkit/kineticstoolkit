@@ -362,6 +362,11 @@ def define_rigid_body(
     """
     Create a generic rigid body definition based on a static acquisition.
 
+    Warning
+    -------
+    This function, which has been introduced in 0.6, is still experimental and
+    may change signature or behaviour in the future.
+
     Parameters
     ----------
     kinematics
@@ -420,6 +425,11 @@ def track_rigid_body(
     contains the required markers, and adds the tracked rigid body to a copy
     of the input TimeSeries as a Nx4x4 series of frames.
 
+    Warning
+    -------
+    This function, which has been introduced in 0.6, is still experimental and
+    may change signature or behaviour in the future.
+
     Parameters
     ----------
     kinematics
@@ -468,6 +478,11 @@ def define_virtual_marker(
 ) -> Dict[str, Any]:
     """
     Define a virtual marker based on a probing acquisition.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.6, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------

@@ -38,7 +38,6 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from collections.abc import MutableMapping
 
 import warnings
 from ast import literal_eval
@@ -882,6 +881,11 @@ class TimeSeries():
     ) -> 'TimeSeries':  # pragma: no cover
         """
         Edit events interactively.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.6, is still experimental
+        and may change signature or behaviour in the future.
 
         Parameters
         ----------
