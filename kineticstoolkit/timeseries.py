@@ -875,11 +875,11 @@ class TimeSeries():
                               f"{name} could not be found.")
         return ts
 
-    @unstable
     def ui_edit_events(
             self,
             name: Union[str, List[str]] = [],
-            data_key: Union[str, List[str]] = []) -> bool:  # pragma: no cover
+            data_keys: Union[str, List[str]] = []
+    ) -> 'TimeSeries':  # pragma: no cover
         """
         Edit events interactively.
 
@@ -887,27 +887,30 @@ class TimeSeries():
         ----------
         name
             Optional. The name of the event(s) to add. May be a string
-            or a list of strings. Event names can be selected interactively.
-        data_key
+            or a list of strings. Event names can also be defined
+            interactively.
+        data_keys
             Optional. A signal name of list of signal name to be plotted,
-            similar to the argument of ktk.TimeSeries.plot().
+            similar to the data_keys argument of ktk.TimeSeries.plot().
 
         Returns
         -------
-        bool
-            True if the TimeSeries has been modified, False if the operation
-            was cancelled by the user.
+        TimeSeries
+            A copy of the original TimeSeries with the modified events. If
+            the operation was cancelled by the user, this is a pure copy of
+            the original TimeSeries.
 
         """
-        def add_this_event(ts, name: str) -> None:
+        def add_this_event(ts: 'TimeSeries', name: str) -> 'TimeSeries':
             kineticstoolkit.gui.message(
                 "Place the event on the figure.",
                 **WINDOW_PLACEMENT)
             this_time = plt.ginput(1)[0][0]
-            ts.add_event(this_time, name)
+            ts = ts.add_event(this_time, name)
             kineticstoolkit.gui.message("")
+            return ts
 
-        def get_event_index(ts) -> int:
+        def get_event_index(ts: 'TimeSeries') -> int:
             kineticstoolkit.gui.message(
                 "Select an event on the figure.",
                 **WINDOW_PLACEMENT)
@@ -924,9 +927,11 @@ class TimeSeries():
             event_names = name
 
         fig = plt.figure()
-        ts.plot(data_key, _raise_on_no_data=True)
+        ts.plot(data_keys, _raise_on_no_data=True)
 
         while True:
+            # Sort the events
+            ts = ts.sort_events(unique=False)
 
             # Populate the choices to the user
             choices = [f"Add '{s}'" for s in event_names]
@@ -955,14 +960,16 @@ class TimeSeries():
             choice_index['cancel'] = len(choices)
             choices.append("Cancel")
 
+            # Show the button dialog
             choice = kineticstoolkit.gui.button_dialog(
                 "Move and zoom on the figure,\n"
                 "then select an option below.",
                 choices,
                 **WINDOW_PLACEMENT)
 
+            # Execute
             if choice < choice_index['add']:
-                add_this_event(ts, event_names[choice])
+                ts = add_this_event(ts, event_names[choice])
 
             elif choice == choice_index['add']:
                 event_names.append(
@@ -970,9 +977,12 @@ class TimeSeries():
                         "Please enter the event name:",
                         **WINDOW_PLACEMENT)
                 )
+                # Add this event name to the list of recently added events
                 if len(event_names) > 5:
                     event_names = event_names[-5:]
-                add_this_event(ts, event_names[-1])
+
+                # Add the event
+                ts = add_this_event(ts, event_names[-1])
 
             elif choice == choice_index['remove']:
                 event_index = get_event_index(ts)
@@ -1009,7 +1019,7 @@ class TimeSeries():
                 event_name = ts.events[event_index].name
                 try:
                     ts.events.pop(event_index)
-                    add_this_event(ts, event_name)
+                    ts = add_this_event(ts, event_name)
                 except IndexError:
                     li.button_dialog(
                         "Could not move this event.",
@@ -1018,18 +1028,17 @@ class TimeSeries():
                         **WINDOW_PLACEMENT)
 
             elif choice == choice_index['close']:
-                self.events = ts.events
                 plt.close(fig)
-                return True
+                return ts
 
             elif choice in [choice_index['cancel'], -1]:
                 plt.close(fig)
-                return False
+                return self.copy()
 
             # Refresh
             axes = plt.axis()
             plt.cla()
-            ts.plot(data_key, _raise_on_no_data=True)
+            ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
 
     @deprecated(since="0.5", until="0.7",
@@ -1038,7 +1047,7 @@ class TimeSeries():
     def ui_add_event(self,
                      name: str = 'event',
                      data_key: Union[str, List[str]] = [], *,
-                     multiple_events: bool = False) -> bool:
+                     multiple_events: bool = False) -> 'TimeSeries':
         """
         Add one or many events interactively to the TimeSeries.
 

@@ -29,7 +29,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.timeseries import dataframe_to_dict_of_arrays
 from kineticstoolkit.decorators import directory
 import kineticstoolkit.config
 
@@ -37,8 +36,6 @@ import scipy.io as spio
 import os
 import numpy as np
 import pandas as pd
-from ast import literal_eval
-import csv
 import warnings
 import shutil
 import json
@@ -47,7 +44,7 @@ import time
 import getpass
 import zipfile
 
-from typing import Any, List
+from typing import Any
 
 
 def save(filename: str, variable: Any) -> None:
@@ -103,9 +100,6 @@ def save(filename: str, variable: Any) -> None:
                 return out
 
             elif isinstance(obj, pd.Series):
-                # return {'class__': 'pandas.Series',
-                #         'value': json.loads(
-                #             pd.DataFrame(obj).to_json(orient='table'))}
                 return {'class__': 'pandas.Series',
                         'name': str(obj.name),
                         'dtype': str(obj.dtype),
@@ -171,105 +165,6 @@ def save(filename: str, variable: Any) -> None:
     shutil.rmtree(temp_folder)
 
 
-def _load(filename):
-    """
-    Load the contents of a folder or filename.
-
-    Returns a tuple where the first element is the suffix
-    (.eval.txt, .dict, etc) and the second element is the contents.
-    """
-
-    # Easiest case:
-    if filename.endswith('.str.txt'):
-        with open(filename, 'r') as fid:
-            return ('.str.txt', fid.read())
-
-    # Next easiest:
-    elif filename.endswith('.eval.txt'):
-        with open(filename, 'r') as fid:
-            return ('.eval.txt', literal_eval(fid.read()))
-
-    elif filename.endswith('.dict'):
-        variable = dict()
-        list_of_files = os.listdir(filename)
-        for subfilename in list_of_files:
-            contents = _load(filename + '/' + subfilename)
-            key = subfilename[0:-len(contents[0])]
-            variable[key] = contents[1]
-        return ('.dict', variable)
-
-    elif filename.endswith('.list'):
-        variable = list()
-        file_list = os.listdir(filename)
-        indexes = [int(file.split('.')[0]) for file in file_list]
-        sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
-
-        for file in sorted_file_list:
-            contents = _load(filename + '/' + file)
-            variable.append(contents[1])
-        return ('.list', variable)
-
-    elif filename.endswith('.tuple'):
-        variable = list()
-        file_list = os.listdir(filename)
-        indexes = [int(file.split('.')[0]) for file in file_list]
-        sorted_file_list = [x for (_, x) in sorted(zip(indexes, file_list))]
-
-        for file in sorted_file_list:
-            contents = _load(filename + '/' + file)
-            variable.append(contents[1])
-        return ('.tuple', tuple(variable))
-
-    elif filename.endswith('.ndarray.txt'):
-        dataframe = pd.read_csv(filename, sep='\t',
-                                quoting=csv.QUOTE_NONNUMERIC)
-        dict_of_arrays = dataframe_to_dict_of_arrays(dataframe)
-        return ('.ndarray.txt', dict_of_arrays['Data'])
-
-    elif filename.endswith('.TimeSeries'):
-
-        data = pd.read_csv(filename + '/data.txt',
-                           sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-        events = pd.read_csv(filename + '/events.txt',
-                             sep='\t', quoting=csv.QUOTE_NONNUMERIC)
-        info = pd.read_csv(filename + '/info.txt',
-                           sep='\t', quoting=csv.QUOTE_NONNUMERIC,
-                           index_col=0)
-
-        out = TimeSeries()
-
-        # DATA AND TIME
-        # -------------
-        out.data = dataframe_to_dict_of_arrays(data)
-        out.time = out.data['time']
-        out.data.pop('time', None)
-
-        # EVENTS
-        # ------
-        for i_event in range(0, len(events)):
-            out.add_event(events.time[i_event], events.name[i_event])
-
-        # INFO
-        # ----
-        n_rows = len(info)
-        row_names = list(info.index)
-        for column_name in info.columns:
-            for i_row in range(0, n_rows):
-                one_info = info[column_name][i_row]
-                if str(one_info).lower() != 'nan':
-                    if column_name == 'time':
-                        out.time_info[row_names[i_row]] = one_info
-                    else:
-                        out.add_data_info(column_name, row_names[i_row],
-                                          one_info)
-
-        return ('.TimeSeries', out)
-
-    else:
-        warnings.warn(f'Could not load contents in {filename}')
-        return ('', None)
-
-
 def _load_object_hook(obj):
     if 'class__' in obj:
         to_class = obj['class__']
@@ -314,56 +209,18 @@ def _load_object_hook(obj):
 
 def _load_ktk_zip(filename, include_metadata=False):
     """Read the ktk.zip file format."""
-
     archive = zipfile.ZipFile(filename, 'r')
-    try:
-        data = json.loads(archive.read('data.json').decode(),
-                          object_hook=_load_object_hook)
 
-        if include_metadata:
-            metadata = json.loads(archive.read('metadata.json').decode(),
-                                  object_hook=_load_object_hook)
-            return data, metadata
+    data = json.loads(archive.read('data.json').decode(),
+                      object_hook=_load_object_hook)
 
-        else:
-            return data
+    if include_metadata:
+        metadata = json.loads(archive.read('metadata.json').decode(),
+                              object_hook=_load_object_hook)
+        return data, metadata
 
-    except Exception:
-        # No data.json. It seems to be the old format.
-
-        basename = os.path.basename(filename)
-        temp_folder_name = kineticstoolkit.config.temp_folder + '/' + basename
-
-        # We will rename the folder to .dict to uniformize loading using _load
-        # if needed.
-        new_temp_folder_name = (
-            temp_folder_name[0:-len('.ktk.zip')] + '.dict')
-
-        try:
-            shutil.rmtree(temp_folder_name)
-        except Exception:
-            pass
-        try:
-            shutil.rmtree(new_temp_folder_name)
-        except Exception:
-            pass
-
-        os.mkdir(temp_folder_name)
-        shutil.unpack_archive(filename, extract_dir=temp_folder_name)
-
-        new_temp_folder_name = (
-            temp_folder_name[0:-len('.ktk.zip')] + '.dict')
-
-        os.rename(temp_folder_name, new_temp_folder_name)
-
-        variable = _load(new_temp_folder_name)[1]
-
-        shutil.rmtree(new_temp_folder_name)
-
-        # Return the entry that corresponds to the contents
-        for key in variable:
-            if key != 'metadata':
-                return variable[key]
+    else:
+        return data
 
 
 def load(filename: str) -> Any:
@@ -382,7 +239,6 @@ def load(filename: str) -> Any:
     Any
         The loaded variable.
     """
-
     # NOTE: THIS FUNCTION CAN ALSO LOAD MAT FILES, BUT THIS IS A TRANSITIONAL
     # FEATURE FOR MY LAB'S MIGRATION FROM MATLAB TO PYTHON. PLEASE DO NOT
     # RELY ON THIS FEATURE AS IT COULD BE REMOVED SOON.
@@ -611,6 +467,4 @@ def __dir__():
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
-    import kineticstoolkit as ktk
-    import numpy as np
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

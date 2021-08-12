@@ -43,6 +43,24 @@ import time
 import json
 
 
+def update_version() -> None:  # pragma: no cover
+    """Update VERSION based on the current branch name."""
+    # Get the current branch name
+    branch_name = subprocess.check_output(['git', 'branch', '--show-current'])
+    if branch_name == 'stable':
+        shutil.copy(
+            kineticstoolkit.config.root_folder
+            + '/kineticstoolkit/STABLE_VERSION',
+            kineticstoolkit.config.root_folder
+            + '/kineticstoolkit/VERSION')
+    else:
+        shutil.copy(
+            kineticstoolkit.config.root_folder
+            + '/kineticstoolkit/DEVELOPMENT_VERSION',
+            kineticstoolkit.config.root_folder
+            + '/kineticstoolkit/VERSION')
+
+
 def run_unit_tests() -> None:  # pragma: no cover
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
@@ -225,6 +243,7 @@ def upload_to_pypi() -> None:  # pragma: no cover
 
 def build() -> None:  # pragma: no cover
     """Run all testing and building functions."""
+    update_version()
     run_style_formatter()
     run_doc_tests()
     run_static_type_checker()
