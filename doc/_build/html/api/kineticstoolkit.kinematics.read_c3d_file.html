@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.kinematics.read_c3d_file &mdash; Kinetics Toolkit 0.6.0 documentation</title>
+  <title>kineticstoolkit.kinematics.read_c3d_file &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -67,7 +67,7 @@
 
           
             
-            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_development.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -123,14 +123,13 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_rigid_body_config.html">kineticstoolkit.kinematics.create_rigid_body_config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_virtual_marker_config.html">kineticstoolkit.kinematics.create_virtual_marker_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.register_markers.html">kineticstoolkit.kinematics.register_markers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_body.html">kineticstoolkit.kinematics.track_rigid_body</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
@@ -140,6 +139,12 @@
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Developer manual</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
             
@@ -155,7 +160,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Kinetics Toolkit</a>
+          <a href="../index.html">Kinetics Toolkit (dev)</a>
         
       </nav>
 
@@ -250,14 +255,7 @@
 <dd><p>Read markers from a C3D file.</p>
 <p>The markers positions are returned in a TimeSeries where each marker
 corresponds to a data key. Each marker position is expressed in this form:</p>
-<blockquote>
-<div><dl class="simple">
-<dt>array([[x0, y0, z0, 1.],</dt><dd><p>[x1, y1, z1, 1.],
-[x2, y2, z2, 1.],
-[…           ]])</p>
-</dd>
-</dl>
-</div></blockquote>
+<p>array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], …])</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>filename</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Path of the C3D file</p>
