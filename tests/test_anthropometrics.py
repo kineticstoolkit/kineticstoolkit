@@ -15,14 +15,26 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""Unit tests for Kinetics Toolkit's antropometry modules."""
+"""Unit tests for Kinetics Toolkit's antropometrics modules."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2021 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
+
+import kineticstoolkit as ktk
+
+
 def test_dumas2007():
     """Test the dumas2007 function."""
-    pass
+    # Load a sample file
+    kinematics = ktk.load(
+        ktk.config.root_folder
+        + '/data/anthropometrics/static_all_markers.ktk.zip')
+    markers = kinematics['kinematics']['Markers']
 
+
+if __name__ == "__main__":
+    import pytest
+    pytest.main([__file__])
