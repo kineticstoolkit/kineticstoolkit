@@ -115,7 +115,7 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="lab_mode.html">Lab mode</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Release Notes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Version-0.6-(To-be-released-in-August-2021)">Version 0.6 (To be released in August 2021)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#Version-0.6-(August-2021)">Version 0.6 (August 2021)</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#New-Features">New Features</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Improvements">Improvements</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#Breaking-Changes">Breaking Changes</a></li>
@@ -506,27 +506,42 @@ div.rendered_html tbody tr:hover {
 </style>
 <div class="section" id="Release-Notes">
 <h1>Release Notes<a class="headerlink" href="#Release-Notes" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="Version-0.6-(To-be-released-in-August-2021)">
-<h2>Version 0.6 (To be released in August 2021)<a class="headerlink" href="#Version-0.6-(To-be-released-in-August-2021)" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="Version-0.6-(August-2021)">
+<h2>Version 0.6 (August 2021)<a class="headerlink" href="#Version-0.6-(August-2021)" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="New-Features">
 <h3>New Features<a class="headerlink" href="#New-Features" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>Marker reconstruction using rigid bodies and probing in module <code class="docutils literal notranslate"><span class="pre">kinematics</span></code>: functions <code class="docutils literal notranslate"><span class="pre">define_rigid_body()</span></code>, <code class="docutils literal notranslate"><span class="pre">define_virtual_marker()</span></code>, and <code class="docutils literal notranslate"><span class="pre">track_rigid_body()</span></code>.</p></li>
+<li><p>Rigid body tracking and reconstruction of virtual markers in module <code class="docutils literal notranslate"><span class="pre">kinematics</span></code>: functions <code class="docutils literal notranslate"><span class="pre">define_rigid_body()</span></code>, <code class="docutils literal notranslate"><span class="pre">define_virtual_marker()</span></code>, and <code class="docutils literal notranslate"><span class="pre">track_rigid_body()</span></code>.</p></li>
+<li><p>Interactive method to edit events in a TimeSeries: method <code class="docutils literal notranslate"><span class="pre">TimeSeries.ui_edit_events()</span></code>.</p></li>
 </ul>
 </div>
 <div class="section" id="Improvements">
 <h3>Improvements<a class="headerlink" href="#Improvements" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p>More homogeneous behaviour for TimeSeries methods, see breaking changes below.</p></li>
+<li><p>All TimeSeries methods now work on copies, see breaking changes below.</p></li>
 </ul>
 </div>
 <div class="section" id="Breaking-Changes">
 <h3>Breaking Changes<a class="headerlink" href="#Breaking-Changes" title="Permalink to this headline">¶</a></h3>
 <ul class="simple">
-<li><p><strong>WARNING - Important breaking change</strong> - Every <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> method now works on a copy of the TimeSeries. The original TimeSeries is never modified itself. It was already the case for methods such as <code class="docutils literal notranslate"><span class="pre">get_ts_between_events()</span></code> etc. which would not affect the original TimeSeries, but not for others such as <code class="docutils literal notranslate"><span class="pre">add_event()</span></code>, <code class="docutils literal notranslate"><span class="pre">rename_data()</span></code>, etc. This modification was made in an effort to standardize the TimeSeries behaviour and to allow safe method chaining. This choice is drastic and
-implemented quickly because we are still early in Kinetics Toolkit’s development. It is encouraged by the (future?) behaviour of Pandas that seems to also go in a similar direction (<a class="reference external" href="https://github.com/pandas-dev/pandas/issues/16529">https://github.com/pandas-dev/pandas/issues/16529</a>). This means that if you have code that relies on TimeSeries methods, you should check for statements such as <code class="docutils literal notranslate"><span class="pre">ts.add_event()</span></code>, <code class="docutils literal notranslate"><span class="pre">ts.add_data_info()</span></code>, etc. to change them to <code class="docutils literal notranslate"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">ts.add_event()</span></code>, <code class="docutils literal notranslate"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">ts.add_data_info()</span></code>, etc. <strong>Please do not update to 0.6
-until you are ready to find and modify those statements in your current code</strong>.</p></li>
+<li><p><strong>WARNING - Important breaking change</strong> - Every <code class="docutils literal notranslate"><span class="pre">TimeSeries</span></code> method now works on a copy of the TimeSeries. The original TimeSeries is never modified itself. It was already the case for methods such as <code class="docutils literal notranslate"><span class="pre">get_ts_between_events()</span></code> etc. which would not affect the original TimeSeries, but not for others such as <code class="docutils literal notranslate"><span class="pre">add_event()</span></code>, <code class="docutils literal notranslate"><span class="pre">rename_data()</span></code>, etc. This modification was made in an effort to standardize the TimeSeries behaviour and to allow safe method chaining. This choice is a bit drastic
+and was implemented quickly because we are still early in Kinetics Toolkit’s development. It has been encouraged by Pandas, which seems to also go in a similar direction (<a class="reference external" href="https://github.com/pandas-dev/pandas/issues/16529">https://github.com/pandas-dev/pandas/issues/16529</a>). To migrate your code to the new behaviour, please change your method calls accordingly by adding an assignation before the call. For example: <code class="docutils literal notranslate"><span class="pre">ts.add_event(...)</span></code> becomes <code class="docutils literal notranslate"><span class="pre">ts</span> <span class="pre">=</span> <span class="pre">ts.add_event(...)</span></code>. The full list of methods that have been changed is:</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_data_info()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">add_event()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fill_missing_samples()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">merge()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_data()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_data_info()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">remove_event()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rename_data()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">rename_event()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shift()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sort_events()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">sync_event()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">trim_events()</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ui_add_event()</span></code> (now discontinued in favour of <code class="docutils literal notranslate"><span class="pre">ui_edit_events</span></code>)</p></li>
 </ul>
+<p><strong>Please do not update to 0.6 until you are ready to find and modify those statements in your current code</strong>.</p>
 </div>
 </div>
 <div class="section" id="Version-0.5-(June-2021)">

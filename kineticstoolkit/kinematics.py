@@ -29,7 +29,7 @@ import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.decorators import unstable, directory, deprecated
 from os.path import exists
-from typing import Sequence, Dict, Any
+from typing import Sequence, Dict, Any, List, Union
 
 import numpy as np
 import warnings
@@ -38,8 +38,10 @@ import struct  # To unpack data from N3D files
 try:
     import ezc3d
 except ModuleNotFoundError:
-    warnings.warn('Could not load ezc3d. Function kinematics.read_c3d_file '
-                  'will not work.')
+    warnings.warn(
+        'Could not load ezc3d. Function kinematics.read_c3d_file '
+        'will not work.'
+    )
 
 
 def read_c3d_file(filename: str) -> TimeSeries:
@@ -94,7 +96,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
     elif point_unit == 'm':
         point_factor = 1
     else:
-        raise(ValueError("Point unit must be 'm' or 'mm'."))
+        raise (ValueError("Point unit must be 'm' or 'mm'."))
 
     n_labels = len(labels)
     for i_label in range(n_labels):
@@ -104,8 +106,9 @@ def read_c3d_file(filename: str) -> TimeSeries:
         label_name = labels[i_label]
 
         output.data[label_name] = np.array(
-            [point_factor, point_factor, point_factor, 1] *
-            reader['data']['points'][:, i_label, :].T)
+            [point_factor, point_factor, point_factor, 1]
+            * reader['data']['points'][:, i_label, :].T
+        )
 
         output = output.add_data_info(label_name, 'Unit', 'm')
 
@@ -140,8 +143,9 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     - The point unit in the output c3d is m.
 
     """
-    sample_rate = ((markers.time.shape[0] - 1) /
-                   (markers.time[-1] - markers.time[0]))
+    sample_rate = (markers.time.shape[0] - 1) / (
+        markers.time[-1] - markers.time[0]
+    )
 
     marker_list = []
     marker_data = np.zeros((4, len(markers.data), len(markers.time)))
@@ -216,7 +220,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
         for i_frame in range(n_frames):
             for i_column in range(n_columns):
                 data = struct.unpack('f', fid.read(4))[0]
-                if (data < -1E25):  # technically, it is -3.697314e+28
+                if data < -1e25:  # technically, it is -3.697314e+28
                     data = np.NaN
                 ndi_array[i_frame, i_column] = data
 
@@ -225,8 +229,10 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 
         # Transformation to a TimeSeries
         ts = TimeSeries(
-            time=np.linspace(0, n_frames / collection_frame_frequency,
-                             n_frames))
+            time=np.linspace(
+                0, n_frames / collection_frame_frequency, n_frames
+            )
+        )
 
         for i_marker in range(n_markers):
             if labels != []:
@@ -234,9 +240,14 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
             else:
                 label = f'Marker{i_marker}'
 
-            ts.data[label] = np.block([[
-                ndi_array[:, 3*i_marker:3*i_marker+3],
-                np.ones((n_frames, 1))]])
+            ts.data[label] = np.block(
+                [
+                    [
+                        ndi_array[:, 3 * i_marker: 3 * i_marker + 3],
+                        np.ones((n_frames, 1)),
+                    ]
+                ]
+            )
             ts = ts.add_data_info(label, 'Unit', 'm')
 
     return ts
@@ -356,9 +367,8 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 
 
 def define_rigid_body(
-    kinematics: TimeSeries,
-    marker_names: Sequence[str]
-) -> Dict[str, Any]:
+    kinematics: TimeSeries, marker_names: Sequence[str]
+) -> List[Dict[str, np.ndarray]]:
     """
     Create a generic rigid body definition based on a static acquisition.
 
@@ -371,11 +381,10 @@ def define_rigid_body(
 
     Returns
     -------
-    Dictionary with the following keys:
-
-        - MarkerNames : the same as marker_names
-        - LocalPoints : a 1x4xM array that indicates the local position of
-          each M marker in the created rigid body config.
+    List of dictionaries with the following keys:
+    - MarkerName : the marker name
+    - LocalCoordinates : 1x4 array that indicates the local position of this
+      marker into the rigid body's local coordinate system.
 
     """
     n_samples = len(kinematics.time)
@@ -385,8 +394,7 @@ def define_rigid_body(
     global_points = np.empty((n_samples, 4, n_markers))
 
     for i_marker, marker in enumerate(marker_names):
-        global_points[:, :, i_marker] = \
-            kinematics.data[marker][:, :]
+        global_points[:, :, i_marker] = kinematics.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
     global_points = global_points[~geometry.isnan(global_points)]
@@ -394,24 +402,35 @@ def define_rigid_body(
     rigid_bodies = geometry.create_frames(
         origin=global_points[:, :, 0],
         x=global_points[:, :, 1] - global_points[:, :, 0],
-        xy=global_points[:, :, 2] - global_points[:, :, 0])
-    local_points = geometry.get_local_coordinates(
-        global_points, rigid_bodies)
+        xy=global_points[:, :, 2] - global_points[:, :, 0],
+    )
+    local_points = geometry.get_local_coordinates(global_points, rigid_bodies)
 
     # Take the average
     local_points = np.array(np.mean(local_points, axis=0))
     local_points = local_points[np.newaxis]
 
-    return {
-        'LocalPoints': local_points,
-        'MarkerNames': marker_names
-    }
+    # Create the output
+    output = []
+    for i_marker, marker_name in enumerate(marker_names):
+        output.append(
+            {
+                'MarkerName': marker_name,
+                'LocalCoordinates': local_points[:, :, i_marker],
+            }
+        )
+
+    return output
 
 
 def track_rigid_body(
-        kinematics: TimeSeries, /,
-        rigid_body_definition: Dict[str, Any],
-        rigid_body_name: str
+    kinematics: TimeSeries,
+    /,
+    rigid_body_definition: Sequence[Dict[str, Any]],
+    rigid_body_name: str,
+    *,
+    include_rigid_body: bool = True,
+    include_markers: bool = False,
 ) -> TimeSeries:
     """
     Track a rigid body from markers trajectories.
@@ -427,10 +446,17 @@ def track_rigid_body(
         specified in rigid_body_definition['MarkerNames'].
     rigid_body_definition
         A dict with the following keys: 'MarkerNames' and 'LocalPoints' as
-        returned by `ktk.kinematics.define_rgid_body()`.
+        returned by `ktk.kinematics.define_rigid_body()`.
     rigid_body_name
         Name of the rigid body, that will be the data key in the output
         TimeSeries.
+    include_rigid_body: Optional.
+        Include the tracked rigid body in the output TimeSeries as an Nx4x4
+        series. The default is True.
+    include_markers: Optional.
+        Include the reconstructed markers in the output TimeSeries as a Nx4
+        series. Every marker of the rigid body definition is recontructed. The
+        default is False.
 
     Returns
     -------
@@ -441,31 +467,40 @@ def track_rigid_body(
     ts = kinematics.copy(copy_data=False, copy_data_info=False)
 
     # Set local and global points
-    local_points = rigid_body_definition['LocalPoints']
+    local_points = np.dstack(
+        [_['LocalCoordinates'] for _ in rigid_body_definition]
+    )
+    marker_names = [_['MarkerName'] for _ in rigid_body_definition]
 
-    global_points = np.empty(
-        (len(ts.time), 4, local_points.shape[2]))
-    for i_marker in range(global_points.shape[2]):
-        marker_name = rigid_body_definition['MarkerNames'][i_marker]
+    global_points = np.empty((len(ts.time), 4, local_points.shape[2]))
+    for i_marker, marker_name in enumerate(marker_names):
         if marker_name in kinematics.data:
             global_points[:, :, i_marker] = kinematics.data[marker_name]
         else:
             global_points[:, :, i_marker] = np.nan
 
     (local_points, global_points) = geometry._match_size(
-        local_points, global_points)
+        local_points, global_points
+    )
 
-    # Track rigid body and add it to the output TimeSeries
-    ts.data[rigid_body_name] = geometry.register_points(
-        global_points, local_points)
+    # Track the rigid body
+    frames = geometry.register_points(global_points, local_points)
+
+    if include_rigid_body:
+        ts.data[rigid_body_name] = frames
+
+    if include_markers:
+        for marker in rigid_body_definition:
+            ts.data[marker['MarkerName']] = geometry.get_global_coordinates(
+                marker['LocalCoordinates'], frames
+            )
+
     return ts
 
 
 def define_virtual_marker(
-        kinematics: TimeSeries,
-        source_name: str,
-        rigid_body_name: str
-) -> Dict[str, Any]:
+    kinematics: TimeSeries, source_name: str, rigid_body_name: str
+) -> np.ndarray:
     """
     Define a virtual marker based on a probing acquisition.
 
@@ -486,12 +521,9 @@ def define_virtual_marker(
 
     Returns
     -------
-    Dict[str, Any]
-        Dictionary with the following keys:
-
-        - RigidBodyName : body_name
-        - LocalPoint : Local position of this marker in the body's local
-          coordinate system. LocalPoint is expressed as a 1x4 array.
+    np.ndarray
+        The position of the probed marker in the rigid bodies' local coordinate
+        system.
 
     """
     marker_trajectory = kinematics.data[source_name]
@@ -503,18 +535,20 @@ def define_virtual_marker(
     rigid_body_trajectory = kinematics.data[rigid_body_name]
 
     local_points = geometry.get_local_coordinates(
-        marker_trajectory, rigid_body_trajectory)
+        marker_trajectory, rigid_body_trajectory
+    )
     to_keep = ~geometry.isnan(local_points)
 
     if np.all(to_keep is False):
-        warnings.warn('There are no frame where both the marker and body '
-                      'are visible at the same time.')
+        warnings.warn(
+            'There are no frame where both the marker and body '
+            'are visible at the same time.'
+        )
 
     local_points = local_points[to_keep]
     local_points = np.mean(local_points, axis=0)[np.newaxis]
 
-    return {'RigidBodyName': rigid_body_name,
-            'LocalPoint': local_points}
+    return local_points
 
 
 @unstable
@@ -543,10 +577,14 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
     # Open file
     with open(filename, 'w') as fid:
         fid.write(f'PathFileType\t4\t(X/Y/Z)\t{filename}\n')
-        fid.write('DataRate\tCameraRate\tNumFrames\tNumMarkers\tUnits\t'
-                  'OrigDataRate\tOrigDataStartFrame\tOrigNumFrames\n')
-        fid.write(f'{data_rate}\t{camera_rate}\t{n_frames}\t{n_markers}\t'
-                  f'{units}\t{data_rate}\t1\t{n_frames}\n')
+        fid.write(
+            'DataRate\tCameraRate\tNumFrames\tNumMarkers\tUnits\t'
+            'OrigDataRate\tOrigDataStartFrame\tOrigNumFrames\n'
+        )
+        fid.write(
+            f'{data_rate}\t{camera_rate}\t{n_frames}\t{n_markers}\t'
+            f'{units}\t{data_rate}\t1\t{n_frames}\n'
+        )
 
         # Write marker names
         fid.write('Frame#\tTime')
@@ -562,57 +600,14 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
         # Write trajectories
         for i_frame in range(n_frames):
-            fid.write(f'{i_frame+1}\t'
-                      '{:.3f}'.format(markers.time[i_frame]))
+            fid.write(f'{i_frame+1}\t' '{:.3f}'.format(markers.time[i_frame]))
             for key in markers.data:
                 fid.write(
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 0]) +
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 1]) +
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 2]))
+                    '\t{:.5f}'.format(markers.data[key][i_frame, 0])
+                    + '\t{:.5f}'.format(markers.data[key][i_frame, 1])
+                    + '\t{:.5f}'.format(markers.data[key][i_frame, 2])
+                )
             fid.write('\n')
-
-
-# %% Deprecated functions
-
-@deprecated(since='0.6', until='1.0',
-            details='It has been replaced by `define_rigid_body`.')
-def create_rigid_body_config(markers, marker_names):
-    """Create a rigid body configuration based on a static acquisition."""
-    return define_rigid_body(markers, marker_names)
-
-
-@deprecated(since='0.6', until='1.0',
-            details='It has been replaced by `track_rigid_body`.')
-def register_markers(markers, rigid_body_configs, verbose=False):
-    """Calculate the trajectory of rigid bodies."""
-    rigid_bodies = TimeSeries(time=markers.time,
-                              time_info=markers.time_info,
-                              events=markers.events)
-    for rigid_body_name in rigid_body_configs:
-        if verbose is True:
-            print(f'Computing trajectory of rigid body {rigid_body_name}...')
-        rigid_bodies.data[rigid_body_name] = track_rigid_body(
-            markers,
-            rigid_body_configs[rigid_body_name],
-            rigid_body_name).data[rigid_body_name]
-    return rigid_bodies
-
-
-@deprecated(since='0.6', until='1.0',
-            details='It has been replaced by `define_virtual_marker`.')
-def create_virtual_marker_config(
-        markers: TimeSeries,
-        rigid_bodies: TimeSeries,
-        marker_name: str,
-        rigid_body_name: str
-) -> Dict[str, Any]:
-    """Create a virtual marker configuration based on a probing acquisition."""
-    ts = markers.copy()
-    ts = ts.merge(rigid_bodies)
-    return define_virtual_marker(
-        ts,
-        marker_name,
-        rigid_body_name)
 
 
 # %% Footer

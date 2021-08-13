@@ -45,7 +45,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="kineticstoolkit.kinematics.write_c3d_file" href="kineticstoolkit.kinematics.write_c3d_file.html" />
-    <link rel="prev" title="kineticstoolkit.kinematics.register_markers" href="kineticstoolkit.kinematics.register_markers.html" />
+    <link rel="prev" title="kineticstoolkit.kinematics.read_n3d_file" href="kineticstoolkit.kinematics.read_n3d_file.html" />
 
 
  
@@ -123,13 +123,10 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_rigid_body_config.html">kineticstoolkit.kinematics.create_rigid_body_config</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_virtual_marker_config.html">kineticstoolkit.kinematics.create_virtual_marker_config</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.register_markers.html">kineticstoolkit.kinematics.register_markers</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.track_rigid_body</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
@@ -217,7 +214,7 @@
         <a href="kineticstoolkit.kinematics.write_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.write_c3d_file" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.kinematics.register_markers.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.register_markers" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.read_n3d_file.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.read_n3d_file" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -254,7 +251,7 @@
 <h1>kineticstoolkit.kinematics.track_rigid_body<a class="headerlink" href="#kineticstoolkit-kinematics-track-rigid-body" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kineticstoolkit.kinematics.track_rigid_body">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_definition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_rigid_body" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_definition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_rigid_body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_rigid_body" title="Permalink to this definition">¶</a></dt>
 <dd><p>Track a rigid body from markers trajectories.</p>
 <p>This function tracks the specified rigid body in a TimeSeries that
 contains the required markers, and adds the tracked rigid body to a copy
@@ -264,10 +261,15 @@ of the input TimeSeries as a Nx4x4 series of frames.</p>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kinematics</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the trajectories of the markers
 specified in rigid_body_definition[‘MarkerNames’].</p></li>
-<li><p><strong>rigid_body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]) – A dict with the following keys: ‘MarkerNames’ and ‘LocalPoints’ as
-returned by <cite>ktk.kinematics.define_rgid_body()</cite>.</p></li>
+<li><p><strong>rigid_body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A dict with the following keys: ‘MarkerNames’ and ‘LocalPoints’ as
+returned by <cite>ktk.kinematics.define_rigid_body()</cite>.</p></li>
 <li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body, that will be the data key in the output
 TimeSeries.</p></li>
+<li><p><strong>include_rigid_body</strong> (<em>Optional.</em>) – Include the tracked rigid body in the output TimeSeries as an Nx4x4
+series. The default is True.</p></li>
+<li><p><strong>include_markers</strong> (<em>Optional.</em>) – Include the reconstructed markers in the output TimeSeries as a Nx4
+series. Every marker of the rigid body definition is recontructed. The
+default is False.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
@@ -288,7 +290,7 @@ TimeSeries.</p></li>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
         <a href="kineticstoolkit.kinematics.write_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.write_c3d_file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.kinematics.register_markers.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.register_markers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.read_n3d_file.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.read_n3d_file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
