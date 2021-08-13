@@ -46,8 +46,9 @@ import json
 def update_version() -> None:  # pragma: no cover
     """Update VERSION based on the current branch name."""
     # Get the current branch name
-    branch_name = subprocess.check_output(['git', 'branch', '--show-current'])
-    if branch_name == 'stable':
+    branch_name = subprocess.check_output(
+        ['git', 'branch', '--show-current']).decode()
+    if 'stable' in branch_name:
         shutil.copy(
             kineticstoolkit.config.root_folder
             + '/kineticstoolkit/STABLE_VERSION',

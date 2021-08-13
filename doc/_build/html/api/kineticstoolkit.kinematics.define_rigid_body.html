@@ -253,6 +253,11 @@
 <dt class="sig sig-object py" id="kineticstoolkit.kinematics.define_rigid_body">
 <span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">define_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">marker_names</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.define_rigid_body" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a generic rigid body definition based on a static acquisition.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This function, which has been introduced in 0.6, is still experimental and
+may change signature or behaviour in the future.</p>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -260,16 +265,14 @@
 <li><p><strong>marker_names</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]) – The markers that define the rigid body.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">List</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]]</p>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dictionary where each entry represents the local position of a point
+(e.g., marker name). The key is the name of the point, the value is a
+1x4 array that indicates the local position of this point in the rigid
+body’s local coordinate system.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p><ul class="simple">
-<li><p><em>List of dictionaries with the following keys</em></p></li>
-<li><p><strong>- MarkerName</strong> (<em>the marker name</em>)</p></li>
-<li><p><strong>- LocalCoordinates</strong> (<em>1x4 array that indicates the local position of this</em>) – marker into the rigid body’s local coordinate system.</p></li>
-</ul>
-</p>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Dict</p>
 </dd>
 </dl>
 </dd></dl>

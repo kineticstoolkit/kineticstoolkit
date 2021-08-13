@@ -1885,18 +1885,11 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[{
-          &#39;MarkerName&#39;: &#39;ArmR1&#39;
-    &#39;LocalCoordinates&#39;: &lt;array of shape (1, 4)&gt;
-},
- {
-          &#39;MarkerName&#39;: &#39;ArmR2&#39;
-    &#39;LocalCoordinates&#39;: &lt;array of shape (1, 4)&gt;
-},
- {
-          &#39;MarkerName&#39;: &#39;ArmR3&#39;
-    &#39;LocalCoordinates&#39;: &lt;array of shape (1, 4)&gt;
-}]
+{
+    &#39;ArmR1&#39;: &lt;array of shape (1, 4)&gt;
+    &#39;ArmR2&#39;: &lt;array of shape (1, 4)&gt;
+    &#39;ArmR3&#39;: &lt;array of shape (1, 4)&gt;
+}
 </pre></div></div>
 </div>
 <p>We proceed the same way for the forearm:</p>
@@ -1917,44 +1910,20 @@ dAAAACWpdG9vAAAAHWRhdGEAAAABAAAAAExhdmY1OC40NS4xMDA=
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;Probe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;Probe1&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[[</span><span class="mf">0.0021213</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0158328</span><span class="p">,</span> <span class="mf">0.0864285</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;Probe2&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[[</span><span class="mf">0.0021213</span><span class="p">,</span> <span class="mf">0.0158508</span><span class="p">,</span> <span class="mf">0.0864285</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;Probe3&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[[</span><span class="mf">0.0020575</span><span class="p">,</span> <span class="mf">0.0160096</span><span class="p">,</span> <span class="mf">0.1309445</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;Probe4&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[[</span><span class="mf">0.0021213</span><span class="p">,</span> <span class="mf">0.0161204</span><span class="p">,</span> <span class="mf">0.1754395</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;Probe5&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[[</span><span class="mf">0.0017070</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0155780</span><span class="p">,</span> <span class="mf">0.1753805</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;Probe6&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
-            <span class="p">[[</span><span class="mf">0.0017762</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0156057</span><span class="p">,</span> <span class="mf">0.1308888</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]</span>
-        <span class="p">),</span>
-    <span class="p">},</span>
-<span class="p">]</span>
+<span></span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;Probe&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;Probe1&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.0021213</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0158328</span><span class="p">,</span> <span class="mf">0.0864285</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]),</span>
+    <span class="s1">&#39;Probe2&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.0021213</span><span class="p">,</span> <span class="mf">0.0158508</span><span class="p">,</span> <span class="mf">0.0864285</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]),</span>
+    <span class="s1">&#39;Probe3&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.0020575</span><span class="p">,</span> <span class="mf">0.0160096</span><span class="p">,</span> <span class="mf">0.1309445</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]),</span>
+    <span class="s1">&#39;Probe4&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.0021213</span><span class="p">,</span> <span class="mf">0.0161204</span><span class="p">,</span> <span class="mf">0.1754395</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]),</span>
+    <span class="s1">&#39;Probe5&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.0017070</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0155780</span><span class="p">,</span> <span class="mf">0.1753805</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]),</span>
+    <span class="s1">&#39;Probe6&#39;</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.0017762</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.0156057</span><span class="p">,</span> <span class="mf">0.1308888</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]]),</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div>
@@ -2416,52 +2385,33 @@ bwAAAB1kYXRhAAAAAQAAAABMYXZmNTguNDUuMTAw
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;AcromionR&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span>
-            <span class="n">process_probing_acquisition</span><span class="p">(</span>
-                <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
-                <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_acromion_R.c3d&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ArmR&#39;</span>
-            <span class="p">)</span>
-    <span class="p">}</span>
+<span></span><span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">][</span><span class="s1">&#39;AcromionR&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span> <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_acromion_R.c3d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ArmR&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;MedialEpicondyleR&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span>
-            <span class="n">process_probing_acquisition</span><span class="p">(</span>
-                <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
-                <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_medial_epicondyle_R.c3d&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ArmR&#39;</span>
-            <span class="p">)</span>
-    <span class="p">}</span>
+<span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ArmR&#39;</span><span class="p">][</span>
+    <span class="s1">&#39;MedialEpicondyleR&#39;</span>
+<span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
+    <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_medial_epicondyle_R.c3d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ArmR&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;RadialStyloidR&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span>
-            <span class="n">process_probing_acquisition</span><span class="p">(</span>
-                <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
-                <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_radial_styloid_R.c3d&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ForearmR&#39;</span>
-            <span class="p">)</span>
-    <span class="p">}</span>
+<span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">][</span>
+    <span class="s1">&#39;RadialStyloidR&#39;</span>
+<span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
+    <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_radial_styloid_R.c3d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ForearmR&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 
-<span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
-    <span class="p">{</span>
-        <span class="s1">&#39;MarkerName&#39;</span><span class="p">:</span> <span class="s1">&#39;UlnarStyloidR&#39;</span><span class="p">,</span>
-        <span class="s1">&#39;LocalCoordinates&#39;</span><span class="p">:</span>
-            <span class="n">process_probing_acquisition</span><span class="p">(</span>
-                <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
-                <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_ulnar_styloid_R.c3d&#39;</span><span class="p">,</span>
-                <span class="s1">&#39;ForearmR&#39;</span>
-            <span class="p">)</span>
-    <span class="p">}</span>
+<span class="n">rigid_body_definitions</span><span class="p">[</span><span class="s1">&#39;ForearmR&#39;</span><span class="p">][</span>
+    <span class="s1">&#39;UlnarStyloidR&#39;</span>
+<span class="p">]</span> <span class="o">=</span> <span class="n">process_probing_acquisition</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
+    <span class="o">+</span> <span class="s1">&#39;/data/kinematics/sample_probing_ulnar_styloid_R.c3d&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ForearmR&#39;</span><span class="p">,</span>
 <span class="p">)</span>
 </pre></div>
 </div>
