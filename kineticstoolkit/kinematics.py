@@ -243,7 +243,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
             ts.data[label] = np.block(
                 [
                     [
-                        ndi_array[:, 3 * i_marker : 3 * i_marker + 3],
+                        ndi_array[:, 3 * i_marker: 3 * i_marker + 3],
                         np.ones((n_frames, 1)),
                     ]
                 ]
@@ -426,9 +426,7 @@ def define_rigid_body(
 def track_rigid_body(
     kinematics: TimeSeries,
     /,
-    rigid_body_definition: Union[
-        Sequence[Dict[str, np.ndarray]], Dict[str, Any]
-    ],
+    rigid_body_definition: Sequence[Dict[str, Any]],
     rigid_body_name: str,
     *,
     include_rigid_body: bool = True,
@@ -448,7 +446,7 @@ def track_rigid_body(
         specified in rigid_body_definition['MarkerNames'].
     rigid_body_definition
         A dict with the following keys: 'MarkerNames' and 'LocalPoints' as
-        returned by `ktk.kinematics.define_rgid_body()`.
+        returned by `ktk.kinematics.define_rigid_body()`.
     rigid_body_name
         Name of the rigid body, that will be the data key in the output
         TimeSeries.
@@ -469,14 +467,10 @@ def track_rigid_body(
     ts = kinematics.copy(copy_data=False, copy_data_info=False)
 
     # Set local and global points
-    if isinstance(rigid_body_definition, list):  # new definition (aug. 2021)
-        local_points = np.dstack(
-            [_['LocalCoordinates'] for _ in rigid_body_definition]
-        )
-        marker_names = [_['MarkerName'] for _ in rigid_body_definition]
-    else:  # old dict definition (<aug. 2021)
-        local_points = rigid_body_definition['LocalPoints']
-        marker_names = rigid_body_definition['MarkerNames']
+    local_points = np.dstack(
+        [_['LocalCoordinates'] for _ in rigid_body_definition]
+    )
+    marker_names = [_['MarkerName'] for _ in rigid_body_definition]
 
     global_points = np.empty((len(ts.time), 4, local_points.shape[2]))
     for i_marker, marker_name in enumerate(marker_names):
@@ -614,55 +608,6 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
                     + '\t{:.5f}'.format(markers.data[key][i_frame, 2])
                 )
             fid.write('\n')
-
-
-# %% Deprecated functions
-
-
-@deprecated(
-    since='0.6',
-    until='1.0',
-    details='It has been replaced by `define_rigid_body`.',
-)
-def create_rigid_body_config(markers, marker_names):
-    """Create a rigid body configuration based on a static acquisition."""
-    return define_rigid_body(markers, marker_names)
-
-
-@deprecated(
-    since='0.6',
-    until='1.0',
-    details='It has been replaced by `track_rigid_body`.',
-)
-def register_markers(markers, rigid_body_configs, verbose=False):
-    """Calculate the trajectory of rigid bodies."""
-    rigid_bodies = TimeSeries(
-        time=markers.time, time_info=markers.time_info, events=markers.events
-    )
-    for rigid_body_name in rigid_body_configs:
-        if verbose is True:
-            print(f'Computing trajectory of rigid body {rigid_body_name}...')
-        rigid_bodies.data[rigid_body_name] = track_rigid_body(
-            markers, rigid_body_configs[rigid_body_name], rigid_body_name
-        ).data[rigid_body_name]
-    return rigid_bodies
-
-
-@deprecated(
-    since='0.6',
-    until='1.0',
-    details='It has been replaced by `define_virtual_marker`.',
-)
-def create_virtual_marker_config(
-    markers: TimeSeries,
-    rigid_bodies: TimeSeries,
-    marker_name: str,
-    rigid_body_name: str,
-) -> Dict[str, Any]:
-    """Create a virtual marker configuration based on a probing acquisition."""
-    ts = markers.copy()
-    ts = ts.merge(rigid_bodies)
-    return define_virtual_marker(ts, marker_name, rigid_body_name)
 
 
 # %% Footer
