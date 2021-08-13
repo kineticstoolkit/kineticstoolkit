@@ -260,9 +260,10 @@ of the input TimeSeries as a Nx4x4 series of frames.</p>
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>kinematics</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the trajectories of the markers
-specified in rigid_body_definition[‘MarkerNames’].</p></li>
-<li><p><strong>rigid_body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-data docutils literal notranslate"><span class="pre">Any</span></code>]]) – A dict with the following keys: ‘MarkerNames’ and ‘LocalPoints’ as
-returned by <cite>ktk.kinematics.define_rigid_body()</cite>.</p></li>
+specified in rigid_body_definition.</p></li>
+<li><p><strong>rigid_body_definition</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A dict where each key is a point name and its corresponding value is
+its local coordinates, as returned by
+<cite>ktk.kinematics.define_rigid_body()</cite>.</p></li>
 <li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the rigid body, that will be the data key in the output
 TimeSeries.</p></li>
 <li><p><strong>include_rigid_body</strong> (<em>Optional.</em>) – Include the tracked rigid body in the output TimeSeries as an Nx4x4

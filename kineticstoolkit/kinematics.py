@@ -51,10 +51,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
     The markers positions are returned in a TimeSeries where each marker
     corresponds to a data key. Each marker position is expressed in this form:
 
-        array([[x0, y0, z0, 1.],
-               [x1, y1, z1, 1.],
-               [x2, y2, z2, 1.],
-               [...           ]])
+    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
 
     Parameters
     ----------
@@ -179,10 +176,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
     The markers positions are returned in a TimeSeries where each marker
     corresponds to a data key. Each marker position is expressed in this form:
 
-            array([[x0, y0, z0, 1.],
-                   [x1, y1, z1, 1.],
-                   [x2, y2, z2, 1.],
-                   [...           ]])
+    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
 
     Parameters
     ----------
@@ -368,7 +362,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 
 def define_rigid_body(
     kinematics: TimeSeries, marker_names: Sequence[str]
-) -> List[Dict[str, np.ndarray]]:
+) -> Dict[str, np.ndarray]:
     """
     Create a generic rigid body definition based on a static acquisition.
 
@@ -381,10 +375,11 @@ def define_rigid_body(
 
     Returns
     -------
-    List of dictionaries with the following keys:
-    - MarkerName : the marker name
-    - LocalCoordinates : 1x4 array that indicates the local position of this
-      marker into the rigid body's local coordinate system.
+    Dict
+        Dictionary where each entry represents the local position of a point
+        (e.g., marker name). The key is the name of the point, the value is a
+        1x4 array that indicates the local position of this point in the rigid
+        body's local coordinate system.
 
     """
     n_samples = len(kinematics.time)
@@ -411,14 +406,9 @@ def define_rigid_body(
     local_points = local_points[np.newaxis]
 
     # Create the output
-    output = []
+    output = {}
     for i_marker, marker_name in enumerate(marker_names):
-        output.append(
-            {
-                'MarkerName': marker_name,
-                'LocalCoordinates': local_points[:, :, i_marker],
-            }
-        )
+        output[marker_name] = local_points[:, :, i_marker]
 
     return output
 
@@ -426,7 +416,7 @@ def define_rigid_body(
 def track_rigid_body(
     kinematics: TimeSeries,
     /,
-    rigid_body_definition: Sequence[Dict[str, Any]],
+    rigid_body_definition: Dict[str, np.ndarray],
     rigid_body_name: str,
     *,
     include_rigid_body: bool = True,
@@ -443,10 +433,11 @@ def track_rigid_body(
     ----------
     kinematics
         TimeSeries that contains at least the trajectories of the markers
-        specified in rigid_body_definition['MarkerNames'].
+        specified in rigid_body_definition.
     rigid_body_definition
-        A dict with the following keys: 'MarkerNames' and 'LocalPoints' as
-        returned by `ktk.kinematics.define_rigid_body()`.
+        A dict where each key is a point name and its corresponding value is
+        its local coordinates, as returned by
+        `ktk.kinematics.define_rigid_body()`.
     rigid_body_name
         Name of the rigid body, that will be the data key in the output
         TimeSeries.
@@ -467,10 +458,10 @@ def track_rigid_body(
     ts = kinematics.copy(copy_data=False, copy_data_info=False)
 
     # Set local and global points
+    marker_names = rigid_body_definition.keys()
     local_points = np.dstack(
-        [_['LocalCoordinates'] for _ in rigid_body_definition]
+        [rigid_body_definition[_] for _ in marker_names]
     )
-    marker_names = [_['MarkerName'] for _ in rigid_body_definition]
 
     global_points = np.empty((len(ts.time), 4, local_points.shape[2]))
     for i_marker, marker_name in enumerate(marker_names):
@@ -491,8 +482,8 @@ def track_rigid_body(
 
     if include_markers:
         for marker in rigid_body_definition:
-            ts.data[marker['MarkerName']] = geometry.get_global_coordinates(
-                marker['LocalCoordinates'], frames
+            ts.data[marker] = geometry.get_global_coordinates(
+                rigid_body_definition[marker], frames
             )
 
     return ts
