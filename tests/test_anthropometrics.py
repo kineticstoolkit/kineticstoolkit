@@ -31,10 +31,26 @@ def test_dumas2007():
     # Load a sample file
     kinematics = ktk.load(
         ktk.config.root_folder
-        + '/data/anthropometrics/static_all_markers.ktk.zip')
+        + '/data/anthropometrics/static_all_markers.ktk.zip'
+    )
     markers = kinematics['kinematics']['Markers']
+
+    markers = markers.rename_data(
+        'AnteriorIliacCrestR', 'AnteriorSuperiorIliacSpineR'
+    )
+    markers = markers.rename_data(
+        'AnteriorIliacCrestL', 'AnteriorSuperiorIliacSpineL'
+    )
+    markers = markers.rename_data('Symphysis', 'PubicSymphysis')
+    markers.data['PosteriorSuperiorIliacSpineR'] = markers.data[
+        'AnteriorSuperiorIliacSpineR'
+    ] - [[0.25, 0.05, 0, 0]]
+    markers.data['PosteriorSuperiorIliacSpineL'] = markers.data[
+        'AnteriorSuperiorIliacSpineL'
+    ] - [[0.25, 0.05, 0, 0]]
 
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

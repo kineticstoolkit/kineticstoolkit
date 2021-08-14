@@ -48,11 +48,11 @@ as one article, without deconstructing into many functions?
 """
 
 
-def build_pelvis(
+def define_pelvis_coordinate_system(
     markers: TimeSeries,
     /,
     *,
-    morphology: str = 'M',
+    sex: str = 'M',
     flesh_adjustment: bool = True,
 ) -> TimeSeries:
     """
@@ -70,9 +70,8 @@ def build_pelvis(
         - PosteriorSuperiorIliacSpineR
         - PosteriorSuperiorIliacSpineL
         - PublicSymphysis
-    morphology : Optional.
-        F' for female, 'M' for midsize male, 'LM' for large male. The default
-        is 'M'.
+    sex : Optional.
+        F' for female, 'M' for male. The default is 'M'.
     flesh_adjusment : Optional.
         True to adjust the skin markers to anatomical landmarks, False if the
         markers are already landmarks. The default is
@@ -116,51 +115,78 @@ def build_pelvis(
     local_lpsis = geometry.get_local_coordinates(lpsis, temp_LCS)
     local_sym = geometry.get_local_coordinates(sym, temp_LCS)
 
-    # Flesh margin adjustment
-    if flesh_adjustment:
-        local_rasis += np.array([[-10, 0, 0, 0]]) / 1000
-        local_lasis += np.array([[-10, 0, 0, 0]]) / 1000
-        local_sym += np.array([[-17.7, -17.7, 0, 0]]) / 1000
-
     # Create a rigid body definition using these locations
-    pelvis_definition = [
-        {
-            'Name': 'AnteriorSuperiorIliacSpineR',
-            'LocalCoordinates': np.nanmean(local_rasis, axis=0),
-        },
-        {
-            'Name': 'AnteriorSuperiorIliacSpineL',
-            'LocalCoordinates': np.nanmean(local_lasis, axis=0),
-        },
-        {
-            'Name': 'PosteriorSuperiorIliacSpineR',
-            'LocalCoordinates': np.nanmean(local_rpsis, axis=0),
-        },
-        {
-            'Name': 'PosteriorSuperiorIliacSpineL',
-            'LocalCoordinates': np.nanmean(local_lpsis, axis=0),
-        },
-        {
-            'Name': 'PubicSymphysis',
-            'LocalCoordinates': np.nanmean(local_sym, axis=0),
-        },
-    ]
+    pelvis_definition = {
+        'AnteriorSuperiorIliacSpineR': np.nanmean(local_rasis, axis=0)[
+            np.newaxis
+        ],
+        'AnteriorSuperiorIliacSpineL': np.nanmean(local_lasis, axis=0)[
+            np.newaxis
+        ],
+        'PosteriorSuperiorIliacSpineR': np.nanmean(local_rpsis, axis=0)[
+            np.newaxis
+        ],
+        'PosteriorSuperiorIliacSpineL': np.nanmean(local_lpsis, axis=0)[
+            np.newaxis
+        ],
+        'PubicSymphysis': np.nanmean(local_sym, axis=0)[np.newaxis],
+    }
+
+    # Flesh margin adjustment to calculate pelvis width
+    if flesh_adjustment:
+        adjusted_local_rasis = local_rasis + np.array([[-10, 0, 0, 0]]) / 1000
+        adjusted_local_lasis = local_lasis + np.array([[-10, 0, 0, 0]]) / 1000
+        adjusted_local_sym = (
+            local_sym + np.array([[-17.7, -17.7, 0, 0]]) / 1000
+        )
+    else:
+        adjusted_local_rasis = local_rasis
+        adjusted_local_lasis = local_lasis
+        adjusted_local_sym = local_sym
 
     # Lengths calculation
-    pw = np.nanmean(local_rasis[:, 2] - local_lasis[:, 2])  # Pelvis width
+    pw = np.nanmean(
+        adjusted_local_rasis[:, 2] - adjusted_local_lasis[:, 2]
+    )  # Pelvis width
     ph = np.nanmean(
-        0.5 * (local_rasis[:, 1] + local_lasis[:, 1]) / local_sym[:, 1]
+        0.5
+        * (adjusted_local_rasis[:, 1] + adjusted_local_lasis[:, 1])
+        / adjusted_local_sym[:, 1]
     )  # Pelvis height
     pd = np.nanmean(
-        0.5 * (local_rasis[:, 0] + local_lasis[:, 0])
+        0.5 * (adjusted_local_rasis[:, 0] + adjusted_local_lasis[:, 0])
         - 0.5 * (local_rpsis[:, 0] + local_lpsis[:, 0])
     )  # Pelvis depth
 
-    # Create L5S1 joint
-    local_l5s1 = np.zeros(local_rasis.shape)
+    # Create L5S1 and hip joint definitions
+    if sex == 'F':
+        pelvis_definition['L5S1'] = np.array(
+            [[0.289 * pw, 0.172 * pw, 0.0, 1.0]]
+        )
+        pelvis_definition['HipJointCenterR'] = np.array(
+            [[0.197 * pw, 0.270 * pw, 0.372 * pw, 1.0]]
+        )
+        pelvis_definition['HipJointCenterL'] = np.array(
+            [[0.197 * pw, 0.270 * pw, -0.372 * pw, 1.0]]
+        )
+    elif sex == 'M':
+        pelvis_definition['L5S1'] = np.array(
+            [[0.264 * pw, 0.126 * pw, 0.0, 1.0]]
+        )
+        pelvis_definition['HipJointCenterR'] = np.array(
+            [[0.208 * pw, 0.278 * pw, 0.361 * pw, 1.0]]
+        )
+        pelvis_definition['HipJointCenterL'] = np.array(
+            [[0.208 * pw, 0.278 * pw, -0.361 * pw, 1.0]]
+        )
 
-    if morphology == 'F':
-        local_l5s1[:, 0]
+    # Move the origin to L5S1
+    l5s1_offset = pelvis_definition['L5S1'].copy()
+    l5s1_offset[:, 3] = 0
+    for point in pelvis_definition:
+        pelvis_definition[point] -= l5s1_offset
+
+    return pelvis_definition
 
 
 @unstable
