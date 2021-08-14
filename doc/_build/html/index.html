@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>Kinetics Toolkit &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>Kinetics Toolkit &mdash; Kinetics Toolkit 0.6.1 documentation</title>
   
 
   
@@ -66,7 +66,7 @@
 
           
             
-            <img src="_static/logo_development.png" class="logo" alt="Logo"/>
+            <img src="_static/logo_with_text_black.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -116,12 +116,6 @@
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a></li>
-</ul>
 
             
           
@@ -136,7 +130,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="#">Kinetics Toolkit (dev)</a>
+          <a href="#">Kinetics Toolkit</a>
         
       </nav>
 
@@ -219,12 +213,6 @@
 </style>
 <div class="section" id="kinetics-toolkit">
 <h1>Kinetics Toolkit<a class="headerlink" href="#kinetics-toolkit" title="Permalink to this headline">¶</a></h1>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>You are currently on Kinetics Toolkit’s development website. This
-website may refer to unreleased and unstable material. Please click <a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">here</a> to
-consult the standard website that refers to the current version.</p>
-</div>
 <p><a class="reference external" href="https://felixchenier.uqam.ca/kineticstoolkit">Kinetics Toolkit (ktk)</a> is an open-source, pure-python package of integrated classes and functions that aims to facilitate research in biomechanics using python. It is mainly addressed to researchers and students in biomechanics with minimal experience in programming, who want to learn processing and controlling their research data using python. A special attention is made on documentation and interoperability with other environments (using pandas Dataframes and JSON files as intermediate data containers).</p>
 <p>This is a long term project that is focused not only on the tool itself, but also a lot on learning. Please consult the “What is Kinetics Toolkit” section for more information on the project.</p>
 <img alt="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" src="https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif" />
@@ -429,10 +417,7 @@ consult the standard website that refers to the current version.</p>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.cycles.unstack.html">kineticstoolkit.cycles.unstack</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.emg.html">kineticstoolkit.emg</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.emg.read_delsys_csv.html">kineticstoolkit.emg.read_delsys_csv</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.filters.html">kineticstoolkit.filters</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.butter.html">kineticstoolkit.filters.butter</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.filters.deriv.html">kineticstoolkit.filters.deriv</a></li>
@@ -447,35 +432,20 @@ consult the standard website that refers to the current version.</p>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.get_angles.html">kineticstoolkit.geometry.get_angles</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.get_global_coordinates.html">kineticstoolkit.geometry.get_global_coordinates</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.get_local_coordinates.html">kineticstoolkit.geometry.get_local_coordinates</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.isnan.html">kineticstoolkit.geometry.isnan</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.matmul.html">kineticstoolkit.geometry.matmul</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.geometry.register_points.html">kineticstoolkit.geometry.register_points</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_com_acceleration.html">kineticstoolkit.inversedynamics.calculate_com_acceleration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_com_position.html">kineticstoolkit.inversedynamics.calculate_com_position</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_proximal_wrench.html">kineticstoolkit.inversedynamics.calculate_proximal_wrench</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_segment_angles.html">kineticstoolkit.inversedynamics.calculate_segment_angles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.calculate_segment_rotation_rates.html">kineticstoolkit.inversedynamics.calculate_segment_rotation_rates</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.get_anthropometrics.html">kineticstoolkit.inversedynamics.get_anthropometrics</a></li>
-</ul>
-</li>
+<li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.track_rigid_body.html">kineticstoolkit.kinematics.track_rigid_body</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_forces_and_moments.html">kineticstoolkit.pushrimkinetics.calculate_forces_and_moments</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_power.html">kineticstoolkit.pushrimkinetics.calculate_power</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_velocity.html">kineticstoolkit.pushrimkinetics.calculate_velocity</a></li>
-<li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.find_recovery_indices.html">kineticstoolkit.pushrimkinetics.find_recovery_indices</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.read_file.html">kineticstoolkit.pushrimkinetics.read_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.remove_offsets.html">kineticstoolkit.pushrimkinetics.remove_offsets</a></li>
 </ul>
@@ -489,21 +459,6 @@ consult the standard website that refers to the current version.</p>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
-<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="dev/conventions.html">Developer manual</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dev/conventions.html#Coding-style">Coding style</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev/conventions.html#Function-life-from-development-to-deprecation">Function life from development to deprecation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev/conventions.html#Feature-development-to-release-cycle">Feature development to release cycle</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="dev/tutorials.html">Tutorials for unreleased features</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dev/inversedynamics.html">Inverse Dynamics</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev/reconstruction.html">Reconstructing virtual markers</a></li>
-</ul>
-</li>
-</ul>
 </div>
 </div>
 </div>

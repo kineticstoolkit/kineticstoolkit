@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.kinematics &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.kinematics &mdash; Kinetics Toolkit 0.6.1 documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.kinematics.define_rigid_body" href="kineticstoolkit.kinematics.define_rigid_body.html" />
-    <link rel="prev" title="kineticstoolkit.inversedynamics.get_anthropometrics" href="kineticstoolkit.inversedynamics.get_anthropometrics.html" />
+    <link rel="next" title="kineticstoolkit.kinematics.read_c3d_file" href="kineticstoolkit.kinematics.read_c3d_file.html" />
+    <link rel="prev" title="kineticstoolkit.inversedynamics" href="kineticstoolkit.inversedynamics.html" />
 
 
  
@@ -67,7 +67,7 @@
 
           
             
-            <img src="../_static/logo_development.png" class="logo" alt="Logo"/>
+            <img src="../_static/logo_with_text_black.png" class="logo" alt="Logo"/>
           
           </a>
 
@@ -123,13 +123,8 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
 <li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_body.html">kineticstoolkit.kinematics.track_rigid_body</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
@@ -139,12 +134,6 @@
 </li>
 <li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
-</ul>
-<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../dev/install.html">Installing from git-hub</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/conventions.html">Developer manual</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../dev/tutorials.html">Tutorials for unreleased features</a></li>
 </ul>
 
             
@@ -160,7 +149,7 @@
       <nav class="wy-nav-top" aria-label="top navigation">
         
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">Kinetics Toolkit (dev)</a>
+          <a href="../index.html">Kinetics Toolkit</a>
         
       </nav>
 
@@ -209,10 +198,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.read_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.read_c3d_file" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.inversedynamics.get_anthropometrics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics.get_anthropometrics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.inversedynamics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -255,26 +244,11 @@
 <col style="width: 90%" />
 </colgroup>
 <tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html#kineticstoolkit.kinematics.define_rigid_body" title="kineticstoolkit.kinematics.define_rigid_body"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_rigid_body</span></code></a></p></td>
-<td><p>Create a generic rigid body definition based on a static acquisition.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.define_virtual_marker.html#kineticstoolkit.kinematics.define_virtual_marker" title="kineticstoolkit.kinematics.define_virtual_marker"><code class="xref py py-obj docutils literal notranslate"><span class="pre">define_virtual_marker</span></code></a></p></td>
-<td><p>Define a virtual marker based on a probing acquisition.</p></td>
-</tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html#kineticstoolkit.kinematics.read_c3d_file" title="kineticstoolkit.kinematics.read_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_c3d_file</span></code></a></p></td>
 <td><p>Read markers from a C3D file.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html#kineticstoolkit.kinematics.read_n3d_file" title="kineticstoolkit.kinematics.read_n3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_n3d_file</span></code></a></p></td>
 <td><p>Read markers from an NDI N3D file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_body.html#kineticstoolkit.kinematics.track_rigid_body" title="kineticstoolkit.kinematics.track_rigid_body"><code class="xref py py-obj docutils literal notranslate"><span class="pre">track_rigid_body</span></code></a></p></td>
-<td><p>Track a rigid body from markers trajectories.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html#kineticstoolkit.kinematics.write_c3d_file" title="kineticstoolkit.kinematics.write_c3d_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_c3d_file</span></code></a></p></td>
-<td><p>Write a markers TimeSeries to a C3D file.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html#kineticstoolkit.kinematics.write_trc_file" title="kineticstoolkit.kinematics.write_trc_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_trc_file</span></code></a></p></td>
-<td><p>Export a markers TimeSeries to OpenSim’s TRC file format.</p></td>
 </tr>
 </tbody>
 </table>
@@ -286,8 +260,8 @@
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.inversedynamics.get_anthropometrics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics.get_anthropometrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.read_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.read_c3d_file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.inversedynamics.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>
