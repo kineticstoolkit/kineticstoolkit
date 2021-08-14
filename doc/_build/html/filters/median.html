@@ -480,7 +480,7 @@ div.rendered_html tbody tr:hover {
 <h1>Removing artefacts using a median filter<a class="headerlink" href="#Removing-artefacts-using-a-median-filter" title="Permalink to this headline">¶</a></h1>
 <p>Sometimes, time-series data is filled with bad measures that really stand out from other data. If such data are impossible to remove at the source and there are not too many of those, then the median filter is a simple way to filter such artefacts. In this tutorial, we will see how to apply a median filter on TimeSeries data, using the <a class="reference internal" href="../api/kineticstoolkit.filters.median.html"><span class="doc">filters.median()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -490,8 +490,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>We will first load some noisy data:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -505,16 +505,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_median_3_0.png" src="../_images/filters_median_3_0.png" />
-</div>
-</div>
 <p>We clearly see the bad values here. We can remove most of those by applying a median filter with a window length of 3, which will give, for each point, the average of the two points that are the closest together.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -530,16 +523,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_median_5_0.png" src="../_images/filters_median_5_0.png" />
-</div>
-</div>
 <p>Most artefacts were removed, but not the ones at 30 and 31 seconds. This is because there are two consecutive artefacts, and as such the median filter considers that at these times, the clean signal is the artefact. A more agressive filter with a larger window length could be used, at the expense of more signal loss.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -553,13 +539,6 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_median_7_0.png" src="../_images/filters_median_7_0.png" />
 </div>
 </div>
 </div>

@@ -484,7 +484,7 @@ div.rendered_html tbody tr:hover {
 <h1>Smoothing and deriving using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-and-deriving-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h1>
 <p>The Savitzky-Golay filter is a generalization of the moving average. Instead of taking the mean of the n points of a moving window, the Savitzky-Golay filter fits a polynomial over each window. It is a powerful filter for data that is heavily quantized, particularly if we want to derivate these data. In this tutorial, we will see how to apply Savitzky-Golay filters on TimeSeries data, using the <a class="reference internal" href="../api/kineticstoolkit.filters.savgol.html"><span class="doc">filters.savgol()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -494,8 +494,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>We will first load some noisy data:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -509,18 +509,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_savgol_3_0.png" src="../_images/filters_savgol_3_0.png" />
-</div>
-</div>
 <div class="section" id="Smoothing-using-a-Savitzky-Golay-filter">
 <h2>Smoothing using a Savitzky-Golay filter<a class="headerlink" href="#Smoothing-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
 <p>Let’s try to smooth the non-derived signal using a second-order Savitzky-Golay filter with a window length of 7.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -535,19 +528,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_savgol_5_0.png" src="../_images/filters_savgol_5_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Deriving-using-a-Savitzky-Golay-filter">
 <h2>Deriving using a Savitzky-Golay filter<a class="headerlink" href="#Deriving-using-a-Savitzky-Golay-filter" title="Permalink to this headline">¶</a></h2>
 <p>This sort of signal that suffers from bad resolution is very difficult to derivate because it is filled with fast-changing plateaus:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -561,16 +547,9 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_savgol_7_0.png" src="../_images/filters_savgol_7_0.png" />
-</div>
-</div>
 <p>Since the Savitzky-Golay filter fits a polynom instead of just smoothing the signal, then the derivative of the filtered signal is automatically given by deriving the polynom instead of the signal. Let’s see the result with the same filtering conditions:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -585,13 +564,6 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_savgol_9_0.png" src="../_images/filters_savgol_9_0.png" />
 </div>
 </div>
 <p>As observed, the derivative of the highly-quantized signal is very similar to the derivative of the clean signal.</p>

@@ -481,7 +481,7 @@ div.rendered_html tbody tr:hover {
 <p>The moving average is an excellent filter to remove noise that is related to a specific time pattern. The classic example is the day-to-day evaluation of a process that is sensible to week-ends (for example, the number of workers who enter a building). A moving average with a window length of 7 days is ideal to evaluate the generic trend of this signal without considering intra-week fluctuations. Although its use in biomechanics is less obvious, this filter may be useful in some situation. This
 tutorial will show how to use the <a class="reference internal" href="../api/kineticstoolkit.filters.smooth.html"><span class="doc">ktk.filters.smooth()</span></a> function on TimeSeries data.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -491,8 +491,8 @@ tutorial will show how to use the <a class="reference internal" href="../api/kin
 </div>
 </div>
 <p>We will first load some noisy data:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -506,16 +506,9 @@ tutorial will show how to use the <a class="reference internal" href="../api/kin
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_smooth_3_0.png" src="../_images/filters_smooth_3_0.png" />
-</div>
-</div>
 <p>In this signal, we observe that appart from random noise, there seems to be a periodic signal with a period of five seconds, that we may consider as noise. Since we consider these variations as noise and their period is constants, the moving average is a nice candidate for filtering out this noise.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -529,13 +522,6 @@ tutorial will show how to use the <a class="reference internal" href="../api/kin
 <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_smooth_5_0.png" src="../_images/filters_smooth_5_0.png" />
 </div>
 </div>
 <p>As expected, the 5-sample period noise was completely removed. Some signal was however averaged and we therefore lost some dynamics in the signal.</p>

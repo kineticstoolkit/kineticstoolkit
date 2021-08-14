@@ -42,3 +42,4 @@ Submodules
    inversedynamics
    kinematics
    pushrimkinetics
+   anthropometrics

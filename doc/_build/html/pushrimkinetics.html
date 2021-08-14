@@ -480,7 +480,7 @@ div.rendered_html tbody tr:hover {
 <h1>Wheelchair kinetics<a class="headerlink" href="#Wheelchair-kinetics" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html"><span class="doc">pushrimkinetics</span></a> module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -495,7 +495,7 @@ div.rendered_html tbody tr:hover {
 <h2>Read data from file<a class="headerlink" href="#Read-data-from-file" title="Permalink to this headline">¶</a></h2>
 <p>The first step is to load data from a file, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.read_file.html"><span class="doc">pushrimkinetics.read_file()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -508,8 +508,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>Let see what we loaded:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -517,22 +517,8 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-TimeSeries with attributes:
-         time: &lt;array of shape (7682,)&gt;
-         data: &lt;dict with 5 entries&gt;
-    time_info: &lt;dict with 1 entries&gt;
-    data_info: &lt;dict with 0 entries&gt;
-       events: &lt;list of 0 items&gt;
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -540,23 +526,8 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{
-       &#39;Index&#39;: &lt;array of shape (7682,)&gt;
-    &#39;Channels&#39;: &lt;array of shape (7682, 6)&gt;
-      &#39;Forces&#39;: &lt;array of shape (7682, 4)&gt;
-     &#39;Moments&#39;: &lt;array of shape (7682, 4)&gt;
-       &#39;Angle&#39;: &lt;array of shape (7682,)&gt;
-}
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -568,20 +539,13 @@ TimeSeries with attributes:
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_7_0.png" src="_images/pushrimkinetics_7_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Calculate-forces-and-moments">
 <h2>Calculate forces and moments<a class="headerlink" href="#Calculate-forces-and-moments" title="Permalink to this headline">¶</a></h2>
 <p>If the loaded data doesn’t include forces and moments but only raw data (for exemple, when loading data from a SmartWheel’s SD card), we must calculate the forces and moments based on a calibration matrix. The function <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_forces_and_moments.html"><span class="doc">pushrimkinetics.calculate_forces_and_moments()</span></a> performs this calculation. In this example, we use a calibration matrix that is included in <code class="docutils literal notranslate"><span class="pre">ktk.pushrimkinetics.CALIBRATION_MATRICES</span></code>, and we express the
 calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel’s angular encoder).</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -590,21 +554,8 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
-</pre></div>
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-{
-         &#39;gains&#39;: &lt;array of shape (6,)&gt;
-       &#39;offsets&#39;: &lt;array of shape (6,)&gt;
-    &#39;transducer&#39;: &#39;smartwheel&#39;
-}
-</pre></div></div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -623,21 +574,14 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_10_0.png" src="_images/pushrimkinetics_10_0.png" />
-</div>
-</div>
 <p>We observe some sign differences here. In fact, the SmartWheel softwares inverts some signals based on the SmartWheel’s sign convention and the side of the wheel. When the forces and moments are reconstructed from raw data, these sign changes do not happen, which explains these discrepancies.</p>
 </div>
 <div class="section" id="Removing-dynamic-offsets-in-forces-and-moments">
 <h2>Removing dynamic offsets in forces and moments<a class="headerlink" href="#Removing-dynamic-offsets-in-forces-and-moments" title="Permalink to this headline">¶</a></h2>
 <p>We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.remove_offsets.html"><span class="doc">pushrimkinetics.remove_offsets()</span></a>.</p>
 <p>Let’s apply this function on the data we just loaded.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -648,15 +592,8 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_13_0.png" src="_images/pushrimkinetics_13_0.png" />
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -669,20 +606,13 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_14_0.png" src="_images/pushrimkinetics_14_0.png" />
-</div>
-</div>
 <p>This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.remove_offsets.html"><span class="doc">pushrimkinetics.remove_offsets()</span></a> function help for more information.</p>
 </div>
 <div class="section" id="Calculate-velocity-and-power">
 <h2>Calculate velocity and power<a class="headerlink" href="#Calculate-velocity-and-power" title="Permalink to this headline">¶</a></h2>
 <p>Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_velocity.html"><span class="doc">pushrimkinetics.calculate_velocity()</span></a> function. Once the velocity has been calculated, the output power can also be calculated by multiplying the velocity by the propulsion moment, using the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.calculate_power.html"><span class="doc">pushrimkinetics.calculate_power()</span></a> function.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -697,19 +627,12 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_17_0.png" src="_images/pushrimkinetics_17_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Detecting-the-pushes">
 <h2>Detecting the pushes<a class="headerlink" href="#Detecting-the-pushes" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="cycles.html"><span class="doc">cycles</span></a> module provides powerful tools to detect and manage cycles. Here we use <a class="reference internal" href="api/kineticstoolkit.cycles.detect_cycles.html"><span class="doc">cycles.detect_cycles()</span></a> to detect the pushes using these specifications: - a push starts when the total force crosses 5 N upward; - a push ends when the total force crosses 2 N downward; - for a push to be valid, it must last at least 100 ms; - to be valid, the total force must reach 25 N.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -729,19 +652,12 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pushrimkinetics_19_0.png" src="_images/pushrimkinetics_19_0.png" />
-</div>
-</div>
 </div>
 <div class="section" id="Extracting-spatiotemporal-and-kinetic-parameters">
 <h2>Extracting spatiotemporal and kinetic parameters<a class="headerlink" href="#Extracting-spatiotemporal-and-kinetic-parameters" title="Permalink to this headline">¶</a></h2>
 <p>As a conclusion to this tutorial, we will now extract some key spatiotemporal and kinetic parameters from these data, and express those parameters as a pandas DataFrame. Obviously, this is only an example and many other parameters can be calculated using a similar procedure.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -793,209 +709,6 @@ calculated forces and moments in a reference frame that is orthogonal to the gro
 <span class="n">df</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
-</pre></div>
-</div>
-<div class="output_area rendered_html docutils container">
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Push time (s)</th>
-      <th>Recovery time (s)</th>
-      <th>Cycle time (s)</th>
-      <th>Push angle (deg)</th>
-      <th>Mean propulsion moment (Nm)</th>
-      <th>Max propulsion moment (Nm)</th>
-      <th>Mean total force (N)</th>
-      <th>Max total force (N)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>1.404167</td>
-      <td>0.358333</td>
-      <td>1.762500</td>
-      <td>75.85</td>
-      <td>9.106452</td>
-      <td>12.716142</td>
-      <td>34.117531</td>
-      <td>44.257457</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>0.654167</td>
-      <td>0.579167</td>
-      <td>1.233333</td>
-      <td>88.33</td>
-      <td>6.992656</td>
-      <td>11.005038</td>
-      <td>30.669055</td>
-      <td>47.699743</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>0.554167</td>
-      <td>0.583333</td>
-      <td>1.137500</td>
-      <td>88.51</td>
-      <td>6.244814</td>
-      <td>9.327931</td>
-      <td>25.279054</td>
-      <td>37.581425</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>0.495833</td>
-      <td>0.633333</td>
-      <td>1.129167</td>
-      <td>79.80</td>
-      <td>4.328190</td>
-      <td>7.851847</td>
-      <td>23.573272</td>
-      <td>39.199059</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>0.533333</td>
-      <td>0.629167</td>
-      <td>1.162500</td>
-      <td>90.70</td>
-      <td>5.271423</td>
-      <td>8.831854</td>
-      <td>22.133097</td>
-      <td>40.147530</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>0.587500</td>
-      <td>0.675000</td>
-      <td>1.262500</td>
-      <td>97.12</td>
-      <td>5.611598</td>
-      <td>8.544609</td>
-      <td>25.567489</td>
-      <td>41.677356</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>0.550000</td>
-      <td>0.570833</td>
-      <td>1.120833</td>
-      <td>93.60</td>
-      <td>4.906104</td>
-      <td>7.642254</td>
-      <td>23.327076</td>
-      <td>37.582148</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>0.537500</td>
-      <td>0.637500</td>
-      <td>1.175000</td>
-      <td>90.00</td>
-      <td>5.233192</td>
-      <td>7.801526</td>
-      <td>23.085664</td>
-      <td>36.135763</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>0.487500</td>
-      <td>0.654167</td>
-      <td>1.141667</td>
-      <td>86.13</td>
-      <td>4.663521</td>
-      <td>6.557192</td>
-      <td>25.296090</td>
-      <td>40.663234</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>0.479167</td>
-      <td>0.658333</td>
-      <td>1.137500</td>
-      <td>87.18</td>
-      <td>3.506395</td>
-      <td>5.401392</td>
-      <td>21.393315</td>
-      <td>35.221362</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>0.491667</td>
-      <td>0.591667</td>
-      <td>1.083333</td>
-      <td>87.63</td>
-      <td>4.315006</td>
-      <td>6.866585</td>
-      <td>21.510567</td>
-      <td>35.246447</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>0.525000</td>
-      <td>0.637500</td>
-      <td>1.162500</td>
-      <td>93.87</td>
-      <td>4.903095</td>
-      <td>8.089712</td>
-      <td>22.627376</td>
-      <td>36.680779</td>
-    </tr>
-    <tr>
-      <th>12</th>
-      <td>0.491667</td>
-      <td>0.650000</td>
-      <td>1.141667</td>
-      <td>85.43</td>
-      <td>3.821445</td>
-      <td>6.286805</td>
-      <td>20.963591</td>
-      <td>35.007896</td>
-    </tr>
-    <tr>
-      <th>13</th>
-      <td>0.550000</td>
-      <td>0.608333</td>
-      <td>1.158333</td>
-      <td>95.36</td>
-      <td>4.967660</td>
-      <td>7.923602</td>
-      <td>24.124500</td>
-      <td>38.413724</td>
-    </tr>
-    <tr>
-      <th>14</th>
-      <td>0.508333</td>
-      <td>0.641667</td>
-      <td>1.150000</td>
-      <td>90.18</td>
-      <td>4.261794</td>
-      <td>6.951129</td>
-      <td>21.341208</td>
-      <td>38.651713</td>
-    </tr>
-  </tbody>
-</table>
-</div></div>
 </div>
 <p>For more information, please check the <a class="reference internal" href="api/kineticstoolkit.pushrimkinetics.html"><span class="doc">API Reference for the pushrimkinetics module</span></a>.</p>
 </div>

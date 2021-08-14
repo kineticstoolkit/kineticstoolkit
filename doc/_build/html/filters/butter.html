@@ -486,7 +486,7 @@ div.rendered_html tbody tr:hover {
 <p>The Butterworth filter may be the most used filter in biomechanics. It targets ranges of frequencies to remove from the signal’s frequency spectrum. A classic use is to estimate the frequency range of both the data and noise, then use the filter to keep most of the data’s frequency range while filtering out most of the noise’s frequency range. In this tutorial, we will see how to apply Butterworth filters on TimeSeries data, using the
 <a class="reference internal" href="../api/kineticstoolkit.filters.butter.html"><span class="doc">filters.butter()</span></a> function.</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -496,8 +496,8 @@ div.rendered_html tbody tr:hover {
 </div>
 </div>
 <p>We begin by loading some sample data:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -510,18 +510,11 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_butter_3_0.png" src="../_images/filters_butter_3_0.png" />
-</div>
-</div>
 <div class="section" id="Low-pass-no-lag-filter">
 <h2>Low-pass no-lag filter<a class="headerlink" href="#Low-pass-no-lag-filter" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example of how to filter out high frequencies using a no-lag Butterworth filter of order 2:</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -543,20 +536,13 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_butter_5_0.png" src="../_images/filters_butter_5_0.png" />
-</div>
-</div>
 <p>As expected, when filtering lower frequencies, the signal is clearer but transitions are less sharp and some very dynamic information may be lost.</p>
 </div>
 <div class="section" id="High-pass-no-lag-filter">
 <h2>High-pass no-lag filter<a class="headerlink" href="#High-pass-no-lag-filter" title="Permalink to this headline">¶</a></h2>
 <p>Here is an example of how to filter out low frequencies using a no-lag Butterworth filter of order 2.</p>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -571,13 +557,6 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 
 </pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="../_images/filters_butter_8_0.png" src="../_images/filters_butter_8_0.png" />
 </div>
 </div>
 <p>As expected, only the transitions are kept; all the stable parts of the signal were removed.</p>

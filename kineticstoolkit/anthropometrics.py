@@ -18,6 +18,8 @@
 """
 Provide tools associated to anthropometric measurements and estimates.
 
+Warning
+-------
 This module is in very early development and everything can still change.
 Please don't use this module in production code.
 
@@ -53,41 +55,55 @@ def define_pelvis_coordinate_system(
     /,
     *,
     sex: str = 'M',
-    flesh_adjustment: bool = True,
-) -> TimeSeries:
+) -> Dict[str, np.ndarray]:
     """
-    Adjust markers for flesh and estimate L5S1, hips and COM and local CS.
+    Create a segment definition for the Pelvis.
 
     The pelvis local coordinate system is located at LS51, with X anterior,
-    Y up and Z right.
+    Y up and Z right. The segment definition is based on
+    Dumas et al. (2007) [1]_, which is based on Reed et al. (1999) [2]_.
 
     Parameters
     ----------
-    markers :
-        TimeSeries that contains the following markers as Nx4 series:
+    markers
+        TimeSeries that contains the following markers as Nx4 series, ideally
+        recorded during a short static acquisition:
+
         - AnteriorSuperiorIliacSpineR
         - AnteriorSuperiorIliacSpineL
         - PosteriorSuperiorIliacSpineR
         - PosteriorSuperiorIliacSpineL
-        - PublicSymphysis
-    sex : Optional.
-        F' for female, 'M' for male. The default is 'M'.
-    flesh_adjusment : Optional.
-        True to adjust the skin markers to anatomical landmarks, False if the
-        markers are already landmarks. The default is
-        True.
+        - PubicSymphysis
+
+    sex
+        Optional. 'F' for female, 'M' for male. The default is 'M'.
 
     Returns
     -------
-    TimeSeries
-        Contains the following data:
-        - AnteriorSuperiorIliacSpineR: Nx4 series.
-        - AnteriorSuperiorIliacSpineL: Nx4 series.
-        - PosteriorSuperiorIliacSpineR: Nx4 series.
-        - PosteriorSuperiorIliacSpineL: Nx4 series.
-        - PublicSymphysis: Nx4 series.
-        - PelvisCOM: Center of mass of the pelvis, as an Nx4 series
-        - PelvisLCS: Local coordinate system of the pelvis, as an Nx4x4 series.
+    Dict[str, np.ndarray]
+        A dict that contains the following data as positions in the
+        pelvis local coordinate system as 1x4 arrays:
+
+        - AnteriorSuperiorIliacSpineR
+        - AnteriorSuperiorIliacSpineL
+        - HipJointCenterR
+        - HipJointCenterL
+        - L5S1
+        - PosteriorSuperiorIliacSpineR
+        - PosteriorSuperiorIliacSpineL
+        - PubicSymphysis
+
+    References
+    ----------
+    .. [1] Dumas, R., Chèze, L., Verriest, J.-P., 2007.
+       Adjustments to McConville et al. and Young et al. body segment inertial
+       parameters. Journal of Biomechanics 40, 543–553.
+       https://doi.org/10.1016/j.jbiomech.2006.02.013
+
+    .. [2] Reed, M., Manary, M.A., Schneider, L.W., 1999.
+       Methods for Measuring and Representing Automobile Occupant Posture.
+       Presented at the International Congress &  Exposition, pp. 1999-01–0959.
+       https://doi.org/10.4271/1999-01-0959
 
     """
     # Get the required markers

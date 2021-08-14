@@ -87,6 +87,7 @@ if config.version == 'master':
     listing.append('dev')
     listing.append('inversedynamics')
     listing.append('emg')
+    listing.append('anthropometrics')
 
 
 def __dir__():
