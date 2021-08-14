@@ -5,3 +5,4 @@ Tutorials for unreleased features
     :maxdepth: 2
 
     inversedynamics
+    reconstruction

@@ -360,16 +360,12 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
+@unstable
 def define_rigid_body(
     kinematics: TimeSeries, marker_names: Sequence[str]
 ) -> Dict[str, np.ndarray]:
     """
     Create a generic rigid body definition based on a static acquisition.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.6, is still experimental and
-    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -418,6 +414,7 @@ def define_rigid_body(
     return output
 
 
+@unstable
 def track_rigid_body(
     kinematics: TimeSeries,
     /,
@@ -433,11 +430,6 @@ def track_rigid_body(
     This function tracks the specified rigid body in a TimeSeries that
     contains the required markers, and adds the tracked rigid body to a copy
     of the input TimeSeries as a Nx4x4 series of frames.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.6, is still experimental and
-    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -499,16 +491,12 @@ def track_rigid_body(
     return ts
 
 
+@unstable
 def define_virtual_marker(
     kinematics: TimeSeries, source_name: str, rigid_body_name: str
 ) -> np.ndarray:
     """
     Define a virtual marker based on a probing acquisition.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.6, is still experimental and
-    may change signature or behaviour in the future.
 
     Parameters
     ----------

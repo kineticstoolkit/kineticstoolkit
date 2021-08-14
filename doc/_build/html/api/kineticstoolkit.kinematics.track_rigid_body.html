@@ -253,13 +253,12 @@
 <dt class="sig sig-object py" id="kineticstoolkit.kinematics.track_rigid_body">
 <span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_rigid_body</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_definition</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_rigid_body</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_rigid_body" title="Permalink to this definition">¶</a></dt>
 <dd><p>Track a rigid body from markers trajectories.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function track_rigid_body is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
 <p>This function tracks the specified rigid body in a TimeSeries that
 contains the required markers, and adds the tracked rigid body to a copy
 of the input TimeSeries as a Nx4x4 series of frames.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This function, which has been introduced in 0.6, is still experimental and
-may change signature or behaviour in the future.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
