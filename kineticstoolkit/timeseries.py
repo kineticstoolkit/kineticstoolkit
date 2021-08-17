@@ -2171,9 +2171,7 @@ class TimeSeries():
             A copy of the TimeSeries with the time being shifted.
 
         """
-        ts = self.copy()
-        ts.shift(-ts.get_event_time(name, occurrence))
-        return ts
+        return self.shift(-self.get_event_time(name, occurrence))
 
     def trim_events(self) -> 'TimeSeries':
         """
