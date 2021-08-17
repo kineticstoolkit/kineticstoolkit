@@ -51,8 +51,7 @@ WINDOW_PLACEMENT = {'top': 50, 'right': 0}
 
 
 def dataframe_to_dict_of_arrays(
-    dataframe: pd.DataFrame,
-) -> Dict[str, np.ndarray]:
+        dataframe: pd.DataFrame) -> Dict[str, np.ndarray]:
     """
     Convert a pandas DataFrame to a dict of numpy ndarrays.
 
@@ -167,8 +166,7 @@ def dataframe_to_dict_of_arrays(
 
 
 def dict_of_arrays_to_dataframe(
-    dict_of_arrays: Dict[str, np.ndarray]
-) -> pd.DataFrame:
+        dict_of_arrays: Dict[str, np.ndarray]) -> pd.DataFrame:
     """
     Convert a dict of ndarray of any dimension to a pandas DataFrame.
 
@@ -534,8 +532,12 @@ class TimeSeries:
         return ts
 
     def add_data_info(
-        self, data_key: str, info_key: str, value: Any
-    ) -> 'TimeSeries':
+            self,
+            data_key: str,
+            info_key: str,
+            value: Any,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Add metadata to TimeSeries' data.
 
@@ -547,11 +549,15 @@ class TimeSeries:
             The key of the info dict.
         value
             The info.
+        in_place
+            Optional. True to modify the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the added data info.
+            The TimeSeries with the added data info.
 
         Example
         -------
@@ -570,14 +576,19 @@ class TimeSeries:
         {'Color': [43, 2, 255]}
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         try:
             ts.data_info[data_key][info_key] = value
         except KeyError:
             ts.data_info[data_key] = {info_key: value}
         return ts
 
-    def remove_data_info(self, data_key: str, info_key: str) -> 'TimeSeries':
+    def remove_data_info(
+            self,
+            data_key: str,
+            info_key: str,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Remove metadata from a TimeSeries' data.
 
@@ -587,11 +598,15 @@ class TimeSeries:
             The data key the info corresponds to.
         info_key
             The key of the info dict.
+        in_place
+            Optional. True to modify the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the removed data info.
+            The TimeSeries with the removed data info.
 
         Note
         ----
@@ -609,7 +624,7 @@ class TimeSeries:
         {}
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         try:
             ts.data_info[data_key].pop(info_key)
         except KeyError:
@@ -617,8 +632,11 @@ class TimeSeries:
         return ts
 
     def rename_data(
-        self, old_data_key: str, new_data_key: str
-    ) -> 'TimeSeries':
+            self,
+            old_data_key: str,
+            new_data_key: str,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Rename a key in data and data_info.
 
@@ -628,11 +646,15 @@ class TimeSeries:
             Name of the current data key.
         new_data_key
             New name of the data key.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the renamed data.
+            The TimeSeries with the renamed data.
 
         Example
         -------
@@ -655,7 +677,7 @@ class TimeSeries:
         {'signal': {'Unit': 'm'}}
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         try:
             ts.data[new_data_key] = ts.data.pop(old_data_key)
         except KeyError:
@@ -666,7 +688,11 @@ class TimeSeries:
             pass
         return ts
 
-    def remove_data(self, data_key: str) -> 'TimeSeries':
+    def remove_data(
+            self,
+            data_key: str,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Remove a data key and its associated metadata.
 
@@ -674,11 +700,15 @@ class TimeSeries:
         ----------
         data_key
             Name of the data key.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the removed data.
+            The TimeSeries with the removed data.
 
         Note
         ----
@@ -707,7 +737,7 @@ class TimeSeries:
         {}
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         try:
             ts.data.pop(data_key)
         except KeyError:
@@ -718,7 +748,12 @@ class TimeSeries:
             pass
         return ts
 
-    def add_event(self, time: float, name: str = 'event') -> 'TimeSeries':
+    def add_event(
+            self,
+            time: float,
+            name: str = 'event',
+            *,
+            in_place=False) -> 'TimeSeries':
         """
         Add an event to the TimeSeries.
 
@@ -727,7 +762,11 @@ class TimeSeries:
         time
             The time of the event, in the same unit as `time_info['Unit']`.
         name
-            Optional. The name of the event.
+            Optional. The name of the event. The default is 'event'.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
@@ -747,13 +786,17 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         ts.events.append(TimeSeriesEvent(time, name))
         return ts
 
     def rename_event(
-        self, old_name: str, new_name: str, occurrence: Optional[int] = None
-    ) -> 'TimeSeries':
+            self,
+            old_name: str,
+            new_name: str,
+            occurrence: Optional[int] = None,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Rename an event occurrence or all events of a same name.
 
@@ -767,11 +810,15 @@ class TimeSeries:
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0, where the occurrences are sorted in time.
             If None (default), all occurences of this event name are renamed.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the renamed event.
+            The TimeSeries with the renamed event.
 
         Example
         -------
@@ -798,7 +845,7 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
 
         if old_name == new_name:
             return ts  # Nothing to do.
@@ -822,8 +869,11 @@ class TimeSeries:
         return ts
 
     def remove_event(
-        self, name: str, occurrence: Optional[int] = None
-    ) -> 'TimeSeries':
+            self,
+            name: str,
+            occurrence: Optional[int] = None,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Remove an event occurrence or all events of a same name.
 
@@ -835,11 +885,15 @@ class TimeSeries:
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0, where the occurrences are sorted in time.
             If None (default), all occurences of this event name or removed.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the removed event.
+            The TimeSeries with the removed event.
 
         Example
         -------
@@ -864,7 +918,7 @@ class TimeSeries:
         [TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
 
         if occurrence is None:  # Remove all occurrences
             event_index = ts.get_event_index(name, 0)
@@ -884,9 +938,9 @@ class TimeSeries:
         return ts
 
     def ui_edit_events(
-        self,
-        name: Union[str, List[str]] = [],
-        data_keys: Union[str, List[str]] = [],
+            self,
+            name: Union[str, List[str]] = [],
+            data_keys: Union[str, List[str]] = []
     ) -> 'TimeSeries':  # pragma: no cover
         """
         Edit events interactively.
@@ -909,7 +963,7 @@ class TimeSeries:
         Returns
         -------
         TimeSeries
-            A copy of the original TimeSeries with the modified events. If
+            The original TimeSeries with the modified events. If
             the operation was cancelled by the user, this is a pure copy of
             the original TimeSeries.
 
@@ -1109,7 +1163,11 @@ class TimeSeries:
         """
         return self.ui_edit_events(name, data_key)
 
-    def sort_events(self, *, unique: bool = True) -> 'TimeSeries':
+    def sort_events(
+            self,
+            *,
+            unique: bool = True,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Sorts the TimeSeries' events from the earliest to the latest.
 
@@ -1118,11 +1176,15 @@ class TimeSeries:
         unique
             Optional. True to make events unique so that no two events can
             have both the same name and the same time.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the sorted events.
+            The TimeSeries with the sorted events.
 
         Example
         -------
@@ -1152,7 +1214,7 @@ class TimeSeries:
          TimeSeriesEvent(time=3, name='three')]
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
 
         ts.events = sorted(ts.events)
 
@@ -2139,7 +2201,10 @@ class TimeSeries:
         return np.isnan(values)
 
     def fill_missing_samples(
-        self, max_missing_samples: int, *, method: str = 'linear'
+            self,
+            max_missing_samples: int,
+            *, method: str = 'linear',
+            in_place: bool = False,
     ) -> 'TimeSeries':
         """
         Fill missing samples with the given method.
@@ -2161,14 +2226,18 @@ class TimeSeries:
             supported by scipy.interpolate.interp1d, such as 'linear',
             'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous' or
             'next'.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the missing samples filled.
+            The TimeSeries with the missing samples filled.
 
         """
-        ts_out = self.copy()
+        ts_out = self if in_place else self.copy()
         max_missing_samples = int(max_missing_samples)
 
         for data in ts_out.data:
@@ -2190,7 +2259,7 @@ class TimeSeries:
                     elif (
                         current_index - hole_start_index > max_missing_samples
                     ):
-                        to_keep[hole_start_index + 1 : current_index + 1] = 0
+                        to_keep[hole_start_index + 1: current_index + 1] = 0
 
                 ts.data[data][to_keep == 0] = np.nan
 
@@ -2198,7 +2267,7 @@ class TimeSeries:
 
         return ts_out
 
-    def shift(self, time: float) -> 'TimeSeries':
+    def shift(self, time: float, *, in_place: bool = False) -> 'TimeSeries':
         """
         Shift time and events.time.
 
@@ -2206,20 +2275,29 @@ class TimeSeries:
         ----------
         time_shift
             Time to be added to time and events.time.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the time being shifted.
+            The TimeSeries with the time being shifted.
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         for event in ts.events:
             event.time = event.time + time
         ts.time = ts.time + time
         return ts
 
-    def sync_event(self, name: str, occurrence: int = 0) -> 'TimeSeries':
+    def sync_event(
+            self,
+            name: str,
+            occurrence: int = 0,
+            *,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Shift time and events.time so that this event is at the new time zero.
 
@@ -2229,25 +2307,36 @@ class TimeSeries:
             Name of the event to sync on.
         occurrence
             Optional. Occurrence of the event to sync on, starting with 0.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the time being shifted.
+            The TimeSeries with the time being shifted.
 
         """
-        ts = self.copy()
-        ts.shift(-ts.get_event_time(name, occurrence))
+        ts = self if in_place else self.copy()
+        ts.shift(-ts.get_event_time(name, occurrence), in_place=True)
         return ts
 
-    def trim_events(self) -> 'TimeSeries':
+    def trim_events(self, *, in_place: bool = False) -> 'TimeSeries':
         """
         Delete the events that are outside the TimeSeries' time vector.
 
+        Parameters
+        ----------
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.        
+
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries without the trimmed events.
+            The TimeSeries without the trimmed events.
 
         Example
         -------
@@ -2274,7 +2363,7 @@ class TimeSeries:
          TimeSeriesEvent(time=9, name='event')]
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
         if ts.time.shape[0] == 0:  # no time, thus no event to keep.
             ts.events = []
             return ts
@@ -2287,10 +2376,10 @@ class TimeSeries:
         return ts
 
     def ui_sync(
-        self,
-        data_keys: Union[str, List[str]] = [],
-        ts2: Union['TimeSeries', None] = None,
-        data_keys2: Union[str, List[str]] = [],
+            self,
+            data_keys: Union[str, List[str]] = [],
+            ts2: Union['TimeSeries', None] = None,
+            data_keys2: Union[str, List[str]] = []
     ) -> 'TimeSeries':  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
@@ -2504,12 +2593,12 @@ class TimeSeries:
 
     @unstable
     def resample(
-        self,
-        new_time: np.ndarray,
-        kind: str = 'linear',
-        *,
-        fill_value: Union[np.ndarray, str, None] = None,
-    ) -> 'TimeSeries':
+            self,
+            new_time: np.ndarray,
+            kind: str = 'linear',
+            *,
+            fill_value: Union[np.ndarray, str, None] = None,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Resample the TimeSeries.
 
@@ -2526,11 +2615,15 @@ class TimeSeries:
             Optional. The fill value to use if new_time vector contains point
             outside the current TimeSeries' time vector. Use 'extrapolate' to
             extrapolate.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with a new sample rate.
+            The TimeSeries with a new sample rate.
 
         Example
         --------
@@ -2557,7 +2650,7 @@ class TimeSeries:
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  nan,  nan,  nan, 16. , 20.5, 25. ])
 
         """
-        ts = self.copy()
+        ts = self if in_place else self.copy()
 
         if np.any(np.isnan(new_time)):
             raise ValueError('new_time must not contain nans')
@@ -2622,13 +2715,13 @@ class TimeSeries:
         return ts
 
     def merge(
-        self,
-        ts: 'TimeSeries',
-        data_keys: Union[str, List[str]] = [],
-        *,
-        resample: bool = False,
-        overwrite: bool = True,
-    ) -> 'TimeSeries':
+            self,
+            ts: 'TimeSeries',
+            data_keys: Union[str, List[str]] = [],
+            *,
+            resample: bool = False,
+            overwrite: bool = True,
+            in_place: bool = False) -> 'TimeSeries':
         """
         Merge the TimeSeries with another TimeSeries.
 
@@ -2652,14 +2745,18 @@ class TimeSeries:
             Optional. If duplicates are found and overwrite is True, then the
             source (ts) overwrites the destination. Otherwise (overwrite is
             False), the duplicate data in ts is ignored.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
         TimeSeries
-            A new, merged TimeSeries.
+            The merged TimeSeries.
 
         """
-        ts_out = self.copy()
+        ts_out = self if in_place else self.copy()
         ts = ts.copy()
         if len(data_keys) == 0:
             data_keys = list(ts.data.keys())
@@ -2690,7 +2787,7 @@ class TimeSeries:
             )
 
         if must_resample is True:
-            ts = ts.resample(ts_out.time, fill_value='extrapolate')
+            ts.resample(ts_out.time, fill_value='extrapolate', in_place=True)
 
         for key in data_keys:
 
@@ -2715,7 +2812,7 @@ class TimeSeries:
         # Merge events
         for event in ts.events:
             ts_out.events.append(event)
-        ts_out = ts_out.sort_events()
+        ts_out.sort_events(in_place=True)
         return ts_out
 
 

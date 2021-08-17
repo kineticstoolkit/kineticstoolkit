@@ -128,7 +128,7 @@ def test_from_to_dataframe():
 def test_add_remove_data_info():
     ts = ktk.TimeSeries()
     ts = ts.add_data_info('Force', 'Unit', 'N')
-    ts = ts.add_data_info('Force', 'Other', 'hello')
+    ts.add_data_info('Force', 'Other', 'hello', in_place=True)
 
     # Check that data_info was added
     assert ts.data_info['Force']['Unit'] == 'N'
@@ -139,7 +139,7 @@ def test_add_remove_data_info():
     assert len(ts.data_info['Force']) == 2
 
     # Test removing existing data_info
-    ts = ts.remove_data_info('Force', 'Other')
+    ts.remove_data_info('Force', 'Other', in_place=True)
     assert ts.data_info['Force']['Unit'] == 'N'
     assert len(ts.data_info['Force']) == 1
 
@@ -151,7 +151,7 @@ def test_rename_remove_data():
     assert np.allclose(ts.data['Moment'], np.arange(10))
 
     # Same test but with data info
-    ts = ts.add_data_info('Moment', 'Unit', 'Nm')
+    ts.add_data_info('Moment', 'Unit', 'Nm', in_place=True)
     ts = ts.rename_data('Moment', 'Power')
     assert np.allclose(ts.data['Power'], np.arange(10))
     assert ts.data_info['Power']['Unit'] == 'Nm'
@@ -163,7 +163,7 @@ def test_rename_remove_data():
     assert len(ts.data_info) == 1
 
     # Remove inexistent data
-    ts = ts.remove_data('NoKey')
+    ts.remove_data('NoKey', in_place=True)
     assert np.allclose(ts.data['Power'], np.arange(10))
     assert len(ts.data) == 1
     assert len(ts.data_info) == 1
@@ -178,8 +178,8 @@ def test_rename_event():
     # Original doctest
     ts = ktk.TimeSeries()
     ts = ts.add_event(5.5, 'event1')
-    ts = ts.add_event(10.8, 'event2')
-    ts = ts.add_event(2.3, 'event2')
+    ts.add_event(10.8, 'event2', in_place=True)
+    ts.add_event(2.3, 'event2', in_place=True)
 
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
@@ -195,7 +195,7 @@ def test_rename_event():
         "TimeSeriesEvent(time=2.3, name='event3')]"
     )
 
-    ts = ts.rename_event('event3', 'event4', 0)
+    ts.rename_event('event3', 'event4', 0, in_place=True)
 
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
@@ -240,7 +240,7 @@ def test_remove_event():
         "TimeSeriesEvent(time=2.3, name='event2')]"
     )
 
-    ts = ts.remove_event('event2', 1)
+    ts.remove_event('event2', 1, in_place=True)
     assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
 
     # Test remove bad occurrence
@@ -264,7 +264,7 @@ def test_sort_events():
         "TimeSeriesEvent(time=3, name='three'), "
         "TimeSeriesEvent(time=3, name='three')]"
     )
-    ts = ts.sort_events()
+    ts.sort_events(in_place=True)
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=1, name='one'), "
         "TimeSeriesEvent(time=2, name='two'), "
@@ -335,24 +335,24 @@ def test_merge_and_resample():
     ts1.data['signal1'] = np.random.rand(100, 2)
     ts1.data['signal2'] = np.random.rand(100, 2)
     ts1.data['signal3'] = np.random.rand(100, 2)
-    ts1 = ts1.add_data_info('signal1', 'Unit', 'Unit1')
-    ts1 = ts1.add_data_info('signal2', 'Unit', 'Unit2')
-    ts1 = ts1.add_data_info('signal3', 'Unit', 'Unit3')
-    ts1 = ts1.add_event(1.54, 'test_event1')
-    ts1 = ts1.add_event(10.2, 'test_event2')
-    ts1 = ts1.add_event(100, 'test_event3')
+    ts1.add_data_info('signal1', 'Unit', 'Unit1', in_place=True)
+    ts1.add_data_info('signal2', 'Unit', 'Unit2', in_place=True)
+    ts1.add_data_info('signal3', 'Unit', 'Unit3', in_place=True)
+    ts1.add_event(1.54, 'test_event1', in_place=True)
+    ts1.add_event(10.2, 'test_event2', in_place=True)
+    ts1.add_event(100, 'test_event3', in_place=True)
 
     ts2 = ktk.TimeSeries()
     ts2.time = np.linspace(0, 99, 100)
     ts2.data['signal4'] = np.random.rand(100, 2)
     ts2.data['signal5'] = np.random.rand(100, 2)
     ts2.data['signal6'] = np.random.rand(100, 2)
-    ts2 = ts2.add_data_info('signal4', 'Unit', 'Unit1')
-    ts2 = ts2.add_data_info('signal5', 'Unit', 'Unit2')
-    ts2 = ts2.add_data_info('signal6', 'Unit', 'Unit3')
-    ts2 = ts2.add_event(1.54, 'test_event4')
-    ts2 = ts2.add_event(10.2, 'test_event5')
-    ts2 = ts2.add_event(100, 'test_event6')
+    ts2.add_data_info('signal4', 'Unit', 'Unit1', in_place=True)
+    ts2.add_data_info('signal5', 'Unit', 'Unit2', in_place=True)
+    ts2.add_data_info('signal6', 'Unit', 'Unit3', in_place=True)
+    ts2.add_event(1.54, 'test_event4', in_place=True)
+    ts2.add_event(10.2, 'test_event5', in_place=True)
+    ts2.add_event(100, 'test_event6', in_place=True)
 
     ts1 = ts1.merge(ts2)
 
@@ -373,24 +373,24 @@ def test_merge_and_resample():
     ts1.data['signal1'] = np.random.rand(100, 2)
     ts1.data['signal2'] = np.random.rand(100, 2)
     ts1.data['signal3'] = np.random.rand(100, 2)
-    ts1 = ts1.add_data_info('signal1', 'Unit', 'Unit1')
-    ts1 = ts1.add_data_info('signal2', 'Unit', 'Unit2')
-    ts1 = ts1.add_data_info('signal3', 'Unit', 'Unit3')
-    ts1 = ts1.add_event(1.54, 'test_event1')
-    ts1 = ts1.add_event(10.2, 'test_event2')
-    ts1 = ts1.add_event(100, 'test_event3')
+    ts1.add_data_info('signal1', 'Unit', 'Unit1', in_place=True)
+    ts1.add_data_info('signal2', 'Unit', 'Unit2', in_place=True)
+    ts1.add_data_info('signal3', 'Unit', 'Unit3', in_place=True)
+    ts1.add_event(1.54, 'test_event1', in_place=True)
+    ts1.add_event(10.2, 'test_event2', in_place=True)
+    ts1.add_event(100, 'test_event3', in_place=True)
 
     ts2 = ktk.TimeSeries()
     ts2.time = np.linspace(0, 99, 300, endpoint=False)
     ts2.data['signal4'] = ts2.time ** 2
     ts2.data['signal5'] = np.random.rand(300, 2)
     ts2.data['signal6'] = np.random.rand(300, 2)
-    ts2 = ts2.add_data_info('signal4', 'Unit', 'Unit1')
-    ts2 = ts2.add_data_info('signal5', 'Unit', 'Unit2')
-    ts2 = ts2.add_data_info('signal6', 'Unit', 'Unit3')
-    ts2 = ts2.add_event(1.54, 'test_event4')
-    ts2 = ts2.add_event(10.2, 'test_event5')
-    ts2 = ts2.add_event(100, 'test_event6')
+    ts2.add_data_info('signal4', 'Unit', 'Unit1', in_place=True)
+    ts2.add_data_info('signal5', 'Unit', 'Unit2', in_place=True)
+    ts2.add_data_info('signal6', 'Unit', 'Unit3', in_place=True)
+    ts2.add_event(1.54, 'test_event4', in_place=True)
+    ts2.add_event(10.2, 'test_event5', in_place=True)
+    ts2.add_event(100, 'test_event6', in_place=True)
 
     try:
         ts1.merge(ts2)
@@ -438,13 +438,13 @@ def test_plot():
     plt.close(fig)
 
     # Add units
-    ts = ts.add_data_info('data1', 'Unit', 'm')
+    ts.add_data_info('data1', 'Unit', 'm', in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)
 
     # Add another unit
-    ts = ts.add_data_info('data2', 'Unit', 'mm')
+    ts.add_data_info('data2', 'Unit', 'mm', in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)
@@ -455,9 +455,9 @@ def test_plot():
     plt.close(fig)
 
     # Add events
-    ts = ts.add_event(0, 'event')
-    ts = ts.add_event(2, '_')
-    ts = ts.add_event(3)
+    ts.add_event(0, 'event', in_place=True)
+    ts.add_event(2, '_', in_place=True)
+    ts.add_event(3, in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)
@@ -475,12 +475,12 @@ def test_copy():
     ts1.data['signal1'] = np.random.rand(100, 2)
     ts1.data['signal2'] = np.random.rand(100, 2)
     ts1.data['signal3'] = np.random.rand(100, 2)
-    ts1 = ts1.add_data_info('signal1', 'Unit', 'Unit1')
-    ts1 = ts1.add_data_info('signal2', 'Unit', 'Unit2')
-    ts1 = ts1.add_data_info('signal3', 'Unit', 'Unit3')
-    ts1 = ts1.add_event(1.54, 'test_event1')
-    ts1 = ts1.add_event(10.2, 'test_event2')
-    ts1 = ts1.add_event(100, 'test_event3')
+    ts1.add_data_info('signal1', 'Unit', 'Unit1', in_place=True)
+    ts1.add_data_info('signal2', 'Unit', 'Unit2', in_place=True)
+    ts1.add_data_info('signal3', 'Unit', 'Unit3', in_place=True)
+    ts1.add_event(1.54, 'test_event1', in_place=True)
+    ts1.add_event(10.2, 'test_event2', in_place=True)
+    ts1.add_event(100, 'test_event3', in_place=True)
 
     # Standard deep copy
     ts2 = ts1.copy()
