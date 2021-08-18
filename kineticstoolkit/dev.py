@@ -211,7 +211,13 @@ def clean() -> None:  # pragma: no cover
     for (folder, _, files) in os.walk(
             kineticstoolkit.config.root_folder + '/doc'):
 
-        if any(['.ipynb' in file for file in files]):
+        if '/_build' in folder or '/.ipynb_checkpoints' in folder:
+            for file in files:
+                if '.ipynb' in file:
+                    os.remove(f"{folder}/{file}")
+
+        elif any(['.ipynb' in file for file in files]):
+            print(f"Cleaning folder {folder}")
             subprocess.call(['jupyter-nbconvert',
                              '--ClearOutputPreprocessor.enabled=True',
                              '--log-level', 'WARN',
