@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.kinematics.define_virtual_marker &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.kinematics.define_local_position &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.kinematics.read_c3d_file" href="kineticstoolkit.kinematics.read_c3d_file.html" />
-    <link rel="prev" title="kineticstoolkit.kinematics.define_rigid_body" href="kineticstoolkit.kinematics.define_rigid_body.html" />
+    <link rel="next" title="kineticstoolkit.kinematics.define_rigid_body" href="kineticstoolkit.kinematics.define_rigid_body.html" />
+    <link rel="prev" title="kineticstoolkit.kinematics" href="kineticstoolkit.kinematics.html" />
 
 
  
@@ -123,8 +123,8 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.define_local_position</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.define_virtual_marker</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_body.html">kineticstoolkit.kinematics.track_rigid_body</a></li>
@@ -197,7 +197,7 @@
         
           <li><a href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a> &raquo;</li>
         
-      <li>kineticstoolkit.kinematics.define_virtual_marker</li>
+      <li>kineticstoolkit.kinematics.define_local_position</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -211,10 +211,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.kinematics.read_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.read_c3d_file" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -247,33 +247,35 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="kineticstoolkit-kinematics-define-virtual-marker">
-<h1>kineticstoolkit.kinematics.define_virtual_marker<a class="headerlink" href="#kineticstoolkit-kinematics-define-virtual-marker" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="kineticstoolkit-kinematics-define-local-position">
+<h1>kineticstoolkit.kinematics.define_local_position<a class="headerlink" href="#kineticstoolkit-kinematics-define-local-position" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.kinematics.define_virtual_marker">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">define_virtual_marker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.define_virtual_marker" title="Permalink to this definition">¶</a></dt>
-<dd><p>Define a virtual marker based on a probing acquisition.</p>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.define_local_position">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">define_local_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kinematics</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">source_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rigid_body_name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.define_local_position" title="Permalink to this definition">¶</a></dt>
+<dd><p>Define a point’s local position based on a static or probing acquisition.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The function define_virtual_marker is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
+<p>The function define_local_position is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
+<p>Ideally, the acquisition should be a short static acquisition and every
+required marker must be visible at the same time at least once.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>kinematics</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains at least the trajectory of the marker or
-of the probe frame (source name) and the trajectory of its reference
-rigid body (rigid_body_name).</p></li>
-<li><p><strong>source_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Key name of the source object. If the object is a marker (Nx4 array),
-its position is expressed in the local coordinate system of the
-specified rigid body. If the object is a frame (Nx4x4 array) such as
-a probe, the position of its origin is expressed in the local
-coordinate system of the specified rigid body.</p></li>
-<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the reference rigid body.</p></li>
+<li><p><strong>kinematics</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries of the static or probing acquisition, that contains the
+required markers and/or rigid bodies.</p></li>
+<li><p><strong>source_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the marker or rigid body to express in local coordinates. This
+name must be a data key in the kinematics TimeSeries and should refer
+to a marker trajectory (Nx4 array) or a rigid body trajectory (Nx4x4
+array).</p></li>
+<li><p><strong>rigid_body_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the reference rigid body. This name must be a data key in the
+kinematics TimeSeries and should refer to a rigid body trajectory
+(Nx4x4 array).</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The position of the probed marker in the rigid bodies’ local coordinate
-system.</p>
+<dd class="field-even"><p>The position of the marker or rigid body origin in the local coordinate
+system, as an Nx4 array.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>np.ndarray</p>
@@ -289,8 +291,8 @@ system.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.kinematics.read_c3d_file.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.read_c3d_file" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.define_rigid_body.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.define_rigid_body" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

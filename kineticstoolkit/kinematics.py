@@ -39,8 +39,8 @@ try:
     import ezc3d
 except ModuleNotFoundError:
     warnings.warn(
-        'Could not load ezc3d. Function kinematics.read_c3d_file '
-        'will not work.'
+        "Could not load ezc3d. Function kinematics.read_c3d_file "
+        "will not work."
     )
 
 
@@ -169,7 +169,7 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     c3d.write(filename)
 
 
-def read_n3d_file(filename: str, labels: Sequence[str] = []):
+def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
     """
     Read markers from an NDI N3D file.
 
@@ -362,8 +362,8 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 
 @unstable
 def define_rigid_body(
-    kinematics: TimeSeries, marker_names: Sequence[str]
-) -> Dict[str, np.ndarray]:
+        kinematics: TimeSeries,
+        marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
     """
     Create a generic rigid body definition based on a static acquisition.
 
@@ -416,14 +416,13 @@ def define_rigid_body(
 
 @unstable
 def track_rigid_body(
-    kinematics: TimeSeries,
-    /,
-    rigid_body_definition: Dict[str, np.ndarray],
-    rigid_body_name: str,
-    *,
-    include_rigid_body: bool = True,
-    include_markers: bool = False,
-) -> TimeSeries:
+        kinematics: TimeSeries,
+        /,
+        local_points: Dict[str, np.ndarray],
+        label: str = 'Trajectory',
+        *,
+        include_rigid_body: bool = True,
+        include_markers: bool = False) -> TimeSeries:
     """
     Track a rigid body from markers trajectories.
 
@@ -436,11 +435,11 @@ def track_rigid_body(
     kinematics
         TimeSeries that contains at least the trajectories of the markers
         specified in rigid_body_definition.
-    rigid_body_definition
+    local_points
         A dict where each key is a point name and its corresponding value is
         its local coordinates, as returned by
         `ktk.kinematics.define_rigid_body()`.
-    rigid_body_name
+    label
         Name of the rigid body, that will be the data key in the output
         TimeSeries.
     include_rigid_body: Optional.
@@ -460,64 +459,65 @@ def track_rigid_body(
     ts = kinematics.copy(copy_data=False, copy_data_info=False)
 
     # Set local and global points
-    marker_names = rigid_body_definition.keys()
-    local_points = np.dstack(
-        [rigid_body_definition[_] for _ in marker_names]
-    )
+    marker_names = local_points.keys()
+    stacked_local_points = np.dstack(
+        [local_points[_] for _ in marker_names])
 
-    global_points = np.empty((len(ts.time), 4, local_points.shape[2]))
+    global_points = np.empty((len(ts.time), 4, stacked_local_points.shape[2]))
     for i_marker, marker_name in enumerate(marker_names):
         if marker_name in kinematics.data:
             global_points[:, :, i_marker] = kinematics.data[marker_name]
         else:
             global_points[:, :, i_marker] = np.nan
 
-    (local_points, global_points) = geometry._match_size(
-        local_points, global_points
-    )
+    (stacked_local_points, global_points) = geometry._match_size(
+        stacked_local_points, global_points)
 
     # Track the rigid body
-    frames = geometry.register_points(global_points, local_points)
+    frames = geometry.register_points(global_points, stacked_local_points)
 
     if include_rigid_body:
-        ts.data[rigid_body_name] = frames
+        ts.data[label] = frames
 
     if include_markers:
-        for marker in rigid_body_definition:
+        for marker in local_points:
             ts.data[marker] = geometry.get_global_coordinates(
-                rigid_body_definition[marker], frames
-            )
+                local_points[marker], frames)
 
     return ts
 
 
 @unstable
-def define_virtual_marker(
-    kinematics: TimeSeries, source_name: str, rigid_body_name: str
-) -> np.ndarray:
+def define_local_position(
+        kinematics: TimeSeries,
+        source_name: str,
+        rigid_body_name: str) -> np.ndarray:
     """
-    Define a virtual marker based on a probing acquisition.
+    Define a point's local position based on a static or probing acquisition.
+
+    Ideally, the acquisition should be a short static acquisition and every
+    required marker must be visible at the same time at least once.
 
     Parameters
     ----------
     kinematics
-        TimeSeries that contains at least the trajectory of the marker or
-        of the probe frame (source name) and the trajectory of its reference
-        rigid body (rigid_body_name).
+        TimeSeries of the static or probing acquisition, that contains the
+        required markers and/or rigid bodies.
     source_name
-        Key name of the source object. If the object is a marker (Nx4 array),
-        its position is expressed in the local coordinate system of the
-        specified rigid body. If the object is a frame (Nx4x4 array) such as
-        a probe, the position of its origin is expressed in the local
-        coordinate system of the specified rigid body.
+        Name of the marker or rigid body to express in local coordinates. This
+        name must be a data key in the kinematics TimeSeries and should refer
+        to a marker trajectory (Nx4 array) or a rigid body trajectory (Nx4x4
+        array).
     rigid_body_name
-        Name of the reference rigid body.
+        Name of the reference rigid body. This name must be a data key in the
+        kinematics TimeSeries and should refer to a rigid body trajectory
+        (Nx4x4 array).
 
     Returns
     -------
     np.ndarray
-        The position of the probed marker in the rigid bodies' local coordinate
-        system.
+        The position of the marker or rigid body origin in the local coordinate
+        system, as an Nx4 array.
 
     """
     marker_trajectory = kinematics.data[source_name]
@@ -529,15 +529,13 @@ def define_virtual_marker(
     rigid_body_trajectory = kinematics.data[rigid_body_name]
 
     local_points = geometry.get_local_coordinates(
-        marker_trajectory, rigid_body_trajectory
-    )
+        marker_trajectory, rigid_body_trajectory)
     to_keep = ~geometry.isnan(local_points)
 
     if np.all(to_keep is False):
         warnings.warn(
-            'There are no frame where both the marker and body '
-            'are visible at the same time.'
-        )
+            "There are no frame where both the marker and body "
+            "are visible at the same time.")
 
     local_points = local_points[to_keep]
     local_points = np.mean(local_points, axis=0)[np.newaxis]
