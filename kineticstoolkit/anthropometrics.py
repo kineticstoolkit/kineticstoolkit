@@ -32,9 +32,10 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.decorators import unstable, directory
-from kineticstoolkit import TimeSeries, geometry
+from kineticstoolkit import TimeSeries, geometry, config
 from typing import Dict
 import numpy as np
+import pandas as pd
 
 
 """
@@ -50,14 +51,10 @@ as one article, without deconstructing into many functions?
 """
 
 
-def define_pelvis_coordinate_system(
-    markers: TimeSeries,
-    /,
-    *,
-    sex: str = 'M',
-) -> Dict[str, np.ndarray]:
+def define_pelvis(
+        markers: TimeSeries, /, *, sex: str = 'M') -> Dict[str, np.ndarray]:
     """
-    Create a segment definition for the Pelvis.
+    Create a local coordinate system for the Pelvis.
 
     The pelvis local coordinate system is located at LS51, with X anterior,
     Y up and Z right. The segment definition is based on
@@ -121,7 +118,8 @@ def define_pelvis_coordinate_system(
     # Create a temporary, well-aligned local coordinate system
     mpsis = 0.5 * (rpsis + lpsis)
     temp_LCS = geometry.create_frames(
-        origin=mpsis, z=(rasis - lasis), xz=(0.5 * (rasis - lasis) - mpsis)
+        origin=mpsis, z=(rasis - lasis),
+        xz=(0.5 * (rasis - lasis) - mpsis),
     )
 
     # Calculate the markers in the local coordinate system
@@ -133,46 +131,22 @@ def define_pelvis_coordinate_system(
 
     # Create a rigid body definition using these locations
     pelvis_definition = {
-        'AnteriorSuperiorIliacSpineR': np.nanmean(local_rasis, axis=0)[
-            np.newaxis
-        ],
-        'AnteriorSuperiorIliacSpineL': np.nanmean(local_lasis, axis=0)[
-            np.newaxis
-        ],
-        'PosteriorSuperiorIliacSpineR': np.nanmean(local_rpsis, axis=0)[
-            np.newaxis
-        ],
-        'PosteriorSuperiorIliacSpineL': np.nanmean(local_lpsis, axis=0)[
-            np.newaxis
-        ],
-        'PubicSymphysis': np.nanmean(local_sym, axis=0)[np.newaxis],
+        'AnteriorSuperiorIliacSpineR':
+            np.nanmean(local_rasis, axis=0)[np.newaxis],
+        'AnteriorSuperiorIliacSpineL':
+            np.nanmean(local_lasis, axis=0)[np.newaxis],
+        'PosteriorSuperiorIliacSpineR':
+            np.nanmean(local_rpsis, axis=0)[np.newaxis],
+        'PosteriorSuperiorIliacSpineL':
+            np.nanmean(local_lpsis, axis=0)[np.newaxis],
+        'PubicSymphysis':
+            np.nanmean(local_sym, axis=0)[np.newaxis],
     }
 
-    # Flesh margin adjustment to calculate pelvis width
-    if flesh_adjustment:
-        adjusted_local_rasis = local_rasis + np.array([[-10, 0, 0, 0]]) / 1000
-        adjusted_local_lasis = local_lasis + np.array([[-10, 0, 0, 0]]) / 1000
-        adjusted_local_sym = (
-            local_sym + np.array([[-17.7, -17.7, 0, 0]]) / 1000
-        )
-    else:
-        adjusted_local_rasis = local_rasis
-        adjusted_local_lasis = local_lasis
-        adjusted_local_sym = local_sym
-
-    # Lengths calculation
+    # Pelvis width
     pw = np.nanmean(
-        adjusted_local_rasis[:, 2] - adjusted_local_lasis[:, 2]
-    )  # Pelvis width
-    ph = np.nanmean(
-        0.5
-        * (adjusted_local_rasis[:, 1] + adjusted_local_lasis[:, 1])
-        / adjusted_local_sym[:, 1]
-    )  # Pelvis height
-    pd = np.nanmean(
-        0.5 * (adjusted_local_rasis[:, 0] + adjusted_local_lasis[:, 0])
-        - 0.5 * (local_rpsis[:, 0] + local_lpsis[:, 0])
-    )  # Pelvis depth
+        local_rasis[:, 2] - local_lasis[:, 2]
+    )
 
     # Create L5S1 and hip joint definitions
     if sex == 'F':
@@ -195,6 +169,8 @@ def define_pelvis_coordinate_system(
         pelvis_definition['HipJointCenterL'] = np.array(
             [[0.208 * pw, 0.278 * pw, -0.361 * pw, 1.0]]
         )
+    else:
+        raise ValueError("sex must be either 'F' or 'M'")
 
     # Move the origin to L5S1
     l5s1_offset = pelvis_definition['L5S1'].copy()
@@ -202,43 +178,38 @@ def define_pelvis_coordinate_system(
     for point in pelvis_definition:
         pelvis_definition[point] -= l5s1_offset
 
+    # Create COM, from Dumas 2007, Table 2.
+    length = np.sqrt(
+        (pelvis_definition['HipJointCenterR'][0, 0]  # x
+         - pelvis_definition['L5S1'][0, 0]) ** 2
+        +
+        (pelvis_definition['HipJointCenterR'][0, 1]  # y
+         - pelvis_definition['L5S1'][0, 1]) ** 2
+    )
+
+    if sex == 'F':
+        pelvis_definition['PelvisCOM'] = (
+            0.01 * np.array([[-0.9, -23.2, 0.2, 0.0]]) * length
+        )
+    else:  # 'M'
+        pelvis_definition['PelvisCOM'] = (
+            0.01 * np.array([[2.8, -28.0, -0.6, 0.0]]) * length
+        )
+    pelvis_definition['PelvisCOM'][0, 3] = 1.0
+
     return pelvis_definition
 
 
-@unstable
-def create_frames(markers: TimeSeries, *, method='dumas2007') -> TimeSeries:
-    """
-    Create body trajectories based on markers, using the specified method.
 
-    At the moment, this function follows the method described in
-    Dumas, R., Chèze, L., Verriest, J.-P., 2007. Adjustments to McConville
-    et al. and Young et al. body segment inertial parameters. Journal of
-    Biomechanics 40, 543–553. https://doi.org/10.1016/j.jbiomech.2006.02.013
+# Load Inertial Values
+INERTIAL_VALUES = {}
 
-    Parameters
-    ----------
-    markers: A TimeSeries that contains a mix of the following markers:
-        Toe3EndL/R, LateralMalleolusL/R, MedialMalleolusL/R,
-        LateralFemoralEpicondyleL/R, MedialFemoralEpicondyleL/R,
-        AnteroSuperiorIliacSpineL/R, PosteroSuperiorIliacSpineL/R,
-        PubicSymphysis, GlenohumeralJointL/R,
-        LateralHumeralEpicondyleL/R, MedialHumeralEpicondyleL/R,
-        RadialStyloidL/R, UlnarStyloidL/R,
-        HandMeta2L/R, HandMeta5L/R,
-        C7, JugularNotch, HeadVertex, Sellion.
-    methods: Optional. Currently only 'dumas2007' is implemented.
-
-    Returns
-    -------
-    TimeSeries
-        A TimeSeries that contains these data as Nx4x4 series (if the
-        corresponding markers are available):
-        Pelvis, Torso, HeadNeck, ArmL, ArmR,
-        ForearmL, ForearmR, HandL, HandR,
-        ThighL, ThighR, LegL, LegR, FootL, FootR
-
-    """
-    pass
+# Dumas2007
+_ = pd.read_csv(config.root_folder + '/data/anthropometrics/dumas_2007.csv')
+_[['RelIXY', 'RelIXZ', 'RelIYZ']] = (
+    _[['RelIXY', 'RelIXZ', 'RelIYZ']].applymap(lambda s: np.complex(s))
+)
+INERTIAL_VALUES['Dumas2007'] = _
 
 
 module_locals = locals()

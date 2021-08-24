@@ -26,7 +26,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit as ktk
 
 
-def test_dumas2007():
+def test_define_pelvis():
     """Test the dumas2007 function."""
     # Load a sample file
     kinematics = ktk.load(
@@ -35,13 +35,20 @@ def test_dumas2007():
     )
     markers = kinematics['kinematics']['Markers']
 
-    markers = markers.rename_data(
-        'AnteriorIliacCrestR', 'AnteriorSuperiorIliacSpineR'
+    markers.rename_data(
+        'AnteriorIliacCrestR', 'AnteriorSuperiorIliacSpineR',
+        in_place=True,
     )
-    markers = markers.rename_data(
-        'AnteriorIliacCrestL', 'AnteriorSuperiorIliacSpineL'
+    markers.rename_data(
+        'AnteriorIliacCrestL', 'AnteriorSuperiorIliacSpineL',
+        in_place=True,
     )
-    markers = markers.rename_data('Symphysis', 'PubicSymphysis')
+    markers.rename_data(
+        'Symphysis', 'PubicSymphysis',
+        in_place=True,
+    )
+
+    # Create fake posterior iliac spine markers
     markers.data['PosteriorSuperiorIliacSpineR'] = markers.data[
         'AnteriorSuperiorIliacSpineR'
     ] - [[0.25, 0.05, 0, 0]]
@@ -49,6 +56,8 @@ def test_dumas2007():
         'AnteriorSuperiorIliacSpineL'
     ] - [[0.25, 0.05, 0, 0]]
 
+    # Generate the pelvis coordinate system
+    pelvis_definition = ktk.anthropometrics.define_pelvis(markers)
 
 if __name__ == "__main__":
     import pytest
