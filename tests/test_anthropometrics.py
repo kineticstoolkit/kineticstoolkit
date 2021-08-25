@@ -26,7 +26,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit as ktk
 
 
-def test_define_pelvis():
+def define_coordinate_systems():
     """Test the dumas2007 function."""
     # Load a sample file
     kinematics = ktk.load(
@@ -35,29 +35,36 @@ def test_define_pelvis():
     )
     markers = kinematics['kinematics']['Markers']
 
-    markers.rename_data(
-        'AnteriorIliacCrestR', 'AnteriorSuperiorIliacSpineR',
-        in_place=True,
-    )
-    markers.rename_data(
-        'AnteriorIliacCrestL', 'AnteriorSuperiorIliacSpineL',
-        in_place=True,
-    )
-    markers.rename_data(
-        'Symphysis', 'PubicSymphysis',
-        in_place=True,
-    )
+    rename_dict = {
+        'AnteriorIliacCrestR': 'AnteriorSuperiorIliacSpineR',
+        'AnteriorIliacCrestL': 'AnteriorSuperiorIliacSpineL',
+        'Symphysis': 'PubicSymphysis',
+        'Body_C7': 'C7',
+        'Body_JugularNotch': 'Suprasternale',
+        'Body_AcromionR': 'AcromionR',
+        'Body_AcromionL': 'AcromionL',
+        'Body_LateralEpicondyleR': 'LateralHumeralEpicondyleR',
+        'Body_LateralEpicondyleL': 'LateralHumeralEpicondyleL',
+        'MedialEpicondyleR': 'MedialHumeralEpicondyleR',
+        'MedialEpicondyleL': 'MedialHumeralEpicondyleL',
+        'Body_RadialStyloidR': 'RadialStyloidR',
+        'Body_RadialStyloidL': 'RadialStyloidL',
+        'Body_UlnarStyloidR': 'UlnarStyloidR',
+        'Body_UlnarStyloidL': 'UlnarStyloidL',
+    }
+    for old_name in rename_dict:
+        markers.rename_data(old_name, rename_dict[old_name], in_place=True)
 
     # Create fake posterior iliac spine markers
     markers.data['PosteriorSuperiorIliacSpineR'] = markers.data[
         'AnteriorSuperiorIliacSpineR'
-    ] - [[0.25, 0.05, 0, 0]]
+    ] + [[0.1, -0.03, 0, 0]]
     markers.data['PosteriorSuperiorIliacSpineL'] = markers.data[
         'AnteriorSuperiorIliacSpineL'
-    ] - [[0.25, 0.05, 0, 0]]
+    ] + [[0.1, -0.03, 0, 0]]
 
     # Generate the pelvis coordinate system
-    pelvis_definition = ktk.anthropometrics.define_pelvis(markers)
+    pelvis_definition = ktk.anthropometrics.define_coordinate_systems(markers)
 
 if __name__ == "__main__":
     import pytest
