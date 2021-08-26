@@ -424,7 +424,9 @@ def track_rigid_body(
         include_rigid_body: bool = True,
         include_markers: bool = False) -> TimeSeries:
     """
-    Track a rigid body from markers trajectories.
+    Deprecated before release. Track a rigid body from markers trajectories.
+
+    Please use track_rigid_bodies() instead.
 
     This function tracks the specified rigid body in a TimeSeries that
     contains the required markers, and adds the tracked rigid body to a copy
@@ -455,34 +457,84 @@ def track_rigid_body(
     TimeSeries
         A TimeSeries that contains the trajectory of the tracked rigid body.
     """
+    warnings.warn("Function track_rigid_body was deprecated before relaease. "
+                  "Please use track_rigid_bodies instead.")
+    return track_rigid_bodies(
+        kinematics,
+        {label: local_points},
+        include_rigid_bodies=include_rigid_body,
+        include_markers=include_markers
+    )
+
+
+@unstable
+def track_rigid_bodies(
+        markers: TimeSeries,
+        /,
+        definitions: Dict[str, Dict[str, np.ndarray]],
+        *,
+        include_rigid_bodies: bool = True,
+        include_markers: bool = False) -> TimeSeries:
+    """
+    Track rigid bodies from markers trajectories.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries that contains the trajectories of the markers specified
+        in the rigid body definitions.
+    definitions
+        A dict where each key is a rigid body name and its value is a dict
+        of local coordinates as returned by
+        `ktk.kinematics.define_rigid_body()`.
+    include_rigid_bodies: Optional.
+        Include the tracked rigid bodies in the output TimeSeries as an Nx4x4
+        series. The default is True.
+    include_markers: Optional.
+        Include the reconstructed markers in the output TimeSeries as a Nx4
+        series. Every marker of the rigid body definitions is recontructed. The
+        default is False.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries that contains the trajectory of the tracked rigid bodies.
+
+    """
     # Create output TimeSeries
-    ts = kinematics.copy(copy_data=False, copy_data_info=False)
+    ts = markers.copy(copy_data=False, copy_data_info=False)
 
-    # Set local and global points
-    marker_names = local_points.keys()
-    stacked_local_points = np.dstack(
-        [local_points[_] for _ in marker_names])
+    for rigid_body in definitions:
 
-    global_points = np.empty((len(ts.time), 4, stacked_local_points.shape[2]))
-    for i_marker, marker_name in enumerate(marker_names):
-        if marker_name in kinematics.data:
-            global_points[:, :, i_marker] = kinematics.data[marker_name]
-        else:
-            global_points[:, :, i_marker] = np.nan
+        # Set local and global points
+        marker_names = definitions[rigid_body].keys()
+        stacked_local_points = np.dstack(
+            [definitions[rigid_body][_] for _ in marker_names])
 
-    (stacked_local_points, global_points) = geometry._match_size(
-        stacked_local_points, global_points)
+        global_points = np.empty(
+            (len(ts.time), 4, stacked_local_points.shape[2])
+        )
 
-    # Track the rigid body
-    frames = geometry.register_points(global_points, stacked_local_points)
+        for i_marker, marker_name in enumerate(marker_names):
+            if marker_name in markers.data:
+                global_points[:, :, i_marker] = markers.data[marker_name]
+            else:
+                global_points[:, :, i_marker] = np.nan
 
-    if include_rigid_body:
-        ts.data[label] = frames
+        (stacked_local_points, global_points) = geometry._match_size(
+            stacked_local_points, global_points
+        )
 
-    if include_markers:
-        for marker in local_points:
-            ts.data[marker] = geometry.get_global_coordinates(
-                local_points[marker], frames)
+        # Track the rigid body
+        frames = geometry.register_points(global_points, stacked_local_points)
+
+        if include_rigid_bodies:
+            ts.data[rigid_body] = frames
+
+        if include_markers:
+            for marker in definitions[rigid_body]:
+                ts.data[marker] = geometry.get_global_coordinates(
+                    definitions[rigid_body][marker], frames)
 
     return ts
 
