@@ -23,6 +23,37 @@ Warning
 This module is in very early development and everything can still change.
 Please don't use this module in production code.
 
+Nomenclature
+------------
+- AnteriorSuperiorIliacSpineL/R
+- PosteriorSuperiorIliacSpineL/R
+- PubicSymphysis
+- L5S1JointCenter
+- C7
+- C7T1JointCenter
+- Suprasternale
+- AcromionL/R
+- GlenohumeralJointCenterL/R
+- LateralHumeralEpicondyleL/R
+- MedialHumeralEpicondyleL/R
+- ElbowJointCenterL/R
+- UlnarStyloidL/R
+- RadialStyloidL/R
+- WristJointCenterL/R
+- CarpalMetaHead1-5
+- FingerTip1-5L/R
+- HipJointCenterL/R
+- LateralFemoralEpicondyleL/R
+- MedialFemoralEpicondyleL/R
+- KneeJointCenterL/R
+- LateralMalleolusL/R
+- MedialMalleolusL/R
+- AnkleJointCenterL/R
+- CalcaneusL/R
+- NavicularL/R
+- TarsalMetaHead1-5L/R
+- ToeTip1-5L/R
+
 """
 
 __author__ = "Félix Chénier"
@@ -39,23 +70,38 @@ import pandas as pd
 from warnings import warn
 
 
-"""
-NOTES WHILE I'M BUILDING IT.
-
-Steps
-1. Get xyz pelvis dimensions by creating a temporary local corodinate system.
-2.
-
-Should I just reconstruct everything with the mothos, since it's documented
-as one article, without deconstructing into many functions?
-
-"""
-
-
-def _add_l5s1_hip_joints(
+@unstable
+def infer_hip_l5s1_joint_centers(
         markers: TimeSeries,
-        sex: str = 'M') -> None:
-    """Add L5S1 and hip joint centers based on Reed et al. (1999)."""
+        sex: str = 'M') -> TimeSeries:
+    """
+    Infer L5S1 and hip joint centers based on anthropometric data.
+
+    Creates L5S1JointCenter, HipJointCenterL and HipJointCenterR based on
+    AnteriorSuperiorIliacSpineL/R, PosteriorSuperiorIliacSpineL/R and
+    PubicSymphysis, following the method presented in Reed et al. (1999)[1]_.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries that contain the trajectory of
+        AnteriorSuperiorIliacSpineL/R, PosteriorSuperiorIliacSpineL/R and
+        PubicSymphysis as Nx4 series.
+    sex
+        Optional. Either 'M' or 'F'. The default is 'M'.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries with L5S1JointCenter, HipJointCenterL and
+        HipJointCenterR as Nx4 series.
+
+    .. [1] Reed, M., Manary, M.A., Schneider, L.W., 1999.
+       Methods for Measuring and Representing Automobile Occupant Posture.
+       Presented at the International Congress &  Exposition, pp. 1999-01–0959.
+       https://doi.org/10.4271/1999-01-0959
+
+    """
     # Get the required markers
     try:
         rasis = markers.data['AnteriorSuperiorIliacSpineR']
@@ -107,54 +153,88 @@ def _add_l5s1_hip_joints(
         local_rasis[:, 1] - local_lasis[:, 1]
     ))
 
-    # Create L5S1 if not already included in markers
-    if 'L5S1' not in markers.data:
-        if sex == 'F':
-            local_position = np.array(
-                [[-0.289 * pw, 0.0, 0.172 * pw, 1.0]]
-            )
-        else:  # M
-            local_position = np.array(
-                [[-0.264 * pw, 0.0, 0.126 * pw, 1.0]]
-            )
-        markers.data['L5S1'] = geometry.get_global_coordinates(
-            local_position, tracked_pelvis.data['Pelvis']
+    output = markers.copy(copy_data=False, copy_data_info=False)
+
+    # Create L5S1JointCenter
+    if sex == 'F':
+        local_position = np.array(
+            [[-0.289 * pw, 0.0, 0.172 * pw, 1.0]]
         )
+    elif sex == 'M':
+        local_position = np.array(
+            [[-0.264 * pw, 0.0, 0.126 * pw, 1.0]]
+        )
+    else:
+        raise ValueError("sex must be either 'M' or 'F'")
+
+    output.data['L5S1'] = geometry.get_global_coordinates(
+        local_position, tracked_pelvis.data['Pelvis']
+    )
 
     # Create HipJointCenterR if not already included in markers
-    if 'HipJointCenterR' not in markers.data:
-        if sex == 'F':
-            local_position = np.array(
-                [[-0.197 * pw, -0.372 * pw, -0.270 * pw, 1.0]]
-            )
-        else:  # M
-            local_position = np.array(
-                [[-0.208 * pw, -0.361 * pw, -0.278 * pw, 1.0]]
-            )
-        markers.data['HipJointCenterR'] = geometry.get_global_coordinates(
-            local_position, tracked_pelvis.data['Pelvis']
+    if sex == 'F':
+        local_position = np.array(
+            [[-0.197 * pw, -0.372 * pw, -0.270 * pw, 1.0]]
         )
+    else:  # M
+        local_position = np.array(
+            [[-0.208 * pw, -0.361 * pw, -0.278 * pw, 1.0]]
+        )
+    output.data['HipJointCenterR'] = geometry.get_global_coordinates(
+        local_position, tracked_pelvis.data['Pelvis']
+    )
 
     # Create HipJointCenterL if not already included in markers
-    if 'HipJointCenterL' not in markers.data:
-        if sex == 'F':
-            local_position = np.array(
-                [[-0.197 * pw, 0.372 * pw, -0.270 * pw, 1.0]]
-            )
-        else:  # M
-            local_position = np.array(
-                [[-0.208 * pw, 0.361 * pw, -0.278 * pw, 1.0]]
-            )
-        markers.data['HipJointCenterL'] = geometry.get_global_coordinates(
-            local_position, tracked_pelvis.data['Pelvis']
+    if sex == 'F':
+        local_position = np.array(
+            [[-0.197 * pw, 0.372 * pw, -0.270 * pw, 1.0]]
         )
+    else:  # M
+        local_position = np.array(
+            [[-0.208 * pw, 0.361 * pw, -0.278 * pw, 1.0]]
+        )
+    output.data['HipJointCenterL'] = geometry.get_global_coordinates(
+        local_position, tracked_pelvis.data['Pelvis']
+    )
+
+    return output
 
 
-def _add_c7t1_gh_joints(markers: TimeSeries, sex: str = 'M') -> None:
+@unstable
+def infer_glenohumeral_c7t1_joint_centers(
+        markers: TimeSeries,
+        sex: str = 'M') -> TimeSeries:
     """
-    Add C7T1 and glenohumeral joint centers.
+    Infer C7T1 and glenohumeral joint centers based on anthropometric data.
 
-    Based on Reed et al. (1999).
+    Creates C7T1JointCenter, GlenohumeralJointCenterL and
+    GlenohumeralJointCenterR based on C7, L5S1JointCenter, Suprasternal,
+    AcromionR and AcromionL, following the method presented in Reed et al.
+    (1999)[1]_. The scapulo-thoracic joint must be in a neutral
+    position.
+
+    Warning
+    -------
+    Only male data is implemented at the moment.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries that contain the trajectory of C7, L5S1JointCenter,
+        Suprasternal, AcromionR and AcromionL as Nx4 series.
+    sex
+        Optional. Either 'M' or 'F'. The default is 'M'.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries with C7T1JointCenter, GlenohumeralJointCenterL and
+        GlenohumeralJointCenterR as Nx4 series.
+
+    .. [1] Reed, M., Manary, M.A., Schneider, L.W., 1999.
+       Methods for Measuring and Representing Automobile Occupant Posture.
+       Presented at the International Congress &  Exposition, pp. 1999-01–0959.
+       https://doi.org/10.4271/1999-01-0959
 
     """
     # Get the required markers
@@ -225,79 +305,107 @@ def _add_c7t1_gh_joints(markers: TimeSeries, sex: str = 'M') -> None:
         1.0,
     ]])
 
-    # Put global positions in markers
-    if 'C7T1' not in markers.data:
-        markers.data['C7T1'] = geometry.get_global_coordinates(
-            local_c7t1, c7_lcs)
-    if 'GlenohumeralJointCenterR' not in markers.data:
-        markers.data['GlenohumeralJointCenterR'] = \
-            geometry.get_global_coordinates(
-                local_rgh, rac_lcs)
-    if 'GlenohumeralJointCenterL' not in markers.data:
-        markers.data['GlenohumeralJointCenterL'] = \
-            geometry.get_global_coordinates(
-                local_lgh, lac_lcs)
+    # Return global positions
+    output = markers.copy(copy_data=False, copy_data_info=False)
+    output.data['C7T1'] = geometry.get_global_coordinates(
+        local_c7t1, c7_lcs)
+    output.data['GlenohumeralJointCenterR'] = \
+        geometry.get_global_coordinates(
+            local_rgh, rac_lcs)
+    output.data['GlenohumeralJointCenterL'] = \
+        geometry.get_global_coordinates(
+            local_lgh, lac_lcs)
+
+    return output
 
 
-def _add_elbow_wrist_knee_ankle_joint_centers(
-        markers: TimeSeries) -> None:
-    """Add upper and lower body joint centers."""
-    if 'ElbowJointCenterR' not in markers.data:
-        try:
-            markers.data['ElbowJointCenterR'] = 0.5 * (
-                markers.data['LateralHumeralEpicondyleR']
-                + markers.data['MedialHumeralEpicondyleR'])
-        except KeyError:
-            warn("Not enough markers to create right elbow joint center.")
-    if 'ElbowJointCenterL' not in markers.data:
-        try:
-            markers.data['ElbowJointCenterL'] = 0.5 * (
-                markers.data['LateralHumeralEpicondyleL']
-                + markers.data['MedialHumeralEpicondyleL'])
-        except KeyError:
-            warn("Not enough markers to create left elbow joint center.")
-    if 'KneeJointCenterR' not in markers.data:
-        try:
-            markers.data['KneeJointCenterR'] = 0.5 * (
-                markers.data['LateralFemoralEpicondyleR']
-                + markers.data['MedialFemoralEpicondyleR'])
-        except KeyError:
-            warn("Not enough markers to create right knee joint center.")
-    if 'KneeJointCenterL' not in markers.data:
-        try:
-            markers.data['KneeJointCenterL'] = 0.5 * (
-                markers.data['LateralFemoralEpicondyleL']
-                + markers.data['MedialFemoralEpicondyleL'])
-        except KeyError:
-            warn("Not enough markers to create left knee joint center.")
-    if 'WristJointCenterR' not in markers.data:
-        try:
-            markers.data['WristJointCenterR'] = 0.5 * (
-                markers.data['RadialStyloidR']
-                + markers.data['UlnarStyloidR'])
-        except KeyError:
-            warn("Not enough markers to create right wrist joint center.")
-    if 'WristJointCenterL' not in markers.data:
-        try:
-            markers.data['WristJointCenterL'] = 0.5 * (
-                markers.data['RadialStyloidL']
-                + markers.data['UlnarStyloidL'])
-        except KeyError:
-            warn("Not enough markers to create left wrist joint center.")
-    if 'AnkleJointCenterR' not in markers.data:
-        try:
-            markers.data['AnkleJointCenterR'] = 0.5 * (
-                markers.data['LateralMalleolousR']
-                + markers.data['MedialMalleolousR'])
-        except KeyError:
-            warn("Not enough markers to create right ankle joint center.")
-    if 'AnkleJointCenterL' not in markers.data:
-        try:
-            markers.data['AnkleJointCenterL'] = 0.5 * (
-                markers.data['LateralMalleolousL']
-                + markers.data['MedialMalleolousL'])
-        except KeyError:
-            warn("Not enough markers to create left ankle joint center.")
+@unstable
+def infer_extremity_joint_centers(
+        markers: TimeSeries) -> TimeSeries:
+    """
+    Infer extremity joint centers based on medial and lateral markers.
+
+    Creates:
+    - ElbowJointCenterL/R as the midpoint between
+      LateralHumeralEpicondyleL/R and MedialHumeralEpicondyleR;
+    - WristJointCenterR as the midpoint between
+      UlnarStyloidL/R and RadialStyloidL/R;
+    - KneeJointCenterL/R as the midpoint between
+      LateralFemoralEpicondyleL/R and MedialFemoralEpicondyleL/R;
+    - AnkleJointCenterL/R as the midpoint between
+      LateralMalleolusL/R and MedialMalleolusL/R.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries the contains the required trajectories as Nx4 series.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries with the calculated joint center trajectories as Nx4
+        series. Trajectories that could not be calculated due to missing
+        markers are ignored.
+
+    """
+    output = markers.copy(copy_data=False, copy_data_info=False)
+    try:
+        output.data['ElbowJointCenterR'] = 0.5 * (
+            markers.data['LateralHumeralEpicondyleR']
+            + markers.data['MedialHumeralEpicondyleR'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['ElbowJointCenterL'] = 0.5 * (
+            markers.data['LateralHumeralEpicondyleL']
+            + markers.data['MedialHumeralEpicondyleL'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['KneeJointCenterR'] = 0.5 * (
+            markers.data['LateralFemoralEpicondyleR']
+            + markers.data['MedialFemoralEpicondyleR'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['KneeJointCenterL'] = 0.5 * (
+            markers.data['LateralFemoralEpicondyleL']
+            + markers.data['MedialFemoralEpicondyleL'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['WristJointCenterR'] = 0.5 * (
+            markers.data['RadialStyloidR']
+            + markers.data['UlnarStyloidR'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['WristJointCenterL'] = 0.5 * (
+            markers.data['RadialStyloidL']
+            + markers.data['UlnarStyloidL'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['AnkleJointCenterR'] = 0.5 * (
+            markers.data['LateralMalleolusR']
+            + markers.data['MedialMalleolusR'])
+    except KeyError:
+        pass
+
+    try:
+        output.data['AnkleJointCenterL'] = 0.5 * (
+            markers.data['LateralMalleolusL']
+            + markers.data['MedialMalleolusL'])
+    except KeyError:
+        pass
+
+    return output
 
 
 def _define_pelvis(
@@ -345,9 +453,18 @@ def _define_pelvis(
     and HipJointCenterL are created if they didn't already exist.
 
     """
-    _add_l5s1_hip_joints(markers, sex)
-    _add_c7t1_gh_joints(markers, sex)
-    _add_elbow_wrist_knee_ankle_joint_centers(markers)
+    markers.merge(
+        infer_hip_l5s1_joint_centers(markers, sex),
+        in_place=True,
+    )
+    markers.merge(
+        infer_glenohumeral_c7t1_joint_centers(markers, sex),
+        in_place=True,
+    )
+    markers.merge(
+        infer_extremity_joint_centers(markers),
+        in_place=True,
+    )
 
     # Get the required markers
     try:
@@ -511,6 +628,35 @@ def define_coordinate_systems(
             ],
             'Color': [1, 0.5, 0],
         },
+        'Tighs': {
+            'Links': [
+                ['HipJointCenterR', 'KneeJointCenterR'],
+                ['HipJointCenterR', 'LateralFemoralEpicondyleR'],
+                ['HipJointCenterR', 'MedialFemoralEpicondyleR'],
+                ['LateralFemoralEpicondyleR', 'MedialFemoralEpicondyleR'],
+
+                ['HipJointCenterL', 'KneeJointCenterL'],
+                ['HipJointCenterL', 'LateralFemoralEpicondyleL'],
+                ['HipJointCenterL', 'MedialFemoralEpicondyleL'],
+                ['LateralFemoralEpicondyleL', 'MedialFemoralEpicondyleL'],
+            ],
+            'Color': [0.5, 0, 1],
+        },
+        'Legs': {
+            'Links': [
+                ['AnkleJointCenterR', 'KneeJointCenterR'],
+                ['LateralMalleolusR', 'LateralFemoralEpicondyleR'],
+                ['MedialMalleolusR', 'MedialFemoralEpicondyleR'],
+                ['LateralMalleolusR', 'MedialMalleolusR'],
+
+                ['AnkleJointCenterL', 'KneeJointCenterL'],
+                ['LateralMalleolusL', 'LateralFemoralEpicondyleL'],
+                ['MedialMalleolusL', 'MedialFemoralEpicondyleL'],
+                ['LateralMalleolusL', 'MedialMalleolusL'],
+            ],
+            'Color': [0, 0.5, 1],
+        },
+
     }
     bodies = kinematics.track_rigid_body(
         markers, definitions['Pelvis'], 'Pelvis')

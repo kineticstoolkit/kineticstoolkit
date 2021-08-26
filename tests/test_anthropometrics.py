@@ -51,6 +51,15 @@ def define_coordinate_systems():
         'Body_RadialStyloidL': 'RadialStyloidL',
         'Body_UlnarStyloidR': 'UlnarStyloidR',
         'Body_UlnarStyloidL': 'UlnarStyloidL',
+        'Body_FemoralLateralEpicondyleR': 'LateralFemoralEpicondyleR',
+        'Body_FemoralLateralEpicondyleL': 'LateralFemoralEpicondyleL',
+        'Body_FemoralMedialEpicondyleR': 'MedialFemoralEpicondyleR',
+        'Body_FemoralMedialEpicondyleL': 'MedialFemoralEpicondyleL',
+        'Body_LateralMalleolusR': 'LateralMalleolusR',
+        'Body_LateralMalleolusL': 'LateralMalleolusL',
+        'Body_MedialMalleolusR': 'MedialMalleolusR',
+        'Body_MedialMalleolusL': 'MedialMalleolusL',
+
     }
     for old_name in rename_dict:
         markers.rename_data(old_name, rename_dict[old_name], in_place=True)
