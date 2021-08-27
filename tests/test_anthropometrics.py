@@ -33,7 +33,7 @@ def test_define_coordinate_systems():
         ktk.config.root_folder
         + '/data/anthropometrics/static_all_markers.ktk.zip'
     )
-    markers = kinematics['kinematics']['Markers']
+    markers = kinematics['kinematics']['Markers'].copy()
 
     rename_dict = {
         'AnteriorIliacCrestR': 'AnteriorSuperiorIliacSpineR',
@@ -91,41 +91,153 @@ def test_define_coordinate_systems():
         in_place=True,
     )
 
-    # Generate the local coordinate systems
-    rigid_body_definitions = {}
-    rigid_body_definitions['Pelvis'] = \
-        ktk.anthropometrics.define_pelvis_coordinate_system(markers)
-    rigid_body_definitions['Thorax'] = \
-        ktk.anthropometrics.define_thorax_coordinate_system(markers)
-    rigid_body_definitions['HeadNeck'] = \
-        ktk.anthropometrics.define_head_neck_coordinate_system(markers)
-    rigid_body_definitions['ArmR'] = \
-        ktk.anthropometrics.define_arm_coordinate_system(markers, side='R')
-    rigid_body_definitions['ArmL'] = \
-        ktk.anthropometrics.define_arm_coordinate_system(markers, side='L')
-    rigid_body_definitions['ForearmR'] = \
-        ktk.anthropometrics.define_forearm_coordinate_system(markers, side='R')
-    rigid_body_definitions['ForearmL'] = \
-        ktk.anthropometrics.define_forearm_coordinate_system(markers, side='L')
-    rigid_body_definitions['HandR'] = \
-        ktk.anthropometrics.define_hand_coordinate_system(markers, side='R')
-    rigid_body_definitions['HandL'] = \
-        ktk.anthropometrics.define_hand_coordinate_system(markers, side='L')
-    rigid_body_definitions['ThighR'] = \
-        ktk.anthropometrics.define_thigh_coordinate_system(markers, side='R')
-    rigid_body_definitions['ThighL'] = \
-        ktk.anthropometrics.define_thigh_coordinate_system(markers, side='L')
-    rigid_body_definitions['LegR'] = \
-        ktk.anthropometrics.define_leg_coordinate_system(markers, side='R')
-    rigid_body_definitions['LegL'] = \
-        ktk.anthropometrics.define_leg_coordinate_system(markers, side='L')
+    # Generate segment clusters
+    clusters = {}
+    clusters['Pelvis'] = ktk.kinematics.create_cluster(
+        markers, [
+            'MWC_Marker1',
+            'MWC_Marker2',
+            'MWC_Marker3',
+            'MWC_Marker4',
+            'AnteriorSuperiorIliacSpineR',
+            'AnteriorSuperiorIliacSpineL',
+            'PosteriorSuperiorIliacSpineR',
+            'PosteriorSuperiorIliacSpineL',
+            'PubicSymphysis',
+            'L5S1JointCenter',
+            'HipJointCenterR',
+            'HipJointCenterL',
+        ]
+    )
 
-    # Track these rigid bodies
-    rigid_bodies = ktk.kinematics.track_rigid_bodies(
-        markers, rigid_body_definitions)
+    clusters['Trunk'] = ktk.kinematics.create_cluster(
+        markers, [
+            'C7',
+            'Body_T8',
+            'Xiphoid',
+            'Suprasternale',
+            'C7T1JointCenter',
+        ]
+    )
 
-    # Print the results
-    ktk.Player(markers, rigid_bodies, segments=ktk.anthropometrics.SEGMENTS)
+    clusters['HeadNeck'] = ktk.kinematics.create_cluster(
+        markers, [
+            'Sellion',
+            'HeadVertex',
+            'Body_Chin',
+        ]
+    )
+
+    for side in ['R', 'L']:
+
+        clusters[f'Arm{side}'] = ktk.kinematics.create_cluster(
+            markers, [
+                f'Arm{side}_Marker1',
+                f'Arm{side}_Marker2',
+                f'Arm{side}_Marker3',
+                f'Arm{side}_Marker4',
+                f'GlenohumeralJointCenter{side}',
+                f'LateralHumeralEpicondyle{side}',
+                f'MedialHumeralEpicondyle{side}',
+                f'ElbowJointCenter{side}',
+            ]
+        )
+
+        clusters[f'Forearm{side}'] = ktk.kinematics.create_cluster(
+            markers, [
+                f'ElbowJointCenter{side}',
+                f'UlnarStyloid{side}',
+                f'RadialStyloid{side}',
+                f'WristJointCenter{side}',
+            ]
+        )
+
+        clusters[f'Hand{side}'] = ktk.kinematics.create_cluster(
+            markers, [
+                f'WristJointCenter{side}',
+                f'CarpalMetaHead2{side}',
+                f'CarpalMetaHead5{side}',
+            ]
+        )
+
+        clusters[f'Thigh{side}'] = ktk.kinematics.create_cluster(
+            markers, [
+                f'HipJointCenter{side}',  # Normally I would remove this one.
+                f'LateralFemoralEpicondyle{side}',
+                f'MedialFemoralEpicondyle{side}',
+                f'KneeJointCenter{side}',
+            ]
+        )
+
+        clusters[f'Leg{side}'] = ktk.kinematics.create_cluster(
+            markers, [
+                f'Leg{side}_Marker1',
+                f'Leg{side}_Marker2',
+                f'Leg{side}_Marker3',
+                f'Leg{side}_Marker4',
+                f'LateralMalleolus{side}',
+                f'MedialMalleolus{side}',
+                f'KneeJointCenter{side}',
+            ]
+        )
+
+    # Test if everything can be built again
+    test_markers = kinematics['kinematics']['Markers'].copy()
+    for old_name in rename_dict:
+        test_markers.rename_data(
+            old_name, rename_dict[old_name], in_place=True)
+
+    for segment in clusters:
+        test_markers.merge(
+            ktk.kinematics.fit_cluster(
+                test_markers,
+                clusters[segment]
+            ),
+            in_place=True,
+        )
+
+    ktk.Player(test_markers, segments=ktk.anthropometrics.LINKS)
+
+    # # Generate the local coordinate systems
+    # rigid_body_definitions = {}
+
+    # for segment in ['Pelvis', 'Thorax']:
+    #     rigid_body_definitions[segment] = \
+    #         ktk.anthropometrics.define_local_coordinate_system(
+    #             markers,
+    #             segment
+    #     )
+
+    # rigid_body_definitions['HeadNeck'] = \
+    #     ktk.anthropometrics.define_head_neck_coordinate_system(markers)
+    # rigid_body_definitions['ArmR'] = \
+    #     ktk.anthropometrics.define_arm_coordinate_system(markers, side='R')
+    # rigid_body_definitions['ArmL'] = \
+    #     ktk.anthropometrics.define_arm_coordinate_system(markers, side='L')
+    # rigid_body_definitions['ForearmR'] = \
+    #     ktk.anthropometrics.define_forearm_coordinate_system(markers, side='R')
+    # rigid_body_definitions['ForearmL'] = \
+    #     ktk.anthropometrics.define_forearm_coordinate_system(markers, side='L')
+    # rigid_body_definitions['HandR'] = \
+    #     ktk.anthropometrics.define_hand_coordinate_system(markers, side='R')
+    # rigid_body_definitions['HandL'] = \
+    #     ktk.anthropometrics.define_hand_coordinate_system(markers, side='L')
+    # rigid_body_definitions['ThighR'] = \
+    #     ktk.anthropometrics.define_thigh_coordinate_system(markers, side='R')
+    # rigid_body_definitions['ThighL'] = \
+    #     ktk.anthropometrics.define_thigh_coordinate_system(markers, side='L')
+    # rigid_body_definitions['LegR'] = \
+    #     ktk.anthropometrics.define_leg_coordinate_system(markers, side='R')
+    # rigid_body_definitions['LegL'] = \
+    #     ktk.anthropometrics.define_leg_coordinate_system(markers, side='L')
+
+    # # Track these rigid bodies
+    # rigid_bodies = ktk.kinematics.track_rigid_bodies(
+    #     markers, rigid_body_definitions)
+
+    # # Print the results
+    # ktk.Player(markers, rigid_bodies, segments=ktk.anthropometrics.LINKS)
+
 
 if __name__ == "__main__":
     import pytest

@@ -118,8 +118,8 @@ def infer_pelvis_joint_centers(
         lpsis = markers.data['PosteriorSuperiorIliacSpineL']
         sym = markers.data['PubicSymphysis']
     except KeyError:
-        warn("Not enough markers to reconstruct L5S1 and hip joint centers.")
-        return
+        raise ValueError(
+            "Not enough markers to reconstruct L5S1 and hip joint centers.")
 
     # Create a local coordinate system at the anterior superior iliac spines
     # midpoint, according to Reed et al.
@@ -417,40 +417,63 @@ def infer_extremity_joint_centers(
     return output
 
 
-def define_pelvis_coordinate_system(
-        markers: TimeSeries) -> Dict[str, np.ndarray]:
+def define_local_coordinate_system(
+        markers: TimeSeries,
+        segment: str
+) -> Dict[str, np.ndarray]:
     """
-    Create the Pelvis definition based on static markers.
-
-    The pelvis local coordinate system is located at LS51, with X anterior,
-    Y up and Z right. The segment definition is based on
-    Dumas et al. (2007) [1]_.
+    Create local coordinate system definitions based on static markers.
 
     Parameters
     ----------
     markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
+        TimeSeries that contains marker trajectories as Nx4
+        series, ideally recorded during a short static acquisition.
 
-        - AnteriorSuperiorIliacSpineR
-        - AnteriorSuperiorIliacSpineL
-        - PosteriorSuperiorIliacSpineR
-        - PosteriorSuperiorIliacSpineL
-        - L5S1JointCenter
-
-        Additionally, if the following markers are also included in the
-        TimeSeries, they will also be expressed in local coordinates in the
-        returned dictionary:
-
-        - PubicSymphysis
-        - HipJointCenterR
-        - HipJointCenterL
+    segment
+        Name of the segment. Can be 'Pelvis', 'Thorax', 'HeadNeck',
+        'ArmR', 'ArmL', 'ForearmR', 'ForearmL', 'HandR', 'HandL', 'ThighR',
+        'ThighL', 'LegR', 'LegL', 'FootR', 'FootL', a sequence (e.g., list) of
+        many segments, or 'all'.
 
     Returns
     -------
     Dict[str, np.ndarray]
-        A dict that contains the local position of the pelvis markers as
+        A dict that contains the local position of the segment's markers as
         1x4 arrays.
+
+    Notes
+    -----
+    The pelvis local coordinate system is located at LS51, with X anterior,
+    Y up and Z right. The segment definition is based on
+    Dumas et al. (2007) [1]_.
+
+    The required markers are:
+    - AnteriorSuperiorIliacSpineR
+    - AnteriorSuperiorIliacSpineL
+    - PosteriorSuperiorIliacSpineR
+    - PosteriorSuperiorIliacSpineL
+    - L5S1JointCenter
+
+    Additionally, if the following markers are also included in the
+    TimeSeries, they will also be expressed in local coordinates in the
+    returned dictionary:
+
+    - PubicSymphysis
+    - HipJointCenterR
+    - HipJointCenterL
+
+    The thorax local coordinate system is located at C7T1JointCenter,
+    with X anterior, Y up and Z right. The segment definition is based on
+    Dumas et al. (2007) [1]_.
+
+    This required markers are:
+    - Suprasternale
+    - L5S1JointCenter
+    - C7T1JointCenter
+
+
+
 
     .. [1] Dumas, R., Chèze, L., Verriest, J.-P., 2007.
        Adjustments to McConville et al. and Young et al. body segment inertial
@@ -458,6 +481,17 @@ def define_pelvis_coordinate_system(
        https://doi.org/10.1016/j.jbiomech.2006.02.013
 
     """
+    if segment == 'Pelvis':
+        return _define_pelvis_coordinate_system(markers)
+    elif segment == 'Thorax':
+        return _define_thorax_coordinate_system(markers)
+    else:
+        raise ValueError("This segment is not recognized.")
+
+
+def _define_pelvis_coordinate_system(
+        markers: TimeSeries) -> Dict[str, np.ndarray]:
+    """Create the Pelvis definition based on static markers."""
     # Get the required markers
     try:
         rasis = markers.data['AnteriorSuperiorIliacSpineR']
@@ -499,37 +533,9 @@ def define_pelvis_coordinate_system(
     return pelvis_definition
 
 
-def define_thorax_coordinate_system(
+def _define_thorax_coordinate_system(
         markers: TimeSeries) -> Dict[str, np.ndarray]:
-    """
-    Create the Thorax definition based on static markers.
-
-    The thorax local coordinate system is located at C7T1JointCenter,
-    with X anterior, Y up and Z right. The segment definition is based on
-    Dumas et al. (2007) [1]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - Suprasternale
-        - L5S1JointCenter
-        - C7T1JointCenter
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the thorax markers as
-        1x4 arrays.
-
-    .. [1] Dumas, R., Chèze, L., Verriest, J.-P., 2007.
-       Adjustments to McConville et al. and Young et al. body segment inertial
-       parameters. Journal of Biomechanics 40, 543–553.
-       https://doi.org/10.1016/j.jbiomech.2006.02.013
-
-    """
+    """Create the Thorax definition based on static markers."""
     # Get the required markers
     try:
         c7t1 = markers.data['C7T1JointCenter']
@@ -1113,7 +1119,7 @@ def _define_coordinate_systems(
        FEDERAL AVIATION ADMINISTRATION OKLAHOMA CITY OK CIVIL AEROMEDICAL INST.
 
     """
-    definitions = {}
+    definitions = {}  # type: Dict[str, Dict[str, np.ndarray]]
 
     # Create center of mass definitions, from Dumas 2007, Table 2.
     length = np.sqrt(
@@ -1138,15 +1144,15 @@ def _define_coordinate_systems(
     bodies = kinematics.track_rigid_body(
         markers, definitions['Pelvis'], 'Pelvis')
 
-    Player(markers, bodies, segments=SEGMENTS)
+    Player(markers, bodies, segments=LINKS)
 
     return definitions
 
 
 # %% Constants
 
-# : A link model to help kinematics visualization
-SEGMENTS = {
+#: A link model to help kinematics visualization
+LINKS = {
     'Pelvis': {
         'Links': [
             ['AnteriorSuperiorIliacSpineR', 'AnteriorSuperiorIliacSpineL'],

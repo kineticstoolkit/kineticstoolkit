@@ -30,6 +30,7 @@ from kineticstoolkit import TimeSeries
 from kineticstoolkit.decorators import unstable, directory, deprecated
 from os.path import exists
 from typing import Sequence, Dict, Any, List, Union
+from copy import deepcopy
 
 import numpy as np
 import warnings
@@ -361,6 +362,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
 
 
 @unstable
+@deprecated(since='master', until='master', details="Use create_cluster().")
 def define_rigid_body(
         kinematics: TimeSeries,
         marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
@@ -383,14 +385,39 @@ def define_rigid_body(
         body's local coordinate system.
 
     """
-    n_samples = len(kinematics.time)
+    return create_cluster(kinematics, marker_names)
+
+
+@unstable
+def create_cluster(
+        markers: TimeSeries,
+        /,
+        marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
+    """
+    Create a cluster definition based on a static acquisition.
+
+    Parameters
+    ----------
+    markers
+        Markers trajectories during a static acquisition.
+    marker_names
+        The markers that define the cluster.
+
+    Returns
+    -------
+    Dict
+        Dictionary where each entry represents the local position of a marker
+        in an arbitrary coordinate system.
+
+    """
+    n_samples = len(markers.time)
     n_markers = len(marker_names)
 
     # Construct the global points array
     global_points = np.empty((n_samples, 4, n_markers))
 
     for i_marker, marker in enumerate(marker_names):
-        global_points[:, :, i_marker] = kinematics.data[marker][:, :]
+        global_points[:, :, i_marker] = markers.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
     global_points = global_points[~geometry.isnan(global_points)]
@@ -415,6 +442,132 @@ def define_rigid_body(
 
 
 @unstable
+def fit_cluster(
+        markers: TimeSeries,
+        /,
+        cluster: Dict[str, np.ndarray]) -> TimeSeries:
+    """
+    Apply a cluster to a TimeSeries of markers.
+
+    Fits a cluster to a TimeSeries and reconstructs a solidified version of
+    all the points defined in this cluster.
+
+    Parameters
+    ----------
+    markers
+        A TimeSeries that contains point trajectories as Nx4 arrays.
+    cluster
+        A cluster definition as returned by ktk.kinematics.create_cluster().
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries with the trajectories of all points defined in the
+        cluster after fitting the input TimeSeries.
+
+    """
+    out = markers.copy(copy_data=False, copy_data_info=False)
+
+    # Track the cluster
+    frames = _track_cluster(markers, cluster)
+
+    for marker in cluster:
+        out.data[marker] = geometry.get_global_coordinates(
+            cluster[marker], frames)
+
+    return out
+
+
+def _track_clusters(
+        markers: TimeSeries,
+        /,
+        clusters: Dict[str, Dict[str, np.ndarray]]) -> TimeSeries:
+    """
+    Track a point cluster in a point TimeSeries.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries with point trajectories from the cluster definition.
+    clusters
+        A dictionary of clusters to track, where each primary key corresponds
+        to one cluster.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries with the tracked clusters.
+
+    """
+    ts = markers.copy(copy_data=False, copy_data_info=False)
+    for cluster in clusters:
+        ts.data[cluster] = _track_cluster(markers, clusters[cluster])
+    return ts
+
+
+def _track_cluster(
+        markers: TimeSeries,
+        cluster: Dict[str, np.ndarray]) -> np.ndarray:
+    """Track one cluster."""
+    # Set local and global points
+    marker_names = cluster.keys()
+    stacked_local_points = np.dstack(
+        [cluster[_] for _ in marker_names])
+
+    global_points = np.empty(
+        (len(markers.time), 4, stacked_local_points.shape[2])
+    )
+
+    for i_marker, marker_name in enumerate(marker_names):
+        if marker_name in markers.data:
+            global_points[:, :, i_marker] = markers.data[marker_name]
+        else:
+            global_points[:, :, i_marker] = np.nan
+
+    (stacked_local_points, global_points) = geometry._match_size(
+        stacked_local_points, global_points
+    )
+
+    # Track the cluster
+    frames = geometry.register_points(global_points, stacked_local_points)
+    return frames
+
+
+@unstable
+def extend_cluster(
+        markers: TimeSeries,
+        /,
+        cluster: Dict[str, np.ndarray],
+        new_point: str) -> Dict[str, np.ndarray]:
+    """
+    Add a point to an existing cluster.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries that includes the new point trajectory, along with point
+        trajectories from the cluster definition.
+    cluster
+        The source cluster to add a new point to.
+    new_point
+        The name of the point to add (data key of the markers TimeSeries).
+
+    Returns
+    -------
+    Dict[str, np.ndarray]
+        The cluster with the added point.
+
+    """
+    cluster = deepcopy(cluster)
+    frames = _track_cluster(markers, cluster)
+    local_coordinates = geometry.get_local_coordinates(
+        markers.data[new_point], frames)
+    cluster[new_point] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
+    return cluster
+
+
+@unstable
+@deprecated(since='master', until='master', details="Use track_clusters().")
 def track_rigid_body(
         kinematics: TimeSeries,
         /,
@@ -424,9 +577,7 @@ def track_rigid_body(
         include_rigid_body: bool = True,
         include_markers: bool = False) -> TimeSeries:
     """
-    Deprecated before release. Track a rigid body from markers trajectories.
-
-    Please use track_rigid_bodies() instead.
+    Track a rigid body from markers trajectories.
 
     This function tracks the specified rigid body in a TimeSeries that
     contains the required markers, and adds the tracked rigid body to a copy
@@ -468,6 +619,7 @@ def track_rigid_body(
 
 
 @unstable
+@deprecated(since='master', until='master', details="No replacement yet.")
 def track_rigid_bodies(
         markers: TimeSeries,
         /,
@@ -501,42 +653,7 @@ def track_rigid_bodies(
         A TimeSeries that contains the trajectory of the tracked rigid bodies.
 
     """
-    # Create output TimeSeries
-    ts = markers.copy(copy_data=False, copy_data_info=False)
-
-    for rigid_body in definitions:
-
-        # Set local and global points
-        marker_names = definitions[rigid_body].keys()
-        stacked_local_points = np.dstack(
-            [definitions[rigid_body][_] for _ in marker_names])
-
-        global_points = np.empty(
-            (len(ts.time), 4, stacked_local_points.shape[2])
-        )
-
-        for i_marker, marker_name in enumerate(marker_names):
-            if marker_name in markers.data:
-                global_points[:, :, i_marker] = markers.data[marker_name]
-            else:
-                global_points[:, :, i_marker] = np.nan
-
-        (stacked_local_points, global_points) = geometry._match_size(
-            stacked_local_points, global_points
-        )
-
-        # Track the rigid body
-        frames = geometry.register_points(global_points, stacked_local_points)
-
-        if include_rigid_bodies:
-            ts.data[rigid_body] = frames
-
-        if include_markers:
-            for marker in definitions[rigid_body]:
-                ts.data[marker] = geometry.get_global_coordinates(
-                    definitions[rigid_body][marker], frames)
-
-    return ts
+    return _track_clusters(markers, definitions)
 
 
 @unstable
