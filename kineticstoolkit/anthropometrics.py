@@ -417,7 +417,8 @@ def _infer_extremity_joint_centers(
 @unstable
 def track_local_coordinate_systems(
         markers: TimeSeries,
-        segment: str,
+        /,
+        segments: Union[str, Sequence[str]],
         *,
         method: int = 1) -> TimeSeries:
     """
@@ -428,7 +429,7 @@ def track_local_coordinate_systems(
     markers
         TimeSeries that contains marker trajectories as Nx4 during an action.
 
-    segment
+    segments
         Name of the segment. Can be 'Pelvis', 'Thorax', 'HeadNeck',
         'ArmR', 'ArmL', 'ForearmR', 'ForearmL', 'HandR', 'HandL', 'ThighR',
         'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'.
@@ -448,6 +449,22 @@ def track_local_coordinate_systems(
 
     """
     output = markers.copy(copy_data=False, copy_data_info=False)
+
+    # If we have a list of segments
+    if not isinstance(segments, str):
+        for segment in segments:
+            output.merge(
+                track_local_coordinate_systems(
+                    markers,
+                    segment,
+                    method=method
+                ),
+                in_place=True,
+            )
+        return output
+
+    # If we have a single segment
+    segment = segments
 
     if segment == 'Pelvis':
         try:
@@ -651,6 +668,131 @@ def track_local_coordinate_systems(
         )
 
     return output
+
+
+def estimate_center_of_mass(
+        markers: TimeSeries,
+        /,
+        segments: Union[str, Sequence[str]],
+        *,
+        sex: str = 'M') -> TimeSeries:
+    """
+    Estimate the segments' center of mass based on anthropometric data.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries that contains marker trajectories as Nx4 during an action.
+
+    segments
+        Name of the segment. Can be 'Pelvis', 'Thorax', 'HeadNeck',
+        'ArmR', 'ArmL', 'ForearmR', 'ForearmL', 'HandR', 'HandL', 'ThighR',
+        'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'.
+
+    sex
+        Optional. Either 'M' or 'F'. The default is 'M'.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries with the trajectory of the segments' centers of mass,
+        named {segment}CenterOfMass.
+
+    """
+    markers = markers.copy()  # We will add markers to it so copy it first.
+    output = markers.copy(copy_data=False, copy_data_info=False)
+
+    # If we have a list of segments
+    if not isinstance(segments, str):
+        for segment in segments:
+            output.merge(
+                estimate_center_of_mass(markers, segment),
+                in_place=True,
+            )
+        return output
+
+    # From here we have a single segment
+    segment = segments
+
+    # Decompose segment name and side
+    if segment not in ['Pelvis', 'Thorax', 'HeadNeck']:
+        side = segment[-1]
+        segment = segment[0:-1]
+    else:
+        side = ''
+
+    # Calculate the local coordinate system for this segment
+    lcs = track_local_coordinate_systems(markers, segments=(segment + side))
+
+    df = INERTIAL_VALUES['Dumas2007']
+    # Search the inertial value tables for the given segment and sex
+    _ = df.loc[(df['Segment'] == segment) & (df['Gender'] == sex)]
+    constants = _.to_dict('records')[0]
+
+    # Add possible missing markers
+    if 'ProjectedHipJointCenter' in [
+        constants['LengthPoint1'],
+        constants['LengthPoint2'],
+    ]:
+        # Calculate ProjectedHipJointCenter
+        local_rhip = geometry.get_local_coordinates(
+            markers.data['HipJointCenterR'],
+            lcs.data['Pelvis'])
+        local_rhip[:, 2] = 0  # Projection in sagittal plane
+        local_lhip = geometry.get_local_coordinates(
+            markers.data['HipJointCenterL'],
+            lcs.data['Pelvis'])
+        local_lhip[:, 2] = 0  # Projection in sagittal plane
+        local_hips = 0.5 * (local_rhip + local_lhip)
+
+        markers.data['ProjectedHipJointCenter'] = \
+            geometry.get_global_coordinates(local_hips, lcs.data['Pelvis'])
+
+    if 'CarpalMetaHeadM25' in [
+        constants['LengthPoint1'],
+        constants['LengthPoint2'],
+    ]:
+        # Calculate midpoint of carpal meat head 2 and 5
+        markers.data[f'CarpalMetaHeadM25{side}'] = 0.5 * (
+            markers.data[f'CarpalMetaHead2{side}']
+            + markers.data[f'CarpalMetaHead5{side}']
+        )
+
+    if 'TarsalMetaHeadM15' in [
+        constants['LengthPoint1'],
+        constants['LengthPoint2'],
+    ]:
+        # Calculate midpoint of carpal meat head 2 and 5
+        markers.data[f'TarsalMetaHeadM15{side}'] = 0.5 * (
+            markers.data[f'TarsalMetaHead1{side}']
+            + markers.data[f'TarsalMetaHead5{side}']
+        )
+
+    # Calculate the segment length
+    segment_length = np.sqrt(
+        np.sum(
+            np.nanmean(
+                markers.data[constants['LengthPoint2'] + side]
+                - markers.data[constants['LengthPoint1'] + side],
+                axis=0,
+            ) ** 2
+        )
+    )
+
+    # Add COM output
+    output.data[f'{segment}{side}CenterOfMass'] = \
+        geometry.get_global_coordinates(
+            np.array([[
+                segment_length * constants['RelComX'],
+                segment_length * constants['RelComY'],
+                segment_length * constants['RelComZ'],
+                1.0,
+            ]]),
+            lcs.data[segment + side],
+    )
+
+    return output
+
 
 # %% Constants
 

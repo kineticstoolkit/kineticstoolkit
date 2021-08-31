@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.anthropometrics &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.anthropometrics.estimate_center_of_mass &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.anthropometrics.estimate_center_of_mass" href="kineticstoolkit.anthropometrics.estimate_center_of_mass.html" />
-    <link rel="prev" title="kineticstoolkit.pushrimkinetics.remove_offsets" href="kineticstoolkit.pushrimkinetics.remove_offsets.html" />
+    <link rel="next" title="kineticstoolkit.anthropometrics.infer_joint_centers" href="kineticstoolkit.anthropometrics.infer_joint_centers.html" />
+    <link rel="prev" title="kineticstoolkit.anthropometrics" href="kineticstoolkit.anthropometrics.html" />
 
 
  
@@ -124,8 +124,8 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">kineticstoolkit.anthropometrics</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.estimate_center_of_mass.html">kineticstoolkit.anthropometrics.estimate_center_of_mass</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.anthropometrics.html">kineticstoolkit.anthropometrics</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.anthropometrics.estimate_center_of_mass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.infer_joint_centers.html">kineticstoolkit.anthropometrics.infer_joint_centers</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.track_local_coordinate_systems.html">kineticstoolkit.anthropometrics.track_local_coordinate_systems</a></li>
 </ul>
@@ -192,7 +192,9 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-      <li>kineticstoolkit.anthropometrics</li>
+          <li><a href="kineticstoolkit.anthropometrics.html">kineticstoolkit.anthropometrics</a> &raquo;</li>
+        
+      <li>kineticstoolkit.anthropometrics.estimate_center_of_mass</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -206,10 +208,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.anthropometrics.estimate_center_of_mass.html" class="btn btn-neutral float-right" title="kineticstoolkit.anthropometrics.estimate_center_of_mass" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.anthropometrics.infer_joint_centers.html" class="btn btn-neutral float-right" title="kineticstoolkit.anthropometrics.infer_joint_centers" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.pushrimkinetics.remove_offsets.html" class="btn btn-neutral float-left" title="kineticstoolkit.pushrimkinetics.remove_offsets" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.anthropometrics.html" class="btn btn-neutral float-left" title="kineticstoolkit.anthropometrics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -242,68 +244,32 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="module-kineticstoolkit.anthropometrics">
-<span id="kineticstoolkit-anthropometrics"></span><h1>kineticstoolkit.anthropometrics<a class="headerlink" href="#module-kineticstoolkit.anthropometrics" title="Permalink to this headline">¶</a></h1>
-<p>Provide tools associated to anthropometric measurements and estimates.</p>
-<div class="admonition warning">
-<p class="admonition-title">Warning</p>
-<p>This module is in very early development and everything can still change.
-Please don’t use this module in production code.</p>
-<p>Skin markers (either real or reconstructed):</p>
-<ul class="simple">
-<li><p>HeadVertex</p></li>
-<li><p>Sellion</p></li>
-<li><p>C7</p></li>
-<li><p>Suprasternale</p></li>
-<li><p>PubicSymphysis</p></li>
-<li><p>AnteriorSuperiorIliacSpineR/L</p></li>
-<li><p>PosteriorSuperiorIliacSpineR/L</p></li>
-<li><p>AcromionR/L</p></li>
-<li><p>LateralHumeralEpicondyleR/L</p></li>
-<li><p>MedialHumeralEpicondyleR/L</p></li>
-<li><p>UlnarStyloidR/L</p></li>
-<li><p>RadialStyloidR/L</p></li>
-<li><p>CarpalMetaHead2R/L</p></li>
-<li><p>CarpalMetaHead5R/L</p></li>
-<li><p>HipJointCenterR/L</p></li>
-<li><p>LateralFemoralEpicondyleR/L</p></li>
-<li><p>MedialFemoralEpicondyleR/L</p></li>
-<li><p>LateralMalleolusR/L</p></li>
-<li><p>MedialMalleolusR/L</p></li>
-<li><p>CalcaneusR/L</p></li>
-<li><p>NavicularR/L</p></li>
-<li><p>TarsalMetaHead1R/L</p></li>
-<li><p>TarsalMetaHead5R/L</p></li>
+<div class="section" id="kineticstoolkit-anthropometrics-estimate-center-of-mass">
+<h1>kineticstoolkit.anthropometrics.estimate_center_of_mass<a class="headerlink" href="#kineticstoolkit-anthropometrics-estimate-center-of-mass" title="Permalink to this headline">¶</a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="kineticstoolkit.anthropometrics.estimate_center_of_mass">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.anthropometrics.</span></span><span class="sig-name descname"><span class="pre">estimate_center_of_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'M'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.anthropometrics.estimate_center_of_mass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the segments’ center of mass based on anthropometric data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains marker trajectories as Nx4 during an action.</p></li>
+<li><p><strong>segments</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Name of the segment. Can be ‘Pelvis’, ‘Thorax’, ‘HeadNeck’,
+‘ArmR’, ‘ArmL’, ‘ForearmR’, ‘ForearmL’, ‘HandR’, ‘HandL’, ‘ThighR’,
+‘ThighL’, ‘LegR’, ‘LegL’, ‘FootR’, or ‘FootL’.</p></li>
+<li><p><strong>sex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Either ‘M’ or ‘F’. The default is ‘M’.</p></li>
 </ul>
-<p>Inferred joint centers:</p>
-<ul class="simple">
-<li><p>L5S1JointCenter</p></li>
-<li><p>C7T1JointCenter</p></li>
-<li><p>GlenohumeralJointCenterR/L</p></li>
-<li><p>ElbowJointCenterR/L</p></li>
-<li><p>WristJointCenterR/L</p></li>
-<li><p>KneeJointCenterR/L</p></li>
-<li><p>AnkleJointCenterR/L</p></li>
-</ul>
-</div>
-<p class="rubric">Functions</p>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.anthropometrics.estimate_center_of_mass.html#kineticstoolkit.anthropometrics.estimate_center_of_mass" title="kineticstoolkit.anthropometrics.estimate_center_of_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimate_center_of_mass</span></code></a></p></td>
-<td><p>Estimate the segments’ center of mass based on anthropometric data.</p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="kineticstoolkit.anthropometrics.infer_joint_centers.html#kineticstoolkit.anthropometrics.infer_joint_centers" title="kineticstoolkit.anthropometrics.infer_joint_centers"><code class="xref py py-obj docutils literal notranslate"><span class="pre">infer_joint_centers</span></code></a></p></td>
-<td><p>Infer joint centers based on anthropometric data.</p></td>
-</tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="kineticstoolkit.anthropometrics.track_local_coordinate_systems.html#kineticstoolkit.anthropometrics.track_local_coordinate_systems" title="kineticstoolkit.anthropometrics.track_local_coordinate_systems"><code class="xref py py-obj docutils literal notranslate"><span class="pre">track_local_coordinate_systems</span></code></a></p></td>
-<td><p>Create local coordinate system definitions based on static markers.</p></td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A TimeSeries with the trajectory of the segments’ centers of mass,
+named {segment}CenterOfMass.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 </div>
 
 
@@ -312,8 +278,8 @@ Please don’t use this module in production code.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.anthropometrics.estimate_center_of_mass.html" class="btn btn-neutral float-right" title="kineticstoolkit.anthropometrics.estimate_center_of_mass" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.pushrimkinetics.remove_offsets.html" class="btn btn-neutral float-left" title="kineticstoolkit.pushrimkinetics.remove_offsets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.anthropometrics.infer_joint_centers.html" class="btn btn-neutral float-right" title="kineticstoolkit.anthropometrics.infer_joint_centers" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.anthropometrics.html" class="btn btn-neutral float-left" title="kineticstoolkit.anthropometrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

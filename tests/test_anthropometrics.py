@@ -29,53 +29,10 @@ import kineticstoolkit as ktk
 def test_define_coordinate_systems():
     """Test the dumas2007 function."""
     # Load a sample file
-    kinematics = ktk.load(
+    markers = ktk.load(
         ktk.config.root_folder
-        + '/data/anthropometrics/static_all_markers.ktk.zip'
+        + '/data/anthropometrics/static.ktk.zip'
     )
-    markers = kinematics['kinematics']['Markers'].copy()
-
-    rename_dict = {
-        'AnteriorIliacCrestR': 'AnteriorSuperiorIliacSpineR',
-        'AnteriorIliacCrestL': 'AnteriorSuperiorIliacSpineL',
-        'Symphysis': 'PubicSymphysis',
-        'Body_C7': 'C7',
-        'Body_JugularNotch': 'Suprasternale',
-        'Body_AcromionR': 'AcromionR',
-        'Body_AcromionL': 'AcromionL',
-        'Body_LateralEpicondyleR': 'LateralHumeralEpicondyleR',
-        'Body_LateralEpicondyleL': 'LateralHumeralEpicondyleL',
-        'MedialEpicondyleR': 'MedialHumeralEpicondyleR',
-        'MedialEpicondyleL': 'MedialHumeralEpicondyleL',
-        'Body_RadialStyloidR': 'RadialStyloidR',
-        'Body_RadialStyloidL': 'RadialStyloidL',
-        'Body_UlnarStyloidR': 'UlnarStyloidR',
-        'Body_UlnarStyloidL': 'UlnarStyloidL',
-        'Body_FemoralLateralEpicondyleR': 'LateralFemoralEpicondyleR',
-        'Body_FemoralLateralEpicondyleL': 'LateralFemoralEpicondyleL',
-        'Body_FemoralMedialEpicondyleR': 'MedialFemoralEpicondyleR',
-        'Body_FemoralMedialEpicondyleL': 'MedialFemoralEpicondyleL',
-        'Body_LateralMalleolusR': 'LateralMalleolusR',
-        'Body_LateralMalleolusL': 'LateralMalleolusL',
-        'Body_MedialMalleolusR': 'MedialMalleolusR',
-        'Body_MedialMalleolusL': 'MedialMalleolusL',
-        'Body_Meta2R': 'CarpalMetaHead2R',
-        'Body_Meta5R': 'CarpalMetaHead5R',
-        'Body_Meta2L': 'CarpalMetaHead2L',
-        'Body_Meta5L': 'CarpalMetaHead5L',
-        'Body_HeadVertex': 'HeadVertex',
-        'Body_InterEyes': 'Sellion',
-    }
-    for old_name in rename_dict:
-        markers.rename_data(old_name, rename_dict[old_name], in_place=True)
-
-    # Create fake posterior iliac spine markers
-    markers.data['PosteriorSuperiorIliacSpineR'] = markers.data[
-        'AnteriorSuperiorIliacSpineR'
-    ] + [[0.1, -0.03, 0, 0]]
-    markers.data['PosteriorSuperiorIliacSpineL'] = markers.data[
-        'AnteriorSuperiorIliacSpineL'
-    ] + [[0.1, -0.03, 0, 0]]
 
     # Infer missing makers
     for segment in ['Pelvis', 'Thorax', 'Extremities']:
@@ -90,10 +47,6 @@ def test_define_coordinate_systems():
     clusters = {}
     clusters['Pelvis'] = ktk.kinematics.create_cluster(
         markers, [
-            'MWC_Marker1',
-            'MWC_Marker2',
-            'MWC_Marker3',
-            'MWC_Marker4',
             'AnteriorSuperiorIliacSpineR',
             'AnteriorSuperiorIliacSpineL',
             'PosteriorSuperiorIliacSpineR',
@@ -108,7 +61,6 @@ def test_define_coordinate_systems():
     clusters['Trunk'] = ktk.kinematics.create_cluster(
         markers, [
             'C7',
-            'Body_T8',
             'Xiphoid',
             'Suprasternale',
             'C7T1JointCenter',
@@ -119,7 +71,7 @@ def test_define_coordinate_systems():
         markers, [
             'Sellion',
             'HeadVertex',
-            'Body_Chin',
+            'Chin',
         ]
     )
 
@@ -178,10 +130,7 @@ def test_define_coordinate_systems():
         )
 
     # Test if everything can be built again using these clusters.
-    test_markers = kinematics['kinematics']['Markers'].copy()
-    for old_name in rename_dict:
-        test_markers.rename_data(
-            old_name, rename_dict[old_name], in_place=True)
+    test_markers = markers.copy()
 
     for segment in clusters:
         test_markers.merge(
@@ -193,29 +142,48 @@ def test_define_coordinate_systems():
         )
 
     # Create segment trajectories
-    bodies = markers.copy(copy_data=False, copy_data_info=False)
-    for segment in [
-        'Pelvis',
-        'Thorax',
-        'HeadNeck',
-        'ArmR',
-        'ArmL',
-        'ForearmR',
-        'ForearmL',
-        'HandR',
-        'HandL',
-        'ThighR',
-        'ThighL',
-        'LegR',
-        'LegL'
-    ]:
-        bodies.merge(
-            ktk.anthropometrics.track_local_coordinate_systems(
-                markers, segment),
-            in_place=True,
-        )
+    bodies = ktk.anthropometrics.track_local_coordinate_systems(
+        markers,
+        [
+            'Pelvis',
+            'Thorax',
+            'HeadNeck',
+            'ArmR',
+            'ArmL',
+            'ForearmR',
+            'ForearmL',
+            'HandR',
+            'HandL',
+            'ThighR',
+            'ThighL',
+            'LegR',
+            'LegL'
+        ]
+    )
 
-    ktk.Player(test_markers, bodies, segments=ktk.anthropometrics.LINKS)
+    COM = ktk.anthropometrics.estimate_center_of_mass(
+        markers,
+        [
+            'Pelvis',
+            'Thorax',
+            'HeadNeck',
+            'ArmR',
+            'ArmL',
+            'ForearmR',
+            'ForearmL',
+            'HandR',
+            'HandL',
+            'ThighR',
+            'ThighL',
+            'LegR',
+            'LegL'
+        ]
+    )
+
+    for marker in COM.data:
+        COM.add_data_info(marker, 'Color', 'c', in_place=True)
+
+    ktk.Player(test_markers, bodies, COM, segments=ktk.anthropometrics.LINKS)
 
 
 if __name__ == "__main__":

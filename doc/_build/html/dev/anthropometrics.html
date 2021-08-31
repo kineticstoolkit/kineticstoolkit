@@ -1,0 +1,912 @@
+
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Anthropometrics &mdash; Kinetics Toolkit (dev) master documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/css/custom.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "document", "processHtmlClass": "math|output_area"}}</script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inverse Dynamics" href="inversedynamics.html" />
+    <link rel="prev" title="Reconstructing virtual markers" href="reconstruction.html" />
+
+
+ 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: black" >
+          
+
+          
+            <a href="../index.html">
+          
+
+          
+            
+            <img src="../_static/logo_development.png" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption" role="heading"><span class="caption-text">GETTING STARTED</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../what_is_kinetics_toolkit.html">What is Kinetics Toolkit</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../install.html">Installing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../conventions.html">Conventions</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeseries.html">TimeSeries</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">TUTORIALS</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../loadsave.html">Saving and loading</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../filters/filters.html">Filtering</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cycles.html">Detecting and normalizing cycles</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../geometry/geometry.html">Rigid body geometry</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../kinematics/kinematics.html">Kinematics analysis</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../pushrimkinetics.html">Wheelchair kinetics</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">IN DEPTH</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../lab_mode.html">Lab mode</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../release_notes.html">Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://felixchenier.uqam.ca/ktk_develop">Development website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/felixchenier/kineticstoolkit">GitHub</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">FOR DEVELOPERS</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installing from git-hub</a></li>
+<li class="toctree-l1"><a class="reference internal" href="conventions.html">Developer manual</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials for unreleased features</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="reconstruction.html">Reconstructing virtual markers</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Anthropometrics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Infer-joint-centers">Infer joint centers</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Estimate-centers-of-mass">Estimate centers of mass</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Track-local-coordinate-systems">Track local coordinate systems</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="inversedynamics.html">Inverse Dynamics</a></li>
+</ul>
+</li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Kinetics Toolkit (dev)</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+          <li><a href="tutorials.html">Tutorials for unreleased features</a> &raquo;</li>
+        
+      <li>Anthropometrics</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
+      
+        <a href="inversedynamics.html" class="btn btn-neutral float-right" title="Inverse Dynamics" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+      
+      
+        <a href="reconstruction.html" class="btn btn-neutral float-left" title="Reconstructing virtual markers" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+      
+  </div>
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div class="section" id="Anthropometrics">
+<h1>Anthropometrics<a class="headerlink" href="#Anthropometrics" title="Permalink to this headline">¶</a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">anthropometrics</span></code> module aims to assist the reconstruction of human-specific points of anatomy, to establish trajectories of segment orientations via standardised local coordinate systems, and to estimate the segment’s centers of mass and inertial properties.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is an experimental module, its API and behaviour may change in the future.</p>
+</div>
+<p>In this tutorial, we will work on a static acquisition where we probed and followed a set of bony landmarks. We will infer joint centers based on these landmarks, then we will estimate the segments’ centers of mass, and finally we will track local coordinate systems for every segment.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">kineticstoolkit.lab</span> <span class="k">as</span> <span class="nn">ktk</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+</div>
+<p>We will start by loading a sample dataset, inspect its contents and show it in a player.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">load</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">root_folder</span>
+    <span class="o">+</span> <span class="s1">&#39;/data/anthropometrics/static.ktk.zip&#39;</span>
+<span class="p">)</span>
+
+<span class="c1"># Print the available markers</span>
+<span class="n">markers</span><span class="o">.</span><span class="n">data</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+                    &#39;LegR_Marker1&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegR_Marker3&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegR_Marker4&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegL_Marker1&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegL_Marker2&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegL_Marker3&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegL_Marker4&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmR_Marker1&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmR_Marker2&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmR_Marker3&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmR_Marker4&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmL_Marker1&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmL_Marker2&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmL_Marker3&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;ArmL_Marker4&#39;: &lt;array of shape (614, 4)&gt;
+                    &#39;LegR_Marker2&#39;: &lt;array of shape (614, 4)&gt;
+                   &#39;Trunk_Marker1&#39;: &lt;array of shape (614, 4)&gt;
+                   &#39;Trunk_Marker2&#39;: &lt;array of shape (614, 4)&gt;
+                         &#39;Xiphoid&#39;: &lt;array of shape (614, 4)&gt;
+     &#39;AnteriorSuperiorIliacSpineR&#39;: &lt;array of shape (614, 4)&gt;
+     &#39;AnteriorSuperiorIliacSpineL&#39;: &lt;array of shape (614, 4)&gt;
+                  &#39;PubicSymphysis&#39;: &lt;array of shape (614, 4)&gt;
+                              &#39;C7&#39;: &lt;array of shape (614, 4)&gt;
+                   &#39;Suprasternale&#39;: &lt;array of shape (614, 4)&gt;
+                       &#39;AcromionR&#39;: &lt;array of shape (614, 4)&gt;
+                       &#39;AcromionL&#39;: &lt;array of shape (614, 4)&gt;
+       &#39;LateralHumeralEpicondyleR&#39;: &lt;array of shape (614, 4)&gt;
+       &#39;LateralHumeralEpicondyleL&#39;: &lt;array of shape (614, 4)&gt;
+        &#39;MedialHumeralEpicondyleR&#39;: &lt;array of shape (614, 4)&gt;
+        &#39;MedialHumeralEpicondyleL&#39;: &lt;array of shape (614, 4)&gt;
+                  &#39;RadialStyloidR&#39;: &lt;array of shape (614, 4)&gt;
+                  &#39;RadialStyloidL&#39;: &lt;array of shape (614, 4)&gt;
+                   &#39;UlnarStyloidR&#39;: &lt;array of shape (614, 4)&gt;
+                   &#39;UlnarStyloidL&#39;: &lt;array of shape (614, 4)&gt;
+       &#39;LateralFemoralEpicondyleR&#39;: &lt;array of shape (614, 4)&gt;
+       &#39;LateralFemoralEpicondyleL&#39;: &lt;array of shape (614, 4)&gt;
+        &#39;MedialFemoralEpicondyleR&#39;: &lt;array of shape (614, 4)&gt;
+        &#39;MedialFemoralEpicondyleL&#39;: &lt;array of shape (614, 4)&gt;
+               &#39;LateralMalleolusR&#39;: &lt;array of shape (614, 4)&gt;
+               &#39;LateralMalleolusL&#39;: &lt;array of shape (614, 4)&gt;
+                &#39;MedialMalleolusR&#39;: &lt;array of shape (614, 4)&gt;
+                &#39;MedialMalleolusL&#39;: &lt;array of shape (614, 4)&gt;
+                &#39;CarpalMetaHead2R&#39;: &lt;array of shape (614, 4)&gt;
+                &#39;CarpalMetaHead5R&#39;: &lt;array of shape (614, 4)&gt;
+                &#39;CarpalMetaHead2L&#39;: &lt;array of shape (614, 4)&gt;
+                &#39;CarpalMetaHead5L&#39;: &lt;array of shape (614, 4)&gt;
+                      &#39;HeadVertex&#39;: &lt;array of shape (614, 4)&gt;
+                         &#39;Sellion&#39;: &lt;array of shape (614, 4)&gt;
+    &#39;PosteriorSuperiorIliacSpineR&#39;: &lt;array of shape (614, 4)&gt;
+    &#39;PosteriorSuperiorIliacSpineL&#39;: &lt;array of shape (614, 4)&gt;
+                            &#39;Chin&#39;: &lt;array of shape (614, 4)&gt;
+}
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="c1"># Show in a Player</span>
+<span class="n">viewpoint</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s1">&#39;zoom&#39;</span><span class="p">:</span> <span class="mf">3.5</span><span class="p">,</span>
+    <span class="s1">&#39;azimuth&#39;</span><span class="p">:</span> <span class="o">-</span><span class="mf">2.356</span><span class="p">,</span>
+    <span class="s1">&#39;elevation&#39;</span><span class="p">:</span> <span class="mf">0.384</span><span class="p">,</span>
+    <span class="s1">&#39;translation&#39;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.083</span><span class="p">,</span> <span class="mf">0.184</span><span class="p">),</span>
+    <span class="s1">&#39;target&#39;</span><span class="p">:</span> <span class="p">(</span><span class="o">-</span><span class="mf">4.435</span><span class="p">,</span> <span class="mf">0.726</span><span class="p">,</span> <span class="mf">0.540</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">),</span>
+<span class="p">}</span>
+
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span>
+    <span class="n">segments</span><span class="o">=</span><span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">LINKS</span><span class="p">,</span>  <span class="c1"># Lines to better see the human shape</span>
+    <span class="o">**</span><span class="n">viewpoint</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/dev_anthropometrics_4_0.png" src="../_images/dev_anthropometrics_4_0.png" />
+</div>
+</div>
+<div class="section" id="Infer-joint-centers">
+<h2>Infer joint centers<a class="headerlink" href="#Infer-joint-centers" title="Permalink to this headline">¶</a></h2>
+<p>Although a lot of markers are already available in this acquisition, the joint centers are undefined. We will first add the hips and L5S1, which are defined by the pelvis segment.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">infer_joint_centers</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="s1">&#39;Pelvis&#39;</span><span class="p">,</span> <span class="n">sex</span><span class="o">=</span><span class="s1">&#39;M&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span>
+    <span class="n">segments</span><span class="o">=</span><span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">LINKS</span><span class="p">,</span>  <span class="c1"># Lines to better see the human shape</span>
+    <span class="o">**</span><span class="n">viewpoint</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/dev_anthropometrics_6_0.png" src="../_images/dev_anthropometrics_6_0.png" />
+</div>
+</div>
+<p>Then, we can add the glenohumeral joints and C7T1, which are defined by the thorax segment.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">infer_joint_centers</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="s1">&#39;Thorax&#39;</span><span class="p">,</span> <span class="n">sex</span><span class="o">=</span><span class="s1">&#39;M&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span>
+    <span class="n">segments</span><span class="o">=</span><span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">LINKS</span><span class="p">,</span>  <span class="c1"># Lines to better see the human shape</span>
+    <span class="o">**</span><span class="n">viewpoint</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/dev_anthropometrics_8_0.png" src="../_images/dev_anthropometrics_8_0.png" />
+</div>
+</div>
+<p>Finally, we add the joint centers for the extremities, which are calculated as the midpoint between their respective lateral and medial bony landmarks.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+    <span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">infer_joint_centers</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="n">segment</span><span class="o">=</span><span class="s1">&#39;Extremities&#39;</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span>
+    <span class="n">segments</span><span class="o">=</span><span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">LINKS</span><span class="p">,</span>  <span class="c1"># Lines to better see the human shape</span>
+    <span class="o">**</span><span class="n">viewpoint</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/dev_anthropometrics_10_0.png" src="../_images/dev_anthropometrics_10_0.png" />
+</div>
+</div>
+<p>Now that every joint center is reconstructed based on this static acquisition, we may to include these joint centers into marker clusters so that they can be reconstructed later in an analyzed action.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">clusters</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="n">clusters</span><span class="p">[</span><span class="s1">&#39;Pelvis&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">&#39;AnteriorSuperiorIliacSpineR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;AnteriorSuperiorIliacSpineL&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PosteriorSuperiorIliacSpineR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PosteriorSuperiorIliacSpineL&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;PubicSymphysis&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;L5S1JointCenter&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HipJointCenterR&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HipJointCenterL&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">clusters</span><span class="p">[</span><span class="s1">&#39;Thorax&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">&#39;C7&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Xiphoid&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Suprasternale&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;C7T1JointCenter&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="n">clusters</span><span class="p">[</span><span class="s1">&#39;HeadNeck&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+        <span class="s1">&#39;Sellion&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;HeadVertex&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;Chin&#39;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+
+<span class="k">for</span> <span class="n">side</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="s1">&#39;L&#39;</span><span class="p">]:</span>
+
+    <span class="n">clusters</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Arm</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;Arm</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker1&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;Arm</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker2&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;Arm</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker3&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;Arm</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker4&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;GlenohumeralJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;LateralHumeralEpicondyle</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;MedialHumeralEpicondyle</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;ElbowJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">clusters</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Forearm</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;ElbowJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;UlnarStyloid</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;RadialStyloid</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;WristJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">clusters</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Hand</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;WristJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;CarpalMetaHead2</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;CarpalMetaHead5</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">clusters</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Thigh</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;HipJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>  <span class="c1"># Normally I would remove this one.</span>
+            <span class="sa">f</span><span class="s1">&#39;LateralFemoralEpicondyle</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;MedialFemoralEpicondyle</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;KneeJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+
+    <span class="n">clusters</span><span class="p">[</span><span class="sa">f</span><span class="s1">&#39;Leg</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">kinematics</span><span class="o">.</span><span class="n">create_cluster</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="p">[</span>
+            <span class="sa">f</span><span class="s1">&#39;Leg</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker1&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;Leg</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker2&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;Leg</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker3&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;Leg</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">_Marker4&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;LateralMalleolus</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;MedialMalleolus</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;KneeJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;AnkleJointCenter</span><span class="si">{</span><span class="n">side</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+        <span class="p">]</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="Estimate-centers-of-mass">
+<h3>Estimate centers of mass<a class="headerlink" href="#Estimate-centers-of-mass" title="Permalink to this headline">¶</a></h3>
+<p>Now that the joint centers are defined, it is possible to estimate the center of mass for every segment.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">segments</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s1">&#39;Pelvis&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Thorax&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HeadNeck&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ArmR&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ArmL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ForearmR&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ForearmL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HandR&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HandL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ThighR&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ThighL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LegR&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;LegL&#39;</span>
+<span class="p">]</span>
+
+<span class="n">com</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">estimate_center_of_mass</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span> <span class="n">segments</span><span class="p">)</span>
+
+<span class="c1"># Paint the centers of mass in cyan for better visualization</span>
+<span class="k">for</span> <span class="n">marker</span> <span class="ow">in</span> <span class="n">com</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+    <span class="n">com</span> <span class="o">=</span> <span class="n">com</span><span class="o">.</span><span class="n">add_data_info</span><span class="p">(</span><span class="n">marker</span><span class="p">,</span> <span class="s1">&#39;Color&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">)</span>
+
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span>
+    <span class="n">com</span><span class="p">,</span>
+    <span class="n">segments</span><span class="o">=</span><span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">LINKS</span><span class="p">,</span>  <span class="c1"># Lines to better see the human shape</span>
+    <span class="o">**</span><span class="n">viewpoint</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/dev_anthropometrics_14_0.png" src="../_images/dev_anthropometrics_14_0.png" />
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="Track-local-coordinate-systems">
+<h2>Track local coordinate systems<a class="headerlink" href="#Track-local-coordinate-systems" title="Permalink to this headline">¶</a></h2>
+<p>To perform a kinematic analysis of a given task, one could use the reconstructed markers to set standard segment’s local coordinate system and track those segments.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bodies</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">track_local_coordinate_systems</span><span class="p">(</span>
+        <span class="n">markers</span><span class="p">,</span> <span class="n">segments</span><span class="p">)</span>
+
+<span class="n">player</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">Player</span><span class="p">(</span>
+    <span class="n">markers</span><span class="p">,</span>
+    <span class="n">bodies</span><span class="p">,</span>
+    <span class="n">segments</span><span class="o">=</span><span class="n">ktk</span><span class="o">.</span><span class="n">anthropometrics</span><span class="o">.</span><span class="n">LINKS</span><span class="p">,</span>  <span class="c1"># Lines to better see the human shape</span>
+    <span class="o">**</span><span class="n">viewpoint</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/dev_anthropometrics_16_0.png" src="../_images/dev_anthropometrics_16_0.png" />
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="inversedynamics.html" class="btn btn-neutral float-right" title="Inverse Dynamics" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="reconstruction.html" class="btn btn-neutral float-left" title="Reconstructing virtual markers" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020-2021, Félix Chénier.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

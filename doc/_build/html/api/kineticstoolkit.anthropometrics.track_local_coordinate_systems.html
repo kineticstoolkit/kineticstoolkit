@@ -125,6 +125,7 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.anthropometrics.html">kineticstoolkit.anthropometrics</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.estimate_center_of_mass.html">kineticstoolkit.anthropometrics.estimate_center_of_mass</a></li>
 <li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.infer_joint_centers.html">kineticstoolkit.anthropometrics.infer_joint_centers</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.anthropometrics.track_local_coordinate_systems</a></li>
 </ul>
@@ -247,7 +248,7 @@
 <h1>kineticstoolkit.anthropometrics.track_local_coordinate_systems<a class="headerlink" href="#kineticstoolkit-anthropometrics-track-local-coordinate-systems" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="kineticstoolkit.anthropometrics.track_local_coordinate_systems">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.anthropometrics.</span></span><span class="sig-name descname"><span class="pre">track_local_coordinate_systems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.anthropometrics.track_local_coordinate_systems" title="Permalink to this definition">¶</a></dt>
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.anthropometrics.</span></span><span class="sig-name descname"><span class="pre">track_local_coordinate_systems</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segments</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.anthropometrics.track_local_coordinate_systems" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create local coordinate system definitions based on static markers.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
@@ -257,7 +258,7 @@
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contains marker trajectories as Nx4 during an action.</p></li>
-<li><p><strong>segment</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Name of the segment. Can be ‘Pelvis’, ‘Thorax’, ‘HeadNeck’,
+<li><p><strong>segments</strong> (<code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">Sequence</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>]]) – Name of the segment. Can be ‘Pelvis’, ‘Thorax’, ‘HeadNeck’,
 ‘ArmR’, ‘ArmL’, ‘ForearmR’, ‘ForearmL’, ‘HandR’, ‘HandL’, ‘ThighR’,
 ‘ThighL’, ‘LegR’, ‘LegL’, ‘FootR’, or ‘FootL’.</p></li>
 <li><p><strong>method</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code>) – Optional. Select one ot both methods to reconstruct the axial
