@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.anthropometrics.define_pelvis_coordinate_system &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.anthropometrics.infer_joint_centers &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Installing from git-hub" href="../dev/install.html" />
-    <link rel="prev" title="kineticstoolkit.anthropometrics.create_frames" href="kineticstoolkit.anthropometrics.create_frames.html" />
+    <link rel="next" title="kineticstoolkit.anthropometrics.track_local_coordinate_systems" href="kineticstoolkit.anthropometrics.track_local_coordinate_systems.html" />
+    <link rel="prev" title="kineticstoolkit.anthropometrics" href="kineticstoolkit.anthropometrics.html" />
 
 
  
@@ -125,8 +125,8 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
 <li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.anthropometrics.html">kineticstoolkit.anthropometrics</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.create_frames.html">kineticstoolkit.anthropometrics.create_frames</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.anthropometrics.define_pelvis_coordinate_system</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.anthropometrics.infer_joint_centers</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.anthropometrics.track_local_coordinate_systems.html">kineticstoolkit.anthropometrics.track_local_coordinate_systems</a></li>
 </ul>
 </li>
 </ul>
@@ -193,7 +193,7 @@
         
           <li><a href="kineticstoolkit.anthropometrics.html">kineticstoolkit.anthropometrics</a> &raquo;</li>
         
-      <li>kineticstoolkit.anthropometrics.define_pelvis_coordinate_system</li>
+      <li>kineticstoolkit.anthropometrics.infer_joint_centers</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -207,10 +207,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="../dev/install.html" class="btn btn-neutral float-right" title="Installing from git-hub" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.anthropometrics.track_local_coordinate_systems.html" class="btn btn-neutral float-right" title="kineticstoolkit.anthropometrics.track_local_coordinate_systems" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.anthropometrics.create_frames.html" class="btn btn-neutral float-left" title="kineticstoolkit.anthropometrics.create_frames" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.anthropometrics.html" class="btn btn-neutral float-left" title="kineticstoolkit.anthropometrics" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -243,60 +243,62 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="kineticstoolkit-anthropometrics-define-pelvis-coordinate-system">
-<h1>kineticstoolkit.anthropometrics.define_pelvis_coordinate_system<a class="headerlink" href="#kineticstoolkit-anthropometrics-define-pelvis-coordinate-system" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="kineticstoolkit-anthropometrics-infer-joint-centers">
+<h1>kineticstoolkit.anthropometrics.infer_joint_centers<a class="headerlink" href="#kineticstoolkit-anthropometrics-infer-joint-centers" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.anthropometrics.define_pelvis_coordinate_system">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.anthropometrics.</span></span><span class="sig-name descname"><span class="pre">define_pelvis_coordinate_system</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'M'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.anthropometrics.define_pelvis_coordinate_system" title="Permalink to this definition">¶</a></dt>
-<dd><p>Create a segment definition for the Pelvis.</p>
-<p>The pelvis local coordinate system is located at LS51, with X anterior,
-Y up and Z right. The segment definition is based on
-Dumas et al. (2007) <a class="footnote-reference brackets" href="#id3" id="id1">1</a>, which is based on Reed et al. (1999) <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
+<dt class="sig sig-object py" id="kineticstoolkit.anthropometrics.infer_joint_centers">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.anthropometrics.</span></span><span class="sig-name descname"><span class="pre">infer_joint_centers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">segment</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sex</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'M'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.anthropometrics.infer_joint_centers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Infer joint centers based on anthropometric data.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The function infer_joint_centers is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
+<p>This function is aimed to be used on static acquisitions in quasi-neutral
+position.</p>
+<p>For the pelvis:
+Creates L5S1JointCenter, HipJointCenterL and HipJointCenterR based on
+AnteriorSuperiorIliacSpineR/L, PosteriorSuperiorIliacSpineR/L and
+PubicSymphysis, following the method presented in Reed et al. (1999)[1]_.</p>
+<p>For the trunk:
+Creates C7T1JointCenter, GlenohumeralJointCenterL and
+GlenohumeralJointCenterR based on C7, L5S1JointCenter, Suprasternal,
+AcromionR and AcromionL, following the method presented in Reed et al.
+(1999)[1]_. The scapulo-thoracic joint must be in a neutral
+position.</p>
+<p>For the extremities, creates:
+- ElbowJointCenterR/L as the midpoint between</p>
+<blockquote>
+<div><p>LateralHumeralEpicondyleR/L and MedialHumeralEpicondyleR;</p>
+</div></blockquote>
+<ul class="simple">
+<li><p>WristJointCenterR as the midpoint between
+UlnarStyloidR/L and RadialStyloidR/L;</p></li>
+<li><p>KneeJointCenterR/L as the midpoint between
+LateralFemoralEpicondyleR/L and MedialFemoralEpicondyleR/L;</p></li>
+<li><p>AnkleJointCenterR/L as the midpoint between
+LateralMalleolusR/L and MedialMalleolusR/L.</p></li>
+</ul>
+</div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>TimeSeries that contains the following markers as Nx4 series, ideally
-recorded during a short static acquisition:</p>
-<ul>
-<li><p>AnteriorSuperiorIliacSpineR</p></li>
-<li><p>AnteriorSuperiorIliacSpineL</p></li>
-<li><p>PosteriorSuperiorIliacSpineR</p></li>
-<li><p>PosteriorSuperiorIliacSpineL</p></li>
-<li><p>PubicSymphysis</p></li>
-</ul>
-</p></li>
-<li><p><strong>sex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. ‘F’ for female, ‘M’ for male. The default is ‘M’.</p></li>
+<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – TimeSeries that contain the trajectory of the required markers as
+Nx4 series.</p></li>
+<li><p><strong>segment</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Can be either ‘Pelvis’, ‘Trunk’, or ‘Extremities’. An error is raised
+in case of missing markers.</p></li>
+<li><p><strong>sex</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Can be either ‘M’ or ‘F’. The default is ‘M’.</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p><p>A dict that contains the following data as positions in the
-pelvis local coordinate system as 1x4 arrays:</p>
-<ul class="simple">
-<li><p>AnteriorSuperiorIliacSpineR</p></li>
-<li><p>AnteriorSuperiorIliacSpineL</p></li>
-<li><p>HipJointCenterR</p></li>
-<li><p>HipJointCenterL</p></li>
-<li><p>L5S1</p></li>
-<li><p>PosteriorSuperiorIliacSpineR</p></li>
-<li><p>PosteriorSuperiorIliacSpineL</p></li>
-<li><p>PubicSymphysis</p></li>
-</ul>
-</p>
+<dd class="field-even"><p>A TimeSeries that contains the inferred joint center trajectories.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Dict[str, np.ndarray]</p>
+<dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries">TimeSeries</a></p>
 </dd>
 </dl>
 <div class="admonition-references admonition">
 <p class="admonition-title">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
-<dd><p>Dumas, R., Chèze, L., Verriest, J.-P., 2007.
-Adjustments to McConville et al. and Young et al. body segment inertial
-parameters. Journal of Biomechanics 40, 543–553.
-<a class="reference external" href="https://doi.org/10.1016/j.jbiomech.2006.02.013">https://doi.org/10.1016/j.jbiomech.2006.02.013</a></p>
-</dd>
-<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dt class="label" id="id1"><span class="brackets">1</span></dt>
 <dd><p>Reed, M., Manary, M.A., Schneider, L.W., 1999.
 Methods for Measuring and Representing Automobile Occupant Posture.
 Presented at the International Congress &amp;  Exposition, pp. 1999-01–0959.
@@ -314,8 +316,8 @@ Presented at the International Congress &amp;  Exposition, pp. 1999-01–0959.
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="../dev/install.html" class="btn btn-neutral float-right" title="Installing from git-hub" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.anthropometrics.create_frames.html" class="btn btn-neutral float-left" title="kineticstoolkit.anthropometrics.create_frames" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.anthropometrics.track_local_coordinate_systems.html" class="btn btn-neutral float-right" title="kineticstoolkit.anthropometrics.track_local_coordinate_systems" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.anthropometrics.html" class="btn btn-neutral float-left" title="kineticstoolkit.anthropometrics" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

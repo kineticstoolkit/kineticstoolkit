@@ -72,44 +72,101 @@ __license__ = "Apache 2.0"
 
 from kineticstoolkit.decorators import unstable, directory
 from kineticstoolkit import TimeSeries, geometry, config, kinematics, Player
-from typing import Dict
+from typing import Dict, Union, Sequence
 import numpy as np
 import pandas as pd
 from warnings import warn
 
 
 @unstable
-def infer_pelvis_joint_centers(
+def infer_joint_centers(
         markers: TimeSeries,
-        sex: str = 'M') -> TimeSeries:
+        /,
+        segment: str,
+        *,
+        sex: str = 'M',
+) -> TimeSeries:
     """
-    Infer L5S1 and hip joint centers based on anthropometric data.
+    Infer joint centers based on anthropometric data.
 
+    This function is aimed to be used on static acquisitions in quasi-neutral
+    position.
+
+    For the pelvis:
     Creates L5S1JointCenter, HipJointCenterL and HipJointCenterR based on
     AnteriorSuperiorIliacSpineR/L, PosteriorSuperiorIliacSpineR/L and
     PubicSymphysis, following the method presented in Reed et al. (1999)[1]_.
 
+    For the trunk:
+    Creates C7T1JointCenter, GlenohumeralJointCenterL and
+    GlenohumeralJointCenterR based on C7, L5S1JointCenter, Suprasternal,
+    AcromionR and AcromionL, following the method presented in Reed et al.
+    (1999)[1]_. The scapulo-thoracic joint must be in a neutral
+    position.
+
+    For the extremities, creates:
+    - ElbowJointCenterR/L as the midpoint between
+      LateralHumeralEpicondyleR/L and MedialHumeralEpicondyleR;
+    - WristJointCenterR as the midpoint between
+      UlnarStyloidR/L and RadialStyloidR/L;
+    - KneeJointCenterR/L as the midpoint between
+      LateralFemoralEpicondyleR/L and MedialFemoralEpicondyleR/L;
+    - AnkleJointCenterR/L as the midpoint between
+      LateralMalleolusR/L and MedialMalleolusR/L.
+
     Parameters
     ----------
     markers
-        TimeSeries that contain the trajectory of
-        AnteriorSuperiorIliacSpineR/L, PosteriorSuperiorIliacSpineR/L and
-        PubicSymphysis as Nx4 series.
+        TimeSeries that contain the trajectory of the required markers as
+        Nx4 series.
+    segment
+        Can be either 'Pelvis', 'Trunk', or 'Extremities'. An error is raised
+        in case of missing markers.
     sex
-        Optional. Either 'M' or 'F'. The default is 'M'.
+        Optional. Can be either 'M' or 'F'. The default is 'M'.
 
     Returns
     -------
     TimeSeries
-        A TimeSeries with L5S1JointCenter, HipJointCenterL and
-        HipJointCenterR as Nx4 series.
+        A TimeSeries that contains the inferred joint center trajectories.
 
+    References
+    ----------
     .. [1] Reed, M., Manary, M.A., Schneider, L.W., 1999.
        Methods for Measuring and Representing Automobile Occupant Posture.
        Presented at the International Congress &  Exposition, pp. 1999-01–0959.
        https://doi.org/10.4271/1999-01-0959
 
     """
+    if segment == 'Pelvis':
+        return _infer_pelvis_joint_centers(markers, sex=sex)
+    elif segment == 'Thorax':
+        return _infer_thorax_joint_centers(markers, sex=sex)
+    elif segment == 'Extremities':
+        return _infer_extremity_joint_centers(markers)
+    elif segment == '':
+        out = markers.copy()
+        for segment in ['Pelvis', 'Thorax', 'Extremities']:
+            try:
+                out.merge(
+                    infer_joint_centers(
+                        markers,
+                        segment=segment,
+                        sex=sex,
+                    ),
+                    in_place=True,
+                )
+            except ValueError:
+                pass
+        return out
+    else:
+        raise ValueError("Unrecognized segment name.")
+
+
+def _infer_pelvis_joint_centers(
+        markers: TimeSeries,
+        sex: str = 'M') -> TimeSeries:
+    """Infer L5S1 and hip joint centers based on anthropometric data."""
     # Get the required markers
     try:
         rasis = markers.data['AnteriorSuperiorIliacSpineR']
@@ -137,8 +194,8 @@ def infer_pelvis_joint_centers(
     local_lpsis = geometry.get_local_coordinates(lpsis, lcs)
     local_sym = geometry.get_local_coordinates(sym, lcs)
 
-    # Create a rigid body definition using these locations
-    pelvis_definition = {
+    # Create a cluster using these locations
+    cluster = {
         'AnteriorSuperiorIliacSpineR':
             np.nanmean(local_rasis, axis=0)[np.newaxis],
         'AnteriorSuperiorIliacSpineL':
@@ -152,9 +209,8 @@ def infer_pelvis_joint_centers(
     }
 
     # Track the pelvis using this definition
-    tracked_pelvis = kinematics.track_rigid_body(
-        markers, pelvis_definition, 'Pelvis'
-    )
+    tracked_pelvis = kinematics.track_cluster(
+        markers, cluster, include_lcs=True, lcs_name='Pelvis')
 
     # Pelvis width
     pw = np.abs(np.nanmean(
@@ -208,43 +264,10 @@ def infer_pelvis_joint_centers(
     return output
 
 
-@unstable
-def infer_thorax_joint_centers(
+def _infer_thorax_joint_centers(
         markers: TimeSeries,
         sex: str = 'M') -> TimeSeries:
-    """
-    Infer C7T1 and glenohumeral joint centers based on anthropometric data.
-
-    Creates C7T1JointCenter, GlenohumeralJointCenterL and
-    GlenohumeralJointCenterR based on C7, L5S1JointCenter, Suprasternal,
-    AcromionR and AcromionL, following the method presented in Reed et al.
-    (1999)[1]_. The scapulo-thoracic joint must be in a neutral
-    position.
-
-    Warning
-    -------
-    Only male data is implemented at the moment.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contain the trajectory of C7, L5S1JointCenter,
-        Suprasternal, AcromionR and AcromionL as Nx4 series.
-    sex
-        Optional. Either 'M' or 'F'. The default is 'M'.
-
-    Returns
-    -------
-    TimeSeries
-        A TimeSeries with C7T1JointCenter, GlenohumeralJointCenterL and
-        GlenohumeralJointCenterR as Nx4 series.
-
-    .. [1] Reed, M., Manary, M.A., Schneider, L.W., 1999.
-       Methods for Measuring and Representing Automobile Occupant Posture.
-       Presented at the International Congress &  Exposition, pp. 1999-01–0959.
-       https://doi.org/10.4271/1999-01-0959
-
-    """
+    """Infer C7T1 and glenohumeral joint centers based on anthropom. data."""
     # Get the required markers
     try:
         c7 = markers.data['C7']
@@ -328,35 +351,9 @@ def infer_thorax_joint_centers(
     return output
 
 
-@unstable
-def infer_extremity_joint_centers(
+def _infer_extremity_joint_centers(
         markers: TimeSeries) -> TimeSeries:
-    """
-    Infer extremity joint centers based on medial and lateral markers.
-
-    Creates:
-    - ElbowJointCenterR/L as the midpoint between
-      LateralHumeralEpicondyleR/L and MedialHumeralEpicondyleR;
-    - WristJointCenterR as the midpoint between
-      UlnarStyloidR/L and RadialStyloidR/L;
-    - KneeJointCenterR/L as the midpoint between
-      LateralFemoralEpicondyleR/L and MedialFemoralEpicondyleR/L;
-    - AnkleJointCenterR/L as the midpoint between
-      LateralMalleolusR/L and MedialMalleolusR/L.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries the contains the required trajectories as Nx4 series.
-
-    Returns
-    -------
-    TimeSeries
-        A TimeSeries with the calculated joint center trajectories as Nx4
-        series. Trajectories that could not be calculated due to missing
-        markers are ignored.
-
-    """
+    """Infer extremity joint centers based on medial and lateral markers."""
     output = markers.copy(copy_data=False, copy_data_info=False)
     try:
         output.data['ElbowJointCenterR'] = 0.5 * (
@@ -417,739 +414,246 @@ def infer_extremity_joint_centers(
     return output
 
 
-def define_local_coordinate_system(
+@unstable
+def track_local_coordinate_systems(
         markers: TimeSeries,
-        segment: str
-) -> Dict[str, np.ndarray]:
+        segment: str,
+        *,
+        method: int = 1) -> TimeSeries:
     """
     Create local coordinate system definitions based on static markers.
 
     Parameters
     ----------
     markers
-        TimeSeries that contains marker trajectories as Nx4
-        series, ideally recorded during a short static acquisition.
+        TimeSeries that contains marker trajectories as Nx4 during an action.
 
     segment
         Name of the segment. Can be 'Pelvis', 'Thorax', 'HeadNeck',
         'ArmR', 'ArmL', 'ForearmR', 'ForearmL', 'HandR', 'HandL', 'ThighR',
-        'ThighL', 'LegR', 'LegL', 'FootR', 'FootL', a sequence (e.g., list) of
-        many segments, or 'all'.
+        'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'.
+
+    method
+        Optional. Select one ot both methods to reconstruct the axial
+        orientation of the arm as proposed by the ISB: 1 to use both humeral
+        epicondyles, 2 to use the elbow center and the ulnar styloid. The
+        default is 1. This parameter is ignored for segments other than
+        ArmR and ArmL.
 
     Returns
     -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the segment's markers as
-        1x4 arrays.
-
-    Notes
-    -----
-    The pelvis local coordinate system is located at LS51, with X anterior,
-    Y up and Z right. The segment definition is based on
-    Dumas et al. (2007) [1]_.
-
-    The required markers are:
-    - AnteriorSuperiorIliacSpineR
-    - AnteriorSuperiorIliacSpineL
-    - PosteriorSuperiorIliacSpineR
-    - PosteriorSuperiorIliacSpineL
-    - L5S1JointCenter
-
-    Additionally, if the following markers are also included in the
-    TimeSeries, they will also be expressed in local coordinates in the
-    returned dictionary:
-
-    - PubicSymphysis
-    - HipJointCenterR
-    - HipJointCenterL
-
-    The thorax local coordinate system is located at C7T1JointCenter,
-    with X anterior, Y up and Z right. The segment definition is based on
-    Dumas et al. (2007) [1]_.
-
-    This required markers are:
-    - Suprasternale
-    - L5S1JointCenter
-    - C7T1JointCenter
-
-
-
-
-    .. [1] Dumas, R., Chèze, L., Verriest, J.-P., 2007.
-       Adjustments to McConville et al. and Young et al. body segment inertial
-       parameters. Journal of Biomechanics 40, 543–553.
-       https://doi.org/10.1016/j.jbiomech.2006.02.013
+    TimeSeries
+        A TimeSeries that contains the segments' local position and orientation
+        as series of Nx4x4 frames.
 
     """
+    output = markers.copy(copy_data=False, copy_data_info=False)
+
     if segment == 'Pelvis':
-        return _define_pelvis_coordinate_system(markers)
+        try:
+            rasis = markers.data['AnteriorSuperiorIliacSpineR']
+            lasis = markers.data['AnteriorSuperiorIliacSpineL']
+            rpsis = markers.data['PosteriorSuperiorIliacSpineR']
+            lpsis = markers.data['PosteriorSuperiorIliacSpineL']
+            l5s1 = markers.data['L5S1JointCenter']
+        except KeyError:
+            raise ValueError(
+                "Not enough markers to create the pelvis coordinate system."
+            )
+
+        mpsis = 0.5 * (rpsis + lpsis)
+        output.data[segment] = geometry.create_frames(
+            origin=l5s1, z=(rasis - lasis),
+            xz=(0.5 * (rasis + lasis) - mpsis),
+        )
+
     elif segment == 'Thorax':
-        return _define_thorax_coordinate_system(markers)
-    else:
-        raise ValueError("This segment is not recognized.")
-
-
-def _define_pelvis_coordinate_system(
-        markers: TimeSeries) -> Dict[str, np.ndarray]:
-    """Create the Pelvis definition based on static markers."""
-    # Get the required markers
-    try:
-        rasis = markers.data['AnteriorSuperiorIliacSpineR']
-        lasis = markers.data['AnteriorSuperiorIliacSpineL']
-        rpsis = markers.data['PosteriorSuperiorIliacSpineR']
-        lpsis = markers.data['PosteriorSuperiorIliacSpineL']
-        l5s1 = markers.data['L5S1JointCenter']
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the pelvis coordinate system."
-        )
-
-    # Create the local coordinate system according to Dumas et al. (2007)
-    mpsis = 0.5 * (rpsis + lpsis)
-    lcs = geometry.create_frames(
-        origin=l5s1, z=(rasis - lasis),
-        xz=(0.5 * (rasis + lasis) - mpsis),
-    )
-
-    # Create the pelvis definition
-    pelvis_definition = {}
-    for marker in [
-        'AnteriorSuperiorIliacSpineR',
-        'AnteriorSuperiorIliacSpineL',
-        'PosteriorSuperiorIliacSpineR',
-        'PosteriorSuperiorIliacSpineL',
-        'PubicSymphysis',
-        'L5S1',
-        'HipJointCenterR',
-        'HipJointCenterL',
-    ]:
-        if marker in markers.data:
-            pelvis_definition[marker] = np.nanmean(
-                geometry.get_local_coordinates(
-                    markers.data[marker],
-                    lcs
-                ), axis=0)[np.newaxis, :]
-
-    return pelvis_definition
-
-
-def _define_thorax_coordinate_system(
-        markers: TimeSeries) -> Dict[str, np.ndarray]:
-    """Create the Thorax definition based on static markers."""
-    # Get the required markers
-    try:
-        c7t1 = markers.data['C7T1JointCenter']
-        sup = markers.data['Suprasternale']
-        l5s1 = markers.data['L5S1JointCenter']
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the thorax coordinate system."
-        )
-
-    # Create the local coordinate system
-    lcs = geometry.create_frames(
-        origin=c7t1, y=(c7t1 - l5s1),
-        xy=(sup - l5s1),
-    )
-
-    # Create the thorax definition
-    thorax_definition = {}
-    for marker in [
-        'C7T1JointCenter',
-        'Suprasternale',
-        'L5S1JointCenter',
-    ]:
-        thorax_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return thorax_definition
-
-
-def define_head_neck_coordinate_system(
-        markers: TimeSeries) -> Dict[str, np.ndarray]:
-    """
-    Create the Head+Neck definition based on static markers.
-
-    The head+neck local coordinate system is located at C7T1JointCenter,
-    with X anterior, Y up and Z right. The segment definition is based on
-    Dumas et al. (2007) [1]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - C7T1JointCenter
-        - Sellion
-        - HeadVertex
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the head+neck markers as
-        1x4 arrays.
-
-    .. [1] Dumas, R., Chèze, L., Verriest, J.-P., 2007.
-       Adjustments to McConville et al. and Young et al. body segment inertial
-       parameters. Journal of Biomechanics 40, 543–553.
-       https://doi.org/10.1016/j.jbiomech.2006.02.013
-
-    """
-    # Get the required markers
-    try:
-        c7t1 = markers.data['C7T1JointCenter']
-        sel = markers.data['Sellion']
-        hv = markers.data['HeadVertex']
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the thorax coordinate system."
-        )
-
-    # Create the local coordinate system
-    lcs = geometry.create_frames(
-        origin=c7t1, y=(hv - c7t1),
-        xy=(sel - c7t1),
-    )
-
-    # Create the thorax definition
-    head_neck_definition = {}
-    for marker in [
-        'C7T1JointCenter',
-        'Sellion',
-        'HeadVertex',
-    ]:
-        head_neck_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return head_neck_definition
-
-
-def define_arm_coordinate_system(
-        markers: TimeSeries, side: str = 'R') -> Dict[str, np.ndarray]:
-    """
-    Create the ArmR or ArmL definition based on static markers.
-
-    The arm local coordinate system is located at GlenohumeralJointCenterR/L,
-    with X anterior, Y up and Z right. The segment definition is based on
-    the ISB, using the 1st definition with both humeral epicondyles [1]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - GlenohumeralJointCenterR or GlenohumeralJointCenterL
-        - ElbowJointCenterR or ElbowJointCenterL
-        - LateralHumeralEpicondyleR or LateralHumeralEpicondyleL
-        - MedialHumeralEpicondyleR or MedialHumeralEpicondyleR
-
-    side
-        Optional. Either 'R' or 'L'. The default is 'R'.
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the arm markers as
-        1x4 arrays.
-
-    .. [1] Wu, G. et al., 2005.
-       ISB recommendation on definitions of joint coordinate systems of
-       various joints for the reporting of human joint motion - Part II:
-       shoulder, elbow, wrist and hand. Journal of Biomechanics 38, 981–992.
-       https://doi.org/10.1016/j.jbiomech.2004.05.042
-
-    """
-    # Get the required markers
-    try:
-        elbow_center = markers.data[f'ElbowJointCenter{side}']
-        gh = markers.data[f'GlenohumeralJointCenter{side}']
-        if side == 'R':
-            r_ep = markers.data['LateralHumeralEpicondyleR']
-            l_ep = markers.data['MedialHumeralEpicondyleR']
-        elif side == 'L':
-            r_ep = markers.data['MedialHumeralEpicondyleL']
-            l_ep = markers.data['LateralHumeralEpicondyleL']
-        else:
+        try:
+            c7t1 = markers.data['C7T1JointCenter']
+            sup = markers.data['Suprasternale']
+            l5s1 = markers.data['L5S1JointCenter']
+        except KeyError:
             raise ValueError(
-                "side must be either 'R' or 'L'"
+                "Not enough markers to create the thorax coordinate system."
             )
 
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the arm coordinate system."
+        output.data[segment] = geometry.create_frames(
+            origin=c7t1, y=(c7t1 - l5s1),
+            xy=(sup - l5s1),
         )
 
-    # Create the local coordinate system
-    lcs = geometry.create_frames(
-        origin=gh, y=(gh - elbow_center),
-        yz=(r_ep - l_ep),
-    )
-
-    # Create the arm definition
-    arm_definition = {}
-    for marker in [
-        f'GlenohumeralJointCenter{side}',
-        f'ElbowJointCenter{side}',
-        f'LateralHumeralEpicondyle{side}',
-        f'LateralHumeralEpicondyle{side}',
-    ]:
-        arm_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return arm_definition
-
-
-def define_forearm_coordinate_system(
-        markers: TimeSeries, side: str = 'R') -> Dict[str, np.ndarray]:
-    """
-    Create the ForearmR or ForearmL definition based on static markers.
-
-    The forearm local coordinate system is located at ElbowJointCenterR/L,
-    with X anterior, Y up and Z right. The segment definition is based on
-    the ISB [1]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - ElbowJointCenterR or ElbowJointCenterL
-        - WristJointCenterR or WristJointCenterL
-        - UlnarStyloidR or UlnarStyloidL
-        - RadialStyloidR or RadialStyloidL
-
-    side
-        Optional. Either 'R' or 'L'. The default is 'R'.
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the forearm markers as
-        1x4 arrays.
-
-    .. [1] Wu, G. et al., 2005.
-       ISB recommendation on definitions of joint coordinate systems of
-       various joints for the reporting of human joint motion - Part II:
-       shoulder, elbow, wrist and hand. Journal of Biomechanics 38, 981–992.
-       https://doi.org/10.1016/j.jbiomech.2004.05.042
-
-    """
-    # Get the required markers
-    try:
-        elbow_center = markers.data[f'ElbowJointCenter{side}']
-        wrist_center = markers.data[f'WristJointCenter{side}']
-        if side == 'R':
-            r_st = markers.data['RadialStyloidR']
-            l_st = markers.data['UlnarStyloidR']
-        elif side == 'L':
-            r_st = markers.data['UlnarStyloidL']
-            l_st = markers.data['RadialStyloidL']
-        else:
+    elif segment == 'HeadNeck':
+        try:
+            c7t1 = markers.data['C7T1JointCenter']
+            sel = markers.data['Sellion']
+            hv = markers.data['HeadVertex']
+        except KeyError:
             raise ValueError(
-                "side must be either 'R' or 'L'"
+                "Not enough markers to create the thorax coordinate system."
             )
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the forearm coordinate system."
+
+        output.data[segment] = geometry.create_frames(
+            origin=c7t1, y=(hv - c7t1),
+            xy=(sel - c7t1),
         )
 
-    # Create the local coordinate system
-    lcs = geometry.create_frames(
-        origin=elbow_center, y=(elbow_center - wrist_center),
-        yz=(r_st - l_st),
-    )
+    elif segment in ['ArmR', 'ArmL']:
+        side = segment[-1]
+        try:
+            elbow_center = markers.data[f'ElbowJointCenter{side}']
+            gh = markers.data[f'GlenohumeralJointCenter{side}']
+            if side == 'R':
+                r_ep = markers.data['LateralHumeralEpicondyleR']
+                l_ep = markers.data['MedialHumeralEpicondyleR']
+            elif side == 'L':
+                r_ep = markers.data['MedialHumeralEpicondyleL']
+                l_ep = markers.data['LateralHumeralEpicondyleL']
+            else:
+                raise ValueError(
+                    "side must be either 'R' or 'L'"
+                )
 
-    # Create the forearm definition
-    forearm_definition = {}
-    for marker in [
-        f'ElbowJointCenter{side}',
-        f'WristJointCenter{side}',
-        f'UlnarStyloid{side}',
-        f'RadialStyloid{side}',
-    ]:
-        forearm_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return forearm_definition
-
-
-def define_hand_coordinate_system(
-        markers: TimeSeries, side: str = 'R') -> Dict[str, np.ndarray]:
-    """
-    Create the HandR or HandL definition based on static markers.
-
-    The forearm local coordinate system is located at WristJointCenterR/L,
-    with X anterior, Y up and Z right. The segment definition is based on
-    the ISB [1]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - WristJointCenterR or WristJointCenterL
-        - CarpalMetaHead2R or CarpalMetaHead2L
-        - CarpalMetaHead5R or CarpalMetaHead5L
-
-    side
-        Optional. Either 'R' or 'L'. The default is 'R'.
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the hand markers as
-        1x4 arrays.
-
-    .. [1] Wu, G. et al., 2005.
-       ISB recommendation on definitions of joint coordinate systems of
-       various joints for the reporting of human joint motion - Part II:
-       shoulder, elbow, wrist and hand. Journal of Biomechanics 38, 981–992.
-       https://doi.org/10.1016/j.jbiomech.2004.05.042
-
-    """
-    # Get the required markers
-    try:
-        wrist_center = markers.data[f'WristJointCenter{side}']
-        if side == 'R':
-            r_meta = markers.data['CarpalMetaHead2R']
-            l_meta = markers.data['CarpalMetaHead5R']
-        elif side == 'L':
-            r_meta = markers.data['CarpalMetaHead5L']
-            l_meta = markers.data['CarpalMetaHead2L']
-        else:
+        except KeyError:
             raise ValueError(
-                "side must be either 'R' or 'L'"
+                "Not enough markers to create the arm coordinate system."
             )
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the hand coordinate system."
+
+        output.data[segment] = geometry.create_frames(
+            origin=gh, y=(gh - elbow_center),
+            yz=(r_ep - l_ep),
         )
 
-    # Create the local coordinate system
-    meta_center = 0.5 * (r_meta + l_meta)
-    lcs = geometry.create_frames(
-        origin=wrist_center, y=(wrist_center - meta_center),
-        yz=(r_meta - l_meta),
-    )
-
-    # Create the hand definition
-    hand_definition = {}
-    for marker in [
-        f'ElbowJointCenter{side}',
-        f'WristJointCenter{side}',
-        f'UlnarStyloid{side}',
-        f'RadialStyloid{side}',
-    ]:
-        hand_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return hand_definition
-
-
-def define_thigh_coordinate_system(
-        markers: TimeSeries, side: str = 'R') -> Dict[str, np.ndarray]:
-    """
-    Create the ThighR or ThighL definition based on static markers.
-
-    The thigh local coordinate system is located at HipJointCenterR/L,
-    with X anterior, Y up and Z right. The segment definition is based on
-    the ISB [2]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - HipJointCenterR or HipJointCenterL
-        - KneeJointCenterR or KneeJointCenterL
-        - LateralFemoralEpicondyleR or LateralFemoralEpicondyleL
-        - MedialFemoralEpicondyleR or MedialFemoralEpicondyleL
-
-    side
-        Optional. Either 'R' or 'L'. The default is 'R'.
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the thigh markers as
-        1x4 arrays.
-
-    .. [2] Wu, G. et al., 2002.
-       ISB recommendation on definitions of joint coordinate system of various
-       joints for the reporting of human joint motion—part I: ankle, hip, and
-       spine. Journal of Biomechanics 35, 543–548.
-       https://doi.org/10.1016/S0021-9290(01)00222-6
-
-    """
-    # Get the required markers
-    try:
-        hip_center = markers.data[f'HipJointCenter{side}']
-        knee_center = markers.data[f'KneeJointCenter{side}']
-        if side == 'R':
-            r_ep = markers.data['LateralFemoralEpicondyleR']
-            l_ep = markers.data['MedialFemoralEpicondyleR']
-        elif side == 'L':
-            r_ep = markers.data['MedialFemoralEpicondyleL']
-            l_ep = markers.data['LateralFemoralEpicondyleL']
-        else:
+    elif segment in ['ForearmR', 'ForearmL']:
+        side = segment[-1]
+        try:
+            elbow_center = markers.data[f'ElbowJointCenter{side}']
+            wrist_center = markers.data[f'WristJointCenter{side}']
+            if side == 'R':
+                r_st = markers.data['RadialStyloidR']
+                l_st = markers.data['UlnarStyloidR']
+            elif side == 'L':
+                r_st = markers.data['UlnarStyloidL']
+                l_st = markers.data['RadialStyloidL']
+            else:
+                raise ValueError(
+                    "side must be either 'R' or 'L'"
+                )
+        except KeyError:
             raise ValueError(
-                "side must be either 'R' or 'L'"
+                "Not enough markers to create the forearm coordinate system."
             )
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the thigh coordinate system."
+
+        output.data[segment] = geometry.create_frames(
+            origin=elbow_center, y=(elbow_center - wrist_center),
+            yz=(r_st - l_st),
         )
 
-    # Create the local coordinate system
-    lcs = geometry.create_frames(
-        origin=hip_center, y=(hip_center - knee_center),
-        yz=(r_ep - l_ep),
-    )
-
-    # Create the thigh definition
-    thigh_definition = {}
-    for marker in [
-        f'HipJointCenter{side}',
-        f'KneeJointCenter{side}',
-        f'LateralFemoralEpicondyle{side}',
-        f'MedialFemoralEpicondyle{side}',
-    ]:
-        thigh_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return thigh_definition
-
-
-def define_leg_coordinate_system(
-        markers: TimeSeries, side: str = 'R') -> Dict[str, np.ndarray]:
-    """
-    Create the LegR or LegL definition based on static markers.
-
-    The leg local coordinate system is located at KneeJointCenterR/L,
-    with X anterior, Y up and Z right. The segment definition is based on
-    the ISB [2]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - AnkleJointCenterR or AnkleJointCenterL
-        - KneeJointCenterR or KneeJointCenterL
-        - LateralMalleolusR or LateralMalleolusL
-        - MedialMalleolusR or MedialMalleolusL
-
-    side
-        Optional. Either 'R' or 'L'. The default is 'R'.
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the leg markers as
-        1x4 arrays.
-
-    .. [2] Wu, G. et al., 2002.
-       ISB recommendation on definitions of joint coordinate system of various
-       joints for the reporting of human joint motion—part I: ankle, hip, and
-       spine. Journal of Biomechanics 35, 543–548.
-       https://doi.org/10.1016/S0021-9290(01)00222-6
-
-    """
-    # Get the required markers
-    try:
-        knee_center = markers.data[f'KneeJointCenter{side}']
-        ankle_center = markers.data[f'AnkleJointCenter{side}']
-        if side == 'R':
-            r_mal = markers.data['LateralMalleolusR']
-            l_mal = markers.data['MedialMalleolusR']
-        elif side == 'L':
-            r_mal = markers.data['MedialMalleolusL']
-            l_mal = markers.data['LateralMalleolusL']
-        else:
+    elif segment in ['HandR', 'HandL']:
+        side = segment[-1]
+        try:
+            wrist_center = markers.data[f'WristJointCenter{side}']
+            if side == 'R':
+                r_meta = markers.data['CarpalMetaHead2R']
+                l_meta = markers.data['CarpalMetaHead5R']
+            elif side == 'L':
+                r_meta = markers.data['CarpalMetaHead5L']
+                l_meta = markers.data['CarpalMetaHead2L']
+            else:
+                raise ValueError(
+                    "side must be either 'R' or 'L'"
+                )
+        except KeyError:
             raise ValueError(
-                "side must be either 'R' or 'L'"
+                "Not enough markers to create the hand coordinate system."
             )
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the leg coordinate system."
+
+        meta_center = 0.5 * (r_meta + l_meta)
+        output.data[segment] = geometry.create_frames(
+            origin=wrist_center, y=(wrist_center - meta_center),
+            yz=(r_meta - l_meta),
         )
 
-    # Create the local coordinate system
-    lcs = geometry.create_frames(
-        origin=knee_center, y=(knee_center - ankle_center),
-        yz=(r_mal - l_mal),
-    )
-
-    # Create the leg definition
-    leg_definition = {}
-    for marker in [
-        f'KneeJointCenter{side}',
-        f'AnkleJointCenter{side}',
-        f'LateralMalleolus{side}',
-        f'MedialMalleolus{side}',
-    ]:
-        leg_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return leg_definition
-
-
-def define_foot_coordinate_system(
-        markers: TimeSeries, side: str = 'R') -> Dict[str, np.ndarray]:
-    """
-    Create the FootR or FootL definition based on static markers.
-
-    The foot local coordinate system is located at AnkleJointCenterR/L,
-    with X anterior, Y up and Z right. The segment definition is based on
-    the ISB [2]_.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains minimally the following markers as Nx4
-        series, ideally recorded during a short static acquisition:
-
-        - AnkleJointCenterR or AnkleJointCenterL
-        - CalcaneousR or CalcaneousL
-        - TarsalMetaHead1R or TarsalMetaHead1L
-        - TarsalMetaHead5R or TarsalMetaHead5L
-
-    side
-        Optional. Either 'R' or 'L'. The default is 'R'.
-
-    Returns
-    -------
-    Dict[str, np.ndarray]
-        A dict that contains the local position of the foot markers as
-        1x4 arrays.
-
-    .. [2] Wu, G. et al., 2002.
-       ISB recommendation on definitions of joint coordinate system of various
-       joints for the reporting of human joint motion—part I: ankle, hip, and
-       spine. Journal of Biomechanics 35, 543–548.
-       https://doi.org/10.1016/S0021-9290(01)00222-6
-
-    """
-    # Get the required markers
-    try:
-        ankle_center = markers.data[f'AnkleJointCenter{side}']
-        calc = markers.data[f'Calcaneus{side}']
-        if side == 'R':
-            r_meta = markers.data['TarsalMetaHead5R']
-            l_meta = markers.data['TarsalMetaHead1R']
-        elif side == 'L':
-            r_meta = markers.data['TarsalMetaHead1L']
-            l_meta = markers.data['TarsalMetaHead5L']
-        else:
+    elif segment in ['ThighR', 'ThighL']:
+        side = segment[-1]
+        try:
+            hip_center = markers.data[f'HipJointCenter{side}']
+            knee_center = markers.data[f'KneeJointCenter{side}']
+            if side == 'R':
+                r_ep = markers.data['LateralFemoralEpicondyleR']
+                l_ep = markers.data['MedialFemoralEpicondyleR']
+            elif side == 'L':
+                r_ep = markers.data['MedialFemoralEpicondyleL']
+                l_ep = markers.data['LateralFemoralEpicondyleL']
+            else:
+                raise ValueError(
+                    "side must be either 'R' or 'L'"
+                )
+        except KeyError:
             raise ValueError(
-                "side must be either 'R' or 'L'"
+                "Not enough markers to create the thigh coordinate system."
             )
-    except KeyError:
-        raise ValueError(
-            "Not enough markers to create the foot coordinate system."
+
+        output.data[segment] = geometry.create_frames(
+            origin=hip_center, y=(hip_center - knee_center),
+            yz=(r_ep - l_ep),
         )
 
-    # Create the local coordinate system
-    meta_center = 0.5 * (r_meta + l_meta)
-    lcs = geometry.create_frames(
-        origin=ankle_center, x=(meta_center - calc),
-        xz=(r_meta - l_meta),
-    )
+    elif segment in ['LegR', 'LegL']:
+        side = segment[-1]
+        try:
+            knee_center = markers.data[f'KneeJointCenter{side}']
+            ankle_center = markers.data[f'AnkleJointCenter{side}']
+            if side == 'R':
+                r_mal = markers.data['LateralMalleolusR']
+                l_mal = markers.data['MedialMalleolusR']
+            elif side == 'L':
+                r_mal = markers.data['MedialMalleolusL']
+                l_mal = markers.data['LateralMalleolusL']
+            else:
+                raise ValueError(
+                    "side must be either 'R' or 'L'"
+                )
+        except KeyError:
+            raise ValueError(
+                "Not enough markers to create the leg coordinate system."
+            )
 
-    # Create the foot definition
-    foot_definition = {}
-    for marker in [
-        f'AnkleJointCenter{side}',
-        f'TarsalMetaHead1{side}',
-        f'TarsalMetaHead5{side}',
-        f'Calcaneus{side}',
-    ]:
-        foot_definition[marker] = np.nanmean(
-            geometry.get_local_coordinates(
-                markers.data[marker],
-                lcs
-            ), axis=0)[np.newaxis, :]
-
-    return foot_definition
-
-
-def _define_coordinate_systems(
-    markers: TimeSeries, /, *, sex: str = 'M'
-) -> Dict[str, Dict[str, np.ndarray]]:
-    """
-    Create local coordinate systems for the body segments.
-
-    References
-    ----------
-
-    .. [2] Reed, M., Manary, M.A., Schneider, L.W., 1999.
-       Methods for Measuring and Representing Automobile Occupant Posture.
-       Presented at the International Congress &  Exposition, pp. 1999-01–0959.
-       https://doi.org/10.4271/1999-01-0959
-
-    .. [3] Reynolds, H.M., Snow, C.C., Young, J.W., 1982.
-       Spatial Geometry of the Human Pelvis.
-       FEDERAL AVIATION ADMINISTRATION OKLAHOMA CITY OK CIVIL AEROMEDICAL INST.
-
-    """
-    definitions = {}  # type: Dict[str, Dict[str, np.ndarray]]
-
-    # Create center of mass definitions, from Dumas 2007, Table 2.
-    length = np.sqrt(
-        (definitions['Pelvis']['HipJointCenterR'][0, 0]  # x
-         - definitions['Pelvis']['L5S1'][0, 0]) ** 2
-        +
-        (definitions['Pelvis']['HipJointCenterR'][0, 1]  # y
-         - definitions['Pelvis']['L5S1'][0, 1]) ** 2
-    )
-
-    if sex == 'F':
-        definitions['Pelvis']['PelvisCOM'] = (
-            0.01 * np.array([[-0.9, -23.2, 0.2, 0.0]]) * length
+        output.data[segment] = geometry.create_frames(
+            origin=knee_center, y=(knee_center - ankle_center),
+            yz=(r_mal - l_mal),
         )
-    else:  # 'M'
-        definitions['Pelvis']['PelvisCOM'] = (
-            0.01 * np.array([[2.8, -28.0, -0.6, 0.0]]) * length
+
+    elif segment in ['FootR', 'FootL']:
+        side = segment[-1]
+        try:
+            ankle_center = markers.data[f'AnkleJointCenter{side}']
+            calc = markers.data[f'Calcaneus{side}']
+            if side == 'R':
+                r_meta = markers.data['TarsalMetaHead5R']
+                l_meta = markers.data['TarsalMetaHead1R']
+            elif side == 'L':
+                r_meta = markers.data['TarsalMetaHead1L']
+                l_meta = markers.data['TarsalMetaHead5L']
+            else:
+                raise ValueError(
+                    "side must be either 'R' or 'L'"
+                )
+        except KeyError:
+            raise ValueError(
+                "Not enough markers to create the foot coordinate system."
+            )
+
+        # Create the local coordinate system
+        meta_center = 0.5 * (r_meta + l_meta)
+        output.data[segment] = geometry.create_frames(
+            origin=ankle_center, x=(meta_center - calc),
+            xz=(r_meta - l_meta),
         )
-    definitions['Pelvis']['PelvisCOM'][0, 3] = 1.0
 
-    # Visual test
-    bodies = kinematics.track_rigid_body(
-        markers, definitions['Pelvis'], 'Pelvis')
-
-    Player(markers, bodies, segments=LINKS)
-
-    return definitions
-
+    return output
 
 # %% Constants
+
 
 #: A link model to help kinematics visualization
 LINKS = {

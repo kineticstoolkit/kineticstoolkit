@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   
-  <title>kineticstoolkit.inversedynamics.calculate_segment_angles &mdash; Kinetics Toolkit (dev) master documentation</title>
+  <title>kineticstoolkit.kinematics.track_cluster &mdash; Kinetics Toolkit (dev) master documentation</title>
   
 
   
@@ -44,8 +44,8 @@
     
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates" href="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates.html" />
-    <link rel="prev" title="kineticstoolkit.inversedynamics.calculate_proximal_wrench" href="kineticstoolkit.inversedynamics.calculate_proximal_wrench.html" />
+    <link rel="next" title="kineticstoolkit.kinematics.track_rigid_bodies" href="kineticstoolkit.kinematics.track_rigid_bodies.html" />
+    <link rel="prev" title="kineticstoolkit.kinematics.read_n3d_file" href="kineticstoolkit.kinematics.read_n3d_file.html" />
 
 
  
@@ -121,16 +121,21 @@
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.emg.html">kineticstoolkit.emg</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.filters.html">kineticstoolkit.filters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.geometry.html">kineticstoolkit.geometry</a></li>
-<li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a><ul class="current">
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.inversedynamics.calculate_com_acceleration.html">kineticstoolkit.inversedynamics.calculate_com_acceleration</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.inversedynamics.calculate_com_position.html">kineticstoolkit.inversedynamics.calculate_com_position</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.inversedynamics.calculate_proximal_wrench.html">kineticstoolkit.inversedynamics.calculate_proximal_wrench</a></li>
-<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.inversedynamics.calculate_segment_angles</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates.html">kineticstoolkit.inversedynamics.calculate_segment_rotation_rates</a></li>
-<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.inversedynamics.get_anthropometrics.html">kineticstoolkit.inversedynamics.get_anthropometrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.create_cluster.html">kineticstoolkit.kinematics.create_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_local_position.html">kineticstoolkit.kinematics.define_local_position</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.define_rigid_body.html">kineticstoolkit.kinematics.define_rigid_body</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.extend_cluster.html">kineticstoolkit.kinematics.extend_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_c3d_file.html">kineticstoolkit.kinematics.read_c3d_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.read_n3d_file.html">kineticstoolkit.kinematics.read_n3d_file</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">kineticstoolkit.kinematics.track_cluster</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_bodies.html">kineticstoolkit.kinematics.track_rigid_bodies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.track_rigid_body.html">kineticstoolkit.kinematics.track_rigid_body</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_c3d_file.html">kineticstoolkit.kinematics.write_c3d_file</a></li>
+<li class="toctree-l4"><a class="reference internal" href="kineticstoolkit.kinematics.write_trc_file.html">kineticstoolkit.kinematics.write_trc_file</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.pushrimkinetics.html">kineticstoolkit.pushrimkinetics</a></li>
 <li class="toctree-l3"><a class="reference internal" href="kineticstoolkit.anthropometrics.html">kineticstoolkit.anthropometrics</a></li>
 </ul>
@@ -195,9 +200,9 @@
         
           <li><a href="../api_reference.html">API Reference</a> &raquo;</li>
         
-          <li><a href="kineticstoolkit.inversedynamics.html">kineticstoolkit.inversedynamics</a> &raquo;</li>
+          <li><a href="kineticstoolkit.kinematics.html">kineticstoolkit.kinematics</a> &raquo;</li>
         
-      <li>kineticstoolkit.inversedynamics.calculate_segment_angles</li>
+      <li>kineticstoolkit.kinematics.track_cluster</li>
     
     
       <li class="wy-breadcrumbs-aside">
@@ -211,10 +216,10 @@
   
   <div class="rst-breadcrumbs-buttons" role="navigation" aria-label="breadcrumb navigation">
       
-        <a href="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates.html" class="btn btn-neutral float-right" title="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.track_rigid_bodies.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.track_rigid_bodies" accesskey="n">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
       
       
-        <a href="kineticstoolkit.inversedynamics.calculate_proximal_wrench.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics.calculate_proximal_wrench" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.read_n3d_file.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.read_n3d_file" accesskey="p"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
       
   </div>
   
@@ -247,28 +252,32 @@
     text-align: unset;
 }
 </style>
-<div class="section" id="kineticstoolkit-inversedynamics-calculate-segment-angles">
-<h1>kineticstoolkit.inversedynamics.calculate_segment_angles<a class="headerlink" href="#kineticstoolkit-inversedynamics-calculate-segment-angles" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="kineticstoolkit-kinematics-track-cluster">
+<h1>kineticstoolkit.kinematics.track_cluster<a class="headerlink" href="#kineticstoolkit-kinematics-track-cluster" title="Permalink to this headline">¶</a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="kineticstoolkit.inversedynamics.calculate_segment_angles">
-<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.inversedynamics.</span></span><span class="sig-name descname"><span class="pre">calculate_segment_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ts</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.inversedynamics.calculate_segment_angles" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the segment’s projection angles in the three axes.</p>
+<dt class="sig sig-object py" id="kineticstoolkit.kinematics.track_cluster">
+<span class="sig-prename descclassname"><span class="pre">kineticstoolkit.kinematics.</span></span><span class="sig-name descname"><span class="pre">track_cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">markers</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">/</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cluster</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_lcs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lcs_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'LCS'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#kineticstoolkit.kinematics.track_cluster" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a cluster to a TimeSeries of point trajectories.</p>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The function calculate_segment_angles is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
+<p>The function track_cluster is unstable, which means it may not be tested or settled yet. Please avoid using this function in production code.</p>
+<p>Fits a cluster to a TimeSeries and reconstructs a solidified version of
+all the points defined in this cluster.</p>
 </div>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ts</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – <p>A TimeSeries with the following data keys:</p>
-<ul class="simple">
-<li><p>ProximalJointPosition (Nx4)</p></li>
-<li><p>DistalJointPosition (Nx4)</p></li>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>markers</strong> (<a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><code class="xref py py-class docutils literal notranslate"><span class="pre">TimeSeries</span></code></a>) – A TimeSeries that contains point trajectories as Nx4 arrays.</p></li>
+<li><p><strong>cluster</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">Dict</span></code>[<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code>]) – A cluster definition as returned by ktk.kinematics.create_cluster().</p></li>
+<li><p><strong>include_lcs</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bool</span></code>) – Optional. If True, return an additional entry in the output
+TimeSeries, that is the Nx4x4 frame series corresponding to the
+tracked cluster’s local coordinate system. The default is False.</p></li>
+<li><p><strong>lcs_name</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code>) – Optional. Name of the TimeSeries data entry for the tracked local
+coordinate system. The default is ‘LCS’.</p></li>
 </ul>
-</p>
 </dd>
 <dt class="field-even">Returns</dt>
-<dd class="field-even"><p>A copy of the input timeseries plus the ‘SegmentAngles’ data
-key, represented as an Nx3 numpy array.</p>
+<dd class="field-even"><p>A TimeSeries with the trajectories of all cluster points.</p>
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p><a class="reference internal" href="kineticstoolkit.TimeSeries.html#kineticstoolkit.TimeSeries" title="kineticstoolkit.TimeSeries">TimeSeries</a></p>
@@ -284,8 +293,8 @@ key, represented as an Nx3 numpy array.</p>
           </div>
           <footer>
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
-        <a href="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates.html" class="btn btn-neutral float-right" title="kineticstoolkit.inversedynamics.calculate_segment_rotation_rates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-        <a href="kineticstoolkit.inversedynamics.calculate_proximal_wrench.html" class="btn btn-neutral float-left" title="kineticstoolkit.inversedynamics.calculate_proximal_wrench" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="kineticstoolkit.kinematics.track_rigid_bodies.html" class="btn btn-neutral float-right" title="kineticstoolkit.kinematics.track_rigid_bodies" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="kineticstoolkit.kinematics.read_n3d_file.html" class="btn btn-neutral float-left" title="kineticstoolkit.kinematics.read_n3d_file" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

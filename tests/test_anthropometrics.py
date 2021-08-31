@@ -78,18 +78,13 @@ def test_define_coordinate_systems():
     ] + [[0.1, -0.03, 0, 0]]
 
     # Infer missing makers
-    markers.merge(
-        ktk.anthropometrics.infer_pelvis_joint_centers(markers, 'M'),
-        in_place=True,
-    )
-    markers.merge(
-        ktk.anthropometrics.infer_thorax_joint_centers(markers, 'M'),
-        in_place=True,
-    )
-    markers.merge(
-        ktk.anthropometrics.infer_extremity_joint_centers(markers),
-        in_place=True,
-    )
+    for segment in ['Pelvis', 'Thorax', 'Extremities']:
+        markers.merge(
+            ktk.anthropometrics.infer_joint_centers(
+                markers, segment=segment, sex='M'
+            ),
+            in_place=True,
+        )
 
     # Generate segment clusters
     clusters = {}
@@ -178,10 +173,11 @@ def test_define_coordinate_systems():
                 f'LateralMalleolus{side}',
                 f'MedialMalleolus{side}',
                 f'KneeJointCenter{side}',
+                f'AnkleJointCenter{side}',
             ]
         )
 
-    # Test if everything can be built again
+    # Test if everything can be built again using these clusters.
     test_markers = kinematics['kinematics']['Markers'].copy()
     for old_name in rename_dict:
         test_markers.rename_data(
@@ -189,54 +185,37 @@ def test_define_coordinate_systems():
 
     for segment in clusters:
         test_markers.merge(
-            ktk.kinematics.fit_cluster(
+            ktk.kinematics.track_cluster(
                 test_markers,
                 clusters[segment]
             ),
             in_place=True,
         )
 
-    ktk.Player(test_markers, segments=ktk.anthropometrics.LINKS)
+    # Create segment trajectories
+    bodies = markers.copy(copy_data=False, copy_data_info=False)
+    for segment in [
+        'Pelvis',
+        'Thorax',
+        'HeadNeck',
+        'ArmR',
+        'ArmL',
+        'ForearmR',
+        'ForearmL',
+        'HandR',
+        'HandL',
+        'ThighR',
+        'ThighL',
+        'LegR',
+        'LegL'
+    ]:
+        bodies.merge(
+            ktk.anthropometrics.track_local_coordinate_systems(
+                markers, segment),
+            in_place=True,
+        )
 
-    # # Generate the local coordinate systems
-    # rigid_body_definitions = {}
-
-    # for segment in ['Pelvis', 'Thorax']:
-    #     rigid_body_definitions[segment] = \
-    #         ktk.anthropometrics.define_local_coordinate_system(
-    #             markers,
-    #             segment
-    #     )
-
-    # rigid_body_definitions['HeadNeck'] = \
-    #     ktk.anthropometrics.define_head_neck_coordinate_system(markers)
-    # rigid_body_definitions['ArmR'] = \
-    #     ktk.anthropometrics.define_arm_coordinate_system(markers, side='R')
-    # rigid_body_definitions['ArmL'] = \
-    #     ktk.anthropometrics.define_arm_coordinate_system(markers, side='L')
-    # rigid_body_definitions['ForearmR'] = \
-    #     ktk.anthropometrics.define_forearm_coordinate_system(markers, side='R')
-    # rigid_body_definitions['ForearmL'] = \
-    #     ktk.anthropometrics.define_forearm_coordinate_system(markers, side='L')
-    # rigid_body_definitions['HandR'] = \
-    #     ktk.anthropometrics.define_hand_coordinate_system(markers, side='R')
-    # rigid_body_definitions['HandL'] = \
-    #     ktk.anthropometrics.define_hand_coordinate_system(markers, side='L')
-    # rigid_body_definitions['ThighR'] = \
-    #     ktk.anthropometrics.define_thigh_coordinate_system(markers, side='R')
-    # rigid_body_definitions['ThighL'] = \
-    #     ktk.anthropometrics.define_thigh_coordinate_system(markers, side='L')
-    # rigid_body_definitions['LegR'] = \
-    #     ktk.anthropometrics.define_leg_coordinate_system(markers, side='R')
-    # rigid_body_definitions['LegL'] = \
-    #     ktk.anthropometrics.define_leg_coordinate_system(markers, side='L')
-
-    # # Track these rigid bodies
-    # rigid_bodies = ktk.kinematics.track_rigid_bodies(
-    #     markers, rigid_body_definitions)
-
-    # # Print the results
-    # ktk.Player(markers, rigid_bodies, segments=ktk.anthropometrics.LINKS)
+    ktk.Player(test_markers, bodies, segments=ktk.anthropometrics.LINKS)
 
 
 if __name__ == "__main__":

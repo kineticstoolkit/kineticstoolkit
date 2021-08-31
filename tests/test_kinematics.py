@@ -270,7 +270,7 @@ def test_reconstruction():
         markers_probing = ktk.kinematics.read_c3d_file(file_name)
 
         # Find the probe tip
-        markers_probing = ktk.kinematics.fit_cluster(
+        markers_probing = ktk.kinematics.track_cluster(
             markers_probing, clusters['Probe'])
 
         # Extend the cluster
@@ -311,7 +311,7 @@ def test_reconstruction():
 
     for cluster in clusters:
         markers = markers.merge(
-            ktk.kinematics.fit_cluster(markers, clusters[cluster])
+            ktk.kinematics.track_cluster(markers, clusters[cluster])
         )
 
 

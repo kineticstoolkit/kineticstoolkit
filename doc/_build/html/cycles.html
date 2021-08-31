@@ -478,8 +478,8 @@ div.rendered_html tbody tr:hover {
 <h1>Detecting and normalizing cycles<a class="headerlink" href="#Detecting-and-normalizing-cycles" title="Permalink to this headline">¶</a></h1>
 <p>The <a class="reference internal" href="api/kineticstoolkit.cycles.html"><span class="doc">cycles</span></a> module allows detecting cycles in TimeSeries, time-normalize these cycles and find the most repeatable ones.</p>
 <p>In this tutorial, we will use kinetics data from wheelchair propulsion using a csv file.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -496,9 +496,24 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+       &#39;Index&#39;: &lt;array of shape (7777,)&gt;
+    &#39;Channels&#39;: &lt;array of shape (7777, 6)&gt;
+      &#39;Forces&#39;: &lt;array of shape (7777, 4)&gt;
+     &#39;Moments&#39;: &lt;array of shape (7777, 4)&gt;
+       &#39;Angle&#39;: &lt;array of shape (7777,)&gt;
+}
+</pre></div></div>
+</div>
 <p>At this point, we have a TimeSeries that contains several signals, including forces and moments.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -510,12 +525,19 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_4_0.png" src="_images/cycles_4_0.png" />
+</div>
+</div>
 <div class="section" id="Detecting-cycles">
 <h2>Detecting cycles<a class="headerlink" href="#Detecting-cycles" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="api/kineticstoolkit.cycles.detect_cycles.html"><span class="doc">cycles.detect_cycles()</span></a> function allows detecting cycles in a TimeSeries, using one specified signal from this TimeSeries. Here, this signal will be the total force Ftot.</p>
 <p>We first calculate it based on the three force components and we add it as a new data of the TimeSeries.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -525,9 +547,16 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_6_0.png" src="_images/cycles_6_0.png" />
+</div>
+</div>
 <p>Now let see how detecting cycles works. We will define the threshold values in Ftot visually based on the figure above.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -539,9 +568,16 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_8_0.png" src="_images/cycles_8_0.png" />
+</div>
+</div>
 <p>We observe that most cycles are well identified, but a short spike at the beginning was wrongly identified as a cycle. This in fact is not a cycle, but a synchronization spike used to sync data between many instruments. We can reject such too short “cycles” by specifying minimal durations for both phases.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -554,9 +590,16 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_10_0.png" src="_images/cycles_10_0.png" />
+</div>
+</div>
 <p>Now the synchronization spike has been ignored. However we also see that the two last cycles seem different: this is because they are braking pushes instead of propulsion pushes. While the last one will be difficult to remove automatically, we could remove the second-to-last by using a minimal peak value for the push phase.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -570,13 +613,20 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_12_0.png" src="_images/cycles_12_0.png" />
+</div>
+</div>
 <p>We observe an <code class="docutils literal notranslate"><span class="pre">_</span></code> event at about 27 seconds. There are in fact such <code class="docutils literal notranslate"><span class="pre">_</span></code> events at the end of each cycle (look how each next push’s ‘p’ letter seems underlined). This is because the <code class="docutils literal notranslate"><span class="pre">detect_cycles</span></code> function adds three events for each cycle: - Beginning of phase 1: <code class="docutils literal notranslate"><span class="pre">event_name1</span></code> - Transition from phase 1 to phase 2: <code class="docutils literal notranslate"><span class="pre">event_name2</span></code> - Cycle end: <code class="docutils literal notranslate"><span class="pre">_</span></code>.</p>
 </div>
 <div class="section" id="Time-normalizing-cycles">
 <h2>Time-normalizing cycles<a class="headerlink" href="#Time-normalizing-cycles" title="Permalink to this headline">¶</a></h2>
 <p>Once the cycles have been detected, we can time-normalize these cycles using <a class="reference internal" href="api/kineticstoolkit.cycles.time_normalize.html"><span class="doc">cycles.time_normalize()</span></a> to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -589,9 +639,16 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_15_0.png" src="_images/cycles_15_0.png" />
+</div>
+</div>
 <p>To time-normalize only during the push phase, we define the cycle end as <code class="docutils literal notranslate"><span class="pre">recovery</span></code> instead of <code class="docutils literal notranslate"><span class="pre">_</span></code>. Each of the <strong>13</strong> complete pushes is then normalized from 0 to 100% of the push.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -604,9 +661,16 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_17_0.png" src="_images/cycles_17_0.png" />
+</div>
+</div>
 <p>It is also possible to include data before 0% and after 100% using the <code class="docutils literal notranslate"><span class="pre">span</span></code> parameter. For example, to include pre-push and post-release data:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -619,14 +683,21 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_19_0.png" src="_images/cycles_19_0.png" />
+</div>
+</div>
 <p>Note that in this case, each time point represents 1% of a push cycle, but the TimeSeries wrap every 145 points (0 to 19 is the pre-push for the first cycle, 20 to 119 is the first push, 120 to 144 is the post-release for the first cycle, etc.).</p>
 </div>
 <div class="section" id="Combining-the-cycles">
 <h2>Combining the cycles<a class="headerlink" href="#Combining-the-cycles" title="Permalink to this headline">¶</a></h2>
 <p>Time-normalizing cycles is often performed in the aim of performing further operations such as computing and visualizing the average cycle. Therefore, the next logical step is often to group the cycles into indexable arrays. This can be done using the <a class="reference internal" href="api/kineticstoolkit.cycles.stack.html"><span class="doc">cycles.stack()</span></a> function.</p>
 <p>In this example, we will stack the data from the last computed TimeSeries.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -635,9 +706,25 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+{
+       &#39;Index&#39;: &lt;array of shape (13, 100)&gt;
+    &#39;Channels&#39;: &lt;array of shape (13, 100, 6)&gt;
+      &#39;Forces&#39;: &lt;array of shape (13, 100, 4)&gt;
+     &#39;Moments&#39;: &lt;array of shape (13, 100, 4)&gt;
+       &#39;Angle&#39;: &lt;array of shape (13, 100)&gt;
+        &#39;Ftot&#39;: &lt;array of shape (13, 100)&gt;
+}
+</pre></div></div>
+</div>
 <p>The first dimension of each dictionary’s entry corresponds to the cycles. It now becomes easier to perform operations on cycles. For example, we may want to plot the propulsive moment <code class="docutils literal notranslate"><span class="pre">Mz</span></code> (<code class="docutils literal notranslate"><span class="pre">Moments[2]</span></code>) in each cycle one of top of the other:</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -655,12 +742,19 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_24_0.png" src="_images/cycles_24_0.png" />
+</div>
+</div>
 </div>
 <div class="section" id="Finding-the-most-repeatable-cycles">
 <h2>Finding the most repeatable cycles<a class="headerlink" href="#Finding-the-most-repeatable-cycles" title="Permalink to this headline">¶</a></h2>
 <p>In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different between each other. We can use the <a class="reference internal" href="api/kineticstoolkit.cycles.most_repeatable_cycles.html"><span class="doc">cycles.most_repeatable_cycles()</span></a> function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the <code class="docutils literal notranslate"><span class="pre">Ftot</span></code> signal.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -669,9 +763,18 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[9, 10, 2, 3, 5, 11, 4, 6, 7, 1, 8, 12, 0]
+</pre></div></div>
+</div>
 <p>We see that cycles 12 (last) and 0 (first) were expectedly found as the least repeatable pushes since they are respectively a braking push and an acceleration push. Now let’s make the same plot of <code class="docutils literal notranslate"><span class="pre">Mz</span></code>, but based only on the five most repeatable cycles.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -687,6 +790,13 @@ div.rendered_html tbody tr:hover {
 <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
 <span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
 </pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/cycles_28_0.png" src="_images/cycles_28_0.png" />
 </div>
 </div>
 <p>For more information on cycles, please check the <a class="reference internal" href="api/kineticstoolkit.cycles.html"><span class="doc">API Reference for the cycles module</span></a>.</p>
