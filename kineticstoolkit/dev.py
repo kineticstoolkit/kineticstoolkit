@@ -46,6 +46,8 @@ import json
 def update_version() -> None:  # pragma: no cover
     """Update VERSION based on the current branch name."""
     # Get the current branch name
+    cwd = os.getcwd()
+    os.chdir(kineticstoolkit.config.root_folder)
     branch_name = subprocess.check_output(
         ['git', 'branch', '--show-current']).decode()
     if 'stable' in branch_name:
@@ -60,6 +62,14 @@ def update_version() -> None:  # pragma: no cover
             + '/kineticstoolkit/DEVELOPMENT_VERSION',
             kineticstoolkit.config.root_folder
             + '/kineticstoolkit/VERSION')
+
+    # Update version in config module
+    with open(
+            kineticstoolkit.config.root_folder
+            + '/kineticstoolkit/VERSION', 'r') as fid:
+        kineticstoolkit.config.version = fid.read()
+
+    os.chdir(cwd)
 
 
 def run_unit_tests() -> None:  # pragma: no cover
@@ -186,23 +196,36 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
         subprocess.call(['make', 'clean'],
                         env=kineticstoolkit.config.env)
 
-    # Generate API
-#    print('Generating API...')
-#     os.environ['SPHINX_APIDOC_OPTIONS'] = (
-# #        'members,undoc-members,autosummary'
-#         'members,undoc-members,autosummary')
-#     subprocess.call(['sphinx-apidoc', '-q', '-e', '-f', '-d', '3',
-#                       '-o', 'api', '../kineticstoolkit',
-#                       'external'])
-
     # Generate site
     print('Generating site...')
     subprocess.call(['make', 'html'], env=kineticstoolkit.config.env)
 
+    # Move site to documentation repository
+    if kineticstoolkit.config.version == 'master':
+        doc_folder = (
+            kineticstoolkit.config.root_folder
+            + '/../kineticstoolkit_doc/master'
+        )
+    else:
+        doc_folder = (
+            kineticstoolkit.config.root_folder
+            + '/../kineticstoolkit_doc/stable'
+        )
+
+    try:
+        os.mkdir(doc_folder)
+    except Exception:
+        pass
+
+    os.rename(
+        kineticstoolkit.config.root_folder + '/doc/_build/html',
+        doc_folder,
+    )
+
     # Open site
     webbrowser.open_new_tab(
-        'file://' + kineticstoolkit.config.root_folder +
-        '/doc/_build/html/index.html')
+        'file://' + doc_folder + '/index.html'
+    )
     os.chdir(cwd)
 
 
