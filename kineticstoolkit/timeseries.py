@@ -967,6 +967,10 @@ class TimeSeries:
             the operation was cancelled by the user, this is a pure copy of
             the original TimeSeries.
 
+        Note
+        ----
+        Matplotlib must be in interactive mode for this function to work.
+
         """
 
         def add_this_event(ts: 'TimeSeries', name: str) -> 'TimeSeries':
@@ -987,6 +991,10 @@ class TimeSeries:
             kineticstoolkit.gui.message("")
             return int(np.argmin(np.abs(event_times - this_time)))
 
+        # Set Matplotlib interactive mode
+        isinteractive = plt.isinteractive()
+        plt.ion()
+
         ts = self.copy()
 
         if isinstance(name, str):
@@ -998,9 +1006,6 @@ class TimeSeries:
         ts.plot(data_keys, _raise_on_no_data=True)
 
         while True:
-            # Sort the events
-            ts = ts.sort_events(unique=False)
-
             # Populate the choices to the user
             choices = [f"Add '{s}'" for s in event_names]
 
@@ -1111,6 +1116,8 @@ class TimeSeries:
                 choice == choice_index['close']
             ):
                 plt.close(fig)
+                if not isinteractive:
+                    plt.ioff()
                 return ts
 
             elif (choice == -1) or (
@@ -1118,9 +1125,12 @@ class TimeSeries:
                 and (choice == choice_index['cancel'])
             ):
                 plt.close(fig)
+                if not isinteractive:
+                    plt.ioff()
                 return self.copy()
 
             # Refresh
+            ts.sort_events(unique=False, in_place=True)
             axes = plt.axis()
             plt.cla()
             ts.plot(data_keys, _raise_on_no_data=True)
@@ -2331,7 +2341,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.        
+            original TimeSeries intact. The default is False.
 
         Returns
         -------
