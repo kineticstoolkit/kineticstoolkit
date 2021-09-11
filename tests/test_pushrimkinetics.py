@@ -83,7 +83,8 @@ def test_calculate_forces_and_moments():
         ktk.config.root_folder +
         '/data/pushrimkinetics/' +
         'sample_swl_overground_propulsion_withrubber.csv',
-        file_format='smartwheel')
+        file_format='smartwheel',
+    )
 
     test = kinetics.copy()
     test = ktk.pushrimkinetics.calculate_forces_and_moments(
@@ -103,6 +104,28 @@ def test_calculate_forces_and_moments():
     assert np.allclose(np.std(np.abs(test.data['Moments']), axis=0),
                        np.std(np.abs(kinetics.data['Moments']), axis=0),
                        atol=2)
+
+
+def test_calculate_velocity_power():
+    """No-regression test for calculate_velocity and calculate_power."""
+    kinetics = ktk.pushrimkinetics.read_file(
+        ktk.config.root_folder +
+        '/data/pushrimkinetics/' +
+        'sample_swl_overground_propulsion_withrubber.csv',
+        file_format='smartwheel',
+    )
+
+    kinetics = ktk.pushrimkinetics.calculate_velocity(kinetics)
+    assert np.allclose([
+        np.mean(kinetics.data['Velocity']),
+        np.std(kinetics.data['Velocity']),
+    ], [2.875997177730561, 0.8584197191949383])
+
+    kinetics = ktk.pushrimkinetics.calculate_power(kinetics)
+    assert np.allclose(
+        kinetics.data['Velocity'] * kinetics.data['Moments'][:, 2],
+        kinetics.data['Power']
+    )
 
 
 if __name__ == "__main__":

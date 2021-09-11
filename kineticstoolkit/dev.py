@@ -213,7 +213,7 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
         )
 
     try:
-        os.mkdir(doc_folder)
+        shutil.rmtree(doc_folder)
     except Exception:
         pass
 
