@@ -1262,7 +1262,7 @@ class TimeSeries():
         # Plot this list
         unit_str = ''
         for unit in unit_set:
-            if len(unit_str) > 1:
+            if len(unit_str) > 0:
                 unit_str += ', '
             unit_str += unit
 
