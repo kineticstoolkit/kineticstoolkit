@@ -161,7 +161,7 @@ def save(filename: str, variable: Any) -> None:
         json.dump(variable, fid, cls=CustomEncoder, indent='\t')
 
     shutil.make_archive(temp_folder, 'zip', temp_folder)
-    os.rename(temp_folder + '.zip', filename)
+    shutil.move(temp_folder + '.zip', filename)
     shutil.rmtree(temp_folder)
 
 
