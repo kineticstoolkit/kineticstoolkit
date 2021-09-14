@@ -1087,17 +1087,6 @@ class TimeSeries:
                 ):
                     ts.events = []
 
-                event_index = get_event_index(ts)
-                try:
-                    ts.events.pop(event_index)
-                except IndexError:
-                    li.button_dialog(
-                        "No event was removed.",
-                        choices=['OK'],
-                        icon='error',
-                        **WINDOW_PLACEMENT,
-                    )
-
             elif ('move' in choice_index) and (choice == choice_index['move']):
                 event_index = get_event_index(ts)
                 event_name = ts.events[event_index].name
