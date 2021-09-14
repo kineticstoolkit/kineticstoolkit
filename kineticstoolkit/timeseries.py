@@ -1000,7 +1000,7 @@ class TimeSeries:
         if isinstance(name, str):
             event_names = [name]
         else:
-            event_names = name
+            event_names = deepcopy(name)
 
         fig = plt.figure()
         ts.plot(data_keys, _raise_on_no_data=True)
