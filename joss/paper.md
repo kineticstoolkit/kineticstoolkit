@@ -37,18 +37,18 @@ Kinetics Toolkit is accessible at `https://kineticstoolkit.uqam.ca` and is distr
 # Statement of need
 
 The last decade has been marked by the development of several powerful open-source software programs in biomechanics. Examples include:
-Opensim [@seth_opensim_2018],
-SimBody [@sherman_simbody_2011],
-Biordb [@michaud_biorbd_2021],
-BiomechZoo [@dixon_biomechzoo_2017],
-Pinocchio [@carpentier_pinocchio_2019],
-FreeBody [@cleather_development_2015],
-CusToM [@muller_custom_2019],
+OpenSim [@seth_opensimsimulatingmusculoskeletal_2018],
+SimBody [@sherman_simbodymultibodydynamics_2011],
+Biordb [@michaud_biorbdpythonmatlab_2021],
+BiomechZoo [@dixon_biomechzooopensourcetoolbox_2017],
+Pinocchio [@carpentier_pinocchiolibraryfast_2019],
+FreeBody [@cleather_developmentsegmentbasedmusculoskeletal_2015],
+CusToM [@muller_custommatlabtoolbox_2019],
 as well as many others. However, many of these tools are rather specific (e.g., musculoskeletal modelling, neuromuscular optimization, etc.) and not especially well suited for performing generic processing of human motion data such as filtering data, segmenting cycles, changing coordinate systems, etc. Other software programs, while being open source, rely on expensive closed-source software such as Matlab (Mathworks LCC, Naticks, USA).
 
-While Matlab has a long and successful history in biomechanical analysis, it is quickly becoming challenged by the free and open-source Python scientific ecosystem, particularly by powerful packages, including Numpy [@harris_array_2020], Matplotlib [@hunter_matplotlib_2007], SciPy [@virtanen_scipy_2020] and Pandas [@mckinney_pandas_2011]. Since Python is one of the easiest programming languages to learn, it may be an ideal tool for new programmers in biomechanics.
+While Matlab has a long and successful history in biomechanical analysis, it is quickly becoming challenged by the free and open-source Python scientific ecosystem, particularly by powerful packages, including Numpy [@harris_array_2020], Matplotlib [@hunter_matplotlib2dgraphics_2007], SciPy [@virtanen_scipyfundamentalalgorithms_2020] and Pandas [@mckinney_pandasfoundationalpython_2011]. Since Python is regarded as a robust introductory programming language for problem solving [@fangohr_comparisonmatlabpython_2004], it may be an ideal tool for new programmers in biomechanics.
 
-The Pyomeca toolbox [@martinez_pyomeca_2020] is a Python library for biomechanical analysis. It uses an object-oriented programming paradigm where each data class (`Angles`, `Rototrans`, `Analogs`, `Markers`) subclasses xarray [@hoyer_xarray_2017], and where the data processing functions are accessible as class methods. While this paradigm may be compelling from a programmer's perspective, it requires users to master xarray and object-oriented concepts such as class inheritance, which are not as straightforward to learn, especially for new programmers who may just be starting out with Python and Numpy.
+The Pyomeca toolbox [@martinez_pyomecaopensourceframework_2020] is a Python library for biomechanical analysis. It uses an object-oriented programming paradigm where each data class (`Angles`, `Rototrans`, `Analogs`, `Markers`) subclasses xarray [@hoyer_xarrayndlabeled_2017], and where the data processing functions are accessible as class methods. While this paradigm may be compelling from a programmer's perspective, it requires users to master xarray and object-oriented concepts such as class inheritance, which are not as straightforward to learn, especially for new programmers who may just be starting out with Python and Numpy.
 
 With this beginner audience in mind, Kinetics Toolkit is a Python package for generic biomechanical analysis of human motion. It is a user-friendly tool for people with little experience in programming, yet elegant, fun to use and still appealing to experienced programmers. Designed with a mainly procedural programming paradigm, its data processing functions can be used directly as examples so that users can build their own scripts, functions, and even modules, and therefore make Kinetics Toolkit fit their own specific needs.
 
@@ -81,7 +81,7 @@ All the data processing functions are included in submodules, for example:
 - `filters` to apply frequency or time-domain filters to the TimeSeries data;
 - `cycles` to detect and time-normalize cycles;
 - `geometry` to express points, vectors, and frames in different global coordinate systems;
-- `kinematics` to work with C3D files -- thanks to the `ezc3d` library [@michaud_ezc3d_2021] -- and to perform higher-level manipulations on markers and rigid bodies;
+- `kinematics` to work with C3D files -- thanks to the `ezc3d` library [@michaud_ezc3deasyc3d_2021] -- and to perform higher-level manipulations on markers and rigid bodies;
 - etc.
 
 
