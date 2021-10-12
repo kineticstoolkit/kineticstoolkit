@@ -37,13 +37,13 @@ import kineticstoolkit as ktk  # for doctests
 
 
 def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.ndarray]:
-    """Interpolate a given data key in a TimeSeries."""
+    """Interpolate NaNs in a given data key in a TimeSeries."""
     ts = ts.get_subset(key)
     nan_index = ts.isnan(key)
 
     if not np.all(~nan_index):
         # There were NaNs, issue a warning.
-        ts.fill_missing_samples(0)
+        ts = ts.fill_missing_samples(0)
         warnings.warn('NaNs found in the signal. They have been '
                       'interpolated before filtering, and then put '
                       'back in the filtered data.')

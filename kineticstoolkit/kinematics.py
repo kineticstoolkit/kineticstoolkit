@@ -27,8 +27,10 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import unstable, directory
-from typing import Sequence, Dict, Any
+from kineticstoolkit.decorators import unstable, directory, deprecated
+from os.path import exists
+from typing import Sequence, Dict, Any, List, Union
+from copy import deepcopy
 
 import numpy as np
 import warnings
@@ -37,8 +39,10 @@ import struct  # To unpack data from N3D files
 try:
     import ezc3d
 except ModuleNotFoundError:
-    warnings.warn('Could not load ezc3d. Function kinematics.read_c3d_file '
-                  'will not work.')
+    warnings.warn(
+        "Could not load ezc3d. Function kinematics.read_c3d_file "
+        "will not work."
+    )
 
 
 def read_c3d_file(filename: str) -> TimeSeries:
@@ -48,10 +52,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
     The markers positions are returned in a TimeSeries where each marker
     corresponds to a data key. Each marker position is expressed in this form:
 
-        array([[x0, y0, z0, 1.],
-               [x1, y1, z1, 1.],
-               [x2, y2, z2, 1.],
-               [...           ]])
+    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
 
     Parameters
     ----------
@@ -73,7 +74,10 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
     """
     # Create the reader
-    reader = ezc3d.c3d(filename)
+    if isinstance(filename, str) and exists(filename):
+        reader = ezc3d.c3d(filename)
+    else:
+        raise FileNotFoundError(f"File {filename} was not found.")
 
     # Create the output timeseries
     output = TimeSeries()
@@ -90,7 +94,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
     elif point_unit == 'm':
         point_factor = 1
     else:
-        raise(ValueError("Point unit must be 'm' or 'mm'."))
+        raise (ValueError("Point unit must be 'm' or 'mm'."))
 
     n_labels = len(labels)
     for i_label in range(n_labels):
@@ -100,10 +104,11 @@ def read_c3d_file(filename: str) -> TimeSeries:
         label_name = labels[i_label]
 
         output.data[label_name] = np.array(
-            [point_factor, point_factor, point_factor, 1] *
-            reader['data']['points'][:, i_label, :].T)
+            [point_factor, point_factor, point_factor, 1]
+            * reader['data']['points'][:, i_label, :].T
+        )
 
-        output.add_data_info(label_name, 'Unit', 'm')
+        output = output.add_data_info(label_name, 'Unit', 'm')
 
     # Create the timeseries time vector
     output.time = np.arange(n_frames) / point_rate
@@ -136,8 +141,9 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     - The point unit in the output c3d is m.
 
     """
-    sample_rate = ((markers.time.shape[0] - 1) /
-                   (markers.time[-1] - markers.time[0]))
+    sample_rate = (markers.time.shape[0] - 1) / (
+        markers.time[-1] - markers.time[0]
+    )
 
     marker_list = []
     marker_data = np.zeros((4, len(markers.data), len(markers.time)))
@@ -164,17 +170,14 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     c3d.write(filename)
 
 
-def read_n3d_file(filename: str, labels: Sequence[str] = []):
+def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
     """
     Read markers from an NDI N3D file.
 
     The markers positions are returned in a TimeSeries where each marker
     corresponds to a data key. Each marker position is expressed in this form:
 
-            array([[x0, y0, z0, 1.],
-                   [x1, y1, z1, 1.],
-                   [x2, y2, z2, 1.],
-                   [...           ]])
+    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
 
     Parameters
     ----------
@@ -212,7 +215,7 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
         for i_frame in range(n_frames):
             for i_column in range(n_columns):
                 data = struct.unpack('f', fid.read(4))[0]
-                if (data < -1E25):  # technically, it is -3.697314e+28
+                if data < -1e25:  # technically, it is -3.697314e+28
                     data = np.NaN
                 ndi_array[i_frame, i_column] = data
 
@@ -221,8 +224,10 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 
         # Transformation to a TimeSeries
         ts = TimeSeries(
-            time=np.linspace(0, n_frames / collection_frame_frequency,
-                             n_frames))
+            time=np.linspace(
+                0, n_frames / collection_frame_frequency, n_frames
+            )
+        )
 
         for i_marker in range(n_markers):
             if labels != []:
@@ -230,10 +235,15 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
             else:
                 label = f'Marker{i_marker}'
 
-            ts.data[label] = np.block([[
-                ndi_array[:, 3*i_marker:3*i_marker+3],
-                np.ones((n_frames, 1))]])
-            ts.add_data_info(label, 'Unit', 'm')
+            ts.data[label] = np.block(
+                [
+                    [
+                        ndi_array[:, 3 * i_marker: 3 * i_marker + 3],
+                        np.ones((n_frames, 1)),
+                    ]
+                ]
+            )
+            ts = ts.add_data_info(label, 'Unit', 'm')
 
     return ts
 
@@ -351,33 +361,26 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []):
 #            return(the_timeseries)
 
 
-def create_rigid_body_config(
-    markers: TimeSeries,
-    marker_names: Sequence[str]
-) -> Dict[str, Any]:
+@unstable
+def create_cluster(
+        markers: TimeSeries,
+        /,
+        marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
     """
-    Create a rigid body configuration based on a static acquisition.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    Create a cluster definition based on a static acquisition.
 
     Parameters
     ----------
     markers
-        Markers trajectories during the static acquisition.
+        Markers trajectories during a static acquisition.
     marker_names
-        The markers that define the rigid body.
+        The markers that define the cluster.
 
     Returns
     -------
-    Dict[str, Any]
-        Dictionary with the following keys:
-
-        - MarkerNames : the same as marker_names
-        - LocalPoints : a 1x4xM array that indicates the local position of
-          each M marker in the created rigid body config.
+    Dict
+        Dictionary where each entry represents the local position of a marker
+        in an arbitrary coordinate system.
 
     """
     n_samples = len(markers.time)
@@ -387,8 +390,7 @@ def create_rigid_body_config(
     global_points = np.empty((n_samples, 4, n_markers))
 
     for i_marker, marker in enumerate(marker_names):
-        global_points[:, :, i_marker] = \
-            markers.data[marker][:, :]
+        global_points[:, :, i_marker] = markers.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
     global_points = global_points[~geometry.isnan(global_points)]
@@ -396,137 +398,130 @@ def create_rigid_body_config(
     rigid_bodies = geometry.create_frames(
         origin=global_points[:, :, 0],
         x=global_points[:, :, 1] - global_points[:, :, 0],
-        xy=global_points[:, :, 2] - global_points[:, :, 0])
-    local_points = geometry.get_local_coordinates(
-        global_points, rigid_bodies)
+        xy=global_points[:, :, 2] - global_points[:, :, 0],
+    )
+    local_points = geometry.get_local_coordinates(global_points, rigid_bodies)
 
     # Take the average
     local_points = np.array(np.mean(local_points, axis=0))
     local_points = local_points[np.newaxis]
 
-    return {
-        'LocalPoints': local_points,
-        'MarkerNames': marker_names
-    }
+    # Create the output
+    output = {}
+    for i_marker, marker_name in enumerate(marker_names):
+        output[marker_name] = local_points[:, :, i_marker]
+
+    return output
 
 
-def register_markers(
+@unstable
+def extend_cluster(
         markers: TimeSeries,
-        rigid_body_configs: Dict[str, Dict[str, Any]],
-        verbose: bool = False
-) -> TimeSeries:
+        /,
+        cluster: Dict[str, np.ndarray],
+        new_point: str) -> Dict[str, np.ndarray]:
     """
-    Calculate the trajectory of rigid bodies.
-
-    Calculates the trajectory of rigid bodies using
-    `ktk.geometry.register_points`.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    Add a point to an existing cluster.
 
     Parameters
     ----------
     markers
-        Markers trajectories to calculate the rigid body trajectories on.
-    rigid_body_configs
-        A dict where each key is a rigid body configuration, and where
-        each rigid body configuration is a dict with the following
-        keys: 'MarkerNames' and 'LocalPoints'.
-    verbose
-        Optional. Set to True to print the rigid body being computed.
+        TimeSeries that includes the new point trajectory, along with point
+        trajectories from the cluster definition.
+    cluster
+        The source cluster to add a new point to.
+    new_point
+        The name of the point to add (data key of the markers TimeSeries).
+
+    Returns
+    -------
+    Dict[str, np.ndarray]
+        The cluster with the added point.
+
+    """
+    cluster = deepcopy(cluster)
+    frames = _track_cluster_frames(markers, cluster)
+    local_coordinates = geometry.get_local_coordinates(
+        markers.data[new_point], frames)
+    cluster[new_point] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
+    return cluster
+
+
+@unstable
+def track_cluster(
+        markers: TimeSeries,
+        /,
+        cluster: Dict[str, np.ndarray],
+        *,
+        include_lcs: bool = False,
+        lcs_name: str = 'LCS') -> TimeSeries:
+    """
+    Fit a cluster to a TimeSeries of point trajectories.
+
+    Fits a cluster to a TimeSeries and reconstructs a solidified version of
+    all the points defined in this cluster.
+
+    Parameters
+    ----------
+    markers
+        A TimeSeries that contains point trajectories as Nx4 arrays.
+    cluster
+        A cluster definition as returned by ktk.kinematics.create_cluster().
+    include_lcs
+        Optional. If True, return an additional entry in the output
+        TimeSeries, that is the Nx4x4 frame series corresponding to the
+        tracked cluster's local coordinate system. The default is False.
+    lcs_name
+        Optional. Name of the TimeSeries data entry for the tracked local
+        coordinate system. The default is 'LCS'.
 
     Returns
     -------
     TimeSeries
-        TimeSeries where each data key is a Nx4x4 series of rigid
-        transformations.
+        A TimeSeries with the trajectories of all cluster points.
+
     """
-    rigid_bodies = TimeSeries(time=markers.time,
-                              time_info=markers.time_info,
-                              events=markers.events)
+    out = markers.copy(copy_data=False, copy_data_info=False)
 
-    for rigid_body_name in rigid_body_configs:
-        if verbose is True:
-            print(f'Computing trajectory of rigid body {rigid_body_name}...')
+    # Track the cluster
+    frames = _track_cluster_frames(markers, cluster)
 
-        # Set local and global points
-        local_points = rigid_body_configs[rigid_body_name]['LocalPoints']
+    for marker in cluster:
+        out.data[marker] = geometry.get_global_coordinates(
+            cluster[marker], frames)
 
-        global_points = np.empty(
-            (len(markers.time), 4, local_points.shape[2]))
-        for i_marker in range(global_points.shape[2]):
-            marker_name = rigid_body_configs[
-                rigid_body_name]['MarkerNames'][i_marker]
-            if marker_name in markers.data:
-                global_points[:, :, i_marker] = markers.data[marker_name]
-            else:
-                global_points[:, :, i_marker] = np.nan
+    if include_lcs:
+        out.data[lcs_name] = frames
 
-        (local_points, global_points) = geometry._match_size(
-            local_points, global_points)
-
-        # Compute the rigid body trajectory
-        rigid_bodies.data[rigid_body_name] = geometry.register_points(
-            global_points, local_points)
-
-    return rigid_bodies
+    return out
 
 
-def create_virtual_marker_config(
+def _track_cluster_frames(
         markers: TimeSeries,
-        rigid_bodies: TimeSeries,
-        marker_name: str,
-        rigid_body_name: str
-) -> Dict[str, Any]:
-    """
-    Create a virtual marker configuration based on a probing acquisition.
+        cluster: Dict[str, np.ndarray]) -> np.ndarray:
+    """Track a cluster and return its frame series."""
+    # Set local and global points
+    marker_names = cluster.keys()
+    stacked_local_points = np.dstack(
+        [cluster[_] for _ in marker_names])
 
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    global_points = np.empty(
+        (len(markers.time), 4, stacked_local_points.shape[2])
+    )
 
-    Parameters
-    ----------
-    markers
-        Markers trajectories during the probing acquisition. This
-        TimeSeries must have at least marker_name in its data keys.
-    rigid_bodies
-        Rigid body trajectories during this probing acquisition. This
-        TimeSeries must have at least rigid_body_name in its data keys.
-    marker_name
-        Name of the marker to express in local coordinates.
-    rigid_body_name
-        Name of the rigid body to express marker_name in relation to.
+    for i_marker, marker_name in enumerate(marker_names):
+        if marker_name in markers.data:
+            global_points[:, :, i_marker] = markers.data[marker_name]
+        else:
+            global_points[:, :, i_marker] = np.nan
 
-    Returns
-    -------
-    Dict[str, Any]
-        Dictionary with the following keys:
+    (stacked_local_points, global_points) = geometry._match_size(
+        stacked_local_points, global_points
+    )
 
-        - RigidBodyName : Name of the virtual marker's rigid body
-        - LocalPoint : Local position of this marker in the reference frame
-          defined by the rigid body RigidBodyName. LocalPoint is expressed as
-          a 1x4 array.
-
-    """
-    marker = markers.data[marker_name]
-    rigid_body = rigid_bodies.data[rigid_body_name]
-
-    local_points = geometry.get_local_coordinates(marker, rigid_body)
-    to_keep = ~geometry.isnan(local_points)
-
-    if np.all(to_keep is False):
-        warnings.warn(f'There are no frame where both {marker_name} and'
-                      f'{rigid_body_name} are visible at the same time.')
-
-    local_points = local_points[to_keep]
-    local_points = np.mean(local_points, axis=0)[np.newaxis]
-
-    return {'RigidBodyName': rigid_body_name,
-            'LocalPoint': local_points}
+    # Track the cluster
+    frames = geometry.register_points(global_points, stacked_local_points)
+    return frames
 
 
 @unstable
@@ -536,10 +531,10 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
     Parameters
     ----------
-    markers : TimeSeries
+    markers
         Markers trajectories.
 
-    filename : str
+    filename
         Name of the trc file to create.
 
     """
@@ -555,10 +550,14 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
     # Open file
     with open(filename, 'w') as fid:
         fid.write(f'PathFileType\t4\t(X/Y/Z)\t{filename}\n')
-        fid.write('DataRate\tCameraRate\tNumFrames\tNumMarkers\tUnits\t'
-                  'OrigDataRate\tOrigDataStartFrame\tOrigNumFrames\n')
-        fid.write(f'{data_rate}\t{camera_rate}\t{n_frames}\t{n_markers}\t'
-                  f'{units}\t{data_rate}\t1\t{n_frames}\n')
+        fid.write(
+            'DataRate\tCameraRate\tNumFrames\tNumMarkers\tUnits\t'
+            'OrigDataRate\tOrigDataStartFrame\tOrigNumFrames\n'
+        )
+        fid.write(
+            f'{data_rate}\t{camera_rate}\t{n_frames}\t{n_markers}\t'
+            f'{units}\t{data_rate}\t1\t{n_frames}\n'
+        )
 
         # Write marker names
         fid.write('Frame#\tTime')
@@ -574,14 +573,193 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
         # Write trajectories
         for i_frame in range(n_frames):
-            fid.write(f'{i_frame+1}\t'
-                      '{:.3f}'.format(markers.time[i_frame]))
+            fid.write(f'{i_frame+1}\t' '{:.3f}'.format(markers.time[i_frame]))
             for key in markers.data:
                 fid.write(
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 0]) +
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 1]) +
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 2]))
+                    '\t{:.5f}'.format(markers.data[key][i_frame, 0])
+                    + '\t{:.5f}'.format(markers.data[key][i_frame, 1])
+                    + '\t{:.5f}'.format(markers.data[key][i_frame, 2])
+                )
             fid.write('\n')
+
+
+# %% Deprecated
+@unstable
+@deprecated(since='master', until='master', details="Use create_cluster().")
+def define_rigid_body(
+        kinematics: TimeSeries,
+        marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
+    """
+    Create a generic rigid body definition based on a static acquisition.
+
+    Parameters
+    ----------
+    kinematics
+        Markers trajectories during a static acquisition.
+    marker_names
+        The markers that define the rigid body.
+
+    Returns
+    -------
+    Dict
+        Dictionary where each entry represents the local position of a point
+        (e.g., marker name). The key is the name of the point, the value is a
+        1x4 array that indicates the local position of this point in the rigid
+        body's local coordinate system.
+
+    """
+    return create_cluster(kinematics, marker_names)
+
+
+@unstable
+@deprecated(since='master', until='master', details="Use track_clusters().")
+def track_rigid_body(
+        kinematics: TimeSeries,
+        /,
+        local_points: Dict[str, np.ndarray],
+        label: str = 'Trajectory',
+        *,
+        include_rigid_body: bool = True,
+        include_markers: bool = False) -> TimeSeries:
+    """
+    Track a rigid body from markers trajectories.
+
+    This function tracks the specified rigid body in a TimeSeries that
+    contains the required markers, and adds the tracked rigid body to a copy
+    of the input TimeSeries as a Nx4x4 series of frames.
+
+    Parameters
+    ----------
+    kinematics
+        TimeSeries that contains at least the trajectories of the markers
+        specified in rigid_body_definition.
+    local_points
+        A dict where each key is a point name and its corresponding value is
+        its local coordinates, as returned by
+        `ktk.kinematics.define_rigid_body()`.
+    label
+        Name of the rigid body, that will be the data key in the output
+        TimeSeries.
+    include_rigid_body: Optional.
+        Include the tracked rigid body in the output TimeSeries as an Nx4x4
+        series. The default is True.
+    include_markers: Optional.
+        Include the reconstructed markers in the output TimeSeries as a Nx4
+        series. Every marker of the rigid body definition is recontructed. The
+        default is False.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries that contains the trajectory of the tracked rigid body.
+    """
+    return track_rigid_bodies(
+        kinematics,
+        {label: local_points},
+        include_rigid_bodies=include_rigid_body,
+        include_markers=include_markers
+    )
+
+
+@unstable
+@deprecated(since='master', until='master', details="No replacement yet.")
+def track_rigid_bodies(
+        markers: TimeSeries,
+        /,
+        definitions: Dict[str, Dict[str, np.ndarray]],
+        *,
+        include_rigid_bodies: bool = True,
+        include_markers: bool = False) -> TimeSeries:
+    """
+    Track rigid bodies from markers trajectories.
+
+    Parameters
+    ----------
+    markers
+        TimeSeries that contains the trajectories of the markers specified
+        in the rigid body definitions.
+    definitions
+        A dict where each key is a rigid body name and its value is a dict
+        of local coordinates as returned by
+        `ktk.kinematics.define_rigid_body()`.
+    include_rigid_bodies: Optional.
+        Include the tracked rigid bodies in the output TimeSeries as an Nx4x4
+        series. The default is True.
+    include_markers: Optional.
+        Include the reconstructed markers in the output TimeSeries as a Nx4
+        series. Every marker of the rigid body definitions is recontructed. The
+        default is False.
+
+    Returns
+    -------
+    TimeSeries
+        A TimeSeries that contains the trajectory of the tracked rigid bodies.
+
+    """
+    out = markers.copy(copy_data=False, copy_data_info=False)
+    for cluster in definitions:
+        out.data[cluster] = _track_cluster_frames(
+            markers, definitions[cluster])
+    return out
+
+
+@unstable
+@deprecated(since='master', until='master', details="Use extend_cluster().")
+def define_local_position(
+        kinematics: TimeSeries,
+        source_name: str,
+        rigid_body_name: str) -> np.ndarray:
+    """
+    Define a point's local position based on a static or probing acquisition.
+
+    Ideally, the acquisition should be a short static acquisition and every
+    required marker must be visible at the same time at least once.
+
+    Parameters
+    ----------
+    kinematics
+        TimeSeries of the static or probing acquisition, that contains the
+        required markers and/or rigid bodies.
+    source_name
+        Name of the marker or rigid body to express in local coordinates. This
+        name must be a data key in the kinematics TimeSeries and should refer
+        to a marker trajectory (Nx4 array) or a rigid body trajectory (Nx4x4
+        array).
+    rigid_body_name
+        Name of the reference rigid body. This name must be a data key in the
+        kinematics TimeSeries and should refer to a rigid body trajectory
+        (Nx4x4 array).
+
+    Returns
+    -------
+    np.ndarray
+        The position of the marker or rigid body origin in the local coordinate
+        system, as an Nx4 array.
+
+    """
+    marker_trajectory = kinematics.data[source_name]
+    if marker_trajectory.shape[1:] == (4,):
+        pass  # Marker trajectory
+    elif marker_trajectory.shape[1:] == (4, 4):
+        marker_trajectory = marker_trajectory[:, :, 3]  # frame trajectory
+
+    rigid_body_trajectory = kinematics.data[rigid_body_name]
+
+    local_points = geometry.get_local_coordinates(
+        marker_trajectory, rigid_body_trajectory)
+    to_keep = ~geometry.isnan(local_points)
+
+    if np.all(to_keep is False):
+        warnings.warn(
+            "There are no frame where both the marker and body "
+            "are visible at the same time.")
+
+    local_points = local_points[to_keep]
+    local_points = np.mean(local_points, axis=0)[np.newaxis]
+
+    return local_points
+
+# %% Footer
 
 
 module_locals = locals()

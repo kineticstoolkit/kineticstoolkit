@@ -8,7 +8,7 @@
 Interactive tests for TimeSeries.
 """
 
-import ktk
+import kineticstoolkit.lab as ktk
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -19,7 +19,7 @@ def test_uisync():
     ts.data['signal1'] = np.sin(ts.time)
     ts.data['signal2'] = np.cos(ts.time)
 
-    ts.ui_sync('signal1')
+    ts = ts.ui_sync('signal1')
     fig = plt.figure()
     ts.plot()
     ktk.gui.button_dialog('Check that this setted the zero.', ['OK'])

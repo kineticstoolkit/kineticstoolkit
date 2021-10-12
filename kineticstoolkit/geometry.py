@@ -617,10 +617,10 @@ def register_points(global_points: np.ndarray,
 module_locals = locals()
 
 
-def __dir__():
+def __dir__():  # pragma: no cover
     return directory(module_locals)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

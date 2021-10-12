@@ -161,16 +161,16 @@ def test_time_normalize():
     ts = ktk.TimeSeries()
     ts.time = np.linspace(0, 20, 201)  # 0 to 20 seconds by 0.1s
     ts.data['test'] = ts.time ** 2
-    ts.add_event(1.0, 'push')
-    ts.add_event(2.0, 'recovery')
-    ts.add_event(3.0, 'push')
-    ts.add_event(3.95, 'recovery')
-    ts.add_event(5.0, 'push')
-    ts.add_event(6.05, 'recovery')
-    ts.add_event(7.05, 'push')
-    ts.add_event(8.0, 'recovery')
-    ts.add_event(8.95, 'push')
-    ts.add_event(10.05, 'recovery')
+    ts = ts.add_event(1.0, 'push')
+    ts = ts.add_event(2.0, 'recovery')
+    ts = ts.add_event(3.0, 'push')
+    ts = ts.add_event(3.95, 'recovery')
+    ts = ts.add_event(5.0, 'push')
+    ts = ts.add_event(6.05, 'recovery')
+    ts = ts.add_event(7.05, 'push')
+    ts = ts.add_event(8.0, 'recovery')
+    ts = ts.add_event(8.95, 'push')
+    ts = ts.add_event(10.05, 'recovery')
 
     ts1 = ktk.cycles.time_normalize(ts, 'push', 'recovery')
     assert len(ts1.events) == 10  # We got all events
@@ -248,9 +248,9 @@ def test_time_normalize():
 #     Commented because a more exhaustive test is done in test_timenormalize
 #     ts = ktk.TimeSeries(time=np.arange(10))
 #     ts.data['test'] = np.arange(10) ** 2
-#     ts.add_event(2, 'push')
-#     ts.add_event(4, 'recovery')
-#     ts.add_event(6, 'push')
+#     ts = ts.add_event(2, 'push')
+#     ts = ts.add_event(4, 'recovery')
+#     ts = ts.add_event(6, 'push')
 
 #     ts1 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10)
 #     ts2 = ktk.cycles.time_normalize(ts, 'push', '_', n_points=10,
@@ -315,12 +315,12 @@ def test_stack_unstack():
 # def test_stack_events():
 #     # Create a TimeSeries with different time-normalized events
 #     ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
-#     ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
-#     ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
-#     ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
-#     ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
-#     ts.add_event(1, 'event2')  # event2 at 1% of cycle 0
-#     ts.add_event(5, 'event2')  # event2 at 5% of cycle 0
+#     ts = ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
+#     ts = ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
+#     ts = ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
+#     ts = ts.add_event(382, 'event1')  # 2nd occurr. event1 at 82% of cycle 3
+#     ts = ts.add_event(1, 'event2')  # event2 at 1% of cycle 0
+#     ts = ts.add_event(5, 'event2')  # event2 at 5% of cycle 0
 
 #     # Stack these events
 #     events = ktk.cycles.stack_events(ts)
@@ -329,5 +329,4 @@ def test_stack_unstack():
 
 if __name__ == "__main__":
     import pytest
-    pytest.main([__file__])
     pytest.main([__file__])

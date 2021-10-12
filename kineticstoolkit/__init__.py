@@ -76,6 +76,7 @@ from kineticstoolkit import config  # noqa
 
 from kineticstoolkit import inversedynamics  # noqa
 from kineticstoolkit import emg  # noqa
+from kineticstoolkit import anthropometrics  # noqa
 
 try:
     from kineticstoolkit import dev  # noqa
@@ -86,6 +87,7 @@ if config.version == 'master':
     listing.append('dev')
     listing.append('inversedynamics')
     listing.append('emg')
+    listing.append('anthropometrics')
 
 
 def __dir__():

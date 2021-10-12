@@ -356,12 +356,6 @@ def calculate_forces_and_moments(
         )
 
     """
-    # Check if this is the old form and call this deprecated form.
-    if isinstance(gains, str):
-        warnings.warn("This old signature won't be supported in future.",
-                      FutureWarning)
-        return _old_calculate_forces_and_moments(kinetics, gains)
-
     # Calculate the forces and moments and add to the output
     if transducer == 'smartwheel':
 
@@ -509,188 +503,6 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
 
 
 #--- Deprecated functions ---#
-def _old_calculate_forces_and_moments(
-        kinetics: TimeSeries, calibration_id: str, /) -> TimeSeries:
-    """
-    Calculate pushrim forces and moments based on raw channel values.
-
-    Deprecated since October 2020.
-
-    Parameters
-    ----------
-    kinetics
-        Input TimeSeries that must contain a 'Channels' key in its data dict.
-    calibration_id
-        Calibration identifier, resulting from factory or custom calibration.
-        Available values are:
-
-        - 'PATHOKIN-93':  PATHOKIN 24" SmartWheel, Serial #93
-        - 'PATHOKIN-94':  PATHOKIN 24" SmartWheel, Serial #94
-        - 'LIO-123':      LIO 24" SmartWheel, Serial #123
-        - 'LIO-124':      LIO 24" SmartWheel, Serial #124
-        - 'LIO-125':      LIO 24" SmartWheel, Serial #125
-        - 'LIO-126':      LIO 26" SmartWheel, Serial #126
-        - 'S18-126':      PATHOKIN Summer 2018, Serial 126 - 26"
-        - 'S18-179':      PATHOKIN Summer 2018, Serial 179 - 25"
-        - 'S18-180':      PATHOKIN Summer 2018, Serial 180 - 25"
-        - 'S18-181':      PATHOKIN Summer 2018, Serial 181 - 26"
-        - 'S18-Racing-Prototype1': Racing wheel prototype
-        - 'W20-Racing-Prototype1': Racing wheel proto with calibration matrix
-
-    Returns
-    -------
-    TimeSeries
-                A copy of the input TimeSeries, with the added 'Forces'
-                and 'Moments' data keys.
-
-    """
-
-    # Get the gains and offsets based on calibration id
-    if calibration_id == 'PATHOKIN-93':
-        forcecell = 'smartwheel'
-        gains = [-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'PATHOKIN-94':
-        forcecell = 'smartwheel'
-        gains = [-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'LIO-123':
-        forcecell = 'smartwheel'
-        gains = [-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'LIO-124':
-        forcecell = 'smartwheel'
-        gains = [-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'LIO-125':
-        forcecell = 'smartwheel'
-        gains = [-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'LIO-126':
-        forcecell = 'smartwheel'
-        gains = [-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'S18-126':
-        forcecell = 'smartwheel'
-        gains = [-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'S18-179':
-        forcecell = 'smartwheel'
-        gains = [-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'S18-180':
-        forcecell = 'smartwheel'
-        gains = [-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'S18-181':
-        forcecell = 'smartwheel'
-        gains = [-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]
-        offsets = [0.0, 10.0, 0.0, 0.0, 0.0, 0.0]
-
-    elif calibration_id == 'S18-Racing-Prototype1':
-        forcecell = 'forcecell'
-        gains = [-0.0314, -0.0300, 0.0576, 0.0037, 0.0019, -0.0019]
-        offsets = [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]
-
-    elif calibration_id == 'S20-Racing-Prototype1':
-        forcecell = 'matrix'
-        # Gains from calibration matrix
-        board_gains = np.array([-2., -2., -2., -2., -4., -4.])
-        adc_gains = (2.**15) / 10
-        gains = (np.array([
-            [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
-            [-0.840, 201.396, 2.119, 0.083, -6.877, 4.482],
-            [-1.935, -1.643, 402.286, 1.687, 0.897, -23.616],
-            [0.213, 0.122, 0.120, 25.190, -0.013, 0.147],
-            [-0.072, 0.286, 0.076, 0.012, 25.430, 0.146],
-            [0.016, -0.015, 0.046, -0.099, -0.076, 25.206]]) /
-            adc_gains / board_gains)
-        # Offsets from home calibration (S18-Racing-Prototype1)
-        offsets = [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869]
-
-    else:
-        raise ValueError('This calibration ID is not available.')
-
-    gains_ = np.array(gains)
-    offsets_ = np.array(offsets)
-
-    # Calculate the forces and moments and add to the output
-    if forcecell == 'smartwheel':
-
-        # Extract channels and angle
-        ch = kinetics.data['Channels'] - 2048
-        theta = kinetics.data['Angle']
-
-        # Calculate the forces and moments
-        Fx = gains_[0] * (
-            ch[:, 0] * sin(theta) +
-            ch[:, 2] * sin(theta + 2 * pi / 3) +
-            ch[:, 4] * sin(theta + 4 * pi / 3)) + offsets[0]
-
-        Fy = gains_[1] * (
-            ch[:, 0] * cos(theta) +
-            ch[:, 2] * cos(theta + 2 * pi / 3) +
-            ch[:, 4] * cos(theta + 4 * pi / 3)) + offsets[1]
-
-        Fz = gains_[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
-
-        Mx = gains_[3] * (
-            ch[:, 1] * sin(theta) +
-            ch[:, 3] * sin(theta + 2 * pi / 3) +
-            ch[:, 5] * sin(theta + 4 * pi / 3)) + offsets[3]
-
-        My = gains_[4] * (
-            ch[:, 1] * cos(theta) +
-            ch[:, 3] * cos(theta + 2 * pi / 3) +
-            ch[:, 5] * cos(theta + 4 * pi / 3)) + offsets[4]
-
-        Mz = gains_[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
-        forces_moments = np.block([Fx[:, np.newaxis],
-                                   Fy[:, np.newaxis],
-                                   Fz[:, np.newaxis],
-                                   Mx[:, np.newaxis],
-                                   My[:, np.newaxis],
-                                   Mz[:, np.newaxis]])
-
-    elif forcecell == 'forcecell':
-
-        forces_moments = gains_ * kinetics.data['Channels'] + offsets_
-
-    elif forcecell == 'matrix':
-
-        n_frames = kinetics.data['Channels'].shape[0]
-
-        forces_moments = np.empty((n_frames, 6))
-        for i_frame in range(n_frames):
-            forces_moments[i_frame] = (gains_ @
-                                       kinetics.data['Channels'][i_frame] +
-                                       offsets_)
-
-    # Format these data in the output timeseries
-    kinetics = kinetics.copy()
-
-    kinetics.data['Forces'] = np.concatenate(
-        [forces_moments[:, 0:3], np.zeros((forces_moments.shape[0], 1))],
-        axis=1)
-    kinetics.add_data_info('Forces', 'Unit', 'N')
-
-    kinetics.data['Moments'] = np.concatenate(
-        [forces_moments[:, 3:6], np.zeros((forces_moments.shape[0], 1))],
-        axis=1)
-    kinetics.add_data_info('Moments', 'Unit', 'Nm')
-
-    return(kinetics)
-
-
 @dead(since="October 2020",
       until="December 2021",
       details="Please use ktk.cycles.detect_cycles instead.")
@@ -826,7 +638,7 @@ CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['MSA_Racing_1'] = {
+CALIBRATION_MATRICES['MOSA_Racing_1'] = {
     'gains': (np.array([
         [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
         [-0.840, 201.396, 2.119, 0.083, -6.877, 4.482],
@@ -845,10 +657,10 @@ CALIBRATION_MATRICES['MSA_Racing_1'] = {
 module_locals = locals()
 
 
-def __dir__():
+def __dir__():  # pragma: no cover
     return directory(module_locals)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import doctest
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

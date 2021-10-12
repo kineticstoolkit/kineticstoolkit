@@ -9,7 +9,7 @@ import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
 
 
-def test_instanciate():
+def test_instanciate_and_to_html5():
     """Test that instanciating a Player does not crash."""
 
     # Load markers
@@ -35,6 +35,10 @@ def test_instanciate():
                     kinematics['ReferenceFrames'],
                     target=[-5, 0, 0])
     plt.pause(0.01)
+
+    # Test that to_html5 doesn't crash
+    assert pl.to_html5() is not None
+
     pl.close()
 
 
