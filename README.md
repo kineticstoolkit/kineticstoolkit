@@ -1,8 +1,7 @@
-Kinetics Toolkit
-================
+# Kinetics Toolkit
 
-Kinetics Toolkit is an open-source, pure-python package of integrated
-classes and functions that aims to facilitate research in biomechanics using
-python.
+An Open-Source Python Package to Facilitate Research in Biomechanics
 
-Please consult https://kineticstoolkit.uqam.ca for information.
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.03714/status.svg)](https://doi.org/10.21105/joss.03714)
+
+Please consult [https://kineticstoolkit.uqam.ca]() for information.
