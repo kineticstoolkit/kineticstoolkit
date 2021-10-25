@@ -648,11 +648,11 @@ class Player:
 
     # ------------------------------------
     # Callbacks
-    def _on_close(self, _) -> None:
+    def _on_close(self, _) -> None:  # pragma: no cover
         # Release all references to objects
         self.close()
 
-    def _on_timer(self, _) -> None:
+    def _on_timer(self, _) -> None:  # pragma: no cover
         if self.running is True:
             # We check self.running because the garbage collector may take time
             # before deleting the animation timer, and unreferencing the
@@ -673,7 +673,7 @@ class Player:
         else:
             self.anim.event_source.stop()
 
-    def _on_pick(self, event):
+    def _on_pick(self, event):  # pragma: no cover
         """Callback for marker selection."""
         if event.mouseevent.button == 1:
             index = event.ind
@@ -694,7 +694,7 @@ class Player:
 
             self._update_plots()
 
-    def _on_key(self, event):
+    def _on_key(self, event):  # pragma: no cover
         """Callback for keyboard key pressed."""
         if event.key == ' ':
             if self.running is False:
@@ -760,18 +760,18 @@ class Player:
 
         self._update_plots()
 
-    def _on_release(self, event):
+    def _on_release(self, event):  # pragma: no cover
         if event.key == 'shift':
             self.state['ShiftPressed'] = False
 
-    def _on_scroll(self, event):
+    def _on_scroll(self, event):  # pragma: no cover
         if event.button == 'up':
             self.zoom *= 1.05
         elif event.button == 'down':
             self.zoom /= 1.05
         self._update_plots()
 
-    def _on_mouse_press(self, event):
+    def _on_mouse_press(self, event):  # pragma: no cover
 
         if len(self.last_selected_marker) > 0:
             self._set_new_target(
@@ -790,7 +790,7 @@ class Player:
         elif event.button == 3:
             self.state['MouseRightPressed'] = True
 
-    def _on_mouse_release(self, event):
+    def _on_mouse_release(self, event):  # pragma: no cover
         if event.button == 1:
             self.state['MouseLeftPressed'] = False
         elif event.button == 2:
@@ -798,7 +798,7 @@ class Player:
         elif event.button == 3:
             self.state['MouseRightPressed'] = False
 
-    def _on_mouse_motion(self, event):
+    def _on_mouse_motion(self, event):  # pragma: no cover
         # Pan:
         if ((self.state['MouseLeftPressed'] and self.state['ShiftPressed']) or
                 self.state['MouseMiddlePressed']):

@@ -212,7 +212,11 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
             + '/../kineticstoolkit_doc/stable'
         )
 
-    shutil.rmtree(doc_folder)
+    try:
+        shutil.rmtree(doc_folder)
+    except Exception:
+        pass
+
     os.makedirs(doc_folder, exist_ok=True)
     os.rename(
         kineticstoolkit.config.root_folder + '/doc/_build/html',

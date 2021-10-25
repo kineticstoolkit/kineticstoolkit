@@ -111,6 +111,210 @@ def test_read_c3d_file():
     assert markers.data_info['Foot_Marker1']['Unit'] == 'm'
 
 
+def test_reconstruction_deprecated():
+    """Simplified copy of the tutorial."""
+    # Read the markers
+    markers = ktk.kinematics.read_c3d_file(
+        ktk.config.root_folder + '/data/kinematics/sample_propulsion.c3d')
+
+    rigid_body_definitions = dict()
+
+    # Read the static trial
+    markers_static = ktk.kinematics.read_c3d_file(
+        ktk.config.root_folder + '/data/kinematics/sample_static.c3d')
+
+    rigid_body_definitions['ArmR'] = ktk.kinematics.define_rigid_body(
+        markers_static,
+        marker_names=['ArmR1', 'ArmR2', 'ArmR3']
+    )
+
+    rigid_body_definitions['ForearmR'] = ktk.kinematics.define_rigid_body(
+        markers_static,
+        marker_names=[
+            'ForearmR1', 'ForearmR2', 'ForearmR3', 'LateralEpicondyleR'
+        ]
+    )
+
+    rigid_body_definitions['Probe'] = {
+        'Probe1': np.array(
+            [[0.0021213, -0.0158328, 0.0864285, 1.0]]),
+        'Probe2': np.array(
+            [[0.0021213, 0.0158508, 0.0864285, 1.0]]),
+        'Probe3': np.array(
+            [[0.0020575, 0.0160096, 0.1309445, 1.0]]),
+        'Probe4': np.array(
+            [[0.0021213, 0.0161204, 0.1754395, 1.0]]),
+        'Probe5': np.array(
+            [[0.0017070, -0.0155780, 0.1753805, 1.0]]),
+        'Probe6': np.array(
+            [[0.0017762, -0.0156057, 0.1308888, 1.0]]),
+    }
+
+    def process_probing_acquisition(file_name, rigid_body_name):
+
+        # Load the markers
+        markers_probing = ktk.kinematics.read_c3d_file(file_name)
+
+        # Track the reference rigid body
+        rigid_bodies_probing = (
+            ktk.kinematics.track_rigid_body(
+                markers_probing,
+                local_points=rigid_body_definitions[rigid_body_name],
+                label=rigid_body_name
+            )
+        )
+
+        # Track the probe
+        rigid_bodies_probing = rigid_bodies_probing.merge(
+            ktk.kinematics.track_rigid_body(
+                markers_probing,
+                local_points=rigid_body_definitions['Probe'],
+                label='Probe'
+            )
+        )
+
+        # Return the local coordinates of the probed virtual marker
+        return ktk.kinematics.define_local_position(
+            rigid_bodies_probing,
+            source_name='Probe',
+            rigid_body_name=rigid_body_name
+        )
+
+    rigid_body_definitions['ArmR']['AcromionR'] = (
+        process_probing_acquisition(
+            ktk.config.root_folder
+            + '/data/kinematics/sample_probing_acromion_R.c3d',
+            'ArmR'
+        )
+    )
+
+    rigid_body_definitions['ArmR']['MedialEpicondyleR'] = (
+        process_probing_acquisition(
+            ktk.config.root_folder
+            + '/data/kinematics/sample_probing_medial_epicondyle_R.c3d',
+            'ArmR'
+        )
+    )
+
+    rigid_body_definitions['ForearmR']['RadialStyloidR'] = (
+        process_probing_acquisition(
+            ktk.config.root_folder
+            + '/data/kinematics/sample_probing_radial_styloid_R.c3d',
+            'ForearmR'
+        )
+    )
+
+    rigid_body_definitions['ForearmR']['UlnarStyloidR'] = (
+        process_probing_acquisition(
+            ktk.config.root_folder
+            + '/data/kinematics/sample_probing_ulnar_styloid_R.c3d',
+            'ForearmR'
+        )
+    )
+
+    rigid_bodies = ktk.TimeSeries()
+
+    for rigid_body_name in ['ArmR', 'ForearmR']:
+        rigid_bodies = rigid_bodies.merge(
+            ktk.kinematics.track_rigid_body(
+                markers,
+                local_points=rigid_body_definitions[rigid_body_name],
+                label=rigid_body_name,
+                include_markers=True
+            )
+        )
+
+
+def test_reconstruction():
+    """Simplified copy of the tutorial."""
+    # Read the markers
+    markers = ktk.kinematics.read_c3d_file(
+        ktk.config.root_folder + '/data/kinematics/sample_propulsion.c3d')
+
+    clusters = dict()
+
+    # Read the static trial
+    markers_static = ktk.kinematics.read_c3d_file(
+        ktk.config.root_folder + '/data/kinematics/sample_static.c3d')
+
+    clusters['ArmR'] = ktk.kinematics.create_cluster(
+        markers_static,
+        marker_names=['ArmR1', 'ArmR2', 'ArmR3', 'LateralEpicondyleR']
+    )
+
+    clusters['ForearmR'] = ktk.kinematics.create_cluster(
+        markers_static,
+        marker_names=['ForearmR1', 'ForearmR2', 'ForearmR3']
+    )
+
+    clusters['Probe'] = {
+        'ProbeTip': np.array(
+            [[0.0, 0.0, 0.0, 1.0]]),
+        'Probe1': np.array(
+            [[0.0021213, -0.0158328, 0.0864285, 1.0]]),
+        'Probe2': np.array(
+            [[0.0021213, 0.0158508, 0.0864285, 1.0]]),
+        'Probe3': np.array(
+            [[0.0020575, 0.0160096, 0.1309445, 1.0]]),
+        'Probe4': np.array(
+            [[0.0021213, 0.0161204, 0.1754395, 1.0]]),
+        'Probe5': np.array(
+            [[0.0017070, -0.0155780, 0.1753805, 1.0]]),
+        'Probe6': np.array(
+            [[0.0017762, -0.0156057, 0.1308888, 1.0]]),
+    }
+
+    def process_probing_acquisition(file_name, cluster, point_name):
+
+        # Load the markers
+        markers_probing = ktk.kinematics.read_c3d_file(file_name)
+
+        # Find the probe tip
+        markers_probing = ktk.kinematics.track_cluster(
+            markers_probing, clusters['Probe'])
+
+        # Extend the cluster
+        markers_probing.rename_data(
+            'ProbeTip', point_name, in_place=True)
+        cluster = ktk.kinematics.extend_cluster(
+            markers_probing, cluster, point_name)
+
+        return cluster
+
+    clusters['ArmR'] = process_probing_acquisition(
+        ktk.config.root_folder
+        + '/data/kinematics/sample_probing_acromion_R.c3d',
+        clusters['ArmR'],
+        'AcromionR'
+    )
+
+    clusters['ArmR'] = process_probing_acquisition(
+        ktk.config.root_folder
+        + '/data/kinematics/sample_probing_medial_epicondyle_R.c3d',
+        clusters['ArmR'],
+        'MedialEpicondyleR'
+    )
+
+    clusters['ForearmR'] = process_probing_acquisition(
+        ktk.config.root_folder
+        + '/data/kinematics/sample_probing_radial_styloid_R.c3d',
+        clusters['ForearmR'],
+        'RadialStyloidR'
+    )
+
+    clusters['ForearmR'] = process_probing_acquisition(
+        ktk.config.root_folder
+        + '/data/kinematics/sample_probing_ulnar_styloid_R.c3d',
+        clusters['ForearmR'],
+        'UlnarStyloidR'
+    )
+
+    for cluster in clusters:
+        markers = markers.merge(
+            ktk.kinematics.track_cluster(markers, clusters[cluster])
+        )
+
+
 if __name__ == "__main__":
     import pytest
 

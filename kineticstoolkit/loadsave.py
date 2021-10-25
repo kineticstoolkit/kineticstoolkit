@@ -161,7 +161,7 @@ def save(filename: str, variable: Any) -> None:
         json.dump(variable, fid, cls=CustomEncoder, indent='\t')
 
     shutil.make_archive(temp_folder, 'zip', temp_folder)
-    os.rename(temp_folder + '.zip', filename)
+    shutil.move(temp_folder + '.zip', filename)
     shutil.rmtree(temp_folder)
 
 
@@ -252,13 +252,13 @@ def load(filename: str) -> Any:
         return _load_ktk_zip(filename)
 
     elif filename.lower().endswith('.mat'):
-        return _loadmat(filename)
+        return _loadmat(filename)  # pragma: no cover
 
     else:
         raise ValueError('The file must be either zip or mat.')
 
 
-def _loadmat(filename):
+def _loadmat(filename):  # pragma: no cover
     """
     Load a Matlab's MAT file.
 
@@ -292,7 +292,7 @@ def _loadmat(filename):
         return data
 
 
-def _convert_cell_arrays_to_lists(the_input):
+def _convert_cell_arrays_to_lists(the_input):  # pragma: no cover
     """
     Convert cell arrays to lists.
 
@@ -354,7 +354,7 @@ def _convert_cell_arrays_to_lists(the_input):
     return the_input
 
 
-def _convert_to_timeseries(the_input):
+def _convert_to_timeseries(the_input):  # pragma: no cover
     """
     Convert dicts of Matlab timeseries to Kinetics Toolkit TimeSeries.
 
@@ -435,7 +435,7 @@ def _convert_to_timeseries(the_input):
         return the_input
 
 
-def _recursive_matstruct_to_dict(variable):
+def _recursive_matstruct_to_dict(variable):  # pragma: no cover
     """Recursively converts Mat-objects in dicts or arrays to nested dicts."""
     if isinstance(variable, spio.matlab.mio5_params.mat_struct):
         variable = _todict(variable)
@@ -449,7 +449,7 @@ def _recursive_matstruct_to_dict(variable):
     return variable
 
 
-def _todict(variable):
+def _todict(variable):  # pragma: no cover
     """Construct dicts from Mat-objects."""
     dict = {}
     for strg in variable._fieldnames:
@@ -461,7 +461,7 @@ def _todict(variable):
 module_locals = locals()
 
 
-def __dir__():
+def __dir__():  # pragma: no cover
     return directory(module_locals)
 
 

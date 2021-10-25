@@ -1,17 +1,31 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Jul 19 14:57:41 2019
+#
+# Copyright 2020 Félix Chénier
 
-@author: felix
-"""
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+
+#     http://www.apache.org/licenses/LICENSE-2.0
+
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
+"""Unit tests for load and save functions."""
+
+
 import kineticstoolkit as ktk
 import numpy as np
 import pandas as pd
-
-
-# test_loadmat():
-# This test is implicitly done with test_read_c3d_file in ktk.kinematics
 
 
 def test_save_load():
@@ -23,13 +37,13 @@ def test_save_load():
     ts.data['signal1'] = np.random.rand(10)
     ts.data['signal2'] = np.random.rand(10, 3)
     ts.data['signal3'] = np.random.rand(10, 3, 3)
-    ts.add_data_info('signal1', 'Unit', 'm/s')
-    ts.add_data_info('signal2', 'Unit', 'km/h')
-    ts.add_data_info('signal3', 'Unit', 'N')
-    ts.add_data_info('signal3', 'SignalType', 'force')
-    ts.add_event(1.53, 'TestEvent1')
-    ts.add_event(7.2, 'TestEvent2')
-    ts.add_event(1, 'TestEvent3')
+    ts = ts.add_data_info('signal1', 'Unit', 'm/s')
+    ts = ts.add_data_info('signal2', 'Unit', 'km/h')
+    ts = ts.add_data_info('signal3', 'Unit', 'N')
+    ts = ts.add_data_info('signal3', 'SignalType', 'force')
+    ts = ts.add_event(1.53, 'TestEvent1')
+    ts = ts.add_event(7.2, 'TestEvent2')
+    ts = ts.add_event(1, 'TestEvent3')
 
     a = dict()
     a['TestTimeSeries'] = ts
@@ -86,6 +100,11 @@ def test_save_load():
     assert a['TestComplexTuple'][10] == b['TestComplexTuple'][10]
     pd.testing.assert_frame_equal(a['TestDataFrame'], b['TestDataFrame'])
     pd.testing.assert_series_equal(a['TestSeries'], b['TestSeries'])
+
+    c = 'full_standard_test'
+    ktk.save('test.ktk.zip', c)
+    d = ktk.load('test.ktk.zip')
+    assert d == c
 
 
 if __name__ == "__main__":

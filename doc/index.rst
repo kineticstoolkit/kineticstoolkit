@@ -1,6 +1,19 @@
 Kinetics Toolkit
 ================
 
+*An Open-Source Python Package to Facilitate Research in Biomechanics*
+
+.. image:: https://joss.theoj.org/papers/10.21105/joss.03714/status.svg
+   :target: https://doi.org/10.21105/joss.03714
+
+.. image:: https://anaconda.org/conda-forge/kineticstoolkit/badges/version.svg
+   :target: https://anaconda.org/conda-forge/kineticstoolkit
+   
+.. image:: https://anaconda.org/conda-forge/kineticstoolkit/badges/latest_release_date.svg
+   :target: https://anaconda.org/conda-forge/kineticstoolkit
+   
+----------------
+
 .. ifconfig:: release in ['master']
 
     .. warning::
@@ -25,6 +38,7 @@ also a lot on learning. Please consult the "What is Kinetics Toolkit" section
 for more information on the project.
 
 .. image:: https://felixchenier.uqam.ca/wp-content/uploads/2020/05/Sample_ktk.Player_Wheelchair.gif
+
 
 Please ask questions and submit bugs or feature requests on the
 `git-hub issue tracker`_. While I develop Kinetics Toolkit primarily for my lab
