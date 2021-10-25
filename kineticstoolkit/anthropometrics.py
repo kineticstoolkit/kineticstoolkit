@@ -670,6 +670,7 @@ def track_local_coordinate_systems(
     return output
 
 
+@unstable
 def estimate_center_of_mass(
         markers: TimeSeries,
         /,

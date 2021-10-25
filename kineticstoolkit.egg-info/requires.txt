@@ -1,0 +1,6 @@
+pandas
+pyqt5
+scipy
+matplotlib
+scikit-learn
+limitedinteraction
