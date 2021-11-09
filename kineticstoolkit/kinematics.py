@@ -116,12 +116,9 @@ def read_c3d_file(filename: str) -> TimeSeries:
     return output
 
 
-@unstable
 def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     """
     Write a markers TimeSeries to a C3D file.
-
-    This is the mirror operation to read_c3d_file.
 
     Parameters
     ----------
@@ -134,11 +131,8 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
 
     Notes
     -----
-    - This function relies on `ezc3d`, which is available on
-      conda-forge and on git-hub. Please install ezc3d before using
-      read_c3d_file. https://github.com/pyomeca/ezc3d
-
-    - The point unit in the output c3d is m.
+    This function relies on `ezc3d`. Please install ezc3d before using
+    write_c3d_file. https://github.com/pyomeca/ezc3d
 
     """
     sample_rate = (markers.time.shape[0] - 1) / (
