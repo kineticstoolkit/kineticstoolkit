@@ -42,8 +42,10 @@ extensions = [
     # Allow conditional contents for master vs stable versions
     'sphinx.ext.ifconfig',
 
-    'nbsphinx',
+    # 'nbsphinx',
     'sphinx_autodoc_typehints',
+    'sphinxcontrib.mermaid',
+    'myst_nb',             # Instead of nbsphinx to generate mermaid from md files
 ]
 
 autodoc_default_options = {
@@ -52,10 +54,21 @@ autodoc_default_options = {
     'recursive': True,
 }
 
-nbsphinx_execute = 'never'
+myst_enable_extensions = [
+    'dollarmath',
+    'html_admonition',
+]
+
+#
+#nbsphinx_execute = 'never'
+
+# Myst-nb options
+jupyter_execute_notebooks = "cache"
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 
+# Mermaid settings
+#mermaid_output_format = 'png'
 
 # Napoleon settings
 napoleon_google_docstring = False

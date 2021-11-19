@@ -2719,7 +2719,7 @@ class TimeSeries:
             data_keys: Union[str, List[str]] = [],
             *,
             resample: bool = False,
-            overwrite: bool = True,
+            overwrite: bool = False,
             in_place: bool = False) -> 'TimeSeries':
         """
         Merge the TimeSeries with another TimeSeries.
@@ -2743,7 +2743,7 @@ class TimeSeries:
         overwrite
             Optional. If duplicates are found and overwrite is True, then the
             source (ts) overwrites the destination. Otherwise (overwrite is
-            False), the duplicate data in ts is ignored.
+            False), the duplicate data in ts is ignored. The default is False.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -2794,19 +2794,22 @@ class TimeSeries:
             # required.
             if (
                 (key in ts_out.data)
-                and (key in ts.data)
-                and overwrite is False
+                and (overwrite is False)
             ):
-                continue
+                pass
 
-            # Add this data
-            ts_out.data[key] = ts.data[key]
+            else:
+                # Add this data
+                ts_out.data[key] = ts.data[key]
 
-            if key in ts.data_info:
-                for info_key in ts.data_info[key].keys():
-                    ts_out = ts_out.add_data_info(
-                        key, info_key, ts.data_info[key][info_key]
-                    )
+                if key in ts.data_info:
+                    for info_key in ts.data_info[key].keys():
+                        ts_out.add_data_info(
+                            key,
+                            info_key,
+                            ts.data_info[key][info_key],
+                            in_place=True,
+                        )
 
         # Merge events
         for event in ts.events:

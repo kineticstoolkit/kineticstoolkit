@@ -20,7 +20,7 @@ Kinetics Toolkit
 ================
 
 To get started, please consult Kinetics Toolkit's
-[website](https://felixchenier.uqam.ca/kineticstoolkit)
+[website](https://kineticstoolkit.uqam.ca)
 
 >>> import kineticstoolkit as ktk
 

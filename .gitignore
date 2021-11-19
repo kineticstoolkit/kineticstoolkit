@@ -32,3 +32,4 @@ doc/_build/html/*.ipynb
 .coverage
 tests/htmlcov
 output.csv
+doc/_build

@@ -97,7 +97,7 @@ def infer_joint_centers(
     AnteriorSuperiorIliacSpineR/L, PosteriorSuperiorIliacSpineR/L and
     PubicSymphysis, following the method presented in Reed et al. (1999)[1]_.
 
-    For the trunk:
+    For the thorax:
     Creates C7T1JointCenter, GlenohumeralJointCenterL and
     GlenohumeralJointCenterR based on C7, L5S1JointCenter, Suprasternal,
     AcromionR and AcromionL, following the method presented in Reed et al.
@@ -120,7 +120,7 @@ def infer_joint_centers(
         TimeSeries that contain the trajectory of the required markers as
         Nx4 series.
     segment
-        Can be either 'Pelvis', 'Trunk', or 'Extremities'. An error is raised
+        Can be either 'Pelvis', 'Thorax', or 'Extremities'. An error is raised
         in case of missing markers.
     sex
         Optional. Can be either 'M' or 'F'. The default is 'M'.
@@ -150,7 +150,7 @@ def infer_joint_centers(
             try:
                 out.merge(
                     infer_joint_centers(
-                        markers,
+                        out,
                         segment=segment,
                         sex=sex,
                     ),
@@ -432,7 +432,8 @@ def track_local_coordinate_systems(
     segments
         Name of the segment. Can be 'Pelvis', 'Thorax', 'HeadNeck',
         'ArmR', 'ArmL', 'ForearmR', 'ForearmL', 'HandR', 'HandL', 'ThighR',
-        'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'.
+        'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'. An empty string or
+        an empty list will try to process every segment.
 
     method
         Optional. Select one ot both methods to reconstruct the axial
@@ -449,6 +450,14 @@ def track_local_coordinate_systems(
 
     """
     output = markers.copy(copy_data=False, copy_data_info=False)
+
+    # If we have no segment or an empty list, go with every segment
+    if len(segments) == 0:
+        segments = [
+            'Pelvis', 'Thorax', 'HeadNeck', 'ArmR', 'ArmL', 'ForearmR',
+            'ForearmL', 'HandR', 'HandL', 'ThighR', 'ThighL', 'LegR', 'LegL',
+            'FootR', 'FootL',
+        ]
 
     # If we have a list of segments
     if not isinstance(segments, str):
@@ -688,7 +697,8 @@ def estimate_center_of_mass(
     segments
         Name of the segment. Can be 'Pelvis', 'Thorax', 'HeadNeck',
         'ArmR', 'ArmL', 'ForearmR', 'ForearmL', 'HandR', 'HandL', 'ThighR',
-        'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'.
+        'ThighL', 'LegR', 'LegL', 'FootR', or 'FootL'. An empty string or
+        an empty list will try to process every segment.
 
     sex
         Optional. Either 'M' or 'F'. The default is 'M'.
@@ -702,6 +712,14 @@ def estimate_center_of_mass(
     """
     markers = markers.copy()  # We will add markers to it so copy it first.
     output = markers.copy(copy_data=False, copy_data_info=False)
+
+    # If we have no segment or an empty list, go with every segment
+    if len(segments) == 0:
+        segments = [
+            'Pelvis', 'Thorax', 'HeadNeck', 'ArmR', 'ArmL', 'ForearmR',
+            'ForearmL', 'HandR', 'HandL', 'ThighR', 'ThighL', 'LegR', 'LegL',
+            'FootR', 'FootL',
+        ]
 
     # If we have a list of segments
     if not isinstance(segments, str):
@@ -795,8 +813,70 @@ def estimate_center_of_mass(
     return output
 
 
-# %% Constants
+@unstable
+def estimate_global_center_of_mass(
+        coms: TimeSeries,
+        /,
+        sex: str = 'M'
+) -> TimeSeries:
+    """
+    Estimate the global center of mass.
 
+    Parameters
+    ----------
+    coms
+        A TimeSeries with the trajectory of every segment's center of mass.
+        The segments must be in this list: 'PelvisCenterOfMass',
+        'ThoraxCenterOfMass', 'HeadNeckCenterOfMass',
+        'ArmRCenterOfMass', 'ArmLCenterOfMass',
+        'ForearmRCenterOfMass', 'ForearmLCenterOfMass',
+        'HandRCenterOfMass', 'HandLCenterOfMass',
+        'ThighRCenterOfMass', 'ThighLCenterOfMass',
+        'LegRCenterOfMass', 'LegLCenterOfMass',
+        'FootRCenterOfMass', 'FootLCenterOfMass'.
+    sex
+        Optional. Either 'M' or 'F'. The default is 'M'.
+
+    Returns
+    -------
+    ktk.TimeSeries
+        A TimeSeries with a single element named 'GlobalCenterOfMass'.
+
+    """
+    inertial_data = INERTIAL_VALUES['Dumas2007']
+
+    out = coms.copy(copy_data=False, copy_data_info=False)
+    out.data['GlobalCenterOfMass'] = np.zeros([out.time.shape[0], 4])
+
+    cumulative_mass = 0
+
+    for data in coms.data:
+        segment_name = data.replace('CenterOfMass', '')
+        if segment_name not in ['Thorax', 'HeadNeck', 'Pelvis']:
+            # The segment name is terminated by L or R. Remove it.
+            segment_name = segment_name[0:-1]
+
+        segment_rel_mass = inertial_data.loc[
+            (inertial_data['Segment'] == segment_name)
+            & (inertial_data['Gender'] == sex),
+            'RelMass'
+        ]
+
+        if len(segment_rel_mass) == 1:
+
+            out.data['GlobalCenterOfMass'] += (
+                float(segment_rel_mass) * coms.data[data]
+            )
+
+            cumulative_mass += float(segment_rel_mass)
+
+    out.data['GlobalCenterOfMass'] /= cumulative_mass
+    out.data['GlobalCenterOfMass'][:, 3] = 1
+
+    return out
+
+
+# %% Constants
 
 #: A link model to help kinematics visualization
 LINKS = {
@@ -886,7 +966,7 @@ LINKS = {
             ['UlnarStyloidL', 'CarpalMetaHead5L'],
             ['CarpalMetaHead2L', 'CarpalMetaHead5L'],
         ],
-        'Color': [0.5, 0, 0],
+        'Color': [0.5, 0, 0.25],
     },
     'Tighs': {
         'Links': [
@@ -916,7 +996,26 @@ LINKS = {
         ],
         'Color': [0, 0.25, 0.5],
     },
+    'Feets': {
+        'Links': [
+            ['CalcaneusR', 'TarsalMetaHead1R'],
+            ['CalcaneusR', 'TarsalMetaHead5R'],
+            ['MedialMalleolusR', 'TarsalMetaHead1R'],
+            ['LateralMalleolusR', 'TarsalMetaHead5R'],
+            ['CalcaneusR', 'MedialMalleolusR'],
+            ['CalcaneusR', 'LateralMalleolusR'],
+            ['TarsalMetaHead1R', 'TarsalMetaHead5R'],
 
+            ['CalcaneusL', 'TarsalMetaHead1L'],
+            ['CalcaneusL', 'TarsalMetaHead5L'],
+            ['MedialMalleolusL', 'TarsalMetaHead1L'],
+            ['LateralMalleolusL', 'TarsalMetaHead5L'],
+            ['CalcaneusL', 'MedialMalleolusL'],
+            ['CalcaneusL', 'LateralMalleolusL'],
+            ['TarsalMetaHead1L', 'TarsalMetaHead5L'],
+        ],
+        'Color': [0.25, 0.0, 0.75],
+    },
 }
 
 
