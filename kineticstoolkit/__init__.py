@@ -74,9 +74,20 @@ from kineticstoolkit import config  # noqa
 
 # --- Import unstable modules but append to listing only if we are on master
 
-from kineticstoolkit import inversedynamics  # noqa
-from kineticstoolkit import emg  # noqa
-from kineticstoolkit import anthropometrics  # noqa
+try:
+    from kineticstoolkit import inversedynamics  # noqa
+except:
+    pass
+
+try:
+    from kineticstoolkit import emg  # noqa
+except:
+    pass
+
+try:
+    from kineticstoolkit import anthropometrics  # noqa
+except:
+    pass
 
 try:
     from kineticstoolkit import dev  # noqa

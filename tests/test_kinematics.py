@@ -13,6 +13,7 @@ For now this is the original tutorial without any additional check.
 import kineticstoolkit as ktk
 import numpy as np
 import warnings
+import os
 
 
 def test_read_n3d_file():
@@ -82,33 +83,44 @@ def test_read_n3d_file():
     assert markers.data_info['GantD3']['Unit'] == 'm'
 
 
-def test_read_c3d_file():
-    """Regression test."""
-    # Regression tests for readc3dfile from OptiTrack Motive
+def test_read_write_c3d_file():
+    """
+    Regression tests for readc3dfile from OptiTrack Motive.
+
+    Tests twice, once using the original c3d, then saving a new c3d and
+    opening again.
+    """
     markers = ktk.kinematics.read_c3d_file(
         ktk.config.root_folder + '/data/kinematics/walkingOptiTrack.c3d'
     )
 
-    assert (
-        np.abs(np.nanmean(markers.data['Foot_Marker1'][:, 0:3]) - 0.1098)
-        < 0.0001
-    )
-    assert (
-        np.abs(np.nanmean(markers.data['Foot_Marker2'][:, 0:3]) - 0.1526)
-        < 0.0001
-    )
-    assert (
-        np.abs(np.nanmean(markers.data['Foot_Marker3'][:, 0:3]) - 0.1625)
-        < 0.0001
-    )
-    assert (
-        np.abs(np.nanmean(markers.data['Foot_Marker4'][:, 0:3]) - 0.1622)
-        < 0.0001
-    )
-    assert markers.data['Foot_Marker1'][0, 3] == 1
+    for i in range(2):
 
-    assert markers.time_info['Unit'] == 's'
-    assert markers.data_info['Foot_Marker1']['Unit'] == 'm'
+        assert (
+            np.abs(np.nanmean(markers.data['Foot_Marker1'][:, 0:3]) - 0.1098)
+            < 0.0001
+        )
+        assert (
+            np.abs(np.nanmean(markers.data['Foot_Marker2'][:, 0:3]) - 0.1526)
+            < 0.0001
+        )
+        assert (
+            np.abs(np.nanmean(markers.data['Foot_Marker3'][:, 0:3]) - 0.1625)
+            < 0.0001
+        )
+        assert (
+            np.abs(np.nanmean(markers.data['Foot_Marker4'][:, 0:3]) - 0.1622)
+            < 0.0001
+        )
+        assert markers.data['Foot_Marker1'][0, 3] == 1
+
+        assert markers.time_info['Unit'] == 's'
+        assert markers.data_info['Foot_Marker1']['Unit'] == 'm'
+
+        ktk.kinematics.write_c3d_file('test.c3d', markers)
+        markers = ktk.kinematics.read_c3d_file('test.c3d')
+
+    os.remove('test.c3d')
 
 
 def test_reconstruction_deprecated():
