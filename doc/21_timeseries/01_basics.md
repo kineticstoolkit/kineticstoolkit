@@ -128,7 +128,7 @@ In the figure above, we see that the TimeSeries contains cyclic data that could 
 There are several ways to edit the events of a TimeSeries:
 - Editing events manually, using the [TimeSeries.add_event()](../api/kineticstoolkit.TimeSeries.add_event.rst) and [TimeSeries.remove_event()](../api/kineticstoolkit.TimeSeries.remove_event.rst) methods;
 - Editing events interactively, using the [TimeSeries.ui_edit_events()](../api/kineticstoolkit.TimeSeries.ui_edit_events.rst) method;
-- Adding events automatically, for example using the [cycles](../24_cycles/cycles.rst) module that can detect cycles automatically.
+- Adding events automatically, for example using the [cycles](../24_cycles/00_cycles.rst) module that can detect cycles automatically.
 
 In this tutorial, we will add the events manually.
 
