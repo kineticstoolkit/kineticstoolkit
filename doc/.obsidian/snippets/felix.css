@@ -1,0 +1,27 @@
+.markdown-source-view {
+  font-family: consolas, helvetica;
+}
+
+.nav-file-title, .nav-folder-title {
+  font-size: 12px;
+  line-height: 15px;
+/*color: #555;*/
+}
+
+div.tree-item {
+  font-size: 12px;
+  line-height: 15px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+.markdown-embed-title, .file-embed-title {
+  font-size: larger;
+  font-weight: normal;
+  text-align: left;
+}
+
+/* Hide Templater icon */
+div[aria-label = "Templater"]{
+  display: none;
+}

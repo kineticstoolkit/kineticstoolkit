@@ -1,0 +1,9 @@
+{
+  "enabled": true,
+  "showNewline": false,
+  "showTab": true,
+  "showSpace": true,
+  "showSingleSpace": false,
+  "showTrailingSpace": true,
+  "showStrictLineBreak": true
+}

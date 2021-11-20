@@ -1,0 +1,234 @@
+{
+  "workspaces": {
+    "Home": {
+      "main": {
+        "id": "fcf2f49267a99d38",
+        "type": "split",
+        "children": [
+          {
+            "id": "cce231b5364ed912",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "Notebox/Home.md",
+                "mode": "source"
+              }
+            }
+          }
+        ],
+        "direction": "vertical"
+      },
+      "left": {
+        "id": "7e707c991bd46e6c",
+        "type": "split",
+        "children": [
+          {
+            "id": "051135cac6eb6e8b",
+            "type": "tabs",
+            "dimension": 33.36623889437315,
+            "children": [
+              {
+                "id": "1995fea2232193da",
+                "type": "leaf",
+                "state": {
+                  "type": "file-explorer",
+                  "state": {}
+                }
+              },
+              {
+                "id": "1e6d3e57b78dc2f4",
+                "type": "leaf",
+                "state": {
+                  "type": "search",
+                  "state": {
+                    "query": "roue instrumentée",
+                    "matchingCase": false,
+                    "explainSearch": false,
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical"
+                  }
+                }
+              },
+              {
+                "id": "05b927728cc41974",
+                "type": "leaf",
+                "state": {
+                  "type": "starred",
+                  "state": {}
+                }
+              },
+              {
+                "id": "07b48bba5510c65a",
+                "type": "leaf",
+                "state": {
+                  "type": "outline",
+                  "state": {
+                    "file": "Notebox/Home.md"
+                  }
+                }
+              },
+              {
+                "id": "76abb143dd75d72c",
+                "type": "leaf",
+                "state": {
+                  "type": "calendar",
+                  "state": {}
+                }
+              }
+            ],
+            "currentTab": 3
+          },
+          {
+            "id": "8e0b7506218fe231",
+            "type": "tabs",
+            "dimension": 66.63376110562686,
+            "children": [
+              {
+                "id": "ac4d1ba08783dc87",
+                "type": "leaf",
+                "state": {
+                  "type": "localgraph",
+                  "state": {
+                    "file": "Notebox/Home.md",
+                    "options": {
+                      "collapse-filter": false,
+                      "search": "",
+                      "localJumps": 2,
+                      "localBacklinks": true,
+                      "localForelinks": true,
+                      "localInterlinks": false,
+                      "showTags": false,
+                      "showAttachments": false,
+                      "hideUnresolved": false,
+                      "collapse-color-groups": false,
+                      "colorGroups": [
+                        {
+                          "query": "file:\"@\"",
+                          "color": {
+                            "a": 1,
+                            "rgb": 6083798
+                          }
+                        },
+                        {
+                          "query": "path:\"MOC\"",
+                          "color": {
+                            "a": 1,
+                            "rgb": 2789390
+                          }
+                        },
+                        {
+                          "query": "path:\"Notebox\"",
+                          "color": {
+                            "a": 1,
+                            "rgb": 4052757
+                          }
+                        },
+                        {
+                          "query": "path:\"Professional\"",
+                          "color": {
+                            "a": 1,
+                            "rgb": 3508479
+                          }
+                        },
+                        {
+                          "query": "path:Personal",
+                          "color": {
+                            "a": 1,
+                            "rgb": 8389119
+                          }
+                        },
+                        {
+                          "query": "path:Examens",
+                          "color": {
+                            "a": 1,
+                            "rgb": 16746496
+                          }
+                        },
+                        {
+                          "query": "path:\"Meeting notes\"",
+                          "color": {
+                            "a": 1,
+                            "rgb": 6698496
+                          }
+                        },
+                        {
+                          "query": "path:\"Projects/\"",
+                          "color": {
+                            "a": 1,
+                            "rgb": 16187617
+                          }
+                        }
+                      ],
+                      "collapse-display": true,
+                      "showArrow": true,
+                      "textFadeMultiplier": -2,
+                      "nodeSizeMultiplier": 0.684126838235294,
+                      "lineSizeMultiplier": 1,
+                      "collapse-forces": true,
+                      "centerStrength": 0.518713248970312,
+                      "repelStrength": 17.75,
+                      "linkStrength": 1,
+                      "linkDistance": 250,
+                      "scale": 0.22383591360657448,
+                      "close": true
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ],
+        "direction": "horizontal",
+        "width": 592
+      },
+      "right": {
+        "id": "398fd9542b6977ed",
+        "type": "split",
+        "children": [
+          {
+            "id": "ac214f64dca5f66c",
+            "type": "tabs",
+            "children": [
+              {
+                "id": "fa22c0741ca6a21a",
+                "type": "leaf",
+                "state": {
+                  "type": "backlink",
+                  "state": {
+                    "file": "Notebox/Home.md",
+                    "collapseAll": false,
+                    "extraContext": false,
+                    "sortOrder": "alphabetical",
+                    "showSearch": false,
+                    "searchQuery": "",
+                    "backlinkCollapsed": false,
+                    "unlinkedCollapsed": true
+                  }
+                }
+              },
+              {
+                "id": "120a8b4ad74930ca",
+                "type": "leaf",
+                "state": {
+                  "type": "tag",
+                  "state": {
+                    "sortOrder": "frequency",
+                    "useHierarchy": true
+                  }
+                }
+              }
+            ],
+            "currentTab": 1
+          }
+        ],
+        "direction": "horizontal",
+        "width": 555,
+        "collapsed": true
+      },
+      "active": "cce231b5364ed912"
+    }
+  },
+  "active": "Home"
+}

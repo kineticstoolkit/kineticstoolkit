@@ -33,3 +33,4 @@ doc/_build/html/*.ipynb
 tests/htmlcov
 output.csv
 doc/_build
+workspace
