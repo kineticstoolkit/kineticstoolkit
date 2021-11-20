@@ -13,10 +13,14 @@ kernelspec:
 
 This tutorial is an introduction or reminder of the basic elements of rigid body geometry. It covers the definitions of bodies, coordinate systems, coordinates (such as points, vectors and frames), and homogeneous transforms. It follows the nomenclature conventions of Craig, J., 1987. Introduction to robotics: Mechanics and control, in the context of rigid body biomechanics.
 
-While these notions largely come from the robotics field, they will be approached in the scope of rigid body biomechanics. As such, we will use the posture in Figure 1 all through the tutorial as an example for every introduced notion. To facilitate the comprehension, this is a bidimensional example; however, we will treat it as conventional 3D problem, with all z coordinates being set to zero.
+While these notions largely come from the robotics field, they will be approached in the scope of rigid body biomechanics. As such, we will use the posture in [Figure 1](humerus_intro) all through the tutorial as an example for every introduced notion. To facilitate the comprehension, this is a bidimensional example; however, we will treat it as conventional 3D problem, with all z coordinates being set to zero.
 
+:::{figure-md} humerus_intro
+:width: 200px
 ![humerus_intro](../_static/geometry/humerus_intro.png)
+
 Figure 1. The posture used as an example in this tutorial.
+:::
 
 ## Coordinates: points, vectors and frames
 
@@ -30,7 +34,7 @@ In this section, we will see how to express:
 
 To express any coordinate, we need a coordinate system. A coordinate system is composed of an origin (the point in space everything is expressed relative to) and a set of axes. In human movement biomechanics, we usually use a cartesian system composed of three orthonormal axes (x, y and z).
 
-In newton dynamics and at the human scale, it is totally acceptable to define a global, non-moving coordinate system everything can be referenced to. In Figure 2, we define such a fixed system:
+In newton dynamics and at the human scale, it is totally acceptable to define a global, non-moving coordinate system everything can be referenced to. In [Figure 2](humerus_global_coordinates), we define such a fixed system:
 
 - The origin is approximately at the hip level and posterior to the person;
 - The x axis points forward;
@@ -39,12 +43,16 @@ In newton dynamics and at the human scale, it is totally acceptable to define a 
 
 This coordinate system is completely arbitrary: any other origin or set of orthonormal axes would still be perfectly valid. This is the one we chose here, and the one every global coordinate will refer to.
 
+:::{figure-md} humerus_global_coordinates
+:width: 200px
 ![humerus_intro](../_static/geometry/humerus_global_coordinates.png)
+
 Figure 2. A global coordinate system
+:::
 
 ### Points and vectors
 
-Using the global coordinate system of Figure 2, we can express the position of any point in space using its three components (x, y, z). For example, the position of the shoulder in global coordinates is:
+Using the global coordinate system of [Figure 2](humerus_global_coordinates), we can express the position of any point in space using its three components (x, y, z). For example, the position of the shoulder in global coordinates is:
 
 $$
 ~^\text{global}p_\text{shoulder} = \begin{bmatrix}
@@ -91,20 +99,28 @@ As we just saw, points and vectors are easy to express in a coordinate system. T
 
 The first step to answer these questions is to create a **local coordinate system** for the humerus. This local coordinate system will be attached to the humerus, and thus will move with it.
 
-To create such a coordinate system, we need to define where is the origin and orthonormal axes of the humerus, in respect to the humerus itself. In this example, we will use the anatomical position as a reference to define this coordinate system (Figure 3):
+To create such a coordinate system, we need to define where is the origin and orthonormal axes of the humerus, in respect to the humerus itself. In this example, we will use the anatomical position as a reference to define this coordinate system ([Figure 3](humerus_coordinate_system)):
 
 - The humerus coordinate system's origin is located at the glenohumeral joint;
 - Its x axis points forward;
 - Its y axis is aligned with the humerus, pointing upward;
 - Its z axis points to the right.
 
+:::{figure-md} humerus_coordinate_system
+:width: 200px
 ![humerus_coordinate_system](../_static/geometry/humerus_coordinate_system.png)
+
 Figure 3. Local coordinate system of the humerus.
+:::
 
-Now that we defined this local coordinate system, we can come back to the position of interest of Figure 1. Look in Figure 4 how the humerus coordinate system is attached to the humerus and thus moves with it.
+Now that we defined this local coordinate system, we can come back to the position of interest of Figure 1. Look in [Figure 4](humerus_frame) how the humerus coordinate system is attached to the humerus and thus moves with it.
 
+:::{figure-md} humerus_frame
+:width: 200px
 ![humerus_frame](../_static/geometry/humerus_frame.png)
+
 Figure 4. Expressing the position and orientation of the humerus.
+:::
 
 ### Frames
 
@@ -122,10 +138,14 @@ $$
 
 The three first columns of a frame express the frame orientation. They express, in the reference coordinate system, the coordinates of three vectors of length 1 that are respectively oriented toward the x, y and z axes of the local coordinate system. Figure 5 illustrates this concept by showing the difference of orientation between the global and the humerus coordinate systems.
 
+:::{figure-md} humerus_orientation
+:width: 200px
 ![humerus_orientation](../_static/geometry/humerus_orientation.png)
-Figure 5. Orientation of the humerus coordinate system.
 
-Based on Figure 5, here is how we would express these three unit vectors (in bold) in both coordinate systems:
+Figure 5. Orientation of the humerus coordinate system.
+:::
+
+Based on [Figure 5](humerus_orientation), here is how we would express these three unit vectors (in bold) in both coordinate systems:
 
 |                |         In the humerus coordinate system         |                     In the global coordinate system                     |
 | --------------:|:------------------------------------------------:|:-----------------------------------------------------------------------:|

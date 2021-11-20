@@ -1,5 +1,5 @@
 {
-  "renderAll": true,
+  "renderAll": false,
   "renderImages": true,
   "renderPDF": false,
   "renderIframe": false,
