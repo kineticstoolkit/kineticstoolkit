@@ -73,27 +73,27 @@ Site map
     :caption: GETTING STARTED
     :maxdepth: 2
 
-    what_is_kinetics_toolkit
-    install
-    conventions
+    11_what_is_kinetics_toolkit
+    12_install
+    13_conventions
 
 .. toctree::
     :caption: TUTORIALS
     :maxdepth: 2
 
-    timeseries/timeseries
-    loadsave
-    filters/filters
-    cycles
-    geometry/geometry
-    kinematics/kinematics
-    pushrimkinetics
+    21_timeseries/timeseries
+    22_loadsave/loadsave
+    23_filters/filters
+    24_cycles/cycles
+    25_geometry/geometry
+    26_kinematics/kinematics
+    27_pushrimkinetics/pushrimkinetics
 
 .. toctree::
     :caption: IN DEPTH
 
-    lab_mode
-    release_notes
+    31_lab_mode
+    32_release_notes
     api_reference
     Development website <https://felixchenier.uqam.ca/ktk_develop>
     GitHub <https://github.com/felixchenier/kineticstoolkit>

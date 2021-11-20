@@ -10,5 +10,5 @@ In this tutorial, we will do a quick starter on rigid body basics (points, vecto
 .. toctree::
     :maxdepth: 2
 
-    basics
-    dimension_conventions
+    01_basics
+    02_dimension_conventions

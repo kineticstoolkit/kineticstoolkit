@@ -15,6 +15,6 @@ The three roles of the TimeSeries class are to:
 .. toctree::
     :maxdepth: 2
 
-    basics
-    manipulating
-    dataframes
+    01_basics
+    02_manipulating
+    03_dataframes

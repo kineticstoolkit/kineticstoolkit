@@ -53,7 +53,7 @@ player = ktk.Player(
 )
 ```
 
-### Infer joint centers
+## Infer joint centers
 
 Although a lot of markers are already available in this acquisition, the joint centers are undefined. We will first add the hips and L5S1, which are defined by the pelvis segment.
 

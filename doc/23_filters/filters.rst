@@ -8,7 +8,7 @@ The filters_ module wraps some filters to use directly with Kinetics Toolkit's T
 .. toctree::
     :maxdepth: 2
 
-    butter
-    smooth
-    savgol
-    median
+    01_butter
+    02_smooth
+    03_savgol
+    04_median

@@ -8,6 +8,5 @@ The kinematics_ module allows opening trajectories of markers from 3D acquisitio
 .. toctree::
     :maxdepth: 2
 
-    load_visualize
-    joint_angles
-    reconstruction
+    01_load_visualize
+    02_joint_angles
