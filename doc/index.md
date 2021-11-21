@@ -61,11 +61,11 @@ GitHub <https://github.com/felixchenier/kineticstoolkit>
 ```
 
 :::{ifconfig} release in ['master']
-```{toctree}
-:caption: FOR DEVELOPERS
-:maxdepth: 2
-41_install
-42_developer_manual
-43_dev/00_tutorials
-```
+    ```{toctree}
+    :caption: FOR DEVELOPERS
+    :maxdepth: 2
+    41_install
+    42_developer_manual
+    43_dev/00_tutorials
+    ```
 :::
