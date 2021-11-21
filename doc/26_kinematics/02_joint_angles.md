@@ -245,5 +245,4 @@ The process would be identical for any joint:
 3. Extract the series of Euler angles from these rigid transforms;
 4. Interpret these Euler angle as anatomical rotation.
 
-
 [^1]: G. Wu et al., "ISB recommendation on definitions of joint coordinate systems of various joints for the reporting of human joint motion - Part II: shoulder, elbow, wrist and hand," Journal of Biomechanics, vol. 38, no. 5, pp. 981--992, 2005.

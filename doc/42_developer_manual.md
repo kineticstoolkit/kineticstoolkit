@@ -139,9 +139,9 @@ Features are developed on `feature/feature_name` branches. All of the above shou
 - Doctest completed and passing (if relevant)
 - Unit test completed and passing
 
-Still on the feature branch, `ktk.dev.release()` should be run with success. This function runs `autopep8`, `mypy`, every unit test, builds all the tutorials, build the API and generates the static website.
+Still on the feature branch, `ktk.dev.run_tests()` should be run with success. This function runs `autopep8`, `mypy`, and every unit test.
 
-On success, the API should be navigated on the generated website to see if it rendered well.
+Then, one should try to build the documentation website and check the output for both the tutorials and API. The website is built using `ktk.dev.build_website()`.
 
 When all is done, the feature branch can be merged onto `master`.
 

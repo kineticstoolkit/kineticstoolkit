@@ -130,56 +130,6 @@ def run_doc_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
-def _generate_tutorial(file: str) -> None:  # pragma: no cover
-    """Generate one tutorial."""
-    print(file)
-    subprocess.call(['jupyter-nbconvert', '--execute',
-                     '--log-level', 'WARN', '--inplace',
-                     '--to', 'notebook', file],
-                    env=kineticstoolkit.config.env)
-
-    # Remove execution metadata (which changes after each run and pollutes
-    # the git repository)
-    with open(file, 'r') as fid:
-        contents = json.load(fid)
-
-    for cell in contents['cells']:
-        cell['metadata'].pop('execution', None)
-
-    with open(file, 'w') as fid:
-        json.dump(contents, fid, indent=1)
-
-
-def build_tutorials() -> None:  # pragma: no cover
-    """Build the markdown from notebooks tutorials."""
-    print('Generating tutorials...')
-    now = time.time()
-    cwd = os.getcwd()
-
-    # Run notebooks to generate the tutorials
-#    os.chdir(kineticstoolkit.config.root_folder + '/doc')
-
-    files = []
-
-    for (dirpath, dirnames, filenames) in os.walk(
-            kineticstoolkit.config.root_folder + '/doc'):
-
-        parent_dir = os.path.basename(dirpath)
-
-        if '_build' not in dirpath and not parent_dir.startswith('.'):
-
-            for file in filenames:
-
-                if file.endswith('.ipynb'):
-                    files.append(dirpath + '/' + file)
-
-    with multiprocessing.Pool() as pool:
-        pool.map(_generate_tutorial, files)
-
-#    os.chdir(cwd)
-    print(f'Done in {time.time() - now} seconds.')
-
-
 def build_website(clean: bool = False) -> None:  # pragma: no cover
     """
     Build the website using sphinx.
@@ -230,26 +180,6 @@ def build_website(clean: bool = False) -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
-def clean() -> None:  # pragma: no cover
-    """Remove outputs in jupyter notebooks (before committing to git)."""
-    for (folder, _, files) in os.walk(
-            kineticstoolkit.config.root_folder + '/doc'):
-
-        if '/_build' in folder or '/.ipynb_checkpoints' in folder:
-            for file in files:
-                if '.ipynb' in file:
-                    os.remove(f"{folder}/{file}")
-
-        elif any(['.ipynb' in file for file in files]):
-            print(f"Cleaning folder {folder}")
-            subprocess.call(['jupyter-nbconvert',
-                             '--ClearOutputPreprocessor.enabled=True',
-                             '--log-level', 'WARN',
-                             '--inplace',
-                             f'{folder}/*.ipynb'],
-                            env=kineticstoolkit.config.env)
-
-
 def compile_for_pypi() -> None:  # pragma: no cover
     """Compile for PyPi."""
     shutil.rmtree(kineticstoolkit.config.root_folder + '/dist',
@@ -272,12 +202,10 @@ def upload_to_pypi() -> None:  # pragma: no cover
         env=kineticstoolkit.config.env)
 
 
-def build() -> None:  # pragma: no cover
+def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     update_version()
     run_style_formatter()
     run_doc_tests()
     run_static_type_checker()
     run_unit_tests()
-    build_tutorials()
-    build_website(True)

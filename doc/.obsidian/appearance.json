@@ -1,9 +1,10 @@
 {
   "baseFontSize": 14,
   "cssTheme": "Spectrum",
-  "theme": "obsidian",
+  "theme": "moonstone",
   "translucency": false,
   "enabledCssSnippets": [
+    "custom",
     "felix"
   ],
   "baseFontSizeAction": false

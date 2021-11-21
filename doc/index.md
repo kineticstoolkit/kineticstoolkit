@@ -65,7 +65,7 @@ GitHub <https://github.com/felixchenier/kineticstoolkit>
 :caption: FOR DEVELOPERS
 :maxdepth: 2
 41_install
-42_conventions
+42_developer_manual
 43_dev/00_tutorials
 ```
 :::

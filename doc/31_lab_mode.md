@@ -23,7 +23,6 @@ Kinetics Toolkit includes a lab mode that changes some defaults so that doing sc
 
     >>> import kineticstoolkit as ktk
 
-
 ## What lab mode does
 
 ### Modification to repr of dictionaries

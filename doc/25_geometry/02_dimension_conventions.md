@@ -20,23 +20,21 @@ To understand better how to express scalars, coordinates (points, vectors, frame
 
 ## Series of scalars
 
-![Series of m scalars](../_static/geometry/series_of_m_scalars.png)
+![Series of m scalars -width:half](../_static/geometry/series_of_m_scalars.png)
 
 ## Series of points, series of vectors
 
-![Series of m points](../_static/geometry/series_of_m_points.png)
-
-![Series of m vectors](../_static/geometry/series_of_m_vectors.png)
+![Series of m points -width:half](../_static/geometry/series_of_m_points.png)
+![Series of m vectors -width:half](../_static/geometry/series_of_m_vectors.png)
 
 ## Series of groups of points, series of groups of vectors
 
-![Series of m groups of n points](../_static/geometry/series_of_m_groups_of_n_points.png)
-
- ![Series of m groups of n vectors](../_static/geometry/series_of_m_groups_of_n_vectors.png)
+![Series of m groups of n points -width:half](../_static/geometry/series_of_m_groups_of_n_points.png)
+ ![Series of m groups of n vectors -width:half](../_static/geometry/series_of_m_groups_of_n_vectors.png)
 
 ## Series of frames/homogeneous transforms
 
-![Series of m transformation matrices](../_static/geometry/series_of_m_transformation_matrices.png)
+![Series of m transformation matrices -width:wider](../_static/geometry/series_of_m_transformation_matrices.png)
 
 ## Working with constants
 
@@ -60,7 +58,7 @@ series_of_one_matrix
 
 Now that we presented the conventions for expressing coordinates and transforms as series, we are ready to redo the last example from the last section, this time using Kinetics Toolkit.
 
-![humerus_frame](../_static/geometry/humerus_frame.png)
+![humerus_frame -height:normal](../_static/geometry/humerus_frame.png)
 Figure 1. Position and orientation of the humerus.
 
 We know the lenght of the arm is 38 cm, and we want to express the position of the elbow in the global coordinate system. The shoulder is located 15 cm forward and 70 cm upward to the global origin and the humerus is inclined at 30 degrees of the vertical.

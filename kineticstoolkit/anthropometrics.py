@@ -848,7 +848,7 @@ def estimate_global_center_of_mass(
     out = coms.copy(copy_data=False, copy_data_info=False)
     out.data['GlobalCenterOfMass'] = np.zeros([out.time.shape[0], 4])
 
-    cumulative_mass = 0
+    cumulative_mass = 0.0
 
     for data in coms.data:
         segment_name = data.replace('CenterOfMass', '')

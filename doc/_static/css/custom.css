@@ -1,25 +1,17 @@
-img.right {
-	max-height: 300px;
-	max-width: 300px;
-	display: block;
-	float: right;
-}
+img[alt*="-height:shortest"] {max-height:100px;}
+img[alt*="-height:shorter"] {max-height:150px;}
+img[alt*="-height:short"] {max-height:225px;}
+img[alt*="-height:normal"] {max-height:340px;}
+img[alt*="-height:tall"] {max-height:510px;}
+img[alt*="-height:taller"] {max-height:765px;}
+img[alt*="-height:tallest"] {max-height:1150px;}
 
-img.left {
-	max-height: 300px;
-	max-width: 300px;
-	display: block;
-	float: left;
-}
-
-div.figure {
-	text-align: center;
-	margin-left: auto;
-	margin-right: auto;
-	max-height: 250px;
-	max-width: 250px;
-}
-
-.wy-nav-content {
-max-width: 1000px !important;
-}
+img[alt*="-width:narrowest"] {width:13%;}
+img[alt*="-width:narrower"] {width:20%;}
+img[alt*="-width:narrow"] {width:30%;}
+img[alt*="-width:normal"] {width:45%;}
+img[alt*="-width:wide"] {width:60%;}
+img[alt*="-width:wider"] {width:80%;}
+img[alt*="-width:widest"] {width:100%;}
+img[alt*="-width:full"] {width:100%;}
+img[alt*="-width:half"] {width:48%;}
