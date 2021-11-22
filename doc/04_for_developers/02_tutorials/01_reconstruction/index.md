@@ -275,7 +275,7 @@ clusters['Probe'] = {
 clusters['Probe']
 ```
 
-Now that we defined these clusters, we will be able to track those in every other acquisition. This process can be done using the [track_cluster()](../../../api/kineticstoolkit.kinematics.track_cluster.rst) function.
+Now that we defined these clusters, we will be able to track those in every other acquisition. This process can be done using the [track_cluster()](/api/kineticstoolkit.kinematics.track_cluster.rst) function.
 
 ## Calibration: Defining the virtual marker configurations based on probing acquisitions
 
@@ -425,4 +425,4 @@ player = ktk.Player(markers, segments=segments, **viewing_options)
 player.to_html5(start_time=0, stop_time=1)
 ```
 
-For more information on kinematics, please check the [API Reference for the kinematics module](../../../api/kineticstoolkit.kinematics.rst).
+For more information on kinematics, please check the [API Reference for the kinematics module](/api/kineticstoolkit.kinematics.rst).

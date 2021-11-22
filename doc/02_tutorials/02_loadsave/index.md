@@ -13,8 +13,8 @@ kernelspec:
 
 Contrarily to Matlab with its `.mat` file, python does not come with a single standard way to save data. To ease saving and sharing data, Kinetics Toolkit provides two functions that load and save its own `.ktk.zip` format:
 
-- [save()](../../api/kineticstoolkit.save.rst)
-- [load()](../../api/kineticstoolkit.load.rst)
+- [save()](/api/kineticstoolkit.save.rst)
+- [load()](/api/kineticstoolkit.load.rst)
 
 These functions are straightforward to use:
 

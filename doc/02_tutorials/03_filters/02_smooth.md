@@ -11,7 +11,7 @@ kernelspec:
 
 # Smoothing signals using a moving average
 
-The moving average is an excellent filter to remove noise that is related to a specific time pattern. The classic example is the day-to-day evaluation of a process that is sensible to week-ends (for example, the number of workers who enter a building). A moving average with a window length of 7 days is ideal to evaluate the generic trend of this signal without considering intra-week fluctuations. Although its use in biomechanics is less obvious, this filter may be useful in some situation. This tutorial will show how to use the [ktk.filters.smooth()](../../api/kineticstoolkit.filters.smooth.rst) function on TimeSeries data.
+The moving average is an excellent filter to remove noise that is related to a specific time pattern. The classic example is the day-to-day evaluation of a process that is sensible to week-ends (for example, the number of workers who enter a building). A moving average with a window length of 7 days is ideal to evaluate the generic trend of this signal without considering intra-week fluctuations. Although its use in biomechanics is less obvious, this filter may be useful in some situation. This tutorial will show how to use the [ktk.filters.smooth()](/api/kineticstoolkit.filters.smooth.rst) function on TimeSeries data.
 
 ```{code-cell}
 import kineticstoolkit.lab as ktk

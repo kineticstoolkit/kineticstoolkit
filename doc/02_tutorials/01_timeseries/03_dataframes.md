@@ -11,7 +11,7 @@ kernelspec:
 
 # Converting between TimeSeries and Pandas DataFrames
 
-To ensure a great compatibility between Kinetics Toolkit and other frameworks, TimeSeries can be converted from and to Pandas DataFrame using the [TimeSeries.from_dataframe()](../../api/kineticstoolkit.TimeSeries.from_dataframe.rst) and [TimeSeries.to_dataframe()](../../api/kineticstoolkit.TimeSeries.to_dataframe.rst) methods, and thus benefit from the myriad of options offered by Pandas.
+To ensure a great compatibility between Kinetics Toolkit and other frameworks, TimeSeries can be converted from and to Pandas DataFrame using the [TimeSeries.from_dataframe()](/api/kineticstoolkit.TimeSeries.from_dataframe.rst) and [TimeSeries.to_dataframe()](/api/kineticstoolkit.TimeSeries.to_dataframe.rst) methods, and thus benefit from the myriad of options offered by Pandas.
 
 In this tutorial, we will learn how to import comma-separated-value (csv) files as TimeSeries, and export back to csv.
 
@@ -129,9 +129,9 @@ For series of arrays with more than one dimension, the brackets would have multi
 
 ## Example 2: Converting a c3d file to csv
 
-For saving a TimeSeries to a `csv`, we create a DataFrame using the [TimeSeries.to_dataframe()](../../api/kineticstoolkit.TimeSeries.to_dataframe.rst) method, then we can use Pandas' `to_csv()` method.
+For saving a TimeSeries to a `csv`, we create a DataFrame using the [TimeSeries.to_dataframe()](/api/kineticstoolkit.TimeSeries.to_dataframe.rst) method, then we can use Pandas' `to_csv()` method.
 
-In this example, we will read 3d marker positions from a sample `c3d` file, and export these positions to a `csv` file. We first read the `c3d` file using the [kinematics](../../api/kineticstoolkit.kinematics.rst) module. This results in a TimeSeries with 26 markers:
+In this example, we will read 3d marker positions from a sample `c3d` file, and export these positions to a `csv` file. We first read the `c3d` file using the [kinematics](/api/kineticstoolkit.kinematics.rst) module. This results in a TimeSeries with 26 markers:
 
 ```{code-cell}
 markers = ktk.kinematics.read_c3d_file(

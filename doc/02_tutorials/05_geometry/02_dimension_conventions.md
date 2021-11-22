@@ -11,7 +11,7 @@ kernelspec:
 
 # Dimension conventions and first example
 
-In the [geometry](../../api/kineticstoolkit.geometry.rst) module and in most of Kinetics Toolkit's module:
+In the [geometry](/api/kineticstoolkit.geometry.rst) module and in most of Kinetics Toolkit's module:
 
 - Every point, vector or matrix, and in many case even scalar, is considered as a **series**.
 - The first dimension of any series corresponds to **time**.
@@ -73,7 +73,7 @@ local_elbow_position = np.array([[0, -0.38, 0, 1]])
 local_elbow_position
 ```
 
-Now, we create the frame representing the position and orientation of the humerus coordinate system. Since we know these position and orientation, then we will create this frame as an homogeneous transform from the global to the humerus coordinate system, using the [geometry.create_transforms()](../../api/kineticstoolkit.geometry.create_transforms.rst) function:
+Now, we create the frame representing the position and orientation of the humerus coordinate system. Since we know these position and orientation, then we will create this frame as an homogeneous transform from the global to the humerus coordinate system, using the [geometry.create_transforms()](/api/kineticstoolkit.geometry.create_transforms.rst) function:
 
 ```{code-cell}
 humerus_frame = ktk.geometry.create_transforms(

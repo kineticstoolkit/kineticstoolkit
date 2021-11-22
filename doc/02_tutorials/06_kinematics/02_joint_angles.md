@@ -200,7 +200,7 @@ arm_to_forearm
 
 ## Extract the series of Euler angles
 
-We now have a series of homogeneous matrices, from which we will now extract Euler angles corresponding to flexion and pronation. We will use the [geometry.get_angles()](../../api/kineticstoolkit.geometry.get_angles.rst) function to extract these Euler angles. We however fist need to define the sequence of rotation for these angles. Still following the recommendations of the International Society of Biomechanics [^1], we define the series of rotations from the arm to forearm as:
+We now have a series of homogeneous matrices, from which we will now extract Euler angles corresponding to flexion and pronation. We will use the [geometry.get_angles()](/api/kineticstoolkit.geometry.get_angles.rst) function to extract these Euler angles. We however fist need to define the sequence of rotation for these angles. Still following the recommendations of the International Society of Biomechanics [^1], we define the series of rotations from the arm to forearm as:
 
 **First rotation:** Around the humerus' z axis. Corresponds to a flexion (positive) or hyperextension (negative).
 

@@ -11,7 +11,7 @@ kernelspec:
 
 # Wheelchair kinetics
 
-The [pushrimkinetics](../../api/kineticstoolkit.pushrimkinetics.rst) module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.
+The [pushrimkinetics](/api/kineticstoolkit.pushrimkinetics.rst) module allows processing kinetics data from instrumented wheelchair wheels such as the SmartWheel.
 
 ```{code-cell} ipython3
 import kineticstoolkit.lab as ktk
@@ -22,7 +22,7 @@ import pandas as pd
 
 ## Read data from file
 
-The first step is to load data from a file, using the [pushrimkinetics.read_file()](../../api/kineticstoolkit.pushrimkinetics.read_file.rst) function.
+The first step is to load data from a file, using the [pushrimkinetics.read_file()](/api/kineticstoolkit.pushrimkinetics.read_file.rst) function.
 
 ```{code-cell} ipython3
 filename = (
@@ -52,7 +52,7 @@ plt.tight_layout()
 
 ## Calculate forces and moments
 
-If the loaded data doesn't include forces and moments but only raw data (for exemple, when loading data from a SmartWheel's SD card), we must calculate the forces and moments based on a calibration matrix. The function [pushrimkinetics.calculate_forces_and_moments()](../../api/kineticstoolkit.pushrimkinetics.calculate_forces_and_moments.rst) performs this calculation. In this example, we use a calibration matrix that is included in `ktk.pushrimkinetics.CALIBRATION_MATRICES`, and we express the calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel's angular encoder).
+If the loaded data doesn't include forces and moments but only raw data (for exemple, when loading data from a SmartWheel's SD card), we must calculate the forces and moments based on a calibration matrix. The function [pushrimkinetics.calculate_forces_and_moments()](/api/kineticstoolkit.pushrimkinetics.calculate_forces_and_moments.rst) performs this calculation. In this example, we use a calibration matrix that is included in `ktk.pushrimkinetics.CALIBRATION_MATRICES`, and we express the calculated forces and moments in a reference frame that is orthogonal to the ground (levelled using the wheel's angular encoder).
 
 ```{code-cell} ipython3
 calibration_matrices = ktk.pushrimkinetics.CALIBRATION_MATRICES['SmartWheel_123']
@@ -78,7 +78,7 @@ We observe some sign differences here. In fact, the SmartWheel softwares inverts
 
 ## Removing dynamic offsets in forces and moments
 
-We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using [pushrimkinetics.remove_offsets()](../../api/kineticstoolkit.pushrimkinetics.remove_offsets.rst).
+We observe in the last graphs that dynamic (sinusoidal) offsets are presents mostly in the forces but also in the moments. We can auto-remove these offsets using [pushrimkinetics.remove_offsets()](/api/kineticstoolkit.pushrimkinetics.remove_offsets.rst).
 
 Let's apply this function on the data we just loaded.
 
@@ -98,12 +98,12 @@ plt.title('After removing offsets')
 plt.tight_layout()
 ```
 
-This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the [pushrimkinetics.remove_offsets()](../../api/kineticstoolkit.pushrimkinetics.remove_offsets.rst) function help for more information.
+This automatic method has only be validated for straight-line, level-ground propulsion. For any other condition, a baseline trial is required. A baseline trial is a trial where an operator pushes the wheelchair but no external force appart from gravity is applied on the instrumented wheel. Please consult the [pushrimkinetics.remove_offsets()](/api/kineticstoolkit.pushrimkinetics.remove_offsets.rst) function help for more information.
 
 ## Calculate velocity and power
 
-Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the [pushrimkinetics.calculate_velocity()](../../api/kineticstoolkit.pushrimkinetics.calculate_velocity.rst) function. Once the velocity has been calculated, the output power can also be calculated by
-multiplying the velocity by the propulsion moment, using the [pushrimkinetics.calculate_power()](../../api/kineticstoolkit.pushrimkinetics.calculate_power.rst) function.
+Thee wheel velocity is calculated from the wheel angle with a derivative Savitsky-Golay filter, using the [pushrimkinetics.calculate_velocity()](/api/kineticstoolkit.pushrimkinetics.calculate_velocity.rst) function. Once the velocity has been calculated, the output power can also be calculated by
+multiplying the velocity by the propulsion moment, using the [pushrimkinetics.calculate_power()](/api/kineticstoolkit.pushrimkinetics.calculate_power.rst) function.
 
 ```{code-cell} ipython3
 kinetics = ktk.pushrimkinetics.calculate_velocity(kinetics)
@@ -118,7 +118,7 @@ plt.tight_layout()
 
 ## Detecting the pushes
 
-The [cycles](../24_cycles/00_cycles.rst) module provides powerful tools to detect and manage cycles. Here we use [cycles.detect_cycles()](../../api/kineticstoolkit.cycles.detect_cycles.rst) to detect the pushes using these specifications:
+The [cycles](/api/kineticstoolkit.cycles.rst) module provides powerful tools to detect and manage cycles. Here we use [cycles.detect_cycles()](/api/kineticstoolkit.cycles.detect_cycles.rst) to detect the pushes using these specifications:
 - a push starts when the total force crosses 5 N upward;
 - a push ends when the total force crosses 2 N downward;
 - for a push to be valid, it must last at least 100 ms;
@@ -193,4 +193,4 @@ df.to_clipboard()
 df
 ```
 
-For more information, please check the [API Reference for the pushrimkinetics module](../../api/kineticstoolkit.pushrimkinetics.rst).
+For more information, please check the [API Reference for the pushrimkinetics module](/api/kineticstoolkit.pushrimkinetics.rst).

@@ -11,7 +11,7 @@ kernelspec:
 
 # Detecting and normalizing cycles
 
-The [cycles](../../api/kineticstoolkit.cycles.rst) module allows detecting cycles in TimeSeries, time-normalize these cycles and find the most repeatable ones.
+The [cycles](/api/kineticstoolkit.cycles.rst) module allows detecting cycles in TimeSeries, time-normalize these cycles and find the most repeatable ones.
 
 In this tutorial, we will use kinetics data from wheelchair propulsion using a csv file.
 
@@ -40,7 +40,7 @@ plt.tight_layout()
 
 ## Detecting cycles
 
-The [cycles.detect_cycles()](../../api/kineticstoolkit.cycles.detect_cycles.rst) function allows detecting cycles in a TimeSeries, using one specified signal from this TimeSeries. Here, this signal will be the total force Ftot.
+The [cycles.detect_cycles()](/api/kineticstoolkit.cycles.detect_cycles.rst) function allows detecting cycles in a TimeSeries, using one specified signal from this TimeSeries. Here, this signal will be the total force Ftot.
 
 We first calculate it based on the three force components and we add it as a new data of the TimeSeries.
 
@@ -99,7 +99,7 @@ We observe an `_` event at about 27 seconds. There are in fact such `_` events a
 
 ## Time-normalizing cycles
 
-Once the cycles have been detected, we can time-normalize these cycles using [cycles.time_normalize()](../../api/kineticstoolkit.cycles.time_normalize.rst) to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.
+Once the cycles have been detected, we can time-normalize these cycles using [cycles.time_normalize()](/api/kineticstoolkit.cycles.time_normalize.rst) to get them on the same time scale (a percentage of the cycle). Each of the 12 complete cycles is then time-normalized from 0 to 100%, with cycles being multiples of 100%.
 
 ```{code-cell} ipython3
 ts_normalized_on_cycle = ktk.cycles.time_normalize(ts_with_events, 'push', '_')
@@ -141,7 +141,7 @@ Note that in this case, each time point represents 1% of a push cycle, but the T
 
 ## Combining the cycles
 
-Time-normalizing cycles is often performed in the aim of performing further operations such as computing and visualizing the average cycle. Therefore, the next logical step is often to group the cycles into indexable arrays. This can be done using the [cycles.stack()](../../api/kineticstoolkit.cycles.stack.rst) function.
+Time-normalizing cycles is often performed in the aim of performing further operations such as computing and visualizing the average cycle. Therefore, the next logical step is often to group the cycles into indexable arrays. This can be done using the [cycles.stack()](/api/kineticstoolkit.cycles.stack.rst) function.
 
 In this example, we will stack the data from the last computed TimeSeries.
 
@@ -168,7 +168,7 @@ plt.tight_layout()
 
 ## Finding the most repeatable cycles
 
-In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different between each other. We can use the [cycles.most_repeatable_cycles()](../../api/kineticstoolkit.cycles.most_repeatable_cycles.rst) function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the `Ftot` signal.
+In the previous step, we calculated an average cycle. However, this average cycle was calculated on cycles that were very different between each other. We can use the [cycles.most_repeatable_cycles()](/api/kineticstoolkit.cycles.most_repeatable_cycles.rst) function to obtain an ordered list from the most repeatable cycles to the most different one. Here, we will base this analysis on the `Ftot` signal.
 
 ```{code-cell} ipython3
 index = ktk.cycles.most_repeatable_cycles(data['Ftot'])
@@ -194,4 +194,4 @@ plt.legend()
 plt.tight_layout()
 ```
 
-For more information on cycles, please check the [API Reference for the cycles module](../../api/kineticstoolkit.cycles.rst).
+For more information on cycles, please check the [API Reference for the cycles module](/api/kineticstoolkit.cycles.rst).

@@ -11,7 +11,7 @@ kernelspec:
 
 # Inverse Dynamics
 
-The [inversedynamics](../../../api/kineticstoolkit.inversedynamics.rst) module calculates the proximal forces and moments based on the segment's kinematics and distal forces and moments, based on the general method published in Dumas et al., 2004 [^1].
+The [inversedynamics](/api/kineticstoolkit.inversedynamics.rst) module calculates the proximal forces and moments based on the segment's kinematics and distal forces and moments, based on the general method published in Dumas et al., 2004 [^1].
 
 [^1]: R. Dumas, R. Aissaoui, and J. A. De Guise, "A 3D generic inverse dynamic method using wrench notation and quaternion algebra," Comput Meth Biomech Biomed Eng, vol. 7, no. 3, pp. 159–166, 2004.
 
@@ -350,4 +350,4 @@ plt.legend(['Abduction', 'Internal rotation', 'Flexion'])
 print('Net internal shoulder moments:')
 ```
 
-For more information on inversedynamics, please check the [API Reference for the inversedynamics module](../../../api/kineticstoolkit.inversedynamics.rst).
+For more information on inversedynamics, please check the [API Reference for the inversedynamics module](/api/kineticstoolkit.inversedynamics.rst).
