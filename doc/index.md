@@ -34,38 +34,36 @@ Thanks to Clay Flannigan for his [icp](https://github.com/ClayFlannigan/icp) met
 ```{toctree}
 :caption: GETTING STARTED
 :maxdepth: 2
-11_what_is_kinetics_toolkit
-12_install
-13_conventions
+:glob:
+
+01_getting_started/*
 ```
 
 ```{toctree}
 :caption: TUTORIALS
 :maxdepth: 2
-21_timeseries/00_timeseries
-22_loadsave/00_loadsave
-23_filters/00_filters
-24_cycles/00_cycles
-25_geometry/00_geometry
-26_kinematics/00_kinematics
-27_pushrimkinetics/00_pushrimkinetics
+:glob:
+
+02_tutorials/*/index
 ```
 
 ```{toctree}
 :caption: IN DEPTH
-31_lab_mode
-32_release_notes
+:maxdepth: 2
+:glob:
+
+03_in_depth/*
 api_reference
 Development website <https://felixchenier.uqam.ca/ktk_develop>
 GitHub <https://github.com/felixchenier/kineticstoolkit>
 ```
 
 :::{ifconfig} release in ['master']
-    ```{toctree}
-    :caption: FOR DEVELOPERS
-    :maxdepth: 2
-    41_install
-    42_developer_manual
-    43_dev/00_tutorials
-    ```
+```{toctree}
+:caption: FOR DEVELOPERS
+:maxdepth: 2
+:glob:
+
+04_for_developers/*/index
+```
 :::
