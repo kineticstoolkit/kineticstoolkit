@@ -61,7 +61,7 @@ def test_TimeSeriesEvent():
     assert the_list[0] == 1.5
     assert the_list[1] == 'event_name'
 
-    the_dict = event.to_dict()
+    the_dict = event._to_dict()
     assert the_dict['Time'] == 1.5
     assert the_dict['Name'] == 'event_name'
 
