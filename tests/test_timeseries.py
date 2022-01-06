@@ -41,9 +41,9 @@ def test_TimeSeriesEvent():
     assert event.name == 'one'
 
     # Test ordering
-    event1 = ktk.TimeSeriesEvent(time = 1, name='event1')
-    event2 = ktk.TimeSeriesEvent(time = 2, name='event2')
-    event3 = ktk.TimeSeriesEvent(time = 2, name='event3')
+    event1 = ktk.TimeSeriesEvent(time=1, name='event1')
+    event2 = ktk.TimeSeriesEvent(time=2, name='event2')
+    event3 = ktk.TimeSeriesEvent(time=2, name='event3')
 
     assert event1 < event2
     assert event1 <= event2

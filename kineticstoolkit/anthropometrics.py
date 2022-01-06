@@ -23,9 +23,9 @@ Warning
 This module is in very early development and everything can still change.
 Please don't use this module in production code.
 
+
 Nomenclature
 ------------
-
 Skin markers (either real or reconstructed):
 
 - HeadVertex

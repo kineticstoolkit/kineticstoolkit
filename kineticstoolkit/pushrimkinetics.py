@@ -313,12 +313,12 @@ def calculate_forces_and_moments(
     For standard force cells (with each channel being a raw value
     corresponding to Fx, Fy, Fz, Mx, My, Mz, respectively), calculates
     the forces and moments using a sensitivity matrix (gains) and an
-    offset vector (offsets):
-
-    ``[Fx, Fy, Fz, Mx, My, Mz] = gains @ channels + offsets``
+    offset vector (offsets).
 
     For SmartWheel, calculates the forces and moments using a gain
     vector (gains) and an offset vector (offsets).
+
+        [Fx, Fy, Fz, Mx, My, Mz] = gains @ channels + offsets
 
     Parameters
     ----------
@@ -342,18 +342,6 @@ def calculate_forces_and_moments(
     TimeSeries
         A copy of the input TimeSeries, with the added 'Forces'
         and 'Moments' data keys.
-
-    Note
-    ----
-    Some calibration matrices are provided as examples in the
-    ``pushrimkinetics.CALIBRATION_MATRICES`` dictionary. This dictionary can
-    be used directly using dict unpacking. For example::
-
-        ktk.pushrimkinetics.calculate_force_and_moments(
-            kinetics,
-            **ktk.pushrimkinetics.CALIBRATION_MATRICES['SmartWheel_123'],
-            reference_frame='level'
-        )
 
     """
     # Calculate the forces and moments and add to the output
@@ -502,143 +490,60 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     return tsout
 
 
-#--- Deprecated functions ---#
-@dead(since="October 2020",
-      until="December 2021",
-      details="Please use ktk.cycles.detect_cycles instead.")
-def detect_pushes(
-        tsin: TimeSeries, /, *,
-        push_threshold: float = 5.0,
-        recovery_threshold: float = 2.0,
-        min_push_time: float = 0.1,
-        min_push_force: float = 30.0) -> TimeSeries:
-    """
-    Detect pushes and recoveries automatically.
+# Deprecated constants:
 
-    Parameters
-    ----------
-    tsin
-        Input TimeSeries that must contain a 'Forces' key in its data dict.
-    push_threshold
-        Optional. The total force over which a push phase is triggered, in
-        newton.
-    recovery_threshold
-        Optional. The total force under which a recovery phase is triggered,
-        in newton.
-    min_push_time
-        Optional. The minimum time required for a push time, in seconds.
-        Detected pushes that last less than this minimum time are removed from
-        the push analysis.
-    min_recovery_time
-        Optional. The minimum time required for a recovery time, in seconds.
-        Detected recoveries that last less than this minimum time are removed
-        from the push analysis.
-    min_push_force
-        Optional. The minimum total push force in N under which the detected
-        push is discarded. For example, if the user puts their hands on the
-        pushrim before starting propelling, this may be detected as a push.
-        Using a minimum push force removes these misdetected pushes.
-
-    Returns
-    -------
-    TimeSeries
-        A copy of tsin with the following added events:
-        - 'push'
-        - 'recovery'
-
-    """
-    # Calculate the total force
-    f_tot = np.sqrt(np.sum(tsin.data['Forces']**2, axis=1))
-    ts_force = TimeSeries(time=tsin.time, data={'Ftot': f_tot})
-    ts_force.events = tsin.events
-
-    # Smooth the total force to avoid detecting pushes on glitches
-    ts_force = filters.smooth(ts_force, 11)
-
-    # Remove the median if it existed
-    ts_force.data['Ftot'] = \
-        ts_force.data['Ftot'] - np.median(ts_force.data['Ftot'])
-
-    # Find the pushes
-    ts_force = cycles.detect_cycles(
-        ts_force, 'Ftot',
-        event_name1='push',
-        event_name2='recovery',
-        threshold1=push_threshold,
-        threshold2=recovery_threshold,
-        min_duration1=min_push_time,
-        min_peak_height1=min_push_force)
-
-    # Form the output timeseries
-    tsout = tsin.copy()
-    tsout.events = ts_force.events
-
-    return tsout
-
-
-@dead(since="October 2020",
-      until="December 2021",
-      details="Please use ktk.pushrimkinetics.remove_offsets instead.")
-def remove_sinusoids(
-        kinetics: TimeSeries,
-        baseline_kinetics: Optional[TimeSeries] = None) -> TimeSeries:
-    """Remove offsets."""
-    return remove_offsets(kinetics, baseline_kinetics)
-
-
-#--- Some calibration matrices ---#
-CALIBRATION_MATRICES = {}
-CALIBRATION_MATRICES['SmartWheel_93'] = {
+_deprecated_CALIBRATION_MATRICES = {}
+_deprecated_CALIBRATION_MATRICES['SmartWheel_93'] = {
     'gains': np.array([-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_94'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_94'] = {
     'gains': np.array([-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_123'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_123'] = {
     'gains': np.array([-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_124'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_124'] = {
     'gains': np.array([-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_125'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_125'] = {
     'gains': np.array([-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_126'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_126'] = {
     'gains': np.array([-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_126_S18'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_126_S18'] = {
     'gains': np.array([-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_179_S18'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_179_S18'] = {
     'gains': np.array([-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_180_S18'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_180_S18'] = {
     'gains': np.array([-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
+_deprecated_CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
     'gains': np.array([-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]),
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-CALIBRATION_MATRICES['MOSA_Racing_1'] = {
+_deprecated_CALIBRATION_MATRICES['MOSA_Racing_1'] = {
     'gains': (np.array([
         [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
         [-0.840, 201.396, 2.119, 0.083, -6.877, 4.482],
@@ -652,6 +557,15 @@ CALIBRATION_MATRICES['MOSA_Racing_1'] = {
     'offsets': [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869],
     'transducer': 'force_cell',
 }
+
+
+def __getattr__(name):
+    if name == 'CALIBRATION_MATRICES':
+        warnings.warn(
+            'These sample calibration matrices will be removed in '
+            'January 2003.', FutureWarning)
+        return globals()['_deprecated_CALIBRATION_MATRICES']
+    raise AttributeError(f"module {__name__} has no attribute {name}")
 
 
 module_locals = locals()
