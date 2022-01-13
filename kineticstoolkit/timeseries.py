@@ -1229,6 +1229,7 @@ class TimeSeries:
     def copy(
         self,
         *,
+        copy_time=True,
         copy_data=True,
         copy_time_info=True,
         copy_data_info=True,
@@ -1263,7 +1264,9 @@ class TimeSeries:
             return deepcopy(self)
         else:
             # Specific cases
-            ts = ktk.TimeSeries(time=self.time)
+            ts = ktk.TimeSeries()
+            if copy_time:
+                ts.time = deepcopy(self.time)
             if copy_data:
                 ts.data = deepcopy(self.data)
             if copy_time_info:
@@ -1773,7 +1776,7 @@ class TimeSeries:
         array([0. , 0.1, 0.2])
 
         """
-        out_ts = self.copy()
+        out_ts = self.copy(copy_data=False, copy_time=False)
 
         if index < 0:
             index += len(self.time)
@@ -1786,9 +1789,9 @@ class TimeSeries:
             else:
                 index_range = range(index)
 
-        out_ts.time = out_ts.time[index_range]
-        for the_data in out_ts.data.keys():
-            out_ts.data[the_data] = out_ts.data[the_data][index_range]
+        out_ts.time = self.time[index_range]
+        for the_data in self.data:
+            out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
     def get_ts_after_index(
@@ -1822,7 +1825,7 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
-        out_ts = self.copy()
+        out_ts = self.copy(copy_data=False, copy_time=False)
 
         if index < 0:
             index += len(self.time)
@@ -1832,9 +1835,9 @@ class TimeSeries:
         else:
             index_range = range(index + 1, len(self.time))
 
-        out_ts.time = out_ts.time[index_range]
-        for the_data in out_ts.data.keys():
-            out_ts.data[the_data] = out_ts.data[the_data][index_range]
+        out_ts.time = self.time[index_range]
+        for the_data in self.data:
+            out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
     def get_ts_between_indexes(
@@ -1868,7 +1871,7 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5])
 
         """
-        out_ts = self.copy()
+        out_ts = self.copy(copy_time=False, copy_data=False)
         if np.isnan(index1) or np.isnan(index2):
             index_range = range(0)
         else:
@@ -1877,9 +1880,9 @@ class TimeSeries:
             else:
                 index_range = range(index1 + 1, index2)
 
-        out_ts.time = out_ts.time[index_range]
-        for the_data in out_ts.data.keys():
-            out_ts.data[the_data] = out_ts.data[the_data][index_range]
+        out_ts.time = self.time[index_range]
+        for the_data in self.data.keys():
+            out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
     def get_ts_before_time(
@@ -2371,7 +2374,7 @@ class TimeSeries:
         ts.events = []
         for event in events:
             if event.time >= ts.time[0] and event.time <= ts.time[-1]:
-                ts = ts.add_event(event.time, event.name)
+                ts.add_event(event.time, event.name, in_place=True)
         return ts
 
     def ui_sync(

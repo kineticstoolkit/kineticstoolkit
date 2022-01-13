@@ -543,20 +543,6 @@ _deprecated_CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
     'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
     'transducer': 'smartwheel',
 }
-_deprecated_CALIBRATION_MATRICES['MOSA_Racing_1'] = {
-    'gains': (np.array([
-        [201.027, 1.387, 2.077, -3.852, -1.837, -1.519],
-        [-0.840, 201.396, 2.119, 0.083, -6.877, 4.482],
-        [-1.935, -1.643, 402.286, 1.687, 0.897, -23.616],
-        [0.213, 0.122, 0.120, 25.190, -0.013, 0.147],
-        [-0.072, 0.286, 0.076, 0.012, 25.430, 0.146],
-        [0.016, -0.015, 0.046, -0.099, -0.076, 25.206]])  # Cell calibration
-        / (2.**15) / 10  # ADC gains
-        / np.array([-2., -2., -2., -2., -4., -4.])  # Board gains
-    ),
-    'offsets': [-111.3874, -63.3298, -8.6596, 1.8089, 1.5761, -0.8869],
-    'transducer': 'force_cell',
-}
 
 
 def __getattr__(name):
