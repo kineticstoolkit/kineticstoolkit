@@ -64,6 +64,9 @@ listing.append('pushrimkinetics')
 from kineticstoolkit import cycles  # noqa
 listing.append('cycles')
 
+from kineticstoolkit import doc  # noqa
+listing.append('doc')
+
 from kineticstoolkit import _repr  # noqa
 from kineticstoolkit import gui  # noqa
 
