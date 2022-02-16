@@ -31,14 +31,18 @@ from kineticstoolkit.decorators import unstable
 
 
 @unstable
-def download_sample_data(
+def download(
         name: str = "", **kwargs) -> str:
     """
-    Download sample data and return its local file name.
+    Download example data and return its local file name.
 
-    This function download sample data from github. These data are the same
+    This function download example data from github. These data are the same
     that are used to generate the
     [documentation website](https://kineticstoolkit.uqam.ca).
+
+    These example data are volatile; they are supplied only for the user to
+    reproduce the tutorials. Therefore, these data may change according to
+    changes in the tutorials.
 
     Parameters
     ----------
@@ -59,8 +63,26 @@ def download_sample_data(
         kwargs['force_download'] = False
 
     file_list = {
-        'wheelchair_racing_full_kinematics.c3d': 'kinematics/racing_full.c3d',
-        'filter_noise.ktk.zip': 'filters/sample_noises.ktk.zip',
+        'dataframe_example1.csv':
+            'timeseries/sample1.csv',
+        'dataframe_example2.csv':
+            'timeseries/sample2.csv',
+        'wheelchair_kinetics.ktk.zip':
+            'timeseries/smartwheel.ktk.zip',
+        'wheelchair_kinetics.csv':
+            'pushrimkinetics/sample_sw_csvtxt.csv',
+        'wheelchair_kinetics.txt':
+            'pushrimkinetics/sample_sw_csvtxt.csv',
+        'wheelchair_kinetics_offsets.csv':
+            'pushrimkinetics/sample_swl_overground_propulsion_withrubber.csv',
+        'wheelchair_kinematics.c3d':
+            'kinematics/sprintbasket.c3d',
+        'wheelchair_racing_full_kinematics.c3d':
+            'kinematics/racing_full.c3d',
+        'noisy_signals.ktk.zip':
+            'filters/sample_noisy.ktk.zip',
+        'types_of_noise.ktk.zip':
+            'filters/sample_noises.ktk.zip',
     }
 
     if name == "":

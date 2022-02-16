@@ -549,7 +549,7 @@ def __getattr__(name):
     if name == 'CALIBRATION_MATRICES':
         warnings.warn(
             'These sample calibration matrices will be removed in '
-            'January 2003.', FutureWarning)
+            'January 2023.', FutureWarning)
         return globals()['_deprecated_CALIBRATION_MATRICES']
     raise AttributeError(f"module {__name__} has no attribute {name}")
 
