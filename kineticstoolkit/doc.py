@@ -79,6 +79,11 @@ def download(filename: str, **kwargs) -> str:
             'https://github.com/felixchenier/kineticstoolkit/raw/master/data/'
             + filename
         )
+        if file.status_code == 404:
+            raise FileNotFoundError(
+                f"'{filename}' could not be found on the server."
+            )
+
         path = config.temp_folder + '/' + filename
         open(path, 'wb').write(file.content)
 

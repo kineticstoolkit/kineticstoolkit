@@ -1023,7 +1023,7 @@ LINKS = {
 INERTIAL_VALUES = {}
 
 # Dumas2007
-_ = pd.read_csv(config.root_folder + '/data/anthropometrics/dumas_2007.csv')
+_ = pd.read_csv(config.root_folder + '/data/anthropometrics_dumas_2007.csv')
 _[['RelIXY', 'RelIXZ', 'RelIYZ']] = (
     _[['RelIXY', 'RelIXZ', 'RelIYZ']].applymap(lambda s: complex(s))
 )
