@@ -14,8 +14,8 @@ def test_instanciate_and_to_html5():
 
     # Load markers
     kinematics = ktk.load(
-        ktk.config.root_folder +
-        '/data/inversedynamics/basketball_kinematics.ktk.zip')
+        ktk.doc.download('inversedynamics_kinematics.ktk.zip')
+    )
 
     kinematics = kinematics['Kinematics']
 

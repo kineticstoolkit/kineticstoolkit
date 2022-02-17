@@ -30,8 +30,7 @@ def test_define_coordinate_systems():
     """Test the dumas2007 function."""
     # Load a sample file
     markers = ktk.load(
-        ktk.config.root_folder
-        + '/data/anthropometrics/static.ktk.zip'
+        ktk.doc.download('anthropometrics_static.ktk.zip')
     )
 
     # Infer missing makers

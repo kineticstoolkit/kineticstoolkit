@@ -19,7 +19,7 @@ import os
 def test_read_n3d_file():
     """Regression test."""
     markers = ktk.kinematics.read_n3d_file(
-        ktk.config.root_folder + '/data/kinematics/sample_optotrak.n3d'
+        ktk.doc.download('kinematics_sample_optotrak.n3d')
     )
 
     tol = 1e-4
@@ -73,7 +73,7 @@ def test_read_n3d_file():
     ]
 
     markers = ktk.kinematics.read_n3d_file(
-        ktk.config.root_folder + '/data/kinematics/sample_optotrak.n3d',
+        ktk.doc.download('kinematics_sample_optotrak.n3d'),
         labels=labels,
     )
 
@@ -85,40 +85,25 @@ def test_read_n3d_file():
 
 def test_read_write_c3d_file():
     """
-    Regression tests for readc3dfile from OptiTrack Motive.
+    Test that writing and reading back a c3d file yields the same results.
 
     Tests twice, once using the original c3d, then saving a new c3d and
     opening again.
     """
     markers = ktk.kinematics.read_c3d_file(
-        ktk.config.root_folder + '/data/kinematics/walkingOptiTrack.c3d'
+        ktk.doc.download('kinematics_racing_static.c3d')
     )
 
-    for i in range(2):
+    assert markers.time_info['Unit'] == 's'
+    assert markers.data_info['ForearmL1']['Unit'] == 'm'
 
-        assert (
-            np.abs(np.nanmean(markers.data['Foot_Marker1'][:, 0:3]) - 0.1098)
-            < 0.0001
-        )
-        assert (
-            np.abs(np.nanmean(markers.data['Foot_Marker2'][:, 0:3]) - 0.1526)
-            < 0.0001
-        )
-        assert (
-            np.abs(np.nanmean(markers.data['Foot_Marker3'][:, 0:3]) - 0.1625)
-            < 0.0001
-        )
-        assert (
-            np.abs(np.nanmean(markers.data['Foot_Marker4'][:, 0:3]) - 0.1622)
-            < 0.0001
-        )
-        assert markers.data['Foot_Marker1'][0, 3] == 1
+    ktk.kinematics.write_c3d_file('test.c3d', markers)
+    markers2 = ktk.kinematics.read_c3d_file('test.c3d')
 
-        assert markers.time_info['Unit'] == 's'
-        assert markers.data_info['Foot_Marker1']['Unit'] == 'm'
-
-        ktk.kinematics.write_c3d_file('test.c3d', markers)
-        markers = ktk.kinematics.read_c3d_file('test.c3d')
+    assert np.allclose(markers.data['ForearmL1'],
+                       markers2.data['ForearmL1'])
+    assert np.allclose(markers.data['ForearmL1'].mean(),
+                       0.14476261166589602)
 
     os.remove('test.c3d')
 
@@ -127,13 +112,14 @@ def test_reconstruction_deprecated():
     """Simplified copy of the tutorial."""
     # Read the markers
     markers = ktk.kinematics.read_c3d_file(
-        ktk.config.root_folder + '/data/kinematics/sample_propulsion.c3d')
-
+        ktk.doc.download('kinematics_racing_propulsion.c3d')
+    )
     rigid_body_definitions = dict()
 
     # Read the static trial
     markers_static = ktk.kinematics.read_c3d_file(
-        ktk.config.root_folder + '/data/kinematics/sample_static.c3d')
+        ktk.doc.download('kinematics_racing_static.c3d')
+    )
 
     rigid_body_definitions['ArmR'] = ktk.kinematics.define_rigid_body(
         markers_static,
@@ -194,32 +180,30 @@ def test_reconstruction_deprecated():
 
     rigid_body_definitions['ArmR']['AcromionR'] = (
         process_probing_acquisition(
-            ktk.config.root_folder
-            + '/data/kinematics/sample_probing_acromion_R.c3d',
+            ktk.doc.download('kinematics_racing_probing_acromion_R.c3d'),
             'ArmR'
         )
     )
 
     rigid_body_definitions['ArmR']['MedialEpicondyleR'] = (
         process_probing_acquisition(
-            ktk.config.root_folder
-            + '/data/kinematics/sample_probing_medial_epicondyle_R.c3d',
+            ktk.doc.download(
+                'kinematics_racing_probing_medial_epicondyle_R.c3d'
+            ),
             'ArmR'
         )
     )
 
     rigid_body_definitions['ForearmR']['RadialStyloidR'] = (
         process_probing_acquisition(
-            ktk.config.root_folder
-            + '/data/kinematics/sample_probing_radial_styloid_R.c3d',
+            ktk.doc.download('kinematics_racing_probing_radial_styloid_R.c3d'),
             'ForearmR'
         )
     )
 
     rigid_body_definitions['ForearmR']['UlnarStyloidR'] = (
         process_probing_acquisition(
-            ktk.config.root_folder
-            + '/data/kinematics/sample_probing_ulnar_styloid_R.c3d',
+            ktk.doc.download('kinematics_racing_probing_ulnar_styloid_R.c3d'),
             'ForearmR'
         )
     )
@@ -241,13 +225,15 @@ def test_reconstruction():
     """Simplified copy of the tutorial."""
     # Read the markers
     markers = ktk.kinematics.read_c3d_file(
-        ktk.config.root_folder + '/data/kinematics/sample_propulsion.c3d')
+        ktk.doc.download('kinematics_racing_propulsion.c3d')
+    )
 
     clusters = dict()
 
     # Read the static trial
     markers_static = ktk.kinematics.read_c3d_file(
-        ktk.config.root_folder + '/data/kinematics/sample_static.c3d')
+        ktk.doc.download('kinematics_racing_static.c3d')
+    )
 
     clusters['ArmR'] = ktk.kinematics.create_cluster(
         markers_static,
@@ -294,29 +280,25 @@ def test_reconstruction():
         return cluster
 
     clusters['ArmR'] = process_probing_acquisition(
-        ktk.config.root_folder
-        + '/data/kinematics/sample_probing_acromion_R.c3d',
+        ktk.doc.download('kinematics_racing_probing_acromion_R.c3d'),
         clusters['ArmR'],
         'AcromionR'
     )
 
     clusters['ArmR'] = process_probing_acquisition(
-        ktk.config.root_folder
-        + '/data/kinematics/sample_probing_medial_epicondyle_R.c3d',
+        ktk.doc.download('kinematics_racing_probing_medial_epicondyle_R.c3d'),
         clusters['ArmR'],
         'MedialEpicondyleR'
     )
 
     clusters['ForearmR'] = process_probing_acquisition(
-        ktk.config.root_folder
-        + '/data/kinematics/sample_probing_radial_styloid_R.c3d',
+        ktk.doc.download('kinematics_racing_probing_radial_styloid_R.c3d'),
         clusters['ForearmR'],
         'RadialStyloidR'
     )
 
     clusters['ForearmR'] = process_probing_acquisition(
-        ktk.config.root_folder
-        + '/data/kinematics/sample_probing_ulnar_styloid_R.c3d',
+        ktk.doc.download('kinematics_racing_probing_ulnar_styloid_R.c3d'),
         clusters['ForearmR'],
         'UlnarStyloidR'
     )

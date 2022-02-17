@@ -31,8 +31,7 @@ from kineticstoolkit.decorators import unstable
 
 
 @unstable
-def download(
-        name: str = "", **kwargs) -> str:
+def download(filename: str, **kwargs) -> str:
     """
     Download example data and return its local file name.
 
@@ -46,9 +45,8 @@ def download(
 
     Parameters
     ----------
-    name
-        A string that indicates which data to download. Run the function
-        without argument to obtain an up-to-date list of available data.
+    filename
+        A string that indicates which file to download.
 
     Returns
     -------
@@ -62,33 +60,6 @@ def download(
     if 'force_download' not in kwargs:
         kwargs['force_download'] = False
 
-    file_list = {
-        'dataframe_example1.csv':
-            'timeseries/sample1.csv',
-        'dataframe_example2.csv':
-            'timeseries/sample2.csv',
-        'wheelchair_kinetics.ktk.zip':
-            'timeseries/smartwheel.ktk.zip',
-        'wheelchair_kinetics.csv':
-            'pushrimkinetics/sample_sw_csvtxt.csv',
-        'wheelchair_kinetics.txt':
-            'pushrimkinetics/sample_sw_csvtxt.csv',
-        'wheelchair_kinetics_offsets.csv':
-            'pushrimkinetics/sample_swl_overground_propulsion_withrubber.csv',
-        'wheelchair_kinematics.c3d':
-            'kinematics/sprintbasket.c3d',
-        'wheelchair_racing_full_kinematics.c3d':
-            'kinematics/racing_full.c3d',
-        'noisy_signals.ktk.zip':
-            'filters/sample_noisy.ktk.zip',
-        'types_of_noise.ktk.zip':
-            'filters/sample_noises.ktk.zip',
-    }
-
-    if name == "":
-        print(f"Available data are {list(file_list.keys())}.")
-        return ""
-
     try:
         import requests
     except ModuleNotFoundError:
@@ -97,16 +68,8 @@ def download(
             "Toolkit. It must be installed to allow downloading data."
         )
 
-    # Set the file name to look for
-    try:
-        file_name = file_list[name]
-    except KeyError:
-        raise ValueError(
-            f"The requested name must be in {list(file_list.keys())}"
-        )
-
-    # Try to get it locally from the local git repository
-    path = config.root_folder + '/data/' + file_name
+    # Try to get the file locally from the local git repository
+    path = config.root_folder + '/data/' + filename
     if os.path.exists(path) is True and kwargs['force_download'] is False:
         return path
 
@@ -114,9 +77,9 @@ def download(
         # Otherwise download it.
         file = requests.get(
             'https://github.com/felixchenier/kineticstoolkit/raw/master/data/'
-            + file_name
+            + filename
         )
-        path = config.temp_folder + '/' + name
+        path = config.temp_folder + '/' + filename
         open(path, 'wb').write(file.content)
 
         return path
