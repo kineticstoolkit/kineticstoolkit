@@ -59,9 +59,9 @@ class Player:
         or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
         can be provided, e.g., ktk.Player(markers, rigid_bodies)
 
-    segments
-        Optional. Used to draw lines between markers. Each key corresponds to a
-        segment, where a segment is another dict with the following keys:
+    interconnections
+        Optional. Each key corresponds to an inerconnection between markers,
+        where one interconnection is another dict with the following keys:
 
         - Links: list of list of 2 str, where each str is a marker
           name. For example, to link Marker1 to Marker2 and
@@ -108,19 +108,26 @@ class Player:
 
     def __init__(self,
                  *ts: TimeSeries,
-                 segments: Dict[str, Dict[str, Any]] = {},
+                 interconnections: Dict[str, Dict[str, Any]] = {},
                  current_frame: int = 0,
                  marker_radius: float = 0.008,
                  axis_length: float = 0.1,
                  axis_width: float = 3.0,
-                 segment_width: float = 1.5,
+                 interconnection_width: float = 1.5,
                  zoom: float = 1.0,
                  azimuth: float = 0.0,
                  elevation: float = 0.2,
                  translation: Union[Sequence[float], np.ndarray] = (0.0, 0.0),
                  target: Union[Sequence[float], np.ndarray] = (0.0, 0.0, 0.0),
                  track: bool = False,
-                 perspective: bool = True):
+                 perspective: bool = True,
+                 **kwargs):
+
+        # Allow the older `segments` and interconnection_width keywords:
+        if 'segments' in kwargs and interconnections == {}:
+            interconnections = kwargs['segments']
+        if 'segment_width' in kwargs:
+            interconnection_width = kwargs['segment_width']
 
         # ---------------------------------------------------------------
         # Set self.n_frames and self.time, and verify that we have at least
@@ -167,8 +174,8 @@ class Player:
             np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
 
         # ---------------------------------------------------------------
-        # Assign the segments
-        self.segments = segments
+        # Assign the interconnections
+        self.interconnections = interconnections
 
         # ---------------------------------------------------------------
         # Other initalizations
@@ -176,7 +183,7 @@ class Player:
         self.marker_radius = marker_radius
         self.axis_length = axis_length
         self.axis_width = axis_width
-        self.segment_width = segment_width
+        self.interconnection_width = interconnection_width
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
@@ -197,7 +204,7 @@ class Player:
         self.objects['PlotRigidBodiesY'] = None
         self.objects['PlotRigidBodiesZ'] = None
         self.objects['PlotGroundPlane'] = None
-        self.objects['PlotSegments'] = dict()
+        self.objects['PlotInterconnections'] = dict()
 
         self.objects['Figure'] = None
         self.objects['Axes'] = None
@@ -240,7 +247,7 @@ class Player:
             '''
 
         self._create_figure()
-        self._create_segments()
+        self._create_interconnections()
         self._create_markers()
         self._create_ground_plane()
         self._first_refresh()
@@ -294,15 +301,15 @@ class Player:
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
 
-    def _create_segments(self) -> None:
-        """Create the segments plots in the player's figure."""
-        if self.segments is not None:
-            for segment in self.segments:
-                self.objects['PlotSegments'][segment] = \
+    def _create_interconnections(self) -> None:
+        """Create the interconnections plots in the player's figure."""
+        if self.interconnections is not None:
+            for interconnection in self.interconnections:
+                self.objects['PlotInterconnections'][interconnection] = \
                     self.objects['Axes'].plot(
                         np.nan, np.nan, '-',
-                        c=self.segments[segment]['Color'],
-                        linewidth=self.segment_width)[0]
+                        c=self.interconnections[interconnection]['Color'],
+                        linewidth=self.interconnection_width)[0]
 
     def _create_markers(self) -> None:
         """Create the markers plots in the player's figure."""
@@ -418,7 +425,7 @@ class Player:
         # Return only x and y
         return rotated_points_3d[:, 0:2]
 
-    def _update_markers_and_segments(self) -> None:
+    def _update_markers_and_interconnections(self) -> None:
         # Get a Nx4 matrices of every marker at the current frame
         markers = self.markers
         if markers is None:
@@ -427,7 +434,7 @@ class Player:
             n_markers = len(markers.data)
 
         markers_data = dict()  # Used to draw the markers with different colors
-        segment_markers = dict()  # Used to draw the segments
+        interconnection_markers = dict()  # Used to draw the interconnections
 
         for color in self._colors:
             markers_data[color] = np.empty([n_markers, 4])
@@ -448,7 +455,7 @@ class Player:
 
                 these_coordinates = markers.data[marker][self.current_frame]
                 markers_data[color][i_marker] = these_coordinates
-                segment_markers[marker] = these_coordinates
+                interconnection_markers[marker] = these_coordinates
 
         # Update the markers plot
         for color in self._colors:
@@ -466,33 +473,39 @@ class Player:
                 markers_data[color + 's'][:, 0],
                 markers_data[color + 's'][:, 1])
 
-        # Draw the segments
-        if self.segments is not None:
-            for segment in self.segments:
-                n_links = len(self.segments[segment]['Links'])
+        # Draw the interconnections
+        if self.interconnections is not None:
+            for interconnection in self.interconnections:
+                n_links = len(self.interconnections[interconnection]['Links'])
                 coordinates = np.empty((3 * n_links, 4))
                 coordinates[:] = np.nan
                 for i_link in range(n_links):
-                    marker1 = self.segments[segment]['Links'][i_link][0]
-                    marker2 = self.segments[segment]['Links'][i_link][1]
-                    if marker1 in segment_markers:
-                        coordinates[3 * i_link] = segment_markers[marker1]
+                    marker1 = self.interconnections[
+                        interconnection]['Links'][i_link][0]
+                    marker2 = self.interconnections[
+                        interconnection]['Links'][i_link][1]
+                    if marker1 in interconnection_markers:
+                        coordinates[3 * i_link] = (
+                            interconnection_markers[marker1]
+                        )
                     else:
                         coordinates[3 * i_link] = np.nan
 
-                    if marker2 in segment_markers:
-                        coordinates[3 * i_link + 1] = segment_markers[marker2]
+                    if marker2 in interconnection_markers:
+                        coordinates[3 * i_link + 1] = (
+                            interconnection_markers[marker2]
+                        )
                     else:
                         coordinates[3 * i_link + 1] = np.nan
 
                 coordinates = self._get_projection(coordinates)
 
-                self.objects['PlotSegments'][segment].set_data(
+                self.objects['PlotInterconnections'][interconnection].set_data(
                     coordinates[:, 0], coordinates[:, 1])
 
     def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
-        self._update_markers_and_segments()
+        self._update_markers_and_interconnections()
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
         # at the current frame
