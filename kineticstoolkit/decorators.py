@@ -94,7 +94,7 @@ def deprecated(since: str, until: str, details: str):
                 return func(*args, **kwargs)
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, f"\nWarning\n-------\n{string}")
-        wrapper._include_in_dir = True
+        wrapper._is_deprecated = True
         return wrapper
     return real_decorator
 
@@ -122,10 +122,7 @@ def unstable(func):
         # Call the function being decorated and return the result
         return func(*args, **kwargs)
 
-    if kineticstoolkit.config.version == 'master':
-        wrapper._include_in_dir = True
-    else:
-        wrapper._include_in_dir = False
+    wrapper._is_unstable = True
 
     wrapper.__doc__ = _inject_in_docstring(
         func.__doc__, f"\nWarning\n-------\n{string}")
@@ -158,7 +155,7 @@ def dead(since: str, until: str, details=''):
                 return func(*args, **kwargs)
         wrapper.__doc__ = _inject_in_docstring(
             func.__doc__, f"\nWarning\n-------\n{string}")
-        wrapper._include_in_dir = False
+        wrapper._is_dead = True
         return wrapper
     return real_decorator
 
@@ -184,14 +181,23 @@ def directory(module_locals: Dict[str, Any]) -> List[str]:
             continue
 
         try:
-            include_in_dir = module_locals[key].__dict__['_include_in_dir']
-        except KeyError:
-            include_in_dir = True
-        except AttributeError:
-            include_in_dir = False
+            if (
+                    '_is_unstable' in module_locals[key].__dict__
+                    and module_locals[key].__dict__['_is_unstable'] is True
+                    and kineticstoolkit.config.version != 'master'
+            ):
+                continue
 
-        if include_in_dir:
-            dir_.append(key)
+            if (
+                    '_is_dead' in module_locals[key].__dict__
+                    and module_locals[key].__dict__['_is_dead'] is True
+            ):
+                continue
+
+        except AttributeError:
+            continue
+
+        dir_.append(key)
 
     return dir_
 

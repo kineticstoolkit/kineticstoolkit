@@ -31,7 +31,6 @@ from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.decorators import directory
 import warnings
 from typing import List, Dict, Tuple, Sequence, Optional
-import tqdm
 
 
 def detect_cycles(ts: TimeSeries,
@@ -43,7 +42,6 @@ def detect_cycles(ts: TimeSeries,
                   max_durations: Sequence[float] = [np.Inf, np.Inf],
                   min_peak_heights: Sequence[float] = [-np.Inf, -np.Inf],
                   max_peak_heights: Sequence[float] = [np.Inf, np.Inf],
-                  show_progress: bool = False,
                   **kwargs,
                   ) -> TimeSeries:
     """
@@ -91,9 +89,6 @@ def detect_cycles(ts: TimeSeries,
     max_peak_heights
         Optional. Maximal peak values to be reached in both phases. Default is
         [np.Inf, np.Inf].
-    show_progress
-        Optional. True to show progress bars during detecting and analyzing
-        cycles.
 
     Returns
     -------
@@ -101,11 +96,6 @@ def detect_cycles(ts: TimeSeries,
         A copy of ts with the events added.
 
     """
-    if show_progress:
-        prange = tqdm.trange
-    else:
-        prange = range
-
     # lowercase directions[0] once
     directions[0] = directions[0].lower()  # type: ignore
     if directions[0] != 'rising' and directions[0] != 'falling':
@@ -119,9 +109,7 @@ def detect_cycles(ts: TimeSeries,
 
     is_phase1 = True
 
-    if show_progress:
-        print("Detecting cycles:")
-    for i in prange(time.shape[0]):
+    for i in range(time.shape[0]):
 
         if directions[0] == 'rising':
             crossing1 = data[i] >= thresholds[0]
@@ -147,10 +135,7 @@ def detect_cycles(ts: TimeSeries,
     # Remove cycles where criteria are not reached.
     valid_events = []
 
-    if show_progress:
-        print("Analyzing cycles:")
-    for i_event in prange(0, len(events) - 1, 2):
-
+    for i_event in range(0, len(events) - 1, 2):
         time1 = events[i_event].time
         time2 = events[i_event + 1].time
         try:
@@ -158,34 +143,15 @@ def detect_cycles(ts: TimeSeries,
         except IndexError:
             time3 = np.Inf
 
-        index1 = ts.get_index_at_time(time1)
-        index2 = ts.get_index_at_time(time2)
-        index3 = ts.get_index_at_time(time3)
-
-        if (
-                np.isnan(index1)
-                or np.isnan(index2)
-                or np.isnan(index3)
-        ):
-            continue
-
-        data12 = ts.data[data_key][int(index1):int(index2)]
-        data23 = ts.data[data_key][int(index2):int(index3) + 1]
-
-        if ((data12.shape[0] == 0) or (data23.shape[0] == 0)):
-            break
-
-        max12 = np.max(data12)
-        max23 = np.max(data23)
-        min12 = np.min(data12)
-        min23 = np.min(data23)
+        sub_ts1 = ts.get_ts_between_times(time1, time2, inclusive=True)
+        sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
 
         if directions[0] == 'rising':
-            the_peak1 = max12
-            the_peak2 = min23
+            the_peak1 = np.max(sub_ts1.data[data_key])
+            the_peak2 = np.min(sub_ts2.data[data_key])
         else:
-            the_peak1 = min12
-            the_peak2 = max23
+            the_peak1 = np.min(sub_ts1.data[data_key])
+            the_peak2 = np.max(sub_ts2.data[data_key])
 
         if (time2 - time1 >= min_durations[0] and
                 time2 - time1 <= max_durations[0] and
@@ -204,7 +170,7 @@ def detect_cycles(ts: TimeSeries,
     # Form the output timeseries
     tsout = ts.copy()
     for event in valid_events:
-        tsout.add_event(event.time, event.name, in_place=True)
+        tsout = tsout.add_event(event.time, event.name)
     tsout.sort_events()
 
     return tsout

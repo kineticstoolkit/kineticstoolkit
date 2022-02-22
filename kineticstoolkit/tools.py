@@ -30,45 +30,43 @@ from kineticstoolkit.decorators import directory
 
 import webbrowser as _webbrowser
 import warnings
-from typing import Dict
 
 
-def start_lab_mode(*, config: Dict[str, bool] = {
-        'change_ipython_dict_repr': True,
-        'change_matplotlib_defaults': True,
-        'change_numpy_print_options': True,
-        'change_warnings_format': True,
-}) -> None:
+def start_lab_mode(
+    change_ipython_dict_repr: bool = True,
+    change_matplotlib_defaults: bool = True,
+    change_numpy_print_options: bool = True,
+    change_warnings_format: bool = True,
+) -> None:
     """
-    Set Kinetics Toolkit to lab mode.
+    Enable Kinetics Toolkit's lab goodies.
 
     This function does not affect Kinetics Toolkit's inner working. It exists
     mostly for cosmetic reasons, so that working with ktk in an IPython console
     (e.g., Spyder, Jupyter) is more enjoyable, at least to the developer's
     taste. It changes defaults and is not reversible in a given session. The
-    usual way to call it is right after importing ktk.
+    usual way to call it is right after importing Kinetics Toolkit.
 
     Parameters
     ----------
-    config:
-        'change_ipython_dict_repr' :
-            True to summarize defaults dict printouts in IPython.
-        'change_matplotlib_defaults' :
-            True to change default figure size, autolayout, dpi, line width
-            and color order in Matplotlib.
-        'change_numpy_print_options' :
-            True to change default print options in numpy to use fixed point
-            notation in printouts.
-        'change_logging_defaults' :
-            True to change logging module's default to a more extended format
-            with file and line number.
+    change_ipython_dict_repr
+        True to summarize defaults dict printouts in IPython.
+    change_matplotlib_defaults
+        True to change default figure size, autolayout, dpi, line width
+        and color order in Matplotlib.
+    change_numpy_print_options
+        True to change default print options in numpy to use fixed point
+        notation in printouts.
+    change_warnings_format
+        True to change warnings module's default to a more extended format
+        with file and line number.
 
     Returns
     -------
     None
 
     """
-    if config['change_ipython_dict_repr']:
+    if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython
         try:
             import IPython as _IPython
@@ -79,7 +77,7 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         except Exception:
             pass
 
-    if config['change_matplotlib_defaults']:
+    if change_matplotlib_defaults:
         # Set alternative defaults to matplotlib
         import matplotlib as _mpl
         _mpl.rcParams['figure.figsize'] = [10, 5]
@@ -87,12 +85,12 @@ def start_lab_mode(*, config: Dict[str, bool] = {
         _mpl.rcParams['lines.linewidth'] = 1
         kineticstoolkit.gui.set_color_order('xyz')
 
-    if config['change_numpy_print_options']:
+    if change_numpy_print_options:
         import numpy as _np
         # Select default mode for numpy
         _np.set_printoptions(suppress=True)
 
-    if config['change_warnings_format']:
+    if change_warnings_format:
         # Monkey-patch warning.formatwarning
         def formatwarning(message, category, filename, lineno, line=None):
             return f'{category.__name__} [{filename}:{lineno}] {message}\n'
