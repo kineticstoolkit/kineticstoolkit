@@ -1529,7 +1529,7 @@ class TimeSeries:
             index += 1
 
         if index < self.time.shape[0]:
-            return index
+            return int(index)
         else:
             return np.nan
 
@@ -1595,7 +1595,7 @@ class TimeSeries:
             index -= 1
 
         if index >= 0:
-            return index
+            return int(index)
         else:
             return np.nan
 

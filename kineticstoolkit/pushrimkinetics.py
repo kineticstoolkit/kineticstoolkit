@@ -295,8 +295,8 @@ def remove_offsets(
     f = f - q @ A
 
     # Make the output timeseries
-    kinetics.data['Forces'][:, 0:3] = f[:, 0:3]
-    kinetics.data['Moments'][:, 0:3] = f[:, 3:6]
+    kinetics.data['Forces'][:, 0:3] = f[:, 0:3]  # type: ignore
+    kinetics.data['Moments'][:, 0:3] = f[:, 3:6]  # type: ignore
 
     return kinetics
 

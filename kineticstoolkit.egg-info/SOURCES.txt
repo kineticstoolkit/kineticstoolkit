@@ -11,6 +11,7 @@ kineticstoolkit/config.py
 kineticstoolkit/cycles.py
 kineticstoolkit/decorators.py
 kineticstoolkit/dev.py
+kineticstoolkit/doc.py
 kineticstoolkit/emg.py
 kineticstoolkit/filters.py
 kineticstoolkit/geometry.py
