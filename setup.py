@@ -33,6 +33,7 @@ setuptools.setup(
                       'matplotlib',
                       'scikit-learn',
                       'limitedinteraction',
+                      'tqdm',
                       # 'ffmpeg',  # Facultative, for matplotlib html5 animations
                       ],
     classifiers=[

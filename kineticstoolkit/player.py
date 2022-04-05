@@ -59,9 +59,9 @@ class Player:
         or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
         can be provided, e.g., ktk.Player(markers, rigid_bodies)
 
-    segments
-        Optional. Used to draw lines between markers. Each key corresponds to a
-        segment, where a segment is another dict with the following keys:
+    interconnections
+        Optional. Each key corresponds to an inerconnection between markers,
+        where one interconnection is another dict with the following keys:
 
         - Links: list of list of 2 str, where each str is a marker
           name. For example, to link Marker1 to Marker2 and
@@ -72,8 +72,8 @@ class Player:
           link. Color must be a valid value for matplotlib's
           plots.
 
-    current_frame
-        Optional. Sets the inital frame number to show.
+    current_index
+        Optional. Sets the inital index number to show.
 
     marker_radius
         Optional. Sets the marker radius as defined by matplotlib.
@@ -98,7 +98,7 @@ class Player:
 
     track
         Optional. False to keep the scene static, True to track the last
-        selected marker when changing frame.
+        selected marker when changing index.
 
     perspective
         Optional. True to draw the scene using perspective, False to draw the
@@ -108,25 +108,34 @@ class Player:
 
     def __init__(self,
                  *ts: TimeSeries,
-                 segments: Dict[str, Dict[str, Any]] = {},
-                 current_frame: int = 0,
+                 interconnections: Dict[str, Dict[str, Any]] = {},
+                 current_index: int = 0,
                  marker_radius: float = 0.008,
                  axis_length: float = 0.1,
                  axis_width: float = 3.0,
-                 segment_width: float = 1.5,
+                 interconnection_width: float = 1.5,
                  zoom: float = 1.0,
                  azimuth: float = 0.0,
                  elevation: float = 0.2,
                  translation: Union[Sequence[float], np.ndarray] = (0.0, 0.0),
                  target: Union[Sequence[float], np.ndarray] = (0.0, 0.0, 0.0),
                  track: bool = False,
-                 perspective: bool = True):
+                 perspective: bool = True,
+                 **kwargs):
+
+        # Allow older variable names
+        if 'segments' in kwargs and interconnections == {}:
+            interconnections = kwargs['segments']
+        if 'segment_width' in kwargs:
+            interconnection_width = kwargs['segment_width']
+        if 'current_frame' in kwargs:
+            current_index = kwargs['current_frame']
 
         # ---------------------------------------------------------------
-        # Set self.n_frames and self.time, and verify that we have at least
+        # Set self.n_indexes and self.time, and verify that we have at least
         # markers or rigid bodies.
         self.time = ts[0].time
-        self.n_frames = len(ts[0].time)
+        self.n_indexes = len(ts[0].time)
 
         # ---------------------------------------------------------------
         # Assign the markers and rigid bodies
@@ -164,19 +173,19 @@ class Player:
 
         # Add the origin to the rigid bodies
         self.rigid_bodies.data['Global'] = np.repeat(
-            np.eye(4, 4)[np.newaxis, :, :], self.n_frames, axis=0)
+            np.eye(4, 4)[np.newaxis, :, :], self.n_indexes, axis=0)
 
         # ---------------------------------------------------------------
-        # Assign the segments
-        self.segments = segments
+        # Assign the interconnections
+        self.interconnections = interconnections
 
         # ---------------------------------------------------------------
         # Other initalizations
-        self.current_frame = current_frame
+        self.current_index = current_index
         self.marker_radius = marker_radius
         self.axis_length = axis_length
         self.axis_width = axis_width
-        self.segment_width = segment_width
+        self.interconnection_width = interconnection_width
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
@@ -197,7 +206,7 @@ class Player:
         self.objects['PlotRigidBodiesY'] = None
         self.objects['PlotRigidBodiesZ'] = None
         self.objects['PlotGroundPlane'] = None
-        self.objects['PlotSegments'] = dict()
+        self.objects['PlotInterconnections'] = dict()
 
         self.objects['Figure'] = None
         self.objects['Axes'] = None
@@ -222,8 +231,8 @@ class Player:
             ----------------------------------------------------
             KEYBOARD COMMANDS
             show/hide this help : h
-            previous frame      : left
-            next frame          : right
+            previous index      : left
+            next index          : right
             previous second     : shift+left
             next second         : shift+right
             play/pause          : space
@@ -240,7 +249,7 @@ class Player:
             '''
 
         self._create_figure()
-        self._create_segments()
+        self._create_interconnections()
         self._create_markers()
         self._create_ground_plane()
         self._first_refresh()
@@ -294,15 +303,15 @@ class Player:
         self.objects['Figure'].canvas.mpl_connect(
             'motion_notify_event', self._on_mouse_motion)
 
-    def _create_segments(self) -> None:
-        """Create the segments plots in the player's figure."""
-        if self.segments is not None:
-            for segment in self.segments:
-                self.objects['PlotSegments'][segment] = \
+    def _create_interconnections(self) -> None:
+        """Create the interconnections plots in the player's figure."""
+        if self.interconnections is not None:
+            for interconnection in self.interconnections:
+                self.objects['PlotInterconnections'][interconnection] = \
                     self.objects['Axes'].plot(
                         np.nan, np.nan, '-',
-                        c=self.segments[segment]['Color'],
-                        linewidth=self.segment_width)[0]
+                        c=self.interconnections[interconnection]['Color'],
+                        linewidth=self.interconnection_width)[0]
 
     def _create_markers(self) -> None:
         """Create the markers plots in the player's figure."""
@@ -418,8 +427,8 @@ class Player:
         # Return only x and y
         return rotated_points_3d[:, 0:2]
 
-    def _update_markers_and_segments(self) -> None:
-        # Get a Nx4 matrices of every marker at the current frame
+    def _update_markers_and_interconnections(self) -> None:
+        # Get a Nx4 matrices of every marker at the current index
         markers = self.markers
         if markers is None:
             return
@@ -427,7 +436,7 @@ class Player:
             n_markers = len(markers.data)
 
         markers_data = dict()  # Used to draw the markers with different colors
-        segment_markers = dict()  # Used to draw the segments
+        interconnection_markers = dict()  # Used to draw the interconnections
 
         for color in self._colors:
             markers_data[color] = np.empty([n_markers, 4])
@@ -446,9 +455,9 @@ class Player:
                 else:
                     color = 'w'
 
-                these_coordinates = markers.data[marker][self.current_frame]
+                these_coordinates = markers.data[marker][self.current_index]
                 markers_data[color][i_marker] = these_coordinates
-                segment_markers[marker] = these_coordinates
+                interconnection_markers[marker] = these_coordinates
 
         # Update the markers plot
         for color in self._colors:
@@ -466,36 +475,42 @@ class Player:
                 markers_data[color + 's'][:, 0],
                 markers_data[color + 's'][:, 1])
 
-        # Draw the segments
-        if self.segments is not None:
-            for segment in self.segments:
-                n_links = len(self.segments[segment]['Links'])
+        # Draw the interconnections
+        if self.interconnections is not None:
+            for interconnection in self.interconnections:
+                n_links = len(self.interconnections[interconnection]['Links'])
                 coordinates = np.empty((3 * n_links, 4))
                 coordinates[:] = np.nan
                 for i_link in range(n_links):
-                    marker1 = self.segments[segment]['Links'][i_link][0]
-                    marker2 = self.segments[segment]['Links'][i_link][1]
-                    if marker1 in segment_markers:
-                        coordinates[3 * i_link] = segment_markers[marker1]
+                    marker1 = self.interconnections[
+                        interconnection]['Links'][i_link][0]
+                    marker2 = self.interconnections[
+                        interconnection]['Links'][i_link][1]
+                    if marker1 in interconnection_markers:
+                        coordinates[3 * i_link] = (
+                            interconnection_markers[marker1]
+                        )
                     else:
                         coordinates[3 * i_link] = np.nan
 
-                    if marker2 in segment_markers:
-                        coordinates[3 * i_link + 1] = segment_markers[marker2]
+                    if marker2 in interconnection_markers:
+                        coordinates[3 * i_link + 1] = (
+                            interconnection_markers[marker2]
+                        )
                     else:
                         coordinates[3 * i_link + 1] = np.nan
 
                 coordinates = self._get_projection(coordinates)
 
-                self.objects['PlotSegments'][segment].set_data(
+                self.objects['PlotInterconnections'][interconnection].set_data(
                     coordinates[:, 0], coordinates[:, 1])
 
     def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
-        self._update_markers_and_segments()
+        self._update_markers_and_interconnections()
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
-        # at the current frame
+        # at the current index
         rigid_bodies = self.rigid_bodies
         n_rigid_bodies = len(rigid_bodies.data)
         rbx_data = np.empty([n_rigid_bodies * 3, 4])
@@ -505,20 +520,20 @@ class Player:
         for i_rigid_body, rigid_body in enumerate(rigid_bodies.data):
             # Origin
             rbx_data[i_rigid_body * 3] = (
-                rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+                rigid_bodies.data[rigid_body][self.current_index, :, 3])
             rby_data[i_rigid_body * 3] = (
-                rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+                rigid_bodies.data[rigid_body][self.current_index, :, 3])
             rbz_data[i_rigid_body * 3] = (
-                rigid_bodies.data[rigid_body][self.current_frame, :, 3])
+                rigid_bodies.data[rigid_body][self.current_index, :, 3])
             # Direction
             rbx_data[i_rigid_body * 3 + 1] = (
-                rigid_bodies.data[rigid_body][self.current_frame] @
+                rigid_bodies.data[rigid_body][self.current_index] @
                 np.array([self.axis_length, 0, 0, 1]))
             rby_data[i_rigid_body * 3 + 1] = (
-                rigid_bodies.data[rigid_body][self.current_frame] @
+                rigid_bodies.data[rigid_body][self.current_index] @
                 np.array([0, self.axis_length, 0, 1]))
             rbz_data[i_rigid_body * 3 + 1] = (
-                rigid_bodies.data[rigid_body][self.current_frame] @
+                rigid_bodies.data[rigid_body][self.current_index] @
                 np.array([0, 0, self.axis_length, 1]))
             # NaN to cut the line between the different rigid bodies
             rbx_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
@@ -558,8 +573,8 @@ class Player:
         # Update the window title
         try:
             self.objects['Figure'].canvas.manager.set_window_title(
-                f'Frame {self.current_frame}, ' +
-                '%2.2f s.' % self.time[self.current_frame])
+                f'{self.current_index}/{self.n_indexes}: ' +
+                '%2.2f s.' % self.time[self.current_index])
         except AttributeError:
             pass
 
@@ -577,7 +592,7 @@ class Player:
         n_markers = len(self.markers.data)
         markers = np.empty((n_markers, 4))
         for i_marker, marker in enumerate(self.markers.data):
-            markers[i_marker] = self.markers.data[marker][self.current_frame]
+            markers[i_marker] = self.markers.data[marker][self.current_index]
 
         initial_projected_markers = self._get_projection(markers)
         # Do not consider markers that are not in the screen
@@ -608,26 +623,26 @@ class Player:
 
     # ------------------------------------
     # Helper functions
-    def _set_frame(self, frame: int) -> None:
-        """Set current frame to a given frame and update plots."""
-        if frame >= self.n_frames:
-            self.current_frame = self.n_frames - 1
-        elif frame < 0:
-            self.current_frame = 0
+    def _set_index(self, index: int) -> None:
+        """Set current index to a given index and update plots."""
+        if index >= self.n_indexes:
+            self.current_index = self.n_indexes - 1
+        elif index < 0:
+            self.current_index = 0
         else:
-            self.current_frame = frame
+            self.current_index = index
 
         if (self.track is True and
                 self.markers is not None):
             new_target = self.markers.data[
-                self.last_selected_marker][self.current_frame]
+                self.last_selected_marker][self.current_index]
             if not np.isnan(np.sum(new_target)):
                 self.target = new_target
 
     def _set_time(self, time: float) -> None:
-        """Set current frame to a given time and update plots."""
+        """Set current index to a given time and update plots."""
         index = int(np.argmin(np.abs(self.time - time)))
-        self._set_frame(index)
+        self._set_index(index)
 
     def _select_none(self) -> None:
         """Deselect every markers."""
@@ -658,15 +673,15 @@ class Player:
             # before deleting the animation timer, and unreferencing the
             # animation timer is the recommended way to deactivate a timer.
             """Callback for the animation timer object."""
-            current_frame = self.current_frame
-            self._set_time(self.time[self.current_frame] +
+            current_index = self.current_index
+            self._set_time(self.time[self.current_index] +
                            self.playback_speed * (
                            time.time() -
                            self.state['SystemTimeOnLastUpdate']))
-            if current_frame == self.current_frame:
+            if current_index == self.current_index:
                 # The time wasn't enough to advance a frame. Articifically
                 # advance a frame.
-                self._set_frame(self.current_frame + 1)
+                self._set_index(self.current_index + 1)
             self.state['SystemTimeOnLastUpdate'] = time.time()
 
             self._update_plots()
@@ -688,9 +703,9 @@ class Player:
             # Set as new target
             self.last_selected_marker = selected_marker
             self._set_new_target(
-                self.markers.data[selected_marker][self.current_frame])
+                self.markers.data[selected_marker][self.current_index])
             marker_position = self.markers.data[selected_marker][
-                self.current_frame]
+                self.current_index]
 
             self._update_plots()
 
@@ -699,7 +714,7 @@ class Player:
         if event.key == ' ':
             if self.running is False:
                 self.state['SystemTimeOnLastUpdate'] = time.time()
-                self.state['SelfTimeOnPlay'] = self.time[self.current_frame]
+                self.state['SelfTimeOnPlay'] = self.time[self.current_index]
                 self.running = True
                 self.anim.event_source.start()
             else:
@@ -707,16 +722,16 @@ class Player:
                 self.anim.event_source.stop()
 
         elif event.key == 'left':
-            self._set_frame(self.current_frame - 1)
+            self._set_index(self.current_index - 1)
 
         elif event.key == 'shift+left':
-            self._set_time(self.time[self.current_frame] - 1)
+            self._set_time(self.time[self.current_index] - 1)
 
         elif event.key == 'right':
-            self._set_frame(self.current_frame + 1)
+            self._set_index(self.current_index + 1)
 
         elif event.key == 'shift+right':
-            self._set_time(self.time[self.current_frame] + 1)
+            self._set_time(self.time[self.current_index] + 1)
 
         elif event.key == '-':
             self.playback_speed /= 2
@@ -776,7 +791,7 @@ class Player:
         if len(self.last_selected_marker) > 0:
             self._set_new_target(
                 self.markers.data[
-                    self.last_selected_marker][self.current_frame])
+                    self.last_selected_marker][self.current_index])
 
         self.state['TranslationOnMousePress'] = self.translation
         self.state['AzimutOnMousePress'] = self.azimuth
@@ -826,29 +841,30 @@ class Player:
             self._update_plots()
 
     def to_html5(self,
-                 start_frame: Optional[int] = None,
-                 stop_frame: Optional[int] = None,
+                 start_index: Optional[int] = None,
+                 stop_index: Optional[int] = None,
                  start_time: Optional[int] = None,
-                 stop_time: Optional[int] = None):
+                 stop_time: Optional[int] = None,
+                 **kwargs):
         """
         Create an html5 video for displaying in Jupyter notebooks.
 
         Parameters
         ----------
-        start_frame
-            Start frame in the exported video. Default is the beginning.
+        start_index
+            Start index in the exported video. Default is the beginning.
 
-        stop_frame
-            Stop frame in the exported video. Negative numbers to count from
+        stop_index
+            Stop index in the exported video. Negative numbers to count from
             the end. Default is the end.
 
         start_time
             Start time in the exported video. Default is the beginning.
-            Ignored if start_frame is set.
+            Ignored if start_index is set.
 
         stop_time
             Stop time in the exported video. Default is the end.
-            Ignored if stop_frame is set.
+            Ignored if stop_index is set.
 
         Returns
         -------
@@ -860,28 +876,34 @@ class Player:
         and may change signature or behaviour in the future.
 
         """
+        # Allow old arguments
+        if 'start_frame' in kwargs:
+            start_index = kwargs['start_frame']
+        if 'stop_frame' in kwargs:
+            stop_index = kwargs['stop_frame']
+
         mpl.rcParams['animation.html'] = 'html5'
 
-        if start_frame is None:
+        if start_index is None:
             if start_time is None:
-                start_frame = 0
+                start_index = 0
             else:
-                start_frame = int(np.argmin(np.abs(self.time - start_time)))
+                start_index = int(np.argmin(np.abs(self.time - start_time)))
 
-        if stop_frame is None:
+        if stop_index is None:
             if stop_time is None:
-                stop_frame = -1
+                stop_index = -1
             else:
-                stop_frame = int(np.argmin(np.abs(self.time - stop_time)))
+                stop_index = int(np.argmin(np.abs(self.time - stop_time)))
 
-        if stop_frame < 0:
-            stop_frame = self.n_frames + stop_frame + 1
+        if stop_index < 0:
+            stop_index = self.n_indexes + stop_index + 1
 
         self.playback_speed = 0
         self.objects['Figure'].set_size_inches(6, 4.5)  # Half size
-        self._set_frame(start_frame)
+        self._set_index(start_index)
         self.running = True
-        self.anim.save_count = stop_frame - start_frame
+        self.anim.save_count = stop_index - start_index
         self.anim.event_source.start()
         plt.close(self.objects['Figure'])
         return self.anim

@@ -32,8 +32,12 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+import os
+
+
 listing = []
-import kineticstoolkit.config  # noqa
+unstable_listing = []
+
 
 # --- Import released modules and functions
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
@@ -44,6 +48,7 @@ from kineticstoolkit.tools import tutorials  # noqa
 listing.append('tutorials')
 
 from kineticstoolkit.tools import start_lab_mode  # noqa
+listing.append('start_lab_mode')
 
 from kineticstoolkit.player import Player  # noqa
 listing.append('Player')
@@ -64,45 +69,57 @@ listing.append('pushrimkinetics')
 from kineticstoolkit import cycles  # noqa
 listing.append('cycles')
 
+from kineticstoolkit import doc  # noqa
+listing.append('doc')
+
 from kineticstoolkit import _repr  # noqa
 from kineticstoolkit import gui  # noqa
 
 from kineticstoolkit import geometry  # noqa
 listing.append('geometry')
 
+
+# Load unstable and dev modules (but do not add those to the __dir__ listing)
+from kineticstoolkit import dev  # noqa
+unstable_listing.append('dev')
+
+from kineticstoolkit import inversedynamics  # noqa
+unstable_listing.append('inversedynamics')
+
+from kineticstoolkit import emg  # noqa
+unstable_listing.append('emg')
+
+from kineticstoolkit import anthropometrics  # noqa
+unstable_listing.append('anthropometrics')
+
 from kineticstoolkit import config  # noqa
 
-# --- Import unstable modules but append to listing only if we are on master
 
-try:
-    from kineticstoolkit import inversedynamics  # noqa
-except:
-    pass
+def enable_dev():
+    """
+    Enable development functions and unstable functions and modules.
 
-try:
-    from kineticstoolkit import emg  # noqa
-except:
-    pass
+    This function is exclusively reserved for Kinetics Toolkit development.
+    It is autatically called if there is a file called "KTK_AUTO_ENABLE_DEV"
+    in the current folder when importing Kinetics Toolkit.
 
-try:
-    from kineticstoolkit import anthropometrics  # noqa
-except:
-    pass
+    There is no disable_dev function that reverts to stable version. To this
+    effect, one must relaunch the Python interpreter and reload Kinetics
+    Toolkit.
 
-try:
-    from kineticstoolkit import dev  # noqa
-except:
-    pass
+    """
+    config.version = 'master'
 
-if config.version == 'master':
-    listing.append('dev')
-    listing.append('inversedynamics')
-    listing.append('emg')
-    listing.append('anthropometrics')
+
+if os.path.exists('KTK_AUTO_ENABLE_DEV'):
+    enable_dev()
 
 
 def __dir__():
-    return listing
+    if config.version == 'master':
+        return listing + unstable_listing
+    else:
+        return listing
 
 
 if __name__ == "__main__":  # pragma: no cover

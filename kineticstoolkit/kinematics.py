@@ -355,13 +355,17 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
 #            return(the_timeseries)
 
 
-@unstable
 def create_cluster(
         markers: TimeSeries,
         /,
         marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
     """
     Create a cluster definition based on a static acquisition.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.7, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -408,7 +412,6 @@ def create_cluster(
     return output
 
 
-@unstable
 def extend_cluster(
         markers: TimeSeries,
         /,
@@ -416,6 +419,11 @@ def extend_cluster(
         new_point: str) -> Dict[str, np.ndarray]:
     """
     Add a point to an existing cluster.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.7, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -441,7 +449,6 @@ def extend_cluster(
     return cluster
 
 
-@unstable
 def track_cluster(
         markers: TimeSeries,
         /,
@@ -454,6 +461,11 @@ def track_cluster(
 
     Fits a cluster to a TimeSeries and reconstructs a solidified version of
     all the points defined in this cluster.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.7, is still experimental and
+    may change signature or behaviour in the future.
 
     Parameters
     ----------
@@ -579,7 +591,7 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
 # %% Deprecated
 @unstable
-@deprecated(since='master', until='master', details="Use create_cluster().")
+@deprecated(since='master', until='January 2023', details="Use create_cluster().")
 def define_rigid_body(
         kinematics: TimeSeries,
         marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
@@ -606,7 +618,7 @@ def define_rigid_body(
 
 
 @unstable
-@deprecated(since='master', until='master', details="Use track_clusters().")
+@deprecated(since='master', until='January 2023', details="Use track_clusters().")
 def track_rigid_body(
         kinematics: TimeSeries,
         /,
@@ -656,7 +668,7 @@ def track_rigid_body(
 
 
 @unstable
-@deprecated(since='master', until='master', details="No replacement yet.")
+@deprecated(since='master', until='January 2023', details="No replacement yet.")
 def track_rigid_bodies(
         markers: TimeSeries,
         /,
@@ -698,7 +710,7 @@ def track_rigid_bodies(
 
 
 @unstable
-@deprecated(since='master', until='master', details="Use extend_cluster().")
+@deprecated(since='master', until='January 2023', details="Use extend_cluster().")
 def define_local_position(
         kinematics: TimeSeries,
         source_name: str,

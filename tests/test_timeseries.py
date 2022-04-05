@@ -31,12 +31,39 @@ import warnings
 
 
 def test_TimeSeriesEvent():
-    """Test basic getters and setters."""
+    """Test TimeSeriesEvent."""
+
+    # Test basic getters and setters
     event = ktk.TimeSeriesEvent()
     event.time = 1
     event.name = 'one'
     assert event.time == 1
     assert event.name == 'one'
+
+    # Test ordering
+    event1 = ktk.TimeSeriesEvent(time=1, name='event1')
+    event2 = ktk.TimeSeriesEvent(time=2, name='event2')
+    event3 = ktk.TimeSeriesEvent(time=2, name='event3')
+
+    assert event1 < event2
+    assert event1 <= event2
+    assert not event2 < event3
+    assert event2 <= event3
+
+    assert event2 > event1
+    assert event2 >= event1
+    assert not event3 > event2
+    assert event3 >= event2
+
+    # Test _to_list and _to_dict
+    event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+    the_list = event._to_list()
+    assert the_list[0] == 1.5
+    assert the_list[1] == 'event_name'
+
+    the_dict = event._to_dict()
+    assert the_dict['Time'] == 1.5
+    assert the_dict['Name'] == 'event_name'
 
 
 def test_TimeSeries():

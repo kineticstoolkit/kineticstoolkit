@@ -32,15 +32,15 @@ import numpy as np
 
 def test_read_csv_txt_file():
     """Test that read_file works similarly for SW's csv and txt files."""
-    filename_csv = (ktk.config.root_folder +
-                    '/data/pushrimkinetics/sample_sw_csvtxt.csv')
     kinetics_csv = ktk.pushrimkinetics.read_file(
-        filename_csv, file_format='smartwheel')
+        ktk.doc.download('pushrimkinetics_propulsion.csv'),
+        file_format='smartwheel',
+    )
 
-    filename_txt = (ktk.config.root_folder +
-                    '/data/pushrimkinetics/sample_sw_csvtxt.TXT')
     kinetics_txt = ktk.pushrimkinetics.read_file(
-        filename_txt, file_format='smartwheeltxt')
+        ktk.doc.download('pushrimkinetics_propulsion.txt'),
+        file_format='smartwheeltxt',
+    )
 
     smaller = min(kinetics_csv.time.shape[0],
                   kinetics_txt.time.shape[0])
@@ -54,15 +54,11 @@ def test_read_csv_txt_file():
 def test_remove_offsets():
     """Test that remove_offsets works with and without a baseline."""
     kinetics = ktk.pushrimkinetics.read_file(
-        ktk.config.root_folder +
-        '/data/pushrimkinetics/' +
-        'sample_swl_overground_propulsion_withrubber.csv',
+        ktk.doc.download('pushrimkinetics_offsets_propulsion.csv'),
         file_format='smartwheel')
 
     baseline = ktk.pushrimkinetics.read_file(
-        ktk.config.root_folder +
-        '/data/pushrimkinetics/' +
-        'sample_swl_overground_baseline_withrubber.csv',
+        ktk.doc.download('pushrimkinetics_offsets_baseline.csv'),
         file_format='smartwheel')
 
     no_offsets1 = ktk.pushrimkinetics.remove_offsets(kinetics)
@@ -80,9 +76,7 @@ def test_remove_offsets():
 def test_calculate_forces_and_moments():
     """Test that force calculation is similar to precalculated forces."""
     kinetics = ktk.pushrimkinetics.read_file(
-        ktk.config.root_folder +
-        '/data/pushrimkinetics/' +
-        'sample_swl_overground_propulsion_withrubber.csv',
+        ktk.doc.download('pushrimkinetics_offsets_propulsion.csv'),
         file_format='smartwheel',
     )
 
@@ -109,9 +103,7 @@ def test_calculate_forces_and_moments():
 def test_calculate_velocity_power():
     """No-regression test for calculate_velocity and calculate_power."""
     kinetics = ktk.pushrimkinetics.read_file(
-        ktk.config.root_folder +
-        '/data/pushrimkinetics/' +
-        'sample_swl_overground_propulsion_withrubber.csv',
+        ktk.doc.download('pushrimkinetics_offsets_propulsion.csv'),
         file_format='smartwheel',
     )
 

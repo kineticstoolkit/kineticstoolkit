@@ -51,7 +51,7 @@ root_folder = os.path.dirname(os.path.dirname(__file__))
 # Home folder
 home_folder = os.path.expanduser("~")
 
-# Kinetics Toolkit version
+# Kinetics Toolkit version. Overrid by ktk.enable_dev()
 with open(root_folder + '/kineticstoolkit/VERSION', 'r') as fid:
     version = fid.read()
 

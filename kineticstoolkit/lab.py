@@ -38,6 +38,6 @@ from kineticstoolkit import *
 
 # Import also some hidden functions
 from kineticstoolkit import __dir__
-from kineticstoolkit import start_lab_mode
+import warnings
 
 start_lab_mode()

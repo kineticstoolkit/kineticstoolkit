@@ -38,38 +38,6 @@ import subprocess
 import shutil
 import webbrowser
 import doctest
-import multiprocessing
-import time
-import json
-
-
-def update_version() -> None:  # pragma: no cover
-    """Update VERSION based on the current branch name."""
-    # Get the current branch name
-    cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder)
-    branch_name = subprocess.check_output(
-        ['git', 'branch', '--show-current']).decode()
-    if 'stable' in branch_name:
-        shutil.copy(
-            kineticstoolkit.config.root_folder
-            + '/kineticstoolkit/STABLE_VERSION',
-            kineticstoolkit.config.root_folder
-            + '/kineticstoolkit/VERSION')
-    else:
-        shutil.copy(
-            kineticstoolkit.config.root_folder
-            + '/kineticstoolkit/DEVELOPMENT_VERSION',
-            kineticstoolkit.config.root_folder
-            + '/kineticstoolkit/VERSION')
-
-    # Update version in config module
-    with open(
-            kineticstoolkit.config.root_folder
-            + '/kineticstoolkit/VERSION', 'r') as fid:
-        kineticstoolkit.config.version = fid.read()
-
-    os.chdir(cwd)
 
 
 def run_unit_tests() -> None:  # pragma: no cover
@@ -130,56 +98,6 @@ def run_doc_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
-def build_website(clean: bool = False) -> None:  # pragma: no cover
-    """
-    Build the website using sphinx.
-
-    Set clean to True to `make clean` beforehand.
-
-    """
-    cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder + '/doc')
-
-    if clean:
-        shutil.rmtree(kineticstoolkit.config.root_folder + '/doc/api',
-                      ignore_errors=True)
-        subprocess.call(['make', 'clean'],
-                        env=kineticstoolkit.config.env)
-
-    # Generate site
-    print('Generating site...')
-    subprocess.call(['make', 'html'], env=kineticstoolkit.config.env)
-
-    # Move site to documentation repository
-    if kineticstoolkit.config.version == 'master':
-        doc_folder = (
-            kineticstoolkit.config.root_folder
-            + '/../kineticstoolkit_doc/master'
-        )
-    else:
-        doc_folder = (
-            kineticstoolkit.config.root_folder
-            + '/../kineticstoolkit_doc/stable'
-        )
-
-    try:
-        shutil.rmtree(doc_folder)
-    except Exception:
-        pass
-
-    os.makedirs(doc_folder, exist_ok=True)
-    os.rename(
-        kineticstoolkit.config.root_folder + '/doc/_build/html',
-        doc_folder,
-    )
-
-    # Open site
-    webbrowser.open_new_tab(
-        'file://' + doc_folder + '/index.html'
-    )
-    os.chdir(cwd)
-
-
 def compile_for_pypi() -> None:  # pragma: no cover
     """Compile for PyPi."""
     shutil.rmtree(kineticstoolkit.config.root_folder + '/dist',
@@ -204,7 +122,6 @@ def upload_to_pypi() -> None:  # pragma: no cover
 
 def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
-    update_version()
     run_style_formatter()
     run_doc_tests()
     run_static_type_checker()

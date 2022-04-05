@@ -579,7 +579,7 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
             rms[i_curve] = np.sqrt(np.mean(np.sum(
                 (data[i_curve] - current_mean_cycle) ** 2)))
 
-        i_cycle = np.nanargmax(rms)
+        i_cycle = int(np.nanargmax(rms))
         out_cycles.append(i_cycle)
         done_cycles.append(i_cycle)
         data[i_cycle] = np.nan

@@ -76,18 +76,20 @@ def test_detect_cycles():
     assert ts2.events[0].time == 6
     assert ts2.events[1].name == 'stop'
     assert ts2.events[1].time == 10
+    assert ts2.events[2].name == '_'
+    assert ts2.events[2].time == 13
     assert ts2.events[3].name == 'start'
     assert ts2.events[3].time == 13
     assert ts2.events[4].name == 'stop'
     assert ts2.events[4].time == 18
+    assert ts2.events[5].name == '_'
+    assert ts2.events[5].time == 19
     assert ts2.events[6].name == 'start'
     assert ts2.events[6].time == 19
     assert ts2.events[7].name == 'stop'
     assert ts2.events[7].time == 22
-    assert ts2.events[9].name == 'start'
-    assert ts2.events[9].time == 31
-    assert ts2.events[10].name == 'stop'
-    assert ts2.events[10].time == 39
+    assert ts2.events[8].name == '_'
+    assert ts2.events[8].time == 31
 
     # With minimal cycles
     ts3 = ktk.cycles.detect_cycles(ts, 'data',

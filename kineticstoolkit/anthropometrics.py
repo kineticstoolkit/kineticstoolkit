@@ -23,9 +23,9 @@ Warning
 This module is in very early development and everything can still change.
 Please don't use this module in production code.
 
+
 Nomenclature
 ------------
-
 Skin markers (either real or reconstructed):
 
 - HeadVertex
@@ -92,19 +92,19 @@ def infer_joint_centers(
     This function is aimed to be used on static acquisitions in quasi-neutral
     position.
 
-    For the pelvis:
-    Creates L5S1JointCenter, HipJointCenterL and HipJointCenterR based on
-    AnteriorSuperiorIliacSpineR/L, PosteriorSuperiorIliacSpineR/L and
-    PubicSymphysis, following the method presented in Reed et al. (1999)[1]_.
+    For the pelvis, creates L5S1JointCenter, HipJointCenterL and
+    HipJointCenterR based on AnteriorSuperiorIliacSpineR/L,
+    PosteriorSuperiorIliacSpineR/L and PubicSymphysis, following the method
+    presented in Reed et al. (1999).
 
-    For the thorax:
-    Creates C7T1JointCenter, GlenohumeralJointCenterL and
+    For the thorax, creates C7T1JointCenter, GlenohumeralJointCenterL and
     GlenohumeralJointCenterR based on C7, L5S1JointCenter, Suprasternal,
     AcromionR and AcromionL, following the method presented in Reed et al.
-    (1999)[1]_. The scapulo-thoracic joint must be in a neutral
+    (1999). The scapulo-thoracic joint must be in a neutral
     position.
 
     For the extremities, creates:
+
     - ElbowJointCenterR/L as the midpoint between
       LateralHumeralEpicondyleR/L and MedialHumeralEpicondyleR;
     - WristJointCenterR as the midpoint between
@@ -132,10 +132,10 @@ def infer_joint_centers(
 
     References
     ----------
-    .. [1] Reed, M., Manary, M.A., Schneider, L.W., 1999.
-       Methods for Measuring and Representing Automobile Occupant Posture.
-       Presented at the International Congress &  Exposition, pp. 1999-01–0959.
-       https://doi.org/10.4271/1999-01-0959
+    - Reed, M., Manary, M.A., Schneider, L.W., 1999. Methods for Measuring and
+      Representing Automobile Occupant Posture. Presented at the International
+      Congress &  Exposition, pp. 1999-01–0959.
+      https://doi.org/10.4271/1999-01-0959
 
     """
     if segment == 'Pelvis':
@@ -1023,7 +1023,7 @@ LINKS = {
 INERTIAL_VALUES = {}
 
 # Dumas2007
-_ = pd.read_csv(config.root_folder + '/data/anthropometrics/dumas_2007.csv')
+_ = pd.read_csv(config.root_folder + '/data/anthropometrics_dumas_2007.csv')
 _[['RelIXY', 'RelIXZ', 'RelIYZ']] = (
     _[['RelIXY', 'RelIXZ', 'RelIYZ']].applymap(lambda s: complex(s))
 )
