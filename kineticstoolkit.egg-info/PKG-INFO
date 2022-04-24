@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: kineticstoolkit
-Version: 0.7.1
+Version: 0.7.2
 Summary: An Open-Source Python Package to Facilitate Research in Biomechanics.
 Home-page: https://kineticstoolkit.uqam.ca
 Author: Félix Chénier
@@ -10,7 +10,7 @@ Project-URL: Documentation, https://kineticstoolkit.uqam.ca
 Project-URL: Source, https://github.com/felixchenier/kineticstoolkit/
 Project-URL: Tracker, https://github.com/felixchenier/kineticstoolkit/issues
 Platform: UNKNOWN
-Classifier: Development Status :: 3 - Alpha
+Classifier: Development Status :: 4 - Beta
 Classifier: Intended Audience :: Science/Research
 Classifier: License :: OSI Approved :: Apache Software License
 Classifier: Natural Language :: English

@@ -5,3 +5,5 @@ matplotlib
 scikit-learn
 limitedinteraction
 tqdm
+requests
+requests-cache
