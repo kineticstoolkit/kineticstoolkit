@@ -83,16 +83,49 @@ listing.append('geometry')
 from kineticstoolkit import dev  # noqa
 unstable_listing.append('dev')
 
-from kineticstoolkit import inversedynamics  # noqa
-unstable_listing.append('inversedynamics')
+try:
+    from kineticstoolkit import inversedynamics  # noqa
+    unstable_listing.append('inversedynamics')
+except:
+    pass
 
-from kineticstoolkit import emg  # noqa
-unstable_listing.append('emg')
+try:
+    from kineticstoolkit import emg  # noqa
+    unstable_listing.append('emg')
+except:
+    pass
 
-from kineticstoolkit import anthropometrics  # noqa
-unstable_listing.append('anthropometrics')
+try:
+    from kineticstoolkit import anthropometrics  # noqa
+    unstable_listing.append('anthropometrics')
+except:
+    pass
 
 from kineticstoolkit import config  # noqa
+
+
+# Check if a serious warning has been issued on this version.
+try:
+    from requests_cache import CachedSession  # noqa
+    from datetime import timedelta  # noqa
+    import json  # noqa
+    import warnings  # noqa
+
+    session = CachedSession(
+        'kineticstoolkit',
+        backend='filesystem',
+        use_temp=True,
+        expire_after=timedelta(hours=1),
+    )
+    res = session.get(
+        'https://kineticstoolkit.uqam.ca/api/import_check.php',
+        params={'version': config.version}
+    )
+    contents = json.loads(res.content)
+    if res.ok and 'warning' in contents:
+        warnings.warn(contents['warning'])
+except Exception:
+    pass
 
 
 def enable_dev():

@@ -32,12 +32,14 @@ setuptools.setup(
                       'scipy',
                       'matplotlib',
                       'scikit-learn',
-                      'limitedinteraction',
+                      'limitedinteraction',  # For UI
                       'tqdm',
+                      'requests',  # To download documentation examples
+                      'requests-cache',  # To check for warning messages on import
                       # 'ffmpeg',  # Facultative, for matplotlib html5 animations
                       ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Science/Research',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
