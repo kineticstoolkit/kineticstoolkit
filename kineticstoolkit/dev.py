@@ -116,7 +116,7 @@ def upload_to_pypi() -> None:  # pragma: no cover
         'osascript',
         '-e',
         'tell application "Terminal" to do script '
-        f'"conda activate ktk; cd {root_folder}; twine upload dist/*"'],
+        f'"conda activate mosa; cd {root_folder}; twine upload dist/*"'],
         env=kineticstoolkit.config.env)
 
 
