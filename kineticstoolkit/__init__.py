@@ -101,6 +101,12 @@ try:
 except:
     pass
 
+try:
+    from kineticstoolkit import ext  # noqa
+    unstable_listing.append('ext')
+except:
+    pass
+
 from kineticstoolkit import config  # noqa
 
 
