@@ -102,6 +102,7 @@ except:
     pass
 
 from kineticstoolkit import config  # noqa
+listing.append('config')
 
 
 # Check if a serious warning has been issued on this version.
@@ -128,28 +129,8 @@ except Exception:
     pass
 
 
-def enable_dev():
-    """
-    Enable development functions and unstable functions and modules.
-
-    This function is exclusively reserved for Kinetics Toolkit development.
-    It is autatically called if there is a file called "KTK_AUTO_ENABLE_DEV"
-    in the current folder when importing Kinetics Toolkit.
-
-    There is no disable_dev function that reverts to stable version. To this
-    effect, one must relaunch the Python interpreter and reload Kinetics
-    Toolkit.
-
-    """
-    config.version = 'master'
-
-
-if os.path.exists('KTK_AUTO_ENABLE_DEV'):
-    enable_dev()
-
-
 def __dir__():
-    if config.version == 'master':
+    if config.dev_enabled:
         return listing + unstable_listing
     else:
         return listing

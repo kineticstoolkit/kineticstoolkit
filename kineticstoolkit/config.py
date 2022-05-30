@@ -51,9 +51,15 @@ root_folder = os.path.dirname(os.path.dirname(__file__))
 # Home folder
 home_folder = os.path.expanduser("~")
 
-# Kinetics Toolkit version. Overrid by ktk.enable_dev()
+# Kinetics Toolkit version.
 with open(root_folder + '/kineticstoolkit/VERSION', 'r') as fid:
     version = fid.read()
+
+# Development functions enabled in dir listings?
+if os.path.exists('KTK_AUTO_ENABLE_DEV'):
+    dev_enabled = False
+else:
+    dev_enabled = True
 
 # Operating system
 is_pc = True if platform.system() == 'Windows' else False
