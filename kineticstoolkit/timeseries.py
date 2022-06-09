@@ -1345,6 +1345,11 @@ class TimeSeries:
         labels = df.columns.to_list()
 
         axes = plt.gca()
+        axes.set_prop_cycle(
+            mpl.cycler(linewidth=[1, 2, 3, 4])
+            * mpl.cycler(linestyle=['-', '--', '-.', ':'])
+            * plt.rcParams['axes.prop_cycle']
+        )
 
         # Plot the curves
         for i_label, label in enumerate(labels):

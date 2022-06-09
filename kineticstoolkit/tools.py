@@ -26,9 +26,9 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
+import kineticstoolkit.ext
 from kineticstoolkit.decorators import directory
 
-import webbrowser as _webbrowser
 import warnings
 
 
@@ -37,6 +37,7 @@ def start_lab_mode(
     change_matplotlib_defaults: bool = True,
     change_numpy_print_options: bool = True,
     change_warnings_format: bool = True,
+    load_extensions: bool = True,
 ) -> None:
     """
     Enable Kinetics Toolkit's lab goodies.
@@ -50,16 +51,19 @@ def start_lab_mode(
     Parameters
     ----------
     change_ipython_dict_repr
-        True to summarize defaults dict printouts in IPython.
+        Optional. True to summarize defaults dict printouts in IPython.
     change_matplotlib_defaults
-        True to change default figure size, autolayout, dpi, line width
-        and color order in Matplotlib.
+        Optional. True to change default figure size, autolayout, dpi, line
+        width and color order in Matplotlib.
     change_numpy_print_options
-        True to change default print options in numpy to use fixed point
-        notation in printouts.
+        Optional. True to change default print options in numpy to use fixed
+        point notation in printouts.
     change_warnings_format
-        True to change warnings module's default to a more extended format
-        with file and line number.
+        Optional. True to change warnings module's default to a more extended
+        format with file and line number.
+    load_extensions
+        Optional. True to load extensions (installed packages that start with
+        `kineticstoolkit_`) into the kinetics.ext namespace.
 
     Returns
     -------
@@ -96,22 +100,8 @@ def start_lab_mode(
             return f'{category.__name__} [{filename}:{lineno}] {message}\n'
         warnings.formatwarning = formatwarning
 
-
-def tutorials() -> None:
-    """
-    Open the Kinetics Toolkits tutorials in a web browser.
-
-    Usage: ktk.tutorials()
-
-    Warning
-    -------
-    This function, which has been introduced in 0.3, is still experimental and
-    may change signature or behaviour in the future.
-
-    """
-    _webbrowser.open('file:///' + kineticstoolkit.config.root_folder +
-                     '/tutorials/index.html',
-                     new=2)
+    if load_extensions:
+        kineticstoolkit.ext.load_extensions()
 
 
 module_locals = locals()

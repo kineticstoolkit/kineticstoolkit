@@ -44,9 +44,6 @@ from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
 listing.append('TimeSeries')
 listing.append('TimeSeriesEvent')
 
-from kineticstoolkit.tools import tutorials  # noqa
-listing.append('tutorials')
-
 from kineticstoolkit.tools import start_lab_mode  # noqa
 listing.append('start_lab_mode')
 
@@ -100,6 +97,13 @@ try:
     unstable_listing.append('anthropometrics')
 except:
     pass
+
+try:
+    from kineticstoolkit import ext  # noqa
+    unstable_listing.append('anthropometrics')
+except:
+    pass
+
 
 from kineticstoolkit import config  # noqa
 listing.append('config')
