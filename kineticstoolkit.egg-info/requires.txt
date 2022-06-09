@@ -1,9 +1,0 @@
-pandas
-pyqt5
-scipy
-matplotlib
-scikit-learn
-limitedinteraction
-tqdm
-requests
-requests-cache
