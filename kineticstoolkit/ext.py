@@ -32,18 +32,33 @@ import sys
 import os
 
 
+def __getattr__(module_name):
+    """Return an helpful message in case an extension was not loaded."""
+    raise ModuleNotFoundError(
+        f"The extension kineticstoolkit_{module_name} is not loaded. "
+        f"You can load extensions using "
+        f"`ktk.ext.load_extensions()`, or by "
+        f"importing Kinetics Toolkit in lab mode "
+        f"using `import kineticstoolkit.lab as ktk`. If this error still "
+        f"happens, make sure that kineticstoolkit_{module_name} is correctly "
+        f"installed."
+    )
+
+
 def _load_module(name, verbose):
     """Load one module by name."""
     if "kineticstoolkit_" in name:
         short_name = name[len('kineticstoolkit_'):]
         try:
             if verbose:
-                print(f"Loaded {name} extension.")
+                print(f"Loaded {name}.")
             globals()[short_name] = importlib.import_module(name)
-            my_dir.append(short_name)
+            loaded_extensions.append(short_name)
         except Exception:
             warnings.warn(
-                f"There have been an error loading the {name} extension."
+                f"There have been an error loading the {name} extension. "
+                f"Please try to import {name} manually to get more insights "
+                f"on the cause of the error."
             )
 
 
@@ -79,9 +94,8 @@ def load_extensions(folder: str = '', verbose: bool = False):
     """
     # Dynamically import extensions
 
-    # Clear my_dir and start over
-    del my_dir[:]
-    my_dir.append('load_extensions')
+    # Clear loaded_extensions and start over
+    del loaded_extensions[:]
 
     if folder == "":
         # Scan PYTHONPATH
@@ -93,8 +107,8 @@ def load_extensions(folder: str = '', verbose: bool = False):
             _load_module(name, verbose)
 
 
-my_dir = ['load_extensions']
+loaded_extensions = ['load_extensions']
 
 
 def __dir__():
-    return my_dir
+    return ['load_extensions'] + loaded_extensions
