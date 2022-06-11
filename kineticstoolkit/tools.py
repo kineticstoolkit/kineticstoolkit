@@ -37,7 +37,7 @@ def start_lab_mode(
     change_matplotlib_defaults: bool = True,
     change_numpy_print_options: bool = True,
     change_warnings_format: bool = True,
-    load_extensions: bool = True,
+    import_extensions: bool = True,
 ) -> None:
     """
     Enable Kinetics Toolkit's lab goodies.
@@ -61,9 +61,8 @@ def start_lab_mode(
     change_warnings_format
         Optional. True to change warnings module's default to a more extended
         format with file and line number.
-    load_extensions
-        Optional. True to load extensions (installed packages that start with
-        `kineticstoolkit_`) into the kinetics.ext namespace.
+    import_extensions
+        Optional. True to import extensions into the kinetics.ext namespace.
 
     Returns
     -------
@@ -100,8 +99,8 @@ def start_lab_mode(
             return f'{category.__name__} [{filename}:{lineno}] {message}\n'
         warnings.formatwarning = formatwarning
 
-    if load_extensions:
-        kineticstoolkit.ext.load_extensions()
+    if import_extensions:
+        kineticstoolkit.ext.import_extensions()
 
 
 module_locals = locals()

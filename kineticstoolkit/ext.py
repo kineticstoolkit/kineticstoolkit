@@ -29,7 +29,7 @@ import warnings
 import importlib
 import pkgutil
 import sys
-import os
+from typing import List
 
 
 def __getattr__(module_name):
@@ -45,33 +45,16 @@ def __getattr__(module_name):
     )
 
 
-def _load_module(name, verbose):
-    """Load one module by name."""
-    if "kineticstoolkit_" in name:
-        short_name = name[len('kineticstoolkit_'):]
-        try:
-            if verbose:
-                print(f"Loaded {name}.")
-            globals()[short_name] = importlib.import_module(name)
-            loaded_extensions.append(short_name)
-        except Exception:
-            warnings.warn(
-                f"There have been an error loading the {name} extension. "
-                f"Please try to import {name} manually to get more insights "
-                f"on the cause of the error."
-            )
-
-
-def load_extensions(folder: str = '', verbose: bool = False):
+def import_extensions(verbose: bool = False):
     """
-    Load all extensions found on PYTHONPATH.
+    Import all extensions found on PYTHONPATH.
 
     Any module that begins by 'kineticstoolkit_' and that is on PYTHONPATH will
     be found and imported as an extension. The simplest case would be a python
     file named `kineticstoolkit_myextension.py` that sits in the current
     folder, and that defines a function named `process_data`.
 
-        ktk.ext.load_extensions()
+        ktk.ext.import_extensions()
 
     would import this file and its content would be accessible via
 
@@ -84,7 +67,7 @@ def load_extensions(folder: str = '', verbose: bool = False):
     Parameters
     ----------
     folder
-        Optional. Name of the folder to scan for extensions. Default is
+        Optional. Name of a folder to scan for extensions, in addition to
         the whole PYTHONPATH.
 
     Returns
@@ -95,20 +78,27 @@ def load_extensions(folder: str = '', verbose: bool = False):
     # Dynamically import extensions
 
     # Clear loaded_extensions and start over
-    del loaded_extensions[:]
+    del imported_extensions[:]
 
-    if folder == "":
-        # Scan PYTHONPATH
-        for finder, name, ispkg in pkgutil.iter_modules(sys.path):
-            _load_module(name, verbose)
-    else:
-        # Scan folder
-        for name in os.listdir(folder):
-            _load_module(name, verbose)
+    # Scan PYTHONPATH
+    for finder, name, ispkg in pkgutil.iter_modules(sys.path):
+        if "kineticstoolkit_" in name:
+            short_name = name[len('kineticstoolkit_'):]
+            try:
+                if verbose:
+                    print(f"Loaded {name}.")
+                globals()[short_name] = importlib.import_module(name)
+                imported_extensions.append(short_name)
+            except Exception:
+                warnings.warn(
+                    f"There have been an error importing the {name} "
+                    f"extension. Please try to import {name} manually to get "
+                    f"more insights on the cause of the error."
+                )
 
 
-loaded_extensions = ['load_extensions']
+imported_extensions = []  # type: List[str]
 
 
 def __dir__():
-    return ['load_extensions'] + loaded_extensions
+    return ['import_extensions'] + imported_extensions
