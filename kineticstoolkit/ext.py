@@ -45,34 +45,24 @@ def __getattr__(module_name):
     )
 
 
-def import_extensions(verbose: bool = False):
+def _import_extension(name: str):
+    """Import the extension."""
+
+
+def import_extensions() -> List[str]:
     """
     Import all extensions found on PYTHONPATH.
 
     Any module that begins by 'kineticstoolkit_' and that is on PYTHONPATH will
-    be found and imported as an extension. The simplest case would be a python
-    file named `kineticstoolkit_myextension.py` that sits in the current
-    folder, and that defines a function named `process_data`.
-
-        ktk.ext.import_extensions()
-
-    would import this file and its content would be accessible via
-
-        ktk.ext.myextension
-
-    for example:
-
-        ktk.ext.myextension.process_data()
+    be found and imported as an extension in the kineticstoolkit.ext namespace.
 
     Parameters
     ----------
-    folder
-        Optional. Name of a folder to scan for extensions, in addition to
-        the whole PYTHONPATH.
+    None.
 
     Returns
     -------
-    None.
+    A list of the imported extension names.
 
     """
     # Dynamically import extensions
@@ -80,13 +70,13 @@ def import_extensions(verbose: bool = False):
     # Clear loaded_extensions and start over
     del imported_extensions[:]
 
-    # Scan PYTHONPATH
-    for finder, name, ispkg in pkgutil.iter_modules(sys.path):
-        if "kineticstoolkit_" in name:
+    # Scan PYTHONPATH and current directory
+    the_path = ['.' if s == '' else s for s in sys.path]
+
+    for finder, name, ispkg in pkgutil.iter_modules(the_path):
+        if name.startswith("kineticstoolkit_"):
             short_name = name[len('kineticstoolkit_'):]
             try:
-                if verbose:
-                    print(f"Loaded {name}.")
                 globals()[short_name] = importlib.import_module(name)
                 imported_extensions.append(short_name)
             except Exception:
@@ -95,6 +85,8 @@ def import_extensions(verbose: bool = False):
                     f"extension. Please try to import {name} manually to get "
                     f"more insights on the cause of the error."
                 )
+
+    return imported_extensions
 
 
 imported_extensions = []  # type: List[str]
