@@ -32,24 +32,20 @@ import sys
 from typing import List
 
 
-def __getattr__(module_name):
-    """Return an helpful message in case an extension was not loaded."""
-    raise ModuleNotFoundError(
-        f"The extension kineticstoolkit_{module_name} is not loaded. "
-        f"You can load extensions using "
-        f"`ktk.ext.load_extensions()`, or by "
-        f"importing Kinetics Toolkit in lab mode "
-        f"using `import kineticstoolkit.lab as ktk`. If this error still "
-        f"happens, make sure that kineticstoolkit_{module_name} is correctly "
-        f"installed."
-    )
+# def __getattr__(module_name):
+#     """Return an helpful message in case an extension was not loaded."""
+#     raise ModuleNotFoundError(
+#         f"The extension kineticstoolkit_{module_name} is not loaded. "
+#         f"You can load extensions using "
+#         f"`ktk.ext.load_extensions()`, or by "
+#         f"importing Kinetics Toolkit in lab mode "
+#         f"using `import kineticstoolkit.lab as ktk`. If this error still "
+#         f"happens, make sure that kineticstoolkit_{module_name} is correctly "
+#         f"installed."
+#     )
 
 
-def _import_extension(name: str):
-    """Import the extension."""
-
-
-def import_extensions() -> List[str]:
+def _import_extensions() -> List[str]:
     """
     Import all extensions found on PYTHONPATH.
 
@@ -71,7 +67,7 @@ def import_extensions() -> List[str]:
     del imported_extensions[:]
 
     # Scan PYTHONPATH and current directory
-    the_path = ['.' if s == '' else s for s in sys.path]
+    the_path = sys.path + ['.']
 
     for finder, name, ispkg in pkgutil.iter_modules(the_path):
         if name.startswith("kineticstoolkit_"):
@@ -93,4 +89,4 @@ imported_extensions = []  # type: List[str]
 
 
 def __dir__():
-    return ['import_extensions'] + imported_extensions
+    return imported_extensions

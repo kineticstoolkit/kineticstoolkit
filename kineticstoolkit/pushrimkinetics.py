@@ -16,7 +16,9 @@
 # limitations under the License.
 
 """
-Provide functions to process kinetic data from instrumented wheelchair wheels.
+Deprecated module.
+Provides functions to process kinetic data from instrumented wheelchair wheels.
+Please use the kineticstoolkit_pushtimkinetics extension.
 """
 
 __author__ = "Félix Chénier"
@@ -28,7 +30,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.filters as filters
 import kineticstoolkit.cycles as cycles
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import unstable, dead, directory
+from kineticstoolkit.decorators import unstable, dead, directory, deprecated
 
 import numpy as np
 from numpy import sin, cos, pi
@@ -38,6 +40,12 @@ import struct  # to unpack binary data from SmartWheels' txt files
 from typing import Union, Optional, List
 
 
+@deprecated(
+    "0.8", "2024", (
+        "Please install the kineticstoolkit_pushtimkinetics extension "
+        "and use the equivalent "
+        "ktk.ext.pushrimkinetics.read_smartwheel() function."
+    ))
 def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
@@ -221,6 +229,11 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     return index
 
 
+@deprecated(
+    "0.8", "2024", (
+        "Please install the kineticstoolkit_pushtimkinetics extension "
+        "and use the equivalent ktk.ext.remove_offsets() function."
+    ))
 def remove_offsets(
         kinetics: TimeSeries,
         baseline_kinetics: Optional[TimeSeries] = None
@@ -301,6 +314,11 @@ def remove_offsets(
     return kinetics
 
 
+@deprecated(
+    "0.8", "2024", (
+        "Please install the kineticstoolkit_pushtimkinetics extension "
+        "and use the equivalent apply_calibration() function."
+    ))
 def calculate_forces_and_moments(
         kinetics: TimeSeries, /,
         gains: Union[np.ndarray, str],
@@ -424,6 +442,12 @@ def calculate_forces_and_moments(
     return(kinetics)
 
 
+@deprecated(
+    "0.8", "2024", (
+        "Please install the kineticstoolkit_pushtimkinetics extension "
+        "and use the equivalent "
+        "ktk.ext.pushrimkinetics.calculate_velocity() function."
+    ))
 def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate velocity based on wheel angle.
@@ -470,6 +494,12 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     return tsout
 
 
+@deprecated(
+    "0.8", "2024", (
+        "Please install the kineticstoolkit_pushtimkinetics extension "
+        "and use the equivalent "
+        "ktk.ext.pushrimkinetics.calculate_power() function."
+    ))
 def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate power based on wheel velocity and moment.
@@ -552,7 +582,7 @@ def __getattr__(name):
     if name == 'CALIBRATION_MATRICES':
         warnings.warn(
             'These sample calibration matrices will be removed in '
-            'January 2023.', FutureWarning)
+            '2024.', FutureWarning)
         return globals()['_deprecated_CALIBRATION_MATRICES']
     raise AttributeError(f"module {__name__} has no attribute {name}")
 

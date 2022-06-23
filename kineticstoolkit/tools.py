@@ -100,7 +100,7 @@ def start_lab_mode(
         warnings.formatwarning = formatwarning
 
     if import_extensions:
-        kineticstoolkit.ext.import_extensions()
+        kineticstoolkit.ext._import_extensions()
 
 
 module_locals = locals()

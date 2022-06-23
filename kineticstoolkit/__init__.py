@@ -100,7 +100,9 @@ except:
 
 try:
     from kineticstoolkit import ext  # noqa
-    unstable_listing.append('anthropometrics')
+    unstable_listing.append('ext')
+    from kineticstoolkit.ext import _import_extensions as import_extensions
+    unstable_listing.append('import_extensions')
 except:
     pass
 
