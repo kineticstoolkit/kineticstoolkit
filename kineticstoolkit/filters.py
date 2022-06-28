@@ -44,14 +44,17 @@ def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.ndarray]:
     if not np.all(~nan_index):
         # There were NaNs, issue a warning.
         ts = ts.fill_missing_samples(0)
-        warnings.warn('NaNs found in the signal. They have been '
-                      'interpolated before filtering, and then put '
-                      'back in the filtered data.')
+        warnings.warn(
+            "NaNs found in the signal. They have been "
+            "interpolated before filtering, and then put "
+            "back in the filtered data."
+        )
     return (ts, nan_index)
 
 
-def savgol(ts: TimeSeries, /, *, window_length: int, poly_order: int,
-           deriv: int = 0) -> TimeSeries:
+def savgol(
+    ts: TimeSeries, /, *, window_length: int, poly_order: int, deriv: int = 0
+) -> TimeSeries:
     """
     Apply a Savitzky-Golay filter on a TimeSeries.
 
@@ -89,16 +92,15 @@ def savgol(ts: TimeSeries, /, *, window_length: int, poly_order: int,
 
         if np.sum(~nan_index) < poly_order + 1:
             # We can't do anything without more points
-            warnings.warn(
-                f"Not enough non-missing samples to filter {key}.")
+            warnings.warn(f"Not enough non-missing samples to filter {key}.")
             continue
 
         input_signal = subts.data[key]
 
         # Filter
-        filtered_data = sgl.savgol_filter(input_signal,
-                                          window_length, poly_order, deriv,
-                                          delta=delta, axis=0)
+        filtered_data = sgl.savgol_filter(
+            input_signal, window_length, poly_order, deriv, delta=delta, axis=0
+        )
 
         # Put back NaNs
         filtered_data[nan_index] = np.nan
@@ -135,8 +137,15 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     return tsout
 
 
-def butter(ts: TimeSeries, /, fc: Union[float, Sequence], *, order: int = 2,
-           btype: str = 'lowpass', filtfilt: bool = True) -> TimeSeries:
+def butter(
+    ts: TimeSeries,
+    /,
+    fc: Union[float, Sequence],
+    *,
+    order: int = 2,
+    btype: str = "lowpass",
+    filtfilt: bool = True,
+) -> TimeSeries:
     """
     Apply a Butterworth filter to a TimeSeries.
 
@@ -170,12 +179,11 @@ def butter(ts: TimeSeries, /, fc: Union[float, Sequence], *, order: int = 2,
     ts = ts.copy()
 
     # Create the filter
-    fs = (1 / (ts.time[1] - ts.time[0]))
+    fs = 1 / (ts.time[1] - ts.time[0])
     if np.isnan(fs):
         raise ValueError("The TimeSeries' time vector must not contain NaNs.")
 
-    sos = sgl.butter(order, fc, btype, analog=False,
-                     output='sos', fs=fs)
+    sos = sgl.butter(order, fc, btype, analog=False, output="sos", fs=fs)
 
     for data in ts.data:
 
@@ -183,11 +191,9 @@ def butter(ts: TimeSeries, /, fc: Union[float, Sequence], *, order: int = 2,
 
         # Filter
         if filtfilt is True:
-            subts.data[data] = sgl.sosfiltfilt(sos, subts.data[data],
-                                               axis=0)
+            subts.data[data] = sgl.sosfiltfilt(sos, subts.data[data], axis=0)
         else:
-            subts.data[data] = sgl.sosfilt(sos, subts.data[data],
-                                           axis=0)
+            subts.data[data] = sgl.sosfilt(sos, subts.data[data], axis=0)
 
         # Put back nans
         subts.data[data][missing] = np.nan
@@ -256,8 +262,9 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
         out_ts.time = (out_ts.time[1:] + out_ts.time[0:-1]) / 2
 
     for key in ts.data:
-        out_ts.data[key] = np.diff(
-            ts.data[key], n=n, axis=0) / (ts.time[1] - ts.time[0]) ** n
+        out_ts.data[key] = (
+            np.diff(ts.data[key], n=n, axis=0) / (ts.time[1] - ts.time[0]) ** n
+        )
 
     return out_ts
 
@@ -289,8 +296,7 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     for key in ts.data:
         window_shape = [1 for i in range(len(ts.data[key].shape))]
         window_shape[0] = window_length
-        out_ts.data[key] = ndi.median_filter(
-            ts.data[key], size=window_shape)
+        out_ts.data[key] = ndi.median_filter(ts.data[key], size=window_shape)
 
     return out_ts
 
@@ -304,4 +310,5 @@ def __dir__():
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

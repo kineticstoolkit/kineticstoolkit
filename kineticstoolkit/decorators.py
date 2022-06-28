@@ -51,23 +51,23 @@ from typing import Dict, List, Any
 
 def _inject_in_docstring(docstring: str, text: str) -> str:
     """Inject a string into the top of a docstring, after line 1."""
-    if docstring == '' or docstring is None:
+    if docstring == "" or docstring is None:
         return text
     result = []
-    splitted = textwrap.dedent(docstring).split('\n')
+    splitted = textwrap.dedent(docstring).split("\n")
     first_line_done = False
     for line in splitted:
         if not first_line_done:
             if len(line) != 0:
                 first_line_done = True
                 result.append(line)
-                for text_line in text.split('\n'):
+                for text_line in text.split("\n"):
                     result.append(text_line)
             else:
                 result.append(line)
         else:
             result.append(line)
-    return '\n'.join(result)
+    return "\n".join(result)
 
 
 def deprecated(since: str, until: str, details: str):
@@ -78,11 +78,14 @@ def deprecated(since: str, until: str, details: str):
     These functions are included in API documentation.
 
     """
+
     def real_decorator(func):
         func_name = func.__name__
-        string = (f"The function {func_name} is deprecated since "
-                  f"{since} and is scheduled to be removed "
-                  f"in {until}. {details}")
+        string = (
+            f"The function {func_name} is deprecated since "
+            f"{since} and is scheduled to be removed "
+            f"in {until}. {details}"
+        )
 
         # Ensure the decorated function keeps its metadata
         @wraps(func)
@@ -92,10 +95,13 @@ def deprecated(since: str, until: str, details: str):
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=FutureWarning)
                 return func(*args, **kwargs)
+
         wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, f"\nWarning\n-------\n{string}")
+            func.__doc__, f"\nWarning\n-------\n{string}"
+        )
         wrapper._is_deprecated = True
         return wrapper
+
     return real_decorator
 
 
@@ -112,9 +118,11 @@ def unstable(func):
 
     """
     func_name = func.__name__
-    string = (f"The function {func_name} is unstable, which means it may not "
-              f"be tested or settled yet. Please avoid using this function "
-              f"in production code.")
+    string = (
+        f"The function {func_name} is unstable, which means it may not "
+        f"be tested or settled yet. Please avoid using this function "
+        f"in production code."
+    )
 
     # Ensure the decorated function keeps its metadata
     @wraps(func)
@@ -125,11 +133,12 @@ def unstable(func):
     wrapper._is_unstable = True
 
     wrapper.__doc__ = _inject_in_docstring(
-        func.__doc__, f"\nWarning\n-------\n{string}")
+        func.__doc__, f"\nWarning\n-------\n{string}"
+    )
     return wrapper
 
 
-def dead(since: str, until: str, details=''):
+def dead(since: str, until: str, details=""):
     """
     Decorate dead Kinetics Toolkit's functions.
 
@@ -139,11 +148,14 @@ def dead(since: str, until: str, details=''):
     Parameter listing is a list of attributes of the module that will be
     returned by the module's or class' __dir__ function.
     """
+
     def real_decorator(func):
         func_name = func.__name__
-        string = (f"The function {func_name} is deprecated since "
-                  f"{since} and is scheduled to be removed "
-                  f"in {until}. {details}")
+        string = (
+            f"The function {func_name} is deprecated since "
+            f"{since} and is scheduled to be removed "
+            f"in {until}. {details}"
+        )
 
         # Ensure the decorated function keeps its metadata
         @wraps(func)
@@ -153,10 +165,13 @@ def dead(since: str, until: str, details=''):
             with warnings.catch_warnings():
                 warnings.filterwarnings("ignore", category=FutureWarning)
                 return func(*args, **kwargs)
+
         wrapper.__doc__ = _inject_in_docstring(
-            func.__doc__, f"\nWarning\n-------\n{string}")
+            func.__doc__, f"\nWarning\n-------\n{string}"
+        )
         wrapper._is_dead = True
         return wrapper
+
     return real_decorator
 
 
@@ -177,20 +192,20 @@ def directory(module_locals: Dict[str, Any]) -> List[str]:
     dir_ = []
     for key in module_locals:
 
-        if key.startswith('_'):
+        if key.startswith("_"):
             continue
 
         try:
             if (
-                    '_is_unstable' in module_locals[key].__dict__
-                    and module_locals[key].__dict__['_is_unstable'] is True
-                    and kineticstoolkit.config.version != 'master'
+                "_is_unstable" in module_locals[key].__dict__
+                and module_locals[key].__dict__["_is_unstable"] is True
+                and kineticstoolkit.config.version != "master"
             ):
                 continue
 
             if (
-                    '_is_dead' in module_locals[key].__dict__
-                    and module_locals[key].__dict__['_is_dead'] is True
+                "_is_dead" in module_locals[key].__dict__
+                and module_locals[key].__dict__["_is_dead"] is True
             ):
                 continue
 

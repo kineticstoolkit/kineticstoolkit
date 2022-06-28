@@ -29,13 +29,10 @@ import kineticstoolkit as ktk
 def test_download_sample_data():
     """Test ktk.doc.download_sample_data."""
     # Download the usual way
-    file1 = ktk.doc.download(
-        'filters_noisy_signals.ktk.zip'
-    )
+    file1 = ktk.doc.download("filters_noisy_signals.ktk.zip")
     # Use the local version
     file2 = ktk.doc.download(
-        'filters_noisy_signals.ktk.zip',
-        force_download=True
+        "filters_noisy_signals.ktk.zip", force_download=True
     )
     assert file1 != file2
     data1 = ktk.load(file1)
@@ -45,4 +42,5 @@ def test_download_sample_data():
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

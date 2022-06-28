@@ -44,28 +44,40 @@ def run_unit_tests() -> None:  # pragma: no cover
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
-    print('Running unit tests...')
+    print("Running unit tests...")
 
     cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder + '/tests')
-    subprocess.call(['coverage', 'run',
-                     '--source', '../kineticstoolkit',
-                     '--omit', '../kineticstoolkit/external/*',
-                     '-m', 'pytest', '--ignore=interactive'],
-                    env=kineticstoolkit.config.env)
-    subprocess.call(['coverage', 'html'], env=kineticstoolkit.config.env)
+    os.chdir(kineticstoolkit.config.root_folder + "/tests")
+    subprocess.call(
+        [
+            "coverage",
+            "run",
+            "--source",
+            "../kineticstoolkit",
+            "--omit",
+            "../kineticstoolkit/external/*",
+            "-m",
+            "pytest",
+            "--ignore=interactive",
+        ],
+        env=kineticstoolkit.config.env,
+    )
+    subprocess.call(["coverage", "html"], env=kineticstoolkit.config.env)
     webbrowser.open_new_tab(
-        'file://' + kineticstoolkit.config.root_folder +
-        '/tests/htmlcov/index.html')
+        "file://"
+        + kineticstoolkit.config.root_folder
+        + "/tests/htmlcov/index.html"
+    )
     os.chdir(cwd)
 
 
 def run_style_formatter() -> None:  # pragma: no cover
-    """Run style formatter (autopep8)."""
-    print("Running autopep8...")
-    subprocess.call(['autopep8', '-r', '-i',
-                     kineticstoolkit.config.root_folder],
-                    env=kineticstoolkit.config.env)
+    """Run style formatter (black)."""
+    print("Running black...")
+    subprocess.call(
+        ["black", kineticstoolkit.config.root_folder],
+        env=kineticstoolkit.config.env,
+    )
 
 
 def run_static_type_checker() -> None:  # pragma: no cover
@@ -75,9 +87,16 @@ def run_static_type_checker() -> None:  # pragma: no cover
     print("Running mypy...")
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder)
-    subprocess.call(['mypy', '--config-file', 'kineticstoolkit/mypy.ini',
-                     '-p', 'kineticstoolkit'],
-                    env=kineticstoolkit.config.env)
+    subprocess.call(
+        [
+            "mypy",
+            "--config-file",
+            "kineticstoolkit/mypy.ini",
+            "-p",
+            "kineticstoolkit",
+        ],
+        env=kineticstoolkit.config.env,
+    )
     os.chdir(cwd)
 
 
@@ -85,13 +104,14 @@ def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
     print("Running doc tests...")
     cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder + '/kineticstoolkit')
+    os.chdir(kineticstoolkit.config.root_folder + "/kineticstoolkit")
     for file in os.listdir():
-        if file.endswith('.py'):
+        if file.endswith(".py"):
             try:
-                module = eval('kineticstoolkit.' + file.split('.py')[0])
-                doctest.testmod(module,
-                                optionflags=doctest.NORMALIZE_WHITESPACE)
+                module = eval("kineticstoolkit." + file.split(".py")[0])
+                doctest.testmod(
+                    module, optionflags=doctest.NORMALIZE_WHITESPACE
+                )
                 print(f"Doctests passed in file {file}.")
             except Exception:
                 print(f"Could not run the doctest in file {file}.")
@@ -100,24 +120,31 @@ def run_doc_tests() -> None:  # pragma: no cover
 
 def compile_for_pypi() -> None:  # pragma: no cover
     """Compile for PyPi."""
-    shutil.rmtree(kineticstoolkit.config.root_folder + '/dist',
-                  ignore_errors=True)
-    shutil.rmtree(kineticstoolkit.config.root_folder + '/build',
-                  ignore_errors=True)
+    shutil.rmtree(
+        kineticstoolkit.config.root_folder + "/dist", ignore_errors=True
+    )
+    shutil.rmtree(
+        kineticstoolkit.config.root_folder + "/build", ignore_errors=True
+    )
     os.chdir(kineticstoolkit.config.root_folder)
-    subprocess.call(['python', 'setup.py', 'sdist', 'bdist_wheel'],
-                    env=kineticstoolkit.config.env)
+    subprocess.call(
+        ["python", "setup.py", "sdist", "bdist_wheel"],
+        env=kineticstoolkit.config.env,
+    )
 
 
 def upload_to_pypi() -> None:  # pragma: no cover
     """Upload to PyPi. Only works on macOS for now."""
     root_folder = kineticstoolkit.config.root_folder
-    subprocess.call([
-        'osascript',
-        '-e',
-        'tell application "Terminal" to do script '
-        f'"conda activate mosa; cd {root_folder}; twine upload dist/*"'],
-        env=kineticstoolkit.config.env)
+    subprocess.call(
+        [
+            "osascript",
+            "-e",
+            'tell application "Terminal" to do script '
+            f'"conda activate mosa; cd {root_folder}; twine upload dist/*"',
+        ],
+        env=kineticstoolkit.config.env,
+    )
 
 
 def run_tests() -> None:  # pragma: no cover

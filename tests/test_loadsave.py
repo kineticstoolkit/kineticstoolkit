@@ -34,79 +34,82 @@ def test_save_load():
     random_variable = np.random.rand(5, 2, 2)
     ts = ktk.TimeSeries()
     ts.time = np.linspace(0, 9, 10)
-    ts.data['signal1'] = np.random.rand(10)
-    ts.data['signal2'] = np.random.rand(10, 3)
-    ts.data['signal3'] = np.random.rand(10, 3, 3)
-    ts = ts.add_data_info('signal1', 'Unit', 'm/s')
-    ts = ts.add_data_info('signal2', 'Unit', 'km/h')
-    ts = ts.add_data_info('signal3', 'Unit', 'N')
-    ts = ts.add_data_info('signal3', 'SignalType', 'force')
-    ts = ts.add_event(1.53, 'TestEvent1')
-    ts = ts.add_event(7.2, 'TestEvent2')
-    ts = ts.add_event(1, 'TestEvent3')
+    ts.data["signal1"] = np.random.rand(10)
+    ts.data["signal2"] = np.random.rand(10, 3)
+    ts.data["signal3"] = np.random.rand(10, 3, 3)
+    ts = ts.add_data_info("signal1", "Unit", "m/s")
+    ts = ts.add_data_info("signal2", "Unit", "km/h")
+    ts = ts.add_data_info("signal3", "Unit", "N")
+    ts = ts.add_data_info("signal3", "SignalType", "force")
+    ts = ts.add_event(1.53, "TestEvent1")
+    ts = ts.add_event(7.2, "TestEvent2")
+    ts = ts.add_event(1, "TestEvent3")
 
     a = dict()
-    a['TestTimeSeries'] = ts
-    a['TestInt'] = 10
-    a['TestFloat'] = np.pi
-    a['TestBool'] = True
-    a['TestStr'] = """Test string with 'quotes' and "double quotes"."""
-    a['TestComplex'] = (34.05+2j)
-    a['TestArray'] = random_variable
-    a['TestList'] = [0, 'test', True]
-#    a['TestTuple'] = (1, 'test2', False)
-    a['TestBigList'] = np.arange(-1, 1, 1E-4).tolist()
-    a['TestDict'] = {'key1': 'value1',
-                     'key2': 10,
-                     'key3': True}
-    a['TestComplexDict'] = {'key1': 'value1',
-                            'key2': 10,
-                            'key3': None}
-    a['TestComplexList'] = ['value1', 10, ts.copy(),
-                            'value2', 12, None,
-                            True, np.pi, (34.05+2j),
-                            [1, 2, 3, 4], [1, 2, 3, 4],
-                            {'key1': 'value1',
-                             'key2': 10,
-                             'key3': ts.copy()}
-                            ]
-    a['TestComplexTuple'] = tuple(a['TestComplexList'])
-    a['TestDataFrame'] = ts.to_dataframe()
-    a['TestSeries'] = a['TestDataFrame']['signal1']
+    a["TestTimeSeries"] = ts
+    a["TestInt"] = 10
+    a["TestFloat"] = np.pi
+    a["TestBool"] = True
+    a["TestStr"] = """Test string with 'quotes' and "double quotes"."""
+    a["TestComplex"] = 34.05 + 2j
+    a["TestArray"] = random_variable
+    a["TestList"] = [0, "test", True]
+    #    a['TestTuple'] = (1, 'test2', False)
+    a["TestBigList"] = np.arange(-1, 1, 1e-4).tolist()
+    a["TestDict"] = {"key1": "value1", "key2": 10, "key3": True}
+    a["TestComplexDict"] = {"key1": "value1", "key2": 10, "key3": None}
+    a["TestComplexList"] = [
+        "value1",
+        10,
+        ts.copy(),
+        "value2",
+        12,
+        None,
+        True,
+        np.pi,
+        (34.05 + 2j),
+        [1, 2, 3, 4],
+        [1, 2, 3, 4],
+        {"key1": "value1", "key2": 10, "key3": ts.copy()},
+    ]
+    a["TestComplexTuple"] = tuple(a["TestComplexList"])
+    a["TestDataFrame"] = ts.to_dataframe()
+    a["TestSeries"] = a["TestDataFrame"]["signal1"]
 
-    ktk.save('test.ktk.zip', a)
-    b = ktk.load('test.ktk.zip')
+    ktk.save("test.ktk.zip", a)
+    b = ktk.load("test.ktk.zip")
     # os.remove('test.mat')
 
-    assert a['TestTimeSeries'] == b['TestTimeSeries']
-    assert a['TestInt'] == b['TestInt']
-    assert a['TestFloat'] == b['TestFloat']
-    assert a['TestBool'] == b['TestBool']
-    assert a['TestStr'] == b['TestStr']
-    assert a['TestComplex'] == b['TestComplex']
-    assert np.sum(np.abs(a['TestArray'] - b['TestArray'])) < 1E-10
-    assert a['TestList'] == b['TestList']
-#    assert a['TestTuple'] == b['TestTuple']
-    assert a['TestBigList'] == b['TestBigList']
-    assert a['TestDict'] == b['TestDict']
-    assert a['TestComplexDict']['key1'] == b['TestComplexDict']['key1']
-    assert a['TestComplexDict']['key2'] == b['TestComplexDict']['key2']
-    assert a['TestComplexDict']['key3'] == b['TestComplexDict']['key3']
+    assert a["TestTimeSeries"] == b["TestTimeSeries"]
+    assert a["TestInt"] == b["TestInt"]
+    assert a["TestFloat"] == b["TestFloat"]
+    assert a["TestBool"] == b["TestBool"]
+    assert a["TestStr"] == b["TestStr"]
+    assert a["TestComplex"] == b["TestComplex"]
+    assert np.sum(np.abs(a["TestArray"] - b["TestArray"])) < 1e-10
+    assert a["TestList"] == b["TestList"]
+    #    assert a['TestTuple'] == b['TestTuple']
+    assert a["TestBigList"] == b["TestBigList"]
+    assert a["TestDict"] == b["TestDict"]
+    assert a["TestComplexDict"]["key1"] == b["TestComplexDict"]["key1"]
+    assert a["TestComplexDict"]["key2"] == b["TestComplexDict"]["key2"]
+    assert a["TestComplexDict"]["key3"] == b["TestComplexDict"]["key3"]
     for i in range(10):
-        assert a['TestComplexList'][i] == b['TestComplexList'][i]
-    assert a['TestComplexList'][10] == b['TestComplexList'][10]
+        assert a["TestComplexList"][i] == b["TestComplexList"][i]
+    assert a["TestComplexList"][10] == b["TestComplexList"][10]
     for i in range(10):
-        assert a['TestComplexTuple'][i] == b['TestComplexTuple'][i]
-    assert a['TestComplexTuple'][10] == b['TestComplexTuple'][10]
-    pd.testing.assert_frame_equal(a['TestDataFrame'], b['TestDataFrame'])
-    pd.testing.assert_series_equal(a['TestSeries'], b['TestSeries'])
+        assert a["TestComplexTuple"][i] == b["TestComplexTuple"][i]
+    assert a["TestComplexTuple"][10] == b["TestComplexTuple"][10]
+    pd.testing.assert_frame_equal(a["TestDataFrame"], b["TestDataFrame"])
+    pd.testing.assert_series_equal(a["TestSeries"], b["TestSeries"])
 
-    c = 'full_standard_test'
-    ktk.save('test.ktk.zip', c)
-    d = ktk.load('test.ktk.zip')
+    c = "full_standard_test"
+    ktk.save("test.ktk.zip", c)
+    d = ktk.load("test.ktk.zip")
     assert d == c
 
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

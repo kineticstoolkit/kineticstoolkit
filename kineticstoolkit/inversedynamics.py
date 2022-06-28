@@ -45,8 +45,9 @@ default_filter_order = 2
 
 
 @unstable
-def get_anthropometrics(segment_name: str,
-                        total_mass: float) -> Dict[str, float]:
+def get_anthropometrics(
+    segment_name: str, total_mass: float
+) -> Dict[str, float]:
     """
     Get anthropometric values for a given segment name.
 
@@ -98,27 +99,27 @@ def get_anthropometrics(segment_name: str,
 
     """
     table = dict()
-    table['Hand'] = [0.006, 0.506, 0.494, 0.297, 0.587, 0.577]
-    table['Forearm'] = [0.016, 0.430, 0.570, 0.303, 0.526, 0.647]
-    table['UpperArm'] = [0.028, 0.436, 0.564, 0.322, 0.542, 0.645]
-    table['ForearmHand'] = [0.022, 0.682, 0.318, 0.468, 0.827, 0.565]
-    table['TotalArm'] = [0.050, 0.530, 0.470, 0.368, 0.645, 0.596]
-    table['Foot'] = [0.0145, 0.50, 0.50, 0.475, 0.690, 0.690]
-    table['Leg'] = [0.0465, 0.433, 0.567, 0.302, 0.528, 0.643]
-    table['Thigh'] = [0.100, 0.433, 0.567, 0.323, 0.540, 0.653]
-    table['FootLeg'] = [0.061, 0.606, 0.394, 0.416, 0.735, 0.572]
-    table['TotalLeg'] = [0.161, 0.447, 0.553, 0.326, 0.560, 0.650]
-    table['TrunkHeadNeck'] = [0.578, 0.66, 0.34, 0.503, 0.830, 0.607]
-    table['HeadArmsTrunk'] = [0.678, 0.626, 0.374, 0.496, 0.798, 0.621]
+    table["Hand"] = [0.006, 0.506, 0.494, 0.297, 0.587, 0.577]
+    table["Forearm"] = [0.016, 0.430, 0.570, 0.303, 0.526, 0.647]
+    table["UpperArm"] = [0.028, 0.436, 0.564, 0.322, 0.542, 0.645]
+    table["ForearmHand"] = [0.022, 0.682, 0.318, 0.468, 0.827, 0.565]
+    table["TotalArm"] = [0.050, 0.530, 0.470, 0.368, 0.645, 0.596]
+    table["Foot"] = [0.0145, 0.50, 0.50, 0.475, 0.690, 0.690]
+    table["Leg"] = [0.0465, 0.433, 0.567, 0.302, 0.528, 0.643]
+    table["Thigh"] = [0.100, 0.433, 0.567, 0.323, 0.540, 0.653]
+    table["FootLeg"] = [0.061, 0.606, 0.394, 0.416, 0.735, 0.572]
+    table["TotalLeg"] = [0.161, 0.447, 0.553, 0.326, 0.560, 0.650]
+    table["TrunkHeadNeck"] = [0.578, 0.66, 0.34, 0.503, 0.830, 0.607]
+    table["HeadArmsTrunk"] = [0.678, 0.626, 0.374, 0.496, 0.798, 0.621]
 
     out = dict()
     try:
-        out['Mass'] = table[segment_name][0] * total_mass
-        out['COMProximalRatio'] = table[segment_name][1]
-        out['COMDistalRatio'] = table[segment_name][2]
-        out['GyrationCOMRatio'] = table[segment_name][3]
-        out['GyrationProximalRatio'] = table[segment_name][4]
-        out['GyrationDistalRatio'] = table[segment_name][5]
+        out["Mass"] = table[segment_name][0] * total_mass
+        out["COMProximalRatio"] = table[segment_name][1]
+        out["COMDistalRatio"] = table[segment_name][2]
+        out["GyrationCOMRatio"] = table[segment_name][3]
+        out["GyrationProximalRatio"] = table[segment_name][4]
+        out["GyrationDistalRatio"] = table[segment_name][5]
         return out
     except KeyError:
         raise ValueError(f'The segment "{segment_name}" is not available.')
@@ -126,7 +127,8 @@ def get_anthropometrics(segment_name: str,
 
 @unstable
 def calculate_com_position(
-        ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
+    ts: TimeSeries, inertial_constants: Dict[str, float]
+) -> TimeSeries:
     """
     Calculate the position of the segment's center of mass.
 
@@ -155,16 +157,18 @@ def calculate_com_position(
     """
     ts = ts.copy()
 
-    ts.data['COMPosition'] = (
-        inertial_constants['COMProximalRatio'] *
-        (ts.data['DistalJointPosition'] - ts.data['ProximalJointPosition']) +
-        ts.data['ProximalJointPosition'])
+    ts.data["COMPosition"] = (
+        inertial_constants["COMProximalRatio"]
+        * (ts.data["DistalJointPosition"] - ts.data["ProximalJointPosition"])
+        + ts.data["ProximalJointPosition"]
+    )
     return ts
 
 
 @unstable
 def calculate_com_acceleration(
-        ts: TimeSeries, filter_func: str, **kwargs) -> TimeSeries:
+    ts: TimeSeries, filter_func: str, **kwargs
+) -> TimeSeries:
     """
     Calculate the acceleration of the segment's center of mass.
 
@@ -207,41 +211,44 @@ def calculate_com_acceleration(
     """
     ts = ts.copy()
 
-    if filter_func == 'savgol':
-        if 'window_length' not in kwargs:
+    if filter_func == "savgol":
+        if "window_length" not in kwargs:
             raise ValueError(
-                "window_length must be specified for Savitzky-Golay filters")
-        if 'poly_order' not in kwargs:
-            kwargs['poly_order'] = 2
+                "window_length must be specified for Savitzky-Golay filters"
+            )
+        if "poly_order" not in kwargs:
+            kwargs["poly_order"] = 2
 
-        ts_com = ts.get_subset('COMPosition')
+        ts_com = ts.get_subset("COMPosition")
         ts_acc = kineticstoolkit.filters.savgol(
-            ts_com, window_length=kwargs['window_length'],
-            poly_order=kwargs['poly_order'], deriv=2)
+            ts_com,
+            window_length=kwargs["window_length"],
+            poly_order=kwargs["poly_order"],
+            deriv=2,
+        )
 
         return ts
 
-    elif filter_func == 'butter':
-        if 'fc' not in kwargs:
-            raise ValueError(
-                "fc must be specified for Butterworth filters")
-        if 'order' not in kwargs:
-            kwargs['order'] = 2
+    elif filter_func == "butter":
+        if "fc" not in kwargs:
+            raise ValueError("fc must be specified for Butterworth filters")
+        if "order" not in kwargs:
+            kwargs["order"] = 2
 
-        ts_com = ts.get_subset('COMPosition')
+        ts_com = ts.get_subset("COMPosition")
         ts_acc = kineticstoolkit.filters.butter(
-            ts_com, fc=kwargs['fc'],
-            order=kwargs['order'])
+            ts_com, fc=kwargs["fc"], order=kwargs["order"]
+        )
 
         ts_acc = kineticstoolkit.filters.deriv(ts_acc, n=2)
-        ts_acc = ts_acc.rename_data('COMPosition', 'COMAcceleration')
+        ts_acc = ts_acc.rename_data("COMPosition", "COMAcceleration")
 
         ts = ts.merge(ts_acc, resample=True)
 
         return ts
 
     else:
-        raise ValueError('Unknown filter type')
+        raise ValueError("Unknown filter type")
 
 
 @unstable
@@ -267,28 +274,37 @@ def calculate_segment_angles(ts: TimeSeries) -> TimeSeries:
     ts = ts.copy()
 
     proximal_to_distal_joint_distance = (
-        ts.data['DistalJointPosition'] - ts.data['ProximalJointPosition'])
+        ts.data["DistalJointPosition"] - ts.data["ProximalJointPosition"]
+    )
 
     segment_angle_x = np.arctan2(
         proximal_to_distal_joint_distance[:, 2],
-        proximal_to_distal_joint_distance[:, 1])
+        proximal_to_distal_joint_distance[:, 1],
+    )
     segment_angle_y = np.arctan2(
         proximal_to_distal_joint_distance[:, 2],
-        proximal_to_distal_joint_distance[:, 0])
+        proximal_to_distal_joint_distance[:, 0],
+    )
     segment_angle_z = np.arctan2(
         proximal_to_distal_joint_distance[:, 1],
-        proximal_to_distal_joint_distance[:, 0])
-    ts.data['SegmentAngles'] = np.concatenate((
-        segment_angle_x[:, np.newaxis],
-        segment_angle_y[:, np.newaxis],
-        segment_angle_z[:, np.newaxis]), axis=1)
+        proximal_to_distal_joint_distance[:, 0],
+    )
+    ts.data["SegmentAngles"] = np.concatenate(
+        (
+            segment_angle_x[:, np.newaxis],
+            segment_angle_y[:, np.newaxis],
+            segment_angle_z[:, np.newaxis],
+        ),
+        axis=1,
+    )
 
     return ts
 
 
 @unstable
 def calculate_segment_rotation_rates(
-        ts: TimeSeries, filter_func: str, **kwargs) -> TimeSeries:
+    ts: TimeSeries, filter_func: str, **kwargs
+) -> TimeSeries:
     """
     Calculate the segments' projected angular velocities and accelerations.
 
@@ -329,44 +345,48 @@ def calculate_segment_rotation_rates(
     """
     ts = ts.copy()
 
-    if filter_func == 'savgol':
-        if 'window_length' not in kwargs:
+    if filter_func == "savgol":
+        if "window_length" not in kwargs:
             raise ValueError(
-                "window_length must be specified for Savitzky-Golay filters")
-        if 'poly_order' not in kwargs:
-            kwargs['poly_order'] = 2
+                "window_length must be specified for Savitzky-Golay filters"
+            )
+        if "poly_order" not in kwargs:
+            kwargs["poly_order"] = 2
 
-        ts_angle = ts.get_subset('SegmentAngles')
+        ts_angle = ts.get_subset("SegmentAngles")
         ts_angvel = kineticstoolkit.filters.savgol(
             ts_angle,
-            window_length=kwargs['window_length'],
-            poly_order=kwargs['poly_order'], deriv=1)
+            window_length=kwargs["window_length"],
+            poly_order=kwargs["poly_order"],
+            deriv=1,
+        )
         ts_angacc = kineticstoolkit.filters.savgol(
             ts_angle,
-            window_length=kwargs['window_length'],
-            poly_order=kwargs['poly_order'], deriv=2)
-        ts.data['AngularVelocity'] = ts_angvel.data['SegmentAngles']
-        ts.data['AngularAcceleration'] = ts_angacc.data['SegmentAngles']
+            window_length=kwargs["window_length"],
+            poly_order=kwargs["poly_order"],
+            deriv=2,
+        )
+        ts.data["AngularVelocity"] = ts_angvel.data["SegmentAngles"]
+        ts.data["AngularAcceleration"] = ts_angacc.data["SegmentAngles"]
 
         return ts
 
-    elif filter_func == 'butter':
-        if 'fc' not in kwargs:
-            raise ValueError(
-                "fc must be specified for Butterworth filters")
-        if 'order' not in kwargs:
-            kwargs['order'] = 2
+    elif filter_func == "butter":
+        if "fc" not in kwargs:
+            raise ValueError("fc must be specified for Butterworth filters")
+        if "order" not in kwargs:
+            kwargs["order"] = 2
 
-        ts_angle = ts.get_subset('SegmentAngles')
+        ts_angle = ts.get_subset("SegmentAngles")
         ts_filt = kineticstoolkit.filters.butter(
-            ts_angle, fc=kwargs['fc'],
-            order=kwargs['order'])
+            ts_angle, fc=kwargs["fc"], order=kwargs["order"]
+        )
 
         ts_vel = kineticstoolkit.filters.deriv(ts_filt, n=1)
-        ts_vel = ts_vel.rename_data('SegmentAngles', 'AngularVelocity')
+        ts_vel = ts_vel.rename_data("SegmentAngles", "AngularVelocity")
 
         ts_acc = kineticstoolkit.filters.deriv(ts_filt, n=2)
-        ts_acc = ts_acc.rename_data('SegmentAngles', 'AngularAcceleration')
+        ts_acc = ts_acc.rename_data("SegmentAngles", "AngularAcceleration")
 
         ts = ts.merge(ts_vel, resample=True)
         ts = ts.merge(ts_acc, resample=True)
@@ -374,12 +394,13 @@ def calculate_segment_rotation_rates(
         return ts
 
     else:
-        raise ValueError('Unknown filter type')
+        raise ValueError("Unknown filter type")
 
 
 @unstable
 def calculate_proximal_wrench(
-        ts: TimeSeries, inertial_constants: Dict[str, float]) -> TimeSeries:
+    ts: TimeSeries, inertial_constants: Dict[str, float]
+) -> TimeSeries:
     """
     Calculate the proximal wrench based on a TimeSeries.
 
@@ -428,123 +449,156 @@ def calculate_proximal_wrench(
     n_frames = ts.time.shape[0]
 
     proximal_to_distal_joint_distance = (
-        ts.data['DistalJointPosition'] -
-        ts.data['ProximalJointPosition'])
+        ts.data["DistalJointPosition"] - ts.data["ProximalJointPosition"]
+    )
 
-    ts.data['RadiusOfGyration'] = np.zeros((n_frames, 3))
-    ts.data['RadiusOfGyration'][:, 0] = \
-        inertial_constants['GyrationCOMRatio'] * np.sqrt(
-        proximal_to_distal_joint_distance[:, 1] ** 2 +
-        proximal_to_distal_joint_distance[:, 2] ** 2)
-    ts.data['RadiusOfGyration'][:, 1] =  \
-        inertial_constants['GyrationCOMRatio'] * np.sqrt(
-        proximal_to_distal_joint_distance[:, 0] ** 2 +
-        proximal_to_distal_joint_distance[:, 2] ** 2)
-    ts.data['RadiusOfGyration'][:, 2] =  \
-        inertial_constants['GyrationCOMRatio'] * np.sqrt(
-        proximal_to_distal_joint_distance[:, 0] ** 2 +
-        proximal_to_distal_joint_distance[:, 1] ** 2)
+    ts.data["RadiusOfGyration"] = np.zeros((n_frames, 3))
+    ts.data["RadiusOfGyration"][:, 0] = inertial_constants[
+        "GyrationCOMRatio"
+    ] * np.sqrt(
+        proximal_to_distal_joint_distance[:, 1] ** 2
+        + proximal_to_distal_joint_distance[:, 2] ** 2
+    )
+    ts.data["RadiusOfGyration"][:, 1] = inertial_constants[
+        "GyrationCOMRatio"
+    ] * np.sqrt(
+        proximal_to_distal_joint_distance[:, 0] ** 2
+        + proximal_to_distal_joint_distance[:, 2] ** 2
+    )
+    ts.data["RadiusOfGyration"][:, 2] = inertial_constants[
+        "GyrationCOMRatio"
+    ] * np.sqrt(
+        proximal_to_distal_joint_distance[:, 0] ** 2
+        + proximal_to_distal_joint_distance[:, 1] ** 2
+    )
 
     # Center of mass position and acceleration
-    if 'COMPosition' not in ts.data:
+    if "COMPosition" not in ts.data:
         ts = calculate_com_position(ts, inertial_constants)
         warnings.warn(
-            "COMPosition not found in input TimeSeries. I calculated it.")
+            "COMPosition not found in input TimeSeries. I calculated it."
+        )
 
-    if 'COMAcceleration' not in ts.data:
+    if "COMAcceleration" not in ts.data:
         ts = calculate_com_acceleration(
-            ts, filter_func='butter',
-            fc=default_filter_fc, order=default_filter_order)
+            ts,
+            filter_func="butter",
+            fc=default_filter_fc,
+            order=default_filter_order,
+        )
         warnings.warn(
             f"COMAcceleration not found in input TimeSeries. I calculated it "
             f"using a low-pass ButterWorth filter of order "
-            f"{default_filter_order} at {default_filter_fc} Hz.")
+            f"{default_filter_order} at {default_filter_fc} Hz."
+        )
 
     # Rotation angle, velocity and acceleration
 
-    if (('AngularVelocity' not in ts.data) or
-            ('AngularAcceleration' not in ts.data)):
+    if ("AngularVelocity" not in ts.data) or (
+        "AngularAcceleration" not in ts.data
+    ):
 
         # Start by calculating the angles
-        if 'SegmentAngles' not in ts.data:
+        if "SegmentAngles" not in ts.data:
             ts = calculate_segment_angles(ts)
             warnings.warn(
-                "SegmentAngles not found in input TimeSeries. I calculated it.")
+                "SegmentAngles not found in input TimeSeries. I calculated it."
+            )
 
         ts = calculate_segment_rotation_rates(
-            ts, filter_func='butter',
-            fc=default_filter_fc, order=default_filter_order)
+            ts,
+            filter_func="butter",
+            fc=default_filter_fc,
+            order=default_filter_order,
+        )
         warnings.warn(
             f"COMAcceleration not found in input TimeSeries. I calculated it "
             f"using a low-pass ButterWorth filter of order "
-            f"{default_filter_order} at {default_filter_fc} Hz.")
+            f"{default_filter_order} at {default_filter_fc} Hz."
+        )
 
     # Forces line of the wrench equation (16)
-    a_i = ts.data['COMAcceleration'][:, 0:3]
+    a_i = ts.data["COMAcceleration"][:, 0:3]
     g = np.array([0, -9.81, 0])
-    F_i_minus_1 = ts.data['DistalForces'][:, 0:3]
+    F_i_minus_1 = ts.data["DistalForces"][:, 0:3]
 
     # Moments line of the wrench equation (16)
-    c_i = (ts.data['COMPosition'][:, 0:3] -
-           ts.data['ProximalJointPosition'][:, 0:3])
-    d_i = (ts.data['ForceApplicationPosition'] -
-           ts.data['ProximalJointPosition'])[:, 0:3]
+    c_i = (
+        ts.data["COMPosition"][:, 0:3]
+        - ts.data["ProximalJointPosition"][:, 0:3]
+    )
+    d_i = (
+        ts.data["ForceApplicationPosition"] - ts.data["ProximalJointPosition"]
+    )[:, 0:3]
 
-    segment_mass = inertial_constants['Mass']
-    I_i_temp = segment_mass * ts.data['RadiusOfGyration'][:, 0:3] ** 2
+    segment_mass = inertial_constants["Mass"]
+    I_i_temp = segment_mass * ts.data["RadiusOfGyration"][:, 0:3] ** 2
     # Diagonalize I_i:
     I_i = np.zeros((n_frames, 3, 3))
     I_i[:, 0, 0] = I_i_temp[:, 0]
     I_i[:, 1, 1] = I_i_temp[:, 1]
     I_i[:, 2, 2] = I_i_temp[:, 2]
 
-    alpha_i = ts.data['AngularAcceleration']
-    omega_i = ts.data['AngularVelocity']
+    alpha_i = ts.data["AngularAcceleration"]
+    omega_i = ts.data["AngularVelocity"]
 
-    M_i_minus_1 = ts.data['DistalMoments'][:, 0:3]
+    M_i_minus_1 = ts.data["DistalMoments"][:, 0:3]
 
     # Calculation of the proximal wrench
     proximal_wrench = np.zeros((n_frames, 6, 1))
     for i_frame in range(n_frames):
 
-        skew_symmetric_c_i = np.array([
-            [0, -c_i[i_frame, 2], c_i[i_frame, 1]],
-            [c_i[i_frame, 2], 0, -c_i[i_frame, 0]],
-            [-c_i[i_frame, 1], c_i[i_frame, 0], 0]])
+        skew_symmetric_c_i = np.array(
+            [
+                [0, -c_i[i_frame, 2], c_i[i_frame, 1]],
+                [c_i[i_frame, 2], 0, -c_i[i_frame, 0]],
+                [-c_i[i_frame, 1], c_i[i_frame, 0], 0],
+            ]
+        )
 
-        skew_symmetric_d_i = np.array([
-            [0, -d_i[i_frame, 2], d_i[i_frame, 1]],
-            [d_i[i_frame, 2], 0, -d_i[i_frame, 0]],
-            [-d_i[i_frame, 1], d_i[i_frame, 0], 0]])
+        skew_symmetric_d_i = np.array(
+            [
+                [0, -d_i[i_frame, 2], d_i[i_frame, 1]],
+                [d_i[i_frame, 2], 0, -d_i[i_frame, 0]],
+                [-d_i[i_frame, 1], d_i[i_frame, 0], 0],
+            ]
+        )
 
         matrix_1 = np.block(
-            [[segment_mass * np.eye(3), np.zeros((3, 3))],
-             [segment_mass * skew_symmetric_c_i, I_i[i_frame]]])
+            [
+                [segment_mass * np.eye(3), np.zeros((3, 3))],
+                [segment_mass * skew_symmetric_c_i, I_i[i_frame]],
+            ]
+        )
 
         matrix_2 = np.block([a_i[i_frame] - g, alpha_i[i_frame]])
         matrix_2 = matrix_2[:, np.newaxis]  # Convert 1d to column vector
 
-        matrix_3 = np.hstack([
-            np.zeros(3),
-            np.cross(omega_i[i_frame], I_i[i_frame] @ omega_i[i_frame])])
+        matrix_3 = np.hstack(
+            [
+                np.zeros(3),
+                np.cross(omega_i[i_frame], I_i[i_frame] @ omega_i[i_frame]),
+            ]
+        )
         matrix_3 = matrix_3[:, np.newaxis]  # Convert 1d to column vector
 
-        matrix_4 = np.block([
-            [np.eye(3), np.zeros((3, 3))],
-            [skew_symmetric_d_i, np.eye(3)]])
+        matrix_4 = np.block(
+            [[np.eye(3), np.zeros((3, 3))], [skew_symmetric_d_i, np.eye(3)]]
+        )
 
         matrix_5 = np.block([F_i_minus_1[i_frame], M_i_minus_1[i_frame]])
         matrix_5 = matrix_5[:, np.newaxis]  # Convert 1d to column vector
 
         proximal_wrench[i_frame] = (
-            matrix_1 @ matrix_2 + matrix_3 + matrix_4 @ matrix_5)
+            matrix_1 @ matrix_2 + matrix_3 + matrix_4 @ matrix_5
+        )
 
     # Initialize to a series of vectors of length 4
-    ts.data['ProximalForces'] = np.zeros((n_frames, 4))
-    ts.data['ProximalMoments'] = np.zeros((n_frames, 4))
+    ts.data["ProximalForces"] = np.zeros((n_frames, 4))
+    ts.data["ProximalMoments"] = np.zeros((n_frames, 4))
     # Assign the 3 first components of the vectors
-    ts.data['ProximalForces'][:, 0:3] = proximal_wrench[:, 0:3, 0]
-    ts.data['ProximalMoments'][:, 0:3] = proximal_wrench[:, 3:6, 0]
+    ts.data["ProximalForces"][:, 0:3] = proximal_wrench[:, 0:3, 0]
+    ts.data["ProximalMoments"][:, 0:3] = proximal_wrench[:, 3:6, 0]
 
     return ts
 

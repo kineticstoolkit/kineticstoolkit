@@ -57,10 +57,10 @@ def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
     """
     # Check the number of rows to skip
     n_rows = 0
-    with open(filename, 'r') as fid:
+    with open(filename, "r") as fid:
         while True:
             s = fid.readline()
-            if s.startswith('X[s]'):
+            if s.startswith("X[s]"):
                 break
             else:
                 n_rows += 1
@@ -82,24 +82,24 @@ def read_delsys_csv(filename: str) -> Dict[str, Dict[str, TimeSeries]]:
         name = df.columns[i_signal * 2 + 1]
         data = df.iloc[:, i_signal * 2 + 1].to_numpy()
 
-        if ': Acc' in name:
+        if ": Acc" in name:
             short_name = name
             ts = TimeSeries(time=time, data={short_name: data})
             acc[short_name] = ts
-        elif ': Mag' in name:
+        elif ": Mag" in name:
             short_name = name
             ts = TimeSeries(time=time, data={short_name: data})
             mag[short_name] = ts
-        elif ': Gyro' in name:
+        elif ": Gyro" in name:
             short_name = name
             ts = TimeSeries(time=time, data={short_name: data})
             gyro[short_name] = ts
-        elif ': EMG' in name:
-            short_name = name.split(':')[0]
+        elif ": EMG" in name:
+            short_name = name.split(":")[0]
             ts = TimeSeries(time=time, data={short_name: data})
             emg[short_name] = ts
 
-    return {'emg': emg, 'acc': acc, 'gyro': gyro, 'mag': mag}
+    return {"emg": emg, "acc": acc, "gyro": gyro, "mag": mag}
 
 
 module_locals = locals()

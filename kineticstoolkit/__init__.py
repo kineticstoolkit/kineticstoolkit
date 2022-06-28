@@ -41,74 +41,91 @@ unstable_listing = []
 
 # --- Import released modules and functions
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
-listing.append('TimeSeries')
-listing.append('TimeSeriesEvent')
+
+listing.append("TimeSeries")
+listing.append("TimeSeriesEvent")
 
 from kineticstoolkit.tools import start_lab_mode  # noqa
-listing.append('start_lab_mode')
+
+listing.append("start_lab_mode")
 
 from kineticstoolkit.player import Player  # noqa
-listing.append('Player')
+
+listing.append("Player")
 
 from kineticstoolkit.loadsave import load, save  # noqa
-listing.append('load')
-listing.append('save')
+
+listing.append("load")
+listing.append("save")
 
 from kineticstoolkit import filters  # noqa
-listing.append('filters')
+
+listing.append("filters")
 
 from kineticstoolkit import kinematics  # noqa
-listing.append('kinematics')
+
+listing.append("kinematics")
 
 from kineticstoolkit import pushrimkinetics  # noqa
-listing.append('pushrimkinetics')
+
+listing.append("pushrimkinetics")
 
 from kineticstoolkit import cycles  # noqa
-listing.append('cycles')
+
+listing.append("cycles")
 
 from kineticstoolkit import doc  # noqa
-listing.append('doc')
+
+listing.append("doc")
 
 from kineticstoolkit import _repr  # noqa
 from kineticstoolkit import gui  # noqa
 
 from kineticstoolkit import geometry  # noqa
-listing.append('geometry')
+
+listing.append("geometry")
 
 
 # Load unstable and dev modules (but do not add those to the __dir__ listing)
 from kineticstoolkit import dev  # noqa
-unstable_listing.append('dev')
+
+unstable_listing.append("dev")
 
 try:
     from kineticstoolkit import inversedynamics  # noqa
-    unstable_listing.append('inversedynamics')
+
+    unstable_listing.append("inversedynamics")
 except:
     pass
 
 try:
     from kineticstoolkit import emg  # noqa
-    unstable_listing.append('emg')
+
+    unstable_listing.append("emg")
 except:
     pass
 
 try:
     from kineticstoolkit import anthropometrics  # noqa
-    unstable_listing.append('anthropometrics')
+
+    unstable_listing.append("anthropometrics")
 except:
     pass
 
 try:
     from kineticstoolkit import ext  # noqa
-    unstable_listing.append('ext')
+
+    unstable_listing.append("ext")
     from kineticstoolkit.ext import _import_extensions as import_extensions
-    unstable_listing.append('import_extensions')
+
+    unstable_listing.append("import_extensions")
 except:
     pass
 
 
 from kineticstoolkit import config  # noqa
-listing.append('config')
+
+listing.append("config")
 
 
 # Check if a serious warning has been issued on this version.
@@ -119,18 +136,18 @@ try:
     import warnings  # noqa
 
     session = CachedSession(
-        'kineticstoolkit',
-        backend='filesystem',
+        "kineticstoolkit",
+        backend="filesystem",
         use_temp=True,
         expire_after=timedelta(hours=1),
     )
     res = session.get(
-        'https://kineticstoolkit.uqam.ca/api/import_check.php',
-        params={'version': config.version}
+        "https://kineticstoolkit.uqam.ca/api/import_check.php",
+        params={"version": config.version},
     )
     contents = json.loads(res.content)
-    if res.ok and 'warning' in contents:
-        warnings.warn(contents['warning'])
+    if res.ok and "warning" in contents:
+        warnings.warn(contents["warning"])
 except Exception:
     pass
 
@@ -144,4 +161,5 @@ def __dir__():
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

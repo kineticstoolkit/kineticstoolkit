@@ -44,21 +44,26 @@ def test_calculate_proximal_wrenches_2d_static():
     """
     n_points = 100
     ts = ktk.TimeSeries(time=np.linspace(0, 1, n_points))
-    ts.data['ProximalJointPosition'] = np.repeat(
-        np.array([[0, 0, 0, 1]]), n_points, axis=0)
-    ts.data['DistalJointPosition'] = np.repeat(
-        np.array([[2, 0, 0, 1]]), n_points, axis=0)
-    ts.data['ForceApplicationPosition'] = np.repeat(
-        np.array([[2, 0, 0, 1]]), n_points, axis=0)
-    ts.data['DistalForces'] = np.repeat(
-        np.array([[0, 80, 0, 0]]), n_points, axis=0)
-    ts.data['DistalMoments'] = np.repeat(
-        np.array([[0, 0, 0, 0]]), n_points, axis=0)
+    ts.data["ProximalJointPosition"] = np.repeat(
+        np.array([[0, 0, 0, 1]]), n_points, axis=0
+    )
+    ts.data["DistalJointPosition"] = np.repeat(
+        np.array([[2, 0, 0, 1]]), n_points, axis=0
+    )
+    ts.data["ForceApplicationPosition"] = np.repeat(
+        np.array([[2, 0, 0, 1]]), n_points, axis=0
+    )
+    ts.data["DistalForces"] = np.repeat(
+        np.array([[0, 80, 0, 0]]), n_points, axis=0
+    )
+    ts.data["DistalMoments"] = np.repeat(
+        np.array([[0, 0, 0, 0]]), n_points, axis=0
+    )
 
     inertial_constants = {
-        'Mass': 3,
-        'COMProximalRatio': 0.5,
-        'GyrationCOMRatio': 0.1,
+        "Mass": 3,
+        "COMProximalRatio": 0.5,
+        "GyrationCOMRatio": 0.1,
     }
 
     # Catch warnings because we use automatic com/angle/vel/acc calculation,
@@ -66,15 +71,18 @@ def test_calculate_proximal_wrenches_2d_static():
     with warnings.catch_warnings():
         warnings.filterwarnings("ignore", category=UserWarning)
         prox = ktk.inversedynamics.calculate_proximal_wrench(
-            ts, inertial_constants)
+            ts, inertial_constants
+        )
 
     assert np.allclose(
-        np.nanmedian(prox.data['ProximalForces'], axis=0),
-        [0., 80 + 3. * 9.81, 0., 0.])
+        np.nanmedian(prox.data["ProximalForces"], axis=0),
+        [0.0, 80 + 3.0 * 9.81, 0.0, 0.0],
+    )
 
     assert np.allclose(
-        np.nanmedian(prox.data['ProximalMoments'], axis=0),
-        [0., 0., 160 + 3. * 9.81, 0.])
+        np.nanmedian(prox.data["ProximalMoments"], axis=0),
+        [0.0, 0.0, 160 + 3.0 * 9.81, 0.0],
+    )
 
 
 def test_calculate_proximal_wrenches_2d_dynamic():
@@ -92,30 +100,39 @@ def test_calculate_proximal_wrenches_2d_dynamic():
     calculation of accelerations, velocities, etc.
     """
     ts = ktk.TimeSeries(time=np.array([0]))
-    ts.data['ProximalJointPosition'] = np.array([[0, 0, 0, 1]])
-    ts.data['DistalJointPosition'] = np.array([[2, 0, 0, 1]])
-    ts.data['COMPosition'] = np.array([[1, 0, 0, 1]])
-    ts.data['ForceApplicationPosition'] = np.array([[2, 0, 0, 1]])
-    ts.data['DistalForces'] = np.array([[0, 80, 0, 0]])
-    ts.data['DistalMoments'] = np.array([[0, 0, 0, 0]])
+    ts.data["ProximalJointPosition"] = np.array([[0, 0, 0, 1]])
+    ts.data["DistalJointPosition"] = np.array([[2, 0, 0, 1]])
+    ts.data["COMPosition"] = np.array([[1, 0, 0, 1]])
+    ts.data["ForceApplicationPosition"] = np.array([[2, 0, 0, 1]])
+    ts.data["DistalForces"] = np.array([[0, 80, 0, 0]])
+    ts.data["DistalMoments"] = np.array([[0, 0, 0, 0]])
 
     inertial_constants = {
-        'Mass': 3,
-        'GyrationCOMRatio': 0.1,
+        "Mass": 3,
+        "GyrationCOMRatio": 0.1,
     }
 
     # Test 1: Fully static
-    ts.data['COMAcceleration'] = np.array([[0, 0, 0, 0]])
-    ts.data['AngularVelocity'] = np.array([[0, 0, 0]])
-    ts.data['AngularAcceleration'] = np.array([[0, 0, 0]])
+    ts.data["COMAcceleration"] = np.array([[0, 0, 0, 0]])
+    ts.data["AngularVelocity"] = np.array([[0, 0, 0]])
+    ts.data["AngularAcceleration"] = np.array([[0, 0, 0]])
 
     prox = ktk.inversedynamics.calculate_proximal_wrench(
-        ts, inertial_constants)
+        ts, inertial_constants
+    )
 
-    assert np.all(np.abs(prox.data['ProximalForces'][0] -
-                         [0., 80 + 3. * 9.81, 0., 0.]) < 1E-10)
-    assert np.all(np.abs(prox.data['ProximalMoments'][0] -
-                         [0., 0., 160 + 3. * 9.81, 0.]) < 1E-10)
+    assert np.all(
+        np.abs(
+            prox.data["ProximalForces"][0] - [0.0, 80 + 3.0 * 9.81, 0.0, 0.0]
+        )
+        < 1e-10
+    )
+    assert np.all(
+        np.abs(
+            prox.data["ProximalMoments"][0] - [0.0, 0.0, 160 + 3.0 * 9.81, 0.0]
+        )
+        < 1e-10
+    )
 
     # Test 2: The origin is fixed and the segment is not turning but has an
     # angular acceleration of 1 rad/s2. This means the COM has an upward
@@ -123,45 +140,54 @@ def test_calculate_proximal_wrenches_2d_dynamic():
     # an additional (ma) component upward. For the moments, we expect an
     # additional z proximal moment of (Ialpha) = I
     # I = mk^2 + md^2 = 0.04 * 3 + 3 = 3.12
-    ts.data['COMAcceleration'] = np.array([[0, 1, 0, 0]])
-    ts.data['AngularVelocity'] = np.array([[0, 0, 0]])
-    ts.data['AngularAcceleration'] = np.array([[0, 0, 1]])
+    ts.data["COMAcceleration"] = np.array([[0, 1, 0, 0]])
+    ts.data["AngularVelocity"] = np.array([[0, 0, 0]])
+    ts.data["AngularAcceleration"] = np.array([[0, 0, 1]])
 
     prox = ktk.inversedynamics.calculate_proximal_wrench(
-        ts, inertial_constants)
+        ts, inertial_constants
+    )
 
-    assert np.allclose(prox.data['ProximalForces'][0],
-                       [0., (80 + 3. * 9.81) + 3, 0., 0.])
-    assert np.allclose(prox.data['ProximalMoments'][0],
-                       [0., 0., (160 + 3. * 9.81) + 3.12, 0.])
+    assert np.allclose(
+        prox.data["ProximalForces"][0], [0.0, (80 + 3.0 * 9.81) + 3, 0.0, 0.0]
+    )
+    assert np.allclose(
+        prox.data["ProximalMoments"][0],
+        [0.0, 0.0, (160 + 3.0 * 9.81) + 3.12, 0.0],
+    )
 
     # Test 3: Like test 2 but by swapping x and z (Fz <--> Fx, -Mx <--> Mz)
     ts = ktk.TimeSeries(time=np.array([0]))
-    ts.data['ProximalJointPosition'] = np.array([[0, 0, 0, 1]])
-    ts.data['DistalJointPosition'] = np.array([[0, 0, 2, 1]])
-    ts.data['COMPosition'] = np.array([[0, 0, 1, 1]])
-    ts.data['ForceApplicationPosition'] = np.array([[0, 0, 2, 1]])
-    ts.data['DistalForces'] = np.array([[0, 80, 0, 0]])
-    ts.data['DistalMoments'] = np.array([[0, 0, 0, 0]])
+    ts.data["ProximalJointPosition"] = np.array([[0, 0, 0, 1]])
+    ts.data["DistalJointPosition"] = np.array([[0, 0, 2, 1]])
+    ts.data["COMPosition"] = np.array([[0, 0, 1, 1]])
+    ts.data["ForceApplicationPosition"] = np.array([[0, 0, 2, 1]])
+    ts.data["DistalForces"] = np.array([[0, 80, 0, 0]])
+    ts.data["DistalMoments"] = np.array([[0, 0, 0, 0]])
 
     inertial_constants = {
-        'Mass': 3,
-        'GyrationCOMRatio': 0.1,
+        "Mass": 3,
+        "GyrationCOMRatio": 0.1,
     }
 
-    ts.data['COMAcceleration'] = np.array([[0, 1, 0, 0]])
-    ts.data['AngularVelocity'] = np.array([[0, 0, 0]])
-    ts.data['AngularAcceleration'] = np.array([[-1, 0, 0]])
+    ts.data["COMAcceleration"] = np.array([[0, 1, 0, 0]])
+    ts.data["AngularVelocity"] = np.array([[0, 0, 0]])
+    ts.data["AngularAcceleration"] = np.array([[-1, 0, 0]])
 
     prox = ktk.inversedynamics.calculate_proximal_wrench(
-        ts, inertial_constants)
+        ts, inertial_constants
+    )
 
-    assert np.allclose(prox.data['ProximalForces'][0],
-                       [0., (80 + 3. * 9.81) + 3, 0., 0.])
-    assert np.allclose(prox.data['ProximalMoments'][0],
-                       [-((160 + 3. * 9.81) + 3.12), 0., 0., 0.])
+    assert np.allclose(
+        prox.data["ProximalForces"][0], [0.0, (80 + 3.0 * 9.81) + 3, 0.0, 0.0]
+    )
+    assert np.allclose(
+        prox.data["ProximalMoments"][0],
+        [-((160 + 3.0 * 9.81) + 3.12), 0.0, 0.0, 0.0],
+    )
 
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

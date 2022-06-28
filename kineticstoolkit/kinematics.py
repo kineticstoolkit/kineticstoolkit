@@ -84,14 +84,14 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
     # Get the marker label names and create a timeseries data entry for each
     # Get the labels
-    labels = reader['parameters']['POINT']['LABELS']['value']
-    n_frames = reader['parameters']['POINT']['FRAMES']['value'][0]
-    point_rate = reader['parameters']['POINT']['RATE']['value'][0]
-    point_unit = reader['parameters']['POINT']['UNITS']['value'][0]
+    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
+    n_frames = reader["parameters"]["POINT"]["FRAMES"]["value"][0]
+    point_rate = reader["parameters"]["POINT"]["RATE"]["value"][0]
+    point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
 
-    if point_unit == 'mm':
+    if point_unit == "mm":
         point_factor = 0.001
-    elif point_unit == 'm':
+    elif point_unit == "m":
         point_factor = 1
     else:
         raise (ValueError("Point unit must be 'm' or 'mm'."))
@@ -105,10 +105,10 @@ def read_c3d_file(filename: str) -> TimeSeries:
 
         output.data[label_name] = np.array(
             [point_factor, point_factor, point_factor, 1]
-            * reader['data']['points'][:, i_label, :].T
+            * reader["data"]["points"][:, i_label, :].T
         )
 
-        output = output.add_data_info(label_name, 'Unit', 'm')
+        output = output.add_data_info(label_name, "Unit", "m")
 
     # Create the timeseries time vector
     output.time = np.arange(n_frames) / point_rate
@@ -153,12 +153,12 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     c3d = ezc3d.c3d()
 
     # Fill it with data
-    c3d['parameters']['POINT']['RATE']['value'] = [sample_rate]
-    c3d['parameters']['POINT']['LABELS']['value'] = tuple(marker_list)
-    c3d['data']['points'] = marker_data
+    c3d["parameters"]["POINT"]["RATE"]["value"] = [sample_rate]
+    c3d["parameters"]["POINT"]["LABELS"]["value"] = tuple(marker_list)
+    c3d["data"]["points"] = marker_data
 
     # Add a custom parameter to the POINT group
-    c3d.add_parameter('POINT', 'UNITS', 'm')
+    c3d.add_parameter("POINT", "UNITS", "m")
 
     # Write the data
     c3d.write(filename)
@@ -185,30 +185,30 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
     TimeSeries
 
     """
-    with open(filename, 'rb') as fid:
+    with open(filename, "rb") as fid:
         _ = fid.read(1)  # 32
-        n_markers = struct.unpack('h', fid.read(2))[0]
-        n_data_per_marker = struct.unpack('h', fid.read(2))[0]
+        n_markers = struct.unpack("h", fid.read(2))[0]
+        n_data_per_marker = struct.unpack("h", fid.read(2))[0]
         n_columns = n_markers * n_data_per_marker
 
-        n_frames = struct.unpack('i', fid.read(4))[0]
+        n_frames = struct.unpack("i", fid.read(4))[0]
 
-        collection_frame_frequency = struct.unpack('f', fid.read(4))[0]
-        user_comments = struct.unpack('60s', fid.read(60))[0]
-        system_comments = struct.unpack('60s', fid.read(60))[0]
-        file_description = struct.unpack('30s', fid.read(30))[0]
-        cutoff_filter_frequency = struct.unpack('h', fid.read(2))[0]
-        time_of_collection = struct.unpack('8s', fid.read(8))[0]
+        collection_frame_frequency = struct.unpack("f", fid.read(4))[0]
+        user_comments = struct.unpack("60s", fid.read(60))[0]
+        system_comments = struct.unpack("60s", fid.read(60))[0]
+        file_description = struct.unpack("30s", fid.read(30))[0]
+        cutoff_filter_frequency = struct.unpack("h", fid.read(2))[0]
+        time_of_collection = struct.unpack("8s", fid.read(8))[0]
         _ = fid.read(2)
-        date_of_collection = struct.unpack('8s', fid.read(8))[0]
-        extended_header = struct.unpack('73s', fid.read(73))[0]
+        date_of_collection = struct.unpack("8s", fid.read(8))[0]
+        extended_header = struct.unpack("73s", fid.read(73))[0]
 
         # Read the rest and put it in an array
         ndi_array = np.ones((n_frames, n_columns)) * np.NaN
 
         for i_frame in range(n_frames):
             for i_column in range(n_columns):
-                data = struct.unpack('f', fid.read(4))[0]
+                data = struct.unpack("f", fid.read(4))[0]
                 if data < -1e25:  # technically, it is -3.697314e+28
                     data = np.NaN
                 ndi_array[i_frame, i_column] = data
@@ -227,17 +227,17 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
             if labels != []:
                 label = labels[i_marker]
             else:
-                label = f'Marker{i_marker}'
+                label = f"Marker{i_marker}"
 
             ts.data[label] = np.block(
                 [
                     [
-                        ndi_array[:, 3 * i_marker: 3 * i_marker + 3],
+                        ndi_array[:, 3 * i_marker : 3 * i_marker + 3],
                         np.ones((n_frames, 1)),
                     ]
                 ]
             )
-            ts = ts.add_data_info(label, 'Unit', 'm')
+            ts = ts.add_data_info(label, "Unit", "m")
 
     return ts
 
@@ -356,9 +356,8 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
 
 
 def create_cluster(
-        markers: TimeSeries,
-        /,
-        marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
+    markers: TimeSeries, /, marker_names: Sequence[str]
+) -> Dict[str, np.ndarray]:
     """
     Create a cluster definition based on a static acquisition.
 
@@ -413,10 +412,8 @@ def create_cluster(
 
 
 def extend_cluster(
-        markers: TimeSeries,
-        /,
-        cluster: Dict[str, np.ndarray],
-        new_point: str) -> Dict[str, np.ndarray]:
+    markers: TimeSeries, /, cluster: Dict[str, np.ndarray], new_point: str
+) -> Dict[str, np.ndarray]:
     """
     Add a point to an existing cluster.
 
@@ -444,18 +441,20 @@ def extend_cluster(
     cluster = deepcopy(cluster)
     frames = _track_cluster_frames(markers, cluster)
     local_coordinates = geometry.get_local_coordinates(
-        markers.data[new_point], frames)
+        markers.data[new_point], frames
+    )
     cluster[new_point] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
     return cluster
 
 
 def track_cluster(
-        markers: TimeSeries,
-        /,
-        cluster: Dict[str, np.ndarray],
-        *,
-        include_lcs: bool = False,
-        lcs_name: str = 'LCS') -> TimeSeries:
+    markers: TimeSeries,
+    /,
+    cluster: Dict[str, np.ndarray],
+    *,
+    include_lcs: bool = False,
+    lcs_name: str = "LCS",
+) -> TimeSeries:
     """
     Fit a cluster to a TimeSeries of point trajectories.
 
@@ -494,7 +493,8 @@ def track_cluster(
 
     for marker in cluster:
         out.data[marker] = geometry.get_global_coordinates(
-            cluster[marker], frames)
+            cluster[marker], frames
+        )
 
     if include_lcs:
         out.data[lcs_name] = frames
@@ -503,13 +503,12 @@ def track_cluster(
 
 
 def _track_cluster_frames(
-        markers: TimeSeries,
-        cluster: Dict[str, np.ndarray]) -> np.ndarray:
+    markers: TimeSeries, cluster: Dict[str, np.ndarray]
+) -> np.ndarray:
     """Track a cluster and return its frame series."""
     # Set local and global points
     marker_names = cluster.keys()
-    stacked_local_points = np.dstack(
-        [cluster[_] for _ in marker_names])
+    stacked_local_points = np.dstack([cluster[_] for _ in marker_names])
 
     global_points = np.empty(
         (len(markers.time), 4, stacked_local_points.shape[2])
@@ -551,50 +550,52 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
     n_frames = markers.time.shape[0]
     data_rate = n_frames / (markers.time[1] - markers.time[0])
     camera_rate = data_rate
-    units = 'm'
+    units = "m"
 
     # Open file
-    with open(filename, 'w') as fid:
-        fid.write(f'PathFileType\t4\t(X/Y/Z)\t{filename}\n')
+    with open(filename, "w") as fid:
+        fid.write(f"PathFileType\t4\t(X/Y/Z)\t{filename}\n")
         fid.write(
-            'DataRate\tCameraRate\tNumFrames\tNumMarkers\tUnits\t'
-            'OrigDataRate\tOrigDataStartFrame\tOrigNumFrames\n'
+            "DataRate\tCameraRate\tNumFrames\tNumMarkers\tUnits\t"
+            "OrigDataRate\tOrigDataStartFrame\tOrigNumFrames\n"
         )
         fid.write(
-            f'{data_rate}\t{camera_rate}\t{n_frames}\t{n_markers}\t'
-            f'{units}\t{data_rate}\t1\t{n_frames}\n'
+            f"{data_rate}\t{camera_rate}\t{n_frames}\t{n_markers}\t"
+            f"{units}\t{data_rate}\t1\t{n_frames}\n"
         )
 
         # Write marker names
-        fid.write('Frame#\tTime')
+        fid.write("Frame#\tTime")
         for key in markers.data:
-            fid.write(f'\t{key}\t\t')
-        fid.write('\n')
+            fid.write(f"\t{key}\t\t")
+        fid.write("\n")
 
         # Write coordinate names
-        fid.write('\t')
+        fid.write("\t")
         for i, key in enumerate(markers.data):
-            fid.write(f'\tX{i+1}\tY{i+1}\tZ{i+1}')
-        fid.write('\n\n')
+            fid.write(f"\tX{i+1}\tY{i+1}\tZ{i+1}")
+        fid.write("\n\n")
 
         # Write trajectories
         for i_frame in range(n_frames):
-            fid.write(f'{i_frame+1}\t' '{:.3f}'.format(markers.time[i_frame]))
+            fid.write(f"{i_frame+1}\t" "{:.3f}".format(markers.time[i_frame]))
             for key in markers.data:
                 fid.write(
-                    '\t{:.5f}'.format(markers.data[key][i_frame, 0])
-                    + '\t{:.5f}'.format(markers.data[key][i_frame, 1])
-                    + '\t{:.5f}'.format(markers.data[key][i_frame, 2])
+                    "\t{:.5f}".format(markers.data[key][i_frame, 0])
+                    + "\t{:.5f}".format(markers.data[key][i_frame, 1])
+                    + "\t{:.5f}".format(markers.data[key][i_frame, 2])
                 )
-            fid.write('\n')
+            fid.write("\n")
 
 
 # %% Deprecated
 @unstable
-@deprecated(since='master', until='January 2023', details="Use create_cluster().")
+@deprecated(
+    since="master", until="January 2023", details="Use create_cluster()."
+)
 def define_rigid_body(
-        kinematics: TimeSeries,
-        marker_names: Sequence[str]) -> Dict[str, np.ndarray]:
+    kinematics: TimeSeries, marker_names: Sequence[str]
+) -> Dict[str, np.ndarray]:
     """
     Create a generic rigid body definition based on a static acquisition.
 
@@ -618,15 +619,18 @@ def define_rigid_body(
 
 
 @unstable
-@deprecated(since='master', until='January 2023', details="Use track_clusters().")
+@deprecated(
+    since="master", until="January 2023", details="Use track_clusters()."
+)
 def track_rigid_body(
-        kinematics: TimeSeries,
-        /,
-        local_points: Dict[str, np.ndarray],
-        label: str = 'Trajectory',
-        *,
-        include_rigid_body: bool = True,
-        include_markers: bool = False) -> TimeSeries:
+    kinematics: TimeSeries,
+    /,
+    local_points: Dict[str, np.ndarray],
+    label: str = "Trajectory",
+    *,
+    include_rigid_body: bool = True,
+    include_markers: bool = False,
+) -> TimeSeries:
     """
     Track a rigid body from markers trajectories.
 
@@ -663,19 +667,22 @@ def track_rigid_body(
         kinematics,
         {label: local_points},
         include_rigid_bodies=include_rigid_body,
-        include_markers=include_markers
+        include_markers=include_markers,
     )
 
 
 @unstable
-@deprecated(since='master', until='January 2023', details="No replacement yet.")
+@deprecated(
+    since="master", until="January 2023", details="No replacement yet."
+)
 def track_rigid_bodies(
-        markers: TimeSeries,
-        /,
-        definitions: Dict[str, Dict[str, np.ndarray]],
-        *,
-        include_rigid_bodies: bool = True,
-        include_markers: bool = False) -> TimeSeries:
+    markers: TimeSeries,
+    /,
+    definitions: Dict[str, Dict[str, np.ndarray]],
+    *,
+    include_rigid_bodies: bool = True,
+    include_markers: bool = False,
+) -> TimeSeries:
     """
     Track rigid bodies from markers trajectories.
 
@@ -705,16 +712,18 @@ def track_rigid_bodies(
     out = markers.copy(copy_data=False, copy_data_info=False)
     for cluster in definitions:
         out.data[cluster] = _track_cluster_frames(
-            markers, definitions[cluster])
+            markers, definitions[cluster]
+        )
     return out
 
 
 @unstable
-@deprecated(since='master', until='January 2023', details="Use extend_cluster().")
+@deprecated(
+    since="master", until="January 2023", details="Use extend_cluster()."
+)
 def define_local_position(
-        kinematics: TimeSeries,
-        source_name: str,
-        rigid_body_name: str) -> np.ndarray:
+    kinematics: TimeSeries, source_name: str, rigid_body_name: str
+) -> np.ndarray:
     """
     Define a point's local position based on a static or probing acquisition.
 
@@ -752,18 +761,21 @@ def define_local_position(
     rigid_body_trajectory = kinematics.data[rigid_body_name]
 
     local_points = geometry.get_local_coordinates(
-        marker_trajectory, rigid_body_trajectory)
+        marker_trajectory, rigid_body_trajectory
+    )
     to_keep = ~geometry.isnan(local_points)
 
     if np.all(to_keep is False):
         warnings.warn(
             "There are no frame where both the marker and body "
-            "are visible at the same time.")
+            "are visible at the same time."
+        )
 
     local_points = local_points[to_keep]
     local_points = np.mean(local_points, axis=0)[np.newaxis]
 
     return local_points
+
 
 # %% Footer
 
