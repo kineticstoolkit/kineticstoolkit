@@ -29,25 +29,25 @@ def test_format_dict_entries():
     """Test dict formatting."""
     # Test with all strings in keys
     d = {
-        'key1': 'value1',
-        'key2': 'value2',
+        "key1": "value1",
+        "key2": "value2",
     }
-    assert(
+    assert (
         _repr._format_dict_entries(d)
         == "    'key1': 'value1'\n    'key2': 'value2'\n"
     )
-    assert(
+    assert (
         _repr._format_dict_entries(d, quotes=False)
         == "    key1: 'value1'\n    key2: 'value2'\n"
     )
 
     # Test with mixed types in keys and long values
     d = {
-        '1': 'value1',
-        2: 'value2',
-        3.0: 'A' * 200,
+        "1": "value1",
+        2: "value2",
+        3.0: "A" * 200,
     }
-    assert(
+    assert (
         _repr._format_dict_entries(d)
         == "    '1': 'value1'\n      2: 'value2'\n    3.0: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...\n"
     )
@@ -55,4 +55,5 @@ def test_format_dict_entries():
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

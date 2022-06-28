@@ -62,6 +62,7 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
         The product, as a series of Nx4 or Nx4xM matrices.
 
     """
+
     def perform_mul(op1, op2):
         if isinstance(op1, np.ndarray) and isinstance(op2, np.ndarray):
             return op1 @ op2
@@ -83,11 +84,13 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     return result
 
 
-def create_transforms(seq: Optional[str] = None,
-                      angles: Optional[np.ndarray] = None,
-                      translations: Optional[np.ndarray] = None,
-                      *,
-                      degrees=False) -> np.ndarray:
+def create_transforms(
+    seq: Optional[str] = None,
+    angles: Optional[np.ndarray] = None,
+    translations: Optional[np.ndarray] = None,
+    *,
+    degrees=False,
+) -> np.ndarray:
     """
     Create an Nx4x4 series of homogeneous transforms.
 
@@ -164,7 +167,7 @@ def create_transforms(seq: Optional[str] = None,
     # Condition angles
     if angles is None:
         angles = np.array([0])
-        seq = 'x'
+        seq = "x"
     else:
         angles = np.array(angles)
 
@@ -187,10 +190,9 @@ def create_transforms(seq: Optional[str] = None,
     return T
 
 
-def get_angles(T: np.ndarray,
-               seq: str,
-               degrees: bool = False,
-               flip: bool = False) -> np.ndarray:
+def get_angles(
+    T: np.ndarray, seq: str, degrees: bool = False, flip: bool = False
+) -> np.ndarray:
     """
     Represent a series of transformation matrices as series of Euler angles.
 
@@ -267,20 +269,21 @@ def get_angles(T: np.ndarray,
         else:  # Tait-Bryan angles
             angles[:, 0] = np.mod(angles[:, 0], 2 * offset) - offset
             angles[:, 1] = offset - angles[:, 1]
-            angles[angles[:, 1] > offset, :] -= (2 * offset)
+            angles[angles[:, 1] > offset, :] -= 2 * offset
             angles[:, 2] = np.mod(angles[:, 2], 2 * offset) - offset
 
     return angles
 
 
 def create_frames(
-        origin: np.ndarray,
-        x: Optional[np.ndarray] = None,
-        y: Optional[np.ndarray] = None,
-        z: Optional[np.ndarray] = None,
-        xy: Optional[np.ndarray] = None,
-        xz: Optional[np.ndarray] = None,
-        yz: Optional[np.ndarray] = None) -> np.ndarray:
+    origin: np.ndarray,
+    x: Optional[np.ndarray] = None,
+    y: Optional[np.ndarray] = None,
+    z: Optional[np.ndarray] = None,
+    xy: Optional[np.ndarray] = None,
+    xz: Optional[np.ndarray] = None,
+    yz: Optional[np.ndarray] = None,
+) -> np.ndarray:
     """
     Create a Nx4x4 series of frames based on series of points and vectors.
 
@@ -363,6 +366,7 @@ def create_frames(
        Biomechanics, vol. 38, no. 5, pp. 981--992, 2005.
 
     """
+
     def normalize(v):
         """Normalize series of vectors."""
         norm = np.linalg.norm(v, axis=1)
@@ -415,8 +419,9 @@ def create_frames(
     return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
-def get_local_coordinates(global_coordinates: np.ndarray,
-                          reference_frames: np.ndarray) -> np.ndarray:
+def get_local_coordinates(
+    global_coordinates: np.ndarray, reference_frames: np.ndarray
+) -> np.ndarray:
     """
     Express global coordinates in local reference frames.
 
@@ -473,8 +478,9 @@ def get_local_coordinates(global_coordinates: np.ndarray,
     return local_coordinates
 
 
-def get_global_coordinates(local_coordinates: np.ndarray,
-                           reference_frames: np.ndarray) -> np.ndarray:
+def get_global_coordinates(
+    local_coordinates: np.ndarray, reference_frames: np.ndarray
+) -> np.ndarray:
     """
     Express local coordinates in the global reference frame.
 
@@ -523,12 +529,13 @@ def isnan(input: np.ndarray, /) -> np.ndarray:
     """
     temp = np.isnan(input)
     while len(temp.shape) > 1:
-        temp = (temp.sum(axis=1) > 0)
+        temp = temp.sum(axis=1) > 0
     return temp
 
 
-def _match_size(op1: np.ndarray, op2: np.ndarray
-                ) -> Tuple[np.ndarray, np.ndarray]:
+def _match_size(
+    op1: np.ndarray, op2: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
     """
     Match the first dimension of op1 and op2.
 
@@ -550,14 +557,14 @@ def _match_size(op1: np.ndarray, op2: np.ndarray
         op2 = np.repeat(op2, op1.shape[0], axis=0)
 
     if op1.shape[0] != op2.shape[0]:
-        raise ValueError(
-            'Could not match first dimension of op1 and op2')
+        raise ValueError("Could not match first dimension of op1 and op2")
 
     return op1, op2
 
 
-def register_points(global_points: np.ndarray,
-                    local_points: np.ndarray) -> np.ndarray:
+def register_points(
+    global_points: np.ndarray, local_points: np.ndarray
+) -> np.ndarray:
     """
     Find the homogeneous transforms between two series of point clouds.
 
@@ -592,22 +599,26 @@ def register_points(global_points: np.ndarray,
         # Identify which global points are visible
         sample_global_points = global_points[i_sample]
         sample_global_points_missing = np.isnan(
-            np.sum(sample_global_points, axis=0))
+            np.sum(sample_global_points, axis=0)
+        )
 
         # Identify which local points are visible
         sample_local_points = local_points[i_sample]
         sample_local_points_missing = np.isnan(
-            np.sum(sample_local_points, axis=0))
+            np.sum(sample_local_points, axis=0)
+        )
 
         sample_points_missing = np.logical_or(
-            sample_global_points_missing, sample_local_points_missing)
+            sample_global_points_missing, sample_local_points_missing
+        )
 
         # If at least 3 common points are visible between local and global
         # points, then we can regress the transformation.
         if sum(~sample_points_missing) >= 3:
             T[i_sample] = icp.best_fit_transform(
                 sample_local_points[0:3, ~sample_points_missing].T,
-                sample_global_points[0:3, ~sample_points_missing].T)[0]
+                sample_global_points[0:3, ~sample_points_missing].T,
+            )[0]
         else:
             T[i_sample] = np.nan
 
@@ -623,4 +634,5 @@ def __dir__():  # pragma: no cover
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

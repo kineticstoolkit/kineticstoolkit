@@ -67,11 +67,11 @@ def _import_extensions() -> List[str]:
     del imported_extensions[:]
 
     # Scan PYTHONPATH and current directory
-    the_path = sys.path + ['.']
+    the_path = sys.path + ["."]
 
     for finder, name, ispkg in pkgutil.iter_modules(the_path):
         if name.startswith("kineticstoolkit_"):
-            short_name = name[len('kineticstoolkit_'):]
+            short_name = name[len("kineticstoolkit_") :]
             try:
                 globals()[short_name] = importlib.import_module(name)
                 imported_extensions.append(short_name)

@@ -57,8 +57,8 @@ def download(filename: str, **kwargs) -> str:
     # Additional information for developers:
     # kwargs may include force_download=True, to force download from github.
     # In standard case, the local git version is used to save on download time.
-    if 'force_download' not in kwargs:
-        kwargs['force_download'] = False
+    if "force_download" not in kwargs:
+        kwargs["force_download"] = False
 
     try:
         import requests
@@ -69,14 +69,14 @@ def download(filename: str, **kwargs) -> str:
         )
 
     # Try to get the file locally from the local git repository
-    path = config.root_folder + '/data/' + filename
-    if os.path.exists(path) is True and kwargs['force_download'] is False:
+    path = config.root_folder + "/data/" + filename
+    if os.path.exists(path) is True and kwargs["force_download"] is False:
         return path
 
     else:
         # Otherwise download it.
         file = requests.get(
-            'https://github.com/felixchenier/kineticstoolkit/raw/master/data/'
+            "https://github.com/felixchenier/kineticstoolkit/raw/master/data/"
             + filename
         )
         if file.status_code == 404:
@@ -84,7 +84,7 @@ def download(filename: str, **kwargs) -> str:
                 f"'{filename}' could not be found on the server."
             )
 
-        path = config.temp_folder + '/' + filename
-        open(path, 'wb').write(file.content)
+        path = config.temp_folder + "/" + filename
+        open(path, "wb").write(file.content)
 
         return path

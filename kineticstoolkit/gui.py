@@ -38,7 +38,7 @@ import os
 from typing import Sequence, Union, Tuple, Any, List
 
 
-def message(message: str = '', **kwargs) -> None:
+def message(message: str = "", **kwargs) -> None:
     """
     Show a message window.
 
@@ -49,14 +49,19 @@ def message(message: str = '', **kwargs) -> None:
     """
     li.message(
         message,
-        icon=[config.root_folder + '/kineticstoolkit/logo.png',
-              config.root_folder + '/kineticstoolkit/logo_hires.png'],
-        **kwargs)
+        icon=[
+            config.root_folder + "/kineticstoolkit/logo.png",
+            config.root_folder + "/kineticstoolkit/logo_hires.png",
+        ],
+        **kwargs
+    )
 
 
-def button_dialog(message: str = 'Please select an option.',
-                  choices: Sequence[str] = ['Cancel', 'OK'],
-                  **kwargs) -> int:
+def button_dialog(
+    message: str = "Please select an option.",
+    choices: Sequence[str] = ["Cancel", "OK"],
+    **kwargs
+) -> int:
     """
     Create a blocking dialog message window with a selection of buttons.
 
@@ -75,10 +80,14 @@ def button_dialog(message: str = 'Please select an option.',
         returned.
     """
     return li.button_dialog(
-        message, choices,
-        icon=[config.root_folder + '/kineticstoolkit/logo.png',
-              config.root_folder + '/kineticstoolkit/logo_hires.png'],
-        **kwargs)
+        message,
+        choices,
+        icon=[
+            config.root_folder + "/kineticstoolkit/logo.png",
+            config.root_folder + "/kineticstoolkit/logo_hires.png",
+        ],
+        **kwargs
+    )
 
 
 def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
@@ -102,21 +111,31 @@ def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
 
     """
     if isinstance(setting, str):
-        if setting == 'default':
-            thelist = ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
-                       '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf']
-        elif setting == 'classic':
-            thelist = ['b', 'g', 'r', 'c', 'm', 'y', 'k']
-        elif setting == 'xyz':
-            thelist = ['r', 'g', 'b', 'c', 'm', 'y', 'k', 'tab:orange']
+        if setting == "default":
+            thelist = [
+                "#1f77b4",
+                "#ff7f0e",
+                "#2ca02c",
+                "#d62728",
+                "#9467bd",
+                "#8c564b",
+                "#e377c2",
+                "#7f7f7f",
+                "#bcbd22",
+                "#17becf",
+            ]
+        elif setting == "classic":
+            thelist = ["b", "g", "r", "c", "m", "y", "k"]
+        elif setting == "xyz":
+            thelist = ["r", "g", "b", "c", "m", "y", "k", "tab:orange"]
         else:
-            raise(ValueError('This setting is not recognized.'))
+            raise (ValueError("This setting is not recognized."))
     elif isinstance(setting, list):
         thelist = setting
     else:
-        raise(ValueError('This setting is not recognized.'))
+        raise (ValueError("This setting is not recognized."))
 
-    mpl.rcParams['axes.prop_cycle'] = mpl.cycler(color=thelist)
+    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)
 
 
 def get_credentials() -> Tuple[str, str]:
@@ -130,13 +149,15 @@ def get_credentials() -> Tuple[str, str]:
         respectively, or an empty tuple if the user closed the window.
 
     """
-    return li.input_dialog('Please enter your credentials',
-                           descriptions=['Username:', 'Password:'],
-                           masked=[False, True],
-                           icon='lock')
+    return li.input_dialog(
+        "Please enter your credentials",
+        descriptions=["Username:", "Password:"],
+        masked=[False, True],
+        icon="lock",
+    )
 
 
-def get_folder(initial_folder: str = '.') -> str:
+def get_folder(initial_folder: str = ".") -> str:
     """
     Get folder interactively using a file dialog window.
 
@@ -154,11 +175,14 @@ def get_folder(initial_folder: str = '.') -> str:
     """
     return li.get_folder(
         initial_folder,
-        icon=[config.root_folder + '/kineticstoolkit/logo.png',
-              config.root_folder + '/kineticstoolkit/logo_hires.png'])
+        icon=[
+            config.root_folder + "/kineticstoolkit/logo.png",
+            config.root_folder + "/kineticstoolkit/logo_hires.png",
+        ],
+    )
 
 
-def get_filename(initial_folder: str = '.') -> str:
+def get_filename(initial_folder: str = ".") -> str:
     """
     Get file name interactively using a file dialog window.
 
@@ -175,5 +199,8 @@ def get_filename(initial_folder: str = '.') -> str:
     """
     return li.get_filename(
         initial_folder,
-        icon=[config.root_folder + '/kineticstoolkit/logo.png',
-              config.root_folder + '/kineticstoolkit/logo_hires.png'])
+        icon=[
+            config.root_folder + "/kineticstoolkit/logo.png",
+            config.root_folder + "/kineticstoolkit/logo_hires.png",
+        ],
+    )

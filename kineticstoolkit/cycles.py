@@ -33,17 +33,19 @@ import warnings
 from typing import List, Dict, Tuple, Sequence, Optional
 
 
-def detect_cycles(ts: TimeSeries,
-                  data_key: str, *,
-                  event_names: Sequence[str] = ['phase1', 'phase2'],
-                  thresholds: Sequence[float] = [0., 1.],
-                  directions: Sequence[str] = ['rising', 'falling'],
-                  min_durations: Sequence[float] = [0., 0.],
-                  max_durations: Sequence[float] = [np.Inf, np.Inf],
-                  min_peak_heights: Sequence[float] = [-np.Inf, -np.Inf],
-                  max_peak_heights: Sequence[float] = [np.Inf, np.Inf],
-                  **kwargs,
-                  ) -> TimeSeries:
+def detect_cycles(
+    ts: TimeSeries,
+    data_key: str,
+    *,
+    event_names: Sequence[str] = ["phase1", "phase2"],
+    thresholds: Sequence[float] = [0.0, 1.0],
+    directions: Sequence[str] = ["rising", "falling"],
+    min_durations: Sequence[float] = [0.0, 0.0],
+    max_durations: Sequence[float] = [np.Inf, np.Inf],
+    min_peak_heights: Sequence[float] = [-np.Inf, -np.Inf],
+    max_peak_heights: Sequence[float] = [np.Inf, np.Inf],
+    **kwargs,
+) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
 
@@ -98,7 +100,7 @@ def detect_cycles(ts: TimeSeries,
     """
     # lowercase directions[0] once
     directions[0] = directions[0].lower()  # type: ignore
-    if directions[0] != 'rising' and directions[0] != 'falling':
+    if directions[0] != "rising" and directions[0] != "falling":
         raise ValueError("directions[0] must be 'rising' or 'falling'")
 
     # Find the pushes
@@ -111,7 +113,7 @@ def detect_cycles(ts: TimeSeries,
 
     for i in range(time.shape[0]):
 
-        if directions[0] == 'rising':
+        if directions[0] == "rising":
             crossing1 = data[i] >= thresholds[0]
             crossing2 = data[i] <= thresholds[1]
         else:
@@ -146,26 +148,28 @@ def detect_cycles(ts: TimeSeries,
         sub_ts1 = ts.get_ts_between_times(time1, time2, inclusive=True)
         sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
 
-        if directions[0] == 'rising':
+        if directions[0] == "rising":
             the_peak1 = np.max(sub_ts1.data[data_key])
             the_peak2 = np.min(sub_ts2.data[data_key])
         else:
             the_peak1 = np.min(sub_ts1.data[data_key])
             the_peak2 = np.max(sub_ts2.data[data_key])
 
-        if (time2 - time1 >= min_durations[0] and
-                time2 - time1 <= max_durations[0] and
-                time3 - time2 >= min_durations[1] and
-                time3 - time2 <= max_durations[1] and
-                the_peak1 >= min_peak_heights[0] and
-                the_peak1 <= max_peak_heights[0] and
-                the_peak2 >= min_peak_heights[1] and
-                the_peak2 <= max_peak_heights[1]):
+        if (
+            time2 - time1 >= min_durations[0]
+            and time2 - time1 <= max_durations[0]
+            and time3 - time2 >= min_durations[1]
+            and time3 - time2 <= max_durations[1]
+            and the_peak1 >= min_peak_heights[0]
+            and the_peak1 <= max_peak_heights[0]
+            and the_peak2 >= min_peak_heights[1]
+            and the_peak2 <= max_peak_heights[1]
+        ):
             # Save it.
             valid_events.append(events[i_event])
             valid_events.append(events[i_event + 1])
             if not np.isinf(time3):
-                valid_events.append(TimeSeriesEvent(time3, '_'))
+                valid_events.append(TimeSeriesEvent(time3, "_"))
 
     # Form the output timeseries
     tsout = ts.copy()
@@ -177,11 +181,13 @@ def detect_cycles(ts: TimeSeries,
 
 
 def time_normalize(
-        ts: TimeSeries, /,
-        event_name1: str,
-        event_name2: str, *,
-        n_points: int = 100,
-        span: Optional[Sequence[int]] = None,
+    ts: TimeSeries,
+    /,
+    event_name1: str,
+    event_name2: str,
+    *,
+    n_points: int = 100,
+    span: Optional[Sequence[int]] = None,
 ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -233,7 +239,7 @@ def time_normalize(
 
     # Find the final number of cycles
     if len(ts.events) < 2:
-        raise(ValueError('No cycle can be defined from these event names.'))
+        raise (ValueError("No cycle can be defined from these event names."))
 
     i_cycle = 0
 
@@ -241,9 +247,9 @@ def time_normalize(
     dest_ts = ts.copy()
     dest_ts.events = []
     if n_points == 100:
-        dest_ts.time_info['Unit'] = '%'
+        dest_ts.time_info["Unit"] = "%"
     else:
-        dest_ts.time_info['Unit'] = f"1/{n_points}"
+        dest_ts.time_info["Unit"] = f"1/{n_points}"
 
     dest_data = {}  # type: Dict[str, List[np.ndarray]]
     dest_data_shape = {}  # type: Dict[str, Tuple[int, ...]]
@@ -266,16 +272,17 @@ def time_normalize(
             break
 
         # Get the extended begin and end times considering relative_span
-        extended_begin_time = (begin_time +
-                               span[0] / n_points *
-                               (end_time - begin_time))
-        extended_end_time = (begin_time +
-                             span[1] / n_points *
-                             (end_time - begin_time))
+        extended_begin_time = begin_time + span[0] / n_points * (
+            end_time - begin_time
+        )
+        extended_end_time = begin_time + span[1] / n_points * (
+            end_time - begin_time
+        )
 
         # Extract this cycle
         subts = ts.get_ts_between_times(
-            extended_begin_time, extended_end_time, inclusive=True)
+            extended_begin_time, extended_end_time, inclusive=True
+        )
         subts_backup = subts.copy()
 
         if subts.time.shape[0] == 0:
@@ -285,21 +292,28 @@ def time_normalize(
         # (and get the first points after)
         try:
             subts = subts.resample(
-                np.linspace(extended_begin_time,
-                            extended_end_time,
-                            span[1] - span[0] + 1))
+                np.linspace(
+                    extended_begin_time,
+                    extended_end_time,
+                    span[1] - span[0] + 1,
+                )
+            )
         except ValueError:
             subts = subts_backup  # In case the try messed with subts
             subts = subts.resample(
-                np.linspace(extended_begin_time,
-                            extended_end_time,
-                            span[1] - span[0] + 1),
-                fill_value='extrapolate')
+                np.linspace(
+                    extended_begin_time,
+                    extended_end_time,
+                    span[1] - span[0] + 1,
+                ),
+                fill_value="extrapolate",
+            )
             warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
 
         # Keep only the first points (the last one belongs to the next cycle)
         subts = subts.get_ts_between_indexes(
-            0, span[1] - span[0] - 1, inclusive=True)
+            0, span[1] - span[0] - 1, inclusive=True
+        )
 
         # Keep only the events in the unextended span
         events = []
@@ -321,20 +335,18 @@ def time_normalize(
         # Add event_name1 at the beginning and end (duplicates will be
         # cancelled at the end)
         dest_ts = dest_ts.add_event(
-            -span[0] + i_cycle * (span[1] - span[0]),
-            event_name1
+            -span[0] + i_cycle * (span[1] - span[0]), event_name1
         )
         dest_ts = dest_ts.add_event(
-            -span[0] + n_points + i_cycle * (span[1] - span[0]),
-            '_'
+            -span[0] + n_points + i_cycle * (span[1] - span[0]), "_"
         )
 
         # Add the other events
         def time_to_normalized_time(time):
             """Resample the events times."""
-            return ((time - extended_begin_time) /
-                    (extended_end_time - extended_begin_time) *
-                    (span[1] - span[0]) + i_cycle * (span[1] - span[0]))
+            return (time - extended_begin_time) / (
+                extended_end_time - extended_begin_time
+            ) * (span[1] - span[0]) + i_cycle * (span[1] - span[0])
 
         for i_event, event in enumerate(other_events):
 
@@ -394,8 +406,9 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
 
     """
     if np.mod(len(ts.time), n_points) != 0:
-        raise(ValueError(
-            'It seems that this TimeSeries is not time-normalized.'))
+        raise (
+            ValueError("It seems that this TimeSeries is not time-normalized.")
+        )
 
     data = dict()
     for key in ts.data.keys():
@@ -403,7 +416,7 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
         new_shape = [-1, n_points]
         for i in range(1, len(current_shape)):
             new_shape.append(ts.data[key].shape[i])
-        data[key] = ts.data[key].reshape(new_shape, order='C')
+        data[key] = ts.data[key].reshape(new_shape, order="C")
     return data
 
 
@@ -435,9 +448,9 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
         current_shape = data[key].shape
         n_cycles = current_shape[0]
         n_points = current_shape[1]
-        ts.data[key] = data[key].reshape([n_cycles * n_points], order='C')
+        ts.data[key] = data[key].reshape([n_cycles * n_points], order="C")
     ts.time = np.arange(n_cycles * n_points)
-    ts.time_info['Unit'] = ''
+    ts.time_info["Unit"] = ""
     return ts
 
 
@@ -562,7 +575,7 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     done_cycles = []  # type: List[int]  # Like out_cycles but includes NaNs
 
     # Exclude cycles with nans: put nans for all data of this cycle
-    for i_cycle in range(n_cycles-1, -1, -1):
+    for i_cycle in range(n_cycles - 1, -1, -1):
         if np.isnan(np.sum(data[i_cycle])):
             data[i_cycle] = np.nan
             done_cycles.append(i_cycle)
@@ -575,9 +588,10 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
 
         rms = np.zeros(n_cycles)
 
-        for i_curve in range(n_cycles-1, -1, -1):
-            rms[i_curve] = np.sqrt(np.mean(np.sum(
-                (data[i_curve] - current_mean_cycle) ** 2)))
+        for i_curve in range(n_cycles - 1, -1, -1):
+            rms[i_curve] = np.sqrt(
+                np.mean(np.sum((data[i_curve] - current_mean_cycle) ** 2))
+            )
 
         i_cycle = int(np.nanargmax(rms))
         out_cycles.append(i_cycle)
@@ -605,4 +619,5 @@ def __dir__():
 
 if __name__ == "__main__":
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

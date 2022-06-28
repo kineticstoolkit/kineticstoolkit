@@ -41,12 +41,15 @@ from typing import Union, Optional, List
 
 
 @deprecated(
-    "0.8", "2024", (
+    "0.8",
+    "2024",
+    (
         "Please install the kineticstoolkit_pushtimkinetics extension "
         "and use the equivalent "
         "ktk.ext.pushrimkinetics.read_smartwheel() function."
-    ))
-def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
+    ),
+)
+def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
     """
     Read a file containing pushrim kinetics data.
 
@@ -62,17 +65,19 @@ def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
         - 'racingwheel' (will change)
 
     """
-    if file_format == '':
-        warnings.warn("file_format will need to be explicitely specified in "
-                      "future versions. Now using 'smartwheel'.",
-                      FutureWarning)
-        file_format = 'smartwheel'
+    if file_format == "":
+        warnings.warn(
+            "file_format will need to be explicitely specified in "
+            "future versions. Now using 'smartwheel'.",
+            FutureWarning,
+        )
+        file_format = "smartwheel"
 
-    if file_format == 'smartwheel':
+    if file_format == "smartwheel":
 
         dataframe = pd.read_csv(filename, delimiter=None, header=None)
         if dataframe.shape[1] == 1:  # Retry with ; as separator
-            dataframe = pd.read_csv(filename, delimiter=';', header=None)
+            dataframe = pd.read_csv(filename, delimiter=";", header=None)
 
         data = dataframe.to_numpy()
         index = data[:, 1]
@@ -85,20 +90,20 @@ def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
 
         ts = TimeSeries(time=time)
 
-        ts.data['Index'] = index
-        ts.data['Channels'] = channels
-        ts.data['Forces'] = np.block([[forces, np.zeros((len(index), 1))]])
-        ts.data['Moments'] = np.block([[moments, np.zeros((len(index), 1))]])
-        ts.data['Angle'] = angle_rad
+        ts.data["Index"] = index
+        ts.data["Channels"] = channels
+        ts.data["Forces"] = np.block([[forces, np.zeros((len(index), 1))]])
+        ts.data["Moments"] = np.block([[moments, np.zeros((len(index), 1))]])
+        ts.data["Angle"] = angle_rad
 
-        ts = ts.add_data_info('Channels', 'Unit', 'raw')
-        ts = ts.add_data_info('Forces', 'Unit', 'N')
-        ts = ts.add_data_info('Moments', 'Unit', 'Nm')
-        ts = ts.add_data_info('Angle', 'Unit', 'rad')
+        ts = ts.add_data_info("Channels", "Unit", "raw")
+        ts = ts.add_data_info("Forces", "Unit", "N")
+        ts = ts.add_data_info("Moments", "Unit", "Nm")
+        ts = ts.add_data_info("Angle", "Unit", "rad")
 
-    elif file_format == 'racingwheel':
+    elif file_format == "racingwheel":
 
-        dataframe = pd.read_csv(filename, delimiter=',')
+        dataframe = pd.read_csv(filename, delimiter=",")
         data = dataframe.to_numpy()
         time = data[:, 0]
         channels = data[:, 1:7]
@@ -106,71 +111,82 @@ def read_file(filename: str, /, file_format: str = '') -> TimeSeries:
 
         ts = TimeSeries(time=time)
 
-        ts.data['Channels'] = channels
-        ts = ts.add_data_info('Channels', 'Unit', 'raw')
+        ts.data["Channels"] = channels
+        ts = ts.add_data_info("Channels", "Unit", "raw")
 
-        ts.data['Battery'] = battery
-        ts = ts.add_data_info('Battery', 'Unit', 'raw')
+        ts.data["Battery"] = battery
+        ts = ts.add_data_info("Battery", "Unit", "raw")
 
-    elif file_format == 'smartwheeltxt':
+    elif file_format == "smartwheeltxt":
 
-        data = {'ch1': [], 'ch2': [], 'ch3': [],
-                'ch4': [], 'ch5': [], 'ch6': [], 'angle_ticks': []}
+        data = {
+            "ch1": [],
+            "ch2": [],
+            "ch3": [],
+            "ch4": [],
+            "ch5": [],
+            "ch6": [],
+            "angle_ticks": [],
+        }
 
         length = 0
-        with open(filename, 'rb') as fid:
+        with open(filename, "rb") as fid:
 
             while True:
                 try:
                     _ = fid.read(2)
-                    data['ch1'].append(struct.unpack('h', fid.read(2))[0])
-                    data['ch2'].append(struct.unpack('h', fid.read(2))[0])
-                    data['ch3'].append(struct.unpack('h', fid.read(2))[0])
-                    data['ch4'].append(struct.unpack('h', fid.read(2))[0])
-                    data['ch5'].append(struct.unpack('h', fid.read(2))[0])
-                    data['ch6'].append(struct.unpack('h', fid.read(2))[0])
-                    data['angle_ticks'].append(
-                        struct.unpack('i', fid.read(4))[0])
+                    data["ch1"].append(struct.unpack("h", fid.read(2))[0])
+                    data["ch2"].append(struct.unpack("h", fid.read(2))[0])
+                    data["ch3"].append(struct.unpack("h", fid.read(2))[0])
+                    data["ch4"].append(struct.unpack("h", fid.read(2))[0])
+                    data["ch5"].append(struct.unpack("h", fid.read(2))[0])
+                    data["ch6"].append(struct.unpack("h", fid.read(2))[0])
+                    data["angle_ticks"].append(
+                        struct.unpack("i", fid.read(4))[0]
+                    )
                     _ = fid.read(8)
                     length += 1
                 except Exception:
                     break
 
-        ch1 = np.array(data['ch1'][1:length])  # Remove 1st sample to be
-        ch2 = np.array(data['ch2'][1:length])  # consistent with CSV file
-        ch3 = np.array(data['ch3'][1:length])
-        ch4 = np.array(data['ch4'][1:length])
-        ch5 = np.array(data['ch5'][1:length])
-        ch6 = np.array(data['ch6'][1:length])
-        angle_ticks = np.array(data['angle_ticks'][1:length])
+        ch1 = np.array(data["ch1"][1:length])  # Remove 1st sample to be
+        ch2 = np.array(data["ch2"][1:length])  # consistent with CSV file
+        ch3 = np.array(data["ch3"][1:length])
+        ch4 = np.array(data["ch4"][1:length])
+        ch5 = np.array(data["ch5"][1:length])
+        ch6 = np.array(data["ch6"][1:length])
+        angle_ticks = np.array(data["angle_ticks"][1:length])
 
         # Keep only 12 least significant bytes
-        ch1 = np.mod(ch1, 2 ** 12)
-        ch2 = np.mod(ch2, 2 ** 12)
-        ch3 = np.mod(ch3, 2 ** 12)
-        ch4 = np.mod(ch4, 2 ** 12)
-        ch5 = np.mod(ch5, 2 ** 12)
-        ch6 = np.mod(ch6, 2 ** 12)
+        ch1 = np.mod(ch1, 2**12)
+        ch2 = np.mod(ch2, 2**12)
+        ch3 = np.mod(ch3, 2**12)
+        ch4 = np.mod(ch4, 2**12)
+        ch5 = np.mod(ch5, 2**12)
+        ch6 = np.mod(ch6, 2**12)
 
         # Convert angle in radian
         angle = angle_ticks / 4096 * 2 * np.pi
 
-        ts = TimeSeries(
-            time=np.linspace(0, (length - 1) / 240, length - 1))
-        ts.data['Channels'] = np.concatenate(
-            [ch1[:, np.newaxis],
-             ch2[:, np.newaxis],
-             ch3[:, np.newaxis],
-             ch4[:, np.newaxis],
-             ch5[:, np.newaxis],
-             ch6[:, np.newaxis]], axis=1)
-        ts.data['Angle'] = angle
+        ts = TimeSeries(time=np.linspace(0, (length - 1) / 240, length - 1))
+        ts.data["Channels"] = np.concatenate(
+            [
+                ch1[:, np.newaxis],
+                ch2[:, np.newaxis],
+                ch3[:, np.newaxis],
+                ch4[:, np.newaxis],
+                ch5[:, np.newaxis],
+                ch6[:, np.newaxis],
+            ],
+            axis=1,
+        )
+        ts.data["Angle"] = angle
 
-        ts = ts.add_data_info('Channels', 'Unit', 'raw')
-        ts = ts.add_data_info('Angle', 'Unit', 'rad')
+        ts = ts.add_data_info("Channels", "Unit", "raw")
+        ts = ts.add_data_info("Angle", "Unit", "rad")
 
     else:
-        raise ValueError('Unknown file format.')
+        raise ValueError("Unknown file format.")
 
     return ts
 
@@ -219,7 +235,8 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
 
         # Remove the 1% upper.
         index_to_remove = index_to_remove[
-            int(0.99*len(index_to_remove))-1:]
+            int(0.99 * len(index_to_remove)) - 1 :
+        ]
 
         # Assign nan to these data
         Mz[index_to_remove] = np.nan
@@ -230,13 +247,15 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
 
 
 @deprecated(
-    "0.8", "2024", (
+    "0.8",
+    "2024",
+    (
         "Please install the kineticstoolkit_pushtimkinetics extension "
         "and use the equivalent ktk.ext.remove_offsets() function."
-    ))
+    ),
+)
 def remove_offsets(
-        kinetics: TimeSeries,
-        baseline_kinetics: Optional[TimeSeries] = None
+    kinetics: TimeSeries, baseline_kinetics: Optional[TimeSeries] = None
 ) -> TimeSeries:
     """
     Remove dynamic offsets in forces and moments.
@@ -271,60 +290,73 @@ def remove_offsets(
 
     if baseline_kinetics is None:
         # Create baseline kinetics.
-        recovery_index = find_recovery_indices(kinetics.data['Moments'][:, 2])
-        f_ofs = np.hstack((kinetics.data['Forces'][recovery_index, 0:3],
-                           kinetics.data['Moments'][recovery_index, 0:3]))
-        theta_baseline = kinetics.data['Angle'][recovery_index]
+        recovery_index = find_recovery_indices(kinetics.data["Moments"][:, 2])
+        f_ofs = np.hstack(
+            (
+                kinetics.data["Forces"][recovery_index, 0:3],
+                kinetics.data["Moments"][recovery_index, 0:3],
+            )
+        )
+        theta_baseline = kinetics.data["Angle"][recovery_index]
 
     else:
         # Use baseline kinetics.
-        f_ofs = np.hstack((baseline_kinetics.data['Forces'][:, 0:3],
-                           baseline_kinetics.data['Moments'][:, 0:3]))
-        theta_baseline = baseline_kinetics.data['Angle'][:]
+        f_ofs = np.hstack(
+            (
+                baseline_kinetics.data["Forces"][:, 0:3],
+                baseline_kinetics.data["Moments"][:, 0:3],
+            )
+        )
+        theta_baseline = baseline_kinetics.data["Angle"][:]
 
     # Do the regression
     theta_baseline = theta_baseline[:, np.newaxis]
-    q = np.hstack((
-        np.sin(theta_baseline),
-        np.cos(theta_baseline),
-        np.ones((len(theta_baseline), 1))
-    ))
+    q = np.hstack(
+        (
+            np.sin(theta_baseline),
+            np.cos(theta_baseline),
+            np.ones((len(theta_baseline), 1)),
+        )
+    )
     A = np.linalg.lstsq(q, f_ofs, rcond=None)
     A = A[0]
 
     # Apply the regression to forces and moments
-    theta = kinetics.data['Angle']
+    theta = kinetics.data["Angle"]
     theta = theta[:, np.newaxis]
 
-    f = np.hstack((kinetics.data['Forces'][:, 0:3],
-                   kinetics.data['Moments'][:, 0:3]))
+    f = np.hstack(
+        (kinetics.data["Forces"][:, 0:3], kinetics.data["Moments"][:, 0:3])
+    )
 
-    q = np.hstack((
-        np.sin(theta),
-        np.cos(theta),
-        np.ones((len(theta), 1))
-    ))
+    q = np.hstack((np.sin(theta), np.cos(theta), np.ones((len(theta), 1))))
 
     f = f - q @ A
 
     # Make the output timeseries
-    kinetics.data['Forces'][:, 0:3] = f[:, 0:3]  # type: ignore
-    kinetics.data['Moments'][:, 0:3] = f[:, 3:6]  # type: ignore
+    kinetics.data["Forces"][:, 0:3] = f[:, 0:3]  # type: ignore
+    kinetics.data["Moments"][:, 0:3] = f[:, 3:6]  # type: ignore
 
     return kinetics
 
 
 @deprecated(
-    "0.8", "2024", (
+    "0.8",
+    "2024",
+    (
         "Please install the kineticstoolkit_pushtimkinetics extension "
         "and use the equivalent apply_calibration() function."
-    ))
+    ),
+)
 def calculate_forces_and_moments(
-        kinetics: TimeSeries, /,
-        gains: Union[np.ndarray, str],
-        offsets: np.ndarray = np.zeros((6)), *,
-        transducer: str = 'force_cell',
-        reference_frame: str = 'wheel') -> TimeSeries:
+    kinetics: TimeSeries,
+    /,
+    gains: Union[np.ndarray, str],
+    offsets: np.ndarray = np.zeros((6)),
+    *,
+    transducer: str = "force_cell",
+    reference_frame: str = "wheel",
+) -> TimeSeries:
     """
     Calculate pushrim forces and moments based on raw channel values.
 
@@ -363,91 +395,122 @@ def calculate_forces_and_moments(
 
     """
     # Calculate the forces and moments and add to the output
-    if transducer == 'smartwheel':
+    if transducer == "smartwheel":
 
         # Calculate the rotation angle to apply to the calculated kinetics
-        if reference_frame == 'wheel':
+        if reference_frame == "wheel":
             theta = np.array([0.0])
-        elif reference_frame == 'hub':
-            theta = kinetics.data['Angle']
+        elif reference_frame == "hub":
+            theta = kinetics.data["Angle"]
         else:
             raise ValueError("reference_frame must be 'wheel' or 'hub'")
 
         # Extract channels and angle
-        ch = kinetics.data['Channels'] - 2048
+        ch = kinetics.data["Channels"] - 2048
 
         # Calculate the forces and moments
-        Fx = gains[0] * (
-            ch[:, 0] * sin(theta) +
-            ch[:, 2] * sin(theta + 2 * pi / 3) +
-            ch[:, 4] * sin(theta + 4 * pi / 3)) + offsets[0]
+        Fx = (
+            gains[0]
+            * (
+                ch[:, 0] * sin(theta)
+                + ch[:, 2] * sin(theta + 2 * pi / 3)
+                + ch[:, 4] * sin(theta + 4 * pi / 3)
+            )
+            + offsets[0]
+        )
 
-        Fy = gains[1] * (
-            ch[:, 0] * cos(theta) +
-            ch[:, 2] * cos(theta + 2 * pi / 3) +
-            ch[:, 4] * cos(theta + 4 * pi / 3)) + offsets[1]
+        Fy = (
+            gains[1]
+            * (
+                ch[:, 0] * cos(theta)
+                + ch[:, 2] * cos(theta + 2 * pi / 3)
+                + ch[:, 4] * cos(theta + 4 * pi / 3)
+            )
+            + offsets[1]
+        )
 
         Fz = gains[2] * (ch[:, 1] + ch[:, 3] + ch[:, 5]) + offsets[2]
 
-        Mx = gains[3] * (
-            ch[:, 1] * sin(theta) +
-            ch[:, 3] * sin(theta + 2 * pi / 3) +
-            ch[:, 5] * sin(theta + 4 * pi / 3)) + offsets[3]
+        Mx = (
+            gains[3]
+            * (
+                ch[:, 1] * sin(theta)
+                + ch[:, 3] * sin(theta + 2 * pi / 3)
+                + ch[:, 5] * sin(theta + 4 * pi / 3)
+            )
+            + offsets[3]
+        )
 
-        My = gains[4] * (
-            ch[:, 1] * cos(theta) +
-            ch[:, 3] * cos(theta + 2 * pi / 3) +
-            ch[:, 5] * cos(theta + 4 * pi / 3)) + offsets[4]
+        My = (
+            gains[4]
+            * (
+                ch[:, 1] * cos(theta)
+                + ch[:, 3] * cos(theta + 2 * pi / 3)
+                + ch[:, 5] * cos(theta + 4 * pi / 3)
+            )
+            + offsets[4]
+        )
 
         Mz = gains[5] * (ch[:, 0] + ch[:, 2] + ch[:, 4]) + offsets[5]
-        forces_moments = np.block([Fx[:, np.newaxis],
-                                   Fy[:, np.newaxis],
-                                   Fz[:, np.newaxis],
-                                   Mx[:, np.newaxis],
-                                   My[:, np.newaxis],
-                                   Mz[:, np.newaxis]])
+        forces_moments = np.block(
+            [
+                Fx[:, np.newaxis],
+                Fy[:, np.newaxis],
+                Fz[:, np.newaxis],
+                Mx[:, np.newaxis],
+                My[:, np.newaxis],
+                Mz[:, np.newaxis],
+            ]
+        )
 
-    elif transducer == 'force_cell':
+    elif transducer == "force_cell":
 
         # Calculate the rotation angle to apply to the calculated kinetics
-        if reference_frame == 'wheel':
+        if reference_frame == "wheel":
             theta = np.array([0.0])
-        elif reference_frame == 'hub':
-            raise NotImplementedError("hub reference_frame not implemented yet"
-                                      "for force_cell transducers.")
+        elif reference_frame == "hub":
+            raise NotImplementedError(
+                "hub reference_frame not implemented yet"
+                "for force_cell transducers."
+            )
         else:
             raise ValueError("reference_frame must be 'wheel' or 'hub'")
 
-        n_frames = kinetics.data['Channels'].shape[0]
+        n_frames = kinetics.data["Channels"].shape[0]
 
         forces_moments = np.empty((n_frames, 6))
         for i_frame in range(n_frames):
-            forces_moments[i_frame] = (gains @
-                                       kinetics.data['Channels'][i_frame] +
-                                       offsets)
+            forces_moments[i_frame] = (
+                gains @ kinetics.data["Channels"][i_frame] + offsets
+            )
 
     # Format these data in the output timeseries
     kinetics = kinetics.copy()
 
-    kinetics.data['Forces'] = np.concatenate(
+    kinetics.data["Forces"] = np.concatenate(
         [forces_moments[:, 0:3], np.zeros((forces_moments.shape[0], 1))],
-        axis=1)
-    kinetics = kinetics.add_data_info('Forces', 'Unit', 'N')
+        axis=1,
+    )
+    kinetics = kinetics.add_data_info("Forces", "Unit", "N")
 
-    kinetics.data['Moments'] = np.concatenate(
+    kinetics.data["Moments"] = np.concatenate(
         [forces_moments[:, 3:6], np.zeros((forces_moments.shape[0], 1))],
-        axis=1)
-    kinetics = kinetics.add_data_info('Moments', 'Unit', 'Nm')
+        axis=1,
+    )
+    kinetics = kinetics.add_data_info("Moments", "Unit", "Nm")
 
-    return(kinetics)
+    return kinetics
 
 
 @deprecated(
-    "0.8", "2024", (
+    "0.8",
+    "2024",
+    (
         "Please install the kineticstoolkit_pushtimkinetics extension "
         "and use the equivalent "
         "ktk.ext.pushrimkinetics.calculate_velocity() function."
-    ))
+    ),
+)
 def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate velocity based on wheel angle.
@@ -478,16 +541,15 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     """
     tsangle = TimeSeries()
     tsangle.time = tsin.time
-    tsangle.data['Angle'] = tsin.data['Angle']
-    tsvelocity = filters.savgol(tsangle, window_length=21,
-                                poly_order=2, deriv=1)
+    tsangle.data["Angle"] = tsin.data["Angle"]
+    tsvelocity = filters.savgol(
+        tsangle, window_length=21, poly_order=2, deriv=1
+    )
     tsout = tsin.copy()
-    tsout.data['Velocity'] = tsvelocity.data['Angle']
+    tsout.data["Velocity"] = tsvelocity.data["Angle"]
     try:
         tsout = tsout.add_data_info(
-            'Velocity',
-            'Unit',
-            tsout.data_info['Angle']['Unit'] + '/s'
+            "Velocity", "Unit", tsout.data_info["Angle"]["Unit"] + "/s"
         )
     except KeyError:
         pass
@@ -495,11 +557,14 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
 
 
 @deprecated(
-    "0.8", "2024", (
+    "0.8",
+    "2024",
+    (
         "Please install the kineticstoolkit_pushtimkinetics extension "
         "and use the equivalent "
         "ktk.ext.pushrimkinetics.calculate_power() function."
-    ))
+    ),
+)
 def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     Calculate power based on wheel velocity and moment.
@@ -517,73 +582,73 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
 
     """
     tsout = tsin.copy()
-    tsout.data['Power'] = (tsout.data['Velocity'] *
-                           tsout.data['Moments'][:, 2])
-    tsout = tsout.add_data_info('Power', 'Unit', 'W')
+    tsout.data["Power"] = tsout.data["Velocity"] * tsout.data["Moments"][:, 2]
+    tsout = tsout.add_data_info("Power", "Unit", "W")
     return tsout
 
 
 # Deprecated constants:
 
 _deprecated_CALIBRATION_MATRICES = {}
-_deprecated_CALIBRATION_MATRICES['SmartWheel_93'] = {
-    'gains': np.array([-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_93"] = {
+    "gains": np.array([-0.1080, 0.1080, 0.0930, 0.0222, -0.0222, 0.0234999]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_94'] = {
-    'gains': np.array([-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_94"] = {
+    "gains": np.array([-0.1070, 0.1070, 0.0960, 0.0222, -0.0222, 0.0230]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_123'] = {
-    'gains': np.array([-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_123"] = {
+    "gains": np.array([-0.106, 0.106, 0.094, 0.022, -0.022, 0.0234999]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_124'] = {
-    'gains': np.array([-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_124"] = {
+    "gains": np.array([-0.106, 0.106, 0.0949999, 0.0215, -0.0215, 0.0225]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_125'] = {
-    'gains': np.array([-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_125"] = {
+    "gains": np.array([-0.104, 0.104, 0.0979999, 0.0215, -0.0215, 0.0225]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_126'] = {
-    'gains': np.array([-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_126"] = {
+    "gains": np.array([-0.1059999, 0.1059999, 0.086, 0.021, -0.021, 0.023]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_126_S18'] = {
-    'gains': np.array([-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_126_S18"] = {
+    "gains": np.array([-0.1083, 0.1109, 0.0898, 0.0211, -0.0194, 0.0214]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_179_S18'] = {
-    'gains': np.array([-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_179_S18"] = {
+    "gains": np.array([-0.1399, 0.1091, 0.0892, 0.0240, -0.0222, 0.0241]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_180_S18'] = {
-    'gains': np.array([-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_180_S18"] = {
+    "gains": np.array([-0.1069, 0.1091, 0.0932, 0.0240, -0.0226, 0.0238]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
-_deprecated_CALIBRATION_MATRICES['SmartWheel_181_S18'] = {
-    'gains': np.array([-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]),
-    'offsets': np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
-    'transducer': 'smartwheel',
+_deprecated_CALIBRATION_MATRICES["SmartWheel_181_S18"] = {
+    "gains": np.array([-0.1152, 0.1095, 0.0791, 0.0229, -0.0197, 0.0220]),
+    "offsets": np.array([0.0, 10.0, 0.0, 0.0, 0.0, 0.0]),
+    "transducer": "smartwheel",
 }
 
 
 def __getattr__(name):
-    if name == 'CALIBRATION_MATRICES':
+    if name == "CALIBRATION_MATRICES":
         warnings.warn(
-            'These sample calibration matrices will be removed in '
-            '2024.', FutureWarning)
-        return globals()['_deprecated_CALIBRATION_MATRICES']
+            "These sample calibration matrices will be removed in " "2024.",
+            FutureWarning,
+        )
+        return globals()["_deprecated_CALIBRATION_MATRICES"]
     raise AttributeError(f"module {__name__} has no attribute {name}")
 
 
@@ -596,4 +661,5 @@ def __dir__():  # pragma: no cover
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

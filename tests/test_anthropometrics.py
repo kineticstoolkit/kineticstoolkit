@@ -29,103 +29,109 @@ import kineticstoolkit as ktk
 def test_define_coordinate_systems():
     """Test the dumas2007 function."""
     # Load a sample file
-    markers = ktk.load(
-        ktk.doc.download('anthropometrics_static.ktk.zip')
-    )
+    markers = ktk.load(ktk.doc.download("anthropometrics_static.ktk.zip"))
 
     # Infer missing makers
-    for segment in ['Pelvis', 'Thorax', 'Extremities']:
+    for segment in ["Pelvis", "Thorax", "Extremities"]:
         markers.merge(
             ktk.anthropometrics.infer_joint_centers(
-                markers, segment=segment, sex='M'
+                markers, segment=segment, sex="M"
             ),
             in_place=True,
         )
 
     # Generate segment clusters
     clusters = {}
-    clusters['Pelvis'] = ktk.kinematics.create_cluster(
-        markers, [
-            'AnteriorSuperiorIliacSpineR',
-            'AnteriorSuperiorIliacSpineL',
-            'PosteriorSuperiorIliacSpineR',
-            'PosteriorSuperiorIliacSpineL',
-            'PubicSymphysis',
-            'L5S1JointCenter',
-            'HipJointCenterR',
-            'HipJointCenterL',
-        ]
+    clusters["Pelvis"] = ktk.kinematics.create_cluster(
+        markers,
+        [
+            "AnteriorSuperiorIliacSpineR",
+            "AnteriorSuperiorIliacSpineL",
+            "PosteriorSuperiorIliacSpineR",
+            "PosteriorSuperiorIliacSpineL",
+            "PubicSymphysis",
+            "L5S1JointCenter",
+            "HipJointCenterR",
+            "HipJointCenterL",
+        ],
     )
 
-    clusters['Trunk'] = ktk.kinematics.create_cluster(
-        markers, [
-            'C7',
-            'Xiphoid',
-            'Suprasternale',
-            'C7T1JointCenter',
-        ]
+    clusters["Trunk"] = ktk.kinematics.create_cluster(
+        markers,
+        [
+            "C7",
+            "Xiphoid",
+            "Suprasternale",
+            "C7T1JointCenter",
+        ],
     )
 
-    clusters['HeadNeck'] = ktk.kinematics.create_cluster(
-        markers, [
-            'Sellion',
-            'HeadVertex',
-            'Chin',
-        ]
+    clusters["HeadNeck"] = ktk.kinematics.create_cluster(
+        markers,
+        [
+            "Sellion",
+            "HeadVertex",
+            "Chin",
+        ],
     )
 
-    for side in ['R', 'L']:
+    for side in ["R", "L"]:
 
-        clusters[f'Arm{side}'] = ktk.kinematics.create_cluster(
-            markers, [
-                f'Arm{side}_Marker1',
-                f'Arm{side}_Marker2',
-                f'Arm{side}_Marker3',
-                f'Arm{side}_Marker4',
-                f'GlenohumeralJointCenter{side}',
-                f'LateralHumeralEpicondyle{side}',
-                f'MedialHumeralEpicondyle{side}',
-                f'ElbowJointCenter{side}',
-            ]
+        clusters[f"Arm{side}"] = ktk.kinematics.create_cluster(
+            markers,
+            [
+                f"Arm{side}_Marker1",
+                f"Arm{side}_Marker2",
+                f"Arm{side}_Marker3",
+                f"Arm{side}_Marker4",
+                f"GlenohumeralJointCenter{side}",
+                f"LateralHumeralEpicondyle{side}",
+                f"MedialHumeralEpicondyle{side}",
+                f"ElbowJointCenter{side}",
+            ],
         )
 
-        clusters[f'Forearm{side}'] = ktk.kinematics.create_cluster(
-            markers, [
-                f'ElbowJointCenter{side}',
-                f'UlnarStyloid{side}',
-                f'RadialStyloid{side}',
-                f'WristJointCenter{side}',
-            ]
+        clusters[f"Forearm{side}"] = ktk.kinematics.create_cluster(
+            markers,
+            [
+                f"ElbowJointCenter{side}",
+                f"UlnarStyloid{side}",
+                f"RadialStyloid{side}",
+                f"WristJointCenter{side}",
+            ],
         )
 
-        clusters[f'Hand{side}'] = ktk.kinematics.create_cluster(
-            markers, [
-                f'WristJointCenter{side}',
-                f'CarpalMetaHead2{side}',
-                f'CarpalMetaHead5{side}',
-            ]
+        clusters[f"Hand{side}"] = ktk.kinematics.create_cluster(
+            markers,
+            [
+                f"WristJointCenter{side}",
+                f"CarpalMetaHead2{side}",
+                f"CarpalMetaHead5{side}",
+            ],
         )
 
-        clusters[f'Thigh{side}'] = ktk.kinematics.create_cluster(
-            markers, [
-                f'HipJointCenter{side}',  # Normally I would remove this one.
-                f'LateralFemoralEpicondyle{side}',
-                f'MedialFemoralEpicondyle{side}',
-                f'KneeJointCenter{side}',
-            ]
+        clusters[f"Thigh{side}"] = ktk.kinematics.create_cluster(
+            markers,
+            [
+                f"HipJointCenter{side}",  # Normally I would remove this one.
+                f"LateralFemoralEpicondyle{side}",
+                f"MedialFemoralEpicondyle{side}",
+                f"KneeJointCenter{side}",
+            ],
         )
 
-        clusters[f'Leg{side}'] = ktk.kinematics.create_cluster(
-            markers, [
-                f'Leg{side}_Marker1',
-                f'Leg{side}_Marker2',
-                f'Leg{side}_Marker3',
-                f'Leg{side}_Marker4',
-                f'LateralMalleolus{side}',
-                f'MedialMalleolus{side}',
-                f'KneeJointCenter{side}',
-                f'AnkleJointCenter{side}',
-            ]
+        clusters[f"Leg{side}"] = ktk.kinematics.create_cluster(
+            markers,
+            [
+                f"Leg{side}_Marker1",
+                f"Leg{side}_Marker2",
+                f"Leg{side}_Marker3",
+                f"Leg{side}_Marker4",
+                f"LateralMalleolus{side}",
+                f"MedialMalleolus{side}",
+                f"KneeJointCenter{side}",
+                f"AnkleJointCenter{side}",
+            ],
         )
 
     # Test if everything can be built again using these clusters.
@@ -133,10 +139,7 @@ def test_define_coordinate_systems():
 
     for segment in clusters:
         test_markers.merge(
-            ktk.kinematics.track_cluster(
-                test_markers,
-                clusters[segment]
-            ),
+            ktk.kinematics.track_cluster(test_markers, clusters[segment]),
             in_place=True,
         )
 
@@ -144,43 +147,43 @@ def test_define_coordinate_systems():
     bodies = ktk.anthropometrics.track_local_coordinate_systems(
         markers,
         [
-            'Pelvis',
-            'Thorax',
-            'HeadNeck',
-            'ArmR',
-            'ArmL',
-            'ForearmR',
-            'ForearmL',
-            'HandR',
-            'HandL',
-            'ThighR',
-            'ThighL',
-            'LegR',
-            'LegL'
-        ]
+            "Pelvis",
+            "Thorax",
+            "HeadNeck",
+            "ArmR",
+            "ArmL",
+            "ForearmR",
+            "ForearmL",
+            "HandR",
+            "HandL",
+            "ThighR",
+            "ThighL",
+            "LegR",
+            "LegL",
+        ],
     )
 
     COM = ktk.anthropometrics.estimate_center_of_mass(
         markers,
         [
-            'Pelvis',
-            'Thorax',
-            'HeadNeck',
-            'ArmR',
-            'ArmL',
-            'ForearmR',
-            'ForearmL',
-            'HandR',
-            'HandL',
-            'ThighR',
-            'ThighL',
-            'LegR',
-            'LegL'
-        ]
+            "Pelvis",
+            "Thorax",
+            "HeadNeck",
+            "ArmR",
+            "ArmL",
+            "ForearmR",
+            "ForearmL",
+            "HandR",
+            "HandL",
+            "ThighR",
+            "ThighL",
+            "LegR",
+            "LegL",
+        ],
     )
 
     for marker in COM.data:
-        COM.add_data_info(marker, 'Color', 'c', in_place=True)
+        COM.add_data_info(marker, "Color", "c", in_place=True)
 
     ktk.Player(test_markers, bodies, COM, segments=ktk.anthropometrics.LINKS)
 

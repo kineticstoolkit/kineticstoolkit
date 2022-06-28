@@ -47,11 +47,12 @@ from typing import Dict, List, Tuple, Any, Union, Optional
 import kineticstoolkit as ktk  # For doctests
 
 
-WINDOW_PLACEMENT = {'top': 50, 'right': 0}
+WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
 
 def dataframe_to_dict_of_arrays(
-        dataframe: pd.DataFrame) -> Dict[str, np.ndarray]:
+    dataframe: pd.DataFrame,
+) -> Dict[str, np.ndarray]:
     """
     Convert a pandas DataFrame to a dict of numpy ndarrays.
 
@@ -115,10 +116,10 @@ def dataframe_to_dict_of_arrays(
     columns = dataframe.columns
     new_columns = []
     for i_column, column in enumerate(columns):
-        splitted = column.split('[')
+        splitted = column.split("[")
         if len(splitted) > 1:  # There are brackets
             new_columns.append(
-                splitted[0] + '[' + splitted[1].replace(' ', '')
+                splitted[0] + "[" + splitted[1].replace(" ", "")
             )
         else:
             new_columns.append(column)
@@ -131,12 +132,12 @@ def dataframe_to_dict_of_arrays(
     #    dimensions['Data3'] = [[0,0],[0,1],[1,0],[1,1]]
     dimensions = dict()  # type: Dict[str, List]
     for column in dataframe.columns:
-        splitted = column.split('[')
+        splitted = column.split("[")
         if len(splitted) == 1:  # No brackets
             dimensions[column] = []
         else:  # With brackets
             key = splitted[0]
-            index = literal_eval('[' + splitted[1])
+            index = literal_eval("[" + splitted[1])
 
             if key in dimensions:
                 dimensions[key].append(index)
@@ -154,7 +155,7 @@ def dataframe_to_dict_of_arrays(
             highest_dims = np.max(np.array(dimensions[key]), axis=0)
 
             columns = [
-                key + str(dim).replace(' ', '')
+                key + str(dim).replace(" ", "")
                 for dim in sorted(dimensions[key])
             ]
             out[key] = dataframe[columns].to_numpy()
@@ -166,7 +167,8 @@ def dataframe_to_dict_of_arrays(
 
 
 def dict_of_arrays_to_dataframe(
-        dict_of_arrays: Dict[str, np.ndarray]) -> pd.DataFrame:
+    dict_of_arrays: Dict[str, np.ndarray]
+) -> pd.DataFrame:
     """
     Convert a dict of ndarray of any dimension to a pandas DataFrame.
 
@@ -282,16 +284,16 @@ def dict_of_arrays_to_dataframe(
                     # This data is expressed in more than one dimension.
                     # We must add brackets to the column names to specify
                     # the indices.
-                    this_column_name += '['
+                    this_column_name += "["
 
                     for i_indice in range(0, n_indices):
                         this_column_name += str(
                             reshaped_indices[i_indice, i_column]
                         )
                         if i_indice == n_indices - 1:
-                            this_column_name += ']'
+                            this_column_name += "]"
                         else:
-                            this_column_name += ','
+                            this_column_name += ","
 
                 column_names.append(this_column_name)
 
@@ -323,7 +325,7 @@ class TimeSeriesEvent:
     """
 
     time: float = 0.0
-    name: str = 'event'
+    name: str = "event"
 
     def __lt__(self, other):
         """Define < operator."""
@@ -365,7 +367,7 @@ class TimeSeriesEvent:
         {'Time': 1.5, 'Name': 'event_name'}
 
         """
-        return {'Time': self.time, 'Name': self.name}
+        return {"Time": self.time, "Name": self.name}
 
 
 class TimeSeries:
@@ -408,7 +410,7 @@ class TimeSeries:
     def __init__(
         self,
         time: np.ndarray = np.array([]),
-        time_info: Dict[str, Any] = {'Unit': 's'},
+        time_info: Dict[str, Any] = {"Unit": "s"},
         data: Dict[str, np.ndarray] = {},
         data_info: Dict[str, Dict[str, Any]] = {},
         events: List[TimeSeriesEvent] = [],
@@ -451,7 +453,7 @@ class TimeSeries:
 
         """
         if not np.array_equal(self.time, ts.time):
-            print('Time is not equal')
+            print("Time is not equal")
             return False
 
         for data in [self.data, ts.data]:
@@ -460,28 +462,28 @@ class TimeSeries:
                     if not np.isclose(
                         self.data[one_data], ts.data[one_data], rtol=1e-15
                     ).all():
-                        print(f'{one_data} is not equal')
+                        print(f"{one_data} is not equal")
                         return False
                 except KeyError:
-                    print(f'{one_data} is missing in one of the TimeSeries')
+                    print(f"{one_data} is missing in one of the TimeSeries")
                     return False
                 except ValueError:
                     print(
-                        f'{one_data} does not have the same size in both '
-                        'TimeSeries'
+                        f"{one_data} does not have the same size in both "
+                        "TimeSeries"
                     )
                     return False
 
         if self.time_info != ts.time_info:
-            print('time_info is not equal')
+            print("time_info is not equal")
             return False
 
         if self.data_info != ts.data_info:
-            print('data_info is not equal')
+            print("data_info is not equal")
             return False
 
         if self.events != ts.events:
-            print('events is not equal')
+            print("events is not equal")
             return False
 
         return True
@@ -504,7 +506,7 @@ class TimeSeries:
         df.index = self.time
         return df
 
-    def from_dataframe(dataframe: pd.DataFrame, /) -> 'TimeSeries':
+    def from_dataframe(dataframe: pd.DataFrame, /) -> "TimeSeries":
         """
         Create a new TimeSeries from a Pandas Dataframe.
 
@@ -532,12 +534,13 @@ class TimeSeries:
         return ts
 
     def add_data_info(
-            self,
-            data_key: str,
-            info_key: str,
-            value: Any,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self,
+        data_key: str,
+        info_key: str,
+        value: Any,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
         """
         Add metadata to TimeSeries' data.
 
@@ -584,11 +587,8 @@ class TimeSeries:
         return ts
 
     def remove_data_info(
-            self,
-            data_key: str,
-            info_key: str,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self, data_key: str, info_key: str, *, in_place: bool = False
+    ) -> "TimeSeries":
         """
         Remove metadata from a TimeSeries' data.
 
@@ -632,11 +632,8 @@ class TimeSeries:
         return ts
 
     def rename_data(
-            self,
-            old_data_key: str,
-            new_data_key: str,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self, old_data_key: str, new_data_key: str, *, in_place: bool = False
+    ) -> "TimeSeries":
         """
         Rename a key in data and data_info.
 
@@ -689,10 +686,8 @@ class TimeSeries:
         return ts
 
     def remove_data(
-            self,
-            data_key: str,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self, data_key: str, *, in_place: bool = False
+    ) -> "TimeSeries":
         """
         Remove a data key and its associated metadata.
 
@@ -749,11 +744,8 @@ class TimeSeries:
         return ts
 
     def add_event(
-            self,
-            time: float,
-            name: str = 'event',
-            *,
-            in_place=False) -> 'TimeSeries':
+        self, time: float, name: str = "event", *, in_place=False
+    ) -> "TimeSeries":
         """
         Add an event to the TimeSeries.
 
@@ -791,12 +783,13 @@ class TimeSeries:
         return ts
 
     def rename_event(
-            self,
-            old_name: str,
-            new_name: str,
-            occurrence: Optional[int] = None,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self,
+        old_name: str,
+        new_name: str,
+        occurrence: Optional[int] = None,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
         """
         Rename an event occurrence or all events of a same name.
 
@@ -869,11 +862,12 @@ class TimeSeries:
         return ts
 
     def remove_event(
-            self,
-            name: str,
-            occurrence: Optional[int] = None,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self,
+        name: str,
+        occurrence: Optional[int] = None,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
         """
         Remove an event occurrence or all events of a same name.
 
@@ -938,10 +932,10 @@ class TimeSeries:
         return ts
 
     def ui_edit_events(
-            self,
-            name: Union[str, List[str]] = [],
-            data_keys: Union[str, List[str]] = []
-    ) -> 'TimeSeries':  # pragma: no cover
+        self,
+        name: Union[str, List[str]] = [],
+        data_keys: Union[str, List[str]] = [],
+    ) -> "TimeSeries":  # pragma: no cover
         """
         Edit events interactively.
 
@@ -973,7 +967,7 @@ class TimeSeries:
 
         """
 
-        def add_this_event(ts: 'TimeSeries', name: str) -> 'TimeSeries':
+        def add_this_event(ts: "TimeSeries", name: str) -> "TimeSeries":
             kineticstoolkit.gui.message(
                 "Place the event on the figure.", **WINDOW_PLACEMENT
             )
@@ -982,7 +976,7 @@ class TimeSeries:
             kineticstoolkit.gui.message("")
             return ts
 
-        def get_event_index(ts: 'TimeSeries') -> int:
+        def get_event_index(ts: "TimeSeries") -> int:
             kineticstoolkit.gui.message(
                 "Select an event on the figure.", **WINDOW_PLACEMENT
             )
@@ -1010,27 +1004,27 @@ class TimeSeries:
             choices = [f"Add '{s}'" for s in event_names]
 
             choice_index = {}
-            choice_index['add'] = len(choices)
+            choice_index["add"] = len(choices)
             if len(event_names) == 0:
                 choices.append("Add event")
             else:
                 choices.append("Add event with another name")
 
             if len(ts.events) > 0:
-                choice_index['remove'] = len(choices)
+                choice_index["remove"] = len(choices)
                 choices.append("Remove event")
 
             if len(ts.events) > 0:
-                choice_index['remove_all'] = len(choices)
+                choice_index["remove_all"] = len(choices)
                 choices.append("Remove all events")
 
-                choice_index['move'] = len(choices)
+                choice_index["move"] = len(choices)
                 choices.append("Move event")
 
-            choice_index['close'] = len(choices)
+            choice_index["close"] = len(choices)
             choices.append("Save and close")
 
-            choice_index['cancel'] = len(choices)
+            choice_index["cancel"] = len(choices)
             choices.append("Cancel")
 
             # Show the button dialog
@@ -1042,10 +1036,10 @@ class TimeSeries:
             )
 
             # Execute
-            if choice < choice_index['add']:
+            if choice < choice_index["add"]:
                 ts = add_this_event(ts, event_names[choice])
 
-            elif choice == choice_index['add']:
+            elif choice == choice_index["add"]:
                 event_names.append(
                     li.input_dialog(
                         "Please enter the event name:", **WINDOW_PLACEMENT
@@ -1058,8 +1052,8 @@ class TimeSeries:
                 # Add the event
                 ts = add_this_event(ts, event_names[-1])
 
-            elif ('remove' in choice_index) and (
-                choice == choice_index['remove']
+            elif ("remove" in choice_index) and (
+                choice == choice_index["remove"]
             ):
                 event_index = get_event_index(ts)
                 try:
@@ -1067,27 +1061,27 @@ class TimeSeries:
                 except IndexError:
                     li.button_dialog(
                         "No event was removed.",
-                        choices=['OK'],
-                        icon='error',
+                        choices=["OK"],
+                        icon="error",
                         **WINDOW_PLACEMENT,
                     )
 
-            elif ('remove_all' in choice_index) and (
-                choice == choice_index['remove_all']
+            elif ("remove_all" in choice_index) and (
+                choice == choice_index["remove_all"]
             ):
                 if (
                     li.button_dialog(
                         "Do you really want to remove all events from this "
                         "TimeSeries?",
-                        ['Yes, remove all events', 'No'],
-                        icon='alert',
+                        ["Yes, remove all events", "No"],
+                        icon="alert",
                         **WINDOW_PLACEMENT,
                     )
                     == 0
                 ):
                     ts.events = []
 
-            elif ('move' in choice_index) and (choice == choice_index['move']):
+            elif ("move" in choice_index) and (choice == choice_index["move"]):
                 event_index = get_event_index(ts)
                 event_name = ts.events[event_index].name
                 try:
@@ -1096,13 +1090,13 @@ class TimeSeries:
                 except IndexError:
                     li.button_dialog(
                         "Could not move this event.",
-                        choices=['OK'],
-                        icon='error',
+                        choices=["OK"],
+                        icon="error",
                         **WINDOW_PLACEMENT,
                     )
 
-            elif ('close' in choice_index) and (
-                choice == choice_index['close']
+            elif ("close" in choice_index) and (
+                choice == choice_index["close"]
             ):
                 plt.close(fig)
                 if not isinteractive:
@@ -1110,8 +1104,8 @@ class TimeSeries:
                 return ts
 
             elif (choice == -1) or (
-                ('cancel' in choice_index)
-                and (choice == choice_index['cancel'])
+                ("cancel" in choice_index)
+                and (choice == choice_index["cancel"])
             ):
                 plt.close(fig)
                 if not isinteractive:
@@ -1135,11 +1129,11 @@ class TimeSeries:
     )
     def ui_add_event(
         self,
-        name: str = 'event',
+        name: str = "event",
         data_key: Union[str, List[str]] = [],
         *,
         multiple_events: bool = False,
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Add one or many events interactively to the TimeSeries.
 
@@ -1163,10 +1157,8 @@ class TimeSeries:
         return self.ui_edit_events(name, data_key)
 
     def sort_events(
-            self,
-            *,
-            unique: bool = True,
-            in_place: bool = False) -> 'TimeSeries':
+        self, *, unique: bool = True, in_place: bool = False
+    ) -> "TimeSeries":
         """
         Sorts the TimeSeries' events from the earliest to the latest.
 
@@ -1234,7 +1226,7 @@ class TimeSeries:
         copy_time_info=True,
         copy_data_info=True,
         copy_events=True,
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Deep copy of a TimeSeries.
 
@@ -1320,8 +1312,8 @@ class TimeSeries:
         """
         # Private argument _raise_on_no_data: Raise a ValueError instead of
         # warning when no data is available to plot.
-        if '_raise_on_no_data' in kwargs:
-            raise_on_no_data = kwargs.pop('_raise_on_no_data')
+        if "_raise_on_no_data" in kwargs:
+            raise_on_no_data = kwargs.pop("_raise_on_no_data")
         else:
             raise_on_no_data = False
 
@@ -1347,8 +1339,8 @@ class TimeSeries:
         axes = plt.gca()
         axes.set_prop_cycle(
             mpl.cycler(linewidth=[1, 2, 3, 4])
-            * mpl.cycler(linestyle=['-', '--', '-.', ':'])
-            * plt.rcParams['axes.prop_cycle']
+            * mpl.cycler(linestyle=["-", "--", "-.", ":"])
+            * plt.rcParams["axes.prop_cycle"]
         )
 
         # Plot the curves
@@ -1362,19 +1354,19 @@ class TimeSeries:
             )
 
         # Add labels
-        plt.xlabel('Time (' + ts.time_info['Unit'] + ')')
+        plt.xlabel("Time (" + ts.time_info["Unit"] + ")")
 
         # Make unique list of units
         unit_set = set()
         for data in ts.data_info:
             for info in ts.data_info[data]:
-                if info == 'Unit':
+                if info == "Unit":
                     unit_set.add(ts.data_info[data][info])
         # Plot this list
-        unit_str = ''
+        unit_str = ""
         for unit in unit_set:
             if len(unit_str) > 0:
-                unit_str += ', '
+                unit_str += ", "
             unit_str += unit
 
         plt.ylabel(unit_str)
@@ -1401,14 +1393,14 @@ class TimeSeries:
                 event_line_y[3 * i_event + 1] = max_y
                 event_line_y[3 * i_event + 2] = np.nan
 
-            plt.plot(event_line_x, event_line_y, ':k')
+            plt.plot(event_line_x, event_line_y, ":k")
 
             if event_names:
                 occurrences = {}  # type:Dict[str, int]
 
                 for event in ts.events:
-                    if event.name == '_':
-                        name = '_'
+                    if event.name == "_":
+                        name = "_"
                     elif event.name in occurrences:
                         occurrences[event.name] += 1
                         name = f"{event.name} {occurrences[event.name]}"
@@ -1420,16 +1412,16 @@ class TimeSeries:
                         event.time,
                         max_y,
                         name,
-                        rotation='vertical',
-                        horizontalalignment='center',
-                        fontsize='small',
+                        rotation="vertical",
+                        horizontalalignment="center",
+                        fontsize="small",
                     )
 
         if legend:
             if len(labels) < 20:
-                legend_location = 'best'
+                legend_location = "best"
             else:
-                legend_location = 'upper right'
+                legend_location = "upper right"
 
             axes.legend(
                 loc=legend_location, ncol=1 + int(len(labels) / 40)
@@ -1618,7 +1610,7 @@ class TimeSeries:
         occurrence = int(occurrence)
 
         if occurrence < 0:
-            raise ValueError('occurrence must be positive')
+            raise ValueError("occurrence must be positive")
 
         # Make a list of event times, with NaNs for events whose name doesn't
         # match what we're looking for.
@@ -1684,7 +1676,7 @@ class TimeSeries:
         else:
             return np.nan
 
-    def get_ts_at_time(self, time: float) -> 'TimeSeries':
+    def get_ts_at_time(self, time: float) -> "TimeSeries":
         """
         Get a one-data subset of the TimeSeries at the nearest time.
 
@@ -1722,7 +1714,7 @@ class TimeSeries:
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    def get_ts_at_event(self, name: str, occurrence: int = 0) -> 'TimeSeries':
+    def get_ts_at_event(self, name: str, occurrence: int = 0) -> "TimeSeries":
         """
         Get a one-data subset of the TimeSeries at the event's nearest time.
 
@@ -1745,7 +1737,7 @@ class TimeSeries:
 
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries before the specified time index.
 
@@ -1794,7 +1786,7 @@ class TimeSeries:
 
     def get_ts_after_index(
         self, index: int, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries after the specified time index.
 
@@ -1840,7 +1832,7 @@ class TimeSeries:
 
     def get_ts_between_indexes(
         self, index1: int, index2: int, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries before two specified time indexes.
 
@@ -1885,7 +1877,7 @@ class TimeSeries:
 
     def get_ts_before_time(
         self, time: float, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries before the specified time.
 
@@ -1927,7 +1919,7 @@ class TimeSeries:
 
     def get_ts_after_time(
         self, time: float, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries after the specified time.
 
@@ -1971,7 +1963,7 @@ class TimeSeries:
 
     def get_ts_between_times(
         self, time1: float, time2: float, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries between two specified times.
 
@@ -2009,7 +2001,7 @@ class TimeSeries:
 
     def get_ts_before_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries before the specified event.
 
@@ -2054,7 +2046,7 @@ class TimeSeries:
 
     def get_ts_after_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries after the specified event.
 
@@ -2105,7 +2097,7 @@ class TimeSeries:
         occurrence2: int = 0,
         *,
         inclusive: bool = False,
-    ) -> 'TimeSeries':
+    ) -> "TimeSeries":
         """
         Get a subset of the TimeSeries between two specified events.
 
@@ -2146,7 +2138,7 @@ class TimeSeries:
 
     def ui_get_ts_between_clicks(
         self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
-    ) -> 'TimeSeries':  # pragma: no cover
+    ) -> "TimeSeries":  # pragma: no cover
         """
         Get a subset of the TimeSeries between two mouse clicks.
 
@@ -2167,11 +2159,11 @@ class TimeSeries:
         fig = plt.figure()
         self.plot(data_keys)
         kineticstoolkit.gui.message(
-            'Click on both sides of the portion to keep.', **WINDOW_PLACEMENT
+            "Click on both sides of the portion to keep.", **WINDOW_PLACEMENT
         )
         plt.pause(0.001)  # Redraw
         points = plt.ginput(2)
-        kineticstoolkit.gui.message('')
+        kineticstoolkit.gui.message("")
         times = [points[0][0], points[1][0]]
         plt.close(fig)
         return self.get_ts_between_times(
@@ -2201,11 +2193,12 @@ class TimeSeries:
         return np.isnan(values)
 
     def fill_missing_samples(
-            self,
-            max_missing_samples: int,
-            *, method: str = 'linear',
-            in_place: bool = False,
-    ) -> 'TimeSeries':
+        self,
+        max_missing_samples: int,
+        *,
+        method: str = "linear",
+        in_place: bool = False,
+    ) -> "TimeSeries":
         """
         Fill missing samples with the given method.
 
@@ -2247,7 +2240,7 @@ class TimeSeries:
             ts = ts_out.get_subset(data)
             ts.data[data] = ts.data[data][is_visible]
             ts.time = ts.time[is_visible]
-            ts = ts.resample(ts_out.time, method, fill_value='extrapolate')
+            ts = ts.resample(ts_out.time, method, fill_value="extrapolate")
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:
@@ -2259,7 +2252,7 @@ class TimeSeries:
                     elif (
                         current_index - hole_start_index > max_missing_samples
                     ):
-                        to_keep[hole_start_index + 1: current_index + 1] = 0
+                        to_keep[hole_start_index + 1 : current_index + 1] = 0
 
                 ts.data[data][to_keep == 0] = np.nan
 
@@ -2267,7 +2260,7 @@ class TimeSeries:
 
         return ts_out
 
-    def shift(self, time: float, *, in_place: bool = False) -> 'TimeSeries':
+    def shift(self, time: float, *, in_place: bool = False) -> "TimeSeries":
         """
         Shift time and events.time.
 
@@ -2293,11 +2286,8 @@ class TimeSeries:
         return ts
 
     def sync_event(
-            self,
-            name: str,
-            occurrence: int = 0,
-            *,
-            in_place: bool = False) -> 'TimeSeries':
+        self, name: str, occurrence: int = 0, *, in_place: bool = False
+    ) -> "TimeSeries":
         """
         Shift time and events.time so that this event is at the new time zero.
 
@@ -2322,7 +2312,7 @@ class TimeSeries:
         ts.shift(-ts.get_event_time(name, occurrence), in_place=True)
         return ts
 
-    def trim_events(self, *, in_place: bool = False) -> 'TimeSeries':
+    def trim_events(self, *, in_place: bool = False) -> "TimeSeries":
         """
         Delete the events that are outside the TimeSeries' time vector.
 
@@ -2376,11 +2366,11 @@ class TimeSeries:
         return ts
 
     def ui_sync(
-            self,
-            data_keys: Union[str, List[str]] = [],
-            ts2: Union['TimeSeries', None] = None,
-            data_keys2: Union[str, List[str]] = []
-    ) -> 'TimeSeries':  # pragma: no cover
+        self,
+        data_keys: Union[str, List[str]] = [],
+        ts2: Union["TimeSeries", None] = None,
+        data_keys2: Union[str, List[str]] = [],
+    ) -> "TimeSeries":  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
 
@@ -2419,14 +2409,14 @@ class TimeSeries:
         """
         ts1 = self.copy()
 
-        fig = plt.figure('ktk.TimeSeries.ui_sync')
+        fig = plt.figure("ktk.TimeSeries.ui_sync")
 
         if ts2 is None:
             # Synchronize ts1 only
             ts1.plot(data_keys)
             choice = kineticstoolkit.gui.button_dialog(
-                'Please zoom on the time zero and press Next.',
-                ['Cancel', 'Next'],
+                "Please zoom on the time zero and press Next.",
+                ["Cancel", "Next"],
                 **WINDOW_PLACEMENT,
             )
             if choice != 1:
@@ -2434,10 +2424,10 @@ class TimeSeries:
                 return ts1
 
             kineticstoolkit.gui.message(
-                'Click on the sync event.', **WINDOW_PLACEMENT
+                "Click on the sync event.", **WINDOW_PLACEMENT
             )
             click = plt.ginput(1)
-            kineticstoolkit.gui.message('')
+            kineticstoolkit.gui.message("")
             plt.close(fig)
             ts1 = ts1.shift(-click[0][0])
 
@@ -2455,79 +2445,79 @@ class TimeSeries:
                 plt.sca(axes[0])
                 axes[0].cla()
                 ts1.plot(data_keys)
-                plt.title('First TimeSeries (ts1)')
+                plt.title("First TimeSeries (ts1)")
                 plt.grid(True)
                 plt.tight_layout()
 
                 plt.sca(axes[1])
                 axes[1].cla()
                 ts2.plot(data_keys2)
-                plt.title('Second TimeSeries (ts2)')
+                plt.title("Second TimeSeries (ts2)")
                 plt.grid(True)
                 plt.tight_layout()
 
                 choice = kineticstoolkit.gui.button_dialog(
-                    'Please select an option.',
+                    "Please select an option.",
                     choices=[
-                        'Zero ts1 only, using ts1',
-                        'Zero ts2 only, using ts2',
-                        'Zero both TimeSeries, using ts1',
-                        'Zero both TimeSeries, using ts2',
-                        'Sync both TimeSeries on a common event',
-                        'Finished',
+                        "Zero ts1 only, using ts1",
+                        "Zero ts2 only, using ts2",
+                        "Zero both TimeSeries, using ts1",
+                        "Zero both TimeSeries, using ts2",
+                        "Sync both TimeSeries on a common event",
+                        "Finished",
                     ],
                     **WINDOW_PLACEMENT,
                 )
 
                 if choice == 0:  # Zero ts1 only
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts1.', **WINDOW_PLACEMENT
+                        "Click on the time zero in ts1.", **WINDOW_PLACEMENT
                     )
                     click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message('')
+                    kineticstoolkit.gui.message("")
 
                     ts1 = ts1.shift(-click_1[0][0])
 
                 elif choice == 1:  # Zero ts2 only
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts2.', **WINDOW_PLACEMENT
+                        "Click on the time zero in ts2.", **WINDOW_PLACEMENT
                     )
                     click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message('')
+                    kineticstoolkit.gui.message("")
 
                     ts2 = ts2.shift(-click_1[0][0])
 
                 elif choice == 2:  # Zero ts1 and ts2 using ts1
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts1.', **WINDOW_PLACEMENT
+                        "Click on the time zero in ts1.", **WINDOW_PLACEMENT
                     )
                     click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message('')
+                    kineticstoolkit.gui.message("")
 
                     ts1 = ts1.shift(-click_1[0][0])
                     ts2 = ts2.shift(-click_1[0][0])
 
                 elif choice == 3:  # Zero ts1 and ts2 using ts2
                     kineticstoolkit.gui.message(
-                        'Click on the time zero in ts2.', **WINDOW_PLACEMENT
+                        "Click on the time zero in ts2.", **WINDOW_PLACEMENT
                     )
                     click_2 = plt.ginput(1)
-                    kineticstoolkit.gui.message('')
+                    kineticstoolkit.gui.message("")
 
                     ts1 = ts1.shift(-click_2[0][0])
                     ts2 = ts2.shift(-click_2[0][0])
 
                 elif choice == 4:  # Sync on a common event
                     kineticstoolkit.gui.message(
-                        'Click on the sync event in ts1.', **WINDOW_PLACEMENT
+                        "Click on the sync event in ts1.", **WINDOW_PLACEMENT
                     )
                     click_1 = plt.ginput(1)
                     kineticstoolkit.gui.message(
-                        'Now click on the same event in ts2.',
+                        "Now click on the same event in ts2.",
                         **WINDOW_PLACEMENT,
                     )
                     click_2 = plt.ginput(1)
-                    kineticstoolkit.gui.message('')
+                    kineticstoolkit.gui.message("")
 
                     ts1 = ts1.shift(-click_1[0][0])
                     ts2 = ts2.shift(-click_2[0][0])
@@ -2538,7 +2528,7 @@ class TimeSeries:
 
         return ts1
 
-    def get_subset(self, data_keys: Union[str, List[str]]) -> 'TimeSeries':
+    def get_subset(self, data_keys: Union[str, List[str]]) -> "TimeSeries":
         """
         Return a subset of the TimeSeries.
 
@@ -2593,12 +2583,13 @@ class TimeSeries:
 
     @unstable
     def resample(
-            self,
-            new_time: np.ndarray,
-            kind: str = 'linear',
-            *,
-            fill_value: Union[np.ndarray, str, None] = None,
-            in_place: bool = False) -> 'TimeSeries':
+        self,
+        new_time: np.ndarray,
+        kind: str = "linear",
+        *,
+        fill_value: Union[np.ndarray, str, None] = None,
+        in_place: bool = False,
+    ) -> "TimeSeries":
         """
         Resample the TimeSeries.
 
@@ -2653,7 +2644,7 @@ class TimeSeries:
         ts = self if in_place else self.copy()
 
         if np.any(np.isnan(new_time)):
-            raise ValueError('new_time must not contain nans')
+            raise ValueError("new_time must not contain nans")
 
         for key in ts.data.keys():
             index = ~ts.isnan(key)
@@ -2685,13 +2676,13 @@ class TimeSeries:
                         time_range = (ts.time[i - 1], np.inf)
                     time_ranges_to_remove.append(time_range)
 
-                if kind == 'pchip':
+                if kind == "pchip":
                     P = sp.interpolate.PchipInterpolator(
                         ts.time[index],
                         ts.data[key][index],
                         axis=0,
                         extrapolate=(
-                            True if fill_value == 'extrapolate' else False
+                            True if fill_value == "extrapolate" else False
                         ),
                     )
                     ts.data[key] = P(new_time)
@@ -2715,13 +2706,14 @@ class TimeSeries:
         return ts
 
     def merge(
-            self,
-            ts: 'TimeSeries',
-            data_keys: Union[str, List[str]] = [],
-            *,
-            resample: bool = False,
-            overwrite: bool = False,
-            in_place: bool = False) -> 'TimeSeries':
+        self,
+        ts: "TimeSeries",
+        data_keys: Union[str, List[str]] = [],
+        *,
+        resample: bool = False,
+        overwrite: bool = False,
+        in_place: bool = False,
+    ) -> "TimeSeries":
         """
         Merge the TimeSeries with another TimeSeries.
 
@@ -2767,7 +2759,7 @@ class TimeSeries:
                 data_keys = [data_keys]
             else:
                 raise TypeError(
-                    'data_keys must be a string or list of strings'
+                    "data_keys must be a string or list of strings"
                 )
 
         # Check if resampling is needed
@@ -2783,20 +2775,17 @@ class TimeSeries:
 
         if must_resample is True and resample is False:
             raise ValueError(
-                'Time vectors do not match, resampling is required.'
+                "Time vectors do not match, resampling is required."
             )
 
         if must_resample is True:
-            ts.resample(ts_out.time, fill_value='extrapolate', in_place=True)
+            ts.resample(ts_out.time, fill_value="extrapolate", in_place=True)
 
         for key in data_keys:
 
             # Check if this key is a duplicate, then continue to next key if
             # required.
-            if (
-                (key in ts_out.data)
-                and (overwrite is False)
-            ):
+            if (key in ts_out.data) and (overwrite is False):
                 pass
 
             else:

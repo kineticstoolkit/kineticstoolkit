@@ -34,14 +34,14 @@ from typing import List
 
 def __dir__() -> List[str]:
     return [
-        'root_folder',
-        'home_folder',
-        'is_pc',
-        'is_mac',
-        'is_linux',
-        'temp_folder',
-        'version',
-        'pythonpath',
+        "root_folder",
+        "home_folder",
+        "is_pc",
+        "is_mac",
+        "is_linux",
+        "temp_folder",
+        "version",
+        "pythonpath",
     ]
 
 
@@ -52,30 +52,30 @@ root_folder = os.path.dirname(os.path.dirname(__file__))
 home_folder = os.path.expanduser("~")
 
 # Kinetics Toolkit version.
-with open(root_folder + '/kineticstoolkit/VERSION', 'r') as fid:
+with open(root_folder + "/kineticstoolkit/VERSION", "r") as fid:
     version = fid.read()
 
 # Development functions enabled in dir listings?
-if os.path.exists('KTK_AUTO_ENABLE_DEV'):
+if os.path.exists("KTK_AUTO_ENABLE_DEV"):
     dev_enabled = False
 else:
     dev_enabled = True
 
 # Operating system
-is_pc = True if platform.system() == 'Windows' else False
-is_mac = True if platform.system() == 'Darwin' else False
-is_linux = True if platform.system() == 'Linux' else False
+is_pc = True if platform.system() == "Windows" else False
+is_mac = True if platform.system() == "Darwin" else False
+is_linux = True if platform.system() == "Linux" else False
 
 # Temporary folder
 try:
-    if is_pc and 'TEMP' in os.environ:
-        _base_temp_folder = os.environ['TEMP']
-        temp_folder = _base_temp_folder + '/kineticstoolkit'
-    elif is_mac and 'TMPDIR' in os.environ:
-        _base_temp_folder = os.environ['TMPDIR']
-        temp_folder = _base_temp_folder + '/kineticstoolkit'
+    if is_pc and "TEMP" in os.environ:
+        _base_temp_folder = os.environ["TEMP"]
+        temp_folder = _base_temp_folder + "/kineticstoolkit"
+    elif is_mac and "TMPDIR" in os.environ:
+        _base_temp_folder = os.environ["TMPDIR"]
+        temp_folder = _base_temp_folder + "/kineticstoolkit"
     else:
-        temp_folder = os.environ['HOME'] + '/.kineticstoolkit'
+        temp_folder = os.environ["HOME"] + "/.kineticstoolkit"
 
     try:
         os.mkdir(temp_folder)
@@ -83,11 +83,11 @@ try:
         pass
 
 except Exception:
-    warnings.warn('Could not set temporary folder.')
-    temp_folder = '.'
+    warnings.warn("Could not set temporary folder.")
+    temp_folder = "."
 
 # Environment, including python path. If PYTHONPATH is defined in Spyder and
 # Spyder is opened as a standalone app, define PYTHONPATH as SPY_PYTHONPATH.
 env = os.environ.copy()
-if 'SPY_PYTHONPATH' in env and 'PYTHONPATH' not in env:
-    env['PYTHONPATH'] = env['SPY_PYTHONPATH']
+if "SPY_PYTHONPATH" in env and "PYTHONPATH" not in env:
+    env["PYTHONPATH"] = env["SPY_PYTHONPATH"]

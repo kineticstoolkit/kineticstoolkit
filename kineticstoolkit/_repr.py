@@ -67,7 +67,7 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
 
     """
     max_width = 79  # How many characters should we print
-    out = ''
+    out = ""
 
     widest = 0
     # Find the widest key name
@@ -83,32 +83,31 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
         key_label = repr(key)
         if quotes is False and isinstance(key_label, str):
             key_label = key_label[1:-1]
-        key_label = (' ' * (widest - len(key_label))
-                     + key_label)
+        key_label = " " * (widest - len(key_label)) + key_label
 
         value = the_dict[key]
 
         # Print the value
         if isinstance(value, dict):
-            value_label = '<dict with ' + str(len(value)) + ' entries>'
+            value_label = "<dict with " + str(len(value)) + " entries>"
         elif isinstance(value, list):
-            value_label = '<list of ' + str(len(value)) + ' items>'
+            value_label = "<list of " + str(len(value)) + " items>"
         elif isinstance(value, np.ndarray):
-            value_label = '<array of shape ' + str(np.shape(value)) + '>'
+            value_label = "<array of shape " + str(np.shape(value)) + ">"
         else:
             value_label = repr(value)
 
         # Remove line breaks and multiple-spaces
-        value_label = ' '.join(value_label.split())
+        value_label = " ".join(value_label.split())
 
         # Printout
         to_print = f"    {key_label}: {value_label}"
 
         if len(to_print) > max_width:
-            to_print = to_print[0:max_width - 3] + '...'
+            to_print = to_print[0 : max_width - 3] + "..."
 
         out += to_print
-        out += '\n'
+        out += "\n"
 
     return out
 
@@ -137,7 +136,7 @@ def _format_class_attributes(obj):
     """
     # Return the type of class (header)
     class_name = type(obj).__name__
-    out = class_name + ' with attributes:\n'
+    out = class_name + " with attributes:\n"
 
     # Return the list of attributes
     out += _format_dict_entries(obj.__dict__, quotes=False)
@@ -152,9 +151,9 @@ def _ktk_format_dict(value, p, cycle):
         if cycle:
             p.pretty("...")
         else:
-            p.text('{\n')
+            p.text("{\n")
             p.text(_format_dict_entries(value))
-            p.text('}')
+            p.text("}")
 
     except:
         p.text(repr(value))

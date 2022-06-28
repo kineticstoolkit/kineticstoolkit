@@ -14,26 +14,25 @@ def test_instanciate_and_to_html5():
 
     # Load markers
     kinematics = ktk.load(
-        ktk.doc.download('inversedynamics_kinematics.ktk.zip')
+        ktk.doc.download("inversedynamics_kinematics.ktk.zip")
     )
 
-    kinematics = kinematics['Kinematics']
+    kinematics = kinematics["Kinematics"]
 
     # The player can be instanciated to show markers
-    pl = ktk.Player(kinematics['Markers'], target=[-5, 0, 0])
+    pl = ktk.Player(kinematics["Markers"], target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 
     # The player can be instanciated to show rigid bodies
-    pl = ktk.Player(kinematics['ReferenceFrames'],
-                    target=[-5, 0, 0])
+    pl = ktk.Player(kinematics["ReferenceFrames"], target=[-5, 0, 0])
     plt.pause(0.01)
     pl.close()
 
     # Or the player can be instanciated to show both markers and rigid bodies
-    pl = ktk.Player(kinematics['Markers'],
-                    kinematics['ReferenceFrames'],
-                    target=[-5, 0, 0])
+    pl = ktk.Player(
+        kinematics["Markers"], kinematics["ReferenceFrames"], target=[-5, 0, 0]
+    )
     plt.pause(0.01)
 
     # Test that to_html5 doesn't crash
@@ -44,4 +43,5 @@ def test_instanciate_and_to_html5():
 
 if __name__ == "__main__":
     import pytest
+
     pytest.main([__file__])

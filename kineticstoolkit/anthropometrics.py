@@ -80,11 +80,11 @@ from warnings import warn
 
 @unstable
 def infer_joint_centers(
-        markers: TimeSeries,
-        /,
-        segment: str,
-        *,
-        sex: str = 'M',
+    markers: TimeSeries,
+    /,
+    segment: str,
+    *,
+    sex: str = "M",
 ) -> TimeSeries:
     """
     Infer joint centers based on anthropometric data.
@@ -138,15 +138,15 @@ def infer_joint_centers(
       https://doi.org/10.4271/1999-01-0959
 
     """
-    if segment == 'Pelvis':
+    if segment == "Pelvis":
         return _infer_pelvis_joint_centers(markers, sex=sex)
-    elif segment == 'Thorax':
+    elif segment == "Thorax":
         return _infer_thorax_joint_centers(markers, sex=sex)
-    elif segment == 'Extremities':
+    elif segment == "Extremities":
         return _infer_extremity_joint_centers(markers)
-    elif segment == '':
+    elif segment == "":
         out = markers.copy()
-        for segment in ['Pelvis', 'Thorax', 'Extremities']:
+        for segment in ["Pelvis", "Thorax", "Extremities"]:
             try:
                 out.merge(
                     infer_joint_centers(
@@ -164,28 +164,25 @@ def infer_joint_centers(
 
 
 def _infer_pelvis_joint_centers(
-        markers: TimeSeries,
-        sex: str = 'M') -> TimeSeries:
+    markers: TimeSeries, sex: str = "M"
+) -> TimeSeries:
     """Infer L5S1 and hip joint centers based on anthropometric data."""
     # Get the required markers
     try:
-        rasis = markers.data['AnteriorSuperiorIliacSpineR']
-        lasis = markers.data['AnteriorSuperiorIliacSpineL']
-        rpsis = markers.data['PosteriorSuperiorIliacSpineR']
-        lpsis = markers.data['PosteriorSuperiorIliacSpineL']
-        sym = markers.data['PubicSymphysis']
+        rasis = markers.data["AnteriorSuperiorIliacSpineR"]
+        lasis = markers.data["AnteriorSuperiorIliacSpineL"]
+        rpsis = markers.data["PosteriorSuperiorIliacSpineR"]
+        lpsis = markers.data["PosteriorSuperiorIliacSpineL"]
+        sym = markers.data["PubicSymphysis"]
     except KeyError:
         raise ValueError(
-            "Not enough markers to reconstruct L5S1 and hip joint centers.")
+            "Not enough markers to reconstruct L5S1 and hip joint centers."
+        )
 
     # Create a local coordinate system at the anterior superior iliac spines
     # midpoint, according to Reed et al.
     masis = 0.5 * (rasis + lasis)
-    lcs = geometry.create_frames(
-        origin=masis,
-        y=lasis - rasis,
-        yz=masis - sym
-    )
+    lcs = geometry.create_frames(origin=masis, y=lasis - rasis, yz=masis - sym)
 
     # Calculate the markers in the local coordinate system
     local_rasis = geometry.get_local_coordinates(rasis, lcs)
@@ -196,47 +193,45 @@ def _infer_pelvis_joint_centers(
 
     # Create a cluster using these locations
     cluster = {
-        'AnteriorSuperiorIliacSpineR':
-            np.nanmean(local_rasis, axis=0)[np.newaxis],
-        'AnteriorSuperiorIliacSpineL':
-            np.nanmean(local_lasis, axis=0)[np.newaxis],
-        'PosteriorSuperiorIliacSpineR':
-            np.nanmean(local_rpsis, axis=0)[np.newaxis],
-        'PosteriorSuperiorIliacSpineL':
-            np.nanmean(local_lpsis, axis=0)[np.newaxis],
-        'PubicSymphysis':
-            np.nanmean(local_sym, axis=0)[np.newaxis],
+        "AnteriorSuperiorIliacSpineR": np.nanmean(local_rasis, axis=0)[
+            np.newaxis
+        ],
+        "AnteriorSuperiorIliacSpineL": np.nanmean(local_lasis, axis=0)[
+            np.newaxis
+        ],
+        "PosteriorSuperiorIliacSpineR": np.nanmean(local_rpsis, axis=0)[
+            np.newaxis
+        ],
+        "PosteriorSuperiorIliacSpineL": np.nanmean(local_lpsis, axis=0)[
+            np.newaxis
+        ],
+        "PubicSymphysis": np.nanmean(local_sym, axis=0)[np.newaxis],
     }
 
     # Track the pelvis using this definition
     tracked_pelvis = kinematics.track_cluster(
-        markers, cluster, include_lcs=True, lcs_name='Pelvis')
+        markers, cluster, include_lcs=True, lcs_name="Pelvis"
+    )
 
     # Pelvis width
-    pw = np.abs(np.nanmean(
-        local_rasis[:, 1] - local_lasis[:, 1]
-    ))
+    pw = np.abs(np.nanmean(local_rasis[:, 1] - local_lasis[:, 1]))
 
     output = markers.copy(copy_data=False, copy_data_info=False)
 
     # Create L5S1JointCenter
-    if sex == 'F':
-        local_position = np.array(
-            [[-0.289 * pw, 0.0, 0.172 * pw, 1.0]]
-        )
-    elif sex == 'M':
-        local_position = np.array(
-            [[-0.264 * pw, 0.0, 0.126 * pw, 1.0]]
-        )
+    if sex == "F":
+        local_position = np.array([[-0.289 * pw, 0.0, 0.172 * pw, 1.0]])
+    elif sex == "M":
+        local_position = np.array([[-0.264 * pw, 0.0, 0.126 * pw, 1.0]])
     else:
         raise ValueError("sex must be either 'M' or 'F'")
 
-    output.data['L5S1JointCenter'] = geometry.get_global_coordinates(
-        local_position, tracked_pelvis.data['Pelvis']
+    output.data["L5S1JointCenter"] = geometry.get_global_coordinates(
+        local_position, tracked_pelvis.data["Pelvis"]
     )
 
     # Create HipJointCenterR if not already included in markers
-    if sex == 'F':
+    if sex == "F":
         local_position = np.array(
             [[-0.197 * pw, -0.372 * pw, -0.270 * pw, 1.0]]
         )
@@ -244,12 +239,12 @@ def _infer_pelvis_joint_centers(
         local_position = np.array(
             [[-0.208 * pw, -0.361 * pw, -0.278 * pw, 1.0]]
         )
-    output.data['HipJointCenterR'] = geometry.get_global_coordinates(
-        local_position, tracked_pelvis.data['Pelvis']
+    output.data["HipJointCenterR"] = geometry.get_global_coordinates(
+        local_position, tracked_pelvis.data["Pelvis"]
     )
 
     # Create HipJointCenterL if not already included in markers
-    if sex == 'F':
+    if sex == "F":
         local_position = np.array(
             [[-0.197 * pw, 0.372 * pw, -0.270 * pw, 1.0]]
         )
@@ -257,30 +252,31 @@ def _infer_pelvis_joint_centers(
         local_position = np.array(
             [[-0.208 * pw, 0.361 * pw, -0.278 * pw, 1.0]]
         )
-    output.data['HipJointCenterL'] = geometry.get_global_coordinates(
-        local_position, tracked_pelvis.data['Pelvis']
+    output.data["HipJointCenterL"] = geometry.get_global_coordinates(
+        local_position, tracked_pelvis.data["Pelvis"]
     )
 
     return output
 
 
 def _infer_thorax_joint_centers(
-        markers: TimeSeries,
-        sex: str = 'M') -> TimeSeries:
+    markers: TimeSeries, sex: str = "M"
+) -> TimeSeries:
     """Infer C7T1 and glenohumeral joint centers based on anthropom. data."""
     # Get the required markers
     try:
-        c7 = markers.data['C7']
-        l5s1 = markers.data['L5S1JointCenter']
-        sup = markers.data['Suprasternale']
-        rac = markers.data['AcromionR']
-        lac = markers.data['AcromionL']
+        c7 = markers.data["C7"]
+        l5s1 = markers.data["L5S1JointCenter"]
+        sup = markers.data["Suprasternale"]
+        rac = markers.data["AcromionR"]
+        lac = markers.data["AcromionL"]
     except KeyError:
         raise ValueError(
-            "Not enough markers to reconstruct C7T1 and GH joint centers.")
+            "Not enough markers to reconstruct C7T1 and GH joint centers."
+        )
         return
 
-    if sex == 'M':
+    if sex == "M":
         c7t1_angle = 8  # deg
         c7t1_ratio = 0.55
         gh_angle = -67  # deg
@@ -295,119 +291,124 @@ def _infer_thorax_joint_centers(
 
     # Create reference frames with x: X7-SUP, y: L5S1-C7, z: right
     c7sup = sup - c7
-    c7_lcs = geometry.create_frames(
-        origin=c7,
-        x=(c7sup),
-        xy=(c7 - l5s1)
-    )
-    rac_lcs = geometry.create_frames(
-        origin=rac,
-        x=(c7sup),
-        xy=(c7 - l5s1)
-    )
-    lac_lcs = geometry.create_frames(
-        origin=lac,
-        x=(c7sup),
-        xy=(c7 - l5s1)
-    )
+    c7_lcs = geometry.create_frames(origin=c7, x=(c7sup), xy=(c7 - l5s1))
+    rac_lcs = geometry.create_frames(origin=rac, x=(c7sup), xy=(c7 - l5s1))
+    lac_lcs = geometry.create_frames(origin=lac, x=(c7sup), xy=(c7 - l5s1))
 
     # Thorax width (tw)
-    tw = np.sqrt(np.sum(
-        np.nanmean(c7sup, axis=0) ** 2))
+    tw = np.sqrt(np.sum(np.nanmean(c7sup, axis=0) ** 2))
 
     # Local positions
-    local_c7t1 = np.array([[
-        c7t1_ratio * tw * np.cos(np.deg2rad(c7t1_angle)),
-        c7t1_ratio * tw * np.sin(np.deg2rad(c7t1_angle)),
-        0.0,
-        1.0,
-    ]])
+    local_c7t1 = np.array(
+        [
+            [
+                c7t1_ratio * tw * np.cos(np.deg2rad(c7t1_angle)),
+                c7t1_ratio * tw * np.sin(np.deg2rad(c7t1_angle)),
+                0.0,
+                1.0,
+            ]
+        ]
+    )
 
-    local_rgh = np.array([[
-        gh_ratio * tw * np.cos(np.deg2rad(gh_angle)),
-        gh_ratio * tw * np.sin(np.deg2rad(gh_angle)),
-        0.0,
-        1.0,
-    ]])
+    local_rgh = np.array(
+        [
+            [
+                gh_ratio * tw * np.cos(np.deg2rad(gh_angle)),
+                gh_ratio * tw * np.sin(np.deg2rad(gh_angle)),
+                0.0,
+                1.0,
+            ]
+        ]
+    )
 
-    local_lgh = np.array([[
-        gh_ratio * tw * np.cos(np.deg2rad(gh_angle)),
-        gh_ratio * tw * np.sin(np.deg2rad(gh_angle)),
-        0.0,
-        1.0,
-    ]])
+    local_lgh = np.array(
+        [
+            [
+                gh_ratio * tw * np.cos(np.deg2rad(gh_angle)),
+                gh_ratio * tw * np.sin(np.deg2rad(gh_angle)),
+                0.0,
+                1.0,
+            ]
+        ]
+    )
 
     # Return global positions
     output = markers.copy(copy_data=False, copy_data_info=False)
-    output.data['C7T1JointCenter'] = geometry.get_global_coordinates(
-        local_c7t1, c7_lcs)
-    output.data['GlenohumeralJointCenterR'] = \
-        geometry.get_global_coordinates(
-            local_rgh, rac_lcs)
-    output.data['GlenohumeralJointCenterL'] = \
-        geometry.get_global_coordinates(
-            local_lgh, lac_lcs)
+    output.data["C7T1JointCenter"] = geometry.get_global_coordinates(
+        local_c7t1, c7_lcs
+    )
+    output.data["GlenohumeralJointCenterR"] = geometry.get_global_coordinates(
+        local_rgh, rac_lcs
+    )
+    output.data["GlenohumeralJointCenterL"] = geometry.get_global_coordinates(
+        local_lgh, lac_lcs
+    )
 
     return output
 
 
-def _infer_extremity_joint_centers(
-        markers: TimeSeries) -> TimeSeries:
+def _infer_extremity_joint_centers(markers: TimeSeries) -> TimeSeries:
     """Infer extremity joint centers based on medial and lateral markers."""
     output = markers.copy(copy_data=False, copy_data_info=False)
     try:
-        output.data['ElbowJointCenterR'] = 0.5 * (
-            markers.data['LateralHumeralEpicondyleR']
-            + markers.data['MedialHumeralEpicondyleR'])
+        output.data["ElbowJointCenterR"] = 0.5 * (
+            markers.data["LateralHumeralEpicondyleR"]
+            + markers.data["MedialHumeralEpicondyleR"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['ElbowJointCenterL'] = 0.5 * (
-            markers.data['LateralHumeralEpicondyleL']
-            + markers.data['MedialHumeralEpicondyleL'])
+        output.data["ElbowJointCenterL"] = 0.5 * (
+            markers.data["LateralHumeralEpicondyleL"]
+            + markers.data["MedialHumeralEpicondyleL"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['KneeJointCenterR'] = 0.5 * (
-            markers.data['LateralFemoralEpicondyleR']
-            + markers.data['MedialFemoralEpicondyleR'])
+        output.data["KneeJointCenterR"] = 0.5 * (
+            markers.data["LateralFemoralEpicondyleR"]
+            + markers.data["MedialFemoralEpicondyleR"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['KneeJointCenterL'] = 0.5 * (
-            markers.data['LateralFemoralEpicondyleL']
-            + markers.data['MedialFemoralEpicondyleL'])
+        output.data["KneeJointCenterL"] = 0.5 * (
+            markers.data["LateralFemoralEpicondyleL"]
+            + markers.data["MedialFemoralEpicondyleL"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['WristJointCenterR'] = 0.5 * (
-            markers.data['RadialStyloidR']
-            + markers.data['UlnarStyloidR'])
+        output.data["WristJointCenterR"] = 0.5 * (
+            markers.data["RadialStyloidR"] + markers.data["UlnarStyloidR"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['WristJointCenterL'] = 0.5 * (
-            markers.data['RadialStyloidL']
-            + markers.data['UlnarStyloidL'])
+        output.data["WristJointCenterL"] = 0.5 * (
+            markers.data["RadialStyloidL"] + markers.data["UlnarStyloidL"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['AnkleJointCenterR'] = 0.5 * (
-            markers.data['LateralMalleolusR']
-            + markers.data['MedialMalleolusR'])
+        output.data["AnkleJointCenterR"] = 0.5 * (
+            markers.data["LateralMalleolusR"]
+            + markers.data["MedialMalleolusR"]
+        )
     except KeyError:
         pass
 
     try:
-        output.data['AnkleJointCenterL'] = 0.5 * (
-            markers.data['LateralMalleolusL']
-            + markers.data['MedialMalleolusL'])
+        output.data["AnkleJointCenterL"] = 0.5 * (
+            markers.data["LateralMalleolusL"]
+            + markers.data["MedialMalleolusL"]
+        )
     except KeyError:
         pass
 
@@ -416,11 +417,12 @@ def _infer_extremity_joint_centers(
 
 @unstable
 def track_local_coordinate_systems(
-        markers: TimeSeries,
-        /,
-        segments: Union[str, Sequence[str]],
-        *,
-        method: int = 1) -> TimeSeries:
+    markers: TimeSeries,
+    /,
+    segments: Union[str, Sequence[str]],
+    *,
+    method: int = 1,
+) -> TimeSeries:
     """
     Create local coordinate system definitions based on static markers.
 
@@ -454,9 +456,21 @@ def track_local_coordinate_systems(
     # If we have no segment or an empty list, go with every segment
     if len(segments) == 0:
         segments = [
-            'Pelvis', 'Thorax', 'HeadNeck', 'ArmR', 'ArmL', 'ForearmR',
-            'ForearmL', 'HandR', 'HandL', 'ThighR', 'ThighL', 'LegR', 'LegL',
-            'FootR', 'FootL',
+            "Pelvis",
+            "Thorax",
+            "HeadNeck",
+            "ArmR",
+            "ArmL",
+            "ForearmR",
+            "ForearmL",
+            "HandR",
+            "HandL",
+            "ThighR",
+            "ThighL",
+            "LegR",
+            "LegL",
+            "FootR",
+            "FootL",
         ]
 
     # If we have a list of segments
@@ -464,9 +478,7 @@ def track_local_coordinate_systems(
         for segment in segments:
             output.merge(
                 track_local_coordinate_systems(
-                    markers,
-                    segment,
-                    method=method
+                    markers, segment, method=method
                 ),
                 in_place=True,
             )
@@ -475,13 +487,13 @@ def track_local_coordinate_systems(
     # If we have a single segment
     segment = segments
 
-    if segment == 'Pelvis':
+    if segment == "Pelvis":
         try:
-            rasis = markers.data['AnteriorSuperiorIliacSpineR']
-            lasis = markers.data['AnteriorSuperiorIliacSpineL']
-            rpsis = markers.data['PosteriorSuperiorIliacSpineR']
-            lpsis = markers.data['PosteriorSuperiorIliacSpineL']
-            l5s1 = markers.data['L5S1JointCenter']
+            rasis = markers.data["AnteriorSuperiorIliacSpineR"]
+            lasis = markers.data["AnteriorSuperiorIliacSpineL"]
+            rpsis = markers.data["PosteriorSuperiorIliacSpineR"]
+            lpsis = markers.data["PosteriorSuperiorIliacSpineL"]
+            l5s1 = markers.data["L5S1JointCenter"]
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the pelvis coordinate system."
@@ -489,55 +501,56 @@ def track_local_coordinate_systems(
 
         mpsis = 0.5 * (rpsis + lpsis)
         output.data[segment] = geometry.create_frames(
-            origin=l5s1, z=(rasis - lasis),
+            origin=l5s1,
+            z=(rasis - lasis),
             xz=(0.5 * (rasis + lasis) - mpsis),
         )
 
-    elif segment == 'Thorax':
+    elif segment == "Thorax":
         try:
-            c7t1 = markers.data['C7T1JointCenter']
-            sup = markers.data['Suprasternale']
-            l5s1 = markers.data['L5S1JointCenter']
+            c7t1 = markers.data["C7T1JointCenter"]
+            sup = markers.data["Suprasternale"]
+            l5s1 = markers.data["L5S1JointCenter"]
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the thorax coordinate system."
             )
 
         output.data[segment] = geometry.create_frames(
-            origin=c7t1, y=(c7t1 - l5s1),
+            origin=c7t1,
+            y=(c7t1 - l5s1),
             xy=(sup - l5s1),
         )
 
-    elif segment == 'HeadNeck':
+    elif segment == "HeadNeck":
         try:
-            c7t1 = markers.data['C7T1JointCenter']
-            sel = markers.data['Sellion']
-            hv = markers.data['HeadVertex']
+            c7t1 = markers.data["C7T1JointCenter"]
+            sel = markers.data["Sellion"]
+            hv = markers.data["HeadVertex"]
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the thorax coordinate system."
             )
 
         output.data[segment] = geometry.create_frames(
-            origin=c7t1, y=(hv - c7t1),
+            origin=c7t1,
+            y=(hv - c7t1),
             xy=(sel - c7t1),
         )
 
-    elif segment in ['ArmR', 'ArmL']:
+    elif segment in ["ArmR", "ArmL"]:
         side = segment[-1]
         try:
-            elbow_center = markers.data[f'ElbowJointCenter{side}']
-            gh = markers.data[f'GlenohumeralJointCenter{side}']
-            if side == 'R':
-                r_ep = markers.data['LateralHumeralEpicondyleR']
-                l_ep = markers.data['MedialHumeralEpicondyleR']
-            elif side == 'L':
-                r_ep = markers.data['MedialHumeralEpicondyleL']
-                l_ep = markers.data['LateralHumeralEpicondyleL']
+            elbow_center = markers.data[f"ElbowJointCenter{side}"]
+            gh = markers.data[f"GlenohumeralJointCenter{side}"]
+            if side == "R":
+                r_ep = markers.data["LateralHumeralEpicondyleR"]
+                l_ep = markers.data["MedialHumeralEpicondyleR"]
+            elif side == "L":
+                r_ep = markers.data["MedialHumeralEpicondyleL"]
+                l_ep = markers.data["LateralHumeralEpicondyleL"]
             else:
-                raise ValueError(
-                    "side must be either 'R' or 'L'"
-                )
+                raise ValueError("side must be either 'R' or 'L'")
 
         except KeyError:
             raise ValueError(
@@ -545,49 +558,47 @@ def track_local_coordinate_systems(
             )
 
         output.data[segment] = geometry.create_frames(
-            origin=gh, y=(gh - elbow_center),
+            origin=gh,
+            y=(gh - elbow_center),
             yz=(r_ep - l_ep),
         )
 
-    elif segment in ['ForearmR', 'ForearmL']:
+    elif segment in ["ForearmR", "ForearmL"]:
         side = segment[-1]
         try:
-            elbow_center = markers.data[f'ElbowJointCenter{side}']
-            wrist_center = markers.data[f'WristJointCenter{side}']
-            if side == 'R':
-                r_st = markers.data['RadialStyloidR']
-                l_st = markers.data['UlnarStyloidR']
-            elif side == 'L':
-                r_st = markers.data['UlnarStyloidL']
-                l_st = markers.data['RadialStyloidL']
+            elbow_center = markers.data[f"ElbowJointCenter{side}"]
+            wrist_center = markers.data[f"WristJointCenter{side}"]
+            if side == "R":
+                r_st = markers.data["RadialStyloidR"]
+                l_st = markers.data["UlnarStyloidR"]
+            elif side == "L":
+                r_st = markers.data["UlnarStyloidL"]
+                l_st = markers.data["RadialStyloidL"]
             else:
-                raise ValueError(
-                    "side must be either 'R' or 'L'"
-                )
+                raise ValueError("side must be either 'R' or 'L'")
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the forearm coordinate system."
             )
 
         output.data[segment] = geometry.create_frames(
-            origin=elbow_center, y=(elbow_center - wrist_center),
+            origin=elbow_center,
+            y=(elbow_center - wrist_center),
             yz=(r_st - l_st),
         )
 
-    elif segment in ['HandR', 'HandL']:
+    elif segment in ["HandR", "HandL"]:
         side = segment[-1]
         try:
-            wrist_center = markers.data[f'WristJointCenter{side}']
-            if side == 'R':
-                r_meta = markers.data['CarpalMetaHead2R']
-                l_meta = markers.data['CarpalMetaHead5R']
-            elif side == 'L':
-                r_meta = markers.data['CarpalMetaHead5L']
-                l_meta = markers.data['CarpalMetaHead2L']
+            wrist_center = markers.data[f"WristJointCenter{side}"]
+            if side == "R":
+                r_meta = markers.data["CarpalMetaHead2R"]
+                l_meta = markers.data["CarpalMetaHead5R"]
+            elif side == "L":
+                r_meta = markers.data["CarpalMetaHead5L"]
+                l_meta = markers.data["CarpalMetaHead2L"]
             else:
-                raise ValueError(
-                    "side must be either 'R' or 'L'"
-                )
+                raise ValueError("side must be either 'R' or 'L'")
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the hand coordinate system."
@@ -595,75 +606,72 @@ def track_local_coordinate_systems(
 
         meta_center = 0.5 * (r_meta + l_meta)
         output.data[segment] = geometry.create_frames(
-            origin=wrist_center, y=(wrist_center - meta_center),
+            origin=wrist_center,
+            y=(wrist_center - meta_center),
             yz=(r_meta - l_meta),
         )
 
-    elif segment in ['ThighR', 'ThighL']:
+    elif segment in ["ThighR", "ThighL"]:
         side = segment[-1]
         try:
-            hip_center = markers.data[f'HipJointCenter{side}']
-            knee_center = markers.data[f'KneeJointCenter{side}']
-            if side == 'R':
-                r_ep = markers.data['LateralFemoralEpicondyleR']
-                l_ep = markers.data['MedialFemoralEpicondyleR']
-            elif side == 'L':
-                r_ep = markers.data['MedialFemoralEpicondyleL']
-                l_ep = markers.data['LateralFemoralEpicondyleL']
+            hip_center = markers.data[f"HipJointCenter{side}"]
+            knee_center = markers.data[f"KneeJointCenter{side}"]
+            if side == "R":
+                r_ep = markers.data["LateralFemoralEpicondyleR"]
+                l_ep = markers.data["MedialFemoralEpicondyleR"]
+            elif side == "L":
+                r_ep = markers.data["MedialFemoralEpicondyleL"]
+                l_ep = markers.data["LateralFemoralEpicondyleL"]
             else:
-                raise ValueError(
-                    "side must be either 'R' or 'L'"
-                )
+                raise ValueError("side must be either 'R' or 'L'")
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the thigh coordinate system."
             )
 
         output.data[segment] = geometry.create_frames(
-            origin=hip_center, y=(hip_center - knee_center),
+            origin=hip_center,
+            y=(hip_center - knee_center),
             yz=(r_ep - l_ep),
         )
 
-    elif segment in ['LegR', 'LegL']:
+    elif segment in ["LegR", "LegL"]:
         side = segment[-1]
         try:
-            knee_center = markers.data[f'KneeJointCenter{side}']
-            ankle_center = markers.data[f'AnkleJointCenter{side}']
-            if side == 'R':
-                r_mal = markers.data['LateralMalleolusR']
-                l_mal = markers.data['MedialMalleolusR']
-            elif side == 'L':
-                r_mal = markers.data['MedialMalleolusL']
-                l_mal = markers.data['LateralMalleolusL']
+            knee_center = markers.data[f"KneeJointCenter{side}"]
+            ankle_center = markers.data[f"AnkleJointCenter{side}"]
+            if side == "R":
+                r_mal = markers.data["LateralMalleolusR"]
+                l_mal = markers.data["MedialMalleolusR"]
+            elif side == "L":
+                r_mal = markers.data["MedialMalleolusL"]
+                l_mal = markers.data["LateralMalleolusL"]
             else:
-                raise ValueError(
-                    "side must be either 'R' or 'L'"
-                )
+                raise ValueError("side must be either 'R' or 'L'")
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the leg coordinate system."
             )
 
         output.data[segment] = geometry.create_frames(
-            origin=knee_center, y=(knee_center - ankle_center),
+            origin=knee_center,
+            y=(knee_center - ankle_center),
             yz=(r_mal - l_mal),
         )
 
-    elif segment in ['FootR', 'FootL']:
+    elif segment in ["FootR", "FootL"]:
         side = segment[-1]
         try:
-            ankle_center = markers.data[f'AnkleJointCenter{side}']
-            calc = markers.data[f'Calcaneus{side}']
-            if side == 'R':
-                r_meta = markers.data['TarsalMetaHead5R']
-                l_meta = markers.data['TarsalMetaHead1R']
-            elif side == 'L':
-                r_meta = markers.data['TarsalMetaHead1L']
-                l_meta = markers.data['TarsalMetaHead5L']
+            ankle_center = markers.data[f"AnkleJointCenter{side}"]
+            calc = markers.data[f"Calcaneus{side}"]
+            if side == "R":
+                r_meta = markers.data["TarsalMetaHead5R"]
+                l_meta = markers.data["TarsalMetaHead1R"]
+            elif side == "L":
+                r_meta = markers.data["TarsalMetaHead1L"]
+                l_meta = markers.data["TarsalMetaHead5L"]
             else:
-                raise ValueError(
-                    "side must be either 'R' or 'L'"
-                )
+                raise ValueError("side must be either 'R' or 'L'")
         except KeyError:
             raise ValueError(
                 "Not enough markers to create the foot coordinate system."
@@ -672,7 +680,8 @@ def track_local_coordinate_systems(
         # Create the local coordinate system
         meta_center = 0.5 * (r_meta + l_meta)
         output.data[segment] = geometry.create_frames(
-            origin=ankle_center, x=(meta_center - calc),
+            origin=ankle_center,
+            x=(meta_center - calc),
             xz=(r_meta - l_meta),
         )
 
@@ -681,11 +690,12 @@ def track_local_coordinate_systems(
 
 @unstable
 def estimate_center_of_mass(
-        markers: TimeSeries,
-        /,
-        segments: Union[str, Sequence[str]],
-        *,
-        sex: str = 'M') -> TimeSeries:
+    markers: TimeSeries,
+    /,
+    segments: Union[str, Sequence[str]],
+    *,
+    sex: str = "M",
+) -> TimeSeries:
     """
     Estimate the segments' center of mass based on anthropometric data.
 
@@ -716,9 +726,21 @@ def estimate_center_of_mass(
     # If we have no segment or an empty list, go with every segment
     if len(segments) == 0:
         segments = [
-            'Pelvis', 'Thorax', 'HeadNeck', 'ArmR', 'ArmL', 'ForearmR',
-            'ForearmL', 'HandR', 'HandL', 'ThighR', 'ThighL', 'LegR', 'LegL',
-            'FootR', 'FootL',
+            "Pelvis",
+            "Thorax",
+            "HeadNeck",
+            "ArmR",
+            "ArmL",
+            "ForearmR",
+            "ForearmL",
+            "HandR",
+            "HandL",
+            "ThighR",
+            "ThighL",
+            "LegR",
+            "LegL",
+            "FootR",
+            "FootL",
         ]
 
     # If we have a list of segments
@@ -734,80 +756,87 @@ def estimate_center_of_mass(
     segment = segments
 
     # Decompose segment name and side
-    if segment not in ['Pelvis', 'Thorax', 'HeadNeck']:
+    if segment not in ["Pelvis", "Thorax", "HeadNeck"]:
         side = segment[-1]
         segment = segment[0:-1]
     else:
-        side = ''
+        side = ""
 
     # Calculate the local coordinate system for this segment
     lcs = track_local_coordinate_systems(markers, segments=(segment + side))
 
-    df = INERTIAL_VALUES['Dumas2007']
+    df = INERTIAL_VALUES["Dumas2007"]
     # Search the inertial value tables for the given segment and sex
-    _ = df.loc[(df['Segment'] == segment) & (df['Gender'] == sex)]
-    constants = _.to_dict('records')[0]
+    _ = df.loc[(df["Segment"] == segment) & (df["Gender"] == sex)]
+    constants = _.to_dict("records")[0]
 
     # Add possible missing markers
-    if 'ProjectedHipJointCenter' in [
-        constants['LengthPoint1'],
-        constants['LengthPoint2'],
+    if "ProjectedHipJointCenter" in [
+        constants["LengthPoint1"],
+        constants["LengthPoint2"],
     ]:
         # Calculate ProjectedHipJointCenter
         local_rhip = geometry.get_local_coordinates(
-            markers.data['HipJointCenterR'],
-            lcs.data['Pelvis'])
+            markers.data["HipJointCenterR"], lcs.data["Pelvis"]
+        )
         local_rhip[:, 2] = 0  # Projection in sagittal plane
         local_lhip = geometry.get_local_coordinates(
-            markers.data['HipJointCenterL'],
-            lcs.data['Pelvis'])
+            markers.data["HipJointCenterL"], lcs.data["Pelvis"]
+        )
         local_lhip[:, 2] = 0  # Projection in sagittal plane
         local_hips = 0.5 * (local_rhip + local_lhip)
 
-        markers.data['ProjectedHipJointCenter'] = \
-            geometry.get_global_coordinates(local_hips, lcs.data['Pelvis'])
+        markers.data[
+            "ProjectedHipJointCenter"
+        ] = geometry.get_global_coordinates(local_hips, lcs.data["Pelvis"])
 
-    if 'CarpalMetaHeadM25' in [
-        constants['LengthPoint1'],
-        constants['LengthPoint2'],
+    if "CarpalMetaHeadM25" in [
+        constants["LengthPoint1"],
+        constants["LengthPoint2"],
     ]:
         # Calculate midpoint of carpal meat head 2 and 5
-        markers.data[f'CarpalMetaHeadM25{side}'] = 0.5 * (
-            markers.data[f'CarpalMetaHead2{side}']
-            + markers.data[f'CarpalMetaHead5{side}']
+        markers.data[f"CarpalMetaHeadM25{side}"] = 0.5 * (
+            markers.data[f"CarpalMetaHead2{side}"]
+            + markers.data[f"CarpalMetaHead5{side}"]
         )
 
-    if 'TarsalMetaHeadM15' in [
-        constants['LengthPoint1'],
-        constants['LengthPoint2'],
+    if "TarsalMetaHeadM15" in [
+        constants["LengthPoint1"],
+        constants["LengthPoint2"],
     ]:
         # Calculate midpoint of carpal meat head 2 and 5
-        markers.data[f'TarsalMetaHeadM15{side}'] = 0.5 * (
-            markers.data[f'TarsalMetaHead1{side}']
-            + markers.data[f'TarsalMetaHead5{side}']
+        markers.data[f"TarsalMetaHeadM15{side}"] = 0.5 * (
+            markers.data[f"TarsalMetaHead1{side}"]
+            + markers.data[f"TarsalMetaHead5{side}"]
         )
 
     # Calculate the segment length
     segment_length = np.sqrt(
         np.sum(
             np.nanmean(
-                markers.data[constants['LengthPoint2'] + side]
-                - markers.data[constants['LengthPoint1'] + side],
+                markers.data[constants["LengthPoint2"] + side]
+                - markers.data[constants["LengthPoint1"] + side],
                 axis=0,
-            ) ** 2
+            )
+            ** 2
         )
     )
 
     # Add COM output
-    output.data[f'{segment}{side}CenterOfMass'] = \
-        geometry.get_global_coordinates(
-            np.array([[
-                segment_length * constants['RelComX'],
-                segment_length * constants['RelComY'],
-                segment_length * constants['RelComZ'],
-                1.0,
-            ]]),
-            lcs.data[segment + side],
+    output.data[
+        f"{segment}{side}CenterOfMass"
+    ] = geometry.get_global_coordinates(
+        np.array(
+            [
+                [
+                    segment_length * constants["RelComX"],
+                    segment_length * constants["RelComY"],
+                    segment_length * constants["RelComZ"],
+                    1.0,
+                ]
+            ]
+        ),
+        lcs.data[segment + side],
     )
 
     return output
@@ -815,9 +844,7 @@ def estimate_center_of_mass(
 
 @unstable
 def estimate_global_center_of_mass(
-        coms: TimeSeries,
-        /,
-        sex: str = 'M'
+    coms: TimeSeries, /, sex: str = "M"
 ) -> TimeSeries:
     """
     Estimate the global center of mass.
@@ -843,35 +870,35 @@ def estimate_global_center_of_mass(
         A TimeSeries with a single element named 'GlobalCenterOfMass'.
 
     """
-    inertial_data = INERTIAL_VALUES['Dumas2007']
+    inertial_data = INERTIAL_VALUES["Dumas2007"]
 
     out = coms.copy(copy_data=False, copy_data_info=False)
-    out.data['GlobalCenterOfMass'] = np.zeros([out.time.shape[0], 4])
+    out.data["GlobalCenterOfMass"] = np.zeros([out.time.shape[0], 4])
 
     cumulative_mass = 0.0
 
     for data in coms.data:
-        segment_name = data.replace('CenterOfMass', '')
-        if segment_name not in ['Thorax', 'HeadNeck', 'Pelvis']:
+        segment_name = data.replace("CenterOfMass", "")
+        if segment_name not in ["Thorax", "HeadNeck", "Pelvis"]:
             # The segment name is terminated by L or R. Remove it.
             segment_name = segment_name[0:-1]
 
         segment_rel_mass = inertial_data.loc[
-            (inertial_data['Segment'] == segment_name)
-            & (inertial_data['Gender'] == sex),
-            'RelMass'
+            (inertial_data["Segment"] == segment_name)
+            & (inertial_data["Gender"] == sex),
+            "RelMass",
         ]
 
         if len(segment_rel_mass) == 1:
 
-            out.data['GlobalCenterOfMass'] += (
+            out.data["GlobalCenterOfMass"] += (
                 float(segment_rel_mass) * coms.data[data]
             )
 
             cumulative_mass += float(segment_rel_mass)
 
-    out.data['GlobalCenterOfMass'] /= cumulative_mass
-    out.data['GlobalCenterOfMass'][:, 3] = 1
+    out.data["GlobalCenterOfMass"] /= cumulative_mass
+    out.data["GlobalCenterOfMass"][:, 3] = 1
 
     return out
 
@@ -880,141 +907,129 @@ def estimate_global_center_of_mass(
 
 #: A link model to help kinematics visualization
 LINKS = {
-    'Pelvis': {
-        'Links': [
-            ['AnteriorSuperiorIliacSpineR', 'AnteriorSuperiorIliacSpineL'],
-            ['AnteriorSuperiorIliacSpineL', 'PosteriorSuperiorIliacSpineL'],
-            ['PosteriorSuperiorIliacSpineL', 'PosteriorSuperiorIliacSpineR'],
-            ['PosteriorSuperiorIliacSpineR', 'AnteriorSuperiorIliacSpineR'],
-
-            ['AnteriorSuperiorIliacSpineR', 'HipJointCenterR'],
-            ['PosteriorSuperiorIliacSpineR', 'HipJointCenterR'],
-            ['AnteriorSuperiorIliacSpineL', 'HipJointCenterL'],
-            ['PosteriorSuperiorIliacSpineL', 'HipJointCenterL'],
-
-            ['AnteriorSuperiorIliacSpineR', 'PubicSymphysis'],
-            ['AnteriorSuperiorIliacSpineL', 'PubicSymphysis'],
-            ['HipJointCenterR', 'PubicSymphysis'],
-            ['HipJointCenterL', 'PubicSymphysis'],
-            ['HipJointCenterL', 'HipJointCenterR'],
+    "Pelvis": {
+        "Links": [
+            ["AnteriorSuperiorIliacSpineR", "AnteriorSuperiorIliacSpineL"],
+            ["AnteriorSuperiorIliacSpineL", "PosteriorSuperiorIliacSpineL"],
+            ["PosteriorSuperiorIliacSpineL", "PosteriorSuperiorIliacSpineR"],
+            ["PosteriorSuperiorIliacSpineR", "AnteriorSuperiorIliacSpineR"],
+            ["AnteriorSuperiorIliacSpineR", "HipJointCenterR"],
+            ["PosteriorSuperiorIliacSpineR", "HipJointCenterR"],
+            ["AnteriorSuperiorIliacSpineL", "HipJointCenterL"],
+            ["PosteriorSuperiorIliacSpineL", "HipJointCenterL"],
+            ["AnteriorSuperiorIliacSpineR", "PubicSymphysis"],
+            ["AnteriorSuperiorIliacSpineL", "PubicSymphysis"],
+            ["HipJointCenterR", "PubicSymphysis"],
+            ["HipJointCenterL", "PubicSymphysis"],
+            ["HipJointCenterL", "HipJointCenterR"],
         ],
-        'Color': [0.25, 0.5, 0.25],
+        "Color": [0.25, 0.5, 0.25],
     },
-    'Trunk': {
-        'Links': [
-            ['L5S1JointCenter', 'C7T1JointCenter'],
-
-            ['C7', 'GlenohumeralJointCenterR'],
-            ['C7', 'GlenohumeralJointCenterL'],
-            ['Suprasternale', 'GlenohumeralJointCenterR'],
-            ['Suprasternale', 'GlenohumeralJointCenterL'],
-
-            ['C7', 'AcromionR'],
-            ['C7', 'AcromionL'],
-            ['Suprasternale', 'AcromionR'],
-            ['Suprasternale', 'AcromionL'],
-
-            ['GlenohumeralJointCenterR', 'AcromionR'],
-            ['GlenohumeralJointCenterL', 'AcromionL'],
-
+    "Trunk": {
+        "Links": [
+            ["L5S1JointCenter", "C7T1JointCenter"],
+            ["C7", "GlenohumeralJointCenterR"],
+            ["C7", "GlenohumeralJointCenterL"],
+            ["Suprasternale", "GlenohumeralJointCenterR"],
+            ["Suprasternale", "GlenohumeralJointCenterL"],
+            ["C7", "AcromionR"],
+            ["C7", "AcromionL"],
+            ["Suprasternale", "AcromionR"],
+            ["Suprasternale", "AcromionL"],
+            ["GlenohumeralJointCenterR", "AcromionR"],
+            ["GlenohumeralJointCenterL", "AcromionL"],
         ],
-        'Color': [0.5, 0.5, 0],
+        "Color": [0.5, 0.5, 0],
     },
-    'HeadNeck': {
-        'Links': [
-            ['Sellion', 'C7T1JointCenter'],
-            ['HeadVertex', 'C7T1JointCenter'],
-            ['Sellion', 'HeadVertex'],
+    "HeadNeck": {
+        "Links": [
+            ["Sellion", "C7T1JointCenter"],
+            ["HeadVertex", "C7T1JointCenter"],
+            ["Sellion", "HeadVertex"],
         ],
-        'Color': [0.5, 0.5, 0.25],
+        "Color": [0.5, 0.5, 0.25],
     },
-    'UpperArms': {
-        'Links': [
-            ['GlenohumeralJointCenterR', 'ElbowJointCenterR'],
-            ['GlenohumeralJointCenterR', 'LateralHumeralEpicondyleR'],
-            ['GlenohumeralJointCenterR', 'MedialHumeralEpicondyleR'],
-            ['LateralHumeralEpicondyleR', 'MedialHumeralEpicondyleR'],
-
-            ['GlenohumeralJointCenterL', 'ElbowJointCenterL'],
-            ['GlenohumeralJointCenterL', 'LateralHumeralEpicondyleL'],
-            ['GlenohumeralJointCenterL', 'MedialHumeralEpicondyleL'],
-            ['LateralHumeralEpicondyleL', 'MedialHumeralEpicondyleL'],
+    "UpperArms": {
+        "Links": [
+            ["GlenohumeralJointCenterR", "ElbowJointCenterR"],
+            ["GlenohumeralJointCenterR", "LateralHumeralEpicondyleR"],
+            ["GlenohumeralJointCenterR", "MedialHumeralEpicondyleR"],
+            ["LateralHumeralEpicondyleR", "MedialHumeralEpicondyleR"],
+            ["GlenohumeralJointCenterL", "ElbowJointCenterL"],
+            ["GlenohumeralJointCenterL", "LateralHumeralEpicondyleL"],
+            ["GlenohumeralJointCenterL", "MedialHumeralEpicondyleL"],
+            ["LateralHumeralEpicondyleL", "MedialHumeralEpicondyleL"],
         ],
-        'Color': [0.5, 0.25, 0],
+        "Color": [0.5, 0.25, 0],
     },
-    'Forearms': {
-        'Links': [
-            ['ElbowJointCenterR', 'WristJointCenterR'],
-            ['RadialStyloidR', 'LateralHumeralEpicondyleR'],
-            ['UlnarStyloidR', 'MedialHumeralEpicondyleR'],
-            ['RadialStyloidR', 'UlnarStyloidR'],
-
-            ['ElbowJointCenterL', 'WristJointCenterL'],
-            ['RadialStyloidL', 'LateralHumeralEpicondyleL'],
-            ['UlnarStyloidL', 'MedialHumeralEpicondyleL'],
-            ['RadialStyloidL', 'UlnarStyloidL'],
+    "Forearms": {
+        "Links": [
+            ["ElbowJointCenterR", "WristJointCenterR"],
+            ["RadialStyloidR", "LateralHumeralEpicondyleR"],
+            ["UlnarStyloidR", "MedialHumeralEpicondyleR"],
+            ["RadialStyloidR", "UlnarStyloidR"],
+            ["ElbowJointCenterL", "WristJointCenterL"],
+            ["RadialStyloidL", "LateralHumeralEpicondyleL"],
+            ["UlnarStyloidL", "MedialHumeralEpicondyleL"],
+            ["RadialStyloidL", "UlnarStyloidL"],
         ],
-        'Color': [0.5, 0, 0],
+        "Color": [0.5, 0, 0],
     },
-    'Hands': {
-        'Links': [
-            ['RadialStyloidR', 'CarpalMetaHead2R'],
-            ['UlnarStyloidR', 'CarpalMetaHead5R'],
-            ['CarpalMetaHead2R', 'CarpalMetaHead5R'],
-
-            ['RadialStyloidL', 'CarpalMetaHead2L'],
-            ['UlnarStyloidL', 'CarpalMetaHead5L'],
-            ['CarpalMetaHead2L', 'CarpalMetaHead5L'],
+    "Hands": {
+        "Links": [
+            ["RadialStyloidR", "CarpalMetaHead2R"],
+            ["UlnarStyloidR", "CarpalMetaHead5R"],
+            ["CarpalMetaHead2R", "CarpalMetaHead5R"],
+            ["RadialStyloidL", "CarpalMetaHead2L"],
+            ["UlnarStyloidL", "CarpalMetaHead5L"],
+            ["CarpalMetaHead2L", "CarpalMetaHead5L"],
         ],
-        'Color': [0.5, 0, 0.25],
+        "Color": [0.5, 0, 0.25],
     },
-    'Tighs': {
-        'Links': [
-            ['HipJointCenterR', 'KneeJointCenterR'],
-            ['HipJointCenterR', 'LateralFemoralEpicondyleR'],
-            ['HipJointCenterR', 'MedialFemoralEpicondyleR'],
-            ['LateralFemoralEpicondyleR', 'MedialFemoralEpicondyleR'],
-
-            ['HipJointCenterL', 'KneeJointCenterL'],
-            ['HipJointCenterL', 'LateralFemoralEpicondyleL'],
-            ['HipJointCenterL', 'MedialFemoralEpicondyleL'],
-            ['LateralFemoralEpicondyleL', 'MedialFemoralEpicondyleL'],
+    "Tighs": {
+        "Links": [
+            ["HipJointCenterR", "KneeJointCenterR"],
+            ["HipJointCenterR", "LateralFemoralEpicondyleR"],
+            ["HipJointCenterR", "MedialFemoralEpicondyleR"],
+            ["LateralFemoralEpicondyleR", "MedialFemoralEpicondyleR"],
+            ["HipJointCenterL", "KneeJointCenterL"],
+            ["HipJointCenterL", "LateralFemoralEpicondyleL"],
+            ["HipJointCenterL", "MedialFemoralEpicondyleL"],
+            ["LateralFemoralEpicondyleL", "MedialFemoralEpicondyleL"],
         ],
-        'Color': [0, 0.5, 0.5],
+        "Color": [0, 0.5, 0.5],
     },
-    'Legs': {
-        'Links': [
-            ['AnkleJointCenterR', 'KneeJointCenterR'],
-            ['LateralMalleolusR', 'LateralFemoralEpicondyleR'],
-            ['MedialMalleolusR', 'MedialFemoralEpicondyleR'],
-            ['LateralMalleolusR', 'MedialMalleolusR'],
-
-            ['AnkleJointCenterL', 'KneeJointCenterL'],
-            ['LateralMalleolusL', 'LateralFemoralEpicondyleL'],
-            ['MedialMalleolusL', 'MedialFemoralEpicondyleL'],
-            ['LateralMalleolusL', 'MedialMalleolusL'],
+    "Legs": {
+        "Links": [
+            ["AnkleJointCenterR", "KneeJointCenterR"],
+            ["LateralMalleolusR", "LateralFemoralEpicondyleR"],
+            ["MedialMalleolusR", "MedialFemoralEpicondyleR"],
+            ["LateralMalleolusR", "MedialMalleolusR"],
+            ["AnkleJointCenterL", "KneeJointCenterL"],
+            ["LateralMalleolusL", "LateralFemoralEpicondyleL"],
+            ["MedialMalleolusL", "MedialFemoralEpicondyleL"],
+            ["LateralMalleolusL", "MedialMalleolusL"],
         ],
-        'Color': [0, 0.25, 0.5],
+        "Color": [0, 0.25, 0.5],
     },
-    'Feets': {
-        'Links': [
-            ['CalcaneusR', 'TarsalMetaHead1R'],
-            ['CalcaneusR', 'TarsalMetaHead5R'],
-            ['MedialMalleolusR', 'TarsalMetaHead1R'],
-            ['LateralMalleolusR', 'TarsalMetaHead5R'],
-            ['CalcaneusR', 'MedialMalleolusR'],
-            ['CalcaneusR', 'LateralMalleolusR'],
-            ['TarsalMetaHead1R', 'TarsalMetaHead5R'],
-
-            ['CalcaneusL', 'TarsalMetaHead1L'],
-            ['CalcaneusL', 'TarsalMetaHead5L'],
-            ['MedialMalleolusL', 'TarsalMetaHead1L'],
-            ['LateralMalleolusL', 'TarsalMetaHead5L'],
-            ['CalcaneusL', 'MedialMalleolusL'],
-            ['CalcaneusL', 'LateralMalleolusL'],
-            ['TarsalMetaHead1L', 'TarsalMetaHead5L'],
+    "Feets": {
+        "Links": [
+            ["CalcaneusR", "TarsalMetaHead1R"],
+            ["CalcaneusR", "TarsalMetaHead5R"],
+            ["MedialMalleolusR", "TarsalMetaHead1R"],
+            ["LateralMalleolusR", "TarsalMetaHead5R"],
+            ["CalcaneusR", "MedialMalleolusR"],
+            ["CalcaneusR", "LateralMalleolusR"],
+            ["TarsalMetaHead1R", "TarsalMetaHead5R"],
+            ["CalcaneusL", "TarsalMetaHead1L"],
+            ["CalcaneusL", "TarsalMetaHead5L"],
+            ["MedialMalleolusL", "TarsalMetaHead1L"],
+            ["LateralMalleolusL", "TarsalMetaHead5L"],
+            ["CalcaneusL", "MedialMalleolusL"],
+            ["CalcaneusL", "LateralMalleolusL"],
+            ["TarsalMetaHead1L", "TarsalMetaHead5L"],
         ],
-        'Color': [0.25, 0.0, 0.75],
+        "Color": [0.25, 0.0, 0.75],
     },
 }
 
@@ -1023,11 +1038,11 @@ LINKS = {
 INERTIAL_VALUES = {}
 
 # Dumas2007
-_ = pd.read_csv(config.root_folder + '/data/anthropometrics_dumas_2007.csv')
-_[['RelIXY', 'RelIXZ', 'RelIYZ']] = (
-    _[['RelIXY', 'RelIXZ', 'RelIYZ']].applymap(lambda s: complex(s))
+_ = pd.read_csv(config.root_folder + "/data/anthropometrics_dumas_2007.csv")
+_[["RelIXY", "RelIXZ", "RelIYZ"]] = _[["RelIXY", "RelIXZ", "RelIYZ"]].applymap(
+    lambda s: complex(s)
 )
-INERTIAL_VALUES['Dumas2007'] = _
+INERTIAL_VALUES["Dumas2007"] = _
 
 
 module_locals = locals()
