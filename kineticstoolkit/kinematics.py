@@ -487,6 +487,7 @@ def track_cluster(
 
     """
     out = markers.copy(copy_data=False, copy_data_info=False)
+    unit = _get_marker_unit(markers)
 
     # Track the cluster
     frames = _track_cluster_frames(markers, cluster)
@@ -495,6 +496,8 @@ def track_cluster(
         out.data[marker] = geometry.get_global_coordinates(
             cluster[marker], frames
         )
+        if unit is not None:
+            out.add_data_info(marker, "Unit", unit, in_place=True)
 
     if include_lcs:
         out.data[lcs_name] = frames
@@ -527,6 +530,27 @@ def _track_cluster_frames(
     # Track the cluster
     frames = geometry.register_points(global_points, stacked_local_points)
     return frames
+
+
+def _get_marker_unit(markers: TimeSeries) -> Union[None, str]:
+    """Get markers unit, raise ValueError if not all have the same unit."""
+    unit = None
+    for marker in markers.data:
+        try:
+            this_unit = markers.data_info[marker]["Unit"]
+        except KeyError:
+            this_unit = None
+
+        if this_unit is not None:
+            if unit is None:
+                unit = this_unit
+            else:
+                if unit != this_unit:
+                    raise ValueError(
+                        "All markers must have the same unit. However, this "
+                        f"TimeSeries has both {unit} and {this_unit}."
+                    )
+    return unit
 
 
 @unstable

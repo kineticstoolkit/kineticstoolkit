@@ -253,6 +253,10 @@ def test_reconstruction():
             markers_probing, clusters["Probe"]
         )
 
+        # Test bugfix #85
+        # Units and other data_info lost in kinetics.track_cluster()
+        assert markers_probing.data_info["ProbeTip"]["Unit"] == "m"
+
         # Extend the cluster
         markers_probing.rename_data("ProbeTip", point_name, in_place=True)
         cluster = ktk.kinematics.extend_cluster(
