@@ -108,6 +108,7 @@ def test_read_write_c3d_file():
 
 def test_reconstruction_deprecated():
     """Simplified copy of the tutorial."""
+
     # Read the markers
     markers = ktk.kinematics.read_c3d_file(
         ktk.doc.download("kinematics_racing_propulsion.c3d")
@@ -171,7 +172,8 @@ def test_reconstruction_deprecated():
         )
 
     rigid_body_definitions["ArmR"]["AcromionR"] = process_probing_acquisition(
-        ktk.doc.download("kinematics_racing_probing_acromion_R.c3d"), "ArmR"
+        ktk.doc.download("kinematics_racing_probing_acromion_R.c3d"),
+        "ArmR",
     )
 
     rigid_body_definitions["ArmR"][

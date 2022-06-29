@@ -28,26 +28,17 @@ __license__ = "Apache 2.0"
 import warnings
 import importlib
 import pkgutil
-import os
-from typing import List, Optional, Set, Sequence
-
-
-# def __getattr__(module_name):
-#     """Return an helpful message in case an extension was not loaded."""
-#     raise ModuleNotFoundError(
-#         f"The extension kineticstoolkit_{module_name} is not loaded. "
-#         f"You can load extensions using "
-#         f"`ktk.ext.load_extensions()`, or by "
-#         f"importing Kinetics Toolkit in lab mode "
-#         f"using `import kineticstoolkit.lab as ktk`. If this error still "
-#         f"happens, make sure that kineticstoolkit_{module_name} is correctly "
-#         f"installed."
-#     )
+from typing import List, Set
 
 
 def _import_extensions() -> List[str]:
     """
     Import all installed kineticstoolkit extensions.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.8, is still experimental and
+    may change signature or behaviour in the future.
 
     Any module that begins by 'kineticstoolkit_' and that is on PYTHONPATH will
     be imported in the kineticstoolkit.ext namespace.
@@ -55,17 +46,6 @@ def _import_extensions() -> List[str]:
     Returns
     -------
     A list of the imported extension names.
-
-    To test an extension in development that is not yet installed, start by
-    adding the extension's folder to the PYTHONPATH. This folder is the outer
-    one: it contains the folder than contains the __init__.py file. For
-    example, for an extension named kineticstoolkit_awesomestuff located in
-    the folder extension_folder:
-
-        import kineticstoolkit as ktk
-        import sys
-        sys.path.append('extension_folder')
-        ktk.import_extensions()
 
     """
     for finder, name, ispkg in pkgutil.iter_modules():
@@ -88,7 +68,7 @@ imported_extensions = set()  # type: Set[str]
 
 
 def __dir__():
-    return imported_extensions
+    return list(imported_extensions)
 
 
 if __name__ == "__main__":  # pragma: no cover
