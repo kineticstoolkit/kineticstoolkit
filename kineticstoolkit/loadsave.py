@@ -32,7 +32,6 @@ from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.decorators import directory
 import kineticstoolkit.config
 
-import scipy.io as spio
 import os
 import numpy as np
 import pandas as pd
@@ -220,8 +219,25 @@ def _load_object_hook(obj):
         return obj
 
 
-def _load_ktk_zip(filename, include_metadata=False):
-    """Read the ktk.zip file format."""
+def load(filename: str, *, include_metadata: bool = False) -> Any:
+    """
+    Load a ktk.zip file.
+
+    Load a data file as saved using the ktk.save function.
+
+    Parameters
+    ----------
+    filename
+        The path of the zip file to load.
+    include_metadata
+        Optional. If True, the output is a tuple of this form:
+        (data, metadata).
+
+    Returns
+    -------
+    Any
+        The loaded variable.
+    """
     archive = zipfile.ZipFile(filename, "r")
 
     data = json.loads(
@@ -237,252 +253,6 @@ def _load_ktk_zip(filename, include_metadata=False):
 
     else:
         return data
-
-
-def load(filename: str) -> Any:
-    """
-    Load a ktk.zip file.
-
-    Load a data file as saved using the ktk.save function.
-
-    Parameters
-    ----------
-    filename : str
-        The path of the zip file to load.
-
-    Returns
-    -------
-    Any
-        The loaded variable.
-    """
-    # NOTE: THIS FUNCTION CAN ALSO LOAD MAT FILES, BUT THIS IS A TRANSITIONAL
-    # FEATURE FOR MY LAB'S MIGRATION FROM MATLAB TO PYTHON. PLEASE DO NOT
-    # RELY ON THIS FEATURE AS IT COULD BE REMOVED SOON.
-    # Check hdf5storage for a nice alternative.
-    if filename is None:
-        raise ValueError("filename is empty.")
-    if not isinstance(filename, str):
-        raise ValueError("filename must be a string.")
-
-    if filename.lower().endswith(".zip"):
-        return _load_ktk_zip(filename)
-
-    elif filename.lower().endswith(".mat"):
-        return _loadmat(filename)  # pragma: no cover
-
-    else:
-        raise ValueError("The file must be either zip or mat.")
-
-
-def _loadmat(filename):  # pragma: no cover
-    """
-    Load a Matlab's MAT file.
-
-    Parameters
-    ----------
-    filename : str
-        Path of the MAT file to load.
-
-    Returns
-    -------
-    The saved variable.
-    """
-    # Load the Matlab file
-    data = spio.loadmat(filename, struct_as_record=False, squeeze_me=True)
-
-    # Correct the keys
-    data = _recursive_matstruct_to_dict(data)
-
-    # Return contents and metadata if it exists, if not return data as is.
-    if ("contents" in data) and ("metadata" in data):
-
-        # Since it was saved using ktksave, then also convert structures of
-        # timeseries to ktk.TimeSeries.
-        contents = data["contents"]
-        # metadata = data['metadata']  # Not sure what to do with it yet.
-        contents = _convert_to_timeseries(contents)
-        contents = _convert_cell_arrays_to_lists(contents)
-        return contents
-    else:
-        return data
-
-
-def _convert_cell_arrays_to_lists(the_input):  # pragma: no cover
-    """
-    Convert cell arrays to lists.
-
-    This function recursively goes into the_input and checks for dicts that
-    contains a 'OriginalClass' == 'cell' field. These dicts are then converted
-    to lists.
-    """
-    if isinstance(the_input, dict):
-        if ("OriginalClass" in the_input) and the_input[
-            "OriginalClass"
-        ] == "cell":
-            # This should be converted to a list.
-            # Let's try with a single dimension list. If it fails, try as a
-            # bidimensional list.
-            try:
-                length = len(the_input.keys()) - 1
-                the_list = []
-                for i_cell in range(length):
-                    the_list.append(
-                        _convert_cell_arrays_to_lists(
-                            the_input[f"cell{i_cell+1}"]
-                        )
-                    )
-                the_input = the_list
-
-            except KeyError:
-                # Convert to a dict with addresses in keys
-
-                def extract_address(key):
-                    if key != "OriginalClass":
-                        return key[4:].split("_")
-                    else:
-                        return None
-
-                # Get the number of rows and columns
-                n_rows = 0
-                n_cols = 0
-                for cell in the_input.keys():
-                    address = extract_address(cell)
-                    if address is not None:
-                        n_rows = max(n_rows, int(address[0]))
-                        n_cols = max(n_cols, int(address[1]))
-
-                # Create and populate the list
-                the_list = [
-                    [None for i_col in range(n_cols)]
-                    for i_row in range(n_rows)
-                ]
-                for cell in the_input.keys():
-                    address = extract_address(cell)
-                    if address is not None:
-                        the_list[int(address[0]) - 1][
-                            int(address[1]) - 1
-                        ] = _convert_cell_arrays_to_lists(the_input[cell])
-
-                the_input = the_list
-
-        else:
-            for key in the_input.keys():
-                the_input[key] = _convert_cell_arrays_to_lists(the_input[key])
-    elif isinstance(the_input, list):
-        for i in range(len(the_input)):
-            the_input[key] = _convert_cell_arrays_to_lists(the_input[key])
-
-    return the_input
-
-
-def _convert_to_timeseries(the_input):  # pragma: no cover
-    """
-    Convert dicts of Matlab timeseries to Kinetics Toolkit TimeSeries.
-
-    This function recursively goes into the_input and checks for dicts that
-    result from obvious Matlab's structures of timeseries. These structures are
-    converted to Kinetics Toolkit Timeseries.
-
-    Parameters
-    ----------
-    the_input : any variable
-        The input to be checked, usually a dict.
-
-    Returns
-    -------
-    A copy of the input, with the converted timeseries.
-    """
-    if isinstance(the_input, dict):
-
-        # Check if this dict should become a timeseries
-        is_a_timeseries = True
-
-        for the_key in the_input:
-            if (
-                isinstance(the_input[the_key], dict)
-                and ("OriginalClass" in the_input[the_key])
-                and (the_input[the_key]["OriginalClass"] == "timeseries")
-            ):
-                pass
-            else:
-                is_a_timeseries = False
-
-        if is_a_timeseries is True:
-            # We checked if each key is a Matlab timeseries and it is.
-            # So we get here.
-            the_output = TimeSeries()
-            for the_key in the_input:
-
-                if (
-                    isinstance(the_input[the_key], dict)
-                    and ("OriginalClass" in the_input[the_key])
-                    and (the_input[the_key]["OriginalClass"] == "timeseries")
-                ):
-                    # This is a matlab timeseries.
-
-                    # Extract Time
-                    the_output.time = the_input[the_key]["Time"]
-
-                    # Extract Data
-                    the_data = the_input[the_key]["Data"]
-
-                    if the_input[the_key]["IsTimeFirst"] is True:
-                        the_output.data[the_key] = the_data
-                    else:  # We must reshape to ensure time is on first dim.
-                        the_shape = the_data.shape
-                        if len(the_shape) == 2:
-                            the_output.data[the_key] = the_data.transpose(
-                                (1, 0)
-                            )
-                        elif len(the_shape) == 3:
-                            the_output.data[the_key] = the_data.transpose(
-                                (2, 0, 1)
-                            )
-                        else:
-                            the_output.data[the_key] = the_data
-
-                    # Extract Events
-                    for event in the_input[the_key]["Events"]:
-                        the_output.add_event(event["Time"], event["Name"])
-
-            return the_output
-
-        else:
-            # It is only a dict, not a dict of matlab timeseries.
-            for the_key in the_input:
-                the_input[the_key] = _convert_to_timeseries(the_input[the_key])
-            return the_input
-
-    elif isinstance(the_input, list):
-        for i in range(len(the_input)):
-            the_input[i] = _convert_to_timeseries(the_input[i])
-        return the_input
-
-    else:
-        return the_input
-
-
-def _recursive_matstruct_to_dict(variable):  # pragma: no cover
-    """Recursively converts Mat-objects in dicts or arrays to nested dicts."""
-    if isinstance(variable, spio.matlab.mio5_params.mat_struct):
-        variable = _todict(variable)
-        variable = _recursive_matstruct_to_dict(variable)
-    elif isinstance(variable, dict):
-        for key in variable:
-            variable[key] = _recursive_matstruct_to_dict(variable[key])
-    elif isinstance(variable, np.ndarray):
-        for index in np.ndindex(np.shape(variable)):
-            variable[index] = _recursive_matstruct_to_dict(variable[index])
-    return variable
-
-
-def _todict(variable):  # pragma: no cover
-    """Construct dicts from Mat-objects."""
-    dict = {}
-    for strg in variable._fieldnames:
-        elem = variable.__dict__[strg]
-        dict[strg] = elem
-    return dict
 
 
 module_locals = locals()
