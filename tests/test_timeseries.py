@@ -567,6 +567,37 @@ def test_copy():
     assert ts2.events[2].time == 100
 
 
+# def test_bugfix_59():
+#     """
+#     Test bugfix #59.
+
+#     TimeSeries.to_dataframe(): Bad columns in output DataFrame when data is
+#     empty
+#     """
+
+#     df = pd.DataFrame(
+#         columns=[
+#             "Data0",
+#             "Data1[0,0]",
+#             "Data1[0,1]",
+#             "Data1[1,0]",
+#             "Data1[1,1]",
+#         ]
+#     )
+#     df["Data0"] = np.array([])
+#     df["Data1[0,0]"] = np.array([])
+#     df["Data1[0,1]"] = np.array([])
+#     df["Data1[1,0]"] = np.array([])
+#     df["Data1[1,1]"] = np.array([])
+
+#     ts = ktk.TimeSeries.from_dataframe(df)
+#     assert ts.data["Data0"].shape == (0,)
+#     assert ts.data["Data1"].shape == (0, 2, 2)
+
+#     df2 = ts.to_dataframe()
+#     assert np.all(df == df2)
+
+
 if __name__ == "__main__":
     import pytest
 

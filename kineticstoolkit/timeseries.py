@@ -247,11 +247,11 @@ def dict_of_arrays_to_dataframe(
 
         if original_data.shape[0] > 0:  # Not empty
 
-            original_data_shape = np.shape(original_data)
-            data_length = np.shape(original_data)[0]
+            original_data_shape = original_data.shape
+            data_length = original_data.shape[0]
 
             reshaped_data = np.reshape(original_data, (data_length, -1))
-            reshaped_data_shape = np.shape(reshaped_data)
+            reshaped_data_shape = reshaped_data.shape
 
             df_data = pd.DataFrame(reshaped_data)
 
