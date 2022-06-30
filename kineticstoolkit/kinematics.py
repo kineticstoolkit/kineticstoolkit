@@ -29,20 +29,12 @@ import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.decorators import unstable, directory, deprecated
 from os.path import exists
-from typing import Sequence, Dict, Any, List, Union
+from typing import Sequence, Dict, Union
 from copy import deepcopy
 
 import numpy as np
 import warnings
 import struct  # To unpack data from N3D files
-
-try:
-    import ezc3d
-except ModuleNotFoundError:
-    warnings.warn(
-        "Could not load ezc3d. Function kinematics.read_c3d_file "
-        "will not work."
-    )
 
 
 def read_c3d_file(filename: str) -> TimeSeries:
@@ -73,6 +65,15 @@ def read_c3d_file(filename: str) -> TimeSeries:
       possible that read_c3d_file misses some corner cases.
 
     """
+    try:
+        import ezc3d
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "The optional module ezc3d is not installed, but it is required "
+            "to use this function. Please install it using: "
+            "conda install -c conda-forge ezc3d"
+        )
+
     # Create the reader
     if isinstance(filename, str) and exists(filename):
         reader = ezc3d.c3d(filename)
@@ -135,6 +136,15 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     write_c3d_file. https://github.com/pyomeca/ezc3d
 
     """
+    try:
+        import ezc3d
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "The optional module ezc3d is not installed, but it is required "
+            "to use this function. Please install it using: "
+            "conda install -c conda-forge ezc3d"
+        )
+
     sample_rate = (markers.time.shape[0] - 1) / (
         markers.time[-1] - markers.time[0]
     )

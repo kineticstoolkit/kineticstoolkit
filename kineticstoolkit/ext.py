@@ -35,17 +35,17 @@ def _import_extensions() -> List[str]:
     """
     Import all installed kineticstoolkit extensions.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.8, is still experimental and
-    may change signature or behaviour in the future.
-
     Any module that begins by 'kineticstoolkit_' and that is on PYTHONPATH will
     be imported in the kineticstoolkit.ext namespace.
 
     Returns
     -------
     A list of the imported extension names.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.8, is still experimental and
+    may change signature or behaviour in the future.
 
     """
     for finder, name, ispkg in pkgutil.iter_modules():
