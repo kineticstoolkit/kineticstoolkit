@@ -38,7 +38,7 @@ from kineticstoolkit.player import Player  # noqa
 
 # Import functions
 from kineticstoolkit.tools import start_lab_mode  # noqa
-from kineticstoolkit.files import load, save  # noqa
+from kineticstoolkit.files import load, save, read_c3d  # noqa
 from kineticstoolkit import _repr  # noqa
 from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
 

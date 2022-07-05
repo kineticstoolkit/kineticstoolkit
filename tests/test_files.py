@@ -109,6 +109,12 @@ def test_save_load():
     assert d == c
 
 
+def test_read_c3d():
+    """Test read_c3d."""
+    filename = ktk.doc.download("walk.c3d")
+    c3d = ktk.read_c3d(filename)
+
+
 if __name__ == "__main__":
     import pytest
 

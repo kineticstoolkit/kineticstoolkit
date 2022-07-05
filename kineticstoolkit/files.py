@@ -42,7 +42,7 @@ import time
 import getpass
 import zipfile
 
-from typing import Any
+from typing import Any, Dict, Union
 
 
 def __dir__():  # pragma: no cover
@@ -256,6 +256,117 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 
     else:
         return data
+
+
+def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
+    """
+    Read point and analog data from a C3D file.
+
+    Point positions are returned in a TimeSeries in output['Points'], where
+    each marker corresponds to a data key. Each marker position is expressed
+    in this form:
+
+    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
+
+    Analog data is returned in a TimeSeries in output['Analogs']. If the C3d
+    file does not contain analog data, output['Analogs'] = None.
+
+    Parameters
+    ----------
+    filename
+        Path of the C3D file
+
+    Notes
+    -----
+    - This function relies on `ezc3d`, which is available on
+      conda-forge and on git-hub. Please install ezc3d before using
+      read_c3d_file. https://github.com/pyomeca/ezc3d
+
+    - The point unit must be either mm or m. In both cases, the final unit
+      returned in the output TimeSeries is m.
+
+    - As for any instrument, please check that your data loads correctly on
+      your first use (e.g., sampling frequency, position unit). It is
+      possible that read_c3d misses some corner cases.
+
+    """
+    try:
+        import ezc3d
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "The optional module ezc3d is not installed, but it is required "
+            "to use this function. Please install it using: "
+            "conda install -c conda-forge ezc3d"
+        )
+
+    # Create the reader
+    if isinstance(filename, str) and os.path.exists(filename):
+        reader = ezc3d.c3d(filename)
+    else:
+        raise FileNotFoundError(f"File {filename} was not found.")
+
+    # ---------------------------------
+    # Create the points TimeSeries
+    points = TimeSeries()
+
+    # Get the marker label names and create a timeseries data entry for each
+    # Get the labels
+    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
+    point_rate = reader["parameters"]["POINT"]["RATE"]["value"][0]
+    point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
+    descriptions = reader["parameters"]["POINT"]["DESCRIPTIONS"]["value"]
+
+    if point_unit == "mm":
+        point_factor = 0.001
+    elif point_unit == "m":
+        point_factor = 1
+    else:
+        raise (ValueError("Point unit must be 'm' or 'mm'."))
+
+    for i_label, label in enumerate(labels):
+        # Strip leading and ending spaces
+        key = label.strip()
+        points.data[key] = np.array(
+            [point_factor, point_factor, point_factor, 1]
+            * reader["data"]["points"][:, i_label, :].T
+        )
+        points = points.add_data_info(key, "Unit", "m")
+        if descriptions[i_label] != "":
+            points.add_data_info(
+                key, "Description", descriptions[i_label], in_place=True
+            )
+
+    points.time = np.arange(points.data[key].shape[0]) / point_rate
+
+    # ---------------------------------
+    # Create the analogs TimeSeries
+
+    labels = reader["parameters"]["ANALOG"]["LABELS"]["value"]
+    analog_rate = reader["parameters"]["ANALOG"]["RATE"]["value"][0]
+    descriptions = reader["parameters"]["ANALOG"]["DESCRIPTIONS"]["value"]
+    units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
+
+    if len(labels) == 0:  # There are no analogs
+        analogs = None
+    else:
+        analogs = TimeSeries()
+
+        for i_label, label in enumerate(labels):
+            # Strip leading and ending spaces
+            key = label.strip()
+            analogs.data[key] = reader["data"]["analogs"][0, i_label].T
+            if units[i_label] != "":
+                analogs.add_data_info(
+                    key, "Unit", units[i_label], in_place=True
+                )
+            if descriptions[i_label] != "":
+                analogs.add_data_info(
+                    key, "Description", descriptions[i_label], in_place=True
+                )
+
+        analogs.time = np.arange(analogs.data[key].shape[0]) / analog_rate
+
+    return {"Points": points, "Analogs": analogs}
 
 
 if __name__ == "__main__":  # pragma: no cover
