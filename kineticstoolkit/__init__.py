@@ -32,9 +32,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import os
-
-
 listing = []
 unstable_listing = []
 
@@ -91,36 +88,10 @@ from kineticstoolkit import dev  # noqa
 
 unstable_listing.append("dev")
 
-try:
-    from kineticstoolkit import inversedynamics  # noqa
+from kineticstoolkit import ext  # noqa
 
-    unstable_listing.append("inversedynamics")
-except:
-    pass
-
-try:
-    from kineticstoolkit import emg  # noqa
-
-    unstable_listing.append("emg")
-except:
-    pass
-
-try:
-    from kineticstoolkit import anthropometrics  # noqa
-
-    unstable_listing.append("anthropometrics")
-except:
-    pass
-
-try:
-    from kineticstoolkit import ext  # noqa
-
-    unstable_listing.append("ext")
-    from kineticstoolkit.ext import _import_extensions as import_extensions
-
-    unstable_listing.append("import_extensions")
-except:
-    pass
+listing.append("ext")
+from kineticstoolkit.ext import _import_extensions as import_extensions
 
 
 from kineticstoolkit import config  # noqa
