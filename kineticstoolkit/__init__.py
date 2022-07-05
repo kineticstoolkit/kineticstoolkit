@@ -32,100 +32,45 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import os
-
-
-listing = []
-unstable_listing = []
-
-
-# --- Import released modules and functions
+# Import classes
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
-
-listing.append("TimeSeries")
-listing.append("TimeSeriesEvent")
-
-from kineticstoolkit.tools import start_lab_mode  # noqa
-
-listing.append("start_lab_mode")
-
 from kineticstoolkit.player import Player  # noqa
 
-listing.append("Player")
-
-from kineticstoolkit.loadsave import load, save  # noqa
-
-listing.append("load")
-listing.append("save")
-
-from kineticstoolkit import filters  # noqa
-
-listing.append("filters")
-
-from kineticstoolkit import kinematics  # noqa
-
-listing.append("kinematics")
-
-from kineticstoolkit import pushrimkinetics  # noqa
-
-listing.append("pushrimkinetics")
-
-from kineticstoolkit import cycles  # noqa
-
-listing.append("cycles")
-
-from kineticstoolkit import doc  # noqa
-
-listing.append("doc")
-
+# Import functions
+from kineticstoolkit.tools import start_lab_mode  # noqa
+from kineticstoolkit.files import load, save  # noqa
 from kineticstoolkit import _repr  # noqa
+from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
+
+# Import modules
+from kineticstoolkit import filters  # noqa
+from kineticstoolkit import kinematics  # noqa
+from kineticstoolkit import pushrimkinetics  # noqa
+from kineticstoolkit import cycles  # noqa
+from kineticstoolkit import doc  # noqa
 from kineticstoolkit import gui  # noqa
-
 from kineticstoolkit import geometry  # noqa
-
-listing.append("geometry")
-
-
-# Load unstable and dev modules (but do not add those to the __dir__ listing)
 from kineticstoolkit import dev  # noqa
-
-unstable_listing.append("dev")
-
-try:
-    from kineticstoolkit import inversedynamics  # noqa
-
-    unstable_listing.append("inversedynamics")
-except:
-    pass
-
-try:
-    from kineticstoolkit import emg  # noqa
-
-    unstable_listing.append("emg")
-except:
-    pass
-
-try:
-    from kineticstoolkit import anthropometrics  # noqa
-
-    unstable_listing.append("anthropometrics")
-except:
-    pass
-
-try:
-    from kineticstoolkit import ext  # noqa
-
-    unstable_listing.append("ext")
-    from kineticstoolkit.ext import _import_extensions as import_extensions
-
-    unstable_listing.append("import_extensions")
-except:
-    pass
-
-
+from kineticstoolkit import ext  # noqa
 from kineticstoolkit import config  # noqa
 
-listing.append("config")
+
+def __dir__():
+    return [
+        "TimeSeries",
+        "TimeSeriesEvent",
+        "Player",
+        "start_lab_mode",
+        "load",
+        "save",
+        "import_extensions",
+        "filters",
+        "kinematics",
+        "cycles",
+        "doc",
+        "geometry",
+        "ext",
+    ]
 
 
 # Check if a serious warning has been issued on this version.
@@ -150,13 +95,6 @@ try:
         warnings.warn(contents["warning"])
 except Exception:
     pass
-
-
-def __dir__():
-    if config.dev_enabled:
-        return listing + unstable_listing
-    else:
-        return listing
 
 
 if __name__ == "__main__":  # pragma: no cover

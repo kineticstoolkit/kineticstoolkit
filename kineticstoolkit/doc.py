@@ -30,7 +30,6 @@ import os
 from kineticstoolkit.decorators import unstable
 
 
-@unstable
 def download(filename: str, **kwargs) -> str:
     """
     Download example data and return its local file name.

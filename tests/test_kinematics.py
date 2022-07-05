@@ -108,6 +108,7 @@ def test_read_write_c3d_file():
 
 def test_reconstruction_deprecated():
     """Simplified copy of the tutorial."""
+
     # Read the markers
     markers = ktk.kinematics.read_c3d_file(
         ktk.doc.download("kinematics_racing_propulsion.c3d")
@@ -171,7 +172,8 @@ def test_reconstruction_deprecated():
         )
 
     rigid_body_definitions["ArmR"]["AcromionR"] = process_probing_acquisition(
-        ktk.doc.download("kinematics_racing_probing_acromion_R.c3d"), "ArmR"
+        ktk.doc.download("kinematics_racing_probing_acromion_R.c3d"),
+        "ArmR",
     )
 
     rigid_body_definitions["ArmR"][
@@ -250,6 +252,10 @@ def test_reconstruction():
         markers_probing = ktk.kinematics.track_cluster(
             markers_probing, clusters["Probe"]
         )
+
+        # Test bugfix #85
+        # Units and other data_info lost in kinetics.track_cluster()
+        assert markers_probing.data_info["ProbeTip"]["Unit"] == "m"
 
         # Extend the cluster
         markers_probing.rename_data("ProbeTip", point_name, in_place=True)

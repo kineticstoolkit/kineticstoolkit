@@ -16,9 +16,7 @@
 # limitations under the License.
 
 """
-Deprecated module.
-Provides functions to process kinetic data from instrumented wheelchair wheels.
-Please use the kineticstoolkit_pushtimkinetics extension.
+Deprecated module. Please use the kineticstoolkit_pushrimkinetics extension.
 """
 
 __author__ = "Félix Chénier"

@@ -30,7 +30,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import unstable, deprecated, directory
+from kineticstoolkit.decorators import directory
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -247,11 +247,11 @@ def dict_of_arrays_to_dataframe(
 
         if original_data.shape[0] > 0:  # Not empty
 
-            original_data_shape = np.shape(original_data)
-            data_length = np.shape(original_data)[0]
+            original_data_shape = original_data.shape
+            data_length = original_data.shape[0]
 
             reshaped_data = np.reshape(original_data, (data_length, -1))
-            reshaped_data_shape = np.shape(reshaped_data)
+            reshaped_data_shape = reshaped_data.shape
 
             df_data = pd.DataFrame(reshaped_data)
 
@@ -1118,43 +1118,6 @@ class TimeSeries:
             plt.cla()
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
-
-    @deprecated(
-        since="0.5",
-        until="0.7",
-        details=(
-            "Please use the ui_edit_events method, which is the "
-            "more powerful replacement."
-        ),
-    )
-    def ui_add_event(
-        self,
-        name: str = "event",
-        data_key: Union[str, List[str]] = [],
-        *,
-        multiple_events: bool = False,
-    ) -> "TimeSeries":
-        """
-        Add one or many events interactively to the TimeSeries.
-
-        Parameters
-        ----------
-        name
-            Optional. The name of the event.
-        data_key
-            Optional. A signal name of list of signal name to be plotted,
-            similar to the argument of ktk.TimeSeries.plot().
-        multiple_events
-            Optional. False to add only one event, True to add multiple events
-            with the same name.
-
-        Returns
-        -------
-        bool
-            True if the event was added, False if the operation was cancelled
-            by the user.
-        """
-        return self.ui_edit_events(name, data_key)
 
     def sort_events(
         self, *, unique: bool = True, in_place: bool = False
@@ -2581,7 +2544,6 @@ class TimeSeries:
 
         return ts
 
-    @unstable
     def resample(
         self,
         new_time: np.ndarray,
@@ -2639,6 +2601,18 @@ class TimeSeries:
 
         >>> ts.data['data_with_nans']
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  nan,  nan,  nan, 16. , 20.5, 25. ])
+
+        Warning
+        -------
+        This function, which was introduced in version 0.9, is still
+        experimental and may slightly change behaviour in future versions.
+
+        Note
+        ----
+        Please note that while it is possible to resample series of points
+        or vectors, it is impossible to resample a series of homogeneous
+        matrices directly. This function won't generate a warning or error
+        if you do.
 
         """
         ts = self if in_place else self.copy()
@@ -2717,11 +2691,6 @@ class TimeSeries:
         """
         Merge the TimeSeries with another TimeSeries.
 
-        Warning
-        -------
-        This function, which has been introduced in 0.2, is still experimental and
-        may change signature or behaviour in the future.
-
         Parameters
         ----------
         ts
@@ -2746,6 +2715,12 @@ class TimeSeries:
         -------
         TimeSeries
             The merged TimeSeries.
+
+        Note
+        ----
+        The behaviour of the resampling option is not settled yet. At the
+        moment, a linear reseampling is performed, but this may change in the
+        future.
 
         """
         ts_out = self if in_place else self.copy()

@@ -28,53 +28,32 @@ __license__ = "Apache 2.0"
 import warnings
 import importlib
 import pkgutil
-import sys
-from typing import List
-
-
-# def __getattr__(module_name):
-#     """Return an helpful message in case an extension was not loaded."""
-#     raise ModuleNotFoundError(
-#         f"The extension kineticstoolkit_{module_name} is not loaded. "
-#         f"You can load extensions using "
-#         f"`ktk.ext.load_extensions()`, or by "
-#         f"importing Kinetics Toolkit in lab mode "
-#         f"using `import kineticstoolkit.lab as ktk`. If this error still "
-#         f"happens, make sure that kineticstoolkit_{module_name} is correctly "
-#         f"installed."
-#     )
+from typing import List, Set
 
 
 def _import_extensions() -> List[str]:
     """
-    Import all extensions found on PYTHONPATH.
+    Import all installed kineticstoolkit extensions.
 
     Any module that begins by 'kineticstoolkit_' and that is on PYTHONPATH will
-    be found and imported as an extension in the kineticstoolkit.ext namespace.
-
-    Parameters
-    ----------
-    None.
+    be imported in the kineticstoolkit.ext namespace.
 
     Returns
     -------
     A list of the imported extension names.
 
+    Warning
+    -------
+    This function, which has been introduced in 0.8, is still experimental and
+    may change signature or behaviour in the future.
+
     """
-    # Dynamically import extensions
-
-    # Clear loaded_extensions and start over
-    del imported_extensions[:]
-
-    # Scan PYTHONPATH and current directory
-    the_path = sys.path + ["."]
-
-    for finder, name, ispkg in pkgutil.iter_modules(the_path):
+    for finder, name, ispkg in pkgutil.iter_modules():
         if name.startswith("kineticstoolkit_"):
             short_name = name[len("kineticstoolkit_") :]
             try:
                 globals()[short_name] = importlib.import_module(name)
-                imported_extensions.append(short_name)
+                imported_extensions.add(short_name)
             except Exception:
                 warnings.warn(
                     f"There have been an error importing the {name} "
@@ -82,11 +61,17 @@ def _import_extensions() -> List[str]:
                     f"more insights on the cause of the error."
                 )
 
-    return imported_extensions
+    return list(imported_extensions)
 
 
-imported_extensions = []  # type: List[str]
+imported_extensions = set()  # type: Set[str]
 
 
 def __dir__():
-    return imported_extensions
+    return list(imported_extensions)
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
