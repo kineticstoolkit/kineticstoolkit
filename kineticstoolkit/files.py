@@ -29,7 +29,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.decorators import directory
 import kineticstoolkit.config
 
 import os
@@ -44,6 +43,10 @@ import getpass
 import zipfile
 
 from typing import Any
+
+
+def __dir__():  # pragma: no cover
+    return ["save", "load"]
 
 
 def save(filename: str, variable: Any) -> None:
@@ -253,13 +256,6 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 
     else:
         return data
-
-
-module_locals = locals()
-
-
-def __dir__():  # pragma: no cover
-    return directory(module_locals)
 
 
 if __name__ == "__main__":  # pragma: no cover
