@@ -63,6 +63,7 @@ def __dir__():
         "start_lab_mode",
         "load",
         "save",
+        "read_c3d",
         "import_extensions",
         "filters",
         "kinematics",
