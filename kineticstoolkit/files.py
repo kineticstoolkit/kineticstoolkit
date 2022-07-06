@@ -306,14 +306,26 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
         raise FileNotFoundError(f"File {filename} was not found.")
 
     # ---------------------------------
+    # List the events
+    if "EVENT" in reader["parameters"]:
+        event_names = reader["parameters"]["EVENT"]["LABELS"]["value"]
+        event_times = reader["parameters"]["EVENT"]["TIMES"]["value"].T
+        event_times = event_times[:, 0] * 60 + event_times[:, 1]
+    else:
+        event_names = []
+        event_times = []
+
+    # ---------------------------------
     # Create the points TimeSeries
     points = TimeSeries()
 
     # Get the marker label names and create a timeseries data entry for each
     # Get the labels
-    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
     point_rate = reader["parameters"]["POINT"]["RATE"]["value"][0]
     point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
+    point_start = reader["header"]["points"]["first_frame"]
+    start_time = point_start / point_rate
+    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
     descriptions = reader["parameters"]["POINT"]["DESCRIPTIONS"]["value"]
 
     if point_unit == "mm":
@@ -336,7 +348,13 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
                 key, "Description", descriptions[i_label], in_place=True
             )
 
-    points.time = np.arange(points.data[key].shape[0]) / point_rate
+    points.time = (
+        np.arange(points.data[key].shape[0]) / point_rate + start_time
+    )
+
+    for i_event, event_name in enumerate(event_names):
+        points.add_event(event_times[i_event], event_name, in_place=True)
+    points.sort_events(in_place=True)
 
     # ---------------------------------
     # Create the analogs TimeSeries
@@ -364,7 +382,13 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
                     key, "Description", descriptions[i_label], in_place=True
                 )
 
-        analogs.time = np.arange(analogs.data[key].shape[0]) / analog_rate
+        analogs.time = (
+            np.arange(analogs.data[key].shape[0]) / analog_rate + start_time
+        )
+
+        for i_event, event_name in enumerate(event_names):
+            analogs.add_event(event_times[i_event], event_name, in_place=True)
+        analogs.sort_events(in_place=True)
 
     return {"Points": points, "Analogs": analogs}
 

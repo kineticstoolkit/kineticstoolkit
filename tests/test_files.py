@@ -26,6 +26,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit as ktk
 import numpy as np
 import pandas as pd
+import os
 
 
 def test_save_load():
@@ -111,8 +112,39 @@ def test_save_load():
 
 def test_read_c3d():
     """Test read_c3d."""
+    # Read the same file as the older kinematics.read_c3d_file
+
+    c3d = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))
+
+    markers = c3d["Points"]
+    assert c3d["Analogs"] is None
+
+    assert markers.time_info["Unit"] == "s"
+    assert markers.data_info["ForearmL1"]["Unit"] == "m"
+
+    ktk.kinematics.write_c3d_file("test.c3d", markers)
+    markers2 = ktk.kinematics.read_c3d_file("test.c3d")
+
+    assert np.allclose(markers.data["ForearmL1"], markers2.data["ForearmL1"])
+    assert np.allclose(markers.data["ForearmL1"].mean(), 0.14476261166589602)
+
+    # Test a file with more data in it (analogs, events)
     filename = ktk.doc.download("walk.c3d")
     c3d = ktk.read_c3d(filename)
+
+    assert len(c3d["Points"].time) == 221
+    assert len(c3d["Points"].data) == 96
+    assert len(c3d["Points"].events) == 8
+    assert len(c3d["Analogs"].time) == 4420
+    assert len(c3d["Analogs"].data) == 248
+    assert len(c3d["Analogs"].events) == 8
+
+    assert (
+        c3d["Points"].get_index_at_time(
+            c3d["Points"].get_event_time("Foot Strike", 0)
+        )
+        == 14
+    )
 
 
 if __name__ == "__main__":
