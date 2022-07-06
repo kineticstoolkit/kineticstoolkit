@@ -259,27 +259,43 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 
 
 def read_c3d(
-    filename: str, *, convert_point_unit: bool = True
+    filename: str,
+    *,
+    convert_point_unit: bool = True,
+    convert_moment_unit: bool = True,
 ) -> Dict[str, TimeSeries]:
     """
     Read point and analog data from a C3D file.
 
     Point positions are returned in a TimeSeries in output['Points'], where
     each marker corresponds to a data key. Each marker position is expressed
-    in this form:
+    as a Nx4 point series.
 
-    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
+    If the C3D file contains force platform data, it is returned as a
+    TimeSeries in output['Platforms']. The available signals are, for example:
+        - 'Forces0': Nx4 series of force vectors on platform 0.
+        - 'Forces1': Nx4 series of force vectors on platform 1.
+        - 'Forces2': Nx4 series of force vectors on platform 2.
+        - ...
+        - 'Moments0': Nx4 series of moment vectors on platform 0.
+        - 'Moments1': Nx4 series of moment vectors on platform 2.
+        - 'Moments2': Nx4 series of moment vectors on platform 3.
+        - ...
 
     If the C3D file contains analog data, it is returned as a TimeSeries in
-    output['Analogs'].
+    output['Analogs']. Each analog signal is expressed as an unidimensional
+    series of length N.
 
     Parameters
     ----------
     filename
         Path of the C3D file
     convert_point_unit
-        Optional. True to ensure that the unit for points is in meters, and
-        not in millimeters.
+        Optional. True to convert the point units to meters, even if they are
+        expressed in mm in the C3D file.
+    convert_moment_unit
+        Optional. True to convert the moment units to Nm, even if they are
+        expressed in Nmm in the C3D file.
 
     Notes
     -----
@@ -287,12 +303,14 @@ def read_c3d(
       conda-forge and on git-hub. Please install ezc3d before using
       read_c3d_file. https://github.com/pyomeca/ezc3d
 
-    - The point unit must be either mm or m. In both cases, the final unit
-      returned in the output TimeSeries is m.
-
     - As for any instrument, please check that your data loads correctly on
       your first use (e.g., sampling frequency, position unit). It is
       possible that read_c3d misses some corner cases.
+
+    Warning
+    -------
+    This function, which has been introduced in version 0.9, is still
+    experimental and its behaviour or API may change slightly in the future.
 
     """
     try:
@@ -306,7 +324,7 @@ def read_c3d(
 
     # Create the reader
     if isinstance(filename, str) and os.path.exists(filename):
-        reader = ezc3d.c3d(filename)
+        reader = ezc3d.c3d(filename, extract_forceplat_data=True)
     else:
         raise FileNotFoundError(f"File {filename} was not found.")
 
@@ -342,7 +360,8 @@ def read_c3d(
     elif point_unit == "m":
         point_factor = 1
     else:
-        raise (ValueError("Point unit must be 'm' or 'mm'."))
+        point_factor = 1
+        warnings.warn(f"Point unit is {point_unit} instead of meters.")
 
     for i_label in range(n_points):
         # Strip leading and ending spaces
@@ -359,6 +378,7 @@ def read_c3d(
         np.arange(points.data[key].shape[0]) / point_rate + start_time
     )
 
+    # Add events
     for i_event, event_name in enumerate(event_names):
         points.add_event(event_times[i_event], event_name, in_place=True)
     points.sort_events(in_place=True)
@@ -392,11 +412,63 @@ def read_c3d(
             np.arange(analogs.data[key].shape[0]) / analog_rate + start_time
         )
 
+        # Add events
         for i_event, event_name in enumerate(event_names):
             analogs.add_event(event_times[i_event], event_name, in_place=True)
         analogs.sort_events(in_place=True)
 
         output["Analogs"] = analogs
+
+    # ---------------------------------
+    # Create the platforms TimeSeries
+    if reader["data"]["platform"] != []:
+
+        platforms = TimeSeries(time=analogs.time)
+
+        n_platforms = len(reader["data"]["platform"])
+        for i_platform in range(n_platforms):
+
+            force_unit = reader["data"]["platform"][0]["unit_force"]
+
+            if force_unit != "N":
+                warnings.warn(
+                    f"Force unit is {force_unit} instead of newtons."
+                )
+
+            key = f"Forces{i_platform}"
+            platforms.data[key] = np.zeros((len(platforms.time), 4))
+            platforms.data[key][:, 0:3] = reader["data"]["platform"][
+                i_platform
+            ]["force"].T
+            platforms.add_data_info(key, "Unit", force_unit, in_place=True)
+
+            moment_unit = reader["data"]["platform"][0]["unit_moment"]
+
+            if convert_moment_unit and (moment_unit == "Nmm"):
+                moment_factor = 0.001
+                moment_unit = "Nm"
+            elif moment_unit == "Nm":
+                moment_factor = 1
+            else:
+                moment_factor = 1
+                warnings.warn(f"Moment unit is {moment_unit} instead of Nm.")
+
+            key = f"Moments{i_platform}"
+            platforms.data[key] = np.zeros((len(platforms.time), 4))
+            platforms.data[key][:, 0:3] = (
+                moment_factor
+                * reader["data"]["platform"][i_platform]["moment"].T
+            )
+            platforms.add_data_info(key, "Unit", moment_unit, in_place=True)
+
+        # Add events
+        for i_event, event_name in enumerate(event_names):
+            platforms.add_event(
+                event_times[i_event], event_name, in_place=True
+            )
+        platforms.sort_events(in_place=True)
+
+        output["Platforms"] = platforms
 
     return output
 

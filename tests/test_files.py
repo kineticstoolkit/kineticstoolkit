@@ -162,6 +162,9 @@ def test_read_c3d_testsuite1():
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
         )
+        assert test[i]["Platforms"]._is_equivalent(
+            test[0]["Platforms"], equal=False
+        )
 
 
 def test_read_c3d_testsuite2():
@@ -190,6 +193,9 @@ def test_read_c3d_testsuite2():
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
         )
+        assert test[i]["Platforms"]._is_equivalent(
+            test[0]["Platforms"], equal=False
+        )
 
 
 def test_read_c3d_testsuite8():
@@ -211,6 +217,9 @@ def test_read_c3d_testsuite8():
         assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
+        )
+        assert test[i]["Platforms"]._is_equivalent(
+            test[0]["Platforms"], equal=False
         )
 
 

@@ -60,7 +60,6 @@ def __dir__():
         "TimeSeries",
         "TimeSeriesEvent",
         "Player",
-        "start_lab_mode",
         "load",
         "save",
         "read_c3d",
