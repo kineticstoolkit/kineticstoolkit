@@ -28,9 +28,18 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.decorators import directory
 import warnings
 from typing import List, Dict, Tuple, Sequence, Optional
+
+
+def __dir__():
+    return [
+        "detect_cycles",
+        "time_normalize",
+        "stack",
+        "unstack",
+        "most_repeatable_cycles",
+    ]
 
 
 def detect_cycles(
@@ -608,13 +617,6 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
         out_cycles.append(remain[0])
 
     return out_cycles[-1::-1]
-
-
-module_locals = locals()
-
-
-def __dir__():
-    return directory(module_locals)
 
 
 if __name__ == "__main__":

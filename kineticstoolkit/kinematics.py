@@ -27,7 +27,7 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import unstable, directory, deprecated
+from kineticstoolkit.decorators import deprecated
 from os.path import exists
 from typing import Sequence, Dict, Union
 from copy import deepcopy
@@ -35,6 +35,17 @@ from copy import deepcopy
 import numpy as np
 import warnings
 import struct  # To unpack data from N3D files
+
+
+def __dir__():
+    return [
+        "read_c3d_file",
+        "write_c3d_file",
+        "read_n3d_file",
+        "create_cluster",
+        "extend_cluster",
+        "track_cluster",
+    ]
 
 
 def read_c3d_file(filename: str) -> TimeSeries:
@@ -563,7 +574,6 @@ def _get_marker_unit(markers: TimeSeries) -> Union[None, str]:
     return unit
 
 
-@unstable
 def write_trc_file(markers: TimeSeries, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
@@ -623,7 +633,6 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
 
 # %% Deprecated
-@unstable
 @deprecated(
     since="master", until="January 2023", details="Use create_cluster()."
 )
@@ -652,7 +661,6 @@ def define_rigid_body(
     return create_cluster(kinematics, marker_names)
 
 
-@unstable
 @deprecated(
     since="master", until="January 2023", details="Use track_clusters()."
 )
@@ -705,7 +713,6 @@ def track_rigid_body(
     )
 
 
-@unstable
 @deprecated(
     since="master", until="January 2023", details="No replacement yet."
 )
@@ -751,7 +758,6 @@ def track_rigid_bodies(
     return out
 
 
-@unstable
 @deprecated(
     since="master", until="January 2023", details="Use extend_cluster()."
 )
@@ -809,13 +815,3 @@ def define_local_position(
     local_points = np.mean(local_points, axis=0)[np.newaxis]
 
     return local_points
-
-
-# %% Footer
-
-
-module_locals = locals()
-
-
-def __dir__():
-    return directory(module_locals)

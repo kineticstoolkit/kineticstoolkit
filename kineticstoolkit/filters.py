@@ -30,10 +30,13 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import directory
 from typing import Tuple, Union, Sequence, List
 
 import kineticstoolkit as ktk  # for doctests
+
+
+def __dir__():
+    return ["savgol", "smooth", "butter", "deriv", "median"]
 
 
 def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.ndarray]:
@@ -299,13 +302,6 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
         out_ts.data[key] = ndi.median_filter(ts.data[key], size=window_shape)
 
     return out_ts
-
-
-module_locals = locals()
-
-
-def __dir__():
-    return directory(module_locals)
 
 
 if __name__ == "__main__":

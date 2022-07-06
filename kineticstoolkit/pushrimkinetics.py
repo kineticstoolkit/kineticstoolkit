@@ -28,7 +28,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.filters as filters
 import kineticstoolkit.cycles as cycles
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.decorators import unstable, dead, directory, deprecated
+from kineticstoolkit.decorators import deprecated
 
 import numpy as np
 from numpy import sin, cos, pi
@@ -36,6 +36,16 @@ import pandas as pd
 import warnings
 import struct  # to unpack binary data from SmartWheels' txt files
 from typing import Union, Optional, List
+
+
+def __dir__():
+    return [
+        "read_file",
+        "remove_offsets",
+        "calculate_forces_and_moments",
+        "calculate_velocity",
+        "calculate_power",
+    ]
 
 
 @deprecated(
@@ -189,7 +199,6 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
     return ts
 
 
-@unstable
 def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     """
     Find recovery indices based on a vector of propulsion moments.
@@ -648,13 +657,6 @@ def __getattr__(name):
         )
         return globals()["_deprecated_CALIBRATION_MATRICES"]
     raise AttributeError(f"module {__name__} has no attribute {name}")
-
-
-module_locals = locals()
-
-
-def __dir__():  # pragma: no cover
-    return directory(module_locals)
 
 
 if __name__ == "__main__":  # pragma: no cover

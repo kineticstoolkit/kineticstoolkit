@@ -30,7 +30,6 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import directory
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -424,7 +423,47 @@ class TimeSeries:
 
     def __dir__(self):
         """Generate the class directory."""
-        return directory(TimeSeries.__dict__)
+        return [
+            "add_data_info",
+            "add_event",
+            "copy",
+            "fill_missing_samples",
+            "from_dataframe",
+            "get_event_index",
+            "get_event_time",
+            "get_index_after_time",
+            "get_index_at_time",
+            "get_index_before_time",
+            "get_subset",
+            "get_ts_after_event",
+            "get_ts_after_index",
+            "get_ts_after_time",
+            "get_ts_at_event",
+            "get_ts_at_time",
+            "get_ts_before_event",
+            "get_ts_before_index",
+            "get_ts_before_time",
+            "get_ts_between_events",
+            "get_ts_between_indexes",
+            "get_ts_between_times",
+            "isnan",
+            "merge",
+            "plot",
+            "remove_data",
+            "remove_data_info",
+            "remove_event",
+            "rename_data",
+            "rename_event",
+            "resample",
+            "shift",
+            "sort_events",
+            "sync_event",
+            "to_dataframe",
+            "trim_events",
+            "ui_edit_events",
+            "ui_get_ts_between_clicks",
+            "ui_sync",
+        ]
 
     def __str__(self):
         """
