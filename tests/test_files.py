@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020 Félix Chénier
 
@@ -117,7 +116,7 @@ def test_read_c3d():
     c3d = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))
 
     markers = c3d["Points"]
-    assert c3d["Analogs"] is None
+    assert "Analogs" not in c3d
 
     assert markers.time_info["Unit"] == "s"
     assert markers.data_info["ForearmL1"]["Unit"] == "m"
@@ -128,6 +127,7 @@ def test_read_c3d():
     assert np.allclose(markers.data["ForearmL1"], markers2.data["ForearmL1"])
     assert np.allclose(markers.data["ForearmL1"].mean(), 0.14476261166589602)
 
+    # --------------------------------------------------
     # Test a file with more data in it (analogs, events)
     filename = ktk.doc.download("walk.c3d")
     c3d = ktk.read_c3d(filename)
@@ -146,6 +146,76 @@ def test_read_c3d():
         == 14
     )
 
+
+def test_read_c3d_testsuite1():
+    """Run the c3d.org test suite 1 and check if every file is equivalent."""
+    # We do not test for mips files because it's not supported by ezc3d
+    test = []
+    for key in ["pi", "pr", "vi", "vr"]:
+        test.append(
+            ktk.read_c3d(
+                ktk.doc.download(f"c3d_test_suite/Sample01/Eb015{key}.c3d")
+            )
+        )
+    for i in range(1, 4):
+        assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
+        assert test[i]["Analogs"]._is_equivalent(
+            test[0]["Analogs"], equal=False
+        )
+
+
+def test_read_c3d_testsuite2():
+    """Run the c3d.org test suite 2 and check if every file is equivalent."""
+    # We do not test for mips files because it's not supported by ezc3d
+    #
+    # Note: we selected a 1mm tolerance because it seems that the files have a
+    # some glitch data in the <1mm range, most probably due to int/real
+    # representation.
+    test = []
+    for key in [
+        "dec_int",
+        "dec_real",
+        "pc_int",
+        "pc_real",
+    ]:
+        test.append(
+            ktk.read_c3d(
+                ktk.doc.download(f"c3d_test_suite/Sample02/{key}.c3d")
+            )
+        )
+    for i in range(1, 4):
+        assert test[i]["Points"]._is_equivalent(
+            test[0]["Points"], equal=False, atol=1e-3
+        )
+        assert test[i]["Analogs"]._is_equivalent(
+            test[0]["Analogs"], equal=False
+        )
+
+
+def test_read_c3d_testsuite8():
+    """Run the c3d.org test suite 8 and check if every file is equivalent."""
+    test = []
+    for key in [
+        "EB015PI",
+        "TESTAPI",
+        "TESTBPI",
+        "TESTCPI",
+        "TESTDPI",
+    ]:
+        test.append(
+            ktk.read_c3d(
+                ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d")
+            )
+        )
+    for i in range(1, 5):
+        assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
+        assert test[i]["Analogs"]._is_equivalent(
+            test[0]["Analogs"], equal=False
+        )
+
+
+# Note: We do not run testsuite36 because floats in FRAMES is not supported by
+# ezc3d.
 
 if __name__ == "__main__":
     import pytest

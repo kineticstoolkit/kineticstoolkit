@@ -42,7 +42,7 @@ import time
 import getpass
 import zipfile
 
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 
 def __dir__():  # pragma: no cover
@@ -258,7 +258,9 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
         return data
 
 
-def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
+def read_c3d(
+    filename: str, *, convert_point_unit: bool = True
+) -> Dict[str, TimeSeries]:
     """
     Read point and analog data from a C3D file.
 
@@ -268,13 +270,16 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
 
     array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
 
-    Analog data is returned in a TimeSeries in output['Analogs']. If the C3d
-    file does not contain analog data, output['Analogs'] = None.
+    If the C3D file contains analog data, it is returned as a TimeSeries in
+    output['Analogs'].
 
     Parameters
     ----------
     filename
         Path of the C3D file
+    convert_point_unit
+        Optional. True to ensure that the unit for points is in meters, and
+        not in millimeters.
 
     Notes
     -----
@@ -305,6 +310,9 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
     else:
         raise FileNotFoundError(f"File {filename} was not found.")
 
+    # Create the output
+    output = {}
+
     # ---------------------------------
     # List the events
     if "EVENT" in reader["parameters"]:
@@ -326,27 +334,26 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
     point_start = reader["header"]["points"]["first_frame"]
     start_time = point_start / point_rate
     labels = reader["parameters"]["POINT"]["LABELS"]["value"]
-    descriptions = reader["parameters"]["POINT"]["DESCRIPTIONS"]["value"]
+    n_points = reader["parameters"]["POINT"]["USED"]["value"][0]
 
-    if point_unit == "mm":
+    if convert_point_unit and (point_unit == "mm"):
         point_factor = 0.001
+        point_unit = "m"
     elif point_unit == "m":
         point_factor = 1
     else:
         raise (ValueError("Point unit must be 'm' or 'mm'."))
 
-    for i_label, label in enumerate(labels):
+    for i_label in range(n_points):
         # Strip leading and ending spaces
+        label = labels[i_label]
         key = label.strip()
-        points.data[key] = np.array(
-            [point_factor, point_factor, point_factor, 1]
-            * reader["data"]["points"][:, i_label, :].T
-        )
-        points = points.add_data_info(key, "Unit", "m")
-        if descriptions[i_label] != "":
-            points.add_data_info(
-                key, "Description", descriptions[i_label], in_place=True
+        if label != "":
+            points.data[key] = np.array(
+                [point_factor, point_factor, point_factor, 1]
+                * reader["data"]["points"][:, i_label, :].T
             )
+            points = points.add_data_info(key, "Unit", point_unit)
 
     points.time = (
         np.arange(points.data[key].shape[0]) / point_rate + start_time
@@ -356,30 +363,29 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
         points.add_event(event_times[i_event], event_name, in_place=True)
     points.sort_events(in_place=True)
 
+    output["Points"] = points
+
     # ---------------------------------
     # Create the analogs TimeSeries
 
     labels = reader["parameters"]["ANALOG"]["LABELS"]["value"]
     analog_rate = reader["parameters"]["ANALOG"]["RATE"]["value"][0]
-    descriptions = reader["parameters"]["ANALOG"]["DESCRIPTIONS"]["value"]
     units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
+    n_analogs = reader["parameters"]["ANALOG"]["USED"]["value"][0]
 
     if len(labels) == 0:  # There are no analogs
         analogs = None
     else:
         analogs = TimeSeries()
 
-        for i_label, label in enumerate(labels):
+        for i_label in range(n_analogs):
             # Strip leading and ending spaces
+            label = labels[i_label]
             key = label.strip()
             analogs.data[key] = reader["data"]["analogs"][0, i_label].T
             if units[i_label] != "":
                 analogs.add_data_info(
                     key, "Unit", units[i_label], in_place=True
-                )
-            if descriptions[i_label] != "":
-                analogs.add_data_info(
-                    key, "Description", descriptions[i_label], in_place=True
                 )
 
         analogs.time = (
@@ -390,7 +396,9 @@ def read_c3d(filename: str) -> Dict[str, Union[None, TimeSeries]]:
             analogs.add_event(event_times[i_event], event_name, in_place=True)
         analogs.sort_events(in_place=True)
 
-    return {"Points": points, "Analogs": analogs}
+        output["Analogs"] = analogs
+
+    return output
 
 
 if __name__ == "__main__":  # pragma: no cover

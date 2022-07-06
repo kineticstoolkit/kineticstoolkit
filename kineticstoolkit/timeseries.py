@@ -491,16 +491,61 @@ class TimeSeries:
         True if each attribute of ts is equal to the TimeSeries' attributes.
 
         """
-        if not np.array_equal(self.time, ts.time):
+        return self._is_equivalent(ts)
+
+    def _is_equivalent(
+        self, ts, *, equal: bool = True, atol: float = 1e-8, rtol: float = 1e-5
+    ):
+        """
+        Test is two TimeSeries are equal or equivalent.
+
+        Parameters
+        ----------
+        ts
+            The TimeSeries to compare to.
+        equal
+            Optional. True to test for complete equality, False to compare
+            withint a given tolerance.
+        atol
+            Optional. Absolute tolerance if using equal=False.
+        rtol
+            Optional. Relative tolerance if using equal=False.
+
+        Returns
+        -------
+        bool
+            True if the TimeSeries are equivalent.
+
+        """
+        if equal:
+            atol = 0
+            rtol = 0
+
+        def compare(var1, var2, atol, rtol):
+            if var1.size == 0 and var2.size == 0:
+                return np.equal(var1.shape, var2.shape)
+            elif var1.size == 0 and var2.size != 0:
+                return False
+            elif var1.size != 0 and var2.size == 0:
+                return False
+            else:
+                return np.allclose(
+                    var1, var2, atol=atol, rtol=rtol, equal_nan=True
+                )
+
+        if not compare(self.time, ts.time, atol=atol, rtol=rtol):
             print("Time is not equal")
             return False
 
         for data in [self.data, ts.data]:
             for one_data in data:
                 try:
-                    if not np.isclose(
-                        self.data[one_data], ts.data[one_data], rtol=1e-15
-                    ).all():
+                    if not compare(
+                        self.data[one_data],
+                        ts.data[one_data],
+                        atol=atol,
+                        rtol=rtol,
+                    ):
                         print(f"{one_data} is not equal")
                         return False
                 except KeyError:
