@@ -29,7 +29,6 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.decorators import directory
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -261,7 +260,7 @@ class Player:
         self._first_refresh()
 
     def __dir__(self):
-        return directory(Player.__dict__)
+        return ["to_html5", "close"]
 
     def _create_figure(self) -> None:
         """Create the player's figure."""

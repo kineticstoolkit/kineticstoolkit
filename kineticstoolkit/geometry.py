@@ -31,10 +31,22 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+def __dir__():
+    return [
+        "matmul",
+        "create_transforms",
+        "get_angles",
+        "create_frames",
+        "get_local_coordinates",
+        "get_global_coordinates",
+        "isnan",
+        "register_points",
+    ]
+
+
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.decorators import unstable, directory
 from typing import Optional, Tuple
 
 
@@ -510,7 +522,6 @@ def get_global_coordinates(
     return global_coordinates
 
 
-@unstable
 def isnan(input: np.ndarray, /) -> np.ndarray:
     """
     Check which samples has at least one NaN.
@@ -623,13 +634,6 @@ def register_points(
             T[i_sample] = np.nan
 
     return T
-
-
-module_locals = locals()
-
-
-def __dir__():  # pragma: no cover
-    return directory(module_locals)
 
 
 if __name__ == "__main__":  # pragma: no cover

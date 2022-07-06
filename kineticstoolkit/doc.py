@@ -27,7 +27,10 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.config as config
 import os
-from kineticstoolkit.decorators import unstable
+
+
+def __dir__():
+    return ["download"]
 
 
 def download(filename: str, **kwargs) -> str:

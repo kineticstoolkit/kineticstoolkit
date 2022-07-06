@@ -27,7 +27,6 @@ import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
 import kineticstoolkit.ext
-from kineticstoolkit.decorators import directory
 
 import warnings
 
@@ -106,10 +105,3 @@ def start_lab_mode(
 
     if import_extensions:
         kineticstoolkit.ext._import_extensions()
-
-
-module_locals = locals()
-
-
-def __dir__():
-    return directory(module_locals)
