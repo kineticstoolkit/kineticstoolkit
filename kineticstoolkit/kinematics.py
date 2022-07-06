@@ -26,7 +26,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.geometry as geometry
-from kineticstoolkit import TimeSeries
+from kineticstoolkit import TimeSeries, read_c3d
 from kineticstoolkit.decorators import deprecated
 from os.path import exists
 from typing import Sequence, Dict, Union
@@ -39,7 +39,6 @@ import struct  # To unpack data from N3D files
 
 def __dir__():
     return [
-        "read_c3d_file",
         "write_c3d_file",
         "read_n3d_file",
         "create_cluster",
@@ -48,6 +47,14 @@ def __dir__():
     ]
 
 
+@deprecated(
+    since="0.9",
+    until="2024",
+    details=(
+        "Please use the ktk.read_c3d() function that is more powerful "
+        "since it can also read force platforms and analog data."
+    ),
+)
 def read_c3d_file(filename: str) -> TimeSeries:
     """
     Read markers from a C3D file.
@@ -56,6 +63,10 @@ def read_c3d_file(filename: str) -> TimeSeries:
     corresponds to a data key. Each marker position is expressed in this form:
 
     array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
+
+    Note
+    ----
+    This function may become deprecated in the future.
 
     Parameters
     ----------
@@ -76,56 +87,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
       possible that read_c3d_file misses some corner cases.
 
     """
-    try:
-        import ezc3d
-    except ModuleNotFoundError:
-        raise ModuleNotFoundError(
-            "The optional module ezc3d is not installed, but it is required "
-            "to use this function. Please install it using: "
-            "conda install -c conda-forge ezc3d"
-        )
-
-    # Create the reader
-    if isinstance(filename, str) and exists(filename):
-        reader = ezc3d.c3d(filename)
-    else:
-        raise FileNotFoundError(f"File {filename} was not found.")
-
-    # Create the output timeseries
-    output = TimeSeries()
-
-    # Get the marker label names and create a timeseries data entry for each
-    # Get the labels
-    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
-    n_frames = reader["parameters"]["POINT"]["FRAMES"]["value"][0]
-    point_rate = reader["parameters"]["POINT"]["RATE"]["value"][0]
-    point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
-
-    if point_unit == "mm":
-        point_factor = 0.001
-    elif point_unit == "m":
-        point_factor = 1
-    else:
-        raise (ValueError("Point unit must be 'm' or 'mm'."))
-
-    n_labels = len(labels)
-    for i_label in range(n_labels):
-        # Strip leading and ending spaces
-        labels[i_label] = labels[i_label].strip()
-
-        label_name = labels[i_label]
-
-        output.data[label_name] = np.array(
-            [point_factor, point_factor, point_factor, 1]
-            * reader["data"]["points"][:, i_label, :].T
-        )
-
-        output = output.add_data_info(label_name, "Unit", "m")
-
-    # Create the timeseries time vector
-    output.time = np.arange(n_frames) / point_rate
-
-    return output
+    return read_c3d(filename)["Points"]
 
 
 def write_c3d_file(filename: str, markers: TimeSeries) -> None:

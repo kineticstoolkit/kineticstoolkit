@@ -423,7 +423,7 @@ def read_c3d(
     # Create the platforms TimeSeries
     if reader["data"]["platform"] != []:
 
-        platforms = TimeSeries(time=analogs.time)
+        platforms = TimeSeries(time=analogs.time)  # type: ignore
 
         n_platforms = len(reader["data"]["platform"])
         for i_platform in range(n_platforms):
