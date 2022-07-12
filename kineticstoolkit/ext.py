@@ -35,8 +35,12 @@ def _import_extensions() -> List[str]:
     """
     Import all installed kineticstoolkit extensions.
 
-    Any module that begins by 'kineticstoolkit_' and that is on PYTHONPATH will
+    Any module that begins by `kineticstoolkit_` and that is on PYTHONPATH will
     be imported in the kineticstoolkit.ext namespace.
+
+    Parameters
+    ----------
+    None
 
     Returns
     -------
