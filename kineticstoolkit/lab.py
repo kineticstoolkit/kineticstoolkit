@@ -40,4 +40,5 @@ from kineticstoolkit import *
 from kineticstoolkit import __dir__
 import warnings
 
-start_lab_mode()
+change_defaults()
+import_extensions()

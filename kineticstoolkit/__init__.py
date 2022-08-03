@@ -37,7 +37,7 @@ from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
 from kineticstoolkit.player import Player  # noqa
 
 # Import functions
-from kineticstoolkit.tools import start_lab_mode  # noqa
+from kineticstoolkit.tools import change_defaults  # noqa
 from kineticstoolkit.files import load, save, read_c3d  # noqa
 from kineticstoolkit import _repr  # noqa
 from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
@@ -70,6 +70,7 @@ def __dir__():
         "doc",
         "geometry",
         "ext",
+        "change_defaults",
     ]
 
 

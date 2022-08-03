@@ -31,12 +31,11 @@ import kineticstoolkit.ext
 import warnings
 
 
-def start_lab_mode(
+def change_defaults(
     change_ipython_dict_repr: bool = True,
     change_matplotlib_defaults: bool = True,
     change_numpy_print_options: bool = True,
     change_warnings_format: bool = True,
-    import_extensions: bool = True,
 ) -> None:
     """
     Enable Kinetics Toolkit's lab goodies.
@@ -50,18 +49,34 @@ def start_lab_mode(
     Parameters
     ----------
     change_ipython_dict_repr
-        Optional. True to summarize defaults dict printouts in IPython.
+        Optional. True to summarize defaults dict printouts in IPython. When
+        False, dict printouts look like:
+
+            {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
+            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
+            'data2': array([  0,   1,   4,   9,  16,  25,  36,  49,  64,  81, 100, 121, 144,
+            169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
+            676, 729, 784, 841])}
+
+        When True, dict printouts look like:
+
+            {'data1': <array of shape (30,)> 'data2': <array of shape (30,)>}
+
     change_matplotlib_defaults
         Optional. True to change default figure size, autolayout, dpi, line
-        width and color order in Matplotlib.
+        width and color order in Matplotlib. The dpi and figure size are
+        optimized for interactive work in default matplotlib figures.
+        Additionally, the default color order is changed to (rgbcmyko).
+        The first colors, (rgb) are consistent with the colours assigned to
+        x, y and z in most 3D visualization softwares.
+
     change_numpy_print_options
         Optional. True to change default print options in numpy to use fixed
         point notation in printouts.
+
     change_warnings_format
         Optional. True to change warnings module's default to a more extended
         format with file and line number.
-    import_extensions
-        Optional. True to import extensions into the kinetics.ext namespace.
 
     Returns
     -------
@@ -102,6 +117,3 @@ def start_lab_mode(
             return f"{category.__name__} [{filename}:{lineno}] {message}\n"
 
         warnings.formatwarning = formatwarning
-
-    if import_extensions:
-        kineticstoolkit.ext._import_extensions()
