@@ -83,29 +83,6 @@ def test_read_n3d_file():
     assert markers.data_info["GantD3"]["Unit"] == "m"
 
 
-def test_read_write_c3d_file():
-    """
-    Test that writing and reading back a c3d file yields the same results.
-
-    Tests twice, once using the original c3d, then saving a new c3d and
-    opening again.
-    """
-    markers = ktk.kinematics.read_c3d_file(
-        ktk.doc.download("kinematics_racing_static.c3d")
-    )
-
-    assert markers.time_info["Unit"] == "s"
-    assert markers.data_info["ForearmL1"]["Unit"] == "m"
-
-    ktk.kinematics.write_c3d_file("test.c3d", markers)
-    markers2 = ktk.kinematics.read_c3d_file("test.c3d")
-
-    assert np.allclose(markers.data["ForearmL1"], markers2.data["ForearmL1"])
-    assert np.allclose(markers.data["ForearmL1"].mean(), 0.14476261166589602)
-
-    os.remove("test.c3d")
-
-
 def test_reconstruction_deprecated():
     """Simplified copy of the tutorial."""
 

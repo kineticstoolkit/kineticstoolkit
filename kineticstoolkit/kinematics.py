@@ -26,9 +26,8 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.geometry as geometry
-from kineticstoolkit import TimeSeries, read_c3d
+from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from os.path import exists
 from typing import Sequence, Dict, Union
 from copy import deepcopy
 
@@ -39,112 +38,11 @@ import struct  # To unpack data from N3D files
 
 def __dir__():
     return [
-        "write_c3d_file",
         "read_n3d_file",
         "create_cluster",
         "extend_cluster",
         "track_cluster",
     ]
-
-
-@deprecated(
-    since="0.9",
-    until="2024",
-    details=(
-        "Please use the ktk.read_c3d() function that is more powerful "
-        "since it can also read force platforms and analog data."
-    ),
-)
-def read_c3d_file(filename: str) -> TimeSeries:
-    """
-    Read markers from a C3D file.
-
-    The markers positions are returned in a TimeSeries where each marker
-    corresponds to a data key. Each marker position is expressed in this form:
-
-    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
-
-    Note
-    ----
-    This function may become deprecated in the future.
-
-    Parameters
-    ----------
-    filename
-        Path of the C3D file
-
-    Notes
-    -----
-    - This function relies on `ezc3d`, which is available on
-      conda-forge and on git-hub. Please install ezc3d before using
-      read_c3d_file. https://github.com/pyomeca/ezc3d
-
-    - The point unit must be either mm or m. In both cases, the final unit
-      returned in the output TimeSeries is m.
-
-    - As for any instrument, please check that your data loads correctly on
-      your first use (e.g., sampling frequency, position unit). It is
-      possible that read_c3d_file misses some corner cases.
-
-    """
-    return read_c3d(filename)["Points"]
-
-
-def write_c3d_file(filename: str, markers: TimeSeries) -> None:
-    """
-    Write a markers TimeSeries to a C3D file.
-
-    Parameters
-    ----------
-    filename
-        Path of the C3D file
-
-    markers
-        Markers trajectories, following the same form as the TimeSeries
-        read by read_c3d_file.
-
-    Notes
-    -----
-    This function relies on `ezc3d`. Please install ezc3d before using
-    write_c3d_file. https://github.com/pyomeca/ezc3d
-
-    """
-    try:
-        import ezc3d
-    except ModuleNotFoundError:
-        raise ModuleNotFoundError(
-            "The optional module ezc3d is not installed, but it is required "
-            "to use this function. Please install it using: "
-            "conda install -c conda-forge ezc3d"
-        )
-
-    sample_rate = (markers.time.shape[0] - 1) / (
-        markers.time[-1] - markers.time[0]
-    )
-
-    marker_list = []
-    marker_data = np.zeros((4, len(markers.data), len(markers.time)))
-
-    for i_marker, marker in enumerate(markers.data):
-        marker_list.append(marker)
-        marker_data[0, i_marker, :] = markers.data[marker][:, 0]
-        marker_data[1, i_marker, :] = markers.data[marker][:, 1]
-        marker_data[2, i_marker, :] = markers.data[marker][:, 2]
-        marker_data[3, i_marker, :] = markers.data[marker][:, 3]
-
-    # Load an empty c3d structure
-    c3d = ezc3d.c3d()
-
-    # Fill it with data
-    c3d["parameters"]["POINT"]["RATE"]["value"] = [sample_rate]
-    c3d["parameters"]["POINT"]["LABELS"]["value"] = tuple(marker_list)
-    c3d["data"]["points"] = marker_data
-
-    # Add a custom parameter to the POINT group
-    c3d.add_parameter("POINT", "UNITS", "m")
-
-    # Write the data
-    c3d.write(filename)
 
 
 def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
@@ -777,3 +675,72 @@ def define_local_position(
     local_points = np.mean(local_points, axis=0)[np.newaxis]
 
     return local_points
+
+
+@deprecated(
+    since="0.9",
+    until="2024",
+    details=(
+        "Please use the ktk.read_c3d() function that is more powerful "
+        "since it can also read analog data."
+    ),
+)
+def read_c3d_file(filename: str) -> TimeSeries:
+    """
+    Read markers from a C3D file.
+
+    The markers positions are returned in a TimeSeries where each marker
+    corresponds to a data key. Each marker position is expressed in this form:
+
+    array([[x0, y0, z0, 1.], [x1, y1, z1, 1.], [x2, y2, z2, 1.], ...])
+
+    Parameters
+    ----------
+    filename
+        Path of the C3D file
+
+    Notes
+    -----
+    - This function relies on `ezc3d`, which is available on
+      conda-forge and on git-hub. Please install ezc3d before using
+      read_c3d_file. https://github.com/pyomeca/ezc3d
+
+    - The point unit must be either mm or m. In both cases, the final unit
+      returned in the output TimeSeries is m.
+
+    - As for any instrument, please check that your data loads correctly on
+      your first use (e.g., sampling frequency, position unit). It is
+      possible that read_c3d_file misses some corner cases.
+
+    """
+    return read_c3d(filename)["points"]
+
+
+@deprecated(
+    since="0.9",
+    until="2024",
+    details=(
+        "Please use the ktk.write_c3d() function that is more powerful "
+        "since it can also write analog data."
+    ),
+)
+def write_c3d_file(filename: str, markers: TimeSeries) -> None:
+    """
+    Write a markers TimeSeries to a C3D file.
+
+    Parameters
+    ----------
+    filename
+        Path of the C3D file
+
+    markers
+        Markers trajectories, following the same form as the TimeSeries
+        read by read_c3d_file.
+
+    Notes
+    -----
+    This function relies on `ezc3d`. Please install ezc3d before using
+    write_c3d_file. https://github.com/pyomeca/ezc3d
+
+    """
+    write_c3d(filename, markers)

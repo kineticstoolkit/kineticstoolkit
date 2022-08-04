@@ -42,7 +42,7 @@ import time
 import getpass
 import zipfile
 
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 
 def __dir__():  # pragma: no cover
@@ -261,18 +261,26 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 def read_c3d(
     filename: str,
     *,
+    extract_force_plates: bool = False,
     convert_point_unit: bool = True,
     convert_moment_unit: bool = True,
 ) -> Dict[str, TimeSeries]:
     """
     Read point and analog data from a C3D file.
 
-    Point positions are returned in a TimeSeries in output['Points'], where
-    each marker corresponds to a data key. Each marker position is expressed
+    Point positions are returned in a TimeSeries in output['points'], where
+    each point corresponds to a data key. Each point position is expressed
     as a Nx4 point series.
 
-    If the C3D file contains force platform data, it is returned as a
-    TimeSeries in output['Platforms']. The available signals are, for example:
+    If the C3D file contains analog data, it is returned as a TimeSeries in
+    output['analogs']. Each analog signal is expressed as an unidimensional
+    series of length N.
+
+    Experimental
+    ------------
+    If the C3D file contains force plate data and extract_force_plates is
+    True, these data are returned as a TimeSeries in output['force_plates'].
+    The available signals are, for example:
         - 'Forces0': Nx4 series of force vectors on platform 0.
         - 'Forces1': Nx4 series of force vectors on platform 1.
         - 'Forces2': Nx4 series of force vectors on platform 2.
@@ -281,10 +289,6 @@ def read_c3d(
         - 'Moments1': Nx4 series of moment vectors on platform 2.
         - 'Moments2': Nx4 series of moment vectors on platform 3.
         - ...
-
-    If the C3D file contains analog data, it is returned as a TimeSeries in
-    output['Analogs']. Each analog signal is expressed as an unidimensional
-    series of length N.
 
     Parameters
     ----------
@@ -301,7 +305,7 @@ def read_c3d(
     -----
     - This function relies on `ezc3d`, which is available on
       conda-forge and on git-hub. Please install ezc3d before using
-      read_c3d_file. https://github.com/pyomeca/ezc3d
+      read_c3d. https://github.com/pyomeca/ezc3d
 
     - As for any instrument, please check that your data loads correctly on
       your first use (e.g., sampling frequency, position unit). It is
@@ -383,7 +387,7 @@ def read_c3d(
         points.add_event(event_times[i_event], event_name, in_place=True)
     points.sort_events(in_place=True)
 
-    output["Points"] = points
+    output["points"] = points
 
     # ---------------------------------
     # Create the analogs TimeSeries
@@ -417,11 +421,11 @@ def read_c3d(
             analogs.add_event(event_times[i_event], event_name, in_place=True)
         analogs.sort_events(in_place=True)
 
-        output["Analogs"] = analogs
+        output["analogs"] = analogs
 
     # ---------------------------------
     # Create the platforms TimeSeries
-    if reader["data"]["platform"] != []:
+    if extract_force_plates and reader["data"]["platform"] != []:
 
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
@@ -468,9 +472,94 @@ def read_c3d(
             )
         platforms.sort_events(in_place=True)
 
-        output["Platforms"] = platforms
+        output["force_plates"] = platforms
 
     return output
+
+
+def write_c3d(
+    filename: str, points: TimeSeries, analogs: Optional[TimeSeries] = None
+) -> None:
+    """
+    Write points and analog data to a C3D file.
+
+    Parameters
+    ----------
+    filename
+        Path of the C3D file
+
+    points
+        Points trajectories, where each point corresponds to a data key.
+        Each point position is expressed as an Nx4 point series.
+
+    analogs
+        Optional. Analog signals, where each data key is an unidimensional
+        array.
+
+    Notes
+    -----
+    This function relies on `ezc3d`, which is available on
+    conda-forge and on git-hub. Please install ezc3d before using
+    write_c3d. https://github.com/pyomeca/ezc3d
+
+    """
+    try:
+        import ezc3d
+    except ModuleNotFoundError:
+        raise ModuleNotFoundError(
+            "The optional module ezc3d is not installed, but it is required "
+            "to use this function. Please install it using: "
+            "conda install -c conda-forge ezc3d"
+        )
+
+    sample_rate = int(
+        (points.time.shape[0] - 1) / (points.time[-1] - points.time[0])
+    )
+
+    marker_list = []
+    marker_data = np.zeros((4, len(points.data), len(points.time)))
+
+    for i_marker, marker in enumerate(points.data):
+        marker_list.append(marker)
+        marker_data[0, i_marker, :] = points.data[marker][:, 0]
+        marker_data[1, i_marker, :] = points.data[marker][:, 1]
+        marker_data[2, i_marker, :] = points.data[marker][:, 2]
+        marker_data[3, i_marker, :] = points.data[marker][:, 3]
+
+    # Load an empty c3d structure
+    c3d = ezc3d.c3d()
+
+    # Fill point data
+    c3d["parameters"]["POINT"]["RATE"]["value"] = [sample_rate]
+    c3d["parameters"]["POINT"]["LABELS"]["value"] = tuple(marker_list)
+    c3d["data"]["points"] = marker_data
+
+    # Add a custom parameter to the POINT group
+    c3d.add_parameter("POINT", "UNITS", "m")
+
+    # Fill analog data
+    if analogs is not None:
+
+        analogs_rate = int(
+            (analogs.time.shape[0] - 1) / (analogs.time[-1] - analogs.time[0])
+        )
+
+        c3d["parameters"]["ANALOG"]["LABELS"]["value"] = list(
+            analogs.data.keys()
+        )
+        c3d["parameters"]["ANALOG"]["RATE"]["value"] = [analogs_rate]
+        c3d["parameters"]["ANALOG"]["UNITS"]["value"] = [
+            analogs.data_info[key]["Unit"]
+            if key in analogs.data_info and "Unit" in analogs.data_info[key]
+            else ""
+            for key in analogs.data
+        ]
+        c3d["parameters"]["ANALOG"]["USED"]["value"] = [len(analogs.data)]
+        analog_data = np.array([analogs.data[key] for key in analogs.data])
+        c3d["data"]["analogs"] = analog_data[np.newaxis]
+
+    # Write the data
+    c3d.write(filename)
 
 
 if __name__ == "__main__":  # pragma: no cover

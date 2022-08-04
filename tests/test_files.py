@@ -115,14 +115,14 @@ def test_read_c3d():
 
     c3d = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))
 
-    markers = c3d["Points"]
-    assert "Analogs" not in c3d
+    markers = c3d["points"]
+    assert "analogs" not in c3d
 
     assert markers.time_info["Unit"] == "s"
     assert markers.data_info["ForearmL1"]["Unit"] == "m"
 
-    ktk.kinematics.write_c3d_file("test.c3d", markers)
-    markers2 = ktk.kinematics.read_c3d_file("test.c3d")
+    ktk.write_c3d("test.c3d", markers)
+    markers2 = ktk.read_c3d("test.c3d")["points"]
 
     assert np.allclose(markers.data["ForearmL1"], markers2.data["ForearmL1"])
     assert np.allclose(markers.data["ForearmL1"].mean(), 0.14476261166589602)
@@ -132,16 +132,16 @@ def test_read_c3d():
     filename = ktk.doc.download("walk.c3d")
     c3d = ktk.read_c3d(filename)
 
-    assert len(c3d["Points"].time) == 221
-    assert len(c3d["Points"].data) == 96
-    assert len(c3d["Points"].events) == 8
-    assert len(c3d["Analogs"].time) == 4420
-    assert len(c3d["Analogs"].data) == 248
-    assert len(c3d["Analogs"].events) == 8
+    assert len(c3d["points"].time) == 221
+    assert len(c3d["points"].data) == 96
+    assert len(c3d["points"].events) == 8
+    assert len(c3d["analogs"].time) == 4420
+    assert len(c3d["analogs"].data) == 248
+    assert len(c3d["analogs"].events) == 8
 
     assert (
-        c3d["Points"].get_index_at_time(
-            c3d["Points"].get_event_time("Foot Strike", 0)
+        c3d["points"].get_index_at_time(
+            c3d["points"].get_event_time("Foot Strike", 0)
         )
         == 14
     )
@@ -154,16 +154,17 @@ def test_read_c3d_testsuite1():
     for key in ["pi", "pr", "vi", "vr"]:
         test.append(
             ktk.read_c3d(
-                ktk.doc.download(f"c3d_test_suite/Sample01/Eb015{key}.c3d")
+                ktk.doc.download(f"c3d_test_suite/Sample01/Eb015{key}.c3d"),
+                extract_force_plates=True,
             )
         )
     for i in range(1, 4):
-        assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
-        assert test[i]["Analogs"]._is_equivalent(
-            test[0]["Analogs"], equal=False
+        assert test[i]["points"]._is_equivalent(test[0]["points"], equal=False)
+        assert test[i]["analogs"]._is_equivalent(
+            test[0]["analogs"], equal=False
         )
-        assert test[i]["Platforms"]._is_equivalent(
-            test[0]["Platforms"], equal=False
+        assert test[i]["force_plates"]._is_equivalent(
+            test[0]["force_plates"], equal=False
         )
 
 
@@ -183,18 +184,19 @@ def test_read_c3d_testsuite2():
     ]:
         test.append(
             ktk.read_c3d(
-                ktk.doc.download(f"c3d_test_suite/Sample02/{key}.c3d")
+                ktk.doc.download(f"c3d_test_suite/Sample02/{key}.c3d"),
+                extract_force_plates=True,
             )
         )
     for i in range(1, 4):
-        assert test[i]["Points"]._is_equivalent(
-            test[0]["Points"], equal=False, atol=1e-3
+        assert test[i]["points"]._is_equivalent(
+            test[0]["points"], equal=False, atol=1e-3
         )
-        assert test[i]["Analogs"]._is_equivalent(
-            test[0]["Analogs"], equal=False
+        assert test[i]["analogs"]._is_equivalent(
+            test[0]["analogs"], equal=False
         )
-        assert test[i]["Platforms"]._is_equivalent(
-            test[0]["Platforms"], equal=False
+        assert test[i]["force_plates"]._is_equivalent(
+            test[0]["force_plates"], equal=False
         )
 
 
@@ -210,21 +212,77 @@ def test_read_c3d_testsuite8():
     ]:
         test.append(
             ktk.read_c3d(
-                ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d")
+                ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d"),
+                extract_force_plates=True,
             )
         )
     for i in range(1, 5):
-        assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
-        assert test[i]["Analogs"]._is_equivalent(
-            test[0]["Analogs"], equal=False
+        assert test[i]["points"]._is_equivalent(test[0]["points"], equal=False)
+        assert test[i]["analogs"]._is_equivalent(
+            test[0]["analogs"], equal=False
         )
-        assert test[i]["Platforms"]._is_equivalent(
-            test[0]["Platforms"], equal=False
+        assert test[i]["force_plates"]._is_equivalent(
+            test[0]["force_plates"], equal=False
         )
 
 
 # Note: We do not run testsuite36 because floats in FRAMES is not supported by
 # ezc3d.
+
+
+def test_read_write_c3d():
+    """
+    Test that writing and reading back a c3d file yields the same results.
+
+    Tests twice, once using the original c3d, then saving a new c3d and
+    opening again.
+    """
+    markers = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))[
+        "points"
+    ]
+
+    assert markers.time_info["Unit"] == "s"
+    assert markers.data_info["ForearmL1"]["Unit"] == "m"
+
+    ktk.write_c3d("test.c3d", markers)
+    markers2 = ktk.read_c3d("test.c3d")["points"]
+
+    assert np.allclose(markers.data["ForearmL1"], markers2.data["ForearmL1"])
+    assert np.allclose(markers.data["ForearmL1"].mean(), 0.14476261166589602)
+
+    os.remove("test.c3d")
+
+
+def test_write_c3d_testsuite8():
+    """
+    Run the c3d.org test suite 8 and check if every file is equivalent even
+    after a round-test (read-write-read).
+    """
+    test = []
+    for key in [
+        "EB015PI",
+        "TESTAPI",
+        "TESTBPI",
+        "TESTCPI",
+        "TESTDPI",
+    ]:
+        data = ktk.read_c3d(
+            ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d"),
+            extract_force_plates=False,
+        )
+        ktk.write_c3d("test.c3d", **data)
+        test.append(ktk.read_c3d("test.c3d", extract_force_plates=True))
+    for i in range(1, 5):
+        assert test[i]["points"]._is_equivalent(test[0]["points"], equal=False)
+        assert test[i]["analogs"]._is_equivalent(
+            test[0]["analogs"], equal=False
+        )
+        # Commented because ezc3d could not extract force_plates data
+        # because there are metadata lacking due to this round-trip.
+        # assert test[i]["force_plates"]._is_equivalent(
+        #     test[0]["force_plates"], equal=False
+        # )
+
 
 if __name__ == "__main__":
     import pytest
