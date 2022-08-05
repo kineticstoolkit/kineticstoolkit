@@ -324,6 +324,21 @@ def test_deriv():
     )
 
 
+def test_validate_input():
+    ts = ktk.TimeSeries(
+        time=np.array([0, 0.1, 0.2]), data={"Data": np.array([0, 0.1, 0.2])}
+    )
+    ts1 = ktk.filters.smooth(ts, window_length=3)
+    # Assert no error
+
+    ts.time = np.array([0, 0.2, 0.1])
+    try:
+        ts2 = ktk.filters.smooth(ts, window_length=3)
+        raise AssertionError("This should have raised a ValueError")
+    except ValueError:
+        pass
+
+
 if __name__ == "__main__":
     import pytest
 

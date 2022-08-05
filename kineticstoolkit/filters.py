@@ -55,6 +55,23 @@ def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.ndarray]:
     return (ts, nan_index)
 
 
+def _validate_input(ts):
+    """
+    Check that time is not null, that sample rate is constant, and that
+    time unit is s.
+    """
+    if ts.time.shape[0] == 0:
+        raise ValueError("There is no data to filter.")
+    if ts.get_sample_rate() < 0:
+        raise ValueError("Sample rate must be constant.")
+    try:
+        assert ts.time_info["Unit"] == "s"
+    except KeyError:
+        warnings.warn("I assume, but cannot tell if the time unit is 's'.")
+    except ValueError:
+        warnings.warn("It seems that unit is not 's'.")
+
+
 def savgol(
     ts: TimeSeries, /, *, window_length: int, poly_order: int, deriv: int = 0
 ) -> TimeSeries:
@@ -84,7 +101,19 @@ def savgol(
         Optional. The order of the derivative to compute. The default is 0,
         which means to filter the data without differentiating.
 
+    Returns
+    -------
+    TimeSeries
+        A copy of the input TimeSeries, which each data filtered.
+
+    Raises
+    ------
+    ValueError if sample rate is not constant, or if there is no data to
+    filter.
+
     """
+    _validate_input(ts)
+
     tsout = ts.copy()
 
     delta = ts.time[1] - ts.time[0]
@@ -135,7 +164,14 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
 
+    Raises
+    ------
+    ValueError if sample rate is not constant, or if there is no data to
+    filter.
+
     """
+    _validate_input(ts)
+
     tsout = savgol(ts, window_length=window_length, poly_order=0)
     return tsout
 
@@ -178,7 +214,14 @@ def butter(
         to eliminate time lag. If False, the filter is applied only in forward
         direction.
 
+    Raises
+    ------
+    ValueError if sample rate is not constant, or if there is no data to
+    filter.
+
     """
+    _validate_input(ts)
+
     ts = ts.copy()
 
     # Create the filter
@@ -231,6 +274,11 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
         A copy of the input TimeSeries, with n less points than the original
         one.
 
+    Raises
+    ------
+    ValueError if sample rate is not constant, or if there is no data to
+    filter.
+
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
@@ -259,6 +307,8 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     array([ 100., -100., -100.])
 
     """
+    _validate_input(ts)
+
     out_ts = ts.copy()
 
     for i in range(n):
