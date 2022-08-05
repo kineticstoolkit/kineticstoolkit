@@ -16,7 +16,7 @@ import warnings
 import os
 
 
-def test_read_n3d_file():
+def test_read_n3d_file_deprecated():
     """Regression test."""
     markers = ktk.kinematics.read_n3d_file(
         ktk.doc.download("kinematics_sample_optotrak.n3d")
