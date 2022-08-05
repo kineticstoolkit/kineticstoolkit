@@ -315,19 +315,19 @@ def test_sort_events():
 
 def test_get_sample_rate():
     ts = ktk.TimeSeries()
-    assert ts.get_sample_rate() == 0
+    assert np.isnan(ts.get_sample_rate())
 
     ts.time = np.array([0.0, 0.1, 0.2, 0.3])
     assert ts.get_sample_rate() == 10.0
 
     ts.time = np.array([0, 0.1, 0.3, 0.4])
-    assert ts.get_sample_rate() == -1
+    assert np.isnan(ts.get_sample_rate())
 
     ts.time = np.array([0])
-    assert ts.get_sample_rate() == -1
+    assert np.isnan(ts.get_sample_rate())
 
     ts.time = np.array([0.0, 0.2, 0.1])
-    assert ts.get_sample_rate() == -1
+    assert np.isnan(ts.get_sample_rate())
 
     ts.time = np.array([0.0, 0.1])
     assert ts.get_sample_rate() == 10.0

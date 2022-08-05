@@ -62,7 +62,7 @@ def _validate_input(ts):
     """
     if ts.time.shape[0] == 0:
         raise ValueError("There is no data to filter.")
-    if ts.get_sample_rate() < 0:
+    if np.isnan(ts.get_sample_rate()):
         raise ValueError("Sample rate must be constant.")
     try:
         assert ts.time_info["unit"] == "s"

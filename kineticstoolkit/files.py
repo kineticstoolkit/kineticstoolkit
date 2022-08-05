@@ -319,7 +319,6 @@ def read_c3d(
         - 'moments1': Nx4 series of moment vectors on platform 2.
         - 'moments2': Nx4 series of moment vectors on platform 3.
         - ...
-      This experimental feature could be modified or removed in the future.
 
     Warning
     -------
