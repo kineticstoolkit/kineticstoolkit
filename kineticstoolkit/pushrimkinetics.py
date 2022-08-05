@@ -104,10 +104,10 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
         ts.data["Moments"] = np.block([[moments, np.zeros((len(index), 1))]])
         ts.data["Angle"] = angle_rad
 
-        ts = ts.add_data_info("Channels", "Unit", "raw")
-        ts = ts.add_data_info("Forces", "Unit", "N")
-        ts = ts.add_data_info("Moments", "Unit", "Nm")
-        ts = ts.add_data_info("Angle", "Unit", "rad")
+        ts = ts.add_data_info("Channels", "unit", "raw")
+        ts = ts.add_data_info("Forces", "unit", "N")
+        ts = ts.add_data_info("Moments", "unit", "Nm")
+        ts = ts.add_data_info("Angle", "unit", "rad")
 
     elif file_format == "racingwheel":
 
@@ -120,10 +120,10 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
         ts = TimeSeries(time=time)
 
         ts.data["Channels"] = channels
-        ts = ts.add_data_info("Channels", "Unit", "raw")
+        ts = ts.add_data_info("Channels", "unit", "raw")
 
         ts.data["Battery"] = battery
-        ts = ts.add_data_info("Battery", "Unit", "raw")
+        ts = ts.add_data_info("Battery", "unit", "raw")
 
     elif file_format == "smartwheeltxt":
 
@@ -190,8 +190,8 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
         )
         ts.data["Angle"] = angle
 
-        ts = ts.add_data_info("Channels", "Unit", "raw")
-        ts = ts.add_data_info("Angle", "Unit", "rad")
+        ts = ts.add_data_info("Channels", "unit", "raw")
+        ts = ts.add_data_info("Angle", "unit", "rad")
 
     else:
         raise ValueError("Unknown file format.")
@@ -498,13 +498,13 @@ def calculate_forces_and_moments(
         [forces_moments[:, 0:3], np.zeros((forces_moments.shape[0], 1))],
         axis=1,
     )
-    kinetics = kinetics.add_data_info("Forces", "Unit", "N")
+    kinetics = kinetics.add_data_info("Forces", "unit", "N")
 
     kinetics.data["Moments"] = np.concatenate(
         [forces_moments[:, 3:6], np.zeros((forces_moments.shape[0], 1))],
         axis=1,
     )
-    kinetics = kinetics.add_data_info("Moments", "Unit", "Nm")
+    kinetics = kinetics.add_data_info("Moments", "unit", "Nm")
 
     return kinetics
 
@@ -556,7 +556,7 @@ def calculate_velocity(tsin: TimeSeries, /) -> TimeSeries:
     tsout.data["Velocity"] = tsvelocity.data["Angle"]
     try:
         tsout = tsout.add_data_info(
-            "Velocity", "Unit", tsout.data_info["Angle"]["Unit"] + "/s"
+            "Velocity", "unit", tsout.data_info["Angle"]["unit"] + "/s"
         )
     except KeyError:
         pass
@@ -590,7 +590,7 @@ def calculate_power(tsin: TimeSeries, /) -> TimeSeries:
     """
     tsout = tsin.copy()
     tsout.data["Power"] = tsout.data["Velocity"] * tsout.data["Moments"][:, 2]
-    tsout = tsout.add_data_info("Power", "Unit", "W")
+    tsout = tsout.add_data_info("Power", "unit", "W")
     return tsout
 
 

@@ -25,8 +25,8 @@ def test_read_n3d_file_deprecated():
     tol = 1e-4
     assert np.abs(np.sum(markers.data["Marker0"]) - 172.3365) < tol
     assert np.abs(np.sum(markers.data["Marker40"]) + 45.3753) < tol
-    assert markers.time_info["Unit"] == "s"
-    assert markers.data_info["Marker40"]["Unit"] == "m"
+    assert markers.time_info["unit"] == "s"
+    assert markers.data_info["Marker40"]["unit"] == "m"
 
     labels = [
         "Probe1",
@@ -79,8 +79,8 @@ def test_read_n3d_file_deprecated():
 
     assert np.abs(np.sum(markers.data["Probe1"]) - 172.3365) < tol
     assert np.abs(np.sum(markers.data["GantD3"]) + 45.3753) < tol
-    assert markers.time_info["Unit"] == "s"
-    assert markers.data_info["GantD3"]["Unit"] == "m"
+    assert markers.time_info["unit"] == "s"
+    assert markers.data_info["GantD3"]["unit"] == "m"
 
 
 def test_reconstruction_deprecated():
@@ -232,7 +232,7 @@ def test_reconstruction():
 
         # Test bugfix #85
         # Units and other data_info lost in kinetics.track_cluster()
-        assert markers_probing.data_info["ProbeTip"]["Unit"] == "m"
+        assert markers_probing.data_info["ProbeTip"]["unit"] == "m"
 
         # Extend the cluster
         markers_probing.rename_data("ProbeTip", point_name, in_place=True)

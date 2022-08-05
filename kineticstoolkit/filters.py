@@ -65,7 +65,7 @@ def _validate_input(ts):
     if ts.get_sample_rate() < 0:
         raise ValueError("Sample rate must be constant.")
     try:
-        assert ts.time_info["Unit"] == "s"
+        assert ts.time_info["unit"] == "s"
     except KeyError:
         warnings.warn("I assume, but cannot tell if the time unit is 's'.")
     except ValueError:

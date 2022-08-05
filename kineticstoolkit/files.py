@@ -184,7 +184,16 @@ def _load_object_hook(obj):
             out = TimeSeries()
             out.time = np.array(obj["time"])
             out.time_info = obj["time_info"]
+
+            # Change "Unit" for "unit" in time_info and data_info
+            # https://github.com/felixchenier/kineticstoolkit/issues/111
+            if "Unit" in out.time_info:
+                out.time_info["unit"] = out.time_info.pop("Unit")
             out.data_info = obj["data_info"]
+            for key in out.data_info:
+                if "Unit" in out.data_info[key]:
+                    out.data_info[key]["unit"] = out.data_info[key].pop("Unit")
+
             for key in obj["data"]:
                 out.data[key] = np.array(obj["data"][key])
             for event in obj["events"]:
@@ -276,20 +285,6 @@ def read_c3d(
     output['analogs']. Each analog signal is expressed as an unidimensional
     series of length N.
 
-    Experimental
-    ------------
-    If the C3D file contains force plate data and extract_force_plates is
-    True, these data are returned as a TimeSeries in output['force_plates'].
-    The available signals are, for example:
-        - 'Forces0': Nx4 series of force vectors on platform 0.
-        - 'Forces1': Nx4 series of force vectors on platform 1.
-        - 'Forces2': Nx4 series of force vectors on platform 2.
-        - ...
-        - 'Moments0': Nx4 series of moment vectors on platform 0.
-        - 'Moments1': Nx4 series of moment vectors on platform 2.
-        - 'Moments2': Nx4 series of moment vectors on platform 3.
-        - ...
-
     Parameters
     ----------
     filename
@@ -310,6 +305,20 @@ def read_c3d(
     - As for any instrument, please check that your data loads correctly on
       your first use (e.g., sampling frequency, position unit). It is
       possible that read_c3d misses some corner cases.
+
+    - Experimental feature: If the C3D file contains force plate data and
+      extract_force_plates is True, these data are returned as a TimeSeries in
+      output['force_plates']. The available signals are, for example:
+
+        - 'forces0': Nx4 series of force vectors on platform 0.
+        - 'forces1': Nx4 series of force vectors on platform 1.
+        - 'forces2': Nx4 series of force vectors on platform 2.
+        - ...
+        - 'moments0': Nx4 series of moment vectors on platform 0.
+        - 'moments1': Nx4 series of moment vectors on platform 2.
+        - 'moments2': Nx4 series of moment vectors on platform 3.
+        - ...
+      This experimental feature could be modified or removed in the future.
 
     Warning
     -------
@@ -390,7 +399,7 @@ def read_c3d(
                 [point_factor, point_factor, point_factor, 1]
                 * reader["data"]["points"][:, i_label, :].T
             )
-            points = points.add_data_info(key, "Unit", point_unit)
+            points = points.add_data_info(key, "unit", point_unit)
 
     points.time = (
         np.arange(points.data[key].shape[0]) / point_rate + start_time
@@ -424,7 +433,7 @@ def read_c3d(
             if units[i_label] != "":
                 analogs.add_data_info(
                     key,
-                    "Unit",
+                    "unit",
                     units[i_label].encode("utf-8", "ignore").decode("utf-8"),
                     in_place=True,
                 )
@@ -456,12 +465,12 @@ def read_c3d(
                     f"Force unit is {force_unit} instead of newtons."
                 )
 
-            key = f"Forces{i_platform}"
+            key = f"forces{i_platform}"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = reader["data"]["platform"][
                 i_platform
             ]["force"].T
-            platforms.add_data_info(key, "Unit", force_unit, in_place=True)
+            platforms.add_data_info(key, "unit", force_unit, in_place=True)
 
             moment_unit = reader["data"]["platform"][0]["unit_moment"]
 
@@ -474,13 +483,13 @@ def read_c3d(
                 moment_factor = 1
                 warnings.warn(f"Moment unit is {moment_unit} instead of Nm.")
 
-            key = f"Moments{i_platform}"
+            key = f"moments{i_platform}"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = (
                 moment_factor
                 * reader["data"]["platform"][i_platform]["moment"].T
             )
-            platforms.add_data_info(key, "Unit", moment_unit, in_place=True)
+            platforms.add_data_info(key, "unit", moment_unit, in_place=True)
 
         # Add events
         for i_event, event_name in enumerate(event_names):
@@ -563,9 +572,9 @@ def write_c3d(
             "ANALOG",
             "UNITS",
             [
-                analogs.data_info[key]["Unit"]
+                analogs.data_info[key]["unit"]
                 if key in analogs.data_info
-                and "Unit" in analogs.data_info[key]
+                and "unit" in analogs.data_info[key]
                 else ""
                 for key in analogs.data
             ],
