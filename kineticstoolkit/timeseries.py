@@ -1474,6 +1474,35 @@ class TimeSeries:
                 loc=legend_location, ncol=1 + int(len(labels) / 40)
             )  # Max 40 items per line
 
+    def get_sample_rate(self) -> float:
+        """
+        Get the sample rate in samples/s.
+
+        Returns
+        -------
+        float
+            The sample rate in samples per second. If time is empty, a value
+            of 0 is returned. If time has only one data, or if sample rate is
+            variable, or if time is not monotonously increasing, a value of -1
+            is returned.
+
+        Warning
+        -------
+        This feature, which has been introduced in version 0.9, is still
+        experimental and may change in the future.
+
+        """
+        if self.time.shape[0] == 0:
+            return 0
+        elif self.time.shape[0] == 1:
+            return -1
+
+        deltas = self.time[1:] - self.time[0:-1]
+        if np.allclose(deltas, [deltas[0]]):
+            return 1.0 / deltas.mean()
+        else:
+            return -1
+
     def get_index_at_time(self, time: float) -> int:
         """
         Get the time index that is the closest to the specified time.
