@@ -185,6 +185,7 @@ def _load_object_hook(obj):
             out.time = np.array(obj["time"])
             out.time_info = obj["time_info"]
 
+            # Added on 2022/08/05
             # Change "Unit" for "unit" in time_info and data_info
             # https://github.com/felixchenier/kineticstoolkit/issues/111
             if "Unit" in out.time_info:
