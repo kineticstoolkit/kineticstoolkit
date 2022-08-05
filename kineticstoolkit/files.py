@@ -368,9 +368,9 @@ def read_c3d(
         warnings.warn(f"Point unit is {point_unit} instead of meters.")
 
     for i_label in range(n_points):
-        # Strip leading and ending spaces
+        # Make sure it's UTF8, and strip leading and ending spaces
         label = labels[i_label]
-        key = label.strip()
+        key = label.encode("utf-8", "ignore").decode("utf-8").strip()
         if label != "":
             points.data[key] = np.array(
                 [point_factor, point_factor, point_factor, 1]
@@ -405,11 +405,14 @@ def read_c3d(
         for i_label in range(n_analogs):
             # Strip leading and ending spaces
             label = labels[i_label]
-            key = label.strip()
+            key = label.encode("utf-8", "ignore").decode("utf-8").strip()
             analogs.data[key] = reader["data"]["analogs"][0, i_label].T
             if units[i_label] != "":
                 analogs.add_data_info(
-                    key, "Unit", units[i_label], in_place=True
+                    key,
+                    "Unit",
+                    units[i_label].encode("utf-8", "ignore").decode("utf-8"),
+                    in_place=True,
                 )
 
         analogs.time = (
@@ -490,11 +493,12 @@ def write_c3d(
 
     points
         Points trajectories, where each point corresponds to a data key.
-        Each point position is expressed as an Nx4 point series.
+        Each point position is expressed as an Nx4 point series. Events from
+        this TimeSeries are also added to the c3d.
 
     analogs
         Optional. Analog signals, where each data key is an unidimensional
-        array.
+        array. Events from this TimeSeries are not added to the c3d.
 
     Notes
     -----
@@ -512,10 +516,10 @@ def write_c3d(
             "conda install -c conda-forge ezc3d"
         )
 
-    sample_rate = int(
-        (points.time.shape[0] - 1) / (points.time[-1] - points.time[0])
-    )
+    # Create an empty c3d structure
+    c3d = ezc3d.c3d()
 
+    # Add the points
     marker_list = []
     marker_data = np.zeros((4, len(points.data), len(points.time)))
 
@@ -526,39 +530,50 @@ def write_c3d(
         marker_data[2, i_marker, :] = points.data[marker][:, 2]
         marker_data[3, i_marker, :] = points.data[marker][:, 3]
 
-    # Load an empty c3d structure
-    c3d = ezc3d.c3d()
-
     # Fill point data
-    c3d["parameters"]["POINT"]["RATE"]["value"] = [sample_rate]
-    c3d["parameters"]["POINT"]["LABELS"]["value"] = tuple(marker_list)
-    c3d["data"]["points"] = marker_data
-
-    # Add a custom parameter to the POINT group
+    c3d["header"]["points"]["first_frame"] = round(
+        points.time[0] * points.get_sample_rate()
+    )
+    c3d.add_parameter("POINT", "RATE", [points.get_sample_rate()])
+    c3d.add_parameter("POINT", "LABELS", [tuple(marker_list)])
     c3d.add_parameter("POINT", "UNITS", "m")
+
+    c3d["data"]["points"] = marker_data
 
     # Fill analog data
     if analogs is not None:
 
-        analogs_rate = int(
-            (analogs.time.shape[0] - 1) / (analogs.time[-1] - analogs.time[0])
+        c3d.add_parameter("ANALOG", "LABELS", list(analogs.data.keys()))
+        c3d.add_parameter("ANALOG", "RATE", [analogs.get_sample_rate()])
+        c3d.add_parameter(
+            "ANALOG",
+            "UNITS",
+            [
+                analogs.data_info[key]["Unit"]
+                if key in analogs.data_info
+                and "Unit" in analogs.data_info[key]
+                else ""
+                for key in analogs.data
+            ],
         )
+        c3d.add_parameter("ANALOG", "USED", [len(analogs.data)])
 
-        c3d["parameters"]["ANALOG"]["LABELS"]["value"] = list(
-            analogs.data.keys()
-        )
-        c3d["parameters"]["ANALOG"]["RATE"]["value"] = [analogs_rate]
-        c3d["parameters"]["ANALOG"]["UNITS"]["value"] = [
-            analogs.data_info[key]["Unit"]
-            if key in analogs.data_info and "Unit" in analogs.data_info[key]
-            else ""
-            for key in analogs.data
-        ]
-        c3d["parameters"]["ANALOG"]["USED"]["value"] = [len(analogs.data)]
         analog_data = np.array([analogs.data[key] for key in analogs.data])
         c3d["data"]["analogs"] = analog_data[np.newaxis]
 
     # Write the data
+    c3d.write(filename)
+
+    # ---------------------------------
+    # Add the events
+    c3d = ezc3d.c3d(filename)
+    for event in points.events:
+        c3d.add_event(
+            time=[event.time // 60, np.mod(event.time, 60)], label=event.name
+        )
+
+    # Write the data again
+    # (workaround https://github.com/pyomeca/ezc3d/issues/263)
     c3d.write(filename)
 
 

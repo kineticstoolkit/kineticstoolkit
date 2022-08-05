@@ -282,6 +282,36 @@ def test_write_c3d_testsuite8():
         # assert test[i]["force_plates"]._is_equivalent(
         #     test[0]["force_plates"], equal=False
         # )
+    os.remove("test.c3d")
+
+
+def test_write_c3d_weirdc3d():
+    """
+    Test that writing data from a weirdly formatted c3d works. This file
+    has weird characters.
+
+    ezc3d has to be patched for this test to pass.
+    https://github.com/pyomeca/ezc3d/issues/264
+    """
+    filename = ktk.doc.download("walk.c3d")
+    c3d = ktk.read_c3d(filename)
+    ktk.write_c3d("test.c3d", **c3d)
+    c3d = ktk.read_c3d("test.c3d")
+
+    assert len(c3d["points"].time) == 221
+    assert len(c3d["points"].data) == 96
+    assert len(c3d["points"].events) == 8
+    assert len(c3d["analogs"].time) == 4420
+    assert len(c3d["analogs"].data) == 248
+    assert len(c3d["analogs"].events) == 8
+
+    assert (
+        c3d["points"].get_index_at_time(
+            c3d["points"].get_event_time("Foot Strike", 0)
+        )
+        == 14
+    )
+    os.remove("test.c3d")
 
 
 if __name__ == "__main__":
