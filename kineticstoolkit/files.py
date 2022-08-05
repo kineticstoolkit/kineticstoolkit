@@ -328,7 +328,21 @@ def read_c3d(
 
     # Create the reader
     if isinstance(filename, str) and os.path.exists(filename):
-        reader = ezc3d.c3d(filename, extract_forceplat_data=True)
+        try:
+            reader = ezc3d.c3d(
+                filename, extract_forceplat_data=extract_force_plates
+            )
+        except OSError:
+            # Maybe there's an invalid character in filename.
+            # Try to workaround
+            # https://github.com/pyomeca/ezc3d/issues/252
+            tempfile = kineticstoolkit.config.temp_folder + "/temp.c3d"
+            shutil.copyfile(filename, tempfile)
+            reader = ezc3d.c3d(
+                tempfile, extract_forceplat_data=extract_force_plates
+            )
+            os.remove(tempfile)
+
     else:
         raise FileNotFoundError(f"File {filename} was not found.")
 
