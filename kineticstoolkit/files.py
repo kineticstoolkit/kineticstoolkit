@@ -268,12 +268,12 @@ def read_c3d(
     """
     Read point and analog data from a C3D file.
 
-    Point positions are returned in a TimeSeries in output['points'], where
+    Point positions are returned in a TimeSeries in output["Points"], where
     each point corresponds to a data key. Each point position is expressed
     as a Nx4 point series.
 
     If the C3D file contains analog data, it is returned as a TimeSeries in
-    output['analogs']. Each analog signal is expressed as an unidimensional
+    output["Analogs"]. Each analog signal is expressed as an unidimensional
     series of length N.
 
     Parameters
@@ -299,15 +299,15 @@ def read_c3d(
 
     - Experimental feature: If the C3D file contains force plate data and
       extract_force_plates is True, these data are returned as a TimeSeries in
-      output['force_plates']. The available signals are, for example:
+      output["force_plates"]. The available signals are, for example:
 
-        - 'forces0': Nx4 series of force vectors on platform 0.
-        - 'forces1': Nx4 series of force vectors on platform 1.
-        - 'forces2': Nx4 series of force vectors on platform 2.
+        - 'Forces0': Nx4 series of force vectors on platform 0.
+        - 'Forces1': Nx4 series of force vectors on platform 1.
+        - 'Forces2': Nx4 series of force vectors on platform 2.
         - ...
-        - 'moments0': Nx4 series of moment vectors on platform 0.
-        - 'moments1': Nx4 series of moment vectors on platform 2.
-        - 'moments2': Nx4 series of moment vectors on platform 3.
+        - 'Moments0': Nx4 series of moment vectors on platform 0.
+        - 'Moments1': Nx4 series of moment vectors on platform 2.
+        - 'Moments2': Nx4 series of moment vectors on platform 3.
         - ...
 
     Warning
@@ -400,7 +400,7 @@ def read_c3d(
         points.add_event(event_times[i_event], event_name, in_place=True)
     points.sort_events(in_place=True)
 
-    output["points"] = points
+    output["Points"] = points
 
     # ---------------------------------
     # Create the analogs TimeSeries
@@ -437,7 +437,7 @@ def read_c3d(
             analogs.add_event(event_times[i_event], event_name, in_place=True)
         analogs.sort_events(in_place=True)
 
-        output["analogs"] = analogs
+        output["Analogs"] = analogs
 
     # ---------------------------------
     # Create the platforms TimeSeries
@@ -488,7 +488,7 @@ def read_c3d(
             )
         platforms.sort_events(in_place=True)
 
-        output["force_plates"] = platforms
+        output["ForcePlates"] = platforms
 
     return output
 

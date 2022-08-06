@@ -634,7 +634,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
       possible that read_c3d_file misses some corner cases.
 
     """
-    return read_c3d(filename)["points"]
+    return read_c3d(filename)["Points"]
 
 
 @deprecated(
