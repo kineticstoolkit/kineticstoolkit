@@ -299,7 +299,7 @@ def track_cluster(
             cluster[marker], frames
         )
         if unit is not None:
-            out.add_data_info(marker, "unit", unit, in_place=True)
+            out.add_data_info(marker, "Unit", unit, in_place=True)
 
     if include_lcs:
         out.data[lcs_name] = frames
@@ -339,7 +339,7 @@ def _get_marker_unit(markers: TimeSeries) -> Union[None, str]:
     unit = None
     for marker in markers.data:
         try:
-            this_unit = markers.data_info[marker]["unit"]
+            this_unit = markers.data_info[marker]["Unit"]
         except KeyError:
             this_unit = None
 
@@ -745,6 +745,6 @@ def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
                     ]
                 ]
             )
-            ts = ts.add_data_info(label, "unit", "m")
+            ts = ts.add_data_info(label, "Unit", "m")
 
     return ts

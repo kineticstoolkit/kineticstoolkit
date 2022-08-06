@@ -114,7 +114,7 @@ def test_empty_constructor():
     assert isinstance(ts.time_info, dict)
     assert isinstance(ts.data_info, dict)
     assert isinstance(ts.events, list)
-    assert ts.time_info["unit"] == "s"
+    assert ts.time_info["Unit"] == "s"
 
 
 def test_from_to_dataframe():
@@ -168,11 +168,11 @@ def test_from_to_dataframe():
 
 def test_add_remove_data_info():
     ts = ktk.TimeSeries()
-    ts = ts.add_data_info("Force", "unit", "N")
+    ts = ts.add_data_info("Force", "Unit", "N")
     ts.add_data_info("Force", "Other", "hello", in_place=True)
 
     # Check that data_info was added
-    assert ts.data_info["Force"]["unit"] == "N"
+    assert ts.data_info["Force"]["Unit"] == "N"
     assert ts.data_info["Force"]["Other"] == "hello"
 
     # Test removing non-existing data_info
@@ -181,7 +181,7 @@ def test_add_remove_data_info():
 
     # Test removing existing data_info
     ts.remove_data_info("Force", "Other", in_place=True)
-    assert ts.data_info["Force"]["unit"] == "N"
+    assert ts.data_info["Force"]["Unit"] == "N"
     assert len(ts.data_info["Force"]) == 1
 
 
@@ -192,10 +192,10 @@ def test_rename_remove_data():
     assert np.allclose(ts.data["Moment"], np.arange(10))
 
     # Same test but with data info
-    ts.add_data_info("Moment", "unit", "Nm", in_place=True)
+    ts.add_data_info("Moment", "Unit", "Nm", in_place=True)
     ts = ts.rename_data("Moment", "Power")
     assert np.allclose(ts.data["Power"], np.arange(10))
-    assert ts.data_info["Power"]["unit"] == "Nm"
+    assert ts.data_info["Power"]["Unit"] == "Nm"
 
     # Rename inexistent data
     ts = ts.rename_data("NoKey", "Anything")
@@ -409,9 +409,9 @@ def test_merge_and_resample():
     ts1.data["signal1"] = np.random.rand(100, 2)
     ts1.data["signal2"] = np.random.rand(100, 2)
     ts1.data["signal3"] = np.random.rand(100, 2)
-    ts1.add_data_info("signal1", "unit", "Unit1", in_place=True)
-    ts1.add_data_info("signal2", "unit", "Unit2", in_place=True)
-    ts1.add_data_info("signal3", "unit", "Unit3", in_place=True)
+    ts1.add_data_info("signal1", "Unit", "Unit1", in_place=True)
+    ts1.add_data_info("signal2", "Unit", "Unit2", in_place=True)
+    ts1.add_data_info("signal3", "Unit", "Unit3", in_place=True)
     ts1.add_event(1.54, "test_event1", in_place=True)
     ts1.add_event(10.2, "test_event2", in_place=True)
     ts1.add_event(100, "test_event3", in_place=True)
@@ -421,9 +421,9 @@ def test_merge_and_resample():
     ts2.data["signal4"] = np.random.rand(100, 2)
     ts2.data["signal5"] = np.random.rand(100, 2)
     ts2.data["signal6"] = np.random.rand(100, 2)
-    ts2.add_data_info("signal4", "unit", "Unit1", in_place=True)
-    ts2.add_data_info("signal5", "unit", "Unit2", in_place=True)
-    ts2.add_data_info("signal6", "unit", "Unit3", in_place=True)
+    ts2.add_data_info("signal4", "Unit", "Unit1", in_place=True)
+    ts2.add_data_info("signal5", "Unit", "Unit2", in_place=True)
+    ts2.add_data_info("signal6", "Unit", "Unit3", in_place=True)
     ts2.add_event(1.54, "test_event4", in_place=True)
     ts2.add_event(10.2, "test_event5", in_place=True)
     ts2.add_event(100, "test_event6", in_place=True)
@@ -434,13 +434,13 @@ def test_merge_and_resample():
     assert np.all(ts1.data["signal5"] == ts2.data["signal5"])
     assert np.all(ts1.data["signal6"] == ts2.data["signal6"])
     assert np.all(
-        ts1.data_info["signal4"]["unit"] == ts2.data_info["signal4"]["unit"]
+        ts1.data_info["signal4"]["Unit"] == ts2.data_info["signal4"]["Unit"]
     )
     assert np.all(
-        ts1.data_info["signal5"]["unit"] == ts2.data_info["signal5"]["unit"]
+        ts1.data_info["signal5"]["Unit"] == ts2.data_info["signal5"]["Unit"]
     )
     assert np.all(
-        ts1.data_info["signal6"]["unit"] == ts2.data_info["signal6"]["unit"]
+        ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
     )
 
     # Try with two timeseries that don't fit in time. It must generate an
@@ -450,9 +450,9 @@ def test_merge_and_resample():
     ts1.data["signal1"] = np.random.rand(100, 2)
     ts1.data["signal2"] = np.random.rand(100, 2)
     ts1.data["signal3"] = np.random.rand(100, 2)
-    ts1.add_data_info("signal1", "unit", "Unit1", in_place=True)
-    ts1.add_data_info("signal2", "unit", "Unit2", in_place=True)
-    ts1.add_data_info("signal3", "unit", "Unit3", in_place=True)
+    ts1.add_data_info("signal1", "Unit", "Unit1", in_place=True)
+    ts1.add_data_info("signal2", "Unit", "Unit2", in_place=True)
+    ts1.add_data_info("signal3", "Unit", "Unit3", in_place=True)
     ts1.add_event(1.54, "test_event1", in_place=True)
     ts1.add_event(10.2, "test_event2", in_place=True)
     ts1.add_event(100, "test_event3", in_place=True)
@@ -462,9 +462,9 @@ def test_merge_and_resample():
     ts2.data["signal4"] = ts2.time**2
     ts2.data["signal5"] = np.random.rand(300, 2)
     ts2.data["signal6"] = np.random.rand(300, 2)
-    ts2.add_data_info("signal4", "unit", "Unit1", in_place=True)
-    ts2.add_data_info("signal5", "unit", "Unit2", in_place=True)
-    ts2.add_data_info("signal6", "unit", "Unit3", in_place=True)
+    ts2.add_data_info("signal4", "Unit", "Unit1", in_place=True)
+    ts2.add_data_info("signal5", "Unit", "Unit2", in_place=True)
+    ts2.add_data_info("signal6", "Unit", "Unit3", in_place=True)
     ts2.add_event(1.54, "test_event4", in_place=True)
     ts2.add_event(10.2, "test_event5", in_place=True)
     ts2.add_event(100, "test_event6", in_place=True)
@@ -484,9 +484,9 @@ def test_merge_and_resample():
     _assert_almost_equal(ts1.data["signal4"], ts2.data["signal4"][0::3])
     _assert_almost_equal(ts1.data["signal5"], ts2.data["signal5"][0::3])
     _assert_almost_equal(ts1.data["signal6"], ts2.data["signal6"][0::3])
-    assert ts1.data_info["signal4"]["unit"] == ts2.data_info["signal4"]["unit"]
-    assert ts1.data_info["signal5"]["unit"] == ts2.data_info["signal5"]["unit"]
-    assert ts1.data_info["signal6"]["unit"] == ts2.data_info["signal6"]["unit"]
+    assert ts1.data_info["signal4"]["Unit"] == ts2.data_info["signal4"]["Unit"]
+    assert ts1.data_info["signal5"]["Unit"] == ts2.data_info["signal5"]["Unit"]
+    assert ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
 
 
 def test_plot():
@@ -516,13 +516,13 @@ def test_plot():
     plt.close(fig)
 
     # Add units
-    ts.add_data_info("data1", "unit", "m", in_place=True)
+    ts.add_data_info("data1", "Unit", "m", in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)
 
     # Add another unit
-    ts.add_data_info("data2", "unit", "mm", in_place=True)
+    ts.add_data_info("data2", "Unit", "mm", in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)
@@ -553,9 +553,9 @@ def test_copy():
     ts1.data["signal1"] = np.random.rand(100, 2)
     ts1.data["signal2"] = np.random.rand(100, 2)
     ts1.data["signal3"] = np.random.rand(100, 2)
-    ts1.add_data_info("signal1", "unit", "Unit1", in_place=True)
-    ts1.add_data_info("signal2", "unit", "Unit2", in_place=True)
-    ts1.add_data_info("signal3", "unit", "Unit3", in_place=True)
+    ts1.add_data_info("signal1", "Unit", "Unit1", in_place=True)
+    ts1.add_data_info("signal2", "Unit", "Unit2", in_place=True)
+    ts1.add_data_info("signal3", "Unit", "Unit3", in_place=True)
     ts1.add_event(1.54, "test_event1", in_place=True)
     ts1.add_event(10.2, "test_event2", in_place=True)
     ts1.add_event(100, "test_event3", in_place=True)
@@ -568,9 +568,9 @@ def test_copy():
     ts2 = ts1.copy(copy_data=False)
     assert ts1 != ts2
     assert np.all(ts2.time == ts1.time)
-    assert ts2.data_info["signal1"]["unit"] == "Unit1"
-    assert ts2.data_info["signal2"]["unit"] == "Unit2"
-    assert ts2.data_info["signal3"]["unit"] == "Unit3"
+    assert ts2.data_info["signal1"]["Unit"] == "Unit1"
+    assert ts2.data_info["signal2"]["Unit"] == "Unit2"
+    assert ts2.data_info["signal3"]["Unit"] == "Unit3"
     assert ts2.events[0].time == 1.54
     assert ts2.events[1].time == 10.2
     assert ts2.events[2].time == 100

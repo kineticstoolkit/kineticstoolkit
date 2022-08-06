@@ -409,7 +409,7 @@ class TimeSeries:
     def __init__(
         self,
         time: np.ndarray = np.array([]),
-        time_info: Dict[str, Any] = {"unit": "s"},
+        time_info: Dict[str, Any] = {"Unit": "s"},
         data: Dict[str, np.ndarray] = {},
         data_info: Dict[str, Dict[str, Any]] = {},
         events: List[TimeSeriesEvent] = [],
@@ -1401,13 +1401,13 @@ class TimeSeries:
             )
 
         # Add labels
-        plt.xlabel("Time (" + ts.time_info["unit"] + ")")
+        plt.xlabel("Time (" + ts.time_info["Unit"] + ")")
 
         # Make unique list of units
         unit_set = set()
         for data in ts.data_info:
             for info in ts.data_info[data]:
-                if info == "unit":
+                if info == "Unit":
                     unit_set.add(ts.data_info[data][info])
         # Plot this list
         unit_str = ""

@@ -184,16 +184,7 @@ def _load_object_hook(obj):
             out = TimeSeries()
             out.time = np.array(obj["time"])
             out.time_info = obj["time_info"]
-
-            # Change "Unit" for "unit" in time_info and data_info
-            # https://github.com/felixchenier/kineticstoolkit/issues/111
-            if "Unit" in out.time_info:
-                out.time_info["unit"] = out.time_info.pop("Unit")
             out.data_info = obj["data_info"]
-            for key in out.data_info:
-                if "Unit" in out.data_info[key]:
-                    out.data_info[key]["unit"] = out.data_info[key].pop("Unit")
-
             for key in obj["data"]:
                 out.data[key] = np.array(obj["data"][key])
             for event in obj["events"]:
@@ -398,7 +389,7 @@ def read_c3d(
                 [point_factor, point_factor, point_factor, 1]
                 * reader["data"]["points"][:, i_label, :].T
             )
-            points = points.add_data_info(key, "unit", point_unit)
+            points = points.add_data_info(key, "Unit", point_unit)
 
     points.time = (
         np.arange(points.data[key].shape[0]) / point_rate + start_time
@@ -432,7 +423,7 @@ def read_c3d(
             if units[i_label] != "":
                 analogs.add_data_info(
                     key,
-                    "unit",
+                    "Unit",
                     units[i_label].encode("utf-8", "ignore").decode("utf-8"),
                     in_place=True,
                 )
@@ -464,12 +455,12 @@ def read_c3d(
                     f"Force unit is {force_unit} instead of newtons."
                 )
 
-            key = f"forces{i_platform}"
+            key = f"Forces{i_platform}"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = reader["data"]["platform"][
                 i_platform
             ]["force"].T
-            platforms.add_data_info(key, "unit", force_unit, in_place=True)
+            platforms.add_data_info(key, "Unit", force_unit, in_place=True)
 
             moment_unit = reader["data"]["platform"][0]["unit_moment"]
 
@@ -482,13 +473,13 @@ def read_c3d(
                 moment_factor = 1
                 warnings.warn(f"Moment unit is {moment_unit} instead of Nm.")
 
-            key = f"moments{i_platform}"
+            key = f"Moments{i_platform}"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = (
                 moment_factor
                 * reader["data"]["platform"][i_platform]["moment"].T
             )
-            platforms.add_data_info(key, "unit", moment_unit, in_place=True)
+            platforms.add_data_info(key, "Unit", moment_unit, in_place=True)
 
         # Add events
         for i_event, event_name in enumerate(event_names):
@@ -571,9 +562,9 @@ def write_c3d(
             "ANALOG",
             "UNITS",
             [
-                analogs.data_info[key]["unit"]
+                analogs.data_info[key]["Unit"]
                 if key in analogs.data_info
-                and "unit" in analogs.data_info[key]
+                and "Unit" in analogs.data_info[key]
                 else ""
                 for key in analogs.data
             ],

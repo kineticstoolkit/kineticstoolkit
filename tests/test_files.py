@@ -37,9 +37,9 @@ def test_save_load():
     ts.data["signal1"] = np.random.rand(10)
     ts.data["signal2"] = np.random.rand(10, 3)
     ts.data["signal3"] = np.random.rand(10, 3, 3)
-    ts = ts.add_data_info("signal1", "unit", "m/s")
-    ts = ts.add_data_info("signal2", "unit", "km/h")
-    ts = ts.add_data_info("signal3", "unit", "N")
+    ts = ts.add_data_info("signal1", "Unit", "m/s")
+    ts = ts.add_data_info("signal2", "Unit", "km/h")
+    ts = ts.add_data_info("signal3", "Unit", "N")
     ts = ts.add_data_info("signal3", "SignalType", "force")
     ts = ts.add_event(1.53, "TestEvent1")
     ts = ts.add_event(7.2, "TestEvent2")
@@ -118,8 +118,8 @@ def test_read_c3d():
     markers = c3d["points"]
     assert "analogs" not in c3d
 
-    assert markers.time_info["unit"] == "s"
-    assert markers.data_info["ForearmL1"]["unit"] == "m"
+    assert markers.time_info["Unit"] == "s"
+    assert markers.data_info["ForearmL1"]["Unit"] == "m"
 
     ktk.write_c3d("test.c3d", markers)
     markers2 = ktk.read_c3d("test.c3d")["points"]
@@ -241,8 +241,8 @@ def test_read_write_c3d():
         "points"
     ]
 
-    assert markers.time_info["unit"] == "s"
-    assert markers.data_info["ForearmL1"]["unit"] == "m"
+    assert markers.time_info["Unit"] == "s"
+    assert markers.data_info["ForearmL1"]["Unit"] == "m"
 
     ktk.write_c3d("test.c3d", markers)
     markers2 = ktk.read_c3d("test.c3d")["points"]
