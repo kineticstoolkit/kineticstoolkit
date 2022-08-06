@@ -332,7 +332,7 @@ class Player:
                     np.nan,
                     np.nan,
                     "-",
-                    c=self.interconnections[interconnection]["color"],
+                    c=self.interconnections[interconnection]["Color"],
                     linewidth=self.interconnection_width,
                 )[
                     0
@@ -522,9 +522,9 @@ class Player:
                 # Get this marker's color
                 if (
                     marker in markers.data_info
-                    and "color" in markers.data_info[marker]
+                    and "Color" in markers.data_info[marker]
                 ):
-                    color = markers.data_info[marker]["color"]
+                    color = markers.data_info[marker]["Color"]
                 else:
                     color = "w"
 
@@ -552,14 +552,14 @@ class Player:
         # Draw the interconnections
         if self.interconnections is not None:
             for interconnection in self.interconnections:
-                n_links = len(self.interconnections[interconnection]["links"])
+                n_links = len(self.interconnections[interconnection]["Links"])
                 coordinates = np.empty((3 * n_links, 4))
                 coordinates[:] = np.nan
                 for i_link in range(n_links):
-                    marker1 = self.interconnections[interconnection]["links"][
+                    marker1 = self.interconnections[interconnection]["Links"][
                         i_link
                     ][0]
-                    marker2 = self.interconnections[interconnection]["links"][
+                    marker2 = self.interconnections[interconnection]["Links"][
                         i_link
                     ][1]
                     if marker1 in interconnection_markers:
@@ -752,11 +752,11 @@ class Player:
                 try:
                     # Keep 1st character, remove the possible 's'
                     self._markers.data_info[marker][
-                        "color"
-                    ] = self._markers.data_info[marker]["color"][0]
+                        "Color"
+                    ] = self._markers.data_info[marker]["Color"][0]
                 except KeyError:
                     self._markers = self._markers.add_data_info(
-                        marker, "color", "w"
+                        marker, "Color", "w"
                     )
 
     def close(self) -> None:
@@ -801,8 +801,8 @@ class Player:
 
             # Mark selected
             self._select_none()
-            self._markers.data_info[selected_marker]["color"] = (
-                self._markers.data_info[selected_marker]["color"][0] + "s"
+            self._markers.data_info[selected_marker]["Color"] = (
+                self._markers.data_info[selected_marker]["Color"][0] + "s"
             )
 
             # Set as new target
