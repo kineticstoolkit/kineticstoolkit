@@ -256,10 +256,10 @@ def get_angles(
 
         Third angle belongs to [-180, 180] degrees (both inclusive)
 
-        The rationale for adding this special case is the calculation
+        One rationale for adding this special case is the calculation
         of shoulder angles: when following the ISB recommendation (YXY), X
         corresponds to the negative elevation and thus we expect to get
-        negative values for Y. In this case, just use flip = True.
+        negative values for Y. In this case, just use alt_angles = True.
 
     Returns
     -------

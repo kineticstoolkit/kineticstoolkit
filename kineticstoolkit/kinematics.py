@@ -255,7 +255,7 @@ def track_cluster(
     cluster: Dict[str, np.ndarray],
     *,
     include_lcs: bool = False,
-    lcs_name: str = "lcs",
+    lcs_name: str = "LCS",
 ) -> TimeSeries:
     """
     Fit a cluster to a TimeSeries of point trajectories.
@@ -280,7 +280,7 @@ def track_cluster(
         tracked cluster's local coordinate system. The default is False.
     lcs_name
         Optional. Name of the TimeSeries data entry for the tracked local
-        coordinate system. The default is 'lcs'.
+        coordinate system. The default is 'LCS'.
 
     Returns
     -------
