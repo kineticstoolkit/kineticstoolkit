@@ -53,7 +53,6 @@ def detect_cycles(
     max_durations: Sequence[float] = [np.Inf, np.Inf],
     min_peak_heights: Sequence[float] = [-np.Inf, -np.Inf],
     max_peak_heights: Sequence[float] = [np.Inf, np.Inf],
-    **kwargs,
 ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -61,32 +60,28 @@ def detect_cycles(
     This function detects biphasic cycles and identifies the transitions as
     new events in the output TimeSeries. These new events are named:
 
-    - `event_name1`:
+    - event_names[0]:
       corresponds to the start of phase 1
-    - `event_name2`:
+    - event_names[1]:
       corresponds to the start of phase 2
     - '_':
       corresponds to the end of the cycle.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
 
     Parameters
     ----------
     ts
         TimeSeries to analyze.
     data_key
-        Name of the data key to analyze in the TimeSeries.
+        Name of the data key to analyze in the TimeSeries. This data must be
+        unidimensional.
     event_names
-        Optional. Name of the events to add in the output TimeSeries. Default
-        is ['phase1', 'phase2'].
+        Optional. Event names to add in the output TimeSeries. Default is
+        ['phase1', 'phase2'].
     thresholds
-        Optional. Value to cross to register phase changes. Default is
+        Optional. Values to cross to register phase changes. Default is
         [0., 1.].
     directions
-        Optional. Direction to cross thresholds to register phase changes.
+        Optional. Directions to cross thresholds to register phase changes.
         Either ['rising', 'falling'] or ['falling', 'rising']. Default is
         ['rising', 'falling'].
     min_durations
@@ -104,7 +99,7 @@ def detect_cycles(
     Returns
     -------
     TimeSeries
-        A copy of ts with the events added.
+        A copy of `ts` with the events added.
 
     """
     # lowercase directions[0] once
@@ -191,7 +186,6 @@ def detect_cycles(
 
 def time_normalize(
     ts: TimeSeries,
-    /,
     event_name1: str,
     event_name2: str,
     *,
@@ -227,19 +221,20 @@ def time_normalize(
     TimeSeries
         A new TimeSeries where each cycle has been time-normalized.
 
-    Notes
-    -----
+    Warning
+    -------
     The span argument is experimental and has been introduced in version 0.4.
-    Use it to define which normalized points to include in the output
-    TimeSeries. For example, to normalize in percents and to include only data
-    from 10 to 90% of each cycle, assign 100 to n_points and [10, 90] to span.
-    The resulting TimeSeries will then be expressed in percents and wrap each
-    80 points. It is also possible to include pre-cycle or post-cycle data.
-    For example, to normalize in percents and to include 20% pre-cycle and 15%
-    post-cycle, assign 100 to n_points and [-20, 15] to span. The resulting
-    TimeSeries will then wrap each 135 points with the cycles starting at 20,
-    155, etc. and ending at 119, 254, etc. For each cycle, events outside the
-    0-100% spans are ignored.
+    **The following behaviour may change in the future**. Don't rely on it in
+    long-term scripts for now. You can use it to define which normalized
+    points to include in the output TimeSeries. For example, to normalize in
+    percents and to include only data from 10 to 90% of each cycle, assign
+    100 to n_points and [10, 90] to span. The resulting TimeSeries will then
+    be expressed in percents and wrap each 80 points. It is also possible to
+    include pre-cycle or post-cycle data. For example, to normalize in
+    percents and to include 20% pre-cycle and 15% post-cycle, assign 100 to
+    n_points and [-20, 15] to span. The resulting TimeSeries will then wrap
+    each 135 points with the cycles starting at 20, 155, etc. and ending at
+    119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.
 
     """
     # Optional span
@@ -388,12 +383,12 @@ def time_normalize(
     return dest_ts
 
 
-def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
+def stack(ts: TimeSeries, *, n_points: int = 100) -> Dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
 
     This methods returns the data of a time-normalized TimeSeries as a dict
-    where each key corresponds to a TimeSeries' data, and contains a numpy
+    where each key corresponds to a TimeSeries' data key, and contains a numpy
     array where the first dimension is the cycle, the second dimension is the
     percentage of cycle, and the other dimensions are the data itself.
 
@@ -411,7 +406,7 @@ def stack(ts: TimeSeries, /, n_points: int = 100) -> Dict[str, np.ndarray]:
 
     See Also
     --------
-    kineticstoolkit.cycles.unstack
+    ktk.cycles.unstack
 
     """
     if np.mod(len(ts.time), n_points) != 0:
@@ -545,10 +540,7 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     last cycles, then the last-removed cycle, and so on. If two cycles are as
     equivalently repeatable, they are returned in order of appearance.
 
-    Note
-    ----
     Cycles that include at least one NaN are excluded.
-
 
     Parameters
     ----------

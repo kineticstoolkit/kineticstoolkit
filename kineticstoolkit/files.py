@@ -42,7 +42,8 @@ import time
 import getpass
 import zipfile
 
-from typing import Any, Dict, Optional
+from typing import Any, Optional, List, Dict
+from collections import namedtuple
 
 
 def __dir__():  # pragma: no cover
@@ -69,12 +70,26 @@ def save(filename: str, variable: Any) -> None:
     - False
     - None
     - numpy.array
-    - pandas.DataFrame
+    - pandas.DataFrame (basic DataFrames, e.g., without multi-indexing.)
     - pandas.Series
     - ktk.TimeSeries
 
+    Parameters
+    ----------
+    filename:
+        Name of the file to save to (e.g., "file.ktk.zip")
+    variable:
+        The variable to save.
+
+    Returns
+    -------
+    None
+
+    Caution
+    -------
     Tuples are also supported but will be loaded back as lists, without
     warning.
+
     """
 
     class CustomEncoder(json.JSONEncoder):
@@ -226,7 +241,12 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     """
     Load a ktk.zip file.
 
-    Load a data file as saved using the ktk.save function.
+    Load a data file as saved using the ``ktk.save`` function.
+
+    Usage::
+
+        data = ktk.load(filename)
+        data, metadata = ktk.load(filename, include_metadata=True)
 
     Parameters
     ----------
@@ -261,31 +281,39 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 def read_c3d(
     filename: str,
     *,
-    extract_force_plates: bool = False,
     convert_point_unit: bool = True,
-    convert_moment_unit: bool = True,
+    **kwargs,
 ) -> Dict[str, TimeSeries]:
     """
     Read point and analog data from a C3D file.
 
-    Point positions are returned in a TimeSeries in output["Points"], where
-    each point corresponds to a data key. Each point position is expressed
-    as a Nx4 point series.
+    Point positions are returned in `output['Points']` as a TimeSeries, where
+    each point corresponds to a data key. Each point position is expressed as
+    an Nx4 point series.
 
-    If the C3D file contains analog data, it is returned as a TimeSeries in
-    output["Analogs"]. Each analog signal is expressed as an unidimensional
+    If available, analog data is returned in `output['Analogs']` as a
+    TimeSeries, where each analog signal is expressed as a unidimensional
     series of length N.
 
     Parameters
     ----------
     filename
         Path of the C3D file
+
     convert_point_unit
         Optional. True to convert the point units to meters, even if they are
         expressed in mm in the C3D file.
-    convert_moment_unit
-        Optional. True to convert the moment units to Nm, even if they are
-        expressed in Nmm in the C3D file.
+
+    Returns
+    -------
+    Dict of TimeSeries
+        A dict of TimeSeries, with keys being "Points" and if available,
+        "Analogs".
+
+    Warning
+    -------
+    This function, which has been introduced in version 0.9, is still
+    experimental and its behaviour or API may change slightly in the future.
 
     Notes
     -----
@@ -297,24 +325,32 @@ def read_c3d(
       your first use (e.g., sampling frequency, position unit). It is
       possible that read_c3d misses some corner cases.
 
-    - Experimental feature: If the C3D file contains force plate data and
-      extract_force_plates is True, these data are returned as a TimeSeries in
-      output["force_plates"]. The available signals are, for example:
+    """
+    """
+    Experimental, unstable features in development:
+        
+    Parameters
+    ----------
+    read_force_plates
+        True to read force plates.
 
-        - 'Forces0': Nx4 series of force vectors on platform 0.
-        - 'Forces1': Nx4 series of force vectors on platform 1.
-        - 'Forces2': Nx4 series of force vectors on platform 2.
-        - ...
-        - 'Moments0': Nx4 series of moment vectors on platform 0.
-        - 'Moments1': Nx4 series of moment vectors on platform 2.
-        - 'Moments2': Nx4 series of moment vectors on platform 3.
-        - ...
+    convert_moment_unit
+        Optional. True to convert the moment units to Nm, even if they are
+        expressed in Nmm in the C3D file.
 
-    Warning
-    -------
-    This function, which has been introduced in version 0.9, is still
-    experimental and its behaviour or API may change slightly in the future.
+    If the C3D file contains force plate data and read_force_plates is True,
+    these data are returned in output["ForcePlates"] as a TimeSeries following
+    this structure:
 
+      - 'Forces0': Nx4 series of force vectors on platform 0.
+      - 'Forces1': Nx4 series of force vectors on platform 1.
+      - 'Forces2': Nx4 series of force vectors on platform 2.
+      - ...
+      - 'Moments0': Nx4 series of moment vectors on platform 0.
+      - 'Moments1': Nx4 series of moment vectors on platform 2.
+      - 'Moments2': Nx4 series of moment vectors on platform 3.
+      - ...
+        
     """
     try:
         import ezc3d
@@ -324,6 +360,20 @@ def read_c3d(
             "to use this function. Please install it using: "
             "conda install -c conda-forge ezc3d"
         )
+
+    # Additional arguments (in development)
+    if "extract_force_plates" in kwargs:
+        extract_force_plates = kwargs["extract_force_plates"]
+    else:
+        extract_force_plates = False
+
+    if "convert_moment_unit" in kwargs:
+        convert_moment_unit = kwargs["convert_moment_unit"]
+    else:
+        convert_moment_unit = True
+
+    # Create the output
+    output = {}
 
     # Create the reader
     if isinstance(filename, str) and os.path.exists(filename):
@@ -344,9 +394,6 @@ def read_c3d(
 
     else:
         raise FileNotFoundError(f"File {filename} was not found.")
-
-    # Create the output
-    output = {}
 
     # ---------------------------------
     # List the events
@@ -400,19 +447,16 @@ def read_c3d(
         points.add_event(event_times[i_event], event_name, in_place=True)
     points.sort_events(in_place=True)
 
+    # Add to output
     output["Points"] = points
 
-    # ---------------------------------
-    # Create the analogs TimeSeries
-
+    # Analogs
     labels = reader["parameters"]["ANALOG"]["LABELS"]["value"]
     analog_rate = reader["parameters"]["ANALOG"]["RATE"]["value"][0]
     units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
     n_analogs = reader["parameters"]["ANALOG"]["USED"]["value"][0]
 
-    if len(labels) == 0:  # There are no analogs
-        analogs = None
-    else:
+    if len(labels) > 0:  # There are analogs
         analogs = TimeSeries()
 
         for i_label in range(n_analogs):
@@ -493,9 +537,7 @@ def read_c3d(
     return output
 
 
-def write_c3d(
-    filename: str, points: TimeSeries, analogs: Optional[TimeSeries] = None
-) -> None:
+def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
     """
     Write points and analog data to a C3D file.
 
@@ -509,10 +551,6 @@ def write_c3d(
         Each point position is expressed as an Nx4 point series. Events from
         this TimeSeries are also added to the c3d.
 
-    analogs
-        Optional. Analog signals, where each data key is an unidimensional
-        array. Events from this TimeSeries are not added to the c3d.
-
     Notes
     -----
     This function relies on `ezc3d`, which is available on
@@ -520,6 +558,21 @@ def write_c3d(
     write_c3d. https://github.com/pyomeca/ezc3d
 
     """
+    """
+    Additional parameters in development
+    ------------------------------------
+    analogs
+        Optional. Analog signals, where each data key is an unidimensional
+        array. Events from this TimeSeries are not added to the c3d.
+        
+    This is not released yet because more checking is required to match sizes,
+    sampling rates, etc. with useful warnings or error messages.
+    """
+    if "analogs" in kwargs:
+        analogs = kwargs["analogs"]
+    else:
+        analogs = None
+
     try:
         import ezc3d
     except ModuleNotFoundError:

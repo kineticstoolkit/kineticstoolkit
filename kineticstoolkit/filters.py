@@ -78,14 +78,10 @@ def savgol(
     """
     Apply a Savitzky-Golay filter on a TimeSeries.
 
-    On n-dimensional data, filtering occurs on the first axis (time).
-
-    Notes
-    -----
-    - The sampling rate must be constant.
-    - If the TimeSeries contains missing samples, a warning is issued, missing
-      samples are interpolated using a first-order interpolation before
-      filtering, and then replaced by NaNs in the filtered signal.
+    Filtering occurs on the first axis (time). If the TimeSeries contains
+    missing samples, a warning is issued, missing samples are interpolated
+    using a first-order interpolation before filtering, and then replaced by
+    np.nan in the filtered signal.
 
     Parameters
     ----------
@@ -104,12 +100,18 @@ def savgol(
     Returns
     -------
     TimeSeries
-        A copy of the input TimeSeries, which each data filtered.
+        A copy of the input TimeSeries, which each data being filtered.
 
     Raises
     ------
-    ValueError if sample rate is not constant, or if there is no data to
-    filter.
+    ValueError
+        If sample rate is not constant, or if there is no data to
+        filter.
+
+    See also
+    --------
+    ktk.filters.smooth
+    ktk.filters.median
 
     """
     _validate_input(ts)
@@ -147,14 +149,10 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
 
-    On n-dimensional data, filtering occurs on the first axis (time).
-
-    Notes
-    -----
-    - The sampling rate must be constant.
-    - If the TimeSeries contains missing samples, a warning is issued, missing
-      samples are interpolated using a first-order interpolation before
-      filtering, and then replaced by NaNs in the filtered signal.
+    Filtering occurs on the first axis (time). If the TimeSeries contains
+    missing samples, a warning is issued, missing samples are interpolated
+    using a first-order interpolation before filtering, and then replaced by
+    np.nan in the filtered signal.
 
     Parameters
     ----------
@@ -164,10 +162,21 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
         The length of the filter window. window_length must be a positive
         odd integer less or equal than the length of the TimeSeries.
 
+    Returns
+    -------
+    TimeSeries
+        A copy of the input TimeSeries, which each data being filtered.
+
     Raises
     ------
-    ValueError if sample rate is not constant, or if there is no data to
-    filter.
+    ValueError
+        If sample rate is not constant, or if there is no data to
+        filter.
+
+    See also
+    --------
+    ktk.filters.savgol
+    ktk.filters.median
 
     """
     _validate_input(ts)
@@ -188,14 +197,10 @@ def butter(
     """
     Apply a Butterworth filter to a TimeSeries.
 
-    On n-dimensional data, filtering occurs on the first axis (time).
-
-    Note
-    ----
-    - The sampling rate must be constant.
-    - If the TimeSeries contains missing samples, a warning is issued, missing
-      samples are interpolated using a first-order interpolation before
-      filtering, and then replaced by NaNs in the filtered signal.
+    Filtering occurs on the first axis (time). If the TimeSeries contains
+    missing samples, a warning is issued, missing samples are interpolated
+    using a first-order interpolation before filtering, and then replaced by
+    np.nan in the filtered signal.
 
     Parameters
     ----------
@@ -206,18 +211,25 @@ def butter(
         (lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
         for two-frequency filters (bandpass, bandstop).
     order
-        Optional. Order of the filter.
+        Optional. Order of the filter. Default is 2.
     btype
-        Optional. {'lowpass', 'highpass', 'bandpass', 'bandstop'}.
+        Optional. Can be either 'lowpass', 'highpass', 'bandpass' or
+        'bandstop'. Default is 'lowpass'.
     filtfilt
         Optional. If True, the filter is applied two times in reverse direction
         to eliminate time lag. If False, the filter is applied only in forward
-        direction.
+        direction. Default is True.
+
+    Returns
+    -------
+    TimeSeries
+        A copy of the input TimeSeries, which each data being filtered.
 
     Raises
     ------
-    ValueError if sample rate is not constant, or if there is no data to
-    filter.
+    ValueError
+        If sample rate is not constant, or if there is no data to
+        filter.
 
     """
     _validate_input(ts)
@@ -254,11 +266,8 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
 
-    On n-dimensional data, filtering occurs on the first axis (time).
-
-    Notes
-    -----
-    - The sample rate must be constant.
+    Filtering occurs on the first axis (time). The sample rate must be
+    constant.
 
     Parameters
     ----------
@@ -271,13 +280,14 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     Returns
     -------
     TimeSeries
-        A copy of the input TimeSeries, with n less points than the original
-        one.
+        A copy of the input TimeSeries, which each data being derived. The
+        length of the resulting TimeSeries is one less than `ts`.
 
     Raises
     ------
-    ValueError if sample rate is not constant, or if there is no data to
-    filter.
+    ValueError
+        If sample rate is not constant, or if there is no data to
+        filter.
 
     Example
     -------
@@ -326,7 +336,7 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.
 
-    On n-dimensional data, filtering occurs on the first axis (time).
+    Filtering occurs on the first axis (time).
 
     Parameters
     ----------
@@ -335,6 +345,11 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 
     window_length
         Optional. Kernel size, must be odd. The default is 3.
+
+    See also
+    --------
+    ktk.butter.smooth
+    ktk.butter.savgol
 
     Example
     -------

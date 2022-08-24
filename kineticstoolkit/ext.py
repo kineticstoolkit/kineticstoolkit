@@ -35,8 +35,8 @@ def _import_extensions() -> List[str]:
     """
     Import all installed kineticstoolkit extensions.
 
-    Any module that begins by `kineticstoolkit_` and that is on PYTHONPATH will
-    be imported in the kineticstoolkit.ext namespace.
+    Any module that begins by ``kineticstoolkit_`` and that is on PYTHONPATH
+    will be imported in the ``kineticstoolkit.ext`` namespace.
 
     Parameters
     ----------
@@ -50,6 +50,21 @@ def _import_extensions() -> List[str]:
     -------
     This function, which has been introduced in 0.8, is still experimental and
     may change signature or behaviour in the future.
+
+    Notes
+    ----
+    This function is called automatically if Kinetics Toolkit is imported in
+    lab mode::
+
+        import kineticstoolkit.lab as ktk
+
+    If your extension is not imported, try importing it manually before
+    reporting a bug::
+
+       import kineticstoolkit_EXTENSION_NAME
+
+    If your extension doesn't import, you need to edit your PYTHONPATH or to
+    check that the extension is correctly installed.
 
     """
     for finder, name, ispkg in pkgutil.iter_modules():

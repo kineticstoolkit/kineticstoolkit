@@ -47,27 +47,48 @@ class Player:
     """
     A class that allows visualizing markers and rigid bodies in 3D.
 
-    player = ktk.Player(parameters) creates and launches a Player
-    instance.
+    ``player = ktk.Player(parameters)`` creates and launches an interactive
+    Player instance. Once the window is open, pressing ``h`` brings this help
+    overlay::
+
+            ktk.Player help
+            ----------------------------------------------------
+            KEYBOARD COMMANDS
+            show/hide this help : h
+            previous index      : left
+            next index          : right
+            previous second     : shift+left
+            next second         : shift+right
+            play/pause          : space
+            2x playback speed   : +
+            0.5x playback speed : -
+            toggle track        : t
+            toggle perspective  : d (depth)
+            ----------------------------------------------------
+            MOUSE COMMANDS
+            select a marker     : left-click
+            3d rotate           : left-drag
+            pan                 : middle-drag or shift+left-drag
+            zoom                : right-drag or wheel
 
     Parameters
     ----------
     *ts
         Contains the markers and rigid bodies to visualize, where each data
-        key is either a marker position expressed as Nx4 array (N=time),
-        or a rigid body pose expressed as a Nx4x4 array. Multiple TimeSeries
-        can be provided, e.g., ktk.Player(markers, rigid_bodies)
+        key is either a marker position expressed as Nx4 array, or a frame
+        expressed as a Nx4x4 array. Multiple TimeSeries can be provided.
 
     interconnections
         Optional. Each key corresponds to an inerconnection between markers,
         where one interconnection is another dict with the following keys:
 
-        - Links: list of list of 2 str, where each str is a marker
+        - ``Links``: list of lists of 2 strings, where each string is a marker
           name. For example, to link Marker1 to Marker2 and
-          Marker1 to Marker3, Links would be:
-          [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+          Marker1 to Marker3, Links would be::
 
-        - Color: character or tuple that represents the color of the
+              [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+
+        - ``Color``: character or tuple that represents the color of the
           link. Color must be a valid value for matplotlib's
           plots.
 
@@ -102,6 +123,10 @@ class Player:
     perspective
         Optional. True to draw the scene using perspective, False to draw the
         scene orthogonally.
+
+    Note
+    ----
+    Matplotlib must be in interactive mode.
 
     """
 

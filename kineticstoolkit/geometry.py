@@ -21,7 +21,7 @@ Provide 3d geometry and linear algebra functions related to biomechanics.
 Note
 ----
 As a convention, the first dimension of every array is always N and corresponds
-to time. For constants, use a length of 1 as the first dimension.
+to time.
 
 """
 
@@ -55,11 +55,8 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     Matrix multiplication between series of matrices.
 
     This function is a wrapper for numpy's matmul function (operator @), that
-    helps numpy to understand Kinetics Toolkit's convention that the first
-    dimension always corresponds to time.
-
-    It aligns and create additionnal dimensions if needed to avoid dimension
-    mismatch errors.
+    uses Kinetics Toolkit's convention that the first dimension always
+    corresponds to time, to broadcast time correctly between operands.
 
     Parameters
     ----------
@@ -71,7 +68,20 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
     Returns
     -------
     np.ndarray
-        The product, as a series of Nx4 or Nx4xM matrices.
+        The product, usually as a series of Nx4 or Nx4xM matrices.
+
+    Example
+    -------
+    A matrix multiplication between one matrix and a series of 3 vectors
+    results in a series of 3 vectors.
+
+    >>> import kineticstoolkit as ktk
+    >>> mat_series = np.array([[[2.0, 0.0], [0.0, 1.0]]])
+    >>> vec_series = np.array([[4.0, 5.0], [6.0, 7.0], [8.0, 9.0]])
+    >>> ktk.geometry.matmul(mat_series, vec_series)
+    array([[ 8.,  5.],
+           [12.,  7.],
+           [16.,  9.]])
 
     """
 
@@ -100,16 +110,10 @@ def create_transforms(
     seq: Optional[str] = None,
     angles: Optional[np.ndarray] = None,
     translations: Optional[np.ndarray] = None,
-    *,
     degrees=False,
 ) -> np.ndarray:
     """
-    Create an Nx4x4 series of homogeneous transforms.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    Create an Nx4x4 series of homogeneous transforms based on angle sequences.
 
     Parameters
     ----------
@@ -121,26 +125,23 @@ def create_transforms(
         Required if angles is specified.
 
     angles
-        Optional array_like, shape (N,) or (N, [1 or 2 or 3]).
-        Angles are specified in radians (degrees is False) or degrees (degrees
-        is True).
+        Optional array_like of shape (N,) or (N, [1 or 2 or 3]). Angles are
+        specified in radians (if degrees is False) or degrees (if degrees is
+        True).
 
-        For a single character seq, angles can be:
+        For a single-character `seq`, `angles` can be:
 
-            - array_like with shape (N,), where each angle[i] corresponds to a
-              single rotation
-            - array_like with shape (N, 1), where each angle[i, 0] corresponds
-              to a single rotation
+        - array_like with shape (N,), where each `angle[i]` corresponds to a
+          single rotation;
+        - array_like with shape (N, 1), where each `angle[i, 0]` corresponds
+          to a single rotation.
 
-        For 2- and 3-character wide seq, angles can be:
-
-            - array_like with shape (W,) where W is the width of seq, which
-              corresponds to a single rotation with W axes
-            - array_like with shape (N, W) where each angle[i] corresponds to
-              a sequence of Euler angles describing a single rotation
+        For 2- and 3-character `seq`, `angles` is an array_like with shape
+        (N, W) where each `angle[i, :]` corresponds to a sequence of Euler
+        angles and W is the length of `seq`.
 
     translations
-        Optional float or array_like, shape (N, 3) or (N, 4). This corresponds
+        Optional array_like or shape (N, 3) or (N, 4). This corresponds
         to the translation part of the generated series of homogeneous
         transforms.
 
@@ -151,6 +152,10 @@ def create_transforms(
     -------
     np.ndarray
         An Nx4x4 series of homogeneous transforms.
+
+    See also
+    --------
+    ktk.geometry.create_frames
 
     Example
     -------
@@ -206,21 +211,11 @@ def get_angles(
     T: np.ndarray, seq: str, degrees: bool = False, flip: bool = False
 ) -> np.ndarray:
     """
-    Represent a series of transformation matrices as series of Euler angles.
+    Extract Euler angles from a series of homogeneous matrices.
 
-    This function is a wrapper for scipy.transform.Rotation.as_euler. Please
-    consult scipy help for the complete docstring.
-
-    Euler angles suffer from the problem of gimbal lock, where the
-    representation loses a degree of freedom and it is not possible to
-    determine the first and third angles uniquely. In this case, a warning is
-    raised, and the third angle is set to zero. Note however that the returned
-    angles still represent the correct rotation.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    In case of gimbal lock, a warning is raised, and the third angle is set to
+    zero. Note however that the returned angles still represent the correct
+    rotation.
 
     Parameters
     ----------
@@ -234,38 +229,45 @@ def get_angles(
         intrinsic rotations cannot be mixed in one function call.
 
     degrees
-        Returned angles are in degrees if this flag is True, else they are in
+        If True, the returned angles are in degrees. If False, they are in
         radians. Default is False.
 
     flip
-        Return an alternate sequence with the second angle inverted, that
-        leads to the same rotation matrices. More specifically:
-
-        First angle belongs to [-180, 180] degrees (both inclusive)
-
-        Second angle belongs to:
-            - Default case (alt_angles = False):
-                - [-90, 90] degrees if all axes are different (like xyz)
-                - [0, 180] degrees if first and third axes are the same
-                  (like zxz)
-            - Alternate case (alt_angles = True):
-                - [-180, -90], [90, 180] degrees if all axes are different
-                  (like xyz)
-                - [-180, 0] degrees if first and third axes are the same
-                  (like zxz)
-
-        Third angle belongs to [-180, 180] degrees (both inclusive)
-
-        One rationale for adding this special case is the calculation
-        of shoulder angles: when following the ISB recommendation (YXY), X
-        corresponds to the negative elevation and thus we expect to get
-        negative values for Y. In this case, just use alt_angles = True.
+        Return an alternate sequence with the second angle inverted, but that
+        leads to the same rotation matrices. See below for more information.
 
     Returns
     -------
     np.ndarray
-        A Tx3 array of Euler angles.
+        An Nx3 series of Euler angles, with the second dimension containing
+        the first, second and third angles, respectively.
 
+    Notes
+    -----
+    The range of the returned angles is dependant on the `flip` parameter. If
+    `flip` is False:
+
+    - First angle belongs to [-180, 180] degrees (both inclusive)
+    - Second angle belongs to:
+
+        - [-90, 90] degrees if all axes are different. e.g., xyz
+        - [0, 180] degrees if first and third axes are the same e.g., zxz
+
+    - Third angle belongs to [-180, 180] degrees (both inclusive)
+
+    If `flip` is True:
+
+    - First angle belongs to [-180, 180] degrees (both inclusive)
+    - Second angle belongs to:
+
+        - [-180, -90], [90, 180] degrees if all axes are different. e.g., xyz
+        - [-180, 0] degrees if first and third axes are the same e.g., zxz
+
+    - Third angle belongs to [-180, 180] degrees (both inclusive)
+
+    This function is a wrapper for scipy.transform.Rotation.as_euler. Please
+    consult scipy help for more help on intrinsic/extrinsic angles and the
+    `seq` parameter.
 
     """
     R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
@@ -297,85 +299,41 @@ def create_frames(
     yz: Optional[np.ndarray] = None,
 ) -> np.ndarray:
     """
-    Create a Nx4x4 series of frames based on series of points and vectors.
-
-    Create reference frames based on points and vectors and return this series
-    of reference frames as a series of transformation matrices.
-
-    This function's behaviour is better explained using an example. We will
-    create reference frames for the right humerus, based on the recommendations
-    of the International Society of Biomechanics [1]. Lets say we have
-    constructed series of points for the glenohumeral joint (GH), lateral elbow
-    epicondyle (EL) and medial elbow epicondyle (EM). Following the ISB:
-
-        1. The origin is GH;
-        2. The y axis is the line between GH and the midpoint of EL and EM,
-           pointing to GH;
-        3. The x axis is the normal to the GH-EL-EM plane, pointing forward;
-           which means that GH-EL-EM is a yz plane.
-        4. The z axis is perpendicular to x and y, pointing to the right.
-
-    Therefore:
-
-        1. origin = GH
-        2. y = GH - (EL + EM) / 2
-        3. yz = EL - EM  # The x axis is formed by cross(y, yz)
-        4. reference_frames = ktk.geometry.create_reference_frames(
-            origin=origin, y=y, yz=yz)
-
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
+    Create an Nx4x4 series of frames based on series of points and vectors.
 
     Parameters
     ----------
     origin
         A series of N points (Nx4) that corresponds to the origin of the
-        returned reference frames.
+        series of frames to be created.
 
     x|y|z
-        A series of N vectors (Nx4) that are aligned toward the {x|y|z}
-        axis of the returned reference frames.
+        Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
+        are aligned toward the {x|y|z} series of frames to be created.
 
     xy|xz
-        When x is specified, a series of N vectors (Nx4) in the {xy|xz} plane
-        of the returned reference frames.
+        Only if `x` is specified. A series of N vectors (Nx4) in the {xy|xz}
+        plane of the series of frames to be created. As a rule of thumb, use
+        a series of N vectors that correspond roughly to the {z|-y} axis.
 
     xy|yz
-        When y is specified, a series of N vectors (Nx4) in the {xy|yz} plane
-        of the returned reference frames.
+        Only if `y` is specified. A series of N vectors (Nx4) in the {xy|yz}
+        plane of the series of frames to be created. As a rule of thumb, use
+        a series of N vectors that correspond roughly to the {z|x} axis.
 
     xz|yz
-        When z is specified, a series of N vectors (Nx4) in the {xz|yz} plane
-        of the returned reference frames.
+        Only if `z` is specified. A series of N vectors (Nx4) in the {xz|yz}
+        plane of the series of frames to be created. As a rule of thumb, use
+        a series of N vectors that correspond roughly to the {-y|x} axis.
 
     Returns
     -------
     np.ndarray
-        Series of transformation matrices (Nx4x4).
+        Series of frames (Nx4x4).
 
-    Examples
+    See also
     --------
-    Create a translated reference frame using 3 points:
-
-        >>> import kineticstoolkit.lab as ktk
-        >>> origin = [[2., 2., 2., 1.]]
-        >>> x = [[10., 0., 0., 0.]]
-        >>> xy = [[10., 10., 0., 0.]]
-        >>> rf = ktk.geometry.create_frames(origin, x=x, xy=xy)
-        >>> rf
-        array([[[1., 0., 0., 2.],
-                [0., 1., 0., 2.],
-                [0., 0., 1., 2.],
-                [0., 0., 0., 1.]]])
-
-    References
-    ----------
-    1. G. Wu et al., "ISB recommendation on definitions of joint
-       coordinate systems of various joints for the reporting of human joint
-       motion - Part II: shoulder, elbow, wrist and hand," Journal of
-       Biomechanics, vol. 38, no. 5, pp. 981--992, 2005.
+    ktk.geometry.create_transforms
 
     """
 
@@ -457,6 +415,10 @@ def get_local_coordinates(
         Series of local coordinates in the same shape than
         `global_coordinates`.
 
+    See also
+    --------
+    ktk.geometry.get_global_coordinates
+
     """
     n_samples = global_coordinates.shape[0]
 
@@ -516,6 +478,10 @@ def get_global_coordinates(
         Series of global coordinates in the same shape than
         `local_coordinates`.
 
+    See also
+    --------
+    ktk.geometry.get_local_coordinates
+
     """
     global_coordinates = np.zeros(local_coordinates.shape)
     global_coordinates = matmul(reference_frames, local_coordinates)
@@ -557,8 +523,8 @@ def _match_size(
 
     Returns
     -------
-    2x np.ndarray
-        References or copies of op1 and op2 now matched in size.
+    Tuple of two np.ndarray
+        op1 and op2, now matched in size.
 
     """
     if op1.shape[0] == 1:
@@ -579,11 +545,6 @@ def register_points(
     """
     Find the homogeneous transforms between two series of point clouds.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future.
-
     Parameters
     ----------
     global_points : array of shape Nx4xM
@@ -597,6 +558,12 @@ def register_points(
     np.ndarray
         Array of shape Nx4x4, expressing a series of 4x4 homogeneous
         transforms.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.4, is still experimental and
+    may change signature or behaviour in the future. Namely, the names of the
+    parameters may change in the future.
 
     """
     n_samples = global_points.shape[0]

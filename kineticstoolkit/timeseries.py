@@ -312,8 +312,8 @@ class TimeSeriesEvent:
     """
     Define an event in a timeseries.
 
-    This class is rarely used by itself, it is easier to use the `TimeSeries``
-    methods to deal with events.
+    This class is rarely used by itself, it is easier to use `TimeSeries`'
+    methods to manage events.
 
     Example
     -------
@@ -371,10 +371,7 @@ class TimeSeriesEvent:
 
 class TimeSeries:
     """
-    A class that implements TimeSeries.
-
-    This class implements a Timeseries in a way that resembles the timeseries
-    and tscollection found in Matlab.
+    A class that holds time, data series, events and metadata.
 
     Attributes
     ----------
@@ -390,9 +387,9 @@ class TimeSeries:
 
     data_info : Dict[str, Dict[str, Any]]
         Contains facultative metadata relative to data. For example, the
-        data_info attribute could indicate the unit of data['Forces']:
+        data_info attribute could indicate the unit of data['Forces']::
 
-        data['Forces'] = {'Unit': 'N'}.
+            data['Forces'] = {'Unit': 'N'}
 
         To facilitate the management of data_info, please use
         `ktk.TimeSeries.add_data_info`.
@@ -402,7 +399,7 @@ class TimeSeries:
 
     Example
     -------
-        >>> ts = ktk.TimeSeries(time=np.arange(0,100))
+    >>> ts = ktk.TimeSeries(time=np.arange(0,100))
 
     """
 
@@ -576,14 +573,49 @@ class TimeSeries:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
 
+        Undimensional data is converted to a single column, and two-dimensional
+        (or more) data are converted to multiple columns with the additional
+        dimensions in brackets. The TimeSeries's events and metadata such as
+        `time_info` and `data_info` are not included in the resulting
+        DataFrame.
+
         Returns
         -------
-        DataFrame
-            DataFrame with the index as the TimeSeries' time. Vector data are
-            converted to single columns, and two-dimensional (or more) data are
-            converted to multiple columns with the additional dimensions in
-            brackets. The TimeSeries's events and metadata such as time_info
-            and data_info are not included in the resulting DataFrame.
+        pd.DataFrame
+            DataFrame with the index as the TimeSeries' time.
+
+        See also
+        --------
+        ktk.TimeSeries.from_dataframe
+
+        Examples
+        --------
+        Example with unidimensional data:
+
+        >>> ts = ktk.TimeSeries(time=np.arange(3) / 10)
+        >>> ts.data['Data'] = np.array([0.0, 2.0, 3.0])
+        >>> ts.to_dataframe()
+             Data
+        0.0   0.0
+        0.1   2.0
+        0.2   3.0
+
+        Example with multidimensional data:
+
+        >>> ts = ktk.TimeSeries(time=np.arange(4) / 10)
+        >>> ts.data['Data'] = np.repeat([[0.0, 2.0, 3.0]], 4, axis=0)
+        >>> ts.data['Data']
+        array([[0., 2., 3.],
+               [0., 2., 3.],
+               [0., 2., 3.],
+               [0., 2., 3.]])
+
+        >>> ts.to_dataframe()
+              Data[0]  Data[1]  Data[2]
+         0.0      0.0      2.0      3.0
+         0.1      0.0      2.0      3.0
+         0.2      0.0      2.0      3.0
+         0.3      0.0      2.0      3.0
 
         """
         df = dict_of_arrays_to_dataframe(self.data)
@@ -594,22 +626,59 @@ class TimeSeries:
         """
         Create a new TimeSeries from a Pandas Dataframe.
 
+        Data in column which names end with bracketed indices such as
+        [0], [1], [0,0], [0,1], etc. are converted to multidimensional
+        arrays. For example, if a DataFrame has these column names::
+
+            'Forces[0]', 'Forces[1]', 'Forces[2]', 'Forces[3]'
+
+        then a single data key is created ('Forces') and the shape of the
+        data is Nx4.
+
         Parameters
         ----------
         dataframe
             A Pandas DataFrame where the index corresponds to time, and
-            where each column corresponds to a data key. As special cases,
-            data in column which names end with bracketed indices such as
-            [0], [1], [0,0], [0,1], etc. are converted to multidimensional
-            arrays. For example, if a DataFrame has these column names:
-            ['Forces[0]', 'Forces[1]', 'Forces[2]', 'Forces[3]'],
-            then a single data key is created (Forces) and the data itself
-            will be of shape Nx4, N being the number of samples (the length
-            of the DataFrame).
+            where each column corresponds to a data key.
 
-        Example
+        Returns
         -------
-            ts = ktk.TimeSeries.from_dataframe(the_dataframe)
+        TimeSeries
+            The converted TimeSeries.
+
+        See also
+        --------
+        ktk.TimeSeries.to_dataframe
+
+        Examples
+        --------
+        Example with unidimensional data:
+
+        >>> import pandas as pd
+        >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
+        >>> df.columns = ['data1', 'data2']
+        >>> df
+           data1  data2
+        0    1.0    2.0
+        1    3.0    4.0
+        2    5.0    6.0
+
+        >>> ts = ktk.TimeSeries.from_dataframe(df)
+        >>> ts.data
+        {'data1': array([1., 3., 5.]), 'data2': array([2., 4., 6.])}
+
+        Example with multidimensional data:
+
+        >>> df.columns = ['data[0]', 'data[1]']
+        >>> df
+           data[0]  data[1]
+        0      1.0      2.0
+        1      3.0      4.0
+        2      5.0      6.0
+
+        >>> ts = ktk.TimeSeries.from_dataframe(df)
+        >>> ts.data
+        {'data': array([[1., 2.], [3., 4.], [5., 6.]])}
 
         """
         ts = TimeSeries()
@@ -646,15 +715,15 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the added data info.
 
+        See also
+        --------
+        ktk.TimeSeries.remove_data_info
+
         Example
         -------
-        We create a TimeSeries with some data info:
-
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_data_info('Forces', 'Unit', 'N')
         >>> ts = ts.add_data_info('Marker1', 'Color', [43, 2, 255])
-
-        Let's see the result:
 
         >>> ts.data_info['Forces']
         {'Unit': 'N'}
@@ -692,9 +761,13 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the removed data info.
 
-        Note
-        ----
+        Caution
+        -------
         No warning or exception is raised if the data key does not exist.
+
+        See also
+        --------
+        ktk.TimeSeries.add_data_info
 
         Example
         -------
@@ -736,6 +809,14 @@ class TimeSeries:
         -------
         TimeSeries
             The TimeSeries with the renamed data.
+
+        See also
+        --------
+        ktk.TimeSeries.remove_data
+
+        Caution
+        -------
+        No warning or exception is raised if the data key does not exist.
 
         Example
         -------
@@ -789,9 +870,13 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the removed data.
 
-        Note
-        ----
+        Caution
+        -------
         No warning or exception is raised if the data key does not exist.
+
+        See also
+        --------
+        ktk.TimeSeries.rename_data
 
         Example
         -------
@@ -849,6 +934,14 @@ class TimeSeries:
         TimeSeries
             A copy of the TimeSeries with the added event.
 
+        See also
+        --------
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
+
         Example
         -------
         >>> ts = ktk.TimeSeries()
@@ -862,6 +955,13 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event2')]
 
         """
+        if isinstance(name, str) is False:
+            raise ValueError("name must be a string.")
+        try:
+            int(time)
+        except ValueError:
+            raise ValueError("time must be a number.")
+
         ts = self if in_place else self.copy()
         ts.events.append(TimeSeriesEvent(time, name))
         return ts
@@ -896,6 +996,18 @@ class TimeSeries:
         -------
         TimeSeries
             The TimeSeries with the renamed event.
+
+        Caution
+        -------
+        No warning or exception is raised if the event does not exist.
+
+        See also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
 
         Example
         -------
@@ -973,6 +1085,18 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the removed event.
 
+        Caution
+        -------
+        No warning or exception is raised if the event does not exist.
+
+        See also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
+
         Example
         -------
         >>> # Instanciate a timeseries with some events
@@ -1023,20 +1147,15 @@ class TimeSeries:
         """
         Edit events interactively.
 
-        Warning
-        -------
-        This function, which has been introduced in 0.6, is still experimental
-        and may change signature or behaviour in the future.
-
         Parameters
         ----------
         name
             Optional. The name of the event(s) to add. May be a string
-            or a list of strings. Event names can also be defined
-            interactively.
+            or a list of strings. These events appear on their own buttons
+            "add `name`". Event names can also be defined interactively.
         data_keys
             Optional. A signal name of list of signal name to be plotted,
-            similar to the data_keys argument of ktk.TimeSeries.plot().
+            similar to the data_keys argument of ktk.TimeSeries.plot.
 
         Returns
         -------
@@ -1044,6 +1163,19 @@ class TimeSeries:
             The original TimeSeries with the modified events. If
             the operation was cancelled by the user, this is a pure copy of
             the original TimeSeries.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.6, is still experimental
+        and may change signature or behaviour in the future.
+
+        See also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.trim_events
 
         Note
         ----
@@ -1224,6 +1356,14 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the sorted events.
 
+        See also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
+
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(100)/10)
@@ -1336,25 +1476,27 @@ class TimeSeries:
         legend
             Optional. True to plot a legend, False otherwise.
 
-        Example
-        -------
-        If a TimeSeries `ts`' data attribute as keys 'Forces', 'Moments' and
-        'Angle', then:
-
-            ts.plot()
-
-        plots all data (Forces, Moments and Angle), whereas:
-
-            ts.plot(['Forces', 'Moments'])
-
-        plots only the forces and moments, without plotting the angle.
-
+        Note
+        ----
         Additional positional and keyboard arguments are passed to
-        matplotlib's pyplot.plot function:
+        matplotlib's ``pyplot.plot`` function::
 
             ts.plot(['Forces'], '--')
 
         plots the forces using a dashed line style.
+
+        Example
+        -------
+        For a TimeSeries ``ts`` with data keys being 'Forces', 'Moments' and
+        'Angle'::
+
+            ts.plot()
+
+        plots all data (Forces, Moments and Angle), whereas::
+
+            ts.plot(['Forces', 'Moments'])
+
+        plots only the forces and moments, without plotting the angle.
 
         """
         # Private argument _raise_on_no_data: Raise a ValueError instead of
@@ -1481,14 +1623,21 @@ class TimeSeries:
         Returns
         -------
         float
-            The sample rate in samples per second. If time is empty or has only one
-            data, or if sample rate is variable, or if time is not monotonously
-            increasing, a value of np.nan is returned.
+            The sample rate in samples per second. If time is empty or has only
+            one data, or if sample rate is variable, or if time is not
+            monotonously increasing, a value of np.nan is returned.
 
         Warning
         -------
         This feature, which has been introduced in version 0.9, is still
-        experimental and may change in the future.
+        experimental and may change in the future. In particular, the value
+        returned if the sample rate is not constant: it is np.nan in all cases
+        for now, but it could change in the future based on discussions and
+        particular use cases.
+
+        See also
+        --------
+        ktk.TimeSeries.resample
 
         """
         if self.time.shape[0] == 0 or self.time.shape[0] == 1:
@@ -1511,8 +1660,13 @@ class TimeSeries:
 
         Returns
         -------
-        int
+        int or float
             The index in the time vector.
+
+        See also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_after_time
 
         Example
         -------
@@ -1545,9 +1699,13 @@ class TimeSeries:
 
         Returns
         -------
-        int
-            The index in the time vector. If no value is before the specified
-            time, a value of np.nan is returned.
+        int or float
+            The index in the time vector, or nan if the time vector is empty.
+
+        See also
+        --------
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
 
         Example
         -------
@@ -1572,12 +1730,12 @@ class TimeSeries:
         0
 
         """
-        # Edge case
-        try:
+        # Edge cases
+        if len(self.time) == 0:
+            return np.nan
+        else:
             if inclusive and time == self.time[0]:
                 return 0
-        except IndexError:  # If time was empty
-            return np.nan
 
         # Other cases
         diff = float(time) - self.time
@@ -1611,9 +1769,13 @@ class TimeSeries:
 
         Returns
         -------
-        int
-            The index in the time vector. If no value is after the
-            specified time, a value of np.nan is returned.
+        int or float
+            The index in the time vector, or nan if the time vector is empty.
+
+        See also
+        --------
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_before_time
 
         Example
         -------
@@ -1638,12 +1800,12 @@ class TimeSeries:
         4
 
         """
-        # Edge case
-        try:
+        # Edge cases
+        if len(self.time) == 0:
+            return np.nan
+        else:
             if inclusive and time == self.time[-1]:
                 return self.time.shape[0] - 1
-        except IndexError:  # If time was empty
-            return np.nan
 
         # Other cases
         diff = self.time - float(time)
@@ -1662,7 +1824,9 @@ class TimeSeries:
         else:
             return np.nan
 
-    def get_event_index(self, name: str, occurrence: int) -> Union[int, float]:
+    def get_event_index(
+        self, name: str, occurrence: int = 0
+    ) -> Union[int, float]:
         """
         Get the index of a given occurrence of an event name.
 
@@ -1676,9 +1840,27 @@ class TimeSeries:
 
         Returns
         -------
-        int
+        int or np.nan
             The index of the event or np.nan if no event found.
 
+        Examples
+        --------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(1.0, 'cycle_start')
+        >>> ts = ts.add_event(1.5, 'cycle_start')
+        >>> ts = ts.add_event(2.0, 'cycle_start')
+
+        >>> ts.get_event_index('cycle_start')
+        0
+
+        >>> ts.get_event_index('cycle_start', 0)
+        0
+
+        >>> ts.get_event_index('cycle_start', 1)
+        1
+
+        >>> ts.get_event_index('cycle_start', 3)
+        nan
         """
         occurrence = int(occurrence)
 
@@ -1716,8 +1898,8 @@ class TimeSeries:
         name
             Name of the event to look for in the events list.
         occurrence
-             Optional. i_th occurence of the event to look for in the events
-             list, starting at 0.
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0.
 
         Returns
         -------
@@ -1751,7 +1933,7 @@ class TimeSeries:
 
     def get_ts_at_time(self, time: float) -> "TimeSeries":
         """
-        Get a one-data subset of the TimeSeries at the nearest time.
+        Get a one-data TimeSeries at the nearest time.
 
         Parameters
         ----------
@@ -1763,6 +1945,13 @@ class TimeSeries:
         TimeSeries
             A TimeSeries of length 1, at the time neasest to the specified
             time.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_at_event
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_between_times
 
         Example
         -------
@@ -1789,7 +1978,7 @@ class TimeSeries:
 
     def get_ts_at_event(self, name: str, occurrence: int = 0) -> "TimeSeries":
         """
-        Get a one-data subset of the TimeSeries at the event's nearest time.
+        Get a one-data TimeSeries at the event's nearest time.
 
         Parameters
         ----------
@@ -1804,6 +1993,13 @@ class TimeSeries:
         TimeSeries
             A TimeSeries of length 1, at the event's nearest time.
 
+        See also
+        --------
+        ktk.TimeSeries.get_ts_at_time
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_between_events
+
         """
         time = self.get_event_time(name, occurrence)
         return self.get_ts_at_time(time)
@@ -1812,7 +2008,7 @@ class TimeSeries:
         self, index: int, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries before the specified time index.
+        Get a TimeSeries before the specified time index.
 
         Parameters
         ----------
@@ -1825,6 +2021,13 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_index
+        ktk.TimeSeries.get_ts_between_indexes
 
         Example
         -------
@@ -1861,7 +2064,7 @@ class TimeSeries:
         self, index: int, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries after the specified time index.
+        Get a TimeSeries after the specified time index.
 
         Parameters
         ----------
@@ -1874,6 +2077,13 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_between_indexes
 
         Example
         -------
@@ -1907,7 +2117,7 @@ class TimeSeries:
         self, index1: int, index2: int, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries before two specified time indexes.
+        Get a TimeSeries between two specified time indexes.
 
         Parameters
         ----------
@@ -1920,6 +2130,14 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.get_ts_between_events
+        ktk.TimeSeries.ui_get_ts_between_clicks
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_after_index
 
         Example
         -------
@@ -1952,7 +2170,7 @@ class TimeSeries:
         self, time: float, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries before the specified time.
+        Get a TimeSeries before the specified time.
 
         Parameters
         ----------
@@ -1965,6 +2183,13 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_between_times
 
         Example
         -------
@@ -1994,7 +2219,7 @@ class TimeSeries:
         self, time: float, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries after the specified time.
+        Get a TimeSeries after the specified time.
 
         Parameters
         ----------
@@ -2007,6 +2232,13 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_after_index
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_between_times
 
         Example
         -------
@@ -2038,7 +2270,7 @@ class TimeSeries:
         self, time1: float, time2: float, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries between two specified times.
+        Get a TimeSeries between two specified times.
 
         Parameters
         ----------
@@ -2051,6 +2283,14 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_events
+        ktk.TimeSeries.ui_get_ts_between_clicks
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_after_time
 
         Example
         -------
@@ -2076,7 +2316,7 @@ class TimeSeries:
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries before the specified event.
+        Get a TimeSeries before the specified event.
 
         Parameters
         ----------
@@ -2092,6 +2332,13 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_between_events
 
         Example
         -------
@@ -2121,7 +2368,7 @@ class TimeSeries:
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries after the specified event.
+        Get a TimeSeries after the specified event.
 
         Parameters
         ----------
@@ -2137,6 +2384,13 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_after_index
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_between_events
 
         Example
         -------
@@ -2172,7 +2426,7 @@ class TimeSeries:
         inclusive: bool = False,
     ) -> "TimeSeries":
         """
-        Get a subset of the TimeSeries between two specified events.
+        Get a TimeSeries between two specified events.
 
         Parameters
         ----------
@@ -2188,6 +2442,14 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.ui_get_ts_between_clicks
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_event
 
         Example
         -------
@@ -2213,7 +2475,7 @@ class TimeSeries:
         self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
     ) -> "TimeSeries":  # pragma: no cover
         """
-        Get a subset of the TimeSeries between two mouse clicks.
+        Get a TimeSeries between two mouse clicks.
 
         Parameters
         ----------
@@ -2227,6 +2489,16 @@ class TimeSeries:
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.get_ts_between_events
+
+        Note
+        ----
+        Matplotlib must be in interactive mode for this method to work.
 
         """
         fig = plt.figure()
@@ -2258,6 +2530,22 @@ class TimeSeries:
             A boolean array of the same size as the time vector, where True
             values represent missing samples (samples that contain at least
             one nan value).
+
+        See also
+        --------
+        ktk.TimeSeries.fill_missing_samples
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(4))
+        >>> ts.data['Data'] = np.zeros((4, 2))
+        >>> ts.data['Data'][2, :] = np.nan
+        >>> ts.data
+        {'Data': array([[ 0.,  0.], [ 0.,  0.], [nan, nan], [ 0.,  0.]])}
+
+        >>> ts.isnan('Data')
+        array([False, False,  True, False])
+
         """
         values = self.data[data_key].copy()
         # Reduce the dimension of values while keeping the time dimension.
@@ -2273,14 +2561,7 @@ class TimeSeries:
         in_place: bool = False,
     ) -> "TimeSeries":
         """
-        Fill missing samples with the given method.
-
-        The sample rate must be constant.
-
-        Warning
-        -------
-        This function, which has been introduced in 0.1, is still experimental
-        and may change signature or behaviour in the future.
+        Fill missing samples using a given method.
 
         Parameters
         ----------
@@ -2302,7 +2583,26 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the missing samples filled.
 
+        Raises
+        ------
+        ValueError
+            If the sample rate is not constant.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future. In particular,
+        the desired behaviour of `max_missing_samples` is still to be precised
+        for points where the criteria is not met.
+
+        See also
+        --------
+        ktk.TimeSeries.isnan
+
         """
+        if np.isnan(self.get_sample_rate()):
+            raise ValueError("The sample rate must be constant.")
+
         ts_out = self if in_place else self.copy()
         max_missing_samples = int(max_missing_samples)
 
@@ -2351,6 +2651,28 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the time being shifted.
 
+        See also
+        --------
+        ktk.TimeSeries.sync_event
+        ktk.TimeSeries.ui_sync
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10))
+        >>> ts = ts.add_event(3.5, "start")
+        >>> ts.time
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        >>> ts.events
+        [TimeSeriesEvent(time=3.5, name='start')]
+
+        >>> ts = ts.shift(2.0)
+        >>> ts.time
+        array([ 2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.])
+
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='start')]
+
         """
         ts = self if in_place else self.copy()
         for event in ts.events:
@@ -2380,6 +2702,28 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the time being shifted.
 
+        See also
+        --------
+        ktk.TimeSeries.shift
+        ktk.TimeSeries.ui_sync
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10))
+        >>> ts = ts.add_event(3.5, "sync")
+        >>> ts.events
+        [TimeSeriesEvent(time=3.5, name='sync')]
+
+        >>> ts.time
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        >>> ts = ts.sync_event("sync")
+        >>> ts.events
+        [TimeSeriesEvent(time=0.0, name='sync')]
+
+        >>> ts.time
+        array([-3.5, -2.5, -1.5, -0.5,  0.5,  1.5,  2.5,  3.5,  4.5,  5.5])
+
         """
         ts = self if in_place else self.copy()
         ts.shift(-ts.get_event_time(name, occurrence), in_place=True)
@@ -2400,6 +2744,14 @@ class TimeSeries:
         -------
         TimeSeries
             The TimeSeries without the trimmed events.
+
+        See also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.ui_edit_events
 
         Example
         -------
@@ -2453,31 +2805,35 @@ class TimeSeries:
         If another TimeSeries is given, an interactive interface allows
         synchronizing both TimeSeries together.
 
-        Warning
-        -------
-        This function, which has been introduced in 0.1, is still experimental
-        and may change signature or behaviour in the future.
-
         Parameters
         ----------
         data_keys
-            Optional. The data keys to plot. If kept tempy, all data is
-            plotted.
+            Optional. The data keys to plot. If empty, all data is plotted.
         ts2
-            Optional. A second TimeSeries that contains both a recognizable
-            zero-time event and a common event with the first TimeSeries.
+            Optional. A second TimeSeries to be synced to the first one. This
+            TimeSeries is modified in place.
         data_keys2
             Optional. The data keys from the second TimeSeries to plot. If
-            kept tempy, all data is plotted.
+            empty, all data is plotted.
 
         Returns
         -------
         TimeSeries
             A copy of the TimeSeries after synchronization.
 
-        Note
-        ----
-        The TimeSeries ts2 is modified in place.
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future.
+
+        See also
+        --------
+        ktk.TimeSeries.sync_event
+        ktk.TimeSeries.shift
+
+        Notes
+        -----
+        Matplotlib must be in interactive mode for this method to work.
 
         """
         ts1 = self.copy()
@@ -2619,6 +2975,10 @@ class TimeSeries:
         TimeSeries
             A copy of the TimeSeries, minus the unspecified data keys.
 
+        See also
+        --------
+        ktk.TimeSeries.merge
+
         Example
         -------
             >>> ts = ktk.TimeSeries(time = np.arange(10))
@@ -2688,6 +3048,24 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with a new sample rate.
 
+        Caution
+        -------
+        While it is possible to resample series of points or vectors,
+        attempting to resample a series of homogeneous matrices would likely
+        produce non-homogeneous matrices, and as a result, transforms would not
+        be rigid anymore. This function can't detect if you attempt to resample
+        series of homogeneous matrices, and therefore won't generate an
+        error or warning.
+
+        Warning
+        -------
+        This function, which was introduced in version 0.9, is still
+        experimental and may slightly change behaviour in future versions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_sample_rate
+
         Example
         --------
         >>> ts = ktk.TimeSeries(time=np.arange(6.))
@@ -2711,18 +3089,6 @@ class TimeSeries:
 
         >>> ts.data['data_with_nans']
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  nan,  nan,  nan, 16. , 20.5, 25. ])
-
-        Warning
-        -------
-        This function, which was introduced in version 0.9, is still
-        experimental and may slightly change behaviour in future versions.
-
-        Note
-        ----
-        Please note that while it is possible to resample series of points
-        or vectors, it is impossible to resample a series of homogeneous
-        matrices directly. This function won't generate a warning or error
-        if you do.
 
         """
         ts = self if in_place else self.copy()
@@ -2826,10 +3192,14 @@ class TimeSeries:
         TimeSeries
             The merged TimeSeries.
 
+        See also
+        --------
+        ktk.TimeSeries.get_subset
+
         Note
         ----
         The behaviour of the resampling option is not settled yet. At the
-        moment, a linear reseampling is performed, but this may change in the
+        moment, a linear resampling is performed, but this may change in the
         future.
 
         """

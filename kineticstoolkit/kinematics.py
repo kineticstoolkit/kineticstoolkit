@@ -163,11 +163,6 @@ def create_cluster(
     """
     Create a cluster definition based on a static acquisition.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.7, is still experimental and
-    may change signature or behaviour in the future.
-
     Parameters
     ----------
     markers
@@ -180,6 +175,16 @@ def create_cluster(
     Dict
         Dictionary where each entry represents the local position of a marker
         in an arbitrary coordinate system.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.7, is still experimental and
+    may change signature or behaviour in the future.
+
+    See also
+    --------
+    ktk.kinematics.extend_cluster
+    ktk.kinematics.track_cluster
 
     """
     n_samples = len(markers.time)
@@ -219,11 +224,6 @@ def extend_cluster(
     """
     Add a point to an existing cluster.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.7, is still experimental and
-    may change signature or behaviour in the future.
-
     Parameters
     ----------
     markers
@@ -237,7 +237,17 @@ def extend_cluster(
     Returns
     -------
     Dict[str, np.ndarray]
-        The cluster with the added point.
+        A copy of the initial cluster, with the added point.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.7, is still experimental and
+    may change signature or behaviour in the future.
+
+    See also
+    --------
+    ktk.kinematics.create_cluster
+    ktk.kinematics.track_cluster
 
     """
     cluster = deepcopy(cluster)
@@ -260,13 +270,8 @@ def track_cluster(
     """
     Fit a cluster to a TimeSeries of point trajectories.
 
-    Fits a cluster to a TimeSeries and reconstructs a solidified version of
-    all the points defined in this cluster.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.7, is still experimental and
-    may change signature or behaviour in the future.
+    This function fits a cluster to a TimeSeries and reconstructs a solidified
+    version of all the points defined in this cluster.
 
     Parameters
     ----------
@@ -286,6 +291,16 @@ def track_cluster(
     -------
     TimeSeries
         A TimeSeries with the trajectories of all cluster points.
+
+    Warning
+    -------
+    This function, which has been introduced in 0.7, is still experimental and
+    may change signature or behaviour in the future.
+
+    See also
+    --------
+    ktk.kinematics.create_cluster
+    ktk.kinematics.track_cluster
 
     """
     out = markers.copy(copy_data=False, copy_data_info=False)
@@ -366,6 +381,12 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
 
     filename
         Name of the trc file to create.
+
+    Warning
+    -------
+    This function may eventually move either to the base namespace like
+    write_c3d_file, or to an opensim extension that is currently being
+    developed.
 
     """
     markers = markers.copy()

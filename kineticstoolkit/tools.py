@@ -42,25 +42,28 @@ def change_defaults(
 
     This function does not affect Kinetics Toolkit's inner working. It exists
     mostly for cosmetic reasons, so that working with ktk in an IPython console
-    (e.g., Spyder, Jupyter) is more enjoyable, at least to the developer's
-    taste. It changes defaults and is not reversible in a given session. The
-    usual way to call it is right after importing Kinetics Toolkit.
+    (e.g., Spyder, Jupyter) is more enjoyable. It changes IPython, Matplotlib
+    and numpy's defaults for the current session only. The usual way to call
+    it is right after importing Kinetics Toolkit.
 
     Parameters
     ----------
     change_ipython_dict_repr
         Optional. True to summarize defaults dict printouts in IPython. When
-        False, dict printouts look like:
+        False, dict printouts look like::
 
             {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
-            17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
-            'data2': array([  0,   1,   4,   9,  16,  25,  36,  49,  64,  81, 100, 121, 144,
-            169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
-            676, 729, 784, 841])}
+                             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
+             'data2': array([  0,   1,   4,   9,  16,  25,  36,  49,  64,  81, 100, 121, 144,
+                             169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
+                              676, 729, 784, 841])}
 
-        When True, dict printouts look like:
+        When True, dict printouts look like::
 
-            {'data1': <array of shape (30,)> 'data2': <array of shape (30,)>}
+            {
+                'data1': <array of shape (30,)>
+                'data2': <array of shape (30,)>
+            }
 
     change_matplotlib_defaults
         Optional. True to change default figure size, autolayout, dpi, line
@@ -81,6 +84,13 @@ def change_defaults(
     Returns
     -------
     None
+
+    Note
+    ----
+    This function is called automatically when importing Kinetics Toolkit in
+    lab mode::
+
+        import kineticstoolkit.lab as ktk
 
     """
     if change_ipython_dict_repr:
