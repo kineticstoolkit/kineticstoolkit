@@ -957,10 +957,13 @@ class TimeSeries:
         """
         if isinstance(name, str) is False:
             raise ValueError("name must be a string.")
-        try:
-            int(time)
-        except ValueError:
-            raise ValueError("time must be a number.")
+
+        # Check that time is any number of nan
+        if ~np.isnan(time):
+            try:
+                int(time)
+            except ValueError:
+                raise ValueError("time must be a number.")
 
         ts = self if in_place else self.copy()
         ts.events.append(TimeSeriesEvent(time, name))

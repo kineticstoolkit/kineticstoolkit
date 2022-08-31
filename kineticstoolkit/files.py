@@ -89,7 +89,7 @@ def save(filename: str, variable: Any) -> None:
     -------
     Tuples are also supported but will be loaded back as lists, without
     warning.
-    
+
     See also
     --------
     ktk.load
@@ -264,11 +264,11 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     -------
     Any
         The loaded variable.
-        
+
     See also
     --------
     ktk.save
-    
+
     """
     archive = zipfile.ZipFile(filename, "r")
 
@@ -323,7 +323,7 @@ def read_c3d(
     -------
     This function, which has been introduced in version 0.9, is still
     experimental and its behaviour or API may change slightly in the future.
-    
+
     See also
     --------
     ktk.write_c3d
@@ -563,7 +563,7 @@ def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
         Points trajectories, where each point corresponds to a data key.
         Each point position is expressed as an Nx4 point series. Events from
         this TimeSeries are also added to the c3d.
-        
+
     See also
     --------
     ktk.read_c3d
