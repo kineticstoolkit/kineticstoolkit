@@ -29,6 +29,7 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.timeseries import TimeSeries
+import kineticstoolkit.geometry as geometry
 
 import matplotlib.pyplot as plt
 import matplotlib as mpl
@@ -101,6 +102,10 @@ class Player:
     axis_length
         Optional. Sets the rigid body size in meters.
 
+    up
+        Optional. Defines the ground plane by setting which axis is up. May be
+        {'x', 'y', 'z', '-x', '-y', '-z'}. Default is 'y'.
+
     zoom
         Optional. Sets the initial camera zoom.
 
@@ -139,6 +144,7 @@ class Player:
         axis_length: float = 0.1,
         axis_width: float = 3.0,
         interconnection_width: float = 1.5,
+        up: str = "y",
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
@@ -204,6 +210,39 @@ class Player:
         self.rigid_bodies.data["Global"] = np.repeat(
             np.eye(4, 4)[np.newaxis, :, :], self.n_indexes, axis=0
         )
+
+        # Rotate everything according to the up input, so that the end result
+        # is y up:
+        #
+        #    |y
+        #    |
+        #    +---- x
+        #   /
+        # z/
+        if up == "x":
+            rotation = geometry.create_transforms("z", [90], degrees=True)
+        elif up == "y":
+            rotation = np.eye(4)[np.newaxis]
+        elif up == "z":
+            rotation = geometry.create_transforms("x", [-90], degrees=True)
+        elif up == "-x":
+            rotation = geometry.create_transforms("z", [-90], degrees=True)
+        elif up == "-y":
+            rotation = geometry.create_transforms("z", [-180], degrees=True)
+        elif up == "-z":
+            rotation = geometry.create_transforms("x", [90], degrees=True)
+        else:
+            raise ValueError(
+                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
+            )
+        for key in self.markers.data:
+            self.markers.data[key] = geometry.get_global_coordinates(
+                self.markers.data[key], rotation
+            )
+        for key in self.rigid_bodies.data:
+            self.rigid_bodies.data[key] = geometry.get_global_coordinates(
+                self.rigid_bodies.data[key], rotation
+            )
 
         # ---------------------------------------------------------------
         # Assign the interconnections

@@ -31,7 +31,10 @@ def test_instanciate_and_to_html5():
 
     # Or the player can be instanciated to show both markers and rigid bodies
     pl = ktk.Player(
-        kinematics["Markers"], kinematics["ReferenceFrames"], target=[-5, 0, 0]
+        kinematics["Markers"],
+        kinematics["ReferenceFrames"],
+        target=[-5, 0, 0],
+        up="z",
     )
     plt.pause(0.01)
 
