@@ -410,11 +410,11 @@ def read_c3d(
 
     # ---------------------------------
     # List the events
-    if "EVENT" in reader["parameters"]:
+    try:
         event_names = reader["parameters"]["EVENT"]["LABELS"]["value"]
         event_times = reader["parameters"]["EVENT"]["TIMES"]["value"].T
         event_times = event_times[:, 0] * 60 + event_times[:, 1]
-    else:
+    except KeyError:
         event_names = []
         event_times = []
 
