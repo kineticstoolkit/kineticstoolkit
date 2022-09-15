@@ -29,6 +29,7 @@ import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
 from typing import Sequence, Dict, Union
+from numpy.typing import ArrayLike
 from copy import deepcopy
 
 import numpy as np
@@ -219,7 +220,7 @@ def create_cluster(
 
 
 def extend_cluster(
-    markers: TimeSeries, /, cluster: Dict[str, np.ndarray], new_point: str
+    markers: TimeSeries, /, cluster: Dict[str, ArrayLike], new_point: str
 ) -> Dict[str, np.ndarray]:
     """
     Add a point to an existing cluster.
@@ -250,7 +251,12 @@ def extend_cluster(
     ktk.kinematics.track_cluster
 
     """
-    cluster = deepcopy(cluster)
+    # Ensure to convert every cluster element to a numpy array
+    new_cluster = {}
+    for key in cluster:
+        new_cluster[key] = np.array(cluster[key])
+    cluster = new_cluster
+
     frames = _track_cluster_frames(markers, cluster)
     local_coordinates = geometry.get_local_coordinates(
         markers.data[new_point], frames
@@ -262,7 +268,7 @@ def extend_cluster(
 def track_cluster(
     markers: TimeSeries,
     /,
-    cluster: Dict[str, np.ndarray],
+    cluster: Dict[str, ArrayLike],
     *,
     include_lcs: bool = False,
     lcs_name: str = "LCS",
@@ -323,12 +329,14 @@ def track_cluster(
 
 
 def _track_cluster_frames(
-    markers: TimeSeries, cluster: Dict[str, np.ndarray]
+    markers: TimeSeries, cluster: Dict[str, ArrayLike]
 ) -> np.ndarray:
     """Track a cluster and return its frame series."""
     # Set local and global points
     marker_names = cluster.keys()
-    stacked_local_points = np.dstack([cluster[_] for _ in marker_names])
+    stacked_local_points = np.dstack(
+        [np.array(cluster[_]) for _ in marker_names]
+    )
 
     global_points = np.empty(
         (len(markers.time), 4, stacked_local_points.shape[2])
