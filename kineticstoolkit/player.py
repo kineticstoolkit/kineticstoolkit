@@ -220,17 +220,27 @@ class Player:
         #   /
         # z/
         if up == "x":
-            rotation = geometry.create_transforms("z", [90], degrees=True)
+            rotation = geometry.create_transforms(
+                "z", np.array([90]), degrees=True
+            )
         elif up == "y":
             rotation = np.eye(4)[np.newaxis]
         elif up == "z":
-            rotation = geometry.create_transforms("x", [-90], degrees=True)
+            rotation = geometry.create_transforms(
+                "x", np.array([-90]), degrees=True
+            )
         elif up == "-x":
-            rotation = geometry.create_transforms("z", [-90], degrees=True)
+            rotation = geometry.create_transforms(
+                "z", np.array([-90]), degrees=True
+            )
         elif up == "-y":
-            rotation = geometry.create_transforms("z", [-180], degrees=True)
+            rotation = geometry.create_transforms(
+                "z", np.array([-180]), degrees=True
+            )
         elif up == "-z":
-            rotation = geometry.create_transforms("x", [90], degrees=True)
+            rotation = geometry.create_transforms(
+                "x", np.array([90]), degrees=True
+            )
         else:
             raise ValueError(
                 "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
