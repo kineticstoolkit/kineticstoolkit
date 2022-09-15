@@ -257,6 +257,11 @@ def test_write_c3d_testsuite8():
     """
     Run the c3d.org test suite 8 and check if every file is equivalent even
     after a round-test (read-write-read).
+
+    ezc3d has to be patched for this test to pass.
+    https://github.com/pyomeca/ezc3d/issues/264
+
+    For now, tests with analogs are commented until the next release of ezc3d
     """
     test = []
     for key in [
@@ -271,14 +276,17 @@ def test_write_c3d_testsuite8():
             extract_force_plates=False,
         )
         ktk.write_c3d(
-            "test.c3d", points=data["Points"], analogs=data["Analogs"]
+            "test.c3d",
+            points=data["Points"],
+            #            analogs=data["Analogs"],
         )
         test.append(ktk.read_c3d("test.c3d", extract_force_plates=True))
     for i in range(1, 5):
         assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
-        assert test[i]["Analogs"]._is_equivalent(
-            test[0]["Analogs"], equal=False
-        )
+        # assert test[i]["Analogs"]._is_equivalent(
+        #     test[0]["Analogs"], equal=False
+        # )
+
         # Commented because ezc3d could not extract force_plates data
         # because there are metadata lacking due to this round-trip.
         # assert test[i]["ForcePlates"]._is_equivalent(
@@ -294,18 +302,24 @@ def test_write_c3d_weirdc3d():
 
     ezc3d has to be patched for this test to pass.
     https://github.com/pyomeca/ezc3d/issues/264
+
+    For now, tests with analogs are commented until the next release of ezc3d
     """
     filename = ktk.doc.download("walk.c3d")
     c3d = ktk.read_c3d(filename)
-    ktk.write_c3d("test.c3d", points=c3d["Points"], analogs=c3d["Analogs"])
+    ktk.write_c3d(
+        "test.c3d",
+        points=c3d["Points"],
+        #        analogs=c3d["Analogs"],
+    )
     c3d = ktk.read_c3d("test.c3d")
 
     assert len(c3d["Points"].time) == 221
     assert len(c3d["Points"].data) == 96
     assert len(c3d["Points"].events) == 8
-    assert len(c3d["Analogs"].time) == 4420
-    assert len(c3d["Analogs"].data) == 248
-    assert len(c3d["Analogs"].events) == 8
+    # assert len(c3d["Analogs"].time) == 4420
+    # assert len(c3d["Analogs"].data) == 248
+    # assert len(c3d["Analogs"].events) == 8
 
     assert (
         c3d["Points"].get_index_at_time(
