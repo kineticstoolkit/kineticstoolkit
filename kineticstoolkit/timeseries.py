@@ -710,7 +710,7 @@ class TimeSeries:
         in_place
             Optional. True to modify the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -756,7 +756,7 @@ class TimeSeries:
         in_place
             Optional. True to modify the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -805,7 +805,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -865,7 +865,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -929,7 +929,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -995,7 +995,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -1083,7 +1083,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -1340,9 +1340,9 @@ class TimeSeries:
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
 
-    def find_duplicate_events(
-        self, atol: float = 1e-8, rtol: float = 1e-5
-    ) -> List[List[int]]:
+    def _get_duplicate_event_indexes(
+        self, *, atol: float = 1e-8, rtol: float = 1e-5
+    ) -> List[int]:
         """
         Find events with same name and same time.
 
@@ -1355,7 +1355,7 @@ class TimeSeries:
 
         Returns
         -------
-        List[List[int]]
+        List[int]
             A list of list of event indexes. The outer list corresponds to
             different events. The inner list corresponds to all occurences of
             this event. The integer corresponds to the event index in the
@@ -1365,15 +1365,13 @@ class TimeSeries:
         -------
         >>> ts = ktk.TimeSeries()
 
-        # Three occurrences of event1 (third after event2)
+        # Three occurrences of event1
         >>> ts = ts.add_event(0.0, "event1")
         >>> ts = ts.add_event(1E-12, "event1")
+        >>> ts = ts.add_event(0.0, "event1")
 
         # One occurrence of event2, but also at 0.0 second
         >>> ts = ts.add_event(0.0, "event2")
-
-        >>> ts = ts.add_event(0.0, "event1")
-
 
         # Two occurrences of event3
         >>> ts = ts.add_event(2.0, "event3")
@@ -1381,7 +1379,7 @@ class TimeSeries:
 
         """
         # Sort all events in a dict with key Tuple(time, name)
-        sorted_events = {}
+        sorted_events = {}  # type: Dict[float, str]
         for i_event, event in enumerate(self.events):
             tup_event = tuple(event._to_list())
 
@@ -1398,14 +1396,73 @@ class TimeSeries:
             if not found:
                 # Otherwise, create it in the list
                 sorted_events[tup_event] = [i_event]
-        
+
         # Convert this dict to the desired list of lists
         out = []
         for key in sorted_events:
             if len(sorted_events[key]) > 1:
-                out.append(sorted_events[key])
-                
-        return out
+                out.extend(sorted_events[key][1:])
+
+        return sorted(out)
+
+    def remove_duplicate_events(
+        self, *, atol: float = 1e-8, rtol: float = 1e-5, in_place: bool = False
+    ) -> TimeSeries:
+        """
+        Remove events that share the same name and same time.
+
+        Parameters
+        ----------
+        atol
+            Optional. Absolute tolerance.
+        rtol
+            Optional. Relative tolerance.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries with only unique events.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+
+        # Three occurrences of event1
+        >>> ts = ts.add_event(0.0, "event1")
+        >>> ts = ts.add_event(1E-12, "event1")
+        >>> ts = ts.add_event(0.0, "event1")
+
+        # One occurrence of event2, but also at 0.0 second
+        >>> ts = ts.add_event(0.0, "event2")
+
+        # Two occurrences of event3
+        >>> ts = ts.add_event(2.0, "event3")
+        >>> ts = ts.add_event(2.0, "event3")
+
+        >>> ts.events
+        [TimeSeriesEvent(time=0.0, name='event1'),
+         TimeSeriesEvent(time=1e-12, name='event1'),
+         TimeSeriesEvent(time=0.0, name='event1'),
+         TimeSeriesEvent(time=0.0, name='event2'),
+         TimeSeriesEvent(time=2.0, name='event3'),
+         TimeSeriesEvent(time=2.0, name='event3')]
+
+        >>> ts2 = ts.remove_duplicate_events()
+        >>> ts2.events
+        [TimeSeriesEvent(time=0.0, name='event1'),
+         TimeSeriesEvent(time=0.0, name='event2'),
+         TimeSeriesEvent(time=2.0, name='event3')]
+
+        """
+        ts = self if in_place else self.copy()
+        duplicates = ts._get_duplicate_event_indexes(atol=atol, rtol=rtol)
+        for event_index in duplicates[-1::-1]:
+            ts.events.pop(event_index)
+        return ts
 
     def sort_events(
         self, *, unique: bool = True, in_place: bool = False
@@ -1421,7 +1478,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -2648,7 +2705,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -2716,7 +2773,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -2767,7 +2824,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -2810,7 +2867,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -3113,7 +3170,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------
@@ -3253,11 +3310,11 @@ class TimeSeries:
         overwrite
             Optional. If duplicates are found and overwrite is True, then the
             source (ts) overwrites the destination. Otherwise (overwrite is
-            False), the duplicate data in ts is ignored. The default is False.
+            False), the duplicate data in ts is ignored.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. The default is False.
+            original TimeSeries intact.
 
         Returns
         -------

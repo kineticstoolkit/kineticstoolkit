@@ -291,6 +291,31 @@ def test_remove_event():
     assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
 
 
+def test_remove_duplicate_events():
+    ts = ktk.TimeSeries()
+    # Three occurrences of event1 (third after event3)
+    ts = ts.add_event(0.0, "event1")
+    ts = ts.add_event(1e-12, "event1")
+
+    # One occurrence of event2, but also at 0.0 second
+    ts = ts.add_event(0.0, "event2")
+
+    # Two occurrences of event3
+    ts = ts.add_event(2.0, "event3")
+    ts = ts.add_event(2.0, "event3")
+    ts = ts.add_event(0.0, "event1")
+
+    assert str(ts._get_duplicate_event_indexes()) == "[1, 4, 5]"
+
+    ts2 = ts.remove_duplicate_events()
+    assert ts2.events[0].time == 0.0
+    assert ts2.events[0].name == "event1"
+    assert ts2.events[1].time == 0.0
+    assert ts2.events[1].name == "event2"
+    assert ts2.events[2].time == 2.0
+    assert ts2.events[2].name == "event3"
+
+
 def test_sort_events():
     # Original doctest
     ts = ktk.TimeSeries(time=np.arange(100) / 10)
