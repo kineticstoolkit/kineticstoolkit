@@ -19,6 +19,7 @@
 Identify cycles and time-normalize data.
 
 """
+from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -29,7 +30,8 @@ __license__ = "Apache 2.0"
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 import warnings
-from typing import List, Dict, Tuple, Sequence, Optional
+from typing import List, Dict, Tuple, Optional
+from numpy.typing import ArrayLike
 
 
 def __dir__():
@@ -46,13 +48,13 @@ def detect_cycles(
     ts: TimeSeries,
     data_key: str,
     *,
-    event_names: Sequence[str] = ["phase1", "phase2"],
-    thresholds: Sequence[float] = [0.0, 1.0],
-    directions: Sequence[str] = ["rising", "falling"],
-    min_durations: Sequence[float] = [0.0, 0.0],
-    max_durations: Sequence[float] = [np.Inf, np.Inf],
-    min_peak_heights: Sequence[float] = [-np.Inf, -np.Inf],
-    max_peak_heights: Sequence[float] = [np.Inf, np.Inf],
+    event_names: List[str] = ["phase1", "phase2"],
+    thresholds: List[float] = [0.0, 1.0],
+    directions: List[str] = ["rising", "falling"],
+    min_durations: List[float] = [0.0, 0.0],
+    max_durations: List[float] = [np.Inf, np.Inf],
+    min_peak_heights: List[float] = [-np.Inf, -np.Inf],
+    max_peak_heights: List[float] = [np.Inf, np.Inf],
 ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -190,7 +192,7 @@ def time_normalize(
     event_name2: str,
     *,
     n_points: int = 100,
-    span: Optional[Sequence[int]] = None,
+    span: Optional[List[int]] = None,
 ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -424,7 +426,7 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> Dict[str, np.ndarray]:
     return data
 
 
-def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
+def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
 
@@ -449,10 +451,11 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
     """
     ts = TimeSeries()
     for key in data.keys():
-        current_shape = data[key].shape
+        current_data = np.array(data[key])
+        current_shape = current_data.shape
         n_cycles = current_shape[0]
         n_points = current_shape[1]
-        ts.data[key] = data[key].reshape([n_cycles * n_points], order="C")
+        ts.data[key] = current_data.reshape([n_cycles * n_points], order="C")
     ts.time = np.arange(n_cycles * n_points)
     ts.time_info["Unit"] = ""
     return ts
@@ -526,7 +529,7 @@ def unstack(data: Dict[str, np.ndarray], /) -> TimeSeries:
 #     return out
 
 
-def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
+def most_repeatable_cycles(data: ArrayLike, /) -> List[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
 
@@ -570,7 +573,7 @@ def most_repeatable_cycles(data: np.ndarray, /) -> List[int]:
     [1, 3, 0, 2]
 
     """
-    data = data.copy()
+    data = np.array(data)
     n_cycles = data.shape[0]
     out_cycles = []  # type: List[int]
     done_cycles = []  # type: List[int]  # Like out_cycles but includes NaNs

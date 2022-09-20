@@ -24,6 +24,8 @@ As a convention, the first dimension of every array is always N and corresponds
 to time.
 
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2021 Félix Chénier"
@@ -48,9 +50,10 @@ import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
 from typing import Optional, Tuple
+from numpy.typing import ArrayLike
 
 
-def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
+def matmul(op1: ArrayLike, op2: ArrayLike) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
 
@@ -84,6 +87,8 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
            [16.,  9.]])
 
     """
+    op1 = np.array(op1)
+    op2 = np.array(op2)
 
     def perform_mul(op1, op2):
         if isinstance(op1, np.ndarray) and isinstance(op2, np.ndarray):
@@ -108,8 +113,8 @@ def matmul(op1: np.ndarray, op2: np.ndarray) -> np.ndarray:
 
 def create_transforms(
     seq: Optional[str] = None,
-    angles: Optional[np.ndarray] = None,
-    translations: Optional[np.ndarray] = None,
+    angles: Optional[ArrayLike] = None,
+    translations: Optional[ArrayLike] = None,
     degrees=False,
 ) -> np.ndarray:
     """
@@ -208,7 +213,7 @@ def create_transforms(
 
 
 def get_angles(
-    T: np.ndarray, seq: str, degrees: bool = False, flip: bool = False
+    T: ArrayLike, seq: str, degrees: bool = False, flip: bool = False
 ) -> np.ndarray:
     """
     Extract Euler angles from a series of homogeneous matrices.
@@ -270,6 +275,7 @@ def get_angles(
     `seq` parameter.
 
     """
+    T = np.array(T)
     R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
     angles = R.as_euler(seq, degrees)
 
@@ -290,13 +296,13 @@ def get_angles(
 
 
 def create_frames(
-    origin: np.ndarray,
-    x: Optional[np.ndarray] = None,
-    y: Optional[np.ndarray] = None,
-    z: Optional[np.ndarray] = None,
-    xy: Optional[np.ndarray] = None,
-    xz: Optional[np.ndarray] = None,
-    yz: Optional[np.ndarray] = None,
+    origin: ArrayLike,
+    x: Optional[ArrayLike] = None,
+    y: Optional[ArrayLike] = None,
+    z: Optional[ArrayLike] = None,
+    xy: Optional[ArrayLike] = None,
+    xz: Optional[ArrayLike] = None,
+    yz: Optional[ArrayLike] = None,
 ) -> np.ndarray:
     """
     Create an Nx4x4 series of frames based on series of points and vectors.
@@ -307,21 +313,21 @@ def create_frames(
         A series of N points (Nx4) that corresponds to the origin of the
         series of frames to be created.
 
-    x|y|z
+    x, y, z
         Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
         are aligned toward the {x|y|z} series of frames to be created.
 
-    xy|xz
+    xy, xz
         Only if `x` is specified. A series of N vectors (Nx4) in the {xy|xz}
         plane of the series of frames to be created. As a rule of thumb, use
         a series of N vectors that correspond roughly to the {z|-y} axis.
 
-    xy|yz
+    xy, yz
         Only if `y` is specified. A series of N vectors (Nx4) in the {xy|yz}
         plane of the series of frames to be created. As a rule of thumb, use
         a series of N vectors that correspond roughly to the {z|x} axis.
 
-    xz|yz
+    xz, yz
         Only if `z` is specified. A series of N vectors (Nx4) in the {xz|yz}
         plane of the series of frames to be created. As a rule of thumb, use
         a series of N vectors that correspond roughly to the {-y|x} axis.
@@ -390,7 +396,7 @@ def create_frames(
 
 
 def get_local_coordinates(
-    global_coordinates: np.ndarray, reference_frames: np.ndarray
+    global_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
     """
     Express global coordinates in local reference frames.
@@ -420,6 +426,9 @@ def get_local_coordinates(
     ktk.geometry.get_global_coordinates
 
     """
+    global_coordinates = np.array(global_coordinates)
+    reference_frames = np.array(reference_frames)
+
     n_samples = global_coordinates.shape[0]
 
     # Transform NaNs in global coordinates to zeros to perform the operation,
@@ -453,7 +462,7 @@ def get_local_coordinates(
 
 
 def get_global_coordinates(
-    local_coordinates: np.ndarray, reference_frames: np.ndarray
+    local_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
     """
     Express local coordinates in the global reference frame.
@@ -483,18 +492,21 @@ def get_global_coordinates(
     ktk.geometry.get_local_coordinates
 
     """
+    local_coordinates = np.array(local_coordinates)
+    reference_frames = np.array(reference_frames)
+
     global_coordinates = np.zeros(local_coordinates.shape)
     global_coordinates = matmul(reference_frames, local_coordinates)
     return global_coordinates
 
 
-def isnan(input: np.ndarray, /) -> np.ndarray:
+def isnan(array: ArrayLike, /) -> np.ndarray:
     """
     Check which samples has at least one NaN.
 
     Parameters
     ----------
-    input
+    in
         Array where the first dimension corresponds to time.
 
     Returns
@@ -504,7 +516,7 @@ def isnan(input: np.ndarray, /) -> np.ndarray:
         True for the samples that contain at least one NaN.
 
     """
-    temp = np.isnan(input)
+    temp = np.isnan(array)
     while len(temp.shape) > 1:
         temp = temp.sum(axis=1) > 0
     return temp
@@ -540,7 +552,7 @@ def _match_size(
 
 
 def register_points(
-    global_points: np.ndarray, local_points: np.ndarray
+    global_points: ArrayLike, local_points: ArrayLike
 ) -> np.ndarray:
     """
     Find the homogeneous transforms between two series of point clouds.
@@ -566,6 +578,9 @@ def register_points(
     parameters may change in the future.
 
     """
+    global_points = np.array(global_points)
+    local_points = np.array(local_points)
+
     n_samples = global_points.shape[0]
 
     # Prealloc the transformation matrix

@@ -18,6 +18,8 @@
 """
 Provide extension support for Kinetics Toolkit.
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022 Félix Chénier"

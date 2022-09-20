@@ -18,6 +18,8 @@
 """
 Provide standard filters for TimeSeries.
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -30,7 +32,7 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from typing import Tuple, Union, Sequence, List
+from typing import Tuple, Union, List
 
 import kineticstoolkit as ktk  # for doctests
 
@@ -188,7 +190,7 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
 def butter(
     ts: TimeSeries,
     /,
-    fc: Union[float, Sequence],
+    fc: Union[float, List[float]],
     *,
     order: int = 2,
     btype: str = "lowpass",
