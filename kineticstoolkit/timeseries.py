@@ -928,7 +928,12 @@ class TimeSeries:
         return ts
 
     def add_event(
-        self, time: float, name: str = "event", *, in_place=False
+        self,
+        time: float,
+        name: str = "event",
+        *,
+        in_place: bool = False,
+        unique: bool = False,
     ) -> TimeSeries:
         """
         Add an event to the TimeSeries.
@@ -943,6 +948,10 @@ class TimeSeries:
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
             original TimeSeries intact.
+        unique
+            Optional. True to prevent duplicating an already existing event. In
+            this case, if an event with the same time and name already exists,
+            no event is added.
 
         Returns
         -------
@@ -981,6 +990,13 @@ class TimeSeries:
                 raise ValueError("time must be a number.")
 
         ts = self if in_place else self.copy()
+
+        if unique:
+            # Ensure that no event of that name and time already exists
+            for event in ts.events:
+                if np.isclose(time, event.time) and (name == event.name):
+                    return ts
+
         ts.events.append(TimeSeriesEvent(time, name))
         return ts
 
@@ -1353,18 +1369,9 @@ class TimeSeries:
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
 
-    def _get_duplicate_event_indexes(
-        self, *, atol: float = 1e-8, rtol: float = 1e-5
-    ) -> List[int]:
+    def _get_duplicate_event_indexes(self) -> List[int]:
         """
         Find events with same name and same time so that every event is unique.
-
-        Parameters
-        ----------
-        atol
-            Optional. Absolute tolerance.
-        rtol
-            Optional. Relative tolerance.
 
         Returns
         -------
@@ -1400,9 +1407,7 @@ class TimeSeries:
             # If it does, add it to the list.
             found = False
             for key in sorted_events:
-                if np.isclose(key[0], event.time, atol=atol, rtol=rtol) and (
-                    key[1] == event.name
-                ):
+                if np.isclose(key[0], event.time) and (key[1] == event.name):
                     sorted_events[key].append(i_event)
                     found = True
                     break
@@ -1418,18 +1423,12 @@ class TimeSeries:
 
         return sorted(out)
 
-    def remove_duplicate_events(
-        self, *, atol: float = 1e-8, rtol: float = 1e-5, in_place: bool = False
-    ) -> TimeSeries:
+    def remove_duplicate_events(self, *, in_place: bool = False) -> TimeSeries:
         """
         Remove events with same name and time so that each event gets unique.
 
         Parameters
         ----------
-        atol
-            Optional. Absolute tolerance.
-        rtol
-            Optional. Relative tolerance.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -1445,17 +1444,17 @@ class TimeSeries:
         >>> ts = ktk.TimeSeries()
 
         Three occurrences of event1:
-            
+
         >>> ts = ts.add_event(0.0, "event1")
         >>> ts = ts.add_event(1E-12, "event1")
         >>> ts = ts.add_event(0.0, "event1")
 
         One occurrence of event2, but also at 0.0 second:
-            
+
         >>> ts = ts.add_event(0.0, "event2")
 
         Two occurrences of event3:
-            
+
         >>> ts = ts.add_event(2.0, "event3")
         >>> ts = ts.add_event(2.0, "event3")
 
@@ -1467,7 +1466,7 @@ class TimeSeries:
          TimeSeriesEvent(time=2.0, name='event3'),
          TimeSeriesEvent(time=2.0, name='event3')]
 
-        >>> ts2 = ts.remove_duplicate_events()        
+        >>> ts2 = ts.remove_duplicate_events()
         >>> ts2.events
         [TimeSeriesEvent(time=0.0, name='event1'),
          TimeSeriesEvent(time=0.0, name='event2'),
@@ -1475,7 +1474,7 @@ class TimeSeries:
 
         """
         ts = self if in_place else self.copy()
-        duplicates = ts._get_duplicate_event_indexes(atol=atol, rtol=rtol)
+        duplicates = ts._get_duplicate_event_indexes()
         for event_index in duplicates[-1::-1]:
             ts.events.pop(event_index)
         return ts
@@ -3324,9 +3323,9 @@ class TimeSeries:
             the time vectors are not matched. If the time vectors are not
             matched and resample is False, an exception is raised.
         overwrite
-            Optional. If duplicates are found and overwrite is True, then the
-            source (ts) overwrites the destination. Otherwise (overwrite is
-            False), the duplicate data in ts is ignored.
+            Optional. If duplicates data keys are found and overwrite is True,
+            then the source (ts) overwrites the destination. Otherwise
+            (overwrite is False), the duplicate data in ts is ignored.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -3341,11 +3340,13 @@ class TimeSeries:
         --------
         ktk.TimeSeries.get_subset
 
-        Note
-        ----
-        The behaviour of the resampling option is not settled yet. At the
-        moment, a linear resampling is performed, but this may change in the
-        future.
+        Notes
+        -----
+        - All events are also merged from both TimeSeries.
+
+        - The behaviour of the resampling option is not settled yet. At the
+          moment, a linear resampling is performed, but this may change in the
+          future.
 
         """
         ts_out = self if in_place else self.copy()
@@ -3403,7 +3404,9 @@ class TimeSeries:
 
         # Merge events
         for event in ts.events:
-            ts_out.events.append(event)
+            ts_out.add_event(
+                event.time, event.name, in_place=True, unique=True
+            )
         ts_out.sort_events(in_place=True)
         return ts_out
 

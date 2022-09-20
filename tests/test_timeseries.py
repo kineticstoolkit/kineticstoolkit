@@ -215,6 +215,17 @@ def test_rename_remove_data():
     assert len(ts.data_info) == 0
 
 
+def test_add_event():
+    # Add event with unique=True and False
+    ts = ktk.TimeSeries()
+    ts = ts.add_event(5.5, "event1")
+    ts.add_event(5.5, "event1", in_place=True, unique=True)
+    ts.add_event(5.5, "event2", in_place=True, unique=True)
+    assert len(ts.events) == 2
+    ts.add_event(5.5, "event2", in_place=True)
+    assert len(ts.events) == 3
+
+
 def test_rename_event():
     # Original doctest
     ts = ktk.TimeSeries()
@@ -449,9 +460,9 @@ def test_merge_and_resample():
     ts2.add_data_info("signal4", "Unit", "Unit1", in_place=True)
     ts2.add_data_info("signal5", "Unit", "Unit2", in_place=True)
     ts2.add_data_info("signal6", "Unit", "Unit3", in_place=True)
-    ts2.add_event(1.54, "test_event4", in_place=True)
-    ts2.add_event(10.2, "test_event5", in_place=True)
-    ts2.add_event(100, "test_event6", in_place=True)
+    ts2.add_event(1.54, "test_event1", in_place=True)
+    ts2.add_event(10.2, "test_event2", in_place=True)
+    ts2.add_event(100, "test_event4", in_place=True)  # This one is named diff.
 
     ts1 = ts1.merge(ts2)
 
@@ -467,6 +478,8 @@ def test_merge_and_resample():
     assert np.all(
         ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
     )
+
+    assert len(ts1.events) == 4
 
     # Try with two timeseries that don't fit in time. It must generate an
     # exception.
