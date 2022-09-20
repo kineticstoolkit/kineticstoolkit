@@ -24,6 +24,8 @@ As a convention, the first dimension of every array is always N and corresponds
 to time.
 
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2021 Félix Chénier"
