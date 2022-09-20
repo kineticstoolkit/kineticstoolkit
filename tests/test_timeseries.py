@@ -323,14 +323,14 @@ def test_sort_events():
     ts = ts.add_event(1, "one")
     ts = ts.add_event(3, "three")
     ts = ts.add_event(3, "three")
-    ts = ts.sort_events(unique=False)
+    ts = ts.sort_events()
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=1, name='one'), "
         "TimeSeriesEvent(time=2, name='two'), "
         "TimeSeriesEvent(time=3, name='three'), "
         "TimeSeriesEvent(time=3, name='three')]"
     )
-    ts.sort_events(in_place=True)
+    ts.sort_events(in_place=True, unique=True)
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=1, name='one'), "
         "TimeSeriesEvent(time=2, name='two'), "

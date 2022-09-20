@@ -344,7 +344,20 @@ class TimeSeriesEvent:
         """Define >= operator."""
         return self.time >= other.time
 
-    def _to_list(self):
+    def _to_tuple(self) -> Tuple[float, str]:
+        """
+        Convert a TimeSeriesEvent to a tuple.
+
+        Example
+        -------
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event._to_tuple()
+        (1.5, 'event_name')
+
+        """
+        return (self.time, self.name)
+
+    def _to_list(self) -> List[Union[float, str]]:
         """
         Convert a TimeSeriesEvent to a list.
 
@@ -357,7 +370,7 @@ class TimeSeriesEvent:
         """
         return [self.time, self.name]
 
-    def _to_dict(self):
+    def _to_dict(self) -> Dict[str, Union[float, str]]:
         """
         Convert a TimeSeriesEvent to a dict.
 
@@ -1378,10 +1391,10 @@ class TimeSeries:
         >>> ts = ts.add_event(2.0, "event3")
 
         """
-        # Sort all events in a dict with key Tuple(time, name)
-        sorted_events = {}  # type: Dict[float, str]
+        # Sort all events in a dict with key being Tuple(time, name)
+        sorted_events = {}  # type: Dict[Tuple[float, str], List[int]]
         for i_event, event in enumerate(self.events):
-            tup_event = tuple(event._to_list())
+            tup_event = event._to_tuple()
 
             # Check if this event already exist in the list.
             # If it does, add it to the list.
@@ -1465,7 +1478,7 @@ class TimeSeries:
         return ts
 
     def sort_events(
-        self, *, unique: bool = True, in_place: bool = False
+        self, *, unique: bool = False, in_place: bool = False
     ) -> TimeSeries:
         """
         Sorts the TimeSeries' events from the earliest to the latest.
