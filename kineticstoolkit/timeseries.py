@@ -1338,6 +1338,73 @@ class TimeSeries:
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
 
+    def find_duplicate_events(
+        self, atol: float = 1e-8, rtol: float = 1e-5
+    ) -> List[List[int]]:
+        """
+        Find events with same name and same time.
+
+        Parameters
+        ----------
+        atol
+            Optional. Absolute tolerance.
+        rtol
+            Optional. Relative tolerance.
+
+        Returns
+        -------
+        List[List[int]]
+            A list of list of event indexes. The outer list corresponds to
+            different events. The inner list corresponds to all occurences of
+            this event. The integer corresponds to the event index in the
+            TimeSeries' event list.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+
+        # Three occurrences of event1 (third after event2)
+        >>> ts = ts.add_event(0.0, "event1")
+        >>> ts = ts.add_event(1E-12, "event1")
+
+        # One occurrence of event2, but also at 0.0 second
+        >>> ts = ts.add_event(0.0, "event2")
+
+        >>> ts = ts.add_event(0.0, "event1")
+
+
+        # Two occurrences of event3
+        >>> ts = ts.add_event(2.0, "event3")
+        >>> ts = ts.add_event(2.0, "event3")
+
+        """
+        # Sort all events in a dict with key Tuple(time, name)
+        sorted_events = {}
+        for i_event, event in enumerate(self.events):
+            tup_event = tuple(event._to_list())
+
+            # Check if this event already exist in the list.
+            # If it does, add it to the list.
+            found = False
+            for key in sorted_events:
+                if np.isclose(key[0], event.time, atol=atol, rtol=rtol) and (
+                    key[1] == event.name
+                ):
+                    sorted_events[key].append(i_event)
+                    found = True
+                    break
+            if not found:
+                # Otherwise, create it in the list
+                sorted_events[tup_event] = [i_event]
+        
+        # Convert this dict to the desired list of lists
+        out = []
+        for key in sorted_events:
+            if len(sorted_events[key]) > 1:
+                out.append(sorted_events[key])
+                
+        return out
+
     def sort_events(
         self, *, unique: bool = True, in_place: bool = False
     ) -> "TimeSeries":
@@ -1401,7 +1468,7 @@ class TimeSeries:
 
         if unique is True:
             for i in range(len(ts.events) - 1, 0, -1):
-                if (ts.events[i].time == ts.events[i - 1].time) and (
+                if np.isclose(ts.events[i].time, ts.events[i - 1].time) and (
                     ts.events[i].name == ts.events[i - 1].name
                 ):
                     ts.events.pop(i)
