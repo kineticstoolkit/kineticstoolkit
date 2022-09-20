@@ -32,6 +32,8 @@ The following decorator can be used on each Kinetics Toolkit's's function:
     for example.
 
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -42,8 +44,6 @@ __license__ = "Apache 2.0"
 from functools import wraps
 import warnings
 import textwrap
-import kineticstoolkit.config
-from typing import Dict, List, Any
 
 
 def _inject_in_docstring(docstring: str, text: str) -> str:

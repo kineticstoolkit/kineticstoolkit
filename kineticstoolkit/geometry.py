@@ -313,21 +313,21 @@ def create_frames(
         A series of N points (Nx4) that corresponds to the origin of the
         series of frames to be created.
 
-    x|y|z
+    x, y, z
         Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
         are aligned toward the {x|y|z} series of frames to be created.
 
-    xy|xz
+    xy, xz
         Only if `x` is specified. A series of N vectors (Nx4) in the {xy|xz}
         plane of the series of frames to be created. As a rule of thumb, use
         a series of N vectors that correspond roughly to the {z|-y} axis.
 
-    xy|yz
+    xy, yz
         Only if `y` is specified. A series of N vectors (Nx4) in the {xy|yz}
         plane of the series of frames to be created. As a rule of thumb, use
         a series of N vectors that correspond roughly to the {z|x} axis.
 
-    xz|yz
+    xz, yz
         Only if `z` is specified. A series of N vectors (Nx4) in the {xz|yz}
         plane of the series of frames to be created. As a rule of thumb, use
         a series of N vectors that correspond roughly to the {-y|x} axis.

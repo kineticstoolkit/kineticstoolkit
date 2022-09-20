@@ -21,6 +21,8 @@ Provides the Player class to visualize markers and rigid bodies in 3d.
 The Player class is accessible directly from the toplevel Kinetics Toolkit
 namespace (i.e., ktk.Player).
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -38,7 +40,8 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-from typing import Union, Sequence, Dict, Any, Optional
+from typing import Union, List, Dict, Any, Optional
+from numpy.typing import ArrayLike
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
@@ -148,8 +151,8 @@ class Player:
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
-        translation: Union[Sequence[float], np.ndarray] = (0.0, 0.0),
-        target: Union[Sequence[float], np.ndarray] = (0.0, 0.0, 0.0),
+        translation: ArrayLike = (0.0, 0.0),
+        target: ArrayLike = (0.0, 0.0, 0.0),
         track: bool = False,
         perspective: bool = True,
         **kwargs,
@@ -220,27 +223,17 @@ class Player:
         #   /
         # z/
         if up == "x":
-            rotation = geometry.create_transforms(
-                "z", np.array([90]), degrees=True
-            )
+            rotation = geometry.create_transforms("z", [90], degrees=True)
         elif up == "y":
             rotation = np.eye(4)[np.newaxis]
         elif up == "z":
-            rotation = geometry.create_transforms(
-                "x", np.array([-90]), degrees=True
-            )
+            rotation = geometry.create_transforms("x", [-90], degrees=True)
         elif up == "-x":
-            rotation = geometry.create_transforms(
-                "z", np.array([-90]), degrees=True
-            )
+            rotation = geometry.create_transforms("z", [-90], degrees=True)
         elif up == "-y":
-            rotation = geometry.create_transforms(
-                "z", np.array([-180]), degrees=True
-            )
+            rotation = geometry.create_transforms("z", [-180], degrees=True)
         elif up == "-z":
-            rotation = geometry.create_transforms(
-                "x", np.array([90]), degrees=True
-            )
+            rotation = geometry.create_transforms("x", [90], degrees=True)
         else:
             raise ValueError(
                 "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
@@ -268,9 +261,9 @@ class Player:
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
-        self.target = target
+        self.target = np.array(target)
         self.track = track
-        self.translation = translation
+        self.translation = np.array(translation)
         self.perspective = perspective
         self.playback_speed = 1.0  # 0.0 to show all samples
         #  self.anim = None  # Will initialize in _create_figure
@@ -737,10 +730,9 @@ class Player:
 
         self.objects["Figure"].canvas.draw()
 
-    def _set_new_target(
-        self, target: Union[Sequence[float], np.ndarray]
-    ) -> None:
+    def _set_new_target(self, target: ArrayLike) -> None:
         """Set new target and adapts translation and zoom consequently."""
+        target = np.array(target)
         if np.sum(np.isnan(target)) > 0:
             return
         initial_translation = copy.deepcopy(self.translation)

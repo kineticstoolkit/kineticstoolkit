@@ -18,6 +18,8 @@
 """
 Provide functions related to kinematics analysis.
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -28,9 +30,8 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from typing import Sequence, Dict, Union
+from typing import List, Dict, Union, Mapping
 from numpy.typing import ArrayLike
-from copy import deepcopy
 
 import numpy as np
 import warnings
@@ -45,121 +46,8 @@ def __dir__():
     ]
 
 
-# def read_xml_file(filename):
-#
-#    # Define a helper function that reads the file line by line until it finds
-#    # one of the strings in a given list.
-#    def read_until(list_strings):
-#        while True:
-#            one_line = fid.readline()
-#            if len(one_line) == 0:
-#                return(one_line)
-#
-#            for one_string in list_strings:
-#                if one_line.find(one_string) >= 0:
-#                    return(one_line)
-#
-#
-#    # Open the file
-#    if os.path.isfile(filename) == False:
-#        raise(FileNotFoundError)
-#
-#    fid = open(filename, 'r')
-#
-#    # Reading loop
-#    the_timeseries = []
-#
-#    while True:
-#
-#        # Wait for next label
-#        one_string = read_until(['>Label :</Data>'])
-#
-#        if len(one_string) > 0:
-#            # A new label was found
-#
-#            # Isolate the label name
-#            one_string = read_until(['<Data'])
-#            label_name = one_string[
-#                    (one_string.find('"String">')+9):one_string.find('</Data>')]
-#            print(label_name)
-#
-#            # Isolate the data format
-#            one_string = read_until(['>Coords'])
-#            one_string = one_string[
-#                    (one_string.find('<Data>')+6):one_string.find('</Data>')]
-#            data_unit = one_string[
-#                    (one_string.find('x,y:')+4):one_string.find('; ')]
-#
-#            # Ignore the next data lines (header)
-#            one_string = read_until(['<Data'])
-#            one_string = read_until(['<Data'])
-#            one_string = read_until(['<Data'])
-#
-#            # Find all data for this marker
-#            time = np.array([1.0]) # Dummy init
-#            data = np.zeros((1,2)) # Dummy init
-#            sample_index = 0
-#
-#            while(True):
-#
-#                # Find the next x data
-#                one_string = read_until(['<Data'])
-#                one_string = one_string[
-#                        (one_string.find('"Number">')+9):one_string.find('</Data>')]
-#
-#                try:
-#                    # If it's a float, then add it.
-#                    # Add a new row to time and data
-#                    if sample_index > 0:
-#                        time = np.block([time, np.array(1)])
-#                        data = np.block([[data], [np.zeros((1,2))]])
-#
-#                    data[sample_index, 0] = float(one_string)
-#
-#                except:
-#                    the_timeseries.append(ts.TimeSeries(name=label_name, data=data, time=time, dataunit=data_unit, timeunit='s'))
-#                    break #No data
-#
-#                # Find the next y data
-#                one_string = read_until(['<Data'])
-#                one_string = one_string[
-#                        (one_string.find('"Number">')+9):one_string.find('</Data>')]
-#                data[sample_index, 1] = float(one_string)
-#
-#                # Find the next t data
-#                one_string = read_until(['<Data'])
-#                one_string = one_string[
-#                        (one_string.find('">')+2):one_string.find('</Data>')]
-#
-#                if one_string.find(':') < 0:
-#                    time[sample_index] = float(one_string) # milliseconds or #frame
-#                else:
-#                    index = one_string.find(':')
-#                    hours = one_string[0:index]
-#                    one_string = one_string[index+1:]
-#
-#                    index = one_string.find(':')
-#                    minutes = one_string[0:index]
-#                    one_string = one_string[index+1:]
-#
-#                    index = one_string.find(':')
-#                    seconds = one_string[0:index]
-#                    milliseconds = one_string[index+1:]
-#
-#                    time[sample_index] = (3600. * float(hours) +
-#                        60. * float(minutes) + float(seconds) +
-#                        (int(milliseconds) % 1000) / 1000)
-#
-#
-#                sample_index = sample_index + 1
-#
-#        else:
-#            # EOF
-#            return(the_timeseries)
-
-
 def create_cluster(
-    markers: TimeSeries, /, marker_names: Sequence[str]
+    markers: TimeSeries, /, names: List[str]
 ) -> Dict[str, np.ndarray]:
     """
     Create a cluster definition based on a static acquisition.
@@ -168,7 +56,7 @@ def create_cluster(
     ----------
     markers
         Markers trajectories during a static acquisition.
-    marker_names
+    names
         The markers that define the cluster.
 
     Returns
@@ -182,6 +70,8 @@ def create_cluster(
     This function, which has been introduced in 0.7, is still experimental and
     may change signature or behaviour in the future.
 
+    0.9.3: Parameters `marker_names` was changed to `names`
+
     See also
     --------
     ktk.kinematics.extend_cluster
@@ -189,12 +79,12 @@ def create_cluster(
 
     """
     n_samples = len(markers.time)
-    n_markers = len(marker_names)
+    n_markers = len(names)
 
     # Construct the global points array
     global_points = np.empty((n_samples, 4, n_markers))
 
-    for i_marker, marker in enumerate(marker_names):
+    for i_marker, marker in enumerate(names):
         global_points[:, :, i_marker] = markers.data[marker][:, :]
 
     # Remove samples where at least one marker is invisible
@@ -213,14 +103,14 @@ def create_cluster(
 
     # Create the output
     output = {}
-    for i_marker, marker_name in enumerate(marker_names):
-        output[marker_name] = local_points[:, :, i_marker]
+    for i_marker, name in enumerate(names):
+        output[name] = local_points[:, :, i_marker]
 
     return output
 
 
 def extend_cluster(
-    markers: TimeSeries, /, cluster: Dict[str, ArrayLike], new_point: str
+    markers: TimeSeries, /, cluster: Dict[str, np.ndarray], name: str
 ) -> Dict[str, np.ndarray]:
     """
     Add a point to an existing cluster.
@@ -232,7 +122,7 @@ def extend_cluster(
         trajectories from the cluster definition.
     cluster
         The source cluster to add a new point to.
-    new_point
+    name
         The name of the point to add (data key of the markers TimeSeries).
 
     Returns
@@ -244,6 +134,8 @@ def extend_cluster(
     -------
     This function, which has been introduced in 0.7, is still experimental and
     may change signature or behaviour in the future.
+
+    0.9.3: Parameter `new_point` was changed to `name`
 
     See also
     --------
@@ -259,16 +151,16 @@ def extend_cluster(
 
     frames = _track_cluster_frames(markers, cluster)
     local_coordinates = geometry.get_local_coordinates(
-        markers.data[new_point], frames
+        markers.data[name], frames
     )
-    cluster[new_point] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
+    cluster[name] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
     return cluster
 
 
 def track_cluster(
     markers: TimeSeries,
     /,
-    cluster: Dict[str, ArrayLike],
+    cluster: Dict[str, np.ndarray],
     *,
     include_lcs: bool = False,
     lcs_name: str = "LCS",
@@ -329,7 +221,7 @@ def track_cluster(
 
 
 def _track_cluster_frames(
-    markers: TimeSeries, cluster: Dict[str, ArrayLike]
+    markers: TimeSeries, cluster: Dict[str, np.ndarray]
 ) -> np.ndarray:
     """Track a cluster and return its frame series."""
     # Set local and global points
@@ -378,7 +270,7 @@ def _get_marker_unit(markers: TimeSeries) -> Union[None, str]:
     return unit
 
 
-def write_trc_file(markers: TimeSeries, filename: str) -> None:
+def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
 
@@ -447,7 +339,7 @@ def write_trc_file(markers: TimeSeries, filename: str) -> None:
     since="master", until="January 2023", details="Use create_cluster()."
 )
 def define_rigid_body(
-    kinematics: TimeSeries, marker_names: Sequence[str]
+    kinematics: TimeSeries, marker_names: List[str]
 ) -> Dict[str, np.ndarray]:
     """
     Create a generic rigid body definition based on a static acquisition.
@@ -701,7 +593,7 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     until="2024",
     details=("This function has been moved to the n3d extension."),
 )
-def read_n3d_file(filename: str, labels: Sequence[str] = []) -> TimeSeries:
+def read_n3d_file(filename: str, labels: List[str] = []) -> TimeSeries:
     """
     Read markers from an NDI N3D file.
 

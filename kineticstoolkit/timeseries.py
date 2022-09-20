@@ -22,6 +22,8 @@ The classes defined in this module are accessible directly from the toplevel
 Kinetics Toolkit's namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)
 
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -622,7 +624,7 @@ class TimeSeries:
         df.index = self.time
         return df
 
-    def from_dataframe(dataframe: pd.DataFrame, /) -> "TimeSeries":
+    def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
         """
         Create a new TimeSeries from a Pandas Dataframe.
 
@@ -693,7 +695,7 @@ class TimeSeries:
         value: Any,
         *,
         in_place: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Add metadata to TimeSeries' data.
 
@@ -741,7 +743,7 @@ class TimeSeries:
 
     def remove_data_info(
         self, data_key: str, info_key: str, *, in_place: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Remove metadata from a TimeSeries' data.
 
@@ -790,7 +792,7 @@ class TimeSeries:
 
     def rename_data(
         self, old_data_key: str, new_data_key: str, *, in_place: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Rename a key in data and data_info.
 
@@ -852,7 +854,7 @@ class TimeSeries:
 
     def remove_data(
         self, data_key: str, *, in_place: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Remove a data key and its associated metadata.
 
@@ -914,7 +916,7 @@ class TimeSeries:
 
     def add_event(
         self, time: float, name: str = "event", *, in_place=False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Add an event to the TimeSeries.
 
@@ -976,7 +978,7 @@ class TimeSeries:
         occurrence: Optional[int] = None,
         *,
         in_place: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Rename an event occurrence or all events of a same name.
 
@@ -1066,7 +1068,7 @@ class TimeSeries:
         occurrence: Optional[int] = None,
         *,
         in_place: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Remove an event occurrence or all events of a same name.
 
@@ -1146,7 +1148,7 @@ class TimeSeries:
         self,
         name: Union[str, List[str]] = [],
         data_keys: Union[str, List[str]] = [],
-    ) -> "TimeSeries":  # pragma: no cover
+    ) -> TimeSeries:  # pragma: no cover
         """
         Edit events interactively.
 
@@ -1186,7 +1188,7 @@ class TimeSeries:
 
         """
 
-        def add_this_event(ts: "TimeSeries", name: str) -> "TimeSeries":
+        def add_this_event(ts: TimeSeries, name: str) -> TimeSeries:
             kineticstoolkit.gui.message(
                 "Place the event on the figure.", **WINDOW_PLACEMENT
             )
@@ -1195,7 +1197,7 @@ class TimeSeries:
             kineticstoolkit.gui.message("")
             return ts
 
-        def get_event_index(ts: "TimeSeries") -> int:
+        def get_event_index(ts: TimeSeries) -> int:
             kineticstoolkit.gui.message(
                 "Select an event on the figure.", **WINDOW_PLACEMENT
             )
@@ -1340,7 +1342,7 @@ class TimeSeries:
 
     def sort_events(
         self, *, unique: bool = True, in_place: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Sorts the TimeSeries' events from the earliest to the latest.
 
@@ -1416,7 +1418,7 @@ class TimeSeries:
         copy_time_info=True,
         copy_data_info=True,
         copy_events=True,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Deep copy of a TimeSeries.
 
@@ -1934,7 +1936,7 @@ class TimeSeries:
         else:
             return np.nan
 
-    def get_ts_at_time(self, time: float) -> "TimeSeries":
+    def get_ts_at_time(self, time: float) -> TimeSeries:
         """
         Get a one-data TimeSeries at the nearest time.
 
@@ -1979,7 +1981,7 @@ class TimeSeries:
             out_ts.data[the_data] = out_ts.data[the_data][index]
         return out_ts
 
-    def get_ts_at_event(self, name: str, occurrence: int = 0) -> "TimeSeries":
+    def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
         """
         Get a one-data TimeSeries at the event's nearest time.
 
@@ -2009,7 +2011,7 @@ class TimeSeries:
 
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries before the specified time index.
 
@@ -2065,7 +2067,7 @@ class TimeSeries:
 
     def get_ts_after_index(
         self, index: int, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries after the specified time index.
 
@@ -2118,7 +2120,7 @@ class TimeSeries:
 
     def get_ts_between_indexes(
         self, index1: int, index2: int, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries between two specified time indexes.
 
@@ -2171,7 +2173,7 @@ class TimeSeries:
 
     def get_ts_before_time(
         self, time: float, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries before the specified time.
 
@@ -2220,7 +2222,7 @@ class TimeSeries:
 
     def get_ts_after_time(
         self, time: float, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries after the specified time.
 
@@ -2271,7 +2273,7 @@ class TimeSeries:
 
     def get_ts_between_times(
         self, time1: float, time2: float, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries between two specified times.
 
@@ -2317,7 +2319,7 @@ class TimeSeries:
 
     def get_ts_before_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries before the specified event.
 
@@ -2369,7 +2371,7 @@ class TimeSeries:
 
     def get_ts_after_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries after the specified event.
 
@@ -2427,7 +2429,7 @@ class TimeSeries:
         occurrence2: int = 0,
         *,
         inclusive: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Get a TimeSeries between two specified events.
 
@@ -2476,7 +2478,7 @@ class TimeSeries:
 
     def ui_get_ts_between_clicks(
         self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
-    ) -> "TimeSeries":  # pragma: no cover
+    ) -> TimeSeries:  # pragma: no cover
         """
         Get a TimeSeries between two mouse clicks.
 
@@ -2562,7 +2564,7 @@ class TimeSeries:
         *,
         method: str = "linear",
         in_place: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Fill missing samples using a given method.
 
@@ -2636,7 +2638,7 @@ class TimeSeries:
 
         return ts_out
 
-    def shift(self, time: float, *, in_place: bool = False) -> "TimeSeries":
+    def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
         Shift time and events.time.
 
@@ -2685,7 +2687,7 @@ class TimeSeries:
 
     def sync_event(
         self, name: str, occurrence: int = 0, *, in_place: bool = False
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Shift time and events.time so that this event is at the new time zero.
 
@@ -2732,7 +2734,7 @@ class TimeSeries:
         ts.shift(-ts.get_event_time(name, occurrence), in_place=True)
         return ts
 
-    def trim_events(self, *, in_place: bool = False) -> "TimeSeries":
+    def trim_events(self, *, in_place: bool = False) -> TimeSeries:
         """
         Delete the events that are outside the TimeSeries' time vector.
 
@@ -2796,9 +2798,9 @@ class TimeSeries:
     def ui_sync(
         self,
         data_keys: Union[str, List[str]] = [],
-        ts2: Union["TimeSeries", None] = None,
+        ts2: Union[TimeSeries, None] = None,
         data_keys2: Union[str, List[str]] = [],
-    ) -> "TimeSeries":  # pragma: no cover
+    ) -> TimeSeries:  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
 
@@ -2960,7 +2962,7 @@ class TimeSeries:
 
         return ts1
 
-    def get_subset(self, data_keys: Union[str, List[str]]) -> "TimeSeries":
+    def get_subset(self, data_keys: Union[str, List[str]]) -> TimeSeries:
         """
         Return a subset of the TimeSeries.
 
@@ -3024,7 +3026,7 @@ class TimeSeries:
         *,
         fill_value: Union[np.ndarray, str, None] = None,
         in_place: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Resample the TimeSeries.
 
@@ -3160,13 +3162,13 @@ class TimeSeries:
 
     def merge(
         self,
-        ts: "TimeSeries",
+        ts: TimeSeries,
         data_keys: Union[str, List[str]] = [],
         *,
         resample: bool = False,
         overwrite: bool = False,
         in_place: bool = False,
-    ) -> "TimeSeries":
+    ) -> TimeSeries:
         """
         Merge the TimeSeries with another TimeSeries.
 

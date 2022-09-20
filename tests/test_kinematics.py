@@ -203,11 +203,11 @@ def test_reconstruction():
 
     clusters["ArmR"] = ktk.kinematics.create_cluster(
         markers_static,
-        marker_names=["ArmR1", "ArmR2", "ArmR3", "LateralEpicondyleR"],
+        names=["ArmR1", "ArmR2", "ArmR3", "LateralEpicondyleR"],
     )
 
     clusters["ForearmR"] = ktk.kinematics.create_cluster(
-        markers_static, marker_names=["ForearmR1", "ForearmR2", "ForearmR3"]
+        markers_static, names=["ForearmR1", "ForearmR2", "ForearmR3"]
     )
 
     clusters["Probe"] = {

@@ -23,6 +23,8 @@ Warning
 This module is private and should be considered only as helper functions
 for Kinetics Toolkit's own use.
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -32,10 +34,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.config as config
 import limitedinteraction as li
 import matplotlib as mpl
-import matplotlib.pyplot as plt
-import sys
-import os
-from typing import Sequence, Union, Tuple, Any, List
+from typing import Union, Tuple, Any, List
 
 
 def message(message: str = "", **kwargs) -> None:
@@ -53,14 +52,14 @@ def message(message: str = "", **kwargs) -> None:
             config.root_folder + "/kineticstoolkit/logo.png",
             config.root_folder + "/kineticstoolkit/logo_hires.png",
         ],
-        **kwargs
+        **kwargs,
     )
 
 
 def button_dialog(
     message: str = "Please select an option.",
-    choices: Sequence[str] = ["Cancel", "OK"],
-    **kwargs
+    choices: List[str] = ["Cancel", "OK"],
+    **kwargs,
 ) -> int:
     """
     Create a blocking dialog message window with a selection of buttons.
@@ -86,11 +85,11 @@ def button_dialog(
             config.root_folder + "/kineticstoolkit/logo.png",
             config.root_folder + "/kineticstoolkit/logo_hires.png",
         ],
-        **kwargs
+        **kwargs,
     )
 
 
-def set_color_order(setting: Union[str, Sequence[Any]]) -> None:
+def set_color_order(setting: Union[str, List[Any]]) -> None:
     """
     Define the standard color order for matplotlib.
 

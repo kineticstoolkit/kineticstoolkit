@@ -22,6 +22,8 @@ The classes defined in this module are accessible directly from the toplevel
 Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
 
 """
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -42,8 +44,7 @@ import time
 import getpass
 import zipfile
 
-from typing import Any, Optional, List, Dict
-from collections import namedtuple
+from typing import Any, Dict
 
 
 def __dir__():  # pragma: no cover
