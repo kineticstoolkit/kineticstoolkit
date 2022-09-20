@@ -1357,7 +1357,7 @@ class TimeSeries:
         self, *, atol: float = 1e-8, rtol: float = 1e-5
     ) -> List[int]:
         """
-        Find events with same name and same time.
+        Find events with same name and same time so that every event is unique.
 
         Parameters
         ----------
@@ -1422,7 +1422,7 @@ class TimeSeries:
         self, *, atol: float = 1e-8, rtol: float = 1e-5, in_place: bool = False
     ) -> TimeSeries:
         """
-        Remove events that share the same name and same time.
+        Remove events with same name and time so that each event gets unique.
 
         Parameters
         ----------
@@ -1444,15 +1444,18 @@ class TimeSeries:
         -------
         >>> ts = ktk.TimeSeries()
 
-        # Three occurrences of event1
+        Three occurrences of event1:
+            
         >>> ts = ts.add_event(0.0, "event1")
         >>> ts = ts.add_event(1E-12, "event1")
         >>> ts = ts.add_event(0.0, "event1")
 
-        # One occurrence of event2, but also at 0.0 second
+        One occurrence of event2, but also at 0.0 second:
+            
         >>> ts = ts.add_event(0.0, "event2")
 
-        # Two occurrences of event3
+        Two occurrences of event3:
+            
         >>> ts = ts.add_event(2.0, "event3")
         >>> ts = ts.add_event(2.0, "event3")
 
@@ -1464,7 +1467,7 @@ class TimeSeries:
          TimeSeriesEvent(time=2.0, name='event3'),
          TimeSeriesEvent(time=2.0, name='event3')]
 
-        >>> ts2 = ts.remove_duplicate_events()
+        >>> ts2 = ts.remove_duplicate_events()        
         >>> ts2.events
         [TimeSeriesEvent(time=0.0, name='event1'),
          TimeSeriesEvent(time=0.0, name='event2'),
@@ -1520,14 +1523,14 @@ class TimeSeries:
          TimeSeriesEvent(time=3, name='three'),
          TimeSeriesEvent(time=3, name='three')]
 
-        >>> ts = ts.sort_events(unique=False)
+        >>> ts = ts.sort_events()
         >>> ts.events
         [TimeSeriesEvent(time=1, name='one'),
          TimeSeriesEvent(time=2, name='two'),
          TimeSeriesEvent(time=3, name='three'),
          TimeSeriesEvent(time=3, name='three')]
 
-        >>> ts = ts.sort_events()
+        >>> ts = ts.sort_events(unique=True)
         >>> ts.events
         [TimeSeriesEvent(time=1, name='one'),
          TimeSeriesEvent(time=2, name='two'),
