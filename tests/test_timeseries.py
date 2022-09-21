@@ -28,6 +28,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import warnings
+from kineticstoolkit.exceptions import (
+    EmptyTimeSeriesError,
+    MalformedTimeSeriesError,
+    TimeSeriesIndexNotFoundError,
+    TimeSeriesEventNotFoundError,
+    TimeSeriesIndexOrderError,
+)
 
 
 def test_TimeSeriesEvent():
@@ -115,6 +122,31 @@ def test_empty_constructor():
     assert isinstance(ts.data_info, dict)
     assert isinstance(ts.events, list)
     assert ts.time_info["Unit"] == "s"
+
+
+def test_validate():
+    ts = ktk.TimeSeries()
+    ts._validate()
+    ts.time = [1, 2, 3]  # Should fail
+    try:
+        ts._validate()
+    except MalformedTimeSeriesError:
+        pass
+    ts.time = np.array([1, 2, 3])  # Should pass
+    ts._validate()
+    ts.data["test1"] = np.array([1, 2, 3])  # Good
+    ts.data["test2"] = [1, 2, 3]  # Should fail
+    try:
+        ts._validate()
+    except MalformedTimeSeriesError:
+        pass
+    ts.data["test2"] = np.array([1, 2])  # Should fail
+    try:
+        ts._validate()
+    except MalformedTimeSeriesError:
+        pass
+    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
+    ts._validate()
 
 
 def test_from_to_dataframe():
