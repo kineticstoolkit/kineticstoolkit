@@ -1537,16 +1537,9 @@ class TimeSeries:
 
         """
         ts = self if in_place else self.copy()
-
+        if unique:
+            ts.remove_duplicate_events(in_place=True)
         ts.events = sorted(ts.events)
-
-        if unique is True:
-            for i in range(len(ts.events) - 1, 0, -1):
-                if np.isclose(ts.events[i].time, ts.events[i - 1].time) and (
-                    ts.events[i].name == ts.events[i - 1].name
-                ):
-                    ts.events.pop(i)
-
         return ts
 
     def copy(
