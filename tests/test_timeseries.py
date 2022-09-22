@@ -29,9 +29,11 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import warnings
 from kineticstoolkit.exceptions import (
+    TimeSeriesTypeError,
+    TimeSeriesShapeError,
+    TimeSeriesSpanError,
     TimeSeriesEmptyTimeError,
     TimeSeriesEmptyDataError,
-    MalformedTimeSeriesError,
     TimeSeriesIndexNotFoundError,
     TimeSeriesEventNotFoundError,
     TimeSeriesIndexOrderError,
@@ -125,53 +127,102 @@ def test_empty_constructor():
     assert ts.time_info["Unit"] == "s"
 
 
-def test_check_well_formed():
+def test_check_well_typed():
     ts = ktk.TimeSeries()  # Should pass
-    ts._check_well_formed()
+    ts._check_well_typed()
 
     ts.time = [1, 2, 3]  # Should fail
     try:
-        ts._check_well_formed()
-    except MalformedTimeSeriesError:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
         pass
 
     ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
-    ts._check_well_formed()
+    ts._check_well_typed()
 
     ts.data["test1"] = np.array([1, 2, 3])
     ts.data["test2"] = [1, 2, 3]  # Should fail
     try:
-        ts._check_well_formed()
-    except MalformedTimeSeriesError:
-        pass
-
-    ts.data["test2"] = np.array([1, 2])  # Should fail
-    try:
-        ts._check_well_formed()
-    except MalformedTimeSeriesError:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
         pass
 
     ts.data["test2"] = np.array([1, 2, 3])  # Should pass
-    ts._check_well_formed()
+    ts._check_well_typed()
 
     ts.time[1] = np.nan  # Should fail
     try:
-        ts._check_well_formed()
-    except MalformedTimeSeriesError:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
+        pass
+
+    ts.time = np.array([1., 2., 2.])  # Should fail
+    try:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
+        pass
+
+
+    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.add_data_info("test1", "Unit", "N", in_place=True)
+    ts.add_data_info("test2", "Unit", "N", in_place=True)
+    ts._check_well_typed()
+
+    ts.data_info["test2"] = "string"  # Should fail
+    try:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
+        pass
+
+    ts.data_info = "string"  # Should fail
+    try:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
+        pass
+
+    ts.data_info = {}
+    ts.time_info = "string"  # Should fail
+    try:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
         pass
 
     ts = ktk.TimeSeries()
+    ts.add_event(0, in_place=True)  # Should pass
+    ts._check_well_typed()
+
     ts.events = "test"  # Should fail
     try:
-        ts._check_well_formed()
-    except MalformedTimeSeriesError:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
         pass
 
     ts.events = [ktk.TimeSeriesEvent(0), "test"]  # Should fail
     try:
-        ts._check_well_formed()
-    except MalformedTimeSeriesError:
+        ts._check_well_typed()
+    except TimeSeriesTypeError:
         pass
+    
+
+def test_check_well_shaped():
+    ts = ktk.TimeSeries()  # Should pass
+    ts._check_well_shaped()
+
+    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts._check_well_shaped()
+
+    ts.data["test1"] = np.array([1, 2, 3])
+    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
+    ts._check_well_shaped()
+
+    ts.data["test2"] = np.array([1, 2])  # Should fail
+    try:
+        ts._check_well_shaped()
+    except TimeSeriesShapeError:
+        pass
+
+    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
+    ts._check_well_shaped()
 
 
 def test_check_not_empty_time():
@@ -253,9 +304,11 @@ def test_add_remove_data_info():
     assert ts.data_info["Force"]["Unit"] == "N"
     assert ts.data_info["Force"]["Other"] == "hello"
 
-    # Test removing non-existing data_info
-    ts = ts.remove_data_info("Nonexisting", "Other")
-    assert len(ts.data_info["Force"]) == 2
+    # Test removing non-existing data_info (should not work)
+    try:
+        ts = ts.remove_data_info("Nonexisting", "Other")
+    except KeyError:
+        pass
 
     # Test removing existing data_info
     ts.remove_data_info("Force", "Other", in_place=True)
@@ -275,14 +328,19 @@ def test_rename_remove_data():
     assert np.allclose(ts.data["Power"], np.arange(10))
     assert ts.data_info["Power"]["Unit"] == "Nm"
 
-    # Rename inexistent data
-    ts = ts.rename_data("NoKey", "Anything")
-    assert np.allclose(ts.data["Power"], np.arange(10))
-    assert len(ts.data) == 1
-    assert len(ts.data_info) == 1
+    # Rename inexistent data (should fail)
+    try:
+        ts = ts.rename_data("NoKey", "Anything")
+    except KeyError:
+        pass
 
-    # Remove inexistent data
-    ts.remove_data("NoKey", in_place=True)
+    # Remove inexistent data (should fail)
+    try:
+        ts.remove_data("NoKey", in_place=True)
+    except KeyError:
+        pass
+
+    # Those fail should not have modified the TimeSeries
     assert np.allclose(ts.data["Power"], np.arange(10))
     assert len(ts.data) == 1
     assert len(ts.data_info) == 1
@@ -333,18 +391,24 @@ def test_rename_event():
         "TimeSeriesEvent(time=2.3, name='event4')]"
     )
 
-    # Test renaming an event to a same name (dumb case but should pass)
-    ts = ts.rename_event("event4", "event4")
+    # Test renaming an event to a same name (should fail)
+    try:
+        ts = ts.rename_event("event4", "event4")
+    except ValueError:
+        pass
+
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
         "TimeSeriesEvent(time=10.8, name='event3'), "
         "TimeSeriesEvent(time=2.3, name='event4')]"
     )
 
-    # Test renaming invalid occurrence
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    # Test renaming invalid occurrence (should fail)
+    try:
         ts = ts.rename_event("event4", "event5", 10)
+    except TimeSeriesEventNotFoundError:
+        pass
+
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
         "TimeSeriesEvent(time=10.8, name='event3'), "
@@ -373,10 +437,12 @@ def test_remove_event():
     ts.remove_event("event2", 1, in_place=True)
     assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
 
-    # Test remove bad occurrence
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
+    # Test remove bad occurrence (should fail)
+    try:
         ts = ts.remove_event("event2", 10)
+    except TimeSeriesEventNotFoundError:
+        pass
+
     assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
 
 
@@ -447,15 +513,63 @@ def test_get_sample_rate():
     assert ts.get_sample_rate() == 10.0
 
 
-def test_get_event_time():
+def test_get_event_indexes_index_time():
     ts = ktk.TimeSeries()
     ts = ts.add_event(5.5, "event1")
     ts = ts.add_event(10.8, "event2")
     ts = ts.add_event(2.3, "event2")
+    assert ts.get_event_indexes("event0") == []
+    assert ts.get_event_indexes("event1") == [0]
+    assert ts.get_event_indexes("event2") == [2, 1]
+    assert ts.get_event_index("event2", 1) == 1
+    try:
+        ts.get_event_index("event0", 0)
+    except TimeSeriesEventNotFoundError:
+        pass
+    try:
+        ts.get_event_index("event1", 1)
+    except TimeSeriesEventNotFoundError:
+        pass
+
     assert ts.get_event_time("event1") == 5.5
     assert ts.get_event_time("event2", 0) == 2.3
     assert ts.get_event_time("event2", 1) == 10.8
 
+
+def test_get_ts_at_before_after_time():
+    # doctests
+    
+    # get_index_at_time
+    ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+    assert ts.get_index_at_time(0.9) == 2
+    assert ts.get_index_at_time(1) == 2
+    assert ts.get_index_at_time(1.1) == 2
+    try:
+        ts.get_index_at_time(2.1)
+    except TimeSeriesSpanError:
+        pass
+    
+    # get_index_before_time
+    assert ts.get_index_before_time(0.9) == 1
+    assert ts.get_index_before_time(1) == 1
+    assert ts.get_index_before_time(1.1) == 2
+    assert ts.get_index_before_time(1.1, inclusive=True) == 3
+    try:
+        ts.get_index_before_time(0)
+    except TimeSeriesSpanError:
+        pass
+    assert ts.get_index_before_time(0, inclusive=True) == 0
+
+    # get_index_after_time
+    assert ts.get_index_after_time(0.9) == 2
+    assert ts.get_index_after_time(0.9, inclusive=True) == 1
+    assert ts.get_index_after_time(1) == 3
+    assert ts.get_index_after_time(1, inclusive=True) == 2
+    try:
+        ts.get_index_after_time(2)
+    except TimeSeriesSpanError:
+        pass
+    assert ts.get_index_after_time(2, inclusive=True) == 4    
 
 def test_get_ts_at_event___get_ts_at_time():
     ts = ktk.TimeSeries()

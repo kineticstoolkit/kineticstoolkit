@@ -28,23 +28,45 @@ __license__ = "Apache 2.0"
 # Exceptions
 
 
+class TimeSeriesShapeError(ValueError):
+    """Raised when the shape TimeSeries data and time mismatch."""
+
+    pass
+
+
+class TimeSeriesTypeError(TypeError):
+    """Raised when the TimeSeries' attributes are of wrong type."""
+
+    pass
+
+
 class TimeSeriesEmptyTimeError(ValueError):
+    """Raised when the TimeSeries' time attribute is empty."""
+
     pass
 
 
 class TimeSeriesEmptyDataError(ValueError):
-    pass
+    """Raised when the TimeSeries has no data."""
 
-
-class MalformedTimeSeriesError(ValueError):
-    pass
-
-
-class TimeSeriesIndexNotFoundError(ValueError):
     pass
 
 
 class TimeSeriesEventNotFoundError(ValueError):
+    """Raised when an occurrence of a TimeSeries event could be found."""
+
+    pass
+
+
+class TimeSeriesSpanError(ValueError):
+    """Raised when the requested time is outside the TimeSeries' time."""
+
+    pass
+
+class TimeSeriesNonIncreasingTimeError(ValueError):
+    """Raised when the TimeSeries' time is not continuously increasing."""
+
+class TimeSeriesIndexNotFoundError(ValueError):
     pass
 
 

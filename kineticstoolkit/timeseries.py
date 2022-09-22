@@ -35,9 +35,12 @@ import kineticstoolkit._repr
 from kineticstoolkit.exceptions import (
     TimeSeriesEmptyTimeError,
     TimeSeriesEmptyDataError,
-    MalformedTimeSeriesError,
+    TimeSeriesTypeError,
+    TimeSeriesShapeError,
     TimeSeriesIndexNotFoundError,
     TimeSeriesEventNotFoundError,
+    TimeSeriesSpanError,
+    TimeSeriesNonIncreasingTimeError,
     TimeSeriesIndexOrderError,
 )
 import matplotlib as mpl
@@ -592,257 +595,283 @@ class TimeSeries:
 
         return True
 
-    def _check_well_formed(self) -> None:
+    def _check_well_typed(self) -> None:
         """
-        Check that the TimeSeries is well formed.
+        Check that every element of every attribute has correct type.
+
+        This is the most basic check: Every component of a TimeSeries must
+        be of the correct type at each step of a code. Therefore, any other
+        check* starts by calling this function. This is not a performance hit
+        because apart from interactive functions (which are not affected by
+        test overhead), the check functions are run in case of error only,
+        to help the users in fixing their code.
+
+        *except _check_increasing_time, which is run in proprocessing and not
+        only in failures.
 
         Raises
         ------
-        MalformedTimeSeriesError:
-            If the TimeSeries is not ready to be processed or saved because of
-            a problem of data formatting.
+        TimeSeriesTypeError
+            If the TimeSeries' attributes are of wrong type.
 
         """
 
         # Ensure that time is a numpy array of dimension 1.
         if not isinstance(self.time, np.ndarray):
-            raise MalformedTimeSeriesError(
+            raise TimeSeriesTypeError(
                 "A TimeSeries' time attribute must be a numpy array. "
                 f"However, the current time type is {type(self.time)}."
             )
 
-        if len(self.time.shape) != 1:
-            raise MalformedTimeSeriesError(
-                "A TimeSeries' time attribute must be a numpy array of "
-                "dimension 1. However, the current time shape is "
-                f"{self.time.shape}, which is a dimension of "
-                f"{len(self.time.shape)}."
-            )
-
-        if not np.alltrue(~np.isnan(self.time.shape)):
-            raise MalformedTimeSeriesError(
+        if not np.alltrue(~np.isnan(self.time)):
+            raise TimeSeriesTypeError(
                 "A TimeSeries' time attribute must not contain nans. "
                 f"However, a total of {np.sum(~np.isnan(self.time.shape))} "
                 f"nans were found among the {self.time.shape[0]} samples of "
                 "the TimeSeries."
             )
 
+        if not np.array_equal(np.unique(self.time), np.sort(self.time)):
+            raise TimeSeriesTypeError(
+                "A TimeSeries' time attribute must not contain duplicates. "
+                f"However, while the TimeSeries has {len(self.time)} samples, "
+                f"only {len(np.unique(self.time))} are unique."
+            )
+
         # Ensure that the data attribute is a dict
         if not isinstance(self.data, dict):
-            raise MalformedTimeSeriesError(
+            raise TimeSeriesTypeError(
                 "The TimeSeries data attribute must be a dict. However, "
                 "this TimeSeries' data attribute is of type "
                 f"{type(self.data)}."
             )
 
-        # Ensure that each data are numpy arrays coherent with time.
+        # Ensure that each data are numpy arrays
         for key in self.data:
             data = self.data[key]
 
-            # Ensure that it's a numpy array
             if not isinstance(data, np.ndarray):
-                raise MalformedTimeSeriesError(
+                raise TimeSeriesTypeError(
                     "A TimeSeries' data attribute must contain only numpy "
                     "arrays. However, at least one of the TimeSeries data "
                     f"is not an array: the data named {key} contains a "
                     f"value of type {type(data)}."
                 )
 
-            # Ensure that it's coherent in shape with time
-            elif data.shape[0] != self.time.shape[0]:
-                raise MalformedTimeSeriesError(
-                    "Every data of a TimeSeries must have its first dimension "
-                    "corresponding to time. At least one of the TimeSeries "
-                    f"data has a dimension problem: the data named {key} "
-                    f"has a shape of {data.shape} while the time's dimension "
-                    f"is {self.time.shape[0]}."
-                )
-
-        # Ensure that the events are a list of TimeSeriesEvent
+        # Ensure that events is a list of TimeSeriesEvent
         if not isinstance(self.events, list):
-            raise MalformedTimeSeriesError(
-                "The TimeSeries' events attribute must be a proper list. "
+            raise TimeSeriesTypeError(
+                "The TimeSeries' events attribute must be a list. "
                 "However, this TimeSeries' events attribute is of type "
                 f"{type(self.events)}."
             )
 
-        # Ensure that all event is an instance of TimeSeriesEvent
+        # Ensure that all events are an instance of TimeSeriesEvent
         for i_event, event in enumerate(self.events):
             if not isinstance(event, TimeSeriesEvent):
-                raise MalformedTimeSeriesError(
+                raise TimeSeriesTypeError(
                     "The TimeSeries' events attribute must be a list of "
                     "TimeSeriesEvent. However, at least one element of this "
                     f"list is not: element {i_event} is "
                     f"of type {type(event)}."
                 )
 
-    def _check_not_empty_time(self) -> None:
+        # Ensure that TimeInfo is a dict
+        if not isinstance(self.time_info, dict):
+            raise TimeSeriesTypeError(
+                "The TimeSeries' time_info attribute must be a dict. "
+                "However, this TimeSeries' time_info attribute is of type "
+                f"{type(self.time_info)}."
+            )
+
+        # Ensure that DataInfo is a dict
+        if not isinstance(self.data_info, dict):
+            raise TimeSeriesTypeError(
+                "The TimeSeries' data_info attribute must be a dict. "
+                "However, this TimeSeries' data_info attribute is of type "
+                f"{type(self.data_info)}."
+            )
+
+        # Ensure that every element of DataInfo is a dict
+        for key in self.data_info:
+            if not isinstance(self.data_info[key], dict):
+                raise TimeSeriesTypeError(
+                    "Each element of a TimeSeries' data_info attribute must "
+                    f"be a dict. However, the element '{key}' of this "
+                    "TimeSeries' data_info attribute is of type "
+                    f"{type(self.data_info[key])}."
+                )
+
+    def _check_well_shaped(self) -> None:
         """
-        Check that the TimeSeries's time vector is not empty.
+        Check that the TimeSeries' time and data shapes concord.
 
         Raises
         ------
-        EmptyTimeSeriesError:
+        TimeSeriesShapeError
+            If the TimeSeries' time and data do not concord in shape.
+
+        """
+        self._check_well_typed()
+        if len(self.time.shape) != 1:
+            raise TimeSeriesTypeError(
+                "A TimeSeries' time attribute must be a numpy array of "
+                "dimension 1. However, the current time shape is "
+                f"{self.time.shape}, which is a dimension of "
+                f"{len(self.time.shape)}."
+            )
+
+        for key in self.data:
+            data = self.data[key]
+            # Ensure that it's coherent in shape with time
+            if data.shape[0] != self.time.shape[0]:
+                raise TimeSeriesShapeError(
+                    "Every data of a TimeSeries must have its first "
+                    "dimension corresponding to time. At least one of the "
+                    "TimeSeries data has a dimension problem: the data "
+                    f"named '{key}' has a shape of {data.shape} while the "
+                    f"time's shape is {self.time.shape}."
+                )
+
+    def _check_not_empty_time(self) -> None:
+        """
+        Check that the TimeSeries' time vector is not empty.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError
             If the TimeSeries as no time
 
         """
-        try:
-            if self.time.shape[0] == 0:
-                raise TimeSeriesEmptyTimeError(
-                    "The TimeSeries is empty: the length of its time "
-                    "attribute is 0."
-                )
+        self._check_well_typed()
+        if self.time.shape[0] == 0:
+            raise TimeSeriesEmptyTimeError(
+                "The TimeSeries is empty: the length of its time "
+                "attribute is 0."
+            )
 
-        except Exception as e:
-            self._check_well_formed()
-            raise e
+    def _check_increasing_time(self) -> None:
+        """
+        Check that the TimeSeries' time vector is always increasing.
+
+        Raises
+        ------
+        TimeSeriesNonIncreasingTimeError
+            If the TimeSeries' time is not always increasing.
+
+        """
+        if not np.array_equal(self.time, np.sort(self.time)):
+            raise TimeSeriesNonIncreasingTimeError(
+                "The TimeSeries' time attribute is not always increasing, "
+                "which is required for the requested function. You can "
+                "resample the TimeSeries on an always increasing time vector "
+                "using ts = ts.resample(np.sort(ts.time))."
+            )
 
     def _check_not_empty_data(self) -> None:
         """
-        Check that the TimeSeries's time vector is not empty.
+        Check that the TimeSeries's data dict is not empty.
 
         Raises
         ------
-        EmptyTimeSeriesError:
+        TimeSeriesEmptyDataError:
             If the TimeSeries as no time
 
         """
-        try:
-            if len(self.data) == 0:
-                raise TimeSeriesEmptyDataError(
-                    "The TimeSeries is empty: it does not contain any data."
-                )
+        self._check_well_typed()
+        if len(self.data) == 0:
+            raise TimeSeriesEmptyDataError(
+                "The TimeSeries is empty: it does not contain any data."
+            )
 
-        except Exception as e:
-            self._check_well_formed()
-            raise e
+    def _raise_data_key_error(self, data_key) -> None:
+        raise KeyError(
+            f"The key '{data_key}' was not found among the "
+            f"{len(self.data)} key(s) of the TimeSeries' "
+            "data_info attribute."
+        )
 
-    def to_dataframe(self) -> pd.DataFrame:
+    def _raise_data_info_key_error(self, data_key, info_key) -> None:
+        raise KeyError(
+            f"The key '{info_key}' was not found among the "
+            f"{len(self.data_info[data_key])} key(s) of the TimeSeries' "
+            f"data_info[{data_key}] attribute."
+        )
+
+    def _raise_span_error_above(self, time) -> None:
+        raise TimeSeriesSpanError(
+            f"The requested time of {time} is above the TimeSeries' "
+            f"maximal time of {np.max(self.time)}."
+        )
+
+    def _raise_span_error_below(self, time) -> None:
+        raise TimeSeriesSpanError(
+            f"The requested time of {time} is below the TimeSeries' "
+            f"minimal time of {np.min(self.time)}."
+        )
+
+    def _raise_span_error_above_equal(self, time) -> None:
+        raise TimeSeriesSpanError(
+            f"The requested time of {time} is above or equal to the "
+            f"TimeSeries' maximal time of {np.max(self.time)}."
+        )
+
+    def _raise_span_error_below_equal(self, time) -> None:
+        raise TimeSeriesSpanError(
+            f"The requested time of {time} is below or equal to the "
+            f"TimeSeries' minimal time of {np.min(self.time)}."
+        )
+
+    def copy(
+        self,
+        *,
+        copy_time=True,
+        copy_data=True,
+        copy_time_info=True,
+        copy_data_info=True,
+        copy_events=True,
+    ) -> TimeSeries:
         """
-        Create a DataFrame by reshaping all data to one bidimensional table.
-
-        Undimensional data is converted to a single column, and two-dimensional
-        (or more) data are converted to multiple columns with the additional
-        dimensions in brackets. The TimeSeries's events and metadata such as
-        `time_info` and `data_info` are not included in the resulting
-        DataFrame.
-
-        Returns
-        -------
-        pd.DataFrame
-            DataFrame with the index as the TimeSeries' time.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
-            If the TimeSeries is empty.
-
-        See also
-        --------
-        ktk.TimeSeries.from_dataframe
-
-        Examples
-        --------
-        Example with unidimensional data:
-
-        >>> ts = ktk.TimeSeries(time=np.arange(3) / 10)
-        >>> ts.data['Data'] = np.array([0.0, 2.0, 3.0])
-        >>> ts.to_dataframe()
-             Data
-        0.0   0.0
-        0.1   2.0
-        0.2   3.0
-
-        Example with multidimensional data:
-
-        >>> ts = ktk.TimeSeries(time=np.arange(4) / 10)
-        >>> ts.data['Data'] = np.repeat([[0.0, 2.0, 3.0]], 4, axis=0)
-        >>> ts.data['Data']
-        array([[0., 2., 3.],
-               [0., 2., 3.],
-               [0., 2., 3.],
-               [0., 2., 3.]])
-
-        >>> ts.to_dataframe()
-              Data[0]  Data[1]  Data[2]
-         0.0      0.0      2.0      3.0
-         0.1      0.0      2.0      3.0
-         0.2      0.0      2.0      3.0
-         0.3      0.0      2.0      3.0
-
-        """
-        try:
-            df = dict_of_arrays_to_dataframe(self.data)
-            df.index = self.time
-            return df
-        except Exception as e:
-            self._check_not_empty_time()
-            self._check_not_empty_data()
-            raise e
-
-    def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
-        """
-        Create a new TimeSeries from a Pandas Dataframe.
-
-        Data in column which names end with bracketed indices such as
-        [0], [1], [0,0], [0,1], etc. are converted to multidimensional
-        arrays. For example, if a DataFrame has these column names::
-
-            'Forces[0]', 'Forces[1]', 'Forces[2]', 'Forces[3]'
-
-        then a single data key is created ('Forces') and the shape of the
-        data is Nx4.
+        Deep copy of a TimeSeries.
 
         Parameters
         ----------
-        dataframe
-            A Pandas DataFrame where the index corresponds to time, and
-            where each column corresponds to a data key.
+        copy_data
+            Optional. True to copy data to the new TimeSeries,
+            False to keep the data attribute empty. Default is True.
+        copy_time_info
+            Optional. True to copy time_info to the new TimeSeries,
+            False to keep the time_info attribute empty. Default is True.
+        copy_data_info
+            Optional. True to copy data_into to the new TimeSeries,
+            False to keep the data_info attribute empty. Default is True.
+        copy_events
+            Optional. True to copy events to the new TimeSeries,
+            False to keep the events attribute empty. Default is True.
 
         Returns
         -------
         TimeSeries
-            The converted TimeSeries.
-
-        See also
-        --------
-        ktk.TimeSeries.to_dataframe
-
-        Examples
-        --------
-        Example with unidimensional data:
-
-        >>> import pandas as pd
-        >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
-        >>> df.columns = ['data1', 'data2']
-        >>> df
-           data1  data2
-        0    1.0    2.0
-        1    3.0    4.0
-        2    5.0    6.0
-
-        >>> ts = ktk.TimeSeries.from_dataframe(df)
-        >>> ts.data
-        {'data1': array([1., 3., 5.]), 'data2': array([2., 4., 6.])}
-
-        Example with multidimensional data:
-
-        >>> df.columns = ['data[0]', 'data[1]']
-        >>> df
-           data[0]  data[1]
-        0      1.0      2.0
-        1      3.0      4.0
-        2      5.0      6.0
-
-        >>> ts = ktk.TimeSeries.from_dataframe(df)
-        >>> ts.data
-        {'data': array([[1., 2.], [3., 4.], [5., 6.]])}
+            A deep copy of the TimeSeries.
 
         """
-        ts = TimeSeries()
-        ts.data = dataframe_to_dict_of_arrays(dataframe)
-        ts.time = dataframe.index.to_numpy()
-        return ts
+        if copy_data and copy_time_info and copy_data_info and copy_events:
+            # General case
+            return deepcopy(self)
+        else:
+            # Specific cases
+            ts = ktk.TimeSeries()
+            if copy_time:
+                ts.time = deepcopy(self.time)
+            if copy_data:
+                ts.data = deepcopy(self.data)
+            if copy_time_info:
+                ts.time_info = deepcopy(self.time_info)
+            if copy_data_info:
+                ts.data_info = deepcopy(self.data_info)
+            if copy_events:
+                ts.events = deepcopy(self.events)
+            return ts
 
     def add_data_info(
         self,
@@ -890,11 +919,15 @@ class TimeSeries:
         {'Color': [43, 2, 255]}
 
         """
-        ts = self if in_place else self.copy()
         try:
-            ts.data_info[data_key][info_key] = value
-        except KeyError:
-            ts.data_info[data_key] = {info_key: value}
+            ts = self if in_place else self.copy()
+            try:
+                ts.data_info[data_key][info_key] = value
+            except KeyError:
+                ts.data_info[data_key] = {info_key: value}
+        except Exception as e:
+            self._check_well_typed()
+            raise e
         return ts
 
     def remove_data_info(
@@ -919,10 +952,6 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the removed data info.
 
-        Caution
-        -------
-        No warning or exception is raised if the data key does not exist.
-
         See also
         --------
         ktk.TimeSeries.add_data_info
@@ -939,11 +968,19 @@ class TimeSeries:
         {}
 
         """
-        ts = self if in_place else self.copy()
         try:
-            ts.data_info[data_key].pop(info_key)
-        except KeyError:
-            pass
+            ts = self if in_place else self.copy()
+            try:
+                data_info = ts.data_info[data_key]
+                try:
+                    data_info.pop(info_key)
+                except KeyError:
+                    self._raise_data_info_key_error(data_key, info_key)
+            except KeyError:
+                self._raise_data_key_error(data_key)
+        except Exception as e:
+            self._check_well_typed()
+            raise e
         return ts
 
     def rename_data(
@@ -972,10 +1009,6 @@ class TimeSeries:
         --------
         ktk.TimeSeries.remove_data
 
-        Caution
-        -------
-        No warning or exception is raised if the data key does not exist.
-
         Example
         -------
         >>> ts = ktk.TimeSeries()
@@ -997,16 +1030,22 @@ class TimeSeries:
         {'signal': {'Unit': 'm'}}
 
         """
-        ts = self if in_place else self.copy()
         try:
-            ts.data[new_data_key] = ts.data.pop(old_data_key)
-        except KeyError:
-            pass
-        try:
-            ts.data_info[new_data_key] = ts.data_info.pop(old_data_key)
-        except KeyError:
-            pass
-        return ts
+            ts = self if in_place else self.copy()
+            try:
+                ts.data[new_data_key] = ts.data.pop(old_data_key)
+            except KeyError:
+                self._raise_data_key_error(old_data_key)
+
+            try:
+                ts.data_info[new_data_key] = ts.data_info.pop(old_data_key)
+            except KeyError:
+                pass  # It's okay if there was no data info for this data_key
+            return ts
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
     def remove_data(
         self, data_key: str, *, in_place: bool = False
@@ -1027,10 +1066,6 @@ class TimeSeries:
         -------
         TimeSeries
             The TimeSeries with the removed data.
-
-        Caution
-        -------
-        No warning or exception is raised if the data key does not exist.
 
         See also
         --------
@@ -1059,16 +1094,168 @@ class TimeSeries:
         {}
 
         """
-        ts = self if in_place else self.copy()
         try:
-            ts.data.pop(data_key)
-        except KeyError:
-            pass
+            ts = self if in_place else self.copy()
+            try:
+                ts.data.pop(data_key)
+            except KeyError:
+                self._raise_data_key_error(data_key)
+            try:
+                ts.data_info.pop(data_key)
+            except KeyError:
+                pass  # It's okay if there was no data info for this data_key
+            return ts
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
+
+    def get_event_indexes(self, name) -> List[int]:
+        """
+        Get a list of index of all occurrences of an event.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+
+        Returns
+        -------
+        List[int]
+            The occurrences of this event.
+
+        """
         try:
-            ts.data_info.pop(data_key)
-        except KeyError:
-            pass
-        return ts
+            # List all events with correct name
+            event_times = []
+            event_indexes = []
+            for i_event, event in enumerate(self.events):
+                if event.name == name:
+                    event_times.append(event.time)
+                    event_indexes.append(i_event)
+
+            # Sort the indexes by time
+            sorted_indexes = np.argsort(event_times)
+            event_indexes = [event_indexes[i] for i in sorted_indexes]
+            return event_indexes
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
+
+    def get_event_index(self, name: str, occurrence: int = 0) -> int:
+        """
+        Get the events index of a given occurrence of an event name.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+        occurrence
+            i_th occurence of the event to look for in the events
+            list, starting at 0, where the occurrences are sorted in time.
+
+        Returns
+        -------
+        int
+            The index of the event or np.nan if no event found. If no
+            occurrence of this event could be found, a
+            TimeSeriesEventNotFoundError is raised.
+
+        Examples
+        --------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(1.0, 'cycle_start')
+        >>> ts = ts.add_event(1.5, 'cycle_start')
+        >>> ts = ts.add_event(2.0, 'cycle_start')
+
+        >>> ts.get_event_index('cycle_start')
+        0
+
+        >>> ts.get_event_index('cycle_start', 0)
+        0
+
+        >>> ts.get_event_index('cycle_start', 1)
+        1
+
+        >>> ts.get_event_index('cycle_start', 3)
+        ...
+        Traceback (most recent call last):
+        kineticstoolkit.exceptions.TimeSeriesEventNotFoundError: The
+        occurrence 3 of event 'cycle_start' could not be found in the
+        TimeSeries. A total of 3 occurrence(s) of this event name was found.
+        """
+        try:
+            occurrence = int(occurrence)
+
+            if occurrence < 0:
+                raise ValueError("occurrence must be positive")
+
+            # Get the event occurrence
+            try:
+                return self.get_event_indexes(name)[occurrence]
+            except IndexError:
+                raise TimeSeriesEventNotFoundError(
+                    f"The occurrence {occurrence} of event '{name}' could not "
+                    "be found in the TimeSeries. A total of "
+                    f"{len(self.get_event_indexes(name))} occurrence(s) of "
+                    "this event name was found."
+                )
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
+
+    def get_event_time(self, name: str, occurrence: int = 0) -> float:
+        """
+        Get the time of the specified event.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+        occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0.
+
+        Returns
+        -------
+        float
+            The time of the specified event. If no corresponding event is
+            found, then np.nan is returned.
+
+        Example
+        -------
+        >>> # Instanciate a timeseries with some events
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, 'event1')
+        >>> ts = ts.add_event(10.8, 'event2')
+        >>> ts = ts.add_event(2.3, 'event2')
+
+        >>> ts.get_event_time('event1')
+        5.5
+
+        >>> ts.get_event_time('event2', 0)
+        2.3
+
+        >>> ts.get_event_time('event2', 1)
+        10.8
+
+        >>> ts.get_event_time('event2', 2)
+        ...
+        Traceback (most recent call last):
+        kineticstoolkit.exceptions.TimeSeriesEventNotFoundError: The
+        occurrence 2 of event 'event2' could not be found in the
+        TimeSeries. A total of 2 occurrence(s) of this event name was found.
+
+        """
+        try:
+            event_index = self.get_event_index(name, occurrence)
+            return self.events[event_index].time
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
     def add_event(
         self,
@@ -1122,26 +1309,31 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        if isinstance(name, str) is False:
-            raise ValueError("name must be a string.")
+        try:
+            if isinstance(name, str) is False:
+                raise ValueError("name must be a string.")
 
-        # Check that time is any number of nan
-        if ~np.isnan(time):
-            try:
-                int(time)
-            except ValueError:
-                raise ValueError("time must be a number.")
+            # Check that time is any number or nan
+            if ~np.isnan(time):
+                try:
+                    int(time)
+                except ValueError:
+                    raise ValueError("time must be a number.")
 
-        ts = self if in_place else self.copy()
+            ts = self if in_place else self.copy()
 
-        if unique:
-            # Ensure that no event of that name and time already exists
-            for event in ts.events:
-                if np.isclose(time, event.time) and (name == event.name):
-                    return ts
+            if unique:
+                # Ensure that no event of that name and time already exists
+                for event in ts.events:
+                    if np.isclose(time, event.time) and (name == event.name):
+                        return ts
 
-        ts.events.append(TimeSeriesEvent(time, name))
-        return ts
+            ts.events.append(TimeSeriesEvent(time, name))
+            return ts
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
     def rename_event(
         self,
@@ -1174,10 +1366,6 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the renamed event.
 
-        Caution
-        -------
-        No warning or exception is raised if the event does not exist.
-
         See also
         --------
         ktk.TimeSeries.add_event
@@ -1204,35 +1392,34 @@ class TimeSeries:
          TimeSeriesEvent(time=10.8, name='event3'),
          TimeSeriesEvent(time=2.3, name='event3')]
 
-        >>> ts = ts.rename_event('event3', 'event4', 0)
+        >>> ts = ts.rename_event('event3', 'event4', occurrence=0)
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event3'),
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
-        ts = self if in_place else self.copy()
+        try:
+            ts = self if in_place else self.copy()
 
-        if old_name == new_name:
-            return ts  # Nothing to do.
-
-        if occurrence is None:
-            # Rename every occurrence of this event
-            index = ts.get_event_index(old_name, 0)
-            while ~np.isnan(index):
-                ts.events[index].name = new_name  # type: ignore
-                index = ts.get_event_index(old_name, 0)
-
-        else:
-            index = ts.get_event_index(old_name, occurrence)
-            if ~np.isnan(index):
-                ts.events[int(index)].name = new_name  # type: ignore
-            else:
-                warnings.warn(
-                    f"The occurrence {occurrence} of event "
-                    f"{old_name} could not be found."
+            if old_name == new_name:
+                raise ValueError(
+                    f"New event name '{new_name}' must be different from old "
+                    "name."
                 )
-        return ts
+
+            if occurrence is None:
+                # Rename every occurrence of this event
+                for index in self.get_event_indexes(old_name):
+                    ts.events[index].name = new_name
+            else:
+                index = ts.get_event_index(old_name, occurrence)
+                ts.events[index].name = new_name
+            return ts
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
     def remove_event(
         self,
@@ -1261,10 +1448,6 @@ class TimeSeries:
         -------
         TimeSeries
             The TimeSeries with the removed event.
-
-        Caution
-        -------
-        No warning or exception is raised if the event does not exist.
 
         See also
         --------
@@ -1296,228 +1479,32 @@ class TimeSeries:
         >>> ts.events
         [TimeSeriesEvent(time=2.3, name='event2')]
 
+        >>> ts = ts.remove_event('event2', 1)
+        Traceback (most recent call last):
+        kineticstoolkit.exceptions.TimeSeriesEventNotFoundError: The
+        occurrence 1 of event 'event2' could not be found in the
+        TimeSeries. A total of 1 occurrence(s) of this event name was found.
+
         """
         ts = self if in_place else self.copy()
 
         if occurrence is None:  # Remove all occurrences
             event_index = ts.get_event_index(name, 0)
-            while ~np.isnan(event_index):
-                ts.events.pop(event_index)  # type: ignore
-                event_index = ts.get_event_index(name, 0)
+            try:
+                # Continually remove the first event of this name, until
+                # there are no more.
+                count = 0
+                while True:
+                    ts.remove_event(name, occurrence=0, in_place=True)
+                    count += 1
+            except TimeSeriesEventNotFoundError as e:
+                if count == 0:  # No event of that name was even found.
+                    raise e
 
         else:  # Remove only the specified occurrence
             event_index = ts.get_event_index(name, occurrence)
-            if ~np.isnan(event_index):
-                ts.events.pop(event_index)  # type: ignore
-            else:
-                warnings.warn(
-                    f"The occurrence {occurrence} of event "
-                    f"{name} could not be found."
-                )
+            ts.events.pop(event_index)
         return ts
-
-    def ui_edit_events(
-        self,
-        name: Union[str, List[str]] = [],
-        data_keys: Union[str, List[str]] = [],
-    ) -> TimeSeries:  # pragma: no cover
-        """
-        Edit events interactively.
-
-        Parameters
-        ----------
-        name
-            Optional. The name of the event(s) to add. May be a string
-            or a list of strings. These events appear on their own buttons
-            "add `name`". Event names can also be defined interactively.
-        data_keys
-            Optional. A signal name of list of signal name to be plotted,
-            similar to the data_keys argument of ktk.TimeSeries.plot.
-
-        Returns
-        -------
-        TimeSeries
-            The original TimeSeries with the modified events. If
-            the operation was cancelled by the user, this is a pure copy of
-            the original TimeSeries.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
-            If the TimeSeries is empty.
-
-        Warning
-        -------
-        This function, which has been introduced in 0.6, is still experimental
-        and may change signature or behaviour in the future.
-
-        See also
-        --------
-        ktk.TimeSeries.add_event
-        ktk.TimeSeries.rename_event
-        ktk.TimeSeries.remove_event
-        ktk.TimeSeries.sort_events
-        ktk.TimeSeries.trim_events
-
-        Note
-        ----
-        Matplotlib must be in interactive mode for this function to work.
-
-        """
-        self._check_not_empty_time()
-        self._check_not_empty_data()
-
-        def add_this_event(ts: TimeSeries, name: str) -> TimeSeries:
-            kineticstoolkit.gui.message(
-                "Place the event on the figure.", **WINDOW_PLACEMENT
-            )
-            this_time = plt.ginput(1)[0][0]
-            ts = ts.add_event(this_time, name)
-            kineticstoolkit.gui.message("")
-            return ts
-
-        def get_event_index(ts: TimeSeries) -> int:
-            kineticstoolkit.gui.message(
-                "Select an event on the figure.", **WINDOW_PLACEMENT
-            )
-            this_time = plt.ginput(1)[0][0]
-            event_times = np.array([event.time for event in ts.events])
-            kineticstoolkit.gui.message("")
-            return int(np.argmin(np.abs(event_times - this_time)))
-
-        # Set Matplotlib interactive mode
-        isinteractive = plt.isinteractive()
-        plt.ion()
-
-        ts = self.copy()
-
-        if isinstance(name, str):
-            event_names = [name]
-        else:
-            event_names = deepcopy(name)
-
-        fig = plt.figure()
-        ts.plot(data_keys, _raise_on_no_data=True)
-
-        while True:
-            # Populate the choices to the user
-            choices = [f"Add '{s}'" for s in event_names]
-
-            choice_index = {}
-            choice_index["add"] = len(choices)
-            if len(event_names) == 0:
-                choices.append("Add event")
-            else:
-                choices.append("Add event with another name")
-
-            if len(ts.events) > 0:
-                choice_index["remove"] = len(choices)
-                choices.append("Remove event")
-
-            if len(ts.events) > 0:
-                choice_index["remove_all"] = len(choices)
-                choices.append("Remove all events")
-
-                choice_index["move"] = len(choices)
-                choices.append("Move event")
-
-            choice_index["close"] = len(choices)
-            choices.append("Save and close")
-
-            choice_index["cancel"] = len(choices)
-            choices.append("Cancel")
-
-            # Show the button dialog
-            choice = kineticstoolkit.gui.button_dialog(
-                "Move and zoom on the figure,\n"
-                "then select an option below.",
-                choices,
-                **WINDOW_PLACEMENT,
-            )
-
-            # Execute
-            if choice < choice_index["add"]:
-                ts = add_this_event(ts, event_names[choice])
-
-            elif choice == choice_index["add"]:
-                event_names.append(
-                    li.input_dialog(
-                        "Please enter the event name:", **WINDOW_PLACEMENT
-                    )
-                )
-                # Add this event name to the list of recently added events
-                if len(event_names) > 5:
-                    event_names = event_names[-5:]
-
-                # Add the event
-                ts = add_this_event(ts, event_names[-1])
-
-            elif ("remove" in choice_index) and (
-                choice == choice_index["remove"]
-            ):
-                event_index = get_event_index(ts)
-                try:
-                    ts.events.pop(event_index)
-                except IndexError:
-                    li.button_dialog(
-                        "No event was removed.",
-                        choices=["OK"],
-                        icon="error",
-                        **WINDOW_PLACEMENT,
-                    )
-
-            elif ("remove_all" in choice_index) and (
-                choice == choice_index["remove_all"]
-            ):
-                if (
-                    li.button_dialog(
-                        "Do you really want to remove all events from this "
-                        "TimeSeries?",
-                        ["Yes, remove all events", "No"],
-                        icon="alert",
-                        **WINDOW_PLACEMENT,
-                    )
-                    == 0
-                ):
-                    ts.events = []
-
-            elif ("move" in choice_index) and (choice == choice_index["move"]):
-                event_index = get_event_index(ts)
-                event_name = ts.events[event_index].name
-                try:
-                    ts.events.pop(event_index)
-                    ts = add_this_event(ts, event_name)
-                except IndexError:
-                    li.button_dialog(
-                        "Could not move this event.",
-                        choices=["OK"],
-                        icon="error",
-                        **WINDOW_PLACEMENT,
-                    )
-
-            elif ("close" in choice_index) and (
-                choice == choice_index["close"]
-            ):
-                plt.close(fig)
-                if not isinteractive:
-                    plt.ioff()
-                return ts
-
-            elif (choice == -1) or (
-                ("cancel" in choice_index)
-                and (choice == choice_index["cancel"])
-            ):
-                plt.close(fig)
-                if not isinteractive:
-                    plt.ioff()
-                return self.copy()
-
-            # Refresh
-            ts.sort_events(unique=False, in_place=True)
-            axes = plt.axis()
-            plt.cla()
-            ts.plot(data_keys, _raise_on_no_data=True)
-            plt.axis(axes)
 
     def _get_duplicate_event_indexes(self) -> List[int]:
         """
@@ -1548,30 +1535,37 @@ class TimeSeries:
         >>> ts = ts.add_event(2.0, "event3")
 
         """
-        # Sort all events in a dict with key being Tuple(time, name)
-        sorted_events = {}  # type: Dict[Tuple[float, str], List[int]]
-        for i_event, event in enumerate(self.events):
-            tup_event = event._to_tuple()
+        try:
+            # Sort all events in a dict with key being Tuple(time, name)
+            sorted_events = {}  # type: Dict[Tuple[float, str], List[int]]
+            for i_event, event in enumerate(self.events):
+                tup_event = event._to_tuple()
 
-            # Check if this event already exist in the list.
-            # If it does, add it to the list.
-            found = False
+                # Check if this event already exist in the list.
+                # If it does, add it to the list.
+                found = False
+                for key in sorted_events:
+                    if np.isclose(key[0], event.time) and (
+                        key[1] == event.name
+                    ):
+                        sorted_events[key].append(i_event)
+                        found = True
+                        break
+                if not found:
+                    # Otherwise, create it in the list
+                    sorted_events[tup_event] = [i_event]
+
+            # Convert this dict to the desired list of lists
+            out = []
             for key in sorted_events:
-                if np.isclose(key[0], event.time) and (key[1] == event.name):
-                    sorted_events[key].append(i_event)
-                    found = True
-                    break
-            if not found:
-                # Otherwise, create it in the list
-                sorted_events[tup_event] = [i_event]
+                if len(sorted_events[key]) > 1:
+                    out.extend(sorted_events[key][1:])
 
-        # Convert this dict to the desired list of lists
-        out = []
-        for key in sorted_events:
-            if len(sorted_events[key]) > 1:
-                out.extend(sorted_events[key][1:])
+            return sorted(out)
 
-        return sorted(out)
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
     def remove_duplicate_events(self, *, in_place: bool = False) -> TimeSeries:
         """
@@ -1623,11 +1617,15 @@ class TimeSeries:
          TimeSeriesEvent(time=2.0, name='event3')]
 
         """
-        ts = self if in_place else self.copy()
-        duplicates = ts._get_duplicate_event_indexes()
-        for event_index in duplicates[-1::-1]:
-            ts.events.pop(event_index)
-        return ts
+        try:
+            ts = self if in_place else self.copy()
+            duplicates = ts._get_duplicate_event_indexes()
+            for event_index in duplicates[-1::-1]:
+                ts.events.pop(event_index)
+            return ts
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
     def sort_events(
         self, *, unique: bool = False, in_place: bool = False
@@ -1686,264 +1684,76 @@ class TimeSeries:
          TimeSeriesEvent(time=3, name='three')]
 
         """
-        ts = self if in_place else self.copy()
-        if unique:
-            ts.remove_duplicate_events(in_place=True)
-        ts.events = sorted(ts.events)
-        return ts
+        try:
+            ts = self if in_place else self.copy()
+            if unique:
+                ts.remove_duplicate_events(in_place=True)
+            ts.events = sorted(ts.events)
+            return ts
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
-    def copy(
-        self,
-        *,
-        copy_time=True,
-        copy_data=True,
-        copy_time_info=True,
-        copy_data_info=True,
-        copy_events=True,
-    ) -> TimeSeries:
+    def trim_events(self, *, in_place: bool = False) -> TimeSeries:
         """
-        Deep copy of a TimeSeries.
+        Delete the events that are outside the TimeSeries' time vector.
 
         Parameters
         ----------
-        copy_data
-            Optional. True to copy data to the new TimeSeries,
-            False to keep the data attribute empty. Default is True.
-        copy_time_info
-            Optional. True to copy time_info to the new TimeSeries,
-            False to keep the time_info attribute empty. Default is True.
-        copy_data_info
-            Optional. True to copy data_into to the new TimeSeries,
-            False to keep the data_info attribute empty. Default is True.
-        copy_events
-            Optional. True to copy events to the new TimeSeries,
-            False to keep the events attribute empty. Default is True.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact.
 
         Returns
         -------
         TimeSeries
-            A deep copy of the TimeSeries.
-
-        """
-        if copy_data and copy_time_info and copy_data_info and copy_events:
-            # General case
-            return deepcopy(self)
-        else:
-            # Specific cases
-            ts = ktk.TimeSeries()
-            if copy_time:
-                ts.time = deepcopy(self.time)
-            if copy_data:
-                ts.data = deepcopy(self.data)
-            if copy_time_info:
-                ts.time_info = deepcopy(self.time_info)
-            if copy_data_info:
-                ts.data_info = deepcopy(self.data_info)
-            if copy_events:
-                ts.events = deepcopy(self.events)
-            return ts
-
-    def plot(
-        self,
-        data_keys: Union[str, List[str]] = [],
-        *args,
-        event_names: bool = True,
-        legend: bool = True,
-        **kwargs,
-    ) -> None:
-        """
-        Plot the TimeSeries in the current matplotlib figure.
-
-        Parameters
-        ----------
-        data_keys
-            The data keys to plot. If left empty, all data is plotted.
-        event_names
-            Optional. True to plot the event names on top of the event lines.
-        legend
-            Optional. True to plot a legend, False otherwise.
-
-        Note
-        ----
-        Additional positional and keyboard arguments are passed to
-        matplotlib's ``pyplot.plot`` function::
-
-            ts.plot(['Forces'], '--')
-
-        plots the forces using a dashed line style.
-
-        Example
-        -------
-        For a TimeSeries ``ts`` with data keys being 'Forces', 'Moments' and
-        'Angle'::
-
-            ts.plot()
-
-        plots all data (Forces, Moments and Angle), whereas::
-
-            ts.plot(['Forces', 'Moments'])
-
-        plots only the forces and moments, without plotting the angle.
-
-        """
-        # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
-        # instead of warning when no data is available to plot.
-        if "_raise_on_no_data" in kwargs:
-            raise_on_no_data = kwargs.pop("_raise_on_no_data")
-        else:
-            raise_on_no_data = False
-
-        if data_keys is None or len(data_keys) == 0:
-            # Plot all
-            ts = self.copy()
-        else:
-            ts = self.get_subset(data_keys)
-
-        try:
-            self._check_not_empty_time()
-            self._check_not_empty_data()
-        except (TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError) as e:
-            if raise_on_no_data:
-                raise e
-            else:
-                warnings.warn("No data available to plot.")
-            return
-
-        # Sort events to help finding each event's occurrence
-        ts.sort_events(unique=False)
-
-        df = ts.to_dataframe()
-        labels = df.columns.to_list()
-
-        axes = plt.gca()
-        axes.set_prop_cycle(
-            mpl.cycler(linewidth=[1, 2, 3, 4])
-            * mpl.cycler(linestyle=["-", "--", "-.", ":"])
-            * plt.rcParams["axes.prop_cycle"]
-        )
-
-        # Plot the curves
-        for i_label, label in enumerate(labels):
-            axes.plot(
-                df.index.to_numpy(),
-                df[label].to_numpy(),
-                *args,
-                label=label,
-                **kwargs,
-            )
-
-        # Add labels
-        plt.xlabel("Time (" + ts.time_info["Unit"] + ")")
-
-        # Make unique list of units
-        unit_set = set()
-        for data in ts.data_info:
-            for info in ts.data_info[data]:
-                if info == "Unit":
-                    unit_set.add(ts.data_info[data][info])
-        # Plot this list
-        unit_str = ""
-        for unit in unit_set:
-            if len(unit_str) > 0:
-                unit_str += ", "
-            unit_str += unit
-
-        plt.ylabel(unit_str)
-
-        # Plot the events
-        n_events = len(ts.events)
-        event_times = []
-        for event in ts.events:
-            event_times.append(event.time)
-
-        if len(ts.events) > 0:
-            a = plt.axis()
-            min_y = a[2]
-            max_y = a[3]
-            event_line_x = np.zeros(3 * n_events)
-            event_line_y = np.zeros(3 * n_events)
-
-            for i_event in range(0, n_events):
-                event_line_x[3 * i_event] = event_times[i_event]
-                event_line_x[3 * i_event + 1] = event_times[i_event]
-                event_line_x[3 * i_event + 2] = np.nan
-
-                event_line_y[3 * i_event] = min_y
-                event_line_y[3 * i_event + 1] = max_y
-                event_line_y[3 * i_event + 2] = np.nan
-
-            plt.plot(event_line_x, event_line_y, ":k")
-
-            if event_names:
-                occurrences = {}  # type:Dict[str, int]
-
-                for event in ts.events:
-                    if event.name == "_":
-                        name = "_"
-                    elif event.name in occurrences:
-                        occurrences[event.name] += 1
-                        name = f"{event.name} {occurrences[event.name]}"
-                    else:
-                        occurrences[event.name] = 0
-                        name = f"{event.name} 0"
-
-                    plt.text(
-                        event.time,
-                        max_y,
-                        name,
-                        rotation="vertical",
-                        horizontalalignment="center",
-                        fontsize="small",
-                    )
-
-        if legend:
-            if len(labels) < 20:
-                legend_location = "best"
-            else:
-                legend_location = "upper right"
-
-            axes.legend(
-                loc=legend_location, ncol=1 + int(len(labels) / 40)
-            )  # Max 40 items per line
-
-    def get_sample_rate(self) -> float:
-        """
-        Get the sample rate in samples/s.
-
-        Returns
-        -------
-        float
-            The sample rate in samples per second. If time is empty or has only
-            one data, or if sample rate is variable, or if time is not
-            monotonously increasing, a value of np.nan is returned.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError
-            If the TimeSeries is empty.
-
-        Warning
-        -------
-        This feature, which has been introduced in version 0.9, is still
-        experimental and may change in the future. In particular, the value
-        returned if the sample rate is not constant: it is np.nan in all cases
-        for now, but it could change in the future based on discussions and
-        particular use cases.
+            The TimeSeries without the trimmed events.
 
         See also
         --------
-        ktk.TimeSeries.resample
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.ui_edit_events
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time = np.arange(10))
+        >>> ts.time
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        >>> ts = ts.add_event(-2)
+        >>> ts = ts.add_event(0)
+        >>> ts = ts.add_event(5)
+        >>> ts = ts.add_event(9)
+        >>> ts = ts.add_event(10)
+        >>> ts.events
+        [TimeSeriesEvent(time=-2, name='event'),
+         TimeSeriesEvent(time=0, name='event'),
+         TimeSeriesEvent(time=5, name='event'),
+         TimeSeriesEvent(time=9, name='event'),
+         TimeSeriesEvent(time=10, name='event')]
+
+        >>> ts = ts.trim_events()
+        >>> ts.events
+        [TimeSeriesEvent(time=0, name='event'),
+         TimeSeriesEvent(time=5, name='event'),
+         TimeSeriesEvent(time=9, name='event')]
 
         """
         try:
-            if self.time.shape[0] == 0 or self.time.shape[0] == 1:
-                return np.nan
+            ts = self if in_place else self.copy()
 
-            deltas = self.time[1:] - self.time[0:-1]
-            if np.allclose(deltas, [deltas[0]]):
-                return 1.0 / deltas.mean()
-            else:
-                return np.nan
+            events = deepcopy(ts.events)
+            ts.events = []
+            for event in events:
+                if event.time <= np.max(ts.time) and event.time >= np.min(
+                    ts.time
+                ):
+                    ts.add_event(event.time, event.name, in_place=True)
+            return ts
 
         except Exception as e:
             self._check_not_empty_time()
@@ -1960,18 +1770,18 @@ class TimeSeries:
 
         Returns
         -------
-        int or float
+        int
             The index in the time vector.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError
-            If the TimeSeries is empty.
 
         See also
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_after_time
+
+        Note
+        ----
+        A TimeSeriesSpanError exception is raised if the time is before
+        the TimeSeries' lowest time, or after the TimeSeries's highest time.
 
         Example
         -------
@@ -1986,16 +1796,27 @@ class TimeSeries:
         >>> ts.get_index_at_time(1.1)
         2
 
+        >>> ts.get_index_at_time(2.1)
+        Traceback (most recent call last):
+        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
+        2.1 is above the TimeSeries' maximal time of 2.0.
+
         """
         try:
+            if time > np.max(self.time):
+                self._raise_span_error_above(time)
+            elif time < np.min(self.time):
+                self._raise_span_error_below(time)
+
             return int(np.argmin(np.abs(self.time - float(time))))
+
         except Exception as e:
             self._check_not_empty_time()
             raise e
 
     def get_index_before_time(
         self, time: float, *, inclusive: bool = False
-    ) -> Union[int, float]:
+    ) -> int:
         """
         Get the time index that is just before the specified time.
 
@@ -2008,18 +1829,18 @@ class TimeSeries:
 
         Returns
         -------
-        int or float
-            The index in the time vector, or nan if the time vector is empty.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError
-            If the TimeSeries is empty.
+        int
+            The index in the time vector.
 
         See also
         --------
         ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_after_time
+
+        Note
+        ----
+        A TimeSeriesSpanError exception is raised if the time is before
+        the TimeSeries' lowest time.
 
         Example
         -------
@@ -2038,34 +1859,42 @@ class TimeSeries:
         3
 
         >>> ts.get_index_before_time(0)
-        nan
+        Traceback (most recent call last):        
+        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
+        0 is below or equal to the TimeSeries' minimal time of 0.0.
 
         >>> ts.get_index_before_time(0, inclusive=True)
         0
 
         """
-
         try:
-            # Edge case
-            if inclusive and time == self.time[0]:
-                return 0
 
-            # Other cases
-            diff = float(time) - self.time
-            diff[diff <= 0] = np.nan
+            self._check_increasing_time()
 
-            if np.all(np.isnan(diff)):  # All nans
-                return np.nan
+            # Start higher, then decrease until the condition matches
+            index = min(
+                len(self.time) - 1, self.get_index_at_time(time) + 1
+            )
+            if inclusive:
+                while True:
+                    if index < 0:
+                        self._raise_span_error_below(time)
+                    if self.time[index] <= time:
+                        break
+                    index -= 1
+                # Ensure to include the transition sample
+                if self.time[index] < time:
+                    index += 1
 
-            index = np.nanargmin(diff)
-
-            if inclusive and self.time[index] < time:
-                index += 1
-
-            if index < self.time.shape[0]:
-                return int(index)
             else:
-                return np.nan
+                while True:
+                    if index < 0:
+                        self._raise_span_error_below_equal(time)
+                    if self.time[index] < time:
+                        break
+                    index -= 1
+
+            return index
 
         except Exception as e:
             self._check_not_empty_time()
@@ -2073,7 +1902,7 @@ class TimeSeries:
 
     def get_index_after_time(
         self, time: float, *, inclusive: bool = False
-    ) -> Union[int, float]:
+    ) -> int:
         """
         Get the time index that is just after the specified time.
 
@@ -2086,13 +1915,18 @@ class TimeSeries:
 
         Returns
         -------
-        int or float
-            The index in the time vector, or nan if the time vector is empty.
+        int
+            The index in the time vector.
 
         See also
         --------
         ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_before_time
+
+        Note
+        ----
+        A TimeSeriesSpanError exception is raised if the time is after
+        the TimeSeries' highest time.
 
         Example
         -------
@@ -2111,232 +1945,41 @@ class TimeSeries:
         2
 
         >>> ts.get_index_after_time(2)
-        nan
+        Traceback (most recent call last):
+        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
+        2 is above or equal to the TimeSeries' maximal time of 2.0.
 
         >>> ts.get_index_after_time(2, inclusive=True)
         4
 
         """
         try:
-            # Edge case
-            if inclusive and time == self.time[-1]:
-                return self.time.shape[0] - 1
 
-            # Other cases
-            diff = self.time - float(time)
-            diff[diff <= 0] = np.nan
+            self._check_increasing_time()
 
-            if np.all(np.isnan(diff)):  # All nans
-                return np.nan
+            # Start lower, then increase until the condition matches
+            index = max(0, self.get_index_at_time(time) - 1)
+            if inclusive:
+                while True:
+                    if index >= len(self.time):
+                        self._raise_span_error_above(time)
+                    if self.time[index] >= time:
+                        break
+                    index += 1
+                # Ensure to include the transition sample
+                if self.time[index] > time:
+                    index -= 1
 
-            index = np.nanargmin(diff)
-
-            if inclusive and self.time[index] > time:
-                index -= 1
-
-            if index >= 0:
-                return int(index)
             else:
-                return np.nan
+                while True:
+                    if index >= len(self.time):
+                        self._raise_span_error_above_equal(time)
+                    if self.time[index] > time:
+                        break
+                    index += 1
 
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
+            return index
 
-    def get_event_index(
-        self, name: str, occurrence: int = 0
-    ) -> Union[int, float]:
-        """
-        Get the index of a given occurrence of an event name.
-
-        Parameters
-        ----------
-        name
-            Name of the event to look for in the events list.
-        occurrence
-            i_th occurence of the event to look for in the events
-            list, starting at 0, where the occurrences are sorted in time.
-
-        Returns
-        -------
-        int or np.nan
-            The index of the event or np.nan if no event found.
-
-        Examples
-        --------
-        >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(1.0, 'cycle_start')
-        >>> ts = ts.add_event(1.5, 'cycle_start')
-        >>> ts = ts.add_event(2.0, 'cycle_start')
-
-        >>> ts.get_event_index('cycle_start')
-        0
-
-        >>> ts.get_event_index('cycle_start', 0)
-        0
-
-        >>> ts.get_event_index('cycle_start', 1)
-        1
-
-        >>> ts.get_event_index('cycle_start', 3)
-        nan
-        """
-        try:
-            occurrence = int(occurrence)
-
-            if occurrence < 0:
-                raise ValueError("occurrence must be positive")
-
-            # Make a list of event times, with NaNs for events whose name doesn't
-            # match what we're looking for.
-            event_times = [
-                event.time if event.name == name else np.nan
-                for event in self.events
-            ]
-
-            # Sort in time
-            event_indexes = np.argsort(event_times)
-
-            # Remove indexes that correspond to nan time (wrong events)
-            clean_event_indexes = [
-                index if ~np.isnan(event_times[index]) else np.nan
-                for index in event_indexes
-            ]
-
-            # Get the event occurrence
-            try:
-                return clean_event_indexes[occurrence]
-            except IndexError:
-                return np.nan
-
-        except Exception as e:
-            self._check_well_formed()
-            raise e
-
-    def get_event_time(self, name: str, occurrence: int = 0) -> float:
-        """
-        Get the time of the specified event.
-
-        Parameters
-        ----------
-        name
-            Name of the event to look for in the events list.
-        occurrence
-            Optional. i_th occurence of the event to look for in the events
-            list, starting at 0.
-
-        Returns
-        -------
-        float
-            The time of the specified event. If no corresponding event is
-            found, then np.nan is returned.
-
-        Example
-        -------
-        >>> # Instanciate a timeseries with some events
-        >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(5.5, 'event1')
-        >>> ts = ts.add_event(10.8, 'event2')
-        >>> ts = ts.add_event(2.3, 'event2')
-
-        >>> ts.get_event_time('event1')
-        5.5
-
-        >>> ts.get_event_time('event2', 0)
-        2.3
-
-        >>> ts.get_event_time('event2', 1)
-        10.8
-
-        """
-        try:
-            event_index = self.get_event_index(name, occurrence)
-            if ~np.isnan(event_index):
-                return self.events[event_index].time  # type: ignore
-            else:
-                return np.nan
-
-        except Exception as e:
-            self._check_well_formed()
-            raise e
-
-    def get_ts_at_time(self, time: float) -> TimeSeries:
-        """
-        Get a one-data TimeSeries at the nearest time.
-
-        Parameters
-        ----------
-        time
-            Time to look for in the TimeSeries' time vector.
-
-        Returns
-        -------
-        TimeSeries
-            A TimeSeries of length 1, at the time neasest to the specified
-            time.
-
-        See also
-        --------
-        ktk.TimeSeries.get_ts_at_event
-        ktk.TimeSeries.get_ts_before_time
-        ktk.TimeSeries.get_ts_after_time
-        ktk.TimeSeries.get_ts_between_times
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
-        >>> ts.time
-        array([0. , 0.5, 1. , 1.5, 2. ])
-
-        >>> ts.get_index_at_time(0.9)
-        2
-
-        >>> ts.get_index_at_time(1)
-        2
-
-        >>> ts.get_index_at_time(1.1)
-        2
-
-        """
-        try:
-            out_ts = self.copy()
-            index = self.get_index_at_time(time)
-            out_ts.time = out_ts.time[index]
-            for the_data in out_ts.data.keys():
-                out_ts.data[the_data] = out_ts.data[the_data][index]
-            return out_ts
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
-        """
-        Get a one-data TimeSeries at the event's nearest time.
-
-        Parameters
-        ----------
-        name
-            Name of the event to look for in the events list.
-        occurrence
-            Optional. i_th occurence of the event to look for in the events
-            list, starting at 0.
-
-        Returns
-        -------
-        TimeSeries
-            A TimeSeries of length 1, at the event's nearest time.
-
-        See also
-        --------
-        ktk.TimeSeries.get_ts_at_time
-        ktk.TimeSeries.get_ts_before_event
-        ktk.TimeSeries.get_ts_after_event
-        ktk.TimeSeries.get_ts_between_events
-
-        """
-        try:
-            time = self.get_event_time(name, occurrence)
-            return self.get_ts_at_time(time)
         except Exception as e:
             self._check_not_empty_time()
             raise e
@@ -2517,6 +2160,55 @@ class TimeSeries:
             self._check_not_empty_time()
             raise e
 
+    def get_ts_at_time(self, time: float) -> TimeSeries:
+        """
+        Get a one-data TimeSeries at the nearest time.
+
+        Parameters
+        ----------
+        time
+            Time to look for in the TimeSeries' time vector.
+
+        Returns
+        -------
+        TimeSeries
+            A TimeSeries of length 1, at the time neasest to the specified
+            time.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_at_event
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_between_times
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+        >>> ts.time
+        array([0. , 0.5, 1. , 1.5, 2. ])
+
+        >>> ts.get_index_at_time(0.9)
+        2
+
+        >>> ts.get_index_at_time(1)
+        2
+
+        >>> ts.get_index_at_time(1.1)
+        2
+
+        """
+        try:
+            out_ts = self.copy()
+            index = self.get_index_at_time(time)
+            out_ts.time = out_ts.time[index]
+            for the_data in out_ts.data.keys():
+                out_ts.data[the_data] = out_ts.data[the_data][index]
+            return out_ts
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
+
     def get_ts_before_time(
         self, time: float, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2676,6 +2368,38 @@ class TimeSeries:
             )
             return new_ts
 
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
+
+    def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
+        """
+        Get a one-data TimeSeries at the event's nearest time.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+        occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0.
+
+        Returns
+        -------
+        TimeSeries
+            A TimeSeries of length 1, at the event's nearest time.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_at_time
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_between_events
+
+        """
+        try:
+            time = self.get_event_time(name, occurrence)
+            return self.get_ts_at_time(time)
         except Exception as e:
             self._check_not_empty_time()
             raise e
@@ -2855,184 +2579,6 @@ class TimeSeries:
             self._check_not_empty_time()
             raise e
 
-    def ui_get_ts_between_clicks(
-        self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
-    ) -> TimeSeries:  # pragma: no cover
-        """
-        Get a TimeSeries between two mouse clicks.
-
-        Parameters
-        ----------
-        data_keys
-            Optional. String or list of strings corresponding to the signals
-            to plot. See TimeSeries.plot() for more information.
-        inclusive
-            Optional. True to include the given time in the comparison.
-
-        Returns
-        -------
-        TimeSeries
-            A new TimeSeries that fulfils the specified conditions.
-
-        See also
-        --------
-        ktk.TimeSeries.get_ts_between_indexes
-        ktk.TimeSeries.get_ts_between_times
-        ktk.TimeSeries.get_ts_between_events
-
-        Note
-        ----
-        Matplotlib must be in interactive mode for this method to work.
-
-        """
-        self._check_not_empty_time()
-        self._check_not_empty_data()
-
-        fig = plt.figure()
-        self.plot(data_keys)
-        kineticstoolkit.gui.message(
-            "Click on both sides of the portion to keep.", **WINDOW_PLACEMENT
-        )
-        plt.pause(0.001)  # Redraw
-        points = plt.ginput(2)
-        kineticstoolkit.gui.message("")
-        times = [points[0][0], points[1][0]]
-        plt.close(fig)
-        return self.get_ts_between_times(
-            min(times), max(times), inclusive=inclusive
-        )
-
-    def isnan(self, data_key: str) -> np.ndarray:
-        """
-        Return a boolean array of missing samples.
-
-        Parameters
-        ----------
-        data_key
-            Key value of the data signal to analyze.
-
-        Returns
-        -------
-        np.ndarray
-            A boolean array of the same size as the time vector, where True
-            values represent missing samples (samples that contain at least
-            one nan value).
-
-        See also
-        --------
-        ktk.TimeSeries.fill_missing_samples
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time=np.arange(4))
-        >>> ts.data['Data'] = np.zeros((4, 2))
-        >>> ts.data['Data'][2, :] = np.nan
-        >>> ts.data
-        {'Data': array([[ 0.,  0.], [ 0.,  0.], [nan, nan], [ 0.,  0.]])}
-
-        >>> ts.isnan('Data')
-        array([False, False,  True, False])
-
-        """
-        try:
-            values = self.data[data_key].copy()
-            # Reduce the dimension of values while keeping the time dimension.
-            while len(values.shape) > 1:
-                values = np.sum(values, 1)  # type: ignore
-            return np.isnan(values)
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    def fill_missing_samples(
-        self,
-        max_missing_samples: int,
-        *,
-        method: str = "linear",
-        in_place: bool = False,
-    ) -> TimeSeries:
-        """
-        Fill missing samples using a given method.
-
-        Parameters
-        ----------
-        max_missing_samples
-            Maximal number of consecutive missing samples to fill. Set to
-            zero to fill all missing samples.
-        method
-            Optional. The interpolation method. This input may take any value
-            supported by scipy.interpolate.interp1d, such as 'linear',
-            'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous' or
-            'next'.
-        in_place
-            Optional. True to modify and return the original TimeSeries. False
-            to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
-
-        Returns
-        -------
-        TimeSeries
-            The TimeSeries with the missing samples filled.
-
-        Raises
-        ------
-        ValueError
-            If the sample rate is not constant.
-
-        Warning
-        -------
-        This function, which has been introduced in 0.1, is still experimental
-        and may change signature or behaviour in the future. In particular,
-        the desired behaviour of `max_missing_samples` is still to be precised
-        for points where the criteria is not met.
-
-        See also
-        --------
-        ktk.TimeSeries.isnan
-
-        """
-        try:
-            if np.isnan(self.get_sample_rate()):
-                raise ValueError("The sample rate must be constant.")
-
-            ts_out = self if in_place else self.copy()
-            max_missing_samples = int(max_missing_samples)
-
-            for data in ts_out.data:
-
-                # Fill missing samples
-                is_visible = ~ts_out.isnan(data)
-                ts = ts_out.get_subset(data)
-                ts.data[data] = ts.data[data][is_visible]
-                ts.time = ts.time[is_visible]
-                ts = ts.resample(ts_out.time, method, fill_value="extrapolate")
-
-                # Put back missing samples in holes longer than max_missing_samples
-                if max_missing_samples > 0:
-                    hole_start_index = 0
-                    to_keep = np.ones(self.time.shape)
-                    for current_index in range(ts.time.shape[0]):
-                        if is_visible[current_index]:
-                            hole_start_index = current_index
-                        elif (
-                            current_index - hole_start_index
-                            > max_missing_samples
-                        ):
-                            to_keep[
-                                hole_start_index + 1 : current_index + 1
-                            ] = 0
-
-                    ts.data[data][to_keep == 0] = np.nan
-
-                ts_out.data[data] = ts.data[data]
-
-            return ts_out
-
-        except Exception as e:
-            self._check_not_empty_time()
-            self._check_not_empty_data()
-            raise e
-
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
         Shift time and events.time.
@@ -3133,72 +2679,6 @@ class TimeSeries:
         try:
             ts = self if in_place else self.copy()
             ts.shift(-ts.get_event_time(name, occurrence), in_place=True)
-            return ts
-
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    def trim_events(self, *, in_place: bool = False) -> TimeSeries:
-        """
-        Delete the events that are outside the TimeSeries' time vector.
-
-        Parameters
-        ----------
-        in_place
-            Optional. True to modify and return the original TimeSeries. False
-            to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
-
-        Returns
-        -------
-        TimeSeries
-            The TimeSeries without the trimmed events.
-
-        See also
-        --------
-        ktk.TimeSeries.add_event
-        ktk.TimeSeries.rename_event
-        ktk.TimeSeries.remove_event
-        ktk.TimeSeries.sort_events
-        ktk.TimeSeries.ui_edit_events
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time = np.arange(10))
-        >>> ts.time
-        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-        >>> ts = ts.add_event(-2)
-        >>> ts = ts.add_event(0)
-        >>> ts = ts.add_event(5)
-        >>> ts = ts.add_event(9)
-        >>> ts = ts.add_event(10)
-        >>> ts.events
-        [TimeSeriesEvent(time=-2, name='event'),
-         TimeSeriesEvent(time=0, name='event'),
-         TimeSeriesEvent(time=5, name='event'),
-         TimeSeriesEvent(time=9, name='event'),
-         TimeSeriesEvent(time=10, name='event')]
-
-        >>> ts = ts.trim_events()
-        >>> ts.events
-        [TimeSeriesEvent(time=0, name='event'),
-         TimeSeriesEvent(time=5, name='event'),
-         TimeSeriesEvent(time=9, name='event')]
-
-        """
-        try:
-            ts = self if in_place else self.copy()
-            if ts.time.shape[0] == 0:  # no time, thus no event to keep.
-                ts.events = []
-                return ts
-
-            events = deepcopy(ts.events)
-            ts.events = []
-            for event in events:
-                if event.time >= ts.time[0] and event.time <= ts.time[-1]:
-                    ts.add_event(event.time, event.name, in_place=True)
             return ts
 
         except Exception as e:
@@ -3438,6 +2918,49 @@ class TimeSeries:
 
         except Exception as e:
             self._check_not_empty_data()
+            raise e
+
+    def get_sample_rate(self) -> float:
+        """
+        Get the sample rate in samples/s.
+
+        Returns
+        -------
+        float
+            The sample rate in samples per second. If time is empty or has only
+            one data, or if sample rate is variable, or if time is not
+            monotonously increasing, a value of np.nan is returned.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError
+            If the TimeSeries is empty.
+
+        Warning
+        -------
+        This feature, which has been introduced in version 0.9, is still
+        experimental and may change in the future. In particular, the value
+        returned if the sample rate is not constant: it is np.nan in all cases
+        for now, but it could change in the future based on discussions and
+        particular use cases.
+
+        See also
+        --------
+        ktk.TimeSeries.resample
+
+        """
+        try:
+            if self.time.shape[0] == 0 or self.time.shape[0] == 1:
+                return np.nan
+
+            deltas = self.time[1:] - self.time[0:-1]
+            if np.allclose(deltas, [deltas[0]]):
+                return 1.0 / deltas.mean()
+            else:
+                return np.nan
+
+        except Exception as e:
+            self._check_not_empty_time()
             raise e
 
     def resample(
@@ -3705,6 +3228,676 @@ class TimeSeries:
             self._check_not_empty_time()
             ts._check_not_empty_time()
             raise e
+
+    def isnan(self, data_key: str) -> np.ndarray:
+        """
+        Return a boolean array of missing samples.
+
+        Parameters
+        ----------
+        data_key
+            Key value of the data signal to analyze.
+
+        Returns
+        -------
+        np.ndarray
+            A boolean array of the same size as the time vector, where True
+            values represent missing samples (samples that contain at least
+            one nan value).
+
+        See also
+        --------
+        ktk.TimeSeries.fill_missing_samples
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(4))
+        >>> ts.data['Data'] = np.zeros((4, 2))
+        >>> ts.data['Data'][2, :] = np.nan
+        >>> ts.data
+        {'Data': array([[ 0.,  0.], [ 0.,  0.], [nan, nan], [ 0.,  0.]])}
+
+        >>> ts.isnan('Data')
+        array([False, False,  True, False])
+
+        """
+        try:
+            values = self.data[data_key].copy()
+            # Reduce the dimension of values while keeping the time dimension.
+            while len(values.shape) > 1:
+                values = np.sum(values, 1)  # type: ignore
+            return np.isnan(values)
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
+
+    def fill_missing_samples(
+        self,
+        max_missing_samples: int,
+        *,
+        method: str = "linear",
+        in_place: bool = False,
+    ) -> TimeSeries:
+        """
+        Fill missing samples using a given method.
+
+        Parameters
+        ----------
+        max_missing_samples
+            Maximal number of consecutive missing samples to fill. Set to
+            zero to fill all missing samples.
+        method
+            Optional. The interpolation method. This input may take any value
+            supported by scipy.interpolate.interp1d, such as 'linear',
+            'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous' or
+            'next'.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the missing samples filled.
+
+        Raises
+        ------
+        ValueError
+            If the sample rate is not constant.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future. In particular,
+        the desired behaviour of `max_missing_samples` is still to be precised
+        for points where the criteria is not met.
+
+        See also
+        --------
+        ktk.TimeSeries.isnan
+
+        """
+        try:
+            if np.isnan(self.get_sample_rate()):
+                raise ValueError("The sample rate must be constant.")
+
+            ts_out = self if in_place else self.copy()
+            max_missing_samples = int(max_missing_samples)
+
+            for data in ts_out.data:
+
+                # Fill missing samples
+                is_visible = ~ts_out.isnan(data)
+                ts = ts_out.get_subset(data)
+                ts.data[data] = ts.data[data][is_visible]
+                ts.time = ts.time[is_visible]
+                ts = ts.resample(ts_out.time, method, fill_value="extrapolate")
+
+                # Put back missing samples in holes longer than max_missing_samples
+                if max_missing_samples > 0:
+                    hole_start_index = 0
+                    to_keep = np.ones(self.time.shape)
+                    for current_index in range(ts.time.shape[0]):
+                        if is_visible[current_index]:
+                            hole_start_index = current_index
+                        elif (
+                            current_index - hole_start_index
+                            > max_missing_samples
+                        ):
+                            to_keep[
+                                hole_start_index + 1 : current_index + 1
+                            ] = 0
+
+                    ts.data[data][to_keep == 0] = np.nan
+
+                ts_out.data[data] = ts.data[data]
+
+            return ts_out
+
+        except Exception as e:
+            self._check_not_empty_time()
+            self._check_not_empty_data()
+            raise e
+
+    def ui_get_ts_between_clicks(
+        self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
+    ) -> TimeSeries:  # pragma: no cover
+        """
+        Get a TimeSeries between two mouse clicks.
+
+        Parameters
+        ----------
+        data_keys
+            Optional. String or list of strings corresponding to the signals
+            to plot. See TimeSeries.plot() for more information.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.get_ts_between_events
+
+        Note
+        ----
+        Matplotlib must be in interactive mode for this method to work.
+
+        """
+        self._check_not_empty_time()
+        self._check_not_empty_data()
+
+        fig = plt.figure()
+        self.plot(data_keys)
+        kineticstoolkit.gui.message(
+            "Click on both sides of the portion to keep.", **WINDOW_PLACEMENT
+        )
+        plt.pause(0.001)  # Redraw
+        points = plt.ginput(2)
+        kineticstoolkit.gui.message("")
+        times = [points[0][0], points[1][0]]
+        plt.close(fig)
+        return self.get_ts_between_times(
+            min(times), max(times), inclusive=inclusive
+        )
+
+    def ui_edit_events(
+        self,
+        name: Union[str, List[str]] = [],
+        data_keys: Union[str, List[str]] = [],
+    ) -> TimeSeries:  # pragma: no cover
+        """
+        Edit events interactively.
+
+        Parameters
+        ----------
+        name
+            Optional. The name of the event(s) to add. May be a string
+            or a list of strings. These events appear on their own buttons
+            "add `name`". Event names can also be defined interactively.
+        data_keys
+            Optional. A signal name of list of signal name to be plotted,
+            similar to the data_keys argument of ktk.TimeSeries.plot.
+
+        Returns
+        -------
+        TimeSeries
+            The original TimeSeries with the modified events. If
+            the operation was cancelled by the user, this is a pure copy of
+            the original TimeSeries.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
+            If the TimeSeries is empty.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.6, is still experimental
+        and may change signature or behaviour in the future.
+
+        See also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.sort_events
+        ktk.TimeSeries.trim_events
+
+        Note
+        ----
+        Matplotlib must be in interactive mode for this function to work.
+
+        """
+        self._check_not_empty_time()
+        self._check_not_empty_data()
+
+        def add_this_event(ts: TimeSeries, name: str) -> TimeSeries:
+            kineticstoolkit.gui.message(
+                "Place the event on the figure.", **WINDOW_PLACEMENT
+            )
+            this_time = plt.ginput(1)[0][0]
+            ts = ts.add_event(this_time, name)
+            kineticstoolkit.gui.message("")
+            return ts
+
+        def get_event_index(ts: TimeSeries) -> int:
+            kineticstoolkit.gui.message(
+                "Select an event on the figure.", **WINDOW_PLACEMENT
+            )
+            this_time = plt.ginput(1)[0][0]
+            event_times = np.array([event.time for event in ts.events])
+            kineticstoolkit.gui.message("")
+            return int(np.argmin(np.abs(event_times - this_time)))
+
+        # Set Matplotlib interactive mode
+        isinteractive = plt.isinteractive()
+        plt.ion()
+
+        ts = self.copy()
+
+        if isinstance(name, str):
+            event_names = [name]
+        else:
+            event_names = deepcopy(name)
+
+        fig = plt.figure()
+        ts.plot(data_keys, _raise_on_no_data=True)
+
+        while True:
+            # Populate the choices to the user
+            choices = [f"Add '{s}'" for s in event_names]
+
+            choice_index = {}
+            choice_index["add"] = len(choices)
+            if len(event_names) == 0:
+                choices.append("Add event")
+            else:
+                choices.append("Add event with another name")
+
+            if len(ts.events) > 0:
+                choice_index["remove"] = len(choices)
+                choices.append("Remove event")
+
+            if len(ts.events) > 0:
+                choice_index["remove_all"] = len(choices)
+                choices.append("Remove all events")
+
+                choice_index["move"] = len(choices)
+                choices.append("Move event")
+
+            choice_index["close"] = len(choices)
+            choices.append("Save and close")
+
+            choice_index["cancel"] = len(choices)
+            choices.append("Cancel")
+
+            # Show the button dialog
+            choice = kineticstoolkit.gui.button_dialog(
+                "Move and zoom on the figure,\n"
+                "then select an option below.",
+                choices,
+                **WINDOW_PLACEMENT,
+            )
+
+            # Execute
+            if choice < choice_index["add"]:
+                ts = add_this_event(ts, event_names[choice])
+
+            elif choice == choice_index["add"]:
+                event_names.append(
+                    li.input_dialog(
+                        "Please enter the event name:", **WINDOW_PLACEMENT
+                    )
+                )
+                # Add this event name to the list of recently added events
+                if len(event_names) > 5:
+                    event_names = event_names[-5:]
+
+                # Add the event
+                ts = add_this_event(ts, event_names[-1])
+
+            elif ("remove" in choice_index) and (
+                choice == choice_index["remove"]
+            ):
+                event_index = get_event_index(ts)
+                try:
+                    ts.events.pop(event_index)
+                except IndexError:
+                    li.button_dialog(
+                        "No event was removed.",
+                        choices=["OK"],
+                        icon="error",
+                        **WINDOW_PLACEMENT,
+                    )
+
+            elif ("remove_all" in choice_index) and (
+                choice == choice_index["remove_all"]
+            ):
+                if (
+                    li.button_dialog(
+                        "Do you really want to remove all events from this "
+                        "TimeSeries?",
+                        ["Yes, remove all events", "No"],
+                        icon="alert",
+                        **WINDOW_PLACEMENT,
+                    )
+                    == 0
+                ):
+                    ts.events = []
+
+            elif ("move" in choice_index) and (choice == choice_index["move"]):
+                event_index = get_event_index(ts)
+                event_name = ts.events[event_index].name
+                try:
+                    ts.events.pop(event_index)
+                    ts = add_this_event(ts, event_name)
+                except IndexError:
+                    li.button_dialog(
+                        "Could not move this event.",
+                        choices=["OK"],
+                        icon="error",
+                        **WINDOW_PLACEMENT,
+                    )
+
+            elif ("close" in choice_index) and (
+                choice == choice_index["close"]
+            ):
+                plt.close(fig)
+                if not isinteractive:
+                    plt.ioff()
+                return ts
+
+            elif (choice == -1) or (
+                ("cancel" in choice_index)
+                and (choice == choice_index["cancel"])
+            ):
+                plt.close(fig)
+                if not isinteractive:
+                    plt.ioff()
+                return self.copy()
+
+            # Refresh
+            ts.sort_events(unique=False, in_place=True)
+            axes = plt.axis()
+            plt.cla()
+            ts.plot(data_keys, _raise_on_no_data=True)
+            plt.axis(axes)
+
+    def plot(
+        self,
+        data_keys: Union[str, List[str]] = [],
+        *args,
+        event_names: bool = True,
+        legend: bool = True,
+        **kwargs,
+    ) -> None:
+        """
+        Plot the TimeSeries in the current matplotlib figure.
+
+        Parameters
+        ----------
+        data_keys
+            The data keys to plot. If left empty, all data is plotted.
+        event_names
+            Optional. True to plot the event names on top of the event lines.
+        legend
+            Optional. True to plot a legend, False otherwise.
+
+        Note
+        ----
+        Additional positional and keyboard arguments are passed to
+        matplotlib's ``pyplot.plot`` function::
+
+            ts.plot(['Forces'], '--')
+
+        plots the forces using a dashed line style.
+
+        Example
+        -------
+        For a TimeSeries ``ts`` with data keys being 'Forces', 'Moments' and
+        'Angle'::
+
+            ts.plot()
+
+        plots all data (Forces, Moments and Angle), whereas::
+
+            ts.plot(['Forces', 'Moments'])
+
+        plots only the forces and moments, without plotting the angle.
+
+        """
+        # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
+        # instead of warning when no data is available to plot.
+        if "_raise_on_no_data" in kwargs:
+            raise_on_no_data = kwargs.pop("_raise_on_no_data")
+        else:
+            raise_on_no_data = False
+
+        if data_keys is None or len(data_keys) == 0:
+            # Plot all
+            ts = self.copy()
+        else:
+            ts = self.get_subset(data_keys)
+
+        try:
+            self._check_not_empty_time()
+            self._check_not_empty_data()
+        except (TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError) as e:
+            if raise_on_no_data:
+                raise e
+            else:
+                warnings.warn("No data available to plot.")
+            return
+
+        # Sort events to help finding each event's occurrence
+        ts.sort_events(unique=False)
+
+        df = ts.to_dataframe()
+        labels = df.columns.to_list()
+
+        axes = plt.gca()
+        axes.set_prop_cycle(
+            mpl.cycler(linewidth=[1, 2, 3, 4])
+            * mpl.cycler(linestyle=["-", "--", "-.", ":"])
+            * plt.rcParams["axes.prop_cycle"]
+        )
+
+        # Plot the curves
+        for i_label, label in enumerate(labels):
+            axes.plot(
+                df.index.to_numpy(),
+                df[label].to_numpy(),
+                *args,
+                label=label,
+                **kwargs,
+            )
+
+        # Add labels
+        plt.xlabel("Time (" + ts.time_info["Unit"] + ")")
+
+        # Make unique list of units
+        unit_set = set()
+        for data in ts.data_info:
+            for info in ts.data_info[data]:
+                if info == "Unit":
+                    unit_set.add(ts.data_info[data][info])
+        # Plot this list
+        unit_str = ""
+        for unit in unit_set:
+            if len(unit_str) > 0:
+                unit_str += ", "
+            unit_str += unit
+
+        plt.ylabel(unit_str)
+
+        # Plot the events
+        n_events = len(ts.events)
+        event_times = []
+        for event in ts.events:
+            event_times.append(event.time)
+
+        if len(ts.events) > 0:
+            a = plt.axis()
+            min_y = a[2]
+            max_y = a[3]
+            event_line_x = np.zeros(3 * n_events)
+            event_line_y = np.zeros(3 * n_events)
+
+            for i_event in range(0, n_events):
+                event_line_x[3 * i_event] = event_times[i_event]
+                event_line_x[3 * i_event + 1] = event_times[i_event]
+                event_line_x[3 * i_event + 2] = np.nan
+
+                event_line_y[3 * i_event] = min_y
+                event_line_y[3 * i_event + 1] = max_y
+                event_line_y[3 * i_event + 2] = np.nan
+
+            plt.plot(event_line_x, event_line_y, ":k")
+
+            if event_names:
+                occurrences = {}  # type:Dict[str, int]
+
+                for event in ts.events:
+                    if event.name == "_":
+                        name = "_"
+                    elif event.name in occurrences:
+                        occurrences[event.name] += 1
+                        name = f"{event.name} {occurrences[event.name]}"
+                    else:
+                        occurrences[event.name] = 0
+                        name = f"{event.name} 0"
+
+                    plt.text(
+                        event.time,
+                        max_y,
+                        name,
+                        rotation="vertical",
+                        horizontalalignment="center",
+                        fontsize="small",
+                    )
+
+        if legend:
+            if len(labels) < 20:
+                legend_location = "best"
+            else:
+                legend_location = "upper right"
+
+            axes.legend(
+                loc=legend_location, ncol=1 + int(len(labels) / 40)
+            )  # Max 40 items per line
+
+    def to_dataframe(self) -> pd.DataFrame:
+        """
+        Create a DataFrame by reshaping all data to one bidimensional table.
+
+        Undimensional data is converted to a single column, and two-dimensional
+        (or more) data are converted to multiple columns with the additional
+        dimensions in brackets. The TimeSeries's events and metadata such as
+        `time_info` and `data_info` are not included in the resulting
+        DataFrame.
+
+        Returns
+        -------
+        pd.DataFrame
+            DataFrame with the index as the TimeSeries' time.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
+            If the TimeSeries is empty.
+
+        See also
+        --------
+        ktk.TimeSeries.from_dataframe
+
+        Examples
+        --------
+        Example with unidimensional data:
+
+        >>> ts = ktk.TimeSeries(time=np.arange(3) / 10)
+        >>> ts.data['Data'] = np.array([0.0, 2.0, 3.0])
+        >>> ts.to_dataframe()
+             Data
+        0.0   0.0
+        0.1   2.0
+        0.2   3.0
+
+        Example with multidimensional data:
+
+        >>> ts = ktk.TimeSeries(time=np.arange(4) / 10)
+        >>> ts.data['Data'] = np.repeat([[0.0, 2.0, 3.0]], 4, axis=0)
+        >>> ts.data['Data']
+        array([[0., 2., 3.],
+               [0., 2., 3.],
+               [0., 2., 3.],
+               [0., 2., 3.]])
+
+        >>> ts.to_dataframe()
+              Data[0]  Data[1]  Data[2]
+         0.0      0.0      2.0      3.0
+         0.1      0.0      2.0      3.0
+         0.2      0.0      2.0      3.0
+         0.3      0.0      2.0      3.0
+
+        """
+        try:
+            df = dict_of_arrays_to_dataframe(self.data)
+            df.index = self.time
+            return df
+        except Exception as e:
+            self._check_well_shaped()
+            raise e
+
+    def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
+        """
+        Create a new TimeSeries from a Pandas Dataframe.
+
+        Data in column which names end with bracketed indices such as
+        [0], [1], [0,0], [0,1], etc. are converted to multidimensional
+        arrays. For example, if a DataFrame has these column names::
+
+            'Forces[0]', 'Forces[1]', 'Forces[2]', 'Forces[3]'
+
+        then a single data key is created ('Forces') and the shape of the
+        data is Nx4.
+
+        Parameters
+        ----------
+        dataframe
+            A Pandas DataFrame where the index corresponds to time, and
+            where each column corresponds to a data key.
+
+        Returns
+        -------
+        TimeSeries
+            The converted TimeSeries.
+
+        See also
+        --------
+        ktk.TimeSeries.to_dataframe
+
+        Examples
+        --------
+        Example with unidimensional data:
+
+        >>> import pandas as pd
+        >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
+        >>> df.columns = ['data1', 'data2']
+        >>> df
+           data1  data2
+        0    1.0    2.0
+        1    3.0    4.0
+        2    5.0    6.0
+
+        >>> ts = ktk.TimeSeries.from_dataframe(df)
+        >>> ts.data
+        {'data1': array([1., 3., 5.]), 'data2': array([2., 4., 6.])}
+
+        Example with multidimensional data:
+
+        >>> df.columns = ['data[0]', 'data[1]']
+        >>> df
+           data[0]  data[1]
+        0      1.0      2.0
+        1      3.0      4.0
+        2      5.0      6.0
+
+        >>> ts = ktk.TimeSeries.from_dataframe(df)
+        >>> ts.data
+        {'data': array([[1., 2.], [3., 4.], [5., 6.]])}
+
+        """
+        ts = TimeSeries()
+        ts.data = dataframe_to_dict_of_arrays(dataframe)
+        ts.time = dataframe.index.to_numpy()
+        return ts
 
 
 if __name__ == "__main__":  # pragma: no cover
