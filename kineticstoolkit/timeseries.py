@@ -33,7 +33,8 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit._repr
 from kineticstoolkit.exceptions import (
-    EmptyTimeSeriesError,
+    TimeSeriesEmptyTimeError,
+    TimeSeriesEmptyDataError,
     MalformedTimeSeriesError,
     TimeSeriesIndexNotFoundError,
     TimeSeriesEventNotFoundError,
@@ -591,9 +592,9 @@ class TimeSeries:
 
         return True
 
-    def _validate(self) -> None:
+    def _check_well_formed(self) -> None:
         """
-        Ensure that the TimeSeries is well formed.
+        Check that the TimeSeries is well formed.
 
         Raises
         ------
@@ -609,12 +610,29 @@ class TimeSeries:
                 "A TimeSeries' time attribute must be a numpy array. "
                 f"However, the current time type is {type(self.time)}."
             )
-        elif len(self.time.shape) != 1:
+
+        if len(self.time.shape) != 1:
             raise MalformedTimeSeriesError(
                 "A TimeSeries' time attribute must be a numpy array of "
                 "dimension 1. However, the current time shape is "
                 f"{self.time.shape}, which is a dimension of "
                 f"{len(self.time.shape)}."
+            )
+
+        if not np.alltrue(~np.isnan(self.time.shape)):
+            raise MalformedTimeSeriesError(
+                "A TimeSeries' time attribute must not contain nans. "
+                f"However, a total of {np.sum(~np.isnan(self.time.shape))} "
+                f"nans were found among the {self.time.shape[0]} samples of "
+                "the TimeSeries."
+            )
+
+        # Ensure that the data attribute is a dict
+        if not isinstance(self.data, dict):
+            raise MalformedTimeSeriesError(
+                "The TimeSeries data attribute must be a dict. However, "
+                "this TimeSeries' data attribute is of type "
+                f"{type(self.data)}."
             )
 
         # Ensure that each data are numpy arrays coherent with time.
@@ -640,6 +658,65 @@ class TimeSeries:
                     f"is {self.time.shape[0]}."
                 )
 
+        # Ensure that the events are a list of TimeSeriesEvent
+        if not isinstance(self.events, list):
+            raise MalformedTimeSeriesError(
+                "The TimeSeries' events attribute must be a proper list. "
+                "However, this TimeSeries' events attribute is of type "
+                f"{type(self.events)}."
+            )
+
+        # Ensure that all event is an instance of TimeSeriesEvent
+        for i_event, event in enumerate(self.events):
+            if not isinstance(event, TimeSeriesEvent):
+                raise MalformedTimeSeriesError(
+                    "The TimeSeries' events attribute must be a list of "
+                    "TimeSeriesEvent. However, at least one element of this "
+                    f"list is not: element {i_event} is "
+                    f"of type {type(event)}."
+                )
+
+    def _check_not_empty_time(self) -> None:
+        """
+        Check that the TimeSeries's time vector is not empty.
+
+        Raises
+        ------
+        EmptyTimeSeriesError:
+            If the TimeSeries as no time
+
+        """
+        try:
+            if self.time.shape[0] == 0:
+                raise TimeSeriesEmptyTimeError(
+                    "The TimeSeries is empty: the length of its time "
+                    "attribute is 0."
+                )
+
+        except Exception as e:
+            self._check_well_formed()
+            raise e
+
+    def _check_not_empty_data(self) -> None:
+        """
+        Check that the TimeSeries's time vector is not empty.
+
+        Raises
+        ------
+        EmptyTimeSeriesError:
+            If the TimeSeries as no time
+
+        """
+        try:
+            if len(self.data) == 0:
+                raise TimeSeriesEmptyDataError(
+                    "The TimeSeries is empty: it does not contain any data."
+                )
+
+        except Exception as e:
+            self._check_well_formed()
+            raise e
+
     def to_dataframe(self) -> pd.DataFrame:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
@@ -654,6 +731,11 @@ class TimeSeries:
         -------
         pd.DataFrame
             DataFrame with the index as the TimeSeries' time.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
+            If the TimeSeries is empty.
 
         See also
         --------
@@ -689,10 +771,14 @@ class TimeSeries:
          0.3      0.0      2.0      3.0
 
         """
-        self._validate()
-        df = dict_of_arrays_to_dataframe(self.data)
-        df.index = self.time
-        return df
+        try:
+            df = dict_of_arrays_to_dataframe(self.data)
+            df.index = self.time
+            return df
+        except Exception as e:
+            self._check_not_empty_time()
+            self._check_not_empty_data()
+            raise e
 
     def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
         """
@@ -1255,6 +1341,11 @@ class TimeSeries:
             the operation was cancelled by the user, this is a pure copy of
             the original TimeSeries.
 
+        Raises
+        ------
+        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
+            If the TimeSeries is empty.
+
         Warning
         -------
         This function, which has been introduced in 0.6, is still experimental
@@ -1273,7 +1364,8 @@ class TimeSeries:
         Matplotlib must be in interactive mode for this function to work.
 
         """
-        self._validate()
+        self._check_not_empty_time()
+        self._check_not_empty_data()
 
         def add_this_event(ts: TimeSeries, name: str) -> TimeSeries:
             kineticstoolkit.gui.message(
@@ -1694,10 +1786,8 @@ class TimeSeries:
         plots only the forces and moments, without plotting the angle.
 
         """
-        self._validate()
-
-        # Private argument _raise_on_no_data: Raise a ValueError instead of
-        # warning when no data is available to plot.
+        # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
+        # instead of warning when no data is available to plot.
         if "_raise_on_no_data" in kwargs:
             raise_on_no_data = kwargs.pop("_raise_on_no_data")
         else:
@@ -1709,9 +1799,12 @@ class TimeSeries:
         else:
             ts = self.get_subset(data_keys)
 
-        if len(ts.data) == 0:
+        try:
+            self._check_not_empty_time()
+            self._check_not_empty_data()
+        except (TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError) as e:
             if raise_on_no_data:
-                raise ValueError("No data available to plot.")
+                raise e
             else:
                 warnings.warn("No data available to plot.")
             return
@@ -1824,6 +1917,11 @@ class TimeSeries:
             one data, or if sample rate is variable, or if time is not
             monotonously increasing, a value of np.nan is returned.
 
+        Raises
+        ------
+        TimeSeriesEmptyTimeError
+            If the TimeSeries is empty.
+
         Warning
         -------
         This feature, which has been introduced in version 0.9, is still
@@ -1837,16 +1935,19 @@ class TimeSeries:
         ktk.TimeSeries.resample
 
         """
-        self._validate()
+        try:
+            if self.time.shape[0] == 0 or self.time.shape[0] == 1:
+                return np.nan
 
-        if self.time.shape[0] == 0 or self.time.shape[0] == 1:
-            return np.nan
+            deltas = self.time[1:] - self.time[0:-1]
+            if np.allclose(deltas, [deltas[0]]):
+                return 1.0 / deltas.mean()
+            else:
+                return np.nan
 
-        deltas = self.time[1:] - self.time[0:-1]
-        if np.allclose(deltas, [deltas[0]]):
-            return 1.0 / deltas.mean()
-        else:
-            return np.nan
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
 
     def get_index_at_time(self, time: float) -> int:
         """
@@ -1861,6 +1962,11 @@ class TimeSeries:
         -------
         int or float
             The index in the time vector.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError
+            If the TimeSeries is empty.
 
         See also
         --------
@@ -1884,7 +1990,7 @@ class TimeSeries:
         try:
             return int(np.argmin(np.abs(self.time - float(time))))
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_index_before_time(
@@ -1904,6 +2010,11 @@ class TimeSeries:
         -------
         int or float
             The index in the time vector, or nan if the time vector is empty.
+
+        Raises
+        ------
+        TimeSeriesEmptyTimeError
+            If the TimeSeries is empty.
 
         See also
         --------
@@ -1933,13 +2044,11 @@ class TimeSeries:
         0
 
         """
+
         try:
-            # Edge cases
-            if len(self.time) == 0:
-                return np.nan
-            else:
-                if inclusive and time == self.time[0]:
-                    return 0
+            # Edge case
+            if inclusive and time == self.time[0]:
+                return 0
 
             # Other cases
             diff = float(time) - self.time
@@ -1959,7 +2068,7 @@ class TimeSeries:
                 return np.nan
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_index_after_time(
@@ -2009,12 +2118,9 @@ class TimeSeries:
 
         """
         try:
-            # Edge cases
-            if len(self.time) == 0:
-                return np.nan
-            else:
-                if inclusive and time == self.time[-1]:
-                    return self.time.shape[0] - 1
+            # Edge case
+            if inclusive and time == self.time[-1]:
+                return self.time.shape[0] - 1
 
             # Other cases
             diff = self.time - float(time)
@@ -2034,7 +2140,7 @@ class TimeSeries:
                 return np.nan
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_event_index(
@@ -2075,32 +2181,37 @@ class TimeSeries:
         >>> ts.get_event_index('cycle_start', 3)
         nan
         """
-        occurrence = int(occurrence)
-
-        if occurrence < 0:
-            raise ValueError("occurrence must be positive")
-
-        # Make a list of event times, with NaNs for events whose name doesn't
-        # match what we're looking for.
-        event_times = [
-            event.time if event.name == name else np.nan
-            for event in self.events
-        ]
-
-        # Sort in time
-        event_indexes = np.argsort(event_times)
-
-        # Remove indexes that correspond to nan time (wrong events)
-        clean_event_indexes = [
-            index if ~np.isnan(event_times[index]) else np.nan
-            for index in event_indexes
-        ]
-
-        # Get the event occurrence
         try:
-            return clean_event_indexes[occurrence]
-        except IndexError:
-            return np.nan
+            occurrence = int(occurrence)
+
+            if occurrence < 0:
+                raise ValueError("occurrence must be positive")
+
+            # Make a list of event times, with NaNs for events whose name doesn't
+            # match what we're looking for.
+            event_times = [
+                event.time if event.name == name else np.nan
+                for event in self.events
+            ]
+
+            # Sort in time
+            event_indexes = np.argsort(event_times)
+
+            # Remove indexes that correspond to nan time (wrong events)
+            clean_event_indexes = [
+                index if ~np.isnan(event_times[index]) else np.nan
+                for index in event_indexes
+            ]
+
+            # Get the event occurrence
+            try:
+                return clean_event_indexes[occurrence]
+            except IndexError:
+                return np.nan
+
+        except Exception as e:
+            self._check_well_formed()
+            raise e
 
     def get_event_time(self, name: str, occurrence: int = 0) -> float:
         """
@@ -2138,11 +2249,16 @@ class TimeSeries:
         10.8
 
         """
-        event_index = self.get_event_index(name, occurrence)
-        if ~np.isnan(event_index):
-            return self.events[event_index].time  # type: ignore
-        else:
-            return np.nan
+        try:
+            event_index = self.get_event_index(name, occurrence)
+            if ~np.isnan(event_index):
+                return self.events[event_index].time  # type: ignore
+            else:
+                return np.nan
+
+        except Exception as e:
+            self._check_well_formed()
+            raise e
 
     def get_ts_at_time(self, time: float) -> TimeSeries:
         """
@@ -2190,7 +2306,7 @@ class TimeSeries:
                 out_ts.data[the_data] = out_ts.data[the_data][index]
             return out_ts
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
@@ -2222,7 +2338,7 @@ class TimeSeries:
             time = self.get_event_time(name, occurrence)
             return self.get_ts_at_time(time)
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_before_index(
@@ -2282,7 +2398,7 @@ class TimeSeries:
                 out_ts.data[the_data] = self.data[the_data][index_range]
             return out_ts
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_after_index(
@@ -2340,7 +2456,7 @@ class TimeSeries:
             return out_ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_between_indexes(
@@ -2398,7 +2514,7 @@ class TimeSeries:
             return out_ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_before_time(
@@ -2452,7 +2568,7 @@ class TimeSeries:
                 return self.get_ts_before_index(0, inclusive=False)
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_after_time(
@@ -2508,7 +2624,7 @@ class TimeSeries:
                 return self.get_ts_after_index(-1, inclusive=False)
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_between_times(
@@ -2561,7 +2677,7 @@ class TimeSeries:
             return new_ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_before_event(
@@ -2617,7 +2733,7 @@ class TimeSeries:
             time = self.get_event_time(name, occurrence)
             return self.get_ts_before_time(time, inclusive=inclusive)
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_after_event(
@@ -2673,7 +2789,7 @@ class TimeSeries:
             time = self.get_event_time(name, occurrence)
             return self.get_ts_after_time(time, inclusive=inclusive)
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def get_ts_between_events(
@@ -2736,7 +2852,7 @@ class TimeSeries:
             )
             return ts
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def ui_get_ts_between_clicks(
@@ -2769,7 +2885,8 @@ class TimeSeries:
         Matplotlib must be in interactive mode for this method to work.
 
         """
-        self._validate()
+        self._check_not_empty_time()
+        self._check_not_empty_data()
 
         fig = plt.figure()
         self.plot(data_keys)
@@ -2824,7 +2941,7 @@ class TimeSeries:
                 values = np.sum(values, 1)  # type: ignore
             return np.isnan(values)
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def fill_missing_samples(
@@ -2912,7 +3029,8 @@ class TimeSeries:
             return ts_out
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
+            self._check_not_empty_data()
             raise e
 
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
@@ -2964,7 +3082,7 @@ class TimeSeries:
             return ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def sync_event(
@@ -3018,7 +3136,7 @@ class TimeSeries:
             return ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def trim_events(self, *, in_place: bool = False) -> TimeSeries:
@@ -3084,7 +3202,7 @@ class TimeSeries:
             return ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
             raise e
 
     def ui_sync(
@@ -3133,9 +3251,11 @@ class TimeSeries:
         Matplotlib must be in interactive mode for this method to work.
 
         """
-        self._validate()
+        self._check_not_empty_time()
+        self._check_not_empty_data()
         if ts2 is not None:
-            ts2._validate()
+            ts2._check_not_empty_time()
+            ts2._check_not_empty_data()
 
         ts1 = self.copy()
 
@@ -3317,7 +3437,7 @@ class TimeSeries:
             return ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_data()
             raise e
 
     def resample(
@@ -3463,7 +3583,8 @@ class TimeSeries:
             return ts
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
+            self._check_not_empty_data()
             raise e
 
     def merge(
@@ -3581,7 +3702,8 @@ class TimeSeries:
             return ts_out
 
         except Exception as e:
-            self._validate()
+            self._check_not_empty_time()
+            ts._check_not_empty_time()
             raise e
 
 

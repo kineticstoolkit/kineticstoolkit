@@ -29,7 +29,8 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import warnings
 from kineticstoolkit.exceptions import (
-    EmptyTimeSeriesError,
+    TimeSeriesEmptyTimeError,
+    TimeSeriesEmptyDataError,
     MalformedTimeSeriesError,
     TimeSeriesIndexNotFoundError,
     TimeSeriesEventNotFoundError,
@@ -124,29 +125,74 @@ def test_empty_constructor():
     assert ts.time_info["Unit"] == "s"
 
 
-def test_validate():
-    ts = ktk.TimeSeries()
-    ts._validate()
+def test_check_well_formed():
+    ts = ktk.TimeSeries()  # Should pass
+    ts._check_well_formed()
+
     ts.time = [1, 2, 3]  # Should fail
     try:
-        ts._validate()
+        ts._check_well_formed()
     except MalformedTimeSeriesError:
         pass
-    ts.time = np.array([1, 2, 3])  # Should pass
-    ts._validate()
-    ts.data["test1"] = np.array([1, 2, 3])  # Good
+
+    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts._check_well_formed()
+
+    ts.data["test1"] = np.array([1, 2, 3])
     ts.data["test2"] = [1, 2, 3]  # Should fail
     try:
-        ts._validate()
+        ts._check_well_formed()
     except MalformedTimeSeriesError:
         pass
+
     ts.data["test2"] = np.array([1, 2])  # Should fail
     try:
-        ts._validate()
+        ts._check_well_formed()
     except MalformedTimeSeriesError:
         pass
+
     ts.data["test2"] = np.array([1, 2, 3])  # Should pass
-    ts._validate()
+    ts._check_well_formed()
+
+    ts.time[1] = np.nan  # Should fail
+    try:
+        ts._check_well_formed()
+    except MalformedTimeSeriesError:
+        pass
+
+    ts = ktk.TimeSeries()
+    ts.events = "test"  # Should fail
+    try:
+        ts._check_well_formed()
+    except MalformedTimeSeriesError:
+        pass
+
+    ts.events = [ktk.TimeSeriesEvent(0), "test"]  # Should fail
+    try:
+        ts._check_well_formed()
+    except MalformedTimeSeriesError:
+        pass
+
+
+def test_check_not_empty_time():
+    ts = ktk.TimeSeries()  # Should fail
+    try:
+        ts._check_not_empty_time()
+    except TimeSeriesEmptyTimeError:
+        pass
+    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts._check_not_empty_time()
+
+
+def test_check_not_empty_data():
+    ts = ktk.TimeSeries()
+    ts.time = np.array([1.0, 2.0, 3.0])  # Should fail
+    try:
+        ts._check_not_empty_time()
+    except TimeSeriesEmptyDataError:
+        pass
+    ts.data["test1"] = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts._check_not_empty_time()
 
 
 def test_from_to_dataframe():

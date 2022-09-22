@@ -28,7 +28,11 @@ __license__ = "Apache 2.0"
 # Exceptions
 
 
-class EmptyTimeSeriesError(ValueError):
+class TimeSeriesEmptyTimeError(ValueError):
+    pass
+
+
+class TimeSeriesEmptyDataError(ValueError):
     pass
 
 
