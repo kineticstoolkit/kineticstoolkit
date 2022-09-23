@@ -31,12 +31,9 @@ import warnings
 from kineticstoolkit.exceptions import (
     TimeSeriesTypeError,
     TimeSeriesShapeError,
-    TimeSeriesSpanError,
     TimeSeriesEmptyTimeError,
     TimeSeriesEmptyDataError,
-    TimeSeriesIndexNotFoundError,
     TimeSeriesEventNotFoundError,
-    TimeSeriesIndexOrderError,
 )
 
 
@@ -530,7 +527,8 @@ def test_get_event_indexes_index_time():
     except TimeSeriesEventNotFoundError:
         pass
 
-    # Deprecated
+
+# Deprecated, put back the tests before pushing to master
 #    assert ts.get_event_time("event1") == 5.5
 #    assert ts.get_event_time("event2", 0) == 2.3
 #    assert ts.get_event_time("event2", 1) == 10.8
@@ -546,7 +544,7 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_at_time(1.1) == 2
     try:
         ts.get_index_at_time(2.1)
-    except TimeSeriesSpanError:
+    except IndexError:
         pass
 
     # get_index_before_time
@@ -556,7 +554,7 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_before_time(1.1, inclusive=True) == 3
     try:
         ts.get_index_before_time(0)
-    except TimeSeriesSpanError:
+    except IndexError:
         pass
     assert ts.get_index_before_time(0, inclusive=True) == 0
 
@@ -567,34 +565,31 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_after_time(1, inclusive=True) == 2
     try:
         ts.get_index_after_time(2)
-    except TimeSeriesSpanError:
+    except IndexError:
         pass
     assert ts.get_index_after_time(2, inclusive=True) == 4
 
 
-def test_get_ts_at_event___get_ts_at_time():
-    ts = ktk.TimeSeries()
-    ts.time = np.linspace(0, 99, 100)
-    time_as_column = np.reshape(ts.time, (-1, 1))
-    ts.data["Forces"] = np.block(
-        [time_as_column, time_as_column**2, time_as_column**3]
-    )
-    ts.data["Moments"] = np.block(
-        [time_as_column**2, time_as_column**3, time_as_column**4]
-    )
-    ts = ts.add_event(5.5, "event1")
-    ts = ts.add_event(10.8, "event2")
-    ts = ts.add_event(2.3, "event2")
-    new_ts = ts.get_ts_at_event("event1")
-    assert np.array_equal(new_ts.time, np.array([5]))
-    new_ts = ts.get_ts_at_event("event2")
-    assert np.array_equal(new_ts.time, np.array([2]))
-    new_ts = ts.get_ts_at_event("event2", 1)
-    assert np.array_equal(new_ts.time, np.array([11]))
-    try:
-        ts.get_ts_at_time(1000)
-    except TimeSeriesSpanError:
-        pass
+# Deprecated, put back the tests before pushing to master.
+# def test_get_ts_at_event___get_ts_at_time():
+#     ts = ktk.TimeSeries()
+#     ts.time = np.linspace(0, 99, 100)
+#     time_as_column = np.reshape(ts.time, (-1, 1))
+#     ts.data["Forces"] = np.block(
+#         [time_as_column, time_as_column**2, time_as_column**3]
+#     )
+#     ts.data["Moments"] = np.block(
+#         [time_as_column**2, time_as_column**3, time_as_column**4]
+#     )
+#     ts = ts.add_event(5.5, "event1")
+#     ts = ts.add_event(10.8, "event2")
+#     ts = ts.add_event(2.3, "event2")
+#     new_ts = ts.get_ts_at_event("event1")
+#     assert np.array_equal(new_ts.time, np.array([5]))
+#     new_ts = ts.get_ts_at_event("event2")
+#     assert np.array_equal(new_ts.time, np.array([2]))
+#     new_ts = ts.get_ts_at_event("event2", 1)
+#     assert np.array_equal(new_ts.time, np.array([11]))
 
 
 def test_get_ts_before_time():
@@ -603,7 +598,7 @@ def test_get_ts_before_time():
     assert new_ts == ts
     try:
         ts.get_ts_before_time(0)
-    except TimeSeriesSpanError:
+    except IndexError:
         pass
     new_ts = ts.get_ts_before_time(5)
     assert new_ts.time.tolist() == [0.0, 1.0, 2.0, 3.0, 4.0]
@@ -617,7 +612,7 @@ def test_get_ts_after_time():
     assert new_ts.time.tolist() == [5.0, 6.0, 7.0, 8.0, 9.0]
     try:
         new_ts = ts.get_ts_after_time(9)
-    except TimeSeriesSpanError:
+    except IndexError:
         pass
 
 
@@ -632,7 +627,7 @@ def test_get_ts_between_indexes():
     )
     try:
         ts.get_ts_between_indexes(5, 2)
-    except TimeSeriesIndexOrderError:
+    except ValueError:
         pass
 
 
@@ -657,17 +652,17 @@ def test_get_ts_between_times():
     # Check that interverting times fails
     try:
         ts.get_ts_between_times(7.5, 4.5)
-    except TimeSeriesIndexOrderError:
+    except ValueError:
         pass
     # Check that data outside span fails
     try:
         ts.get_ts_between_times(-2, -1)
-    except TimeSeriesSpanError:
+    except IndexError:
         pass
     # Check that inverted times fails
     try:
         ts.get_ts_between_times(5, 3)
-    except TimeSeriesIndexOrderError:
+    except ValueError:
         pass
 
 

@@ -38,11 +38,8 @@ from kineticstoolkit.exceptions import (
     TimeSeriesEmptyDataError,
     TimeSeriesTypeError,
     TimeSeriesShapeError,
-    TimeSeriesIndexNotFoundError,
     TimeSeriesEventNotFoundError,
-    TimeSeriesSpanError,
     TimeSeriesNonIncreasingTimeError,
-    TimeSeriesIndexOrderError,
 )
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -460,8 +457,6 @@ class TimeSeries:
             "get_ts_after_event",
             "get_ts_after_index",
             "get_ts_after_time",
-            "get_ts_at_event",
-            "get_ts_at_time",
             "get_ts_before_event",
             "get_ts_before_index",
             "get_ts_before_time",
@@ -479,11 +474,9 @@ class TimeSeries:
             "resample",
             "shift",
             "sort_events",
-            "sync_event",
             "to_dataframe",
             "trim_events",
             "ui_edit_events",
-            "ui_get_ts_between_clicks",
             "ui_sync",
         ]
 
@@ -795,30 +788,6 @@ class TimeSeries:
             f"The key '{info_key}' was not found among the "
             f"{len(self.data_info[data_key])} key(s) of the TimeSeries' "
             f"data_info[{data_key}] attribute."
-        )
-
-    def _raise_span_error_above(self, time) -> None:
-        raise TimeSeriesSpanError(
-            f"The requested time of {time} is above the TimeSeries' "
-            f"maximal time of {np.max(self.time)}."
-        )
-
-    def _raise_span_error_below(self, time) -> None:
-        raise TimeSeriesSpanError(
-            f"The requested time of {time} is below the TimeSeries' "
-            f"minimal time of {np.min(self.time)}."
-        )
-
-    def _raise_span_error_above_equal(self, time) -> None:
-        raise TimeSeriesSpanError(
-            f"The requested time of {time} is above or equal to the "
-            f"TimeSeries' maximal time of {np.max(self.time)}."
-        )
-
-    def _raise_span_error_below_equal(self, time) -> None:
-        raise TimeSeriesSpanError(
-            f"The requested time of {time} is below or equal to the "
-            f"TimeSeries' minimal time of {np.min(self.time)}."
         )
 
     def copy(
@@ -1162,7 +1131,7 @@ class TimeSeries:
     def _get_event_index(self, name: str, occurrence: int = 0) -> int:
         """
         Get the events index of a given occurrence of an event name.
-        
+
         Parameters
         ----------
         name
@@ -1170,17 +1139,17 @@ class TimeSeries:
 
         occurrence
             Occurrence of the event
-            
+
         Returns
         -------
         int
             The index of the event occurrence in the events list.
-            
+
         Raises
         ------
         TimeSeriesEventNotFoundError
             If the specified occurrence could not be found.
-        
+
         """
         try:
             occurrence = int(occurrence)
@@ -1263,7 +1232,6 @@ class TimeSeries:
         except Exception as e:
             self._check_well_typed()
             raise e
-
 
     def add_event(
         self,
@@ -1415,7 +1383,7 @@ class TimeSeries:
                     f"New event name '{new_name}' must be different from old "
                     "name."
                 )
-                
+
             if occurrence is None:
                 # Rename every occurrence of this event
                 for index in self._get_event_indexes(old_name):
@@ -1703,7 +1671,7 @@ class TimeSeries:
             return ts
 
         except Exception as e:
-            self._check_not_empty_time()
+            self._check_well_typed()
             raise e
 
     def get_index_at_time(self, time: float) -> int:
@@ -1725,10 +1693,6 @@ class TimeSeries:
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_after_time
 
-        Note
-        ----
-        A TimeSeriesSpanError exception is raised if the time is before
-        the TimeSeries' lowest time, or after the TimeSeries's highest time.
 
         Example
         -------
@@ -1744,17 +1708,10 @@ class TimeSeries:
         2
 
         >>> ts.get_index_at_time(2.1)
-        Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
-        2.1 is above the TimeSeries' maximal time of 2.0.
+        4
 
         """
         try:
-            if time > np.max(self.time):
-                self._raise_span_error_above(time)
-            elif time < np.min(self.time):
-                self._raise_span_error_below(time)
-
             return int(np.argmin(np.abs(self.time - float(time))))
 
         except Exception as e:
@@ -1779,15 +1736,15 @@ class TimeSeries:
         int
             The index in the time vector.
 
+        Raises
+        ------
+        IndexError
+            If the resulting index would be outside the TimeSeries range.
+
         See also
         --------
         ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_after_time
-
-        Note
-        ----
-        A TimeSeriesSpanError exception is raised if the time is before
-        the TimeSeries' lowest time.
 
         Example
         -------
@@ -1807,31 +1764,31 @@ class TimeSeries:
 
         >>> ts.get_index_before_time(0)
         Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
-        0 is below or equal to the TimeSeries' minimal time of 0.0.
+        IndexError: The resulting index would be outside the TimeSeries range.
 
         >>> ts.get_index_before_time(0, inclusive=True)
         0
 
         """
-        try:
 
+        def _raise():
+            raise IndexError(
+                "The resulting index would be outside the TimeSeries range."
+            )
+
+        try:
             self._check_increasing_time()
 
             # Start higher, then decrease until the condition matches
-            try:
-                start_index = self.get_index_at_time(time) + 1
-            except TimeSeriesSpanError as e:
-                if time > np.max(self.time):  # It's okay.
-                    return len(self.time) - 1
-                else:
-                    raise e
+            start_index = min(
+                self.get_index_at_time(time) + 1, len(self.time) - 1
+            )
 
             index = min(len(self.time) - 1, start_index)
             if inclusive:
                 while True:
                     if index < 0:
-                        self._raise_span_error_below(time)
+                        _raise()
                     if self.time[index] <= time:
                         break
                     index -= 1
@@ -1842,7 +1799,7 @@ class TimeSeries:
             else:
                 while True:
                     if index < 0:
-                        self._raise_span_error_below_equal(time)
+                        _raise()
                     if self.time[index] < time:
                         break
                     index -= 1
@@ -1871,15 +1828,15 @@ class TimeSeries:
         int
             The index in the time vector.
 
+        Raises
+        ------
+        IndexError
+            If the resulting index would be outside the TimeSeries range.
+
         See also
         --------
         ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_before_time
-
-        Note
-        ----
-        A TimeSeriesSpanError exception is raised if the time is after
-        the TimeSeries' highest time.
 
         Example
         -------
@@ -1899,30 +1856,28 @@ class TimeSeries:
 
         >>> ts.get_index_after_time(2)
         Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
-        2 is above or equal to the TimeSeries' maximal time of 2.0.
+        IndexError: The resulting index would be outside the TimeSeries range.
 
         >>> ts.get_index_after_time(2, inclusive=True)
         4
 
         """
+
+        def _raise():
+            raise IndexError(
+                "The resulting index would be outside the TimeSeries range."
+            )
+
         try:
             self._check_increasing_time()
 
             # Start lower, then increase until the condition matches
-            try:
-                start_index = self.get_index_at_time(time) - 1
-            except TimeSeriesSpanError as e:
-                if time < np.min(self.time):  # It's okay
-                    return 0
-                else:
-                    raise e
+            index = max(self.get_index_at_time(time) - 1, 0)
 
-            index = max(0, start_index)
             if inclusive:
                 while True:
                     if index >= len(self.time):
-                        self._raise_span_error_above(time)
+                        _raise()
                     if self.time[index] >= time:
                         break
                     index += 1
@@ -1933,7 +1888,7 @@ class TimeSeries:
             else:
                 while True:
                     if index >= len(self.time):
-                        self._raise_span_error_above_equal(time)
+                        _raise()
                     if self.time[index] > time:
                         break
                     index += 1
@@ -1962,6 +1917,11 @@ class TimeSeries:
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
+        Raises
+        ------
+        IndexError
+            If `index` is out of the TimeSeries time range.
+
         See also
         --------
         ktk.TimeSeries.get_ts_before_time
@@ -1987,14 +1947,14 @@ class TimeSeries:
 
             out_ts = self.copy(copy_data=False, copy_time=False)
 
-            if index < 0:
-                index += len(self.time)
+            if index < 0 or index >= len(self.time):
+                raise IndexError(
+                    f"The specified index of {index} is out of "
+                    f"range. The TimeSeries has {len(self.time)} samples."
+                )
+            index += int(inclusive)
 
-            if inclusive:
-                index_range = range(index + 1)
-            else:
-                index_range = range(index)
-
+            index_range = range(index)
             out_ts.time = self.time[index_range]
             for the_data in self.data:
                 out_ts.data[the_data] = self.data[the_data][index_range]
@@ -2021,6 +1981,11 @@ class TimeSeries:
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
+        Raises
+        ------
+        IndexError
+            If `index` is out of the TimeSeries time range.
+
         See also
         --------
         ktk.TimeSeries.get_ts_after_time
@@ -2046,13 +2011,14 @@ class TimeSeries:
 
             out_ts = self.copy(copy_data=False, copy_time=False)
 
-            if index < 0:
-                index += len(self.time)
+            if index < 0 or index >= len(self.time):
+                raise IndexError(
+                    f"The specified index of {index} is out of "
+                    f"range. The TimeSeries has {len(self.time)} samples."
+                )
+            index -= int(inclusive)
 
-            if inclusive:
-                index_range = range(index, len(self.time))
-            else:
-                index_range = range(index + 1, len(self.time))
+            index_range = range(index + 1, len(self.time))
 
             out_ts.time = self.time[index_range]
             for the_data in self.data:
@@ -2081,10 +2047,10 @@ class TimeSeries:
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
-        Note
-        ----
-        A TimeSeriesIndexOrderError is raised if index2 is not higher than
-        index1.
+        Raises
+        ------
+        IndexError
+            If `index` is out of the TimeSeries time range.
 
         See also
         --------
@@ -2110,75 +2076,35 @@ class TimeSeries:
         try:
             self._check_increasing_time()
 
+            out_ts = self.copy(copy_data=False, copy_time=False)
+
             if index2 <= index1:
-                raise TimeSeriesIndexOrderError(
+                raise ValueError(
                     "The parameter index2 must be higher than index1. "
                     f"However, index2 is {index2} while index1 is {index1}."
                 )
 
-            out_ts = self.copy(copy_time=False, copy_data=False)
+            if index1 < 0 or index1 >= len(self.time):
+                raise IndexError(
+                    f"The specified index1 of {index1} is out of "
+                    f"range. The TimeSeries has {len(self.time)} samples."
+                )
+            index1 -= int(inclusive)
 
-            if inclusive:
-                index_range = range(index1, index2 + 1)
-            else:
-                index_range = range(index1 + 1, index2)
+            if index2 < 0 or index2 >= len(self.time):
+                raise IndexError(
+                    f"The specified index2 of {index2} is out of "
+                    f"range. The TimeSeries has {len(self.time)} samples."
+                )
+            index2 += int(inclusive)
+
+            index_range = range(index1 + 1, index2)
 
             out_ts.time = self.time[index_range]
             for the_data in self.data.keys():
                 out_ts.data[the_data] = self.data[the_data][index_range]
             return out_ts
 
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    def get_ts_at_time(self, time: float) -> TimeSeries:
-        """
-        Get a one-data TimeSeries at the nearest time.
-
-        Parameters
-        ----------
-        time
-            Time to look for in the TimeSeries' time vector.
-
-        Returns
-        -------
-        TimeSeries
-            A TimeSeries of length 1, at the time neasest to the specified
-            time.
-
-        See also
-        --------
-        ktk.TimeSeries.get_ts_at_event
-        ktk.TimeSeries.get_ts_before_time
-        ktk.TimeSeries.get_ts_after_time
-        ktk.TimeSeries.get_ts_between_times
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
-        >>> ts.time
-        array([0. , 0.5, 1. , 1.5, 2. ])
-
-        >>> ts.get_ts_at_time(0.9).time
-        array([1.])
-
-        >>> ts.get_ts_at_time(1).time
-        array([1.])
-
-        >>> ts.get_ts_at_time(3.0).time
-        Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
-        3.0 is above the TimeSeries' maximal time of 2.0.
-
-        """
-        try:
-            out_ts = self.copy()
-            index = self.get_index_at_time(time)
-            out_ts.time = np.array([out_ts.time[index]])
-            for the_data in out_ts.data.keys():
-                out_ts.data[the_data] = out_ts.data[the_data][index]
-            return out_ts
         except Exception as e:
             self._check_not_empty_time()
             raise e
@@ -2323,7 +2249,7 @@ class TimeSeries:
         try:
             self._check_increasing_time()
             if time2 <= time1:
-                raise TimeSeriesIndexOrderError(
+                raise ValueError(
                     "The parameters time2 must be higher than time1. "
                     f"However, time2 is {time2} while time1 is {time1}."
                 )
@@ -2331,49 +2257,6 @@ class TimeSeries:
             new_ts = new_ts.get_ts_before_time(time2, inclusive=inclusive)
             return new_ts
 
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
-        """
-        Get a one-data TimeSeries at the event's nearest time.
-
-        Parameters
-        ----------
-        name
-            Name of the event to look for in the events list.
-        occurrence
-            Optional. i_th occurence of the event to look for in the events
-            list, starting at 0.
-
-        Returns
-        -------
-        TimeSeries
-            A TimeSeries of length 1, at the event's nearest time.
-
-        See also
-        --------
-        ktk.TimeSeries.get_ts_at_time
-        ktk.TimeSeries.get_ts_before_event
-        ktk.TimeSeries.get_ts_after_event
-        ktk.TimeSeries.get_ts_between_events
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time = np.arange(10)/10)
-        >>> ts.time
-        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
-
-        >>> ts = ts.add_event(0.22, 'event')
-        >>> new_ts = ts.get_ts_at_event('event')
-        >>> new_ts.time
-        array([0.2])
-
-        """
-        try:
-            time = self.events[self._get_event_index(name, occurrence)].time
-            return self.get_ts_at_time(time)
         except Exception as e:
             self._check_not_empty_time()
             raise e
@@ -2431,7 +2314,7 @@ class TimeSeries:
             time = self.events[self._get_event_index(name, occurrence)].time
             return self.get_ts_before_time(time, inclusive=inclusive)
         except Exception as e:
-            self._check_not_empty_time()
+            self._check_well_shaped()
             raise e
 
     def get_ts_after_event(
@@ -2487,7 +2370,7 @@ class TimeSeries:
             time = self.events[self._get_event_index(name, occurrence)].time
             return self.get_ts_after_time(time, inclusive=inclusive)
         except Exception as e:
-            self._check_not_empty_time()
+            self._check_well_shaped()
             raise e
 
     def get_ts_between_events(
@@ -2550,7 +2433,7 @@ class TimeSeries:
             )
             return ts
         except Exception as e:
-            self._check_not_empty_time()
+            self._check_well_shaped()
             raise e
 
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
@@ -2573,265 +2456,36 @@ class TimeSeries:
 
         See also
         --------
-        ktk.TimeSeries.sync_event
         ktk.TimeSeries.ui_sync
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10))
-        >>> ts = ts.add_event(3.5, "start")
+        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ts.add_event(0.35, "start")
         >>> ts.time
-        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         >>> ts.events
-        [TimeSeriesEvent(time=3.5, name='start')]
+        [TimeSeriesEvent(time=0.35, name='start')]
 
-        >>> ts = ts.shift(2.0)
+        >>> ts = ts.shift(0.2)
         >>> ts.time
-        array([ 2.,  3.,  4.,  5.,  6.,  7.,  8.,  9., 10., 11.])
+        array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. , 1.1])
 
         >>> ts.events
-        [TimeSeriesEvent(time=5.5, name='start')]
+        [TimeSeriesEvent(time=0.55, name='start')]
 
         """
         try:
             ts = self if in_place else self.copy()
             for event in ts.events:
-                event.time = event.time + time
-            ts.time = ts.time + time
+                event.time += time
+            ts.time += time
             return ts
 
         except Exception as e:
             self._check_not_empty_time()
             raise e
-
-    def sync_event(
-        self, name: str, occurrence: int = 0, *, in_place: bool = False
-    ) -> TimeSeries:
-        """
-        Shift time and events.time so that this event is at the new time zero.
-
-        Parameters
-        ----------
-        name
-            Name of the event to sync on.
-        occurrence
-            Optional. Occurrence of the event to sync on, starting with 0.
-        in_place
-            Optional. True to modify and return the original TimeSeries. False
-            to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
-
-        Returns
-        -------
-        TimeSeries
-            The TimeSeries with the time being shifted.
-
-        See also
-        --------
-        ktk.TimeSeries.shift
-        ktk.TimeSeries.ui_sync
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10))
-        >>> ts = ts.add_event(3.5, "sync")
-        >>> ts.events
-        [TimeSeriesEvent(time=3.5, name='sync')]
-
-        >>> ts.time
-        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-
-        >>> ts = ts.sync_event("sync")
-        >>> ts.events
-        [TimeSeriesEvent(time=0.0, name='sync')]
-
-        >>> ts.time
-        array([-3.5, -2.5, -1.5, -0.5,  0.5,  1.5,  2.5,  3.5,  4.5,  5.5])
-
-        """
-        try:
-            ts = self if in_place else self.copy()
-            time_shift = -self.events[self._get_event_index(name, occurrence)].time
-            ts.shift(time_shift, in_place=True)
-            return ts
-
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    def ui_sync(
-        self,
-        data_keys: Union[str, List[str]] = [],
-        ts2: Union[TimeSeries, None] = None,
-        data_keys2: Union[str, List[str]] = [],
-    ) -> TimeSeries:  # pragma: no cover
-        """
-        Synchronize one or two TimeSeries by shifting their time.
-
-        If this method is called on only one TimeSeries, an interactive
-        interface asks the user to click on the time to set to zero.
-
-        If another TimeSeries is given, an interactive interface allows
-        synchronizing both TimeSeries together.
-
-        Parameters
-        ----------
-        data_keys
-            Optional. The data keys to plot. If empty, all data is plotted.
-        ts2
-            Optional. A second TimeSeries to be synced to the first one. This
-            TimeSeries is modified in place.
-        data_keys2
-            Optional. The data keys from the second TimeSeries to plot. If
-            empty, all data is plotted.
-
-        Returns
-        -------
-        TimeSeries
-            A copy of the TimeSeries after synchronization.
-
-        Warning
-        -------
-        This function, which has been introduced in 0.1, is still experimental
-        and may change signature or behaviour in the future.
-
-        See also
-        --------
-        ktk.TimeSeries.sync_event
-        ktk.TimeSeries.shift
-
-        Notes
-        -----
-        Matplotlib must be in interactive mode for this method to work.
-
-        """
-        self._check_not_empty_time()
-        self._check_not_empty_data()
-        if ts2 is not None:
-            ts2._check_not_empty_time()
-            ts2._check_not_empty_data()
-
-        ts1 = self.copy()
-
-        fig = plt.figure("ktk.TimeSeries.ui_sync")
-
-        if ts2 is None:
-            # Synchronize ts1 only
-            ts1.plot(data_keys)
-            choice = kineticstoolkit.gui.button_dialog(
-                "Please zoom on the time zero and press Next.",
-                ["Cancel", "Next"],
-                **WINDOW_PLACEMENT,
-            )
-            if choice != 1:
-                plt.close(fig)
-                return ts1
-
-            kineticstoolkit.gui.message(
-                "Click on the sync event.", **WINDOW_PLACEMENT
-            )
-            click = plt.ginput(1)
-            kineticstoolkit.gui.message("")
-            plt.close(fig)
-            ts1 = ts1.shift(-click[0][0])
-
-        else:  # Sync two TimeSeries together
-
-            finished = False
-            # List of axes:
-            axes = []  # type: List[Any]
-            while finished is False:
-
-                if len(axes) == 0:
-                    axes.append(fig.add_subplot(2, 1, 1))
-                    axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
-
-                plt.sca(axes[0])
-                axes[0].cla()
-                ts1.plot(data_keys)
-                plt.title("First TimeSeries (ts1)")
-                plt.grid(True)
-                plt.tight_layout()
-
-                plt.sca(axes[1])
-                axes[1].cla()
-                ts2.plot(data_keys2)
-                plt.title("Second TimeSeries (ts2)")
-                plt.grid(True)
-                plt.tight_layout()
-
-                choice = kineticstoolkit.gui.button_dialog(
-                    "Please select an option.",
-                    choices=[
-                        "Zero ts1 only, using ts1",
-                        "Zero ts2 only, using ts2",
-                        "Zero both TimeSeries, using ts1",
-                        "Zero both TimeSeries, using ts2",
-                        "Sync both TimeSeries on a common event",
-                        "Finished",
-                    ],
-                    **WINDOW_PLACEMENT,
-                )
-
-                if choice == 0:  # Zero ts1 only
-                    kineticstoolkit.gui.message(
-                        "Click on the time zero in ts1.", **WINDOW_PLACEMENT
-                    )
-                    click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message("")
-
-                    ts1 = ts1.shift(-click_1[0][0])
-
-                elif choice == 1:  # Zero ts2 only
-                    kineticstoolkit.gui.message(
-                        "Click on the time zero in ts2.", **WINDOW_PLACEMENT
-                    )
-                    click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message("")
-
-                    ts2 = ts2.shift(-click_1[0][0])
-
-                elif choice == 2:  # Zero ts1 and ts2 using ts1
-                    kineticstoolkit.gui.message(
-                        "Click on the time zero in ts1.", **WINDOW_PLACEMENT
-                    )
-                    click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message("")
-
-                    ts1 = ts1.shift(-click_1[0][0])
-                    ts2 = ts2.shift(-click_1[0][0])
-
-                elif choice == 3:  # Zero ts1 and ts2 using ts2
-                    kineticstoolkit.gui.message(
-                        "Click on the time zero in ts2.", **WINDOW_PLACEMENT
-                    )
-                    click_2 = plt.ginput(1)
-                    kineticstoolkit.gui.message("")
-
-                    ts1 = ts1.shift(-click_2[0][0])
-                    ts2 = ts2.shift(-click_2[0][0])
-
-                elif choice == 4:  # Sync on a common event
-                    kineticstoolkit.gui.message(
-                        "Click on the sync event in ts1.", **WINDOW_PLACEMENT
-                    )
-                    click_1 = plt.ginput(1)
-                    kineticstoolkit.gui.message(
-                        "Now click on the same event in ts2.",
-                        **WINDOW_PLACEMENT,
-                    )
-                    click_2 = plt.ginput(1)
-                    kineticstoolkit.gui.message("")
-
-                    ts1 = ts1.shift(-click_1[0][0])
-                    ts2 = ts2.shift(-click_2[0][0])
-
-                elif choice == 5 or choice < -1:  # OK or closed figure, quit.
-                    plt.close(fig)
-                    finished = True
-
-        return ts1
 
     def get_subset(self, data_keys: Union[str, List[str]]) -> TimeSeries:
         """
@@ -2850,6 +2504,12 @@ class TimeSeries:
         -------
         TimeSeries
             A copy of the TimeSeries, minus the unspecified data keys.
+
+        Raises
+        ------
+        KeyError
+            If one or more data keys could not be found in the TimeSeries
+            data.
 
         See also
         --------
@@ -2882,7 +2542,10 @@ class TimeSeries:
                 try:
                     ts.data[key] = self.data[key].copy()
                 except KeyError:
-                    pass
+                    raise KeyError(
+                        f"The key '{key}' could not be found among the "
+                        f"{len(self.data)} data entries of the TimeSeries"
+                    )
 
                 try:
                     ts.data_info[key] = deepcopy(self.data_info[key])
@@ -2925,7 +2588,7 @@ class TimeSeries:
 
         """
         try:
-            if self.time.shape[0] == 0 or self.time.shape[0] == 1:
+            if self.time.shape[0] <= 1:
                 return np.nan
 
             deltas = self.time[1:] - self.time[0:-1]
@@ -2935,7 +2598,7 @@ class TimeSeries:
                 return np.nan
 
         except Exception as e:
-            self._check_not_empty_time()
+            self._check_well_typed()  # We already checked for not-empty time.
             raise e
 
     def resample(
@@ -3082,7 +2745,6 @@ class TimeSeries:
 
         except Exception as e:
             self._check_not_empty_time()
-            self._check_not_empty_data()
             raise e
 
     def merge(
@@ -3335,53 +2997,6 @@ class TimeSeries:
             self._check_not_empty_data()
             raise e
 
-    def ui_get_ts_between_clicks(
-        self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
-    ) -> TimeSeries:  # pragma: no cover
-        """
-        Get a TimeSeries between two mouse clicks.
-
-        Parameters
-        ----------
-        data_keys
-            Optional. String or list of strings corresponding to the signals
-            to plot. See TimeSeries.plot() for more information.
-        inclusive
-            Optional. True to include the given time in the comparison.
-
-        Returns
-        -------
-        TimeSeries
-            A new TimeSeries that fulfils the specified conditions.
-
-        See also
-        --------
-        ktk.TimeSeries.get_ts_between_indexes
-        ktk.TimeSeries.get_ts_between_times
-        ktk.TimeSeries.get_ts_between_events
-
-        Note
-        ----
-        Matplotlib must be in interactive mode for this method to work.
-
-        """
-        self._check_not_empty_time()
-        self._check_not_empty_data()
-
-        fig = plt.figure()
-        self.plot(data_keys)
-        kineticstoolkit.gui.message(
-            "Click on both sides of the portion to keep.", **WINDOW_PLACEMENT
-        )
-        plt.pause(0.001)  # Redraw
-        points = plt.ginput(2)
-        kineticstoolkit.gui.message("")
-        times = [points[0][0], points[1][0]]
-        plt.close(fig)
-        return self.get_ts_between_times(
-            min(times), max(times), inclusive=inclusive
-        )
-
     def ui_edit_events(
         self,
         name: Union[str, List[str]] = [],
@@ -3584,6 +3199,178 @@ class TimeSeries:
             plt.cla()
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
+
+    def ui_sync(
+        self,
+        data_keys: Union[str, List[str]] = [],
+        ts2: Union[TimeSeries, None] = None,
+        data_keys2: Union[str, List[str]] = [],
+    ) -> TimeSeries:  # pragma: no cover
+        """
+        Synchronize one or two TimeSeries by shifting their time.
+
+        If this method is called on only one TimeSeries, an interactive
+        interface asks the user to click on the time to set to zero.
+
+        If another TimeSeries is given, an interactive interface allows
+        synchronizing both TimeSeries together.
+
+        Parameters
+        ----------
+        data_keys
+            Optional. The data keys to plot. If empty, all data is plotted.
+        ts2
+            Optional. A second TimeSeries to be synced to the first one. This
+            TimeSeries is modified in place.
+        data_keys2
+            Optional. The data keys from the second TimeSeries to plot. If
+            empty, all data is plotted.
+
+        Returns
+        -------
+        TimeSeries
+            A copy of the TimeSeries after synchronization.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future.
+
+        See also
+        --------
+        ktk.TimeSeries.shift
+
+        Notes
+        -----
+        Matplotlib must be in interactive mode for this method to work.
+
+        """
+        self._check_not_empty_time()
+        self._check_not_empty_data()
+        if ts2 is not None:
+            ts2._check_not_empty_time()
+            ts2._check_not_empty_data()
+
+        ts1 = self.copy()
+
+        fig = plt.figure("ktk.TimeSeries.ui_sync")
+
+        if ts2 is None:
+            # Synchronize ts1 only
+            ts1.plot(data_keys)
+            choice = kineticstoolkit.gui.button_dialog(
+                "Please zoom on the time zero and press Next.",
+                ["Cancel", "Next"],
+                **WINDOW_PLACEMENT,
+            )
+            if choice != 1:
+                plt.close(fig)
+                return ts1
+
+            kineticstoolkit.gui.message(
+                "Click on the sync event.", **WINDOW_PLACEMENT
+            )
+            click = plt.ginput(1)
+            kineticstoolkit.gui.message("")
+            plt.close(fig)
+            ts1 = ts1.shift(-click[0][0])
+
+        else:  # Sync two TimeSeries together
+
+            finished = False
+            # List of axes:
+            axes = []  # type: List[Any]
+            while finished is False:
+
+                if len(axes) == 0:
+                    axes.append(fig.add_subplot(2, 1, 1))
+                    axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
+
+                plt.sca(axes[0])
+                axes[0].cla()
+                ts1.plot(data_keys)
+                plt.title("First TimeSeries (ts1)")
+                plt.grid(True)
+                plt.tight_layout()
+
+                plt.sca(axes[1])
+                axes[1].cla()
+                ts2.plot(data_keys2)
+                plt.title("Second TimeSeries (ts2)")
+                plt.grid(True)
+                plt.tight_layout()
+
+                choice = kineticstoolkit.gui.button_dialog(
+                    "Please select an option.",
+                    choices=[
+                        "Zero ts1 only, using ts1",
+                        "Zero ts2 only, using ts2",
+                        "Zero both TimeSeries, using ts1",
+                        "Zero both TimeSeries, using ts2",
+                        "Sync both TimeSeries on a common event",
+                        "Finished",
+                    ],
+                    **WINDOW_PLACEMENT,
+                )
+
+                if choice == 0:  # Zero ts1 only
+                    kineticstoolkit.gui.message(
+                        "Click on the time zero in ts1.", **WINDOW_PLACEMENT
+                    )
+                    click_1 = plt.ginput(1)
+                    kineticstoolkit.gui.message("")
+
+                    ts1 = ts1.shift(-click_1[0][0])
+
+                elif choice == 1:  # Zero ts2 only
+                    kineticstoolkit.gui.message(
+                        "Click on the time zero in ts2.", **WINDOW_PLACEMENT
+                    )
+                    click_1 = plt.ginput(1)
+                    kineticstoolkit.gui.message("")
+
+                    ts2 = ts2.shift(-click_1[0][0])
+
+                elif choice == 2:  # Zero ts1 and ts2 using ts1
+                    kineticstoolkit.gui.message(
+                        "Click on the time zero in ts1.", **WINDOW_PLACEMENT
+                    )
+                    click_1 = plt.ginput(1)
+                    kineticstoolkit.gui.message("")
+
+                    ts1 = ts1.shift(-click_1[0][0])
+                    ts2 = ts2.shift(-click_1[0][0])
+
+                elif choice == 3:  # Zero ts1 and ts2 using ts2
+                    kineticstoolkit.gui.message(
+                        "Click on the time zero in ts2.", **WINDOW_PLACEMENT
+                    )
+                    click_2 = plt.ginput(1)
+                    kineticstoolkit.gui.message("")
+
+                    ts1 = ts1.shift(-click_2[0][0])
+                    ts2 = ts2.shift(-click_2[0][0])
+
+                elif choice == 4:  # Sync on a common event
+                    kineticstoolkit.gui.message(
+                        "Click on the sync event in ts1.", **WINDOW_PLACEMENT
+                    )
+                    click_1 = plt.ginput(1)
+                    kineticstoolkit.gui.message(
+                        "Now click on the same event in ts2.",
+                        **WINDOW_PLACEMENT,
+                    )
+                    click_2 = plt.ginput(1)
+                    kineticstoolkit.gui.message("")
+
+                    ts1 = ts1.shift(-click_1[0][0])
+                    ts2 = ts2.shift(-click_2[0][0])
+
+                elif choice == 5 or choice < -1:  # OK or closed figure, quit.
+                    plt.close(fig)
+                    finished = True
+
+        return ts1
 
     def plot(
         self,
@@ -3873,8 +3660,8 @@ class TimeSeries:
         ts.data = dataframe_to_dict_of_arrays(dataframe)
         ts.time = dataframe.index.to_numpy()
         return ts
-    
-#%% Deprecated methods
+
+    #%% Deprecated methods
     @deprecated(
         since="0.9.3",
         until="2024",
@@ -3916,6 +3703,120 @@ class TimeSeries:
         except Exception as e:
             self._check_well_typed()
             raise e
+
+    @deprecated(
+        since="0.9.3",
+        until="2024",
+        details=(
+            "Please use ts.get_ts_after_time() and address the first sample "
+            "of the resulting TimeSeries."
+        ),
+    )
+    def get_ts_at_time(self, time: float) -> TimeSeries:
+        """Get a one-data TimeSeries at the nearest time."""
+        try:
+            out_ts = self.copy()
+            index = self.get_index_at_time(time)
+            out_ts.time = np.array([out_ts.time[index]])
+            for the_data in out_ts.data.keys():
+                out_ts.data[the_data] = out_ts.data[the_data][index]
+            return out_ts
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
+
+    @deprecated(
+        since="0.9.3",
+        until="2024",
+        details=(
+            "Please use ts.get_ts_after_event() and address the first sample "
+            "of the resulting TimeSeries."
+        ),
+    )
+    def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
+        """Get a one-data TimeSeries at the event's nearest time."""
+        try:
+            time = self.events[self._get_event_index(name, occurrence)].time
+            return self.get_ts_at_time(time)
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
+
+    @deprecated(
+        since="0.9.3", until="2024", details=("Please use ts.shift() instead.")
+    )
+    def sync_event(
+        self, name: str, occurrence: int = 0, *, in_place: bool = False
+    ) -> TimeSeries:
+        """Shift time and events so that this event is at the new time zero."""
+        try:
+            ts = self if in_place else self.copy()
+            time_shift = -self.events[
+                self._get_event_index(name, occurrence)
+            ].time
+            ts.shift(time_shift, in_place=True)
+            return ts
+
+        except Exception as e:
+            self._check_not_empty_time()
+            raise e
+
+    @deprecated(
+        since="0.9.3",
+        until="2024",
+        details=(
+            "Please use ts.ui_edit_events() and add 'begin' and 'end' events "
+            "interactively instead. Then, you can use "
+            "ts.get_ts_between_events() programmatically to keep only the "
+            "interesting portion of the TimeSeries."
+        ),
+    )
+    def ui_get_ts_between_clicks(
+        self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
+    ) -> TimeSeries:  # pragma: no cover
+        """
+        Get a TimeSeries between two mouse clicks.
+
+        Parameters
+        ----------
+        data_keys
+            Optional. String or list of strings corresponding to the signals
+            to plot. See TimeSeries.plot() for more information.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        See also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.get_ts_between_events
+
+        Note
+        ----
+        Matplotlib must be in interactive mode for this method to work.
+
+        """
+        self._check_not_empty_time()
+        self._check_not_empty_data()
+
+        fig = plt.figure()
+        self.plot(data_keys)
+        kineticstoolkit.gui.message(
+            "Click on both sides of the portion to keep.", **WINDOW_PLACEMENT
+        )
+        plt.pause(0.001)  # Redraw
+        points = plt.ginput(2)
+        kineticstoolkit.gui.message("")
+        times = [points[0][0], points[1][0]]
+        plt.close(fig)
+        return self.get_ts_between_times(
+            min(times), max(times), inclusive=inclusive
+        )
 
 
 if __name__ == "__main__":  # pragma: no cover
