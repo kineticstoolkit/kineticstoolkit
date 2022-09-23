@@ -32,6 +32,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
+from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.exceptions import (
     TimeSeriesEmptyTimeError,
     TimeSeriesEmptyDataError,
@@ -452,8 +453,6 @@ class TimeSeries:
             "copy",
             "fill_missing_samples",
             "from_dataframe",
-            "get_event_index",
-            "get_event_time",
             "get_index_after_time",
             "get_index_at_time",
             "get_index_before_time",
@@ -952,6 +951,11 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the removed data info.
 
+        Raises
+        ------
+        KeyError
+            If this data_info could not be found.
+
         See also
         --------
         ktk.TimeSeries.add_data_info
@@ -1004,6 +1008,12 @@ class TimeSeries:
         -------
         TimeSeries
             The TimeSeries with the renamed data.
+
+        Raises
+        ------
+        KeyError
+            If this data key could not be found in the TimeSeries' data
+            attribute.
 
         See also
         --------
@@ -1067,6 +1077,12 @@ class TimeSeries:
         TimeSeries
             The TimeSeries with the removed data.
 
+        Raises
+        ------
+        KeyError
+            If this data key could not be found in the TimeSeries' data
+            attribute.
+
         See also
         --------
         ktk.TimeSeries.rename_data
@@ -1110,7 +1126,7 @@ class TimeSeries:
             self._check_well_typed()
             raise e
 
-    def get_event_indexes(self, name) -> List[int]:
+    def _get_event_indexes(self, name) -> List[int]:
         """
         Get a list of index of all occurrences of an event.
 
@@ -1143,47 +1159,28 @@ class TimeSeries:
             self._check_well_typed()
             raise e
 
-    def get_event_index(self, name: str, occurrence: int = 0) -> int:
+    def _get_event_index(self, name: str, occurrence: int = 0) -> int:
         """
         Get the events index of a given occurrence of an event name.
-
+        
         Parameters
         ----------
         name
             Name of the event to look for in the events list.
-        occurrence
-            i_th occurence of the event to look for in the events
-            list, starting at 0, where the occurrences are sorted in time.
 
+        occurrence
+            Occurrence of the event
+            
         Returns
         -------
         int
-            The index of the event or np.nan if no event found. If no
-            occurrence of this event could be found, a
-            TimeSeriesEventNotFoundError is raised.
-
-        Examples
-        --------
-        >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(1.0, 'cycle_start')
-        >>> ts = ts.add_event(1.5, 'cycle_start')
-        >>> ts = ts.add_event(2.0, 'cycle_start')
-
-        >>> ts.get_event_index('cycle_start')
-        0
-
-        >>> ts.get_event_index('cycle_start', 0)
-        0
-
-        >>> ts.get_event_index('cycle_start', 1)
-        1
-
-        >>> ts.get_event_index('cycle_start', 3)
-        ...
-        Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesEventNotFoundError: The
-        occurrence 3 of event 'cycle_start' could not be found in the
-        TimeSeries. A total of 3 occurrence(s) of this event name was found.
+            The index of the event occurrence in the events list.
+            
+        Raises
+        ------
+        TimeSeriesEventNotFoundError
+            If the specified occurrence could not be found.
+        
         """
         try:
             occurrence = int(occurrence)
@@ -1193,12 +1190,12 @@ class TimeSeries:
 
             # Get the event occurrence
             try:
-                return self.get_event_indexes(name)[occurrence]
+                return self._get_event_indexes(name)[occurrence]
             except IndexError:
                 raise TimeSeriesEventNotFoundError(
                     f"The occurrence {occurrence} of event '{name}' could not "
                     "be found in the TimeSeries. A total of "
-                    f"{len(self.get_event_indexes(name))} occurrence(s) of "
+                    f"{len(self._get_event_indexes(name))} occurrence(s) of "
                     "this event name was found."
                 )
 
@@ -1206,56 +1203,67 @@ class TimeSeries:
             self._check_well_typed()
             raise e
 
-    def get_event_time(self, name: str, occurrence: int = 0) -> float:
+    def _get_duplicate_event_indexes(self) -> List[int]:
         """
-        Get the time of the specified event.
-
-        Parameters
-        ----------
-        name
-            Name of the event to look for in the events list.
-        occurrence
-            Optional. i_th occurence of the event to look for in the events
-            list, starting at 0.
+        Find events with same name and same time.
 
         Returns
         -------
-        float
-            The time of the specified event. If no corresponding event is
-            found, then np.nan is returned.
+        List[int]
+            A list of list of event indexes. The outer list corresponds to
+            different events. The inner list corresponds to all occurences of
+            this event. The integer corresponds to the event index in the
+            TimeSeries' event list.
 
         Example
         -------
-        >>> # Instanciate a timeseries with some events
         >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(5.5, 'event1')
-        >>> ts = ts.add_event(10.8, 'event2')
-        >>> ts = ts.add_event(2.3, 'event2')
 
-        >>> ts.get_event_time('event1')
-        5.5
+        # Three occurrences of event1
+        >>> ts = ts.add_event(0.0, "event1")
+        >>> ts = ts.add_event(1E-12, "event1")
+        >>> ts = ts.add_event(0.0, "event1")
 
-        >>> ts.get_event_time('event2', 0)
-        2.3
+        # One occurrence of event2, but also at 0.0 second
+        >>> ts = ts.add_event(0.0, "event2")
 
-        >>> ts.get_event_time('event2', 1)
-        10.8
-
-        >>> ts.get_event_time('event2', 2)
-        ...
-        Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesEventNotFoundError: The
-        occurrence 2 of event 'event2' could not be found in the
-        TimeSeries. A total of 2 occurrence(s) of this event name was found.
+        # Two occurrences of event3
+        >>> ts = ts.add_event(2.0, "event3")
+        >>> ts = ts.add_event(2.0, "event3")
 
         """
         try:
-            event_index = self.get_event_index(name, occurrence)
-            return self.events[event_index].time
+            # Sort all events in a dict with key being Tuple(time, name)
+            sorted_events = {}  # type: Dict[Tuple[float, str], List[int]]
+            for i_event, event in enumerate(self.events):
+                tup_event = event._to_tuple()
+
+                # Check if this event already exist in the list.
+                # If it does, add it to the list.
+                found = False
+                for key in sorted_events:
+                    if np.isclose(key[0], event.time) and (
+                        key[1] == event.name
+                    ):
+                        sorted_events[key].append(i_event)
+                        found = True
+                        break
+                if not found:
+                    # Otherwise, create it in the list
+                    sorted_events[tup_event] = [i_event]
+
+            # Convert this dict to the desired list of lists
+            out = []
+            for key in sorted_events:
+                if len(sorted_events[key]) > 1:
+                    out.extend(sorted_events[key][1:])
+
+            return sorted(out)
 
         except Exception as e:
             self._check_well_typed()
             raise e
+
 
     def add_event(
         self,
@@ -1407,13 +1415,13 @@ class TimeSeries:
                     f"New event name '{new_name}' must be different from old "
                     "name."
                 )
-
+                
             if occurrence is None:
                 # Rename every occurrence of this event
-                for index in self.get_event_indexes(old_name):
+                for index in self._get_event_indexes(old_name):
                     ts.events[index].name = new_name
             else:
-                index = ts.get_event_index(old_name, occurrence)
+                index = self._get_event_index(old_name, occurrence)
                 ts.events[index].name = new_name
             return ts
 
@@ -1489,7 +1497,7 @@ class TimeSeries:
         ts = self if in_place else self.copy()
 
         if occurrence is None:  # Remove all occurrences
-            event_index = ts.get_event_index(name, 0)
+            event_index = ts._get_event_index(name, 0)
             try:
                 # Continually remove the first event of this name, until
                 # there are no more.
@@ -1502,70 +1510,9 @@ class TimeSeries:
                     raise e
 
         else:  # Remove only the specified occurrence
-            event_index = ts.get_event_index(name, occurrence)
+            event_index = ts._get_event_index(name, occurrence)
             ts.events.pop(event_index)
         return ts
-
-    def _get_duplicate_event_indexes(self) -> List[int]:
-        """
-        Find events with same name and same time so that every event is unique.
-
-        Returns
-        -------
-        List[int]
-            A list of list of event indexes. The outer list corresponds to
-            different events. The inner list corresponds to all occurences of
-            this event. The integer corresponds to the event index in the
-            TimeSeries' event list.
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries()
-
-        # Three occurrences of event1
-        >>> ts = ts.add_event(0.0, "event1")
-        >>> ts = ts.add_event(1E-12, "event1")
-        >>> ts = ts.add_event(0.0, "event1")
-
-        # One occurrence of event2, but also at 0.0 second
-        >>> ts = ts.add_event(0.0, "event2")
-
-        # Two occurrences of event3
-        >>> ts = ts.add_event(2.0, "event3")
-        >>> ts = ts.add_event(2.0, "event3")
-
-        """
-        try:
-            # Sort all events in a dict with key being Tuple(time, name)
-            sorted_events = {}  # type: Dict[Tuple[float, str], List[int]]
-            for i_event, event in enumerate(self.events):
-                tup_event = event._to_tuple()
-
-                # Check if this event already exist in the list.
-                # If it does, add it to the list.
-                found = False
-                for key in sorted_events:
-                    if np.isclose(key[0], event.time) and (
-                        key[1] == event.name
-                    ):
-                        sorted_events[key].append(i_event)
-                        found = True
-                        break
-                if not found:
-                    # Otherwise, create it in the list
-                    sorted_events[tup_event] = [i_event]
-
-            # Convert this dict to the desired list of lists
-            out = []
-            for key in sorted_events:
-                if len(sorted_events[key]) > 1:
-                    out.extend(sorted_events[key][1:])
-
-            return sorted(out)
-
-        except Exception as e:
-            self._check_well_typed()
-            raise e
 
     def remove_duplicate_events(self, *, in_place: bool = False) -> TimeSeries:
         """
@@ -1859,7 +1806,7 @@ class TimeSeries:
         3
 
         >>> ts.get_index_before_time(0)
-        Traceback (most recent call last):        
+        Traceback (most recent call last):
         kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
         0 is below or equal to the TimeSeries' minimal time of 0.0.
 
@@ -1872,9 +1819,15 @@ class TimeSeries:
             self._check_increasing_time()
 
             # Start higher, then decrease until the condition matches
-            index = min(
-                len(self.time) - 1, self.get_index_at_time(time) + 1
-            )
+            try:
+                start_index = self.get_index_at_time(time) + 1
+            except TimeSeriesSpanError as e:
+                if time > np.max(self.time):  # It's okay.
+                    return len(self.time) - 1
+                else:
+                    raise e
+
+            index = min(len(self.time) - 1, start_index)
             if inclusive:
                 while True:
                     if index < 0:
@@ -1954,11 +1907,18 @@ class TimeSeries:
 
         """
         try:
-
             self._check_increasing_time()
 
             # Start lower, then increase until the condition matches
-            index = max(0, self.get_index_at_time(time) - 1)
+            try:
+                start_index = self.get_index_at_time(time) - 1
+            except TimeSeriesSpanError as e:
+                if time < np.min(self.time):  # It's okay
+                    return 0
+                else:
+                    raise e
+
+            index = max(0, start_index)
             if inclusive:
                 while True:
                     if index >= len(self.time):
@@ -2023,18 +1983,17 @@ class TimeSeries:
 
         """
         try:
+            self._check_increasing_time()
+
             out_ts = self.copy(copy_data=False, copy_time=False)
 
             if index < 0:
                 index += len(self.time)
 
-            if np.isnan(index):
-                index_range = range(0)
+            if inclusive:
+                index_range = range(index + 1)
             else:
-                if inclusive:
-                    index_range = range(index + 1)
-                else:
-                    index_range = range(index)
+                index_range = range(index)
 
             out_ts.time = self.time[index_range]
             for the_data in self.data:
@@ -2083,6 +2042,8 @@ class TimeSeries:
 
         """
         try:
+            self._check_increasing_time()
+
             out_ts = self.copy(copy_data=False, copy_time=False)
 
             if index < 0:
@@ -2120,6 +2081,11 @@ class TimeSeries:
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
+        Note
+        ----
+        A TimeSeriesIndexOrderError is raised if index2 is not higher than
+        index1.
+
         See also
         --------
         ktk.TimeSeries.get_ts_between_times
@@ -2142,14 +2108,20 @@ class TimeSeries:
 
         """
         try:
+            self._check_increasing_time()
+
+            if index2 <= index1:
+                raise TimeSeriesIndexOrderError(
+                    "The parameter index2 must be higher than index1. "
+                    f"However, index2 is {index2} while index1 is {index1}."
+                )
+
             out_ts = self.copy(copy_time=False, copy_data=False)
-            if np.isnan(index1) or np.isnan(index2):
-                index_range = range(0)
+
+            if inclusive:
+                index_range = range(index1, index2 + 1)
             else:
-                if inclusive:
-                    index_range = range(index1, index2 + 1)
-                else:
-                    index_range = range(index1 + 1, index2)
+                index_range = range(index1 + 1, index2)
 
             out_ts.time = self.time[index_range]
             for the_data in self.data.keys():
@@ -2188,20 +2160,22 @@ class TimeSeries:
         >>> ts.time
         array([0. , 0.5, 1. , 1.5, 2. ])
 
-        >>> ts.get_index_at_time(0.9)
-        2
+        >>> ts.get_ts_at_time(0.9).time
+        array([1.])
 
-        >>> ts.get_index_at_time(1)
-        2
+        >>> ts.get_ts_at_time(1).time
+        array([1.])
 
-        >>> ts.get_index_at_time(1.1)
-        2
+        >>> ts.get_ts_at_time(3.0).time
+        Traceback (most recent call last):
+        kineticstoolkit.exceptions.TimeSeriesSpanError: The requested time of
+        3.0 is above the TimeSeries' maximal time of 2.0.
 
         """
         try:
             out_ts = self.copy()
             index = self.get_index_at_time(time)
-            out_ts.time = out_ts.time[index]
+            out_ts.time = np.array([out_ts.time[index]])
             for the_data in out_ts.data.keys():
                 out_ts.data[the_data] = out_ts.data[the_data][index]
             return out_ts
@@ -2248,16 +2222,10 @@ class TimeSeries:
 
         """
         try:
-            # Edge case
-            if len(self.time) == 0 or time > self.time[-1]:
-                return self.copy()
+            self._check_increasing_time()
 
-            # Other cases
             index = self.get_index_before_time(time, inclusive=inclusive)
-            if ~np.isnan(index):
-                return self.get_ts_before_index(index, inclusive=True)  # type: ignore # noqa
-            else:
-                return self.get_ts_before_index(0, inclusive=False)
+            return self.get_ts_before_index(index, inclusive=True)
 
         except Exception as e:
             self._check_not_empty_time()
@@ -2304,16 +2272,10 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
         try:
-            # Edge case
-            if len(self.time) == 0 or time < self.time[0]:
-                return self.copy()
+            self._check_increasing_time()
 
-            # Other cases
             index = self.get_index_after_time(time, inclusive=inclusive)
-            if ~np.isnan(index):
-                return self.get_ts_after_index(index, inclusive=True)  # type: ignore # noqa
-            else:
-                return self.get_ts_after_index(-1, inclusive=False)
+            return self.get_ts_after_index(index, inclusive=True)
 
         except Exception as e:
             self._check_not_empty_time()
@@ -2359,13 +2321,14 @@ class TimeSeries:
 
         """
         try:
-            sorted_times = np.sort([time1, time2])
-            new_ts = self.get_ts_after_time(
-                sorted_times[0], inclusive=inclusive
-            )
-            new_ts = new_ts.get_ts_before_time(
-                sorted_times[1], inclusive=inclusive
-            )
+            self._check_increasing_time()
+            if time2 <= time1:
+                raise TimeSeriesIndexOrderError(
+                    "The parameters time2 must be higher than time1. "
+                    f"However, time2 is {time2} while time1 is {time1}."
+                )
+            new_ts = self.get_ts_after_time(time1, inclusive=inclusive)
+            new_ts = new_ts.get_ts_before_time(time2, inclusive=inclusive)
             return new_ts
 
         except Exception as e:
@@ -2396,9 +2359,20 @@ class TimeSeries:
         ktk.TimeSeries.get_ts_after_event
         ktk.TimeSeries.get_ts_between_events
 
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time = np.arange(10)/10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts = ts.add_event(0.22, 'event')
+        >>> new_ts = ts.get_ts_at_event('event')
+        >>> new_ts.time
+        array([0.2])
+
         """
         try:
-            time = self.get_event_time(name, occurrence)
+            time = self.events[self._get_event_index(name, occurrence)].time
             return self.get_ts_at_time(time)
         except Exception as e:
             self._check_not_empty_time()
@@ -2454,7 +2428,7 @@ class TimeSeries:
 
         """
         try:
-            time = self.get_event_time(name, occurrence)
+            time = self.events[self._get_event_index(name, occurrence)].time
             return self.get_ts_before_time(time, inclusive=inclusive)
         except Exception as e:
             self._check_not_empty_time()
@@ -2510,7 +2484,7 @@ class TimeSeries:
 
         """
         try:
-            time = self.get_event_time(name, occurrence)
+            time = self.events[self._get_event_index(name, occurrence)].time
             return self.get_ts_after_time(time, inclusive=inclusive)
         except Exception as e:
             self._check_not_empty_time()
@@ -2678,7 +2652,8 @@ class TimeSeries:
         """
         try:
             ts = self if in_place else self.copy()
-            ts.shift(-ts.get_event_time(name, occurrence), in_place=True)
+            time_shift = -self.events[self._get_event_index(name, occurrence)].time
+            ts.shift(time_shift, in_place=True)
             return ts
 
         except Exception as e:
@@ -3898,6 +3873,49 @@ class TimeSeries:
         ts.data = dataframe_to_dict_of_arrays(dataframe)
         ts.time = dataframe.index.to_numpy()
         return ts
+    
+#%% Deprecated methods
+    @deprecated(
+        since="0.9.3",
+        until="2024",
+        details=(
+            """
+        This function was deprecated in an attempt to simplify the TimeSeries
+        API. A similar way to achieve the same result would be to do::
+
+            temp = ts.sort_events()
+            indexes = [i for i, e in enumerate(temp.events) if e.name == name]
+            index = indexes[occurrence]
+            """
+        ),
+    )
+    def get_event_index(self, name: str, occurrence: int = 0) -> int:
+        """Get the events index of a given occurrence of an event name."""
+        return self._get_event_index(name=name, occurrence=occurrence)
+
+    @deprecated(
+        since="0.9.3",
+        until="2024",
+        details=(
+            """
+        This function was deprecated in an attempt to simplify the TimeSeries
+        API. A similar way to achieve the same result would be to do::
+
+            temp = ts.sort_events()
+            times = [e.time e in temp.events if e.name == name]
+            time = times[occurrence]
+            """
+        ),
+    )
+    def get_event_time(self, name: str, occurrence: int = 0) -> float:
+        """Get the time of the specified event."""
+        try:
+            event_index = self._get_event_index(name, occurrence)
+            return self.events[event_index].time
+
+        except Exception as e:
+            self._check_well_typed()
+            raise e
 
 
 if __name__ == "__main__":  # pragma: no cover

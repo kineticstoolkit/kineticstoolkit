@@ -63,8 +63,10 @@ class TimeSeriesSpanError(ValueError):
 
     pass
 
+
 class TimeSeriesNonIncreasingTimeError(ValueError):
     """Raised when the TimeSeries' time is not continuously increasing."""
+
 
 class TimeSeriesIndexNotFoundError(ValueError):
     pass

@@ -156,12 +156,11 @@ def test_check_well_typed():
     except TimeSeriesTypeError:
         pass
 
-    ts.time = np.array([1., 2., 2.])  # Should fail
+    ts.time = np.array([1.0, 2.0, 2.0])  # Should fail
     try:
         ts._check_well_typed()
     except TimeSeriesTypeError:
         pass
-
 
     ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
     ts.add_data_info("test1", "Unit", "N", in_place=True)
@@ -202,7 +201,7 @@ def test_check_well_typed():
         ts._check_well_typed()
     except TimeSeriesTypeError:
         pass
-    
+
 
 def test_check_well_shaped():
     ts = ktk.TimeSeries()  # Should pass
@@ -518,27 +517,28 @@ def test_get_event_indexes_index_time():
     ts = ts.add_event(5.5, "event1")
     ts = ts.add_event(10.8, "event2")
     ts = ts.add_event(2.3, "event2")
-    assert ts.get_event_indexes("event0") == []
-    assert ts.get_event_indexes("event1") == [0]
-    assert ts.get_event_indexes("event2") == [2, 1]
-    assert ts.get_event_index("event2", 1) == 1
+    assert ts._get_event_indexes("event0") == []
+    assert ts._get_event_indexes("event1") == [0]
+    assert ts._get_event_indexes("event2") == [2, 1]
+    assert ts._get_event_index("event2", 1) == 1
     try:
-        ts.get_event_index("event0", 0)
+        ts._get_event_index("event0", 0)
     except TimeSeriesEventNotFoundError:
         pass
     try:
-        ts.get_event_index("event1", 1)
+        ts._get_event_index("event1", 1)
     except TimeSeriesEventNotFoundError:
         pass
 
-    assert ts.get_event_time("event1") == 5.5
-    assert ts.get_event_time("event2", 0) == 2.3
-    assert ts.get_event_time("event2", 1) == 10.8
+    # Deprecated
+#    assert ts.get_event_time("event1") == 5.5
+#    assert ts.get_event_time("event2", 0) == 2.3
+#    assert ts.get_event_time("event2", 1) == 10.8
 
 
-def test_get_ts_at_before_after_time():
+def test_get_index_at_before_after_time():
     # doctests
-    
+
     # get_index_at_time
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
     assert ts.get_index_at_time(0.9) == 2
@@ -548,7 +548,7 @@ def test_get_ts_at_before_after_time():
         ts.get_index_at_time(2.1)
     except TimeSeriesSpanError:
         pass
-    
+
     # get_index_before_time
     assert ts.get_index_before_time(0.9) == 1
     assert ts.get_index_before_time(1) == 1
@@ -569,7 +569,8 @@ def test_get_ts_at_before_after_time():
         ts.get_index_after_time(2)
     except TimeSeriesSpanError:
         pass
-    assert ts.get_index_after_time(2, inclusive=True) == 4    
+    assert ts.get_index_after_time(2, inclusive=True) == 4
+
 
 def test_get_ts_at_event___get_ts_at_time():
     ts = ktk.TimeSeries()
@@ -585,27 +586,54 @@ def test_get_ts_at_event___get_ts_at_time():
     ts = ts.add_event(10.8, "event2")
     ts = ts.add_event(2.3, "event2")
     new_ts = ts.get_ts_at_event("event1")
-    assert new_ts.time == 5
+    assert np.array_equal(new_ts.time, np.array([5]))
     new_ts = ts.get_ts_at_event("event2")
-    assert new_ts.time == 2
+    assert np.array_equal(new_ts.time, np.array([2]))
     new_ts = ts.get_ts_at_event("event2", 1)
-    assert new_ts.time == 11
+    assert np.array_equal(new_ts.time, np.array([11]))
+    try:
+        ts.get_ts_at_time(1000)
+    except TimeSeriesSpanError:
+        pass
 
 
 def test_get_ts_before_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
-    new_ts = ts.get_ts_before_time(0)
-    assert new_ts.time.tolist() == []
+    new_ts = ts.get_ts_before_time(50)
+    assert new_ts == ts
+    try:
+        ts.get_ts_before_time(0)
+    except TimeSeriesSpanError:
+        pass
     new_ts = ts.get_ts_before_time(5)
     assert new_ts.time.tolist() == [0.0, 1.0, 2.0, 3.0, 4.0]
 
 
 def test_get_ts_after_time():
     ts = ktk.TimeSeries(time=np.linspace(0, 9, 10))
+    new_ts = ts.get_ts_after_time(-50)
+    assert new_ts == ts
     new_ts = ts.get_ts_after_time(4)
     assert new_ts.time.tolist() == [5.0, 6.0, 7.0, 8.0, 9.0]
-    new_ts = ts.get_ts_after_time(9)
-    assert new_ts.time.tolist() == []
+    try:
+        new_ts = ts.get_ts_after_time(9)
+    except TimeSeriesSpanError:
+        pass
+
+
+def test_get_ts_between_indexes():
+    ts = ktk.TimeSeries(time=np.arange(10) / 10)
+    assert np.array_equal(
+        ts.get_ts_between_indexes(2, 5).time, np.array([0.3, 0.4])
+    )
+    assert np.array_equal(
+        ts.get_ts_between_indexes(2, 5, inclusive=True).time,
+        np.array([0.2, 0.3, 0.4, 0.5]),
+    )
+    try:
+        ts.get_ts_between_indexes(5, 2)
+    except TimeSeriesIndexOrderError:
+        pass
 
 
 def test_get_ts_between_times():
@@ -623,11 +651,24 @@ def test_get_ts_between_times():
         8.0,
         9.0,
     ]
-    new_ts = ts.get_ts_between_times(-2, -1)
-    assert new_ts.time.tolist() == []
     # Test that inclusive works
     new_ts = ts.get_ts_between_times(4.5, 7.5, inclusive=True)
     assert new_ts.time.tolist() == [4.0, 5.0, 6.0, 7.0, 8.0]
+    # Check that interverting times fails
+    try:
+        ts.get_ts_between_times(7.5, 4.5)
+    except TimeSeriesIndexOrderError:
+        pass
+    # Check that data outside span fails
+    try:
+        ts.get_ts_between_times(-2, -1)
+    except TimeSeriesSpanError:
+        pass
+    # Check that inverted times fails
+    try:
+        ts.get_ts_between_times(5, 3)
+    except TimeSeriesIndexOrderError:
+        pass
 
 
 def test_merge_and_resample():
