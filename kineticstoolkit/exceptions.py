@@ -26,27 +26,26 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 # Exceptions
+class KTKBaseException(Exception):
+    """Base class for KTK's exceptions."""
 
+class TimeSeriesShapeError(KTKBaseException):
+    """Raised when the TimeSeries data or time has a dimension problem."""
 
-class TimeSeriesShapeError(ValueError):
-    """Raised when the shape TimeSeries data and time mismatch."""
-
-
-class TimeSeriesTypeError(TypeError):
+class TimeSeriesTypeError(KTKBaseException):
     """Raised when the TimeSeries' attributes are of wrong type."""
 
-
-class TimeSeriesEmptyTimeError(ValueError):
-    """Raised when the TimeSeries' time attribute is empty."""
-
-
-class TimeSeriesEmptyDataError(ValueError):
-    """Raised when the TimeSeries has no data."""
-
-
-class TimeSeriesEventNotFoundError(ValueError):
+class TimeSeriesEventNotFoundError(KTKBaseException):
     """Raised when an occurrence of a TimeSeries event could be found."""
 
+class KTKValueError(KTKBaseException):
+    """Raised as an equivalent of standard ValueError, but aimed to users."""
+    
+class KTKIndexError(KTKBaseException):
+    """Raised as an equivalent of standard IndexError, but aimed to users."""
 
-class TimeSeriesNonIncreasingTimeError(ValueError):
-    """Raised when the TimeSeries' time is not continuously increasing."""
+class KTKKeyError(KTKBaseException):
+    """Raised as an equivalent of standard KeyError, but aimed to users."""
+
+class KTKError(KTKBaseException):
+    """Raised when an unexpected error happened, mostly due to a bug in KTK."""

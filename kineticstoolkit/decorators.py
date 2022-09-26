@@ -44,6 +44,7 @@ __license__ = "Apache 2.0"
 from functools import wraps
 import warnings
 import textwrap
+import kineticstoolkit.exceptions as exceptions
 
 
 def _inject_in_docstring(docstring: str, text: str) -> str:
@@ -100,6 +101,62 @@ def deprecated(since: str, until: str, details: str):
         return wrapper
 
     return real_decorator
+
+
+def timeseries_method(func):
+    """
+    Decorate TimeSeries methods for error solving in case of exception.
+
+    Generates a FutureWarning and adds a warning section to its docstring.
+    These functions are included in API documentation.
+
+    """
+
+    # Ensure the decorated function keeps its metadata
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        try:
+            retval = func(*args, **kwargs)
+        except exceptions.KTKBaseException:
+            raise
+        except Exception:
+            args[0]._check_well_shaped()
+            raise exceptions.KTKError(
+                """
+                An error happened, and it seems to be due to a problem in the
+                Kinetics Toolkit package. You are advised to:
+                    
+                (1) Ensure that your copy of Kinetics Toolkit is up to date. Consult
+                    this web page to see how to update:
+                        
+                    https://kineticstoolkit.uqam.ca/doc/ktk_installing.html
+                
+                (2) Consult the discussion board and issue tracker to see if a similar
+                    issue has been notified, and if a workaround is available.
+                        
+                (3) Ask for help in the Q&A discussion board.
+                        
+                (4) Issue a bug on the issue tracker. Please copy-paste the entire
+                    traceback, starting on line "Traceback (most recent call last):"
+                    in this issue.
+                    
+                Discussion board:
+                    
+                    https://github.com/felixchenier/kineticstoolkit/discussions
+                    
+                Issue tracker:
+                    
+                    https://github.com/felixchenier/kineticstoolkit/issues        
+                
+                Please don't leave this error unreported. Reporting an error is always
+                the first step toward fixing it.
+                
+                """
+            )
+        else:
+            return retval
+
+    return wrapper
 
 
 def __dir__():
