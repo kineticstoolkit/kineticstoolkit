@@ -247,8 +247,6 @@ def time_normalize(
     if len(ts.events) < 2:
         raise (ValueError("No cycle can be defined from these event names."))
 
-    i_cycle = 0
-
     # Initialize the destination TimeSeries
     dest_ts = ts.copy()
     dest_ts.events = []
@@ -261,20 +259,32 @@ def time_normalize(
     dest_data_shape = {}  # type: Dict[str, Tuple[int, ...]]
 
     # Go through all cycles
+    i_cycle = 0
+    break_now = False
     while True:
 
         # Get the begin time for this cycle
-        begin_time = ts.get_event_time(event_name1, i_cycle)
+        try:
+            event_index = ts._get_event_index(event_name1, i_cycle)
+        except ValueError:
+            break_now = True
+        else:
+            begin_time = ts.events[event_index].time
 
         # Get the end time for this cycle
         end_cycle = 0
-        end_time = ts.get_event_time(event_name2, end_cycle)
+        end_time = ts.events[ts._get_event_index(event_name2, end_cycle)].time
         while end_time <= begin_time:
             end_cycle += 1
-            end_time = ts.get_event_time(event_name2, end_cycle)
+            try:
+                end_time = ts.events[
+                    ts._get_event_index(event_name2, end_cycle)
+                ].time
+            except ValueError:
+                break_now = True
+                break
 
-        # We are done. Quit the loop.
-        if np.isnan(begin_time) or np.isnan(end_time):
+        if break_now:
             break
 
         # Get the extended begin and end times considering relative_span
@@ -341,10 +351,10 @@ def time_normalize(
         # Add event_name1 at the beginning and end (duplicates will be
         # cancelled at the end)
         dest_ts = dest_ts.add_event(
-            -span[0] + i_cycle * (span[1] - span[0]), event_name1
+            float(-span[0] + i_cycle * (span[1] - span[0])), event_name1
         )
         dest_ts = dest_ts.add_event(
-            -span[0] + n_points + i_cycle * (span[1] - span[0]), "_"
+            float(-span[0] + n_points + i_cycle * (span[1] - span[0])), "_"
         )
 
         # Add the other events
@@ -370,7 +380,6 @@ def time_normalize(
         i_cycle += 1
 
     n_cycles = i_cycle
-
     # Put back dest_time and dest_data in dest_ts
     dest_ts.time = 1.0 * np.arange(n_cycles * (span[1] - span[0]))
     for key in ts.data:

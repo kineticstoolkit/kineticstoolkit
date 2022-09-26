@@ -124,7 +124,7 @@ def test_check_well_typed():
     ts.time = [1, 2, 3]  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
@@ -134,7 +134,7 @@ def test_check_well_typed():
     ts.data["test2"] = [1, 2, 3]  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.data["test2"] = np.array([1, 2, 3])  # Should pass
@@ -143,13 +143,13 @@ def test_check_well_typed():
     ts.time[1] = np.nan  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.time = np.array([1.0, 2.0, 2.0])  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
@@ -160,20 +160,20 @@ def test_check_well_typed():
     ts.data_info["test2"] = "string"  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.data_info = "string"  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.data_info = {}
     ts.time_info = "string"  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts = ktk.TimeSeries()
@@ -183,13 +183,13 @@ def test_check_well_typed():
     ts.events = "test"  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
     ts.events = [ktk.TimeSeriesEvent(0), "test"]  # Should fail
     try:
         ts._check_well_typed()
-    except ktk.exceptions.TimeSeriesTypeError:
+    except TypeError:
         pass
 
 
@@ -207,7 +207,7 @@ def test_check_well_shaped():
     ts.data["test2"] = np.array([1, 2])  # Should fail
     try:
         ts._check_well_shaped()
-    except ktk.exceptions.TimeSeriesShapeError:
+    except ValueError:
         pass
 
     ts.data["test2"] = np.array([1, 2, 3])  # Should pass
@@ -218,7 +218,7 @@ def test_check_not_empty_time():
     ts = ktk.TimeSeries()  # Should fail
     try:
         ts._check_not_empty_time()
-    except ktk.exceptions.TimeSeriesShapeError:
+    except ValueError:
         pass
     ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
     ts._check_not_empty_time()
@@ -229,7 +229,7 @@ def test_check_not_empty_data():
     ts.time = np.array([1.0, 2.0, 3.0])  # Should fail
     try:
         ts._check_not_empty_time()
-    except ktk.exceptions.TimeSeriesShapeError:
+    except ValueError:
         pass
     ts.data["test1"] = np.array([1.0, 2.0, 3.0])  # Should pass
     ts._check_not_empty_time()
@@ -296,7 +296,7 @@ def test_add_remove_data_info():
     # Test removing non-existing data_info (should not work)
     try:
         ts = ts.remove_data_info("Nonexisting", "Other")
-    except ktk.exceptions.KTKKeyError:
+    except KeyError:
         pass
 
     # Test removing existing data_info
@@ -306,7 +306,7 @@ def test_add_remove_data_info():
 
 
 def test_rename_remove_data():
-    ts = ktk.TimeSeries()
+    ts = ktk.TimeSeries(time=np.arange(10))
     ts.data["Force"] = np.arange(10)
     ts = ts.rename_data("Force", "Moment")
     assert np.allclose(ts.data["Moment"], np.arange(10))
@@ -320,13 +320,13 @@ def test_rename_remove_data():
     # Rename inexistent data (should fail)
     try:
         ts = ts.rename_data("NoKey", "Anything")
-    except ktk.exceptions.KTKKeyError:
+    except KeyError:
         pass
 
     # Remove inexistent data (should fail)
     try:
         ts.remove_data("NoKey", in_place=True)
-    except ktk.exceptions.KTKKeyError:
+    except KeyError:
         pass
 
     # Those fail should not have modified the TimeSeries
@@ -395,7 +395,7 @@ def test_rename_event():
     # Test renaming invalid occurrence (should fail)
     try:
         ts = ts.rename_event("event4", "event5", 10)
-    except ktk.exceptions.TimeSeriesEventNotFoundError:
+    except ValueError:
         pass
 
     assert str(ts.events) == (
@@ -429,7 +429,7 @@ def test_remove_event():
     # Test remove bad occurrence (should fail)
     try:
         ts = ts.remove_event("event2", 10)
-    except ktk.exceptions.TimeSeriesEventNotFoundError:
+    except ValueError:
         pass
 
     assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
@@ -515,11 +515,11 @@ def test_get_event_indexes_count_index_time():
     assert ts._get_event_index("event2", 1) == 1
     try:
         ts._get_event_index("event0", 0)
-    except ktk.exceptions.TimeSeriesEventNotFoundError:
+    except ValueError:
         pass
     try:
         ts._get_event_index("event1", 1)
-    except ktk.exceptions.TimeSeriesEventNotFoundError:
+    except ValueError:
         pass
 
 
@@ -539,7 +539,7 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_at_time(1.1) == 2
     try:
         ts.get_index_at_time(2.1)
-    except ktk.exceptions.KTKIndexError:
+    except IndexError:
         pass
 
     # get_index_before_time
@@ -549,7 +549,7 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_before_time(1.1, inclusive=True) == 3
     try:
         ts.get_index_before_time(0)
-    except ktk.exceptions.KTKIndexError:
+    except IndexError:
         pass
     assert ts.get_index_before_time(0, inclusive=True) == 0
 
@@ -560,7 +560,7 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_after_time(1, inclusive=True) == 2
     try:
         ts.get_index_after_time(2)
-    except ktk.exceptions.KTKIndexError:
+    except IndexError:
         pass
     assert ts.get_index_after_time(2, inclusive=True) == 4
 
@@ -593,7 +593,7 @@ def test_get_ts_before_time():
     assert new_ts == ts
     try:
         ts.get_ts_before_time(0)
-    except ktk.exceptions.KTKIndexError:
+    except IndexError:
         pass
     new_ts = ts.get_ts_before_time(5)
     assert new_ts.time.tolist() == [0.0, 1.0, 2.0, 3.0, 4.0]
@@ -607,7 +607,7 @@ def test_get_ts_after_time():
     assert new_ts.time.tolist() == [5.0, 6.0, 7.0, 8.0, 9.0]
     try:
         new_ts = ts.get_ts_after_time(9)
-    except ktk.exceptions.KTKIndexError:
+    except IndexError:
         pass
 
 
@@ -622,7 +622,7 @@ def test_get_ts_between_indexes():
     )
     try:
         ts.get_ts_between_indexes(5, 2)
-    except ktk.exceptions.KTKValueError:
+    except ValueError:
         pass
 
 
@@ -647,17 +647,17 @@ def test_get_ts_between_times():
     # Check that interverting times fails
     try:
         ts.get_ts_between_times(7.5, 4.5)
-    except ktk.exceptions.KTKValueError:
+    except ValueError:
         pass
     # Check that data outside span fails
     try:
         ts.get_ts_between_times(-2, -1)
-    except ktk.exceptions.KTKIndexError:
+    except IndexError:
         pass
     # Check that inverted times fails
     try:
         ts.get_ts_between_times(5, 3)
-    except ktk.exceptions.KTKValueError:
+    except ValueError:
         pass
 
 
@@ -732,8 +732,8 @@ def test_merge_and_resample():
 
     try:
         ts1.merge(ts2)
-        raise Exception("This command should have raised a KTKValueError.")
-    except ktk.exceptions.KTKValueError:
+        raise Exception("This command should have raised a ValueError.")
+    except ValueError:
         pass
 
     # Try the same thing but with linear resampling

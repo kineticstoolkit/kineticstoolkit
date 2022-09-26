@@ -33,7 +33,6 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit._repr
 from kineticstoolkit.decorators import deprecated, timeseries_method
-import kineticstoolkit.exceptions as exceptions
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -55,7 +54,7 @@ WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
 def dataframe_to_dict_of_arrays(
     dataframe: pd.DataFrame,
-) -> Dict[str, np.ndarray]:
+) -> dict[str, np.ndarray]:
     """
     Convert a pandas DataFrame to a dict of numpy ndarrays.
 
@@ -610,47 +609,47 @@ class TimeSeries:
         try:
             self.time
         except AttributeError:
-            raise exceptions.TimeSeriesTypeError(
+            raise AttributeError(
                 "This TimeSeries does not have a time attribute anymore."
             )
 
         try:
             self.data
         except AttributeError:
-            raise exceptions.TimeSeriesTypeError(
+            raise AttributeError(
                 "This TimeSeries does not have a data attribute anymore."
             )
 
         try:
             self.events
         except AttributeError:
-            raise exceptions.TimeSeriesTypeError(
+            raise AttributeError(
                 "This TimeSeries does not have a events attribute anymore."
             )
 
         try:
             self.time_info
         except AttributeError:
-            raise exceptions.TimeSeriesTypeError(
+            raise AttributeError(
                 "This TimeSeries does not have a time_info attribute anymore."
             )
 
         try:
             self.data_info
         except AttributeError:
-            raise exceptions.TimeSeriesTypeError(
+            raise AttributeError(
                 "This TimeSeries does not have a data_info attribute anymore."
             )
 
         # Ensure that time is a numpy array of dimension 1.
         if not isinstance(self.time, np.ndarray):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "A TimeSeries' time attribute must be a numpy array. "
                 f"However, the current time type is {type(self.time)}."
             )
 
         if not np.alltrue(~np.isnan(self.time)):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "A TimeSeries' time attribute must not contain nans. "
                 f"However, a total of {np.sum(~np.isnan(self.time.shape))} "
                 f"nans were found among the {self.time.shape[0]} samples of "
@@ -658,7 +657,7 @@ class TimeSeries:
             )
 
         if not np.array_equal(np.unique(self.time), np.sort(self.time)):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "A TimeSeries' time attribute must not contain duplicates. "
                 f"However, while the TimeSeries has {len(self.time)} samples, "
                 f"only {len(np.unique(self.time))} are unique."
@@ -666,7 +665,7 @@ class TimeSeries:
 
         # Ensure that the data attribute is a dict
         if not isinstance(self.data, dict):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "The TimeSeries data attribute must be a dict. However, "
                 "this TimeSeries' data attribute is of type "
                 f"{type(self.data)}."
@@ -677,7 +676,7 @@ class TimeSeries:
             data = self.data[key]
 
             if not isinstance(data, np.ndarray):
-                raise exceptions.TimeSeriesTypeError(
+                raise TypeError(
                     "A TimeSeries' data attribute must contain only numpy "
                     "arrays. However, at least one of the TimeSeries data "
                     f"is not an array: the data named {key} contains a "
@@ -686,7 +685,7 @@ class TimeSeries:
 
         # Ensure that events is a list of TimeSeriesEvent
         if not isinstance(self.events, list):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "The TimeSeries' events attribute must be a list. "
                 "However, this TimeSeries' events attribute is of type "
                 f"{type(self.events)}."
@@ -695,7 +694,7 @@ class TimeSeries:
         # Ensure that all events are an instance of TimeSeriesEvent
         for i_event, event in enumerate(self.events):
             if not isinstance(event, TimeSeriesEvent):
-                raise exceptions.TimeSeriesTypeError(
+                raise TypeError(
                     "The TimeSeries' events attribute must be a list of "
                     "TimeSeriesEvent. However, at least one element of this "
                     f"list is not: element {i_event} is "
@@ -704,7 +703,7 @@ class TimeSeries:
 
         # Ensure that TimeInfo is a dict
         if not isinstance(self.time_info, dict):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "The TimeSeries' time_info attribute must be a dict. "
                 "However, this TimeSeries' time_info attribute is of type "
                 f"{type(self.time_info)}."
@@ -712,7 +711,7 @@ class TimeSeries:
 
         # Ensure that DataInfo is a dict
         if not isinstance(self.data_info, dict):
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "The TimeSeries' data_info attribute must be a dict. "
                 "However, this TimeSeries' data_info attribute is of type "
                 f"{type(self.data_info)}."
@@ -721,7 +720,7 @@ class TimeSeries:
         # Ensure that every element of DataInfo is a dict
         for key in self.data_info:
             if not isinstance(self.data_info[key], dict):
-                raise exceptions.TimeSeriesTypeError(
+                raise TypeError(
                     "Each element of a TimeSeries' data_info attribute must "
                     f"be a dict. However, the element '{key}' of this "
                     "TimeSeries' data_info attribute is of type "
@@ -740,7 +739,7 @@ class TimeSeries:
         """
         self._check_well_typed()
         if len(self.time.shape) != 1:
-            raise exceptions.TimeSeriesTypeError(
+            raise TypeError(
                 "A TimeSeries' time attribute must be a numpy array of "
                 "dimension 1. However, the current time shape is "
                 f"{self.time.shape}, which is a dimension of "
@@ -751,7 +750,7 @@ class TimeSeries:
             data = self.data[key]
             # Ensure that it's coherent in shape with time
             if data.shape[0] != self.time.shape[0]:
-                raise exceptions.TimeSeriesShapeError(
+                raise ValueError(
                     "Every data of a TimeSeries must have its first "
                     "dimension corresponding to time. At least one of the "
                     "TimeSeries data has a dimension problem: the data "
@@ -771,7 +770,7 @@ class TimeSeries:
 
         """
         if self.time.shape[0] == 0:
-            raise exceptions.TimeSeriesShapeError(
+            raise ValueError(
                 "The TimeSeries is empty: the length of its time "
                 "attribute is 0."
             )
@@ -788,7 +787,7 @@ class TimeSeries:
 
         """
         if not np.array_equal(self.time, np.sort(self.time)):
-            raise exceptions.KTKValueError(
+            raise ValueError(
                 "The TimeSeries' time attribute is not always increasing, "
                 "which is required for the requested function. You can "
                 "resample the TimeSeries on an always increasing time vector "
@@ -807,19 +806,19 @@ class TimeSeries:
 
         """
         if len(self.data) == 0:
-            raise exceptions.TimeSeriesShapeError(
+            raise ValueError(
                 "The TimeSeries is empty: it does not contain any data."
             )
 
     def _raise_data_key_error(self, data_key) -> None:
-        raise exceptions.KTKKeyError(
+        raise KeyError(
             f"The key '{data_key}' was not found among the "
             f"{len(self.data)} key(s) of the TimeSeries' "
             "data_info attribute."
         )
 
     def _raise_data_info_key_error(self, data_key, info_key) -> None:
-        raise exceptions.KTKKeyError(
+        raise KeyError(
             f"The key '{info_key}' was not found among the "
             f"{len(self.data_info[data_key])} key(s) of the TimeSeries' "
             f"data_info[{data_key}] attribute."
@@ -829,11 +828,11 @@ class TimeSeries:
     def copy(
         self,
         *,
-        copy_time=True,
-        copy_data=True,
-        copy_time_info=True,
-        copy_data_info=True,
-        copy_events=True,
+        copy_time: bool = True,
+        copy_data: bool = True,
+        copy_time_info: bool = True,
+        copy_data_info: bool = True,
+        copy_events: bool = True,
     ) -> TimeSeries:
         """
         Deep copy of a TimeSeries.
@@ -1183,7 +1182,7 @@ class TimeSeries:
         try:
             return self._get_event_indexes(name)[occurrence]
         except IndexError:
-            raise exceptions.TimeSeriesEventNotFoundError(
+            raise ValueError(
                 f"The occurrence {occurrence} of event '{name}' could not "
                 "be found in the TimeSeries. A total of "
                 f"{len(self._get_event_indexes(name))} occurrence(s) of "
@@ -1459,7 +1458,7 @@ class TimeSeries:
 
         >>> ts = ts.remove_event('event2', 1)
         Traceback (most recent call last):
-        kineticstoolkit.exceptions.TimeSeriesEventNotFoundError: The
+        ValueError: The
         occurrence 1 of event 'event2' could not be found in the
         TimeSeries. A total of 1 occurrence(s) of this event name was found.
 
@@ -1475,7 +1474,7 @@ class TimeSeries:
                 while True:
                     ts.remove_event(name, occurrence=0, in_place=True)
                     count += 1
-            except exceptions.TimeSeriesEventNotFoundError as e:
+            except ValueError as e:
                 if count == 0:  # No event of that name was even found.
                     raise e
 
@@ -1483,22 +1482,22 @@ class TimeSeries:
             event_index = ts._get_event_index(name, occurrence)
             ts.events.pop(event_index)
         return ts
-    
+
     @timeseries_method
     def count_events(self, name: str) -> int:
         """
         Count the number of occurrence of a given event name.
-        
+
         Parameters
         ----------
         name
             The name of the events to count.
-            
+
         Returns
         -------
         int
             The number of occurrences.
-            
+
         """
         indexes = self._get_event_indexes(name)
         return len(indexes)
@@ -1770,7 +1769,7 @@ class TimeSeries:
 
         >>> ts.get_index_before_time(0)
         Traceback (most recent call last):
-        kineticstoolkit.exceptions.KTKIndexError: The resulting index
+        IndexError: The resulting index
         would be outside the TimeSeries range.
 
         >>> ts.get_index_before_time(0, inclusive=True)
@@ -1779,7 +1778,7 @@ class TimeSeries:
         """
 
         def _raise():
-            raise exceptions.KTKIndexError(
+            raise IndexError(
                 "The resulting index would be outside the TimeSeries range."
             )
 
@@ -1857,7 +1856,7 @@ class TimeSeries:
 
         >>> ts.get_index_after_time(2)
         Traceback (most recent call last):
-        kineticstoolkit.exceptions.KTKIndexError: The resulting index
+        IndexError: The resulting index
         would be outside the TimeSeries range.
 
         >>> ts.get_index_after_time(2, inclusive=True)
@@ -1866,7 +1865,7 @@ class TimeSeries:
         """
 
         def _raise():
-            raise exceptions.KTKIndexError(
+            raise IndexError(
                 "The resulting index would be outside the TimeSeries range."
             )
 
@@ -1915,11 +1914,6 @@ class TimeSeries:
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
-        Raises
-        ------
-        TimeSeriesIndexError
-            If `index` is out of the TimeSeries time range.
-
         See also
         --------
         ktk.TimeSeries.get_ts_before_time
@@ -1944,12 +1938,9 @@ class TimeSeries:
 
         out_ts = self.copy(copy_data=False, copy_time=False)
 
-        if index < 0 or index >= len(self.time):
-            raise exceptions.KTKIndexError(
-                f"The specified index of {index} is out of "
-                f"range. The TimeSeries has {len(self.time)} samples."
-            )
         index += int(inclusive)
+        if index >= len(self.time):
+            return self.copy()
 
         index_range = range(index)
         out_ts.time = self.time[index_range]
@@ -1976,11 +1967,6 @@ class TimeSeries:
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
-        Raises
-        ------
-        TimeSeriesIndexError
-            If `index` is out of the TimeSeries time range.
-
         See also
         --------
         ktk.TimeSeries.get_ts_after_time
@@ -2005,12 +1991,10 @@ class TimeSeries:
 
         out_ts = self.copy(copy_data=False, copy_time=False)
 
-        if index < 0 or index >= len(self.time):
-            raise exceptions.KTKIndexError(
-                f"The specified index of {index} is out of "
-                f"range. The TimeSeries has {len(self.time)} samples."
-            )
         index -= int(inclusive)
+
+        if index <= 0:
+            return self.copy()
 
         index_range = range(index + 1, len(self.time))
 
@@ -2069,20 +2053,20 @@ class TimeSeries:
         out_ts = self.copy(copy_data=False, copy_time=False)
 
         if index2 <= index1:
-            raise exceptions.KTKValueError(
+            raise ValueError(
                 "The parameter index2 must be higher than index1. "
                 f"However, index2 is {index2} while index1 is {index1}."
             )
 
         if index1 < 0 or index1 >= len(self.time):
-            raise exceptions.KTKIndexError(
+            raise IndexError(
                 f"The specified index1 of {index1} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
         index1 -= int(inclusive)
 
         if index2 < 0 or index2 >= len(self.time):
-            raise exceptions.KTKIndexError(
+            raise IndexError(
                 f"The specified index2 of {index2} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
@@ -2227,7 +2211,7 @@ class TimeSeries:
         """
         self._check_increasing_time()
         if time2 <= time1:
-            raise exceptions.KTKValueError(
+            raise ValueError(
                 "The parameters time2 must be higher than time1. "
                 f"However, time2 is {time2} while time1 is {time1}."
             )
@@ -2445,7 +2429,7 @@ class TimeSeries:
         return ts
 
     @timeseries_method
-    def get_subset(self, data_keys: Union[str, List[str]]) -> TimeSeries:
+    def get_subset(self, data_keys: str | list[str]) -> TimeSeries:
         """
         Return a subset of the TimeSeries.
 
@@ -2681,7 +2665,14 @@ class TimeSeries:
                         fill_value=fill_value,
                         kind=kind,
                     )
-                    ts.data[key] = f(new_time)
+                    try:
+                        ts.data[key] = f(new_time)
+                    except ValueError as e:
+                        raise ValueError(
+                            f"The following exception was raised: {e} ."
+                            "You may want to retry with using "
+                            "fill_value='extrapolate'."
+                        )
 
                 # Put back nans
                 for j in time_ranges_to_remove:
@@ -2753,7 +2744,7 @@ class TimeSeries:
             elif isinstance(data_keys, str):
                 data_keys = [data_keys]
             else:
-                raise exceptions.KTKTypeError(
+                raise TypeError(
                     "data_keys must be a string or list of strings"
                 )
 
@@ -2769,7 +2760,7 @@ class TimeSeries:
             must_resample = True
 
         if must_resample is True and resample is False:
-            raise ktk.exceptions.KTKValueError(
+            raise ValueError(
                 "Time vectors do not match, resampling is required."
             )
 
@@ -3132,7 +3123,7 @@ class TimeSeries:
     def ui_sync(
         self,
         data_keys: Union[str, List[str]] = [],
-        ts2: Union[TimeSeries, None] = None,
+        ts2=None,
         data_keys2: Union[str, List[str]] = [],
     ) -> TimeSeries:  # pragma: no cover
         """
@@ -3362,7 +3353,7 @@ class TimeSeries:
         try:
             self._check_not_empty_time()
             self._check_not_empty_data()
-        except exceptions.TimeSeriesShapeError as e:
+        except ValueError as e:
             if raise_on_no_data:
                 raise e
             else:

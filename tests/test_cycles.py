@@ -32,50 +32,12 @@ def test_detect_cycles():
     # Test min and max lenghts
     # Create a timeseries with one frame per seconds.
     t = np.arange(40)
+    # fmt: off
     d = np.array(
-        [
-            0,
-            0,
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-        ]
+        [0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+         1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1], dtype=float
     )
+    # fmt: on
     ts = ktk.TimeSeries(time=t, data={"data": d})
 
     # Detect all cycles
@@ -174,50 +136,13 @@ def test_detect_cycles():
 
     # With target heights
     t = np.arange(40)
+    # fmt: off
     d = np.array(
-        [
-            0,
-            0,
-            1,
-            1,
-            2,
-            1,
-            0,
-            0,
-            -1,
-            0,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-            0,
-            0,
-            0,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            1,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            1,
-        ]
+        [0, 0, 1, 1, 2, 1, 0, 0, -1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+         1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+        dtype=float,
     )
+    # fmt: on
     ts = ktk.TimeSeries(time=t, data={"data": d})
 
     ts5 = ktk.cycles.detect_cycles(

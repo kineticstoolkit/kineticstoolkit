@@ -141,7 +141,9 @@ def test_read_c3d():
 
     assert (
         c3d["Points"].get_index_at_time(
-            c3d["Points"].get_event_time("Foot Strike", 0)
+            c3d["Points"]
+            .events[c3d["Points"]._get_event_index("Foot Strike", 0)]
+            .time
         )
         == 14
     )
@@ -323,7 +325,9 @@ def test_write_c3d_weirdc3d():
 
     assert (
         c3d["Points"].get_index_at_time(
-            c3d["Points"].get_event_time("Foot Strike", 0)
+            c3d["Points"]
+            .events[c3d["Points"]._get_event_index("Foot Strike", 0)]
+            .time
         )
         == 14
     )
