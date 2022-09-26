@@ -1483,6 +1483,25 @@ class TimeSeries:
             event_index = ts._get_event_index(name, occurrence)
             ts.events.pop(event_index)
         return ts
+    
+    @timeseries_method
+    def count_events(self, name: str) -> int:
+        """
+        Count the number of occurrence of a given event name.
+        
+        Parameters
+        ----------
+        name
+            The name of the events to count.
+            
+        Returns
+        -------
+        int
+            The number of occurrences.
+            
+        """
+        indexes = self._get_event_indexes(name)
+        return len(indexes)
 
     @timeseries_method
     def remove_duplicate_events(self, *, in_place: bool = False) -> TimeSeries:

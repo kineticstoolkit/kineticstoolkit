@@ -502,11 +502,13 @@ def test_get_sample_rate():
     assert ts.get_sample_rate() == 10.0
 
 
-def test_get_event_indexes_index_time():
+def test_get_event_indexes_count_index_time():
     ts = ktk.TimeSeries()
     ts = ts.add_event(5.5, "event1")
     ts = ts.add_event(10.8, "event2")
     ts = ts.add_event(2.3, "event2")
+    assert ts.count_events("event1") == 1
+    assert ts.count_events("event2") == 2
     assert ts._get_event_indexes("event0") == []
     assert ts._get_event_indexes("event1") == [0]
     assert ts._get_event_indexes("event2") == [2, 1]
