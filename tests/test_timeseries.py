@@ -523,10 +523,10 @@ def test_get_event_indexes_count_index_time():
         pass
 
 
-# Deprecated, put back the tests before pushing to master
-#    assert ts.get_event_time("event1") == 5.5
-#    assert ts.get_event_time("event2", 0) == 2.3
-#    assert ts.get_event_time("event2", 1) == 10.8
+    # Deprecated
+    assert ts.get_event_time("event1") == 5.5
+    assert ts.get_event_time("event2", 0) == 2.3
+    assert ts.get_event_time("event2", 1) == 10.8
 
 
 def test_get_index_at_before_after_time():
@@ -565,26 +565,26 @@ def test_get_index_at_before_after_time():
     assert ts.get_index_after_time(2, inclusive=True) == 4
 
 
-# Deprecated, put back the tests before pushing to master.
-# def test_get_ts_at_event___get_ts_at_time():
-#     ts = ktk.TimeSeries()
-#     ts.time = np.linspace(0, 99, 100)
-#     time_as_column = np.reshape(ts.time, (-1, 1))
-#     ts.data["Forces"] = np.block(
-#         [time_as_column, time_as_column**2, time_as_column**3]
-#     )
-#     ts.data["Moments"] = np.block(
-#         [time_as_column**2, time_as_column**3, time_as_column**4]
-#     )
-#     ts = ts.add_event(5.5, "event1")
-#     ts = ts.add_event(10.8, "event2")
-#     ts = ts.add_event(2.3, "event2")
-#     new_ts = ts.get_ts_at_event("event1")
-#     assert np.array_equal(new_ts.time, np.array([5]))
-#     new_ts = ts.get_ts_at_event("event2")
-#     assert np.array_equal(new_ts.time, np.array([2]))
-#     new_ts = ts.get_ts_at_event("event2", 1)
-#     assert np.array_equal(new_ts.time, np.array([11]))
+# Deprecated
+def test_get_ts_at_event___get_ts_at_time():
+    ts = ktk.TimeSeries()
+    ts.time = np.linspace(0, 99, 100)
+    time_as_column = np.reshape(ts.time, (-1, 1))
+    ts.data["Forces"] = np.block(
+        [time_as_column, time_as_column**2, time_as_column**3]
+    )
+    ts.data["Moments"] = np.block(
+        [time_as_column**2, time_as_column**3, time_as_column**4]
+    )
+    ts = ts.add_event(5.5, "event1")
+    ts = ts.add_event(10.8, "event2")
+    ts = ts.add_event(2.3, "event2")
+    new_ts = ts.get_ts_at_event("event1")
+    assert np.array_equal(new_ts.time, np.array([5]))
+    new_ts = ts.get_ts_at_event("event2")
+    assert np.array_equal(new_ts.time, np.array([2]))
+    new_ts = ts.get_ts_at_event("event2", 1)
+    assert np.array_equal(new_ts.time, np.array([11]))
 
 
 def test_get_ts_before_time():

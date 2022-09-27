@@ -21,4 +21,9 @@ filterwarnings = [
     # kinematics
     'ignore:The function read_c3d_file is deprecated since 0.9 and is scheduled to be removed in 2024:FutureWarning',    
     'ignore:The function read_n3d_file is deprecated since 0.9 and is scheduled to be removed in 2024:FutureWarning',    
+
+    # TimeSeries
+    'ignore:The function get_ts_at_event is deprecated since 0.9.3 and is scheduled to be removed in 2024:FutureWarning',
+    'ignore:The function get_event_time is deprecated since 0.9.3 and is scheduled to be removed in 2024:FutureWarning',
+
 ]
