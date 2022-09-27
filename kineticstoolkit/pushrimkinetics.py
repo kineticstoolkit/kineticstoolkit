@@ -26,7 +26,6 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.filters as filters
-import kineticstoolkit.cycles as cycles
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.decorators import deprecated
 
@@ -35,7 +34,7 @@ from numpy import sin, cos, pi
 import pandas as pd
 import warnings
 import struct  # to unpack binary data from SmartWheels' txt files
-from typing import Union, Optional, List
+from typing import Union, Optional
 
 
 def __dir__():

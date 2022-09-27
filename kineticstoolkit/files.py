@@ -31,6 +31,7 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.exceptions import check_types
 import kineticstoolkit.config
 
 import os
@@ -44,7 +45,7 @@ import time
 import getpass
 import zipfile
 
-from typing import Any, Dict
+from typing import Any
 
 
 def __dir__():  # pragma: no cover
@@ -96,6 +97,7 @@ def save(filename: str, variable: Any) -> None:
     ktk.load
 
     """
+    check_types(save, locals())
 
     class CustomEncoder(json.JSONEncoder):
         def default(self, obj):
@@ -271,6 +273,8 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     ktk.save
 
     """
+    check_types(load, locals())
+
     archive = zipfile.ZipFile(filename, "r")
 
     data = json.loads(
@@ -293,7 +297,7 @@ def read_c3d(
     *,
     convert_point_unit: bool = True,
     **kwargs,
-) -> Dict[str, TimeSeries]:
+) -> dict[str, TimeSeries]:
     """
     Read point and analog data from a C3D file.
 
@@ -366,6 +370,8 @@ def read_c3d(
       - ...
         
     """
+    check_types(read_c3d, locals())
+
     try:
         import ezc3d
     except ModuleNotFoundError:
@@ -586,6 +592,8 @@ def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
     This is not released yet because more checking is required to match sizes,
     sampling rates, etc. with useful warnings or error messages.
     """
+    check_types(write_c3d, locals())
+
     if "analogs" in kwargs:
         analogs = kwargs["analogs"]
     else:

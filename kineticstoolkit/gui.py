@@ -34,7 +34,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.config as config
 import limitedinteraction as li
 import matplotlib as mpl
-from typing import Union, Tuple, Any, List
+from typing import Any
 
 
 def message(message: str = "", **kwargs) -> None:
@@ -58,7 +58,7 @@ def message(message: str = "", **kwargs) -> None:
 
 def button_dialog(
     message: str = "Please select an option.",
-    choices: List[str] = ["Cancel", "OK"],
+    choices: list[str] = ["Cancel", "OK"],
     **kwargs,
 ) -> int:
     """
@@ -69,7 +69,7 @@ def button_dialog(
     message
         Message that is presented to the user.
     choices
-        List of button text.
+        list of button text.
 
     Returns
     -------
@@ -89,7 +89,7 @@ def button_dialog(
     )
 
 
-def set_color_order(setting: Union[str, List[Any]]) -> None:
+def set_color_order(setting: str | list[Any]) -> None:
     """
     Define the standard color order for matplotlib.
 
@@ -137,13 +137,13 @@ def set_color_order(setting: Union[str, List[Any]]) -> None:
     mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)
 
 
-def get_credentials() -> Tuple[str, str]:
+def get_credentials() -> tuple[str, str]:
     """
     Ask the user's username and password.
 
     Returns
     -------
-    Tuple[str]
+    tuple[str]
         A tuple of two strings containing the username and password,
         respectively, or an empty tuple if the user closed the window.
 

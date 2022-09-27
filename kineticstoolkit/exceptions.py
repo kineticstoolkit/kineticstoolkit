@@ -25,10 +25,34 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import numpy as np
+from typing import Any
 
 
-def check_types(function, args):
+def check_types(function, args: dict[str, Any]):
+    """
+    Check that a function's arguments are of correct type.
+
+    Parameters
+    ----------
+    function
+        The function to be checked.
+
+    args
+        Usually, locals(). Those are the arguments of the function.
+
+    Raises
+    ------
+    TypeError
+        If one of the arguments is of wrong type.
+
+    Warning
+    -------
+    This function is very lousy. It will work for most basic types, but won't
+    even attempt to check for more complex ones such as ArrayLike. It may
+    help users finding some bugs in their scripts, but it's really not
+    foulproof.
+
+    """
     try:
         annotations = function.__annotations__
     except AttributeError:
@@ -38,44 +62,53 @@ def check_types(function, args):
     def raise_type_error():
         raise TypeError(
             f"In function '{function.__name__}', parameter '{arg}' expects a "
-            f"variable of type {expected_type}. However, this variable of "
-            f"type {value_type} was provided: {value}."
+            f"variable of type '{expected_type}'. However, this variable of "
+            f"type '{value_type}' was provided: {value}."
         )
 
     for arg in args:
         if arg in annotations:
             value = args[arg]
             value_type = str(type(value)).split("'")[1]
-            expected_type = annotations[arg]
+            expected_type = annotations[arg].replace(" ", "")
 
-            if expected_type == "float":
-                # Just ensure that it's equal to its float version
-                try:
-                    if value != float(value):
-                        raise_type_error()
-                except ValueError:
-                    raise_type_error()
+            ok = False
+            for one_expected_type in expected_type.split("|"):
 
-            if expected_type == "int" and not isinstance(value, int):
+                if one_expected_type == "float":
+                    # Just ensure that it's equal to its float version
+                    try:
+                        if value == float(value):
+                            ok = True
+                    except Exception:
+                        pass
+
+                elif one_expected_type == "int":
+                    if isinstance(value, int):
+                        ok = True
+
+                elif one_expected_type == "bool":
+                    if isinstance(value, bool):
+                        ok = True
+
+                elif one_expected_type == "str":
+                    if isinstance(value, str):
+                        ok = True
+
+                elif one_expected_type.lower().startswith("list"):
+                    if isinstance(value, list):
+                        ok = True
+
+                elif one_expected_type.lower().startswith("dict"):
+                    if isinstance(value, dict):
+                        ok = True
+
+                elif one_expected_type == "TimeSeries":
+                    if "TimeSeries" in value_type:
+                        ok = True
+
+                else:  # expected type not in list, ok by default.
+                    ok = True
+
+            if not ok:
                 raise_type_error()
-
-            if expected_type == "bool" and not isinstance(value, bool):
-                raise_type_error()
-
-            if expected_type == "str" and not isinstance(value, str):
-                raise_type_error()
-
-            if expected_type.lower().startswith("list") and not isinstance(
-                value, list
-            ):
-                raise_type_error()
-
-            if expected_type.lower().startswith("dict") and not isinstance(
-                value, dict
-            ):
-                raise_type_error()
-
-            if expected_type == "TimeSeries":
-                if "TimeSeries" not in value_type:
-                    raise_type_error()
-                value._check_well_typed()

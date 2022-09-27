@@ -29,8 +29,9 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
+from kineticstoolkit.exceptions import check_types
 import warnings
-from typing import List, Dict, Tuple, Optional
+from typing import Optional
 from numpy.typing import ArrayLike
 
 
@@ -48,13 +49,13 @@ def detect_cycles(
     ts: TimeSeries,
     data_key: str,
     *,
-    event_names: List[str] = ["phase1", "phase2"],
-    thresholds: List[float] = [0.0, 1.0],
-    directions: List[str] = ["rising", "falling"],
-    min_durations: List[float] = [0.0, 0.0],
-    max_durations: List[float] = [np.Inf, np.Inf],
-    min_peak_heights: List[float] = [-np.Inf, -np.Inf],
-    max_peak_heights: List[float] = [np.Inf, np.Inf],
+    event_names: list[str] = ["phase1", "phase2"],
+    thresholds: list[float] = [0.0, 1.0],
+    directions: list[str] = ["rising", "falling"],
+    min_durations: list[float] = [0.0, 0.0],
+    max_durations: list[float] = [np.Inf, np.Inf],
+    min_peak_heights: list[float] = [-np.Inf, -np.Inf],
+    max_peak_heights: list[float] = [np.Inf, np.Inf],
 ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -104,6 +105,8 @@ def detect_cycles(
         A copy of `ts` with the events added.
 
     """
+    check_types(detect_cycles, locals())
+
     # lowercase directions[0] once
     directions[0] = directions[0].lower()  # type: ignore
     if directions[0] != "rising" and directions[0] != "falling":
@@ -192,7 +195,7 @@ def time_normalize(
     event_name2: str,
     *,
     n_points: int = 100,
-    span: Optional[List[int]] = None,
+    span: Optional[list[int]] = None,
 ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
@@ -239,6 +242,8 @@ def time_normalize(
     119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.
 
     """
+    check_types(time_normalize, locals())
+
     # Optional span
     if span is None:
         span = [0, n_points]
@@ -255,8 +260,8 @@ def time_normalize(
     else:
         dest_ts.time_info["Unit"] = f"1/{n_points}"
 
-    dest_data = {}  # type: Dict[str, List[np.ndarray]]
-    dest_data_shape = {}  # type: Dict[str, Tuple[int, ...]]
+    dest_data = {}  # type: dict[str, list[np.ndarray]]
+    dest_data_shape = {}  # type: dict[str, tuple[int, ...]]
 
     # Go through all cycles
     i_cycle = 0
@@ -394,7 +399,7 @@ def time_normalize(
     return dest_ts
 
 
-def stack(ts: TimeSeries, *, n_points: int = 100) -> Dict[str, np.ndarray]:
+def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
 
@@ -413,13 +418,15 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> Dict[str, np.ndarray]:
 
     Returns
     -------
-    Dict[str, np.ndarray]
+    dict[str, np.ndarray]
 
     See Also
     --------
     ktk.cycles.unstack
 
     """
+    check_types(stack, locals())
+
     if np.mod(len(ts.time), n_points) != 0:
         raise (
             ValueError("It seems that this TimeSeries is not time-normalized.")
@@ -435,7 +442,7 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> Dict[str, np.ndarray]:
     return data
 
 
-def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
+def unstack(data: dict[str, ArrayLike], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
 
@@ -458,6 +465,8 @@ def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
     ktk.cycles.stack
 
     """
+    check_types(unstack, locals())
+
     ts = TimeSeries()
     for key in data.keys():
         current_data = np.array(data[key])
@@ -477,7 +486,7 @@ def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
 #
 # def stack_events(
 #         ts: TimeSeries, /,
-#         n_points: int = 100) -> Dict[str, np.ndarray]:
+#         n_points: int = 100) -> dict[str, np.ndarray]:
 #     """
 #     Stack time-normalized TimeSeries' events into a dict of arrays.
 
@@ -501,7 +510,7 @@ def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
 
 #     Returns
 #     -------
-#     Dict[str, np.ndarray]
+#     dict[str, np.ndarray]
 
 #     Example
 #     -------
@@ -523,7 +532,7 @@ def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
 #     ts.sort_events()
 
 #     n_cycles = int(ts.time.shape[0] / n_points)
-#     out = {}  # type: Dict[str, np.ndarray]
+#     out = {}  # type: dict[str, np.ndarray]
 
 #     # Init
 #     for event in ts.events:
@@ -538,7 +547,7 @@ def unstack(data: Dict[str, ArrayLike], /) -> TimeSeries:
 #     return out
 
 
-def most_repeatable_cycles(data: ArrayLike, /) -> List[int]:
+def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     """
     Get the indexes of the most repeatable cycles in TimeSeries or array.
 
@@ -562,8 +571,8 @@ def most_repeatable_cycles(data: ArrayLike, /) -> List[int]:
 
     Returns
     -------
-    List[int]
-        List of indexes corresponding to the cycles in most to least
+    list[int]
+        list of indexes corresponding to the cycles in most to least
         repeatable order.
 
     Example
@@ -582,10 +591,12 @@ def most_repeatable_cycles(data: ArrayLike, /) -> List[int]:
     [1, 3, 0, 2]
 
     """
+    check_types(most_repeatable_cycles, locals())
+
     data = np.array(data)
     n_cycles = data.shape[0]
-    out_cycles = []  # type: List[int]
-    done_cycles = []  # type: List[int]  # Like out_cycles but includes NaNs
+    out_cycles = []  # type: list[int]
+    done_cycles = []  # type: list[int]  # Like out_cycles but includes NaNs
 
     # Exclude cycles with nans: put nans for all data of this cycle
     for i_cycle in range(n_cycles - 1, -1, -1):

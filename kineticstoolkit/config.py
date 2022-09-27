@@ -31,10 +31,9 @@ __license__ = "Apache 2.0"
 import os
 import warnings
 import platform
-from typing import List
 
 
-def __dir__() -> List[str]:
+def __dir__() -> list[str]:
     return [
         "root_folder",
         "home_folder",

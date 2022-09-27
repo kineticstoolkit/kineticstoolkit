@@ -40,7 +40,7 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-from typing import Union, List, Dict, Any, Optional
+from typing import Any, Optional
 from numpy.typing import ArrayLike
 
 # To fit the new viewpoint on selecting a new marker
@@ -141,7 +141,7 @@ class Player:
     def __init__(
         self,
         *ts: TimeSeries,
-        interconnections: Dict[str, Dict[str, Any]] = {},
+        interconnections: dict[str, dict[str, Any]] = {},
         current_index: int = 0,
         marker_radius: float = 0.008,
         axis_length: float = 0.1,
@@ -268,7 +268,7 @@ class Player:
         self.playback_speed = 1.0  # 0.0 to show all samples
         #  self.anim = None  # Will initialize in _create_figure
 
-        self.objects = dict()  # type: Dict[str, Any]
+        self.objects = dict()  # type: dict[str, Any]
         self._colors = ["r", "g", "b", "y", "c", "m", "w"]
         self.objects["PlotMarkers"] = dict()
         for color in self._colors:
@@ -284,7 +284,7 @@ class Player:
         self.objects["Axes"] = None
         self.objects["Help"] = None
 
-        self.state = dict()  # type: Dict[str, Any]
+        self.state = dict()  # type: dict[str, Any]
         self.state["ShiftPressed"] = False
         self.state["MouseLeftPressed"] = False
         self.state["MouseMiddlePressed"] = False

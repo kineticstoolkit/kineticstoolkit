@@ -41,7 +41,7 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from typing import Any, Optional, List
+from typing import Any, Optional
 
 import warnings
 from ast import literal_eval

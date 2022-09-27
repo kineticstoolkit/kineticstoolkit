@@ -49,8 +49,9 @@ def __dir__():
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from typing import Optional, Tuple
+from typing import Optional
 from numpy.typing import ArrayLike
+from kineticstoolkit.exceptions import check_types
 
 
 def matmul(op1: ArrayLike, op2: ArrayLike) -> np.ndarray:
@@ -87,6 +88,8 @@ def matmul(op1: ArrayLike, op2: ArrayLike) -> np.ndarray:
            [16.,  9.]])
 
     """
+    check_types(matmul, locals())
+
     op1 = np.array(op1)
     op2 = np.array(op2)
 
@@ -180,6 +183,8 @@ def create_transforms(
                 [ 0.,  0.,  0.,  1.]]])
 
     """
+    check_types(create_transforms, locals())
+
     # Condition translations
     if translations is None:
         translations = np.zeros((1, 3))
@@ -275,6 +280,8 @@ def get_angles(
     `seq` parameter.
 
     """
+    check_types(get_angles, locals())
+
     T = np.array(T)
     R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
     angles = R.as_euler(seq, degrees)
@@ -342,6 +349,7 @@ def create_frames(
     ktk.geometry.create_transforms
 
     """
+    check_types(create_frames, locals())
 
     def normalize(v):
         """Normalize series of vectors."""
@@ -426,6 +434,8 @@ def get_local_coordinates(
     ktk.geometry.get_global_coordinates
 
     """
+    check_types(get_local_coordinates, locals())
+
     global_coordinates = np.array(global_coordinates)
     reference_frames = np.array(reference_frames)
 
@@ -492,6 +502,8 @@ def get_global_coordinates(
     ktk.geometry.get_local_coordinates
 
     """
+    check_types(get_global_coordinates, locals())
+
     local_coordinates = np.array(local_coordinates)
     reference_frames = np.array(reference_frames)
 
@@ -516,6 +528,8 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
         True for the samples that contain at least one NaN.
 
     """
+    check_types(isnan, locals())
+
     temp = np.isnan(array)
     while len(temp.shape) > 1:
         temp = temp.sum(axis=1) > 0
@@ -524,7 +538,7 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
 
 def _match_size(
     op1: np.ndarray, op2: np.ndarray
-) -> Tuple[np.ndarray, np.ndarray]:
+) -> tuple[np.ndarray, np.ndarray]:
     """
     Match the first dimension of op1 and op2.
 
@@ -535,7 +549,7 @@ def _match_size(
 
     Returns
     -------
-    Tuple of two np.ndarray
+    tuple of two np.ndarray
         op1 and op2, now matched in size.
 
     """
@@ -578,6 +592,8 @@ def register_points(
     parameters may change in the future.
 
     """
+    check_types(register_points, locals())
+
     global_points = np.array(global_points)
     local_points = np.array(local_points)
 

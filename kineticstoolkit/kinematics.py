@@ -30,8 +30,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from typing import List, Dict, Union, Mapping
-from numpy.typing import ArrayLike
+from kineticstoolkit.exceptions import check_types
 
 import numpy as np
 import warnings
@@ -47,8 +46,8 @@ def __dir__():
 
 
 def create_cluster(
-    markers: TimeSeries, /, names: List[str]
-) -> Dict[str, np.ndarray]:
+    markers: TimeSeries, /, names: list[str]
+) -> dict[str, np.ndarray]:
     """
     Create a cluster definition based on a static acquisition.
 
@@ -61,8 +60,8 @@ def create_cluster(
 
     Returns
     -------
-    Dict
-        Dictionary where each entry represents the local position of a marker
+    dict
+        dictionary where each entry represents the local position of a marker
         in an arbitrary coordinate system.
 
     Warning
@@ -78,6 +77,8 @@ def create_cluster(
     ktk.kinematics.track_cluster
 
     """
+    check_types(create_cluster, locals())
+
     n_samples = len(markers.time)
     n_markers = len(names)
 
@@ -110,8 +111,8 @@ def create_cluster(
 
 
 def extend_cluster(
-    markers: TimeSeries, /, cluster: Dict[str, np.ndarray], name: str
-) -> Dict[str, np.ndarray]:
+    markers: TimeSeries, /, cluster: dict[str, np.ndarray], name: str
+) -> dict[str, np.ndarray]:
     """
     Add a point to an existing cluster.
 
@@ -127,7 +128,7 @@ def extend_cluster(
 
     Returns
     -------
-    Dict[str, np.ndarray]
+    dict[str, np.ndarray]
         A copy of the initial cluster, with the added point.
 
     Warning
@@ -143,6 +144,8 @@ def extend_cluster(
     ktk.kinematics.track_cluster
 
     """
+    check_types(extend_cluster, locals())
+
     # Ensure to convert every cluster element to a numpy array
     new_cluster = {}
     for key in cluster:
@@ -160,7 +163,7 @@ def extend_cluster(
 def track_cluster(
     markers: TimeSeries,
     /,
-    cluster: Dict[str, np.ndarray],
+    cluster: dict[str, np.ndarray],
     *,
     include_lcs: bool = False,
     lcs_name: str = "LCS",
@@ -201,6 +204,8 @@ def track_cluster(
     ktk.kinematics.track_cluster
 
     """
+    check_types(track_cluster, locals())
+
     out = markers.copy(copy_data=False, copy_data_info=False)
     unit = _get_marker_unit(markers)
 
@@ -221,7 +226,7 @@ def track_cluster(
 
 
 def _track_cluster_frames(
-    markers: TimeSeries, cluster: Dict[str, np.ndarray]
+    markers: TimeSeries, cluster: dict[str, np.ndarray]
 ) -> np.ndarray:
     """Track a cluster and return its frame series."""
     # Set local and global points
@@ -249,7 +254,7 @@ def _track_cluster_frames(
     return frames
 
 
-def _get_marker_unit(markers: TimeSeries) -> Union[None, str]:
+def _get_marker_unit(markers: TimeSeries) -> None | str:
     """Get markers unit, raise ValueError if not all have the same unit."""
     unit = None
     for marker in markers.data:
@@ -289,6 +294,8 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     developed.
 
     """
+    check_types(write_trc_file, locals())
+
     markers = markers.copy()
     markers.fill_missing_samples(0)
 
@@ -339,8 +346,8 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     since="master", until="January 2023", details="Use create_cluster()."
 )
 def define_rigid_body(
-    kinematics: TimeSeries, marker_names: List[str]
-) -> Dict[str, np.ndarray]:
+    kinematics: TimeSeries, marker_names: list[str]
+) -> dict[str, np.ndarray]:
     """
     Create a generic rigid body definition based on a static acquisition.
 
@@ -353,8 +360,8 @@ def define_rigid_body(
 
     Returns
     -------
-    Dict
-        Dictionary where each entry represents the local position of a point
+    dict
+        dictionary where each entry represents the local position of a point
         (e.g., marker name). The key is the name of the point, the value is a
         1x4 array that indicates the local position of this point in the rigid
         body's local coordinate system.
@@ -369,7 +376,7 @@ def define_rigid_body(
 def track_rigid_body(
     kinematics: TimeSeries,
     /,
-    local_points: Dict[str, np.ndarray],
+    local_points: dict[str, np.ndarray],
     label: str = "Trajectory",
     *,
     include_rigid_body: bool = True,
@@ -421,7 +428,7 @@ def track_rigid_body(
 def track_rigid_bodies(
     markers: TimeSeries,
     /,
-    definitions: Dict[str, Dict[str, np.ndarray]],
+    definitions: dict[str, dict[str, np.ndarray]],
     *,
     include_rigid_bodies: bool = True,
     include_markers: bool = False,
@@ -593,7 +600,7 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     until="2024",
     details=("This function has been moved to the n3d extension."),
 )
-def read_n3d_file(filename: str, labels: List[str] = []) -> TimeSeries:
+def read_n3d_file(filename: str, labels: list[str] = []) -> TimeSeries:
     """
     Read markers from an NDI N3D file.
 

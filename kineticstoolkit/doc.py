@@ -28,6 +28,7 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.config as config
+from kineticstoolkit.exceptions import check_types
 import os
 
 
@@ -68,6 +69,8 @@ def download(filename: str, **kwargs) -> str:
     # Additional information for developers:
     # kwargs may include force_download=True, to force download from github.
     # In standard case, the local git version is used to save on download time.
+    check_types(download, locals())
+
     if "force_download" not in kwargs:
         kwargs["force_download"] = False
 

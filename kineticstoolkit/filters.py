@@ -32,7 +32,8 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from typing import Tuple, Union, List
+from kineticstoolkit.exceptions import check_types
+
 
 import kineticstoolkit as ktk  # for doctests
 
@@ -41,7 +42,7 @@ def __dir__():
     return ["savgol", "smooth", "butter", "deriv", "median"]
 
 
-def _interpolate(ts: TimeSeries, key: str) -> Tuple[TimeSeries, np.ndarray]:
+def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     """Interpolate NaNs in a given data key in a TimeSeries."""
     ts = ts.get_subset(key)
     nan_index = ts.isnan(key)
@@ -116,6 +117,7 @@ def savgol(
     ktk.filters.median
 
     """
+    check_types(savgol, locals())
     _validate_input(ts)
 
     tsout = ts.copy()
@@ -181,6 +183,7 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     ktk.filters.median
 
     """
+    check_types(smooth, locals())
     _validate_input(ts)
 
     tsout = savgol(ts, window_length=window_length, poly_order=0)
@@ -190,7 +193,7 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
 def butter(
     ts: TimeSeries,
     /,
-    fc: Union[float, List[float]],
+    fc: float | list[float],
     *,
     order: int = 2,
     btype: str = "lowpass",
@@ -234,6 +237,7 @@ def butter(
         filter.
 
     """
+    check_types(butter, locals())
     _validate_input(ts)
 
     ts = ts.copy()
@@ -319,6 +323,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     array([ 100., -100., -100.])
 
     """
+    check_types(deriv, locals())
     _validate_input(ts)
 
     out_ts = ts.copy()
@@ -362,6 +367,7 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     array([10., 11., 11., 14., 15., 15.])
 
     """
+    check_types(median, locals())
     out_ts = ts.copy()
     for key in ts.data:
         window_shape = [1 for i in range(len(ts.data[key].shape))]
