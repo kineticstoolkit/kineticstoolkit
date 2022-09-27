@@ -102,28 +102,5 @@ def deprecated(since: str, until: str, details: str):
     return real_decorator
 
 
-def check_timeseries_on_fail(func):
-    """
-    Decorate TimeSeries methods for error solving in case of exception.
-
-    Generates a FutureWarning and adds a warning section to its docstring.
-    These functions are included in API documentation.
-
-    """
-
-    # Ensure the decorated function keeps its metadata
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        try:
-            retval = func(*args, **kwargs)
-        except Exception:
-            args[0]._check_well_shaped()
-            raise
-        else:
-            return retval
-
-    return wrapper
-
-
 def __dir__():
     return []

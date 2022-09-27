@@ -441,6 +441,7 @@ class TimeSeries:
             "add_data_info",
             "add_event",
             "copy",
+            "count_events",
             "fill_missing_samples",
             "from_dataframe",
             "get_index_after_time",
