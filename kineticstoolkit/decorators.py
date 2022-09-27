@@ -102,7 +102,7 @@ def deprecated(since: str, until: str, details: str):
     return real_decorator
 
 
-def timeseries_method(func):
+def check_timeseries_on_fail(func):
     """
     Decorate TimeSeries methods for error solving in case of exception.
 

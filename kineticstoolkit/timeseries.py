@@ -32,7 +32,8 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import deprecated, timeseries_method
+from kineticstoolkit.decorators import deprecated
+from kineticstoolkit.exceptions import check_types
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -40,11 +41,11 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
+from typing import Any, Optional, List
 
 import warnings
 from ast import literal_eval
 from copy import deepcopy
-from typing import Dict, List, Tuple, Any, Union, Optional
 
 import kineticstoolkit as ktk  # For doctests
 
@@ -68,7 +69,7 @@ def dataframe_to_dict_of_arrays(
 
     Returns
     -------
-    Dict[str, np.ndarray]
+    dict[str, np.ndarray]
 
 
     Examples
@@ -132,7 +133,7 @@ def dataframe_to_dict_of_arrays(
     #    dimensions['Data1'] = []
     #    dimensions['Data2'] = [[0], [1], [2]]
     #    dimensions['Data3'] = [[0,0],[0,1],[1,0],[1,1]]
-    dimensions = dict()  # type: Dict[str, List]
+    dimensions = dict()  # type: dict[str, list]
     for column in dataframe.columns:
         splitted = column.split("[")
         if len(splitted) == 1:  # No brackets
@@ -149,7 +150,7 @@ def dataframe_to_dict_of_arrays(
     n_samples = len(dataframe)
 
     # Assign the columns to the output
-    out = dict()  # type: Dict[str, np.ndarray]
+    out = dict()  # type: dict[str, np.ndarray]
     for key in dimensions:
         if len(dimensions[key]) == 0:
             out[key] = dataframe[key].to_numpy()
@@ -169,7 +170,7 @@ def dataframe_to_dict_of_arrays(
 
 
 def dict_of_arrays_to_dataframe(
-    dict_of_arrays: Dict[str, np.ndarray]
+    dict_of_arrays: dict[str, np.ndarray]
 ) -> pd.DataFrame:
     """
     Convert a dict of ndarray of any dimension to a pandas DataFrame.
@@ -345,7 +346,7 @@ class TimeSeriesEvent:
         """Define >= operator."""
         return self.time >= other.time
 
-    def _to_tuple(self) -> Tuple[float, str]:
+    def _to_tuple(self) -> tuple[float, str]:
         """
         Convert a TimeSeriesEvent to a tuple.
 
@@ -358,7 +359,7 @@ class TimeSeriesEvent:
         """
         return (self.time, self.name)
 
-    def _to_list(self) -> List[Union[float, str]]:
+    def _to_list(self) -> list[float | str]:
         """
         Convert a TimeSeriesEvent to a list.
 
@@ -371,7 +372,7 @@ class TimeSeriesEvent:
         """
         return [self.time, self.name]
 
-    def _to_dict(self) -> Dict[str, Union[float, str]]:
+    def _to_dict(self) -> dict[str, float | str]:
         """
         Convert a TimeSeriesEvent to a dict.
 
@@ -394,14 +395,14 @@ class TimeSeries:
     time : np.ndarray
         Time vector as 1-dimension np.array.
 
-    data : Dict[str, np.ndarray]
+    data : dict[str, np.ndarray]
         Contains the data, where each element contains a np.array
         which first dimension corresponds to time.
 
-    time_info : Dict[str, Any]
+    time_info : dict[str, Any]
         Contains metadata relative to time. The default is {'Unit': 's'}
 
-    data_info : Dict[str, Dict[str, Any]]
+    data_info : dict[str, dict[str, Any]]
         Contains facultative metadata relative to data. For example, the
         data_info attribute could indicate the unit of data['Forces']::
 
@@ -410,8 +411,8 @@ class TimeSeries:
         To facilitate the management of data_info, please use
         `ktk.TimeSeries.add_data_info`.
 
-    events : List[TimeSeriesEvent]
-        List of events.
+    events : list[TimeSeriesEvent]
+        list of events.
 
     Example
     -------
@@ -422,10 +423,10 @@ class TimeSeries:
     def __init__(
         self,
         time: np.ndarray = np.array([]),
-        time_info: Dict[str, Any] = {"Unit": "s"},
-        data: Dict[str, np.ndarray] = {},
-        data_info: Dict[str, Dict[str, Any]] = {},
-        events: List[TimeSeriesEvent] = [],
+        time_info: dict[str, Any] = {"Unit": "s"},
+        data: dict[str, np.ndarray] = {},
+        data_info: dict[str, dict[str, Any]] = {},
+        events: list[TimeSeriesEvent] = [],
     ):
 
         self.time = time.copy()
@@ -500,7 +501,6 @@ class TimeSeries:
         """
         return self._is_equivalent(ts)
 
-    @timeseries_method
     def _is_equivalent(
         self, ts, *, equal: bool = True, atol: float = 1e-8, rtol: float = 1e-5
     ):
@@ -758,7 +758,6 @@ class TimeSeries:
                     f"time's shape is {self.time.shape}."
                 )
 
-    @timeseries_method
     def _check_not_empty_time(self) -> None:
         """
         Check that the TimeSeries' time vector is not empty.
@@ -775,7 +774,6 @@ class TimeSeries:
                 "attribute is 0."
             )
 
-    @timeseries_method
     def _check_increasing_time(self) -> None:
         """
         Check that the TimeSeries' time vector is always increasing.
@@ -794,7 +792,6 @@ class TimeSeries:
                 "using ts = ts.resample(np.sort(ts.time))."
             )
 
-    @timeseries_method
     def _check_not_empty_data(self) -> None:
         """
         Check that the TimeSeries's data dict is not empty.
@@ -824,7 +821,6 @@ class TimeSeries:
             f"data_info[{data_key}] attribute."
         )
 
-    @timeseries_method
     def copy(
         self,
         *,
@@ -858,6 +854,9 @@ class TimeSeries:
             A deep copy of the TimeSeries.
 
         """
+        check_types(TimeSeries.copy, locals())
+        self._check_well_typed()
+
         if copy_data and copy_time_info and copy_data_info and copy_events:
             # General case
             return deepcopy(self)
@@ -876,7 +875,6 @@ class TimeSeries:
                 ts.events = deepcopy(self.events)
             return ts
 
-    @timeseries_method
     def add_data_info(
         self,
         data_key: str,
@@ -923,15 +921,16 @@ class TimeSeries:
         {'Color': [43, 2, 255]}
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.add_data_info, locals())
+
         ts = self if in_place else self.copy()
         try:
             ts.data_info[data_key][info_key] = value
         except KeyError:
             ts.data_info[data_key] = {info_key: value}
-
         return ts
 
-    @timeseries_method
     def remove_data_info(
         self, data_key: str, info_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -975,6 +974,9 @@ class TimeSeries:
         {}
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.remove_data_info, locals())
+
         ts = self if in_place else self.copy()
         try:
             data_info = ts.data_info[data_key]
@@ -984,10 +986,8 @@ class TimeSeries:
                 self._raise_data_info_key_error(data_key, info_key)
         except KeyError:
             self._raise_data_key_error(data_key)
-
         return ts
 
-    @timeseries_method
     def rename_data(
         self, old_data_key: str, new_data_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -1041,6 +1041,9 @@ class TimeSeries:
         {'signal': {'Unit': 'm'}}
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.rename_data, locals())
+
         ts = self if in_place else self.copy()
         try:
             ts.data[new_data_key] = ts.data.pop(old_data_key)
@@ -1054,7 +1057,6 @@ class TimeSeries:
 
         return ts
 
-    @timeseries_method
     def remove_data(
         self, data_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -1108,6 +1110,9 @@ class TimeSeries:
         {}
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.remove_data, locals())
+
         ts = self if in_place else self.copy()
         try:
             ts.data.pop(data_key)
@@ -1120,8 +1125,7 @@ class TimeSeries:
 
         return ts
 
-    @timeseries_method
-    def _get_event_indexes(self, name) -> List[int]:
+    def _get_event_indexes(self, name: str) -> list[int]:
         """
         Get a list of index of all occurrences of an event.
 
@@ -1132,11 +1136,14 @@ class TimeSeries:
 
         Returns
         -------
-        List[int]
+        list[int]
             The occurrences of this event.
 
         """
-        # List all events with correct name
+        self._check_well_typed()
+        check_types(TimeSeries._get_event_indexes, locals())
+
+        # list all events with correct name
         event_times = []
         event_indexes = []
         for i_event, event in enumerate(self.events):
@@ -1149,7 +1156,6 @@ class TimeSeries:
         event_indexes = [event_indexes[i] for i in sorted_indexes]
         return event_indexes
 
-    @timeseries_method
     def _get_event_index(self, name: str, occurrence: int = 0) -> int:
         """
         Get the events index of a given occurrence of an event name.
@@ -1173,10 +1179,16 @@ class TimeSeries:
             If the specified occurrence could not be found.
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries._get_event_index, locals())
+
         occurrence = int(occurrence)
 
         if occurrence < 0:
-            raise ValueError("occurrence must be positive")
+            raise ValueError(
+                "The parameter `occurrence` must be positive a integer. "
+                f"However, a value of {occurrence} was received."
+            )
 
         # Get the event occurrence
         try:
@@ -1189,14 +1201,13 @@ class TimeSeries:
                 "this event name was found."
             )
 
-    @timeseries_method
-    def _get_duplicate_event_indexes(self) -> List[int]:
+    def _get_duplicate_event_indexes(self) -> list[int]:
         """
         Find events with same name and same time.
 
         Returns
         -------
-        List[int]
+        list[int]
             A list of list of event indexes. The outer list corresponds to
             different events. The inner list corresponds to all occurences of
             this event. The integer corresponds to the event index in the
@@ -1219,8 +1230,11 @@ class TimeSeries:
         >>> ts = ts.add_event(2.0, "event3")
 
         """
-        # Sort all events in a dict with key being Tuple(time, name)
-        sorted_events = {}  # type: Dict[Tuple[float, str], List[int]]
+        self._check_well_typed()
+        check_types(TimeSeries._get_duplicate_event_indexes, locals())
+
+        # Sort all events in a dict with key being tuple(time, name)
+        sorted_events = {}  # type: dict[tuple[float, str], list[int]]
         for i_event, event in enumerate(self.events):
             tup_event = event._to_tuple()
 
@@ -1244,7 +1258,6 @@ class TimeSeries:
 
         return sorted(out)
 
-    @timeseries_method
     def add_event(
         self,
         time: float,
@@ -1297,15 +1310,8 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        if isinstance(name, str) is False:
-            raise ValueError("name must be a string.")
-
-        # Check that time is any number or nan
-        if ~np.isnan(time):
-            try:
-                int(time)
-            except ValueError:
-                raise ValueError("time must be a number.")
+        self._check_well_typed()
+        check_types(TimeSeries.add_event, locals())
 
         ts = self if in_place else self.copy()
 
@@ -1318,7 +1324,6 @@ class TimeSeries:
         ts.events.append(TimeSeriesEvent(time, name))
         return ts
 
-    @timeseries_method
     def rename_event(
         self,
         old_name: str,
@@ -1383,6 +1388,9 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.rename_event, locals())
+
         ts = self if in_place else self.copy()
 
         if old_name == new_name:
@@ -1397,7 +1405,6 @@ class TimeSeries:
             ts.events[index].name = new_name
         return ts
 
-    @timeseries_method
     def remove_event(
         self,
         name: str,
@@ -1463,6 +1470,9 @@ class TimeSeries:
         TimeSeries. A total of 1 occurrence(s) of this event name was found.
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.remove_event, locals())
+
         ts = self if in_place else self.copy()
 
         if occurrence is None:  # Remove all occurrences
@@ -1483,7 +1493,6 @@ class TimeSeries:
             ts.events.pop(event_index)
         return ts
 
-    @timeseries_method
     def count_events(self, name: str) -> int:
         """
         Count the number of occurrence of a given event name.
@@ -1499,10 +1508,12 @@ class TimeSeries:
             The number of occurrences.
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.count_events, locals())
+
         indexes = self._get_event_indexes(name)
         return len(indexes)
 
-    @timeseries_method
     def remove_duplicate_events(self, *, in_place: bool = False) -> TimeSeries:
         """
         Remove events with same name and time so that each event gets unique.
@@ -1553,13 +1564,15 @@ class TimeSeries:
          TimeSeriesEvent(time=2.0, name='event3')]
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.remove_duplicate_events, locals())
+
         ts = self if in_place else self.copy()
         duplicates = ts._get_duplicate_event_indexes()
         for event_index in duplicates[-1::-1]:
             ts.events.pop(event_index)
         return ts
 
-    @timeseries_method
     def sort_events(
         self, *, unique: bool = False, in_place: bool = False
     ) -> TimeSeries:
@@ -1617,13 +1630,15 @@ class TimeSeries:
          TimeSeriesEvent(time=3, name='three')]
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.sort_events, locals())
+
         ts = self if in_place else self.copy()
         if unique:
             ts.remove_duplicate_events(in_place=True)
         ts.events = sorted(ts.events)
         return ts
 
-    @timeseries_method
     def trim_events(self, *, in_place: bool = False) -> TimeSeries:
         """
         Delete the events that are outside the TimeSeries' time vector.
@@ -1673,6 +1688,9 @@ class TimeSeries:
          TimeSeriesEvent(time=9, name='event')]
 
         """
+        self._check_well_typed()
+        check_types(TimeSeries.trim_events, locals())
+
         ts = self if in_place else self.copy()
 
         events = deepcopy(ts.events)
@@ -1682,7 +1700,6 @@ class TimeSeries:
                 ts.add_event(event.time, event.name, in_place=True)
         return ts
 
-    @timeseries_method
     def get_index_at_time(self, time: float) -> int:
         """
         Get the time index that is the closest to the specified time.
@@ -1720,9 +1737,12 @@ class TimeSeries:
         4
 
         """
+        self._check_well_shaped()
+        check_types(TimeSeries.get_index_at_time, locals())
+
+        self._check_not_empty_time()
         return int(np.argmin(np.abs(self.time - float(time))))
 
-    @timeseries_method
     def get_index_before_time(
         self, time: float, *, inclusive: bool = False
     ) -> int:
@@ -1776,6 +1796,8 @@ class TimeSeries:
         0
 
         """
+        self._check_well_shaped()
+        check_types(TimeSeries.get_index_before_time, locals())
 
         def _raise():
             raise IndexError(
@@ -1809,7 +1831,6 @@ class TimeSeries:
 
         return index
 
-    @timeseries_method
     def get_index_after_time(
         self, time: float, *, inclusive: bool = False
     ) -> int:
@@ -1863,6 +1884,8 @@ class TimeSeries:
         4
 
         """
+        self._check_well_shaped()
+        check_types(TimeSeries.get_index_after_time, locals())
 
         def _raise():
             raise IndexError(
@@ -1895,7 +1918,6 @@ class TimeSeries:
 
         return index
 
-    @timeseries_method
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -1934,6 +1956,8 @@ class TimeSeries:
         array([0. , 0.1, 0.2])
 
         """
+        check_types(TimeSeries.get_ts_before_index, locals())
+        self._check_well_shaped()
         self._check_increasing_time()
 
         out_ts = self.copy(copy_data=False, copy_time=False)
@@ -1948,7 +1972,6 @@ class TimeSeries:
             out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
-    @timeseries_method
     def get_ts_after_index(
         self, index: int, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -1987,6 +2010,8 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
+        check_types(TimeSeries.get_ts_after_index, locals())
+        self._check_well_shaped()
         self._check_increasing_time()
 
         out_ts = self.copy(copy_data=False, copy_time=False)
@@ -2003,7 +2028,6 @@ class TimeSeries:
             out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
-    @timeseries_method
     def get_ts_between_indexes(
         self, index1: int, index2: int, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2048,6 +2072,8 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5])
 
         """
+        check_types(TimeSeries.get_ts_between_indexes, locals())
+        self._check_well_shaped()
         self._check_increasing_time()
 
         out_ts = self.copy(copy_data=False, copy_time=False)
@@ -2079,7 +2105,6 @@ class TimeSeries:
             out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
-    @timeseries_method
     def get_ts_before_time(
         self, time: float, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2118,12 +2143,13 @@ class TimeSeries:
         array([0. , 0.1, 0.2, 0.3])
 
         """
+        check_types(TimeSeries.get_ts_before_time, locals())
+        self._check_well_shaped()
         self._check_increasing_time()
 
         index = self.get_index_before_time(time, inclusive=inclusive)
         return self.get_ts_before_index(index, inclusive=True)
 
-    @timeseries_method
     def get_ts_after_time(
         self, time: float, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2164,12 +2190,13 @@ class TimeSeries:
         >>> ts.get_ts_after_time(0.25, inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
+        check_types(TimeSeries.get_ts_after_time, locals())
+        self._check_well_shaped()
         self._check_increasing_time()
 
         index = self.get_index_after_time(time, inclusive=inclusive)
         return self.get_ts_after_index(index, inclusive=True)
 
-    @timeseries_method
     def get_ts_between_times(
         self, time1: float, time2: float, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2209,7 +2236,10 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5])
 
         """
+        check_types(TimeSeries.get_ts_between_times, locals())
+        self._check_well_shaped()
         self._check_increasing_time()
+
         if time2 <= time1:
             raise ValueError(
                 "The parameters time2 must be higher than time1. "
@@ -2219,7 +2249,6 @@ class TimeSeries:
         new_ts = new_ts.get_ts_before_time(time2, inclusive=inclusive)
         return new_ts
 
-    @timeseries_method
     def get_ts_before_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2269,10 +2298,12 @@ class TimeSeries:
         array([0. , 0.1, 0.2, 0.3, 0.4])
 
         """
+        check_types(TimeSeries.get_ts_before_event, locals())
+        self._check_well_shaped()
+
         time = self.events[self._get_event_index(name, occurrence)].time
         return self.get_ts_before_time(time, inclusive=inclusive)
 
-    @timeseries_method
     def get_ts_after_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2322,10 +2353,12 @@ class TimeSeries:
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
+        check_types(TimeSeries.get_ts_after_event, locals())
+        self._check_well_shaped()
+
         time = self.events[self._get_event_index(name, occurrence)].time
         return self.get_ts_after_time(time, inclusive=inclusive)
 
-    @timeseries_method
     def get_ts_between_events(
         self,
         name1: str,
@@ -2377,11 +2410,13 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5, 0.6])
 
         """
+        check_types(TimeSeries.get_ts_between_events, locals())
+        self._check_well_shaped()
+
         ts = self.get_ts_after_event(name1, occurrence1, inclusive=inclusive)
         ts = ts.get_ts_before_event(name2, occurrence2, inclusive=inclusive)
         return ts
 
-    @timeseries_method
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
         Shift time and events.time.
@@ -2422,13 +2457,15 @@ class TimeSeries:
         [TimeSeriesEvent(time=0.55, name='start')]
 
         """
+        check_types(TimeSeries.shift, locals())
+        self._check_well_shaped()
+
         ts = self if in_place else self.copy()
         for event in ts.events:
             event.time += time
         ts.time += time
         return ts
 
-    @timeseries_method
     def get_subset(self, data_keys: str | list[str]) -> TimeSeries:
         """
         Return a subset of the TimeSeries.
@@ -2471,6 +2508,9 @@ class TimeSeries:
             dict_keys(['signal1', 'signal3'])
 
         """
+        check_types(TimeSeries.get_subset, locals())
+        self._check_well_shaped()
+
         if isinstance(data_keys, str):
             data_keys = [data_keys]
 
@@ -2495,7 +2535,6 @@ class TimeSeries:
 
         return ts
 
-    @timeseries_method
     def get_sample_rate(self) -> float:
         """
         Get the sample rate in samples/s.
@@ -2525,6 +2564,9 @@ class TimeSeries:
         ktk.TimeSeries.resample
 
         """
+        check_types(TimeSeries.get_sample_rate, locals())
+        self._check_well_shaped()
+
         if self.time.shape[0] <= 1:
             return np.nan
 
@@ -2534,13 +2576,12 @@ class TimeSeries:
         else:
             return np.nan
 
-    @timeseries_method
     def resample(
         self,
         new_time: np.ndarray,
         kind: str = "linear",
         *,
-        fill_value: Union[np.ndarray, str, None] = None,
+        fill_value: Optional[np.ndarray | str] = None,
         in_place: bool = False,
     ) -> TimeSeries:
         """
@@ -2612,10 +2653,16 @@ class TimeSeries:
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  nan,  nan,  nan, 16. , 20.5, 25. ])
 
         """
+        check_types(TimeSeries.resample, locals())
+        self._check_well_shaped()
+
         ts = self if in_place else self.copy()
 
         if np.any(np.isnan(new_time)):
             raise ValueError("new_time must not contain nans")
+
+        # We will progressively fill these data
+        new_data = {}  # type: dict[str, np.ndarray]
 
         for key in ts.data.keys():
             index = ~ts.isnan(key)
@@ -2628,15 +2675,15 @@ class TimeSeries:
                 new_shape = [len(new_time)]
                 for i in range(1, len(self.data[key].shape)):
                     new_shape.append(self.data[key].shape[i])
-                ts.data[key] = np.empty(new_shape)
-                ts.data[key][:] = np.nan
+                new_data[key] = np.empty(new_shape)
+                new_data[key][:] = np.nan
 
             else:  # Interpolate.
 
                 # Express nans as a range of times to
                 # remove from the final, interpolated timeseries
                 nan_indexes = np.argwhere(~index)
-                time_ranges_to_remove = []  # type: List[Tuple[int, int]]
+                time_ranges_to_remove = []  # type: list[tuple[int, int]]
                 length = ts.time.shape[0]
                 for i in nan_indexes:
                     if i > 0 and i < length - 1:
@@ -2656,7 +2703,7 @@ class TimeSeries:
                             True if fill_value == "extrapolate" else False
                         ),
                     )
-                    ts.data[key] = P(new_time)
+                    new_data[key] = P(new_time)
                 else:
                     f = sp.interpolate.interp1d(
                         ts.time[index],
@@ -2666,7 +2713,7 @@ class TimeSeries:
                         kind=kind,
                     )
                     try:
-                        ts.data[key] = f(new_time)
+                        new_data[key] = f(new_time)
                     except ValueError as e:
                         raise ValueError(
                             f"The following exception was raised: {e} ."
@@ -2676,18 +2723,18 @@ class TimeSeries:
 
                 # Put back nans
                 for j in time_ranges_to_remove:
-                    ts.data[key][
+                    new_data[key][
                         (new_time > j[0]) & (new_time < j[1])
                     ] = np.nan
 
         ts.time = new_time
+        ts.data = new_data
         return ts
 
-    @timeseries_method
     def merge(
         self,
         ts: TimeSeries,
-        data_keys: Union[str, List[str]] = [],
+        data_keys: str | list[str] = [],
         *,
         resample: bool = False,
         overwrite: bool = False,
@@ -2734,6 +2781,10 @@ class TimeSeries:
           future.
 
         """
+        check_types(TimeSeries.merge, locals())
+        self._check_well_shaped()
+        ts._check_well_shaped()
+
         ts_out = self if in_place else self.copy()
         ts = ts.copy()
         if len(data_keys) == 0:
@@ -2795,7 +2846,6 @@ class TimeSeries:
         ts_out.sort_events(in_place=True)
         return ts_out
 
-    @timeseries_method
     def isnan(self, data_key: str) -> np.ndarray:
         """
         Return a boolean array of missing samples.
@@ -2828,13 +2878,15 @@ class TimeSeries:
         array([False, False,  True, False])
 
         """
+        check_types(TimeSeries.isnan, locals())
+        self._check_well_shaped()
+
         values = self.data[data_key].copy()
         # Reduce the dimension of values while keeping the time dimension.
         while len(values.shape) > 1:
             values = np.sum(values, 1)  # type: ignore
         return np.isnan(values)
 
-    @timeseries_method
     def fill_missing_samples(
         self,
         max_missing_samples: int,
@@ -2882,6 +2934,9 @@ class TimeSeries:
         ktk.TimeSeries.isnan
 
         """
+        check_types(TimeSeries.fill_missing_samples, locals())
+        self._check_well_shaped()
+
         if np.isnan(self.get_sample_rate()):
             raise ValueError("The sample rate must be constant.")
 
@@ -2915,11 +2970,10 @@ class TimeSeries:
 
         return ts_out
 
-    @timeseries_method
     def ui_edit_events(
         self,
-        name: Union[str, List[str]] = [],
-        data_keys: Union[str, List[str]] = [],
+        name: str | list[str] = [],
+        data_keys: str | list[str] = [],
     ) -> TimeSeries:  # pragma: no cover
         """
         Edit events interactively.
@@ -2964,6 +3018,8 @@ class TimeSeries:
         Matplotlib must be in interactive mode for this function to work.
 
         """
+        check_types(TimeSeries.ui_edit_events, locals())
+        self._check_well_shaped()
         self._check_not_empty_time()
         self._check_not_empty_data()
 
@@ -3119,12 +3175,11 @@ class TimeSeries:
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
 
-    @timeseries_method
     def ui_sync(
         self,
-        data_keys: Union[str, List[str]] = [],
+        data_keys: str | list[str] = [],
         ts2=None,
-        data_keys2: Union[str, List[str]] = [],
+        data_keys2: str | list[str] = [],
     ) -> TimeSeries:  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
@@ -3165,10 +3220,13 @@ class TimeSeries:
         Matplotlib must be in interactive mode for this method to work.
 
         """
+        check_types(TimeSeries.ui_sync, locals())
+        self._check_well_shaped()
         self._check_not_empty_time()
         self._check_not_empty_data()
 
         if ts2 is not None:
+            ts2._check_well_shaped()
             ts2._check_not_empty_time()
             ts2._check_not_empty_data()
 
@@ -3199,8 +3257,8 @@ class TimeSeries:
         else:  # Sync two TimeSeries together
 
             finished = False
-            # List of axes:
-            axes = []  # type: List[Any]
+            # list of axes:
+            axes = []  # type: list[Any]
             while finished is False:
 
                 if len(axes) == 0:
@@ -3293,10 +3351,9 @@ class TimeSeries:
 
         return ts1
 
-    @timeseries_method
     def plot(
         self,
-        data_keys: Union[str, List[str]] = [],
+        data_keys: str | list[str] = [],
         *args,
         event_names: bool = True,
         legend: bool = True,
@@ -3337,6 +3394,9 @@ class TimeSeries:
         plots only the forces and moments, without plotting the angle.
 
         """
+        check_types(TimeSeries.plot, locals())
+        self._check_well_shaped()
+
         # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
         # instead of warning when no data is available to plot.
         if "_raise_on_no_data" in kwargs:
@@ -3426,7 +3486,7 @@ class TimeSeries:
             plt.plot(event_line_x, event_line_y, ":k")
 
             if event_names:
-                occurrences = {}  # type:Dict[str, int]
+                occurrences = {}  # type:dict[str, int]
 
                 for event in ts.events:
                     if event.name == "_":
@@ -3457,7 +3517,6 @@ class TimeSeries:
                 loc=legend_location, ncol=1 + int(len(labels) / 40)
             )  # Max 40 items per line
 
-    @timeseries_method
     def to_dataframe(self) -> pd.DataFrame:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
@@ -3512,11 +3571,13 @@ class TimeSeries:
          0.3      0.0      2.0      3.0
 
         """
+        check_types(TimeSeries.to_dataframe, locals())
+        self._check_well_shaped()
+
         df = dict_of_arrays_to_dataframe(self.data)
         df.index = self.time
         return df
 
-    @timeseries_method
     def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
         """
         Create a new TimeSeries from a Pandas Dataframe.
@@ -3576,6 +3637,8 @@ class TimeSeries:
         {'data': array([[1., 2.], [3., 4.], [5., 6.]])}
 
         """
+        check_types(TimeSeries.from_dataframe, locals())
+
         ts = TimeSeries()
         ts.data = dataframe_to_dict_of_arrays(dataframe)
         ts.time = dataframe.index.to_numpy()
@@ -3692,7 +3755,7 @@ class TimeSeries:
         ),
     )
     def ui_get_ts_between_clicks(
-        self, data_keys: Union[str, List[str]] = [], *, inclusive: bool = False
+        self, data_keys: str | list[str] = [], *, inclusive: bool = False
     ) -> TimeSeries:  # pragma: no cover
         """
         Get a TimeSeries between two mouse clicks.
