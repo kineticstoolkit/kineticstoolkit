@@ -552,7 +552,7 @@ def unstack(data: dict[str, ArrayLike], /) -> TimeSeries:
 
 def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     """
-    Get the indexes of the most repeatable cycles in TimeSeries or array.
+    Get the indexes of the most repeatable cycles in array.
 
     This function returns an ordered list of the most repeatable to the least
     repeatable cycles.

@@ -1206,7 +1206,7 @@ class TimeSeries:
                 f"The occurrence {occurrence} of event '{name}' could not "
                 "be found in the TimeSeries. A total of "
                 f"{len(self._get_event_indexes(name))} occurrence(s) of "
-                "this event name was found."
+                "this event name were found."
             )
 
     def _get_duplicate_event_indexes(self) -> list[int]:

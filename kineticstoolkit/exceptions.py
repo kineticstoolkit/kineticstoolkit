@@ -26,6 +26,7 @@ __license__ = "Apache 2.0"
 
 
 from typing import Any
+import numpy as np
 
 
 class TimeSeriesRangeError(Exception):
@@ -94,7 +95,9 @@ def check_types(function, args: dict[str, Any]):
                 if one_expected_type == "float":
                     # Just ensure that it's equal to its float version
                     try:
-                        if value == float(value):
+                        if np.isnan(value) or np.isinf(value):
+                            ok = True
+                        elif value == float(value):
                             ok = True
                     except Exception:
                         pass
