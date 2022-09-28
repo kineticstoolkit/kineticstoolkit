@@ -47,9 +47,9 @@ def check_types(function, args: dict[str, Any]):
 
     Warning
     -------
-    This function is very lousy. It will work for most basic types, but won't
-    even attempt to check for more complex ones such as ArrayLike. It may
-    help users finding some bugs in their scripts, but it's really not
+    This function does not check into constructs such as lists or dicts.
+    It does not check for ArrayLike. It may help users finding some bugs in
+    their scripts, but it's really not
     foulproof.
 
     """
@@ -71,6 +71,14 @@ def check_types(function, args: dict[str, Any]):
             value = args[arg]
             value_type = str(type(value)).split("'")[1]
             expected_type = annotations[arg].replace(" ", "")
+            if expected_type.lower().startswith("list["):
+               expected_type = 'list'
+            elif expected_type.lower().startswith("dict["):
+               expected_type = 'dict'
+            elif expected_type.lower().startswith("tuple["):
+               expected_type = 'tuple'
+            elif expected_type.lower().startswith("set["):
+               expected_type = 'set'
 
             ok = False
             for one_expected_type in expected_type.split("|"):
@@ -95,14 +103,22 @@ def check_types(function, args: dict[str, Any]):
                     if isinstance(value, str):
                         ok = True
 
-                elif one_expected_type.lower().startswith("list"):
+                elif one_expected_type == "list":
                     if isinstance(value, list):
                         ok = True
 
-                elif one_expected_type.lower().startswith("dict"):
+                elif one_expected_type == "dict":
                     if isinstance(value, dict):
                         ok = True
 
+                elif one_expected_type == "tuple":
+                    if isinstance(value, tuple):
+                        ok = True
+                        
+                elif one_expected_type == "set":
+                    if isinstance(value, set):
+                        ok = True
+                        
                 elif one_expected_type == "TimeSeries":
                     if "TimeSeries" in value_type:
                         ok = True

@@ -10,6 +10,11 @@ Unit tests for ktk.kinematics.
 For now this is the original tutorial without any additional check.
 """
 
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
+
 import kineticstoolkit as ktk
 import numpy as np
 import warnings
