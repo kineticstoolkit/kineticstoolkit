@@ -29,7 +29,10 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.exceptions import check_types
+from kineticstoolkit.exceptions import (
+    check_types,
+    TimeSeriesEventNotFoundError,
+)
 import warnings
 from typing import Optional
 from numpy.typing import ArrayLike
@@ -271,7 +274,7 @@ def time_normalize(
         # Get the begin time for this cycle
         try:
             event_index = ts._get_event_index(event_name1, i_cycle)
-        except ValueError:
+        except TimeSeriesEventNotFoundError:
             break_now = True
         else:
             begin_time = ts.events[event_index].time
@@ -285,7 +288,7 @@ def time_normalize(
                 end_time = ts.events[
                     ts._get_event_index(event_name2, end_cycle)
                 ].time
-            except ValueError:
+            except TimeSeriesEventNotFoundError:
                 break_now = True
                 break
 

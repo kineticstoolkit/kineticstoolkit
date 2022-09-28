@@ -33,7 +33,11 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit._repr
 from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.exceptions import check_types
+from kineticstoolkit.exceptions import (
+    check_types,
+    TimeSeriesRangeError,
+    TimeSeriesEventNotFoundError,
+)
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
@@ -602,7 +606,10 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesTypeError
+        AttributeError
+            If the TimeSeries' miss some attributes.
+
+        TypeError
             If the TimeSeries' attributes are of wrong type.
 
         """
@@ -734,7 +741,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesShapeError
+        ValueError
             If the TimeSeries' time and data do not concord in shape.
 
         """
@@ -765,8 +772,8 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesEmptyTimeError
-            If the TimeSeries as no time
+        ValueError
+            If the TimeSeries time is empty
 
         """
         if self.time.shape[0] == 0:
@@ -781,7 +788,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesNonIncreasingTimeError
+        ValueError
             If the TimeSeries' time is not always increasing.
 
         """
@@ -799,7 +806,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesEmptyDataError:
+        ValueError:
             If the TimeSeries as no time
 
         """
@@ -956,7 +963,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesKeyError
+        KeyError
             If this data_info could not be found.
 
         See also
@@ -1013,7 +1020,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesKeyError
+        KeyError
             If this data key could not be found in the TimeSeries' data
             attribute.
 
@@ -1080,7 +1087,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesKeyError
+        KeyError
             If this data key could not be found in the TimeSeries' data
             attribute.
 
@@ -1186,7 +1193,7 @@ class TimeSeries:
         occurrence = int(occurrence)
 
         if occurrence < 0:
-            raise ValueError(
+            raise TimeSeriesEventNotFoundError(
                 "The parameter `occurrence` must be positive a integer. "
                 f"However, a value of {occurrence} was received."
             )
@@ -1195,7 +1202,7 @@ class TimeSeries:
         try:
             return self._get_event_indexes(name)[occurrence]
         except IndexError:
-            raise ValueError(
+            raise TimeSeriesEventNotFoundError(
                 f"The occurrence {occurrence} of event '{name}' could not "
                 "be found in the TimeSeries. A total of "
                 f"{len(self._get_event_indexes(name))} occurrence(s) of "
@@ -1464,12 +1471,6 @@ class TimeSeries:
         >>> ts.events
         [TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts = ts.remove_event('event2', 1)
-        Traceback (most recent call last):
-        ValueError: The
-        occurrence 1 of event 'event2' could not be found in the
-        TimeSeries. A total of 1 occurrence(s) of this event name was found.
-
         """
         self._check_well_typed()
         check_types(TimeSeries.remove_event, locals())
@@ -1485,9 +1486,11 @@ class TimeSeries:
                 while True:
                     ts.remove_event(name, occurrence=0, in_place=True)
                     count += 1
-            except ValueError as e:
+            except TimeSeriesEventNotFoundError:
                 if count == 0:  # No event of that name was even found.
-                    raise e
+                    raise TimeSeriesEventNotFoundError(
+                        f"No event named {name} could be found."
+                    )
 
         else:  # Remove only the specified occurrence
             event_index = ts._get_event_index(name, occurrence)
@@ -1764,7 +1767,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesIndexError
+        TimeSeriesRangeError
             If the resulting index would be outside the TimeSeries range.
 
         See also
@@ -1788,21 +1791,14 @@ class TimeSeries:
         >>> ts.get_index_before_time(1.1, inclusive=True)
         3
 
-        >>> ts.get_index_before_time(0)
-        Traceback (most recent call last):
-        IndexError: The resulting index
-        would be outside the TimeSeries range.
-
-        >>> ts.get_index_before_time(0, inclusive=True)
-        0
-
         """
         self._check_well_shaped()
         check_types(TimeSeries.get_index_before_time, locals())
 
         def _raise():
-            raise IndexError(
-                "The resulting index would be outside the TimeSeries range."
+            raise TimeSeriesRangeError(
+                f"There is no data before the requested time of {time} "
+                f"{self.time_info['Unit']}."
             )
 
         self._check_increasing_time()
@@ -1852,7 +1848,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesIndexError
+        TimeSeriesRangeError
             If the resulting index would be outside the TimeSeries range.
 
         See also
@@ -1876,21 +1872,14 @@ class TimeSeries:
         >>> ts.get_index_after_time(1, inclusive=True)
         2
 
-        >>> ts.get_index_after_time(2)
-        Traceback (most recent call last):
-        IndexError: The resulting index
-        would be outside the TimeSeries range.
-
-        >>> ts.get_index_after_time(2, inclusive=True)
-        4
-
         """
         self._check_well_shaped()
         check_types(TimeSeries.get_index_after_time, locals())
 
         def _raise():
-            raise IndexError(
-                "The resulting index would be outside the TimeSeries range."
+            raise TimeSeriesRangeError(
+                f"There is no data before the requested time of {time} "
+                f"{self.time_info['Unit']}."
             )
 
         self._check_increasing_time()
@@ -2049,7 +2038,7 @@ class TimeSeries:
 
         Raises
         ------
-        TimeSeriesIndexError
+        TimeSeriesRangeError
             If `index` is out of the TimeSeries time range.
 
         See also
@@ -2086,14 +2075,14 @@ class TimeSeries:
             )
 
         if index1 < 0 or index1 >= len(self.time):
-            raise IndexError(
+            raise TimeSeriesRangeError(
                 f"The specified index1 of {index1} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
         index1 -= int(inclusive)
 
         if index2 < 0 or index2 >= len(self.time):
-            raise IndexError(
+            raise TimeSeriesRangeError(
                 f"The specified index2 of {index2} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
@@ -2303,7 +2292,16 @@ class TimeSeries:
         self._check_well_shaped()
 
         time = self.events[self._get_event_index(name, occurrence)].time
-        return self.get_ts_before_time(time, inclusive=inclusive)
+        try:
+            retval = self.get_ts_before_time(time, inclusive=inclusive)
+        except TimeSeriesRangeError:
+            raise TimeSeriesRangeError(
+                f"There is no data before the occurrence {occurrence} of "
+                f"event '{name}', which happens at {time} "
+                f"{self.time_info['Unit']}."
+            )
+        else:
+            return retval
 
     def get_ts_after_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
@@ -2358,7 +2356,16 @@ class TimeSeries:
         self._check_well_shaped()
 
         time = self.events[self._get_event_index(name, occurrence)].time
-        return self.get_ts_after_time(time, inclusive=inclusive)
+        try:
+            retval = self.get_ts_after_time(time, inclusive=inclusive)
+        except TimeSeriesRangeError:
+            raise TimeSeriesRangeError(
+                f"There is no data after the occurrence {occurrence} of "
+                f"event '{name}', which happens at {time} "
+                f"{self.time_info['Unit']}."
+            )
+        else:
+            return retval
 
     def get_ts_between_events(
         self,
@@ -2413,6 +2420,18 @@ class TimeSeries:
         """
         check_types(TimeSeries.get_ts_between_events, locals())
         self._check_well_shaped()
+
+        time1 = self.events[self._get_event_index(name1, occurrence1)].time
+        time2 = self.events[self._get_event_index(name2, occurrence2)].time
+
+        if time2 < time1:
+            raise ValueError(
+                f"The end event (occurrence {occurrence2} of "
+                f"'{name2}') happens at {time2} {self.time_info['Unit']}, "
+                f"which is before the begin event (occurrence {occurrence1} "
+                f"of '{name1}') that happens at {time1} "
+                f"{self.time_info['Unit']}."
+            )
 
         ts = self.get_ts_after_event(name1, occurrence1, inclusive=inclusive)
         ts = ts.get_ts_before_event(name2, occurrence2, inclusive=inclusive)
@@ -2546,11 +2565,6 @@ class TimeSeries:
             The sample rate in samples per second. If time is empty or has only
             one data, or if sample rate is variable, or if time is not
             monotonously increasing, a value of np.nan is returned.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError
-            If the TimeSeries is empty.
 
         Warning
         -------
@@ -2995,11 +3009,6 @@ class TimeSeries:
             The original TimeSeries with the modified events. If
             the operation was cancelled by the user, this is a pure copy of
             the original TimeSeries.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
-            If the TimeSeries is empty.
 
         Warning
         -------
@@ -3532,11 +3541,6 @@ class TimeSeries:
         -------
         pd.DataFrame
             DataFrame with the index as the TimeSeries' time.
-
-        Raises
-        ------
-        TimeSeriesEmptyTimeError, TimeSeriesEmptyDataError
-            If the TimeSeries is empty.
 
         See also
         --------

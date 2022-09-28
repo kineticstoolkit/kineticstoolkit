@@ -52,7 +52,7 @@ def test_check_types():
         list_var=["a", 1.1],
         tuple_var=("a", 1.1),
         dict_var={"a": 1.1},
-        set_var={'a', 1.1},
+        set_var={"a", 1.1},
         ts_var=ktk.TimeSeries(time=np.arange(10)),
     )
 
@@ -65,7 +65,7 @@ def test_check_types():
         list_var=["a", 1.1],
         tuple_var=("a", 1.1),
         dict_var={"a": 1.1},
-        set_var={'a', 1.1},
+        set_var={"a", 1.1},
         ts_var=ktk.TimeSeries(time=np.arange(10)),
     )
 
@@ -79,7 +79,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var={"a": 1.1},
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -96,7 +96,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var={"a": 1.1},
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -113,7 +113,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var={"a": 1.1},
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -130,7 +130,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var={"a": 1.1},
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -147,7 +147,7 @@ def test_check_types():
             list_var="a",
             tuple_var=("a", 1.1),
             dict_var={"a": 1.1},
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -164,7 +164,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var={"a": 1.1},
             dict_var={"a": 1.1},
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -181,7 +181,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var=("a", 1.1),
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -198,7 +198,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var={"a": 1.1},
-            set_var=['a', 1.1],
+            set_var=["a", 1.1],
             ts_var=ktk.TimeSeries(time=np.arange(10)),
         )
         raise ValueError("This should have failed")
@@ -215,7 +215,7 @@ def test_check_types():
             list_var=["a", 1.1],
             tuple_var=("a", 1.1),
             dict_var=("a", 1.1),
-            set_var={'a', 1.1},
+            set_var={"a", 1.1},
             ts_var="timeseries",
         )
         raise ValueError("This should have failed")

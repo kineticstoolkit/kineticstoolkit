@@ -28,6 +28,14 @@ __license__ = "Apache 2.0"
 from typing import Any
 
 
+class TimeSeriesRangeError(Exception):
+    """The requested operation exceeds the TimeSeries' time range."""
+
+
+class TimeSeriesEventNotFoundError(Exception):
+    """The requested event occurrence was not found."""
+
+
 def check_types(function, args: dict[str, Any]):
     """
     Check that a function's arguments are of correct type.
@@ -72,13 +80,13 @@ def check_types(function, args: dict[str, Any]):
             value_type = str(type(value)).split("'")[1]
             expected_type = annotations[arg].replace(" ", "")
             if expected_type.lower().startswith("list["):
-               expected_type = 'list'
+                expected_type = "list"
             elif expected_type.lower().startswith("dict["):
-               expected_type = 'dict'
+                expected_type = "dict"
             elif expected_type.lower().startswith("tuple["):
-               expected_type = 'tuple'
+                expected_type = "tuple"
             elif expected_type.lower().startswith("set["):
-               expected_type = 'set'
+                expected_type = "set"
 
             ok = False
             for one_expected_type in expected_type.split("|"):
@@ -114,11 +122,11 @@ def check_types(function, args: dict[str, Any]):
                 elif one_expected_type == "tuple":
                     if isinstance(value, tuple):
                         ok = True
-                        
+
                 elif one_expected_type == "set":
                     if isinstance(value, set):
                         ok = True
-                        
+
                 elif one_expected_type == "TimeSeries":
                     if "TimeSeries" in value_type:
                         ok = True
