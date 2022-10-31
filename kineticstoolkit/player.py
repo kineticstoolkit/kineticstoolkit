@@ -247,6 +247,11 @@ class Player:
                 self.rigid_bodies.data[key], rotation
             )
 
+        # Camera target
+        target1x4 = np.ones((1, 4))
+        target1x4[0, 0:3] = target
+        self.target = geometry.get_global_coordinates(target1x4, rotation)[0]
+
         # ---------------------------------------------------------------
         # Assign the interconnections
         self.interconnections = interconnections
@@ -261,7 +266,6 @@ class Player:
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
-        self.target = np.array(target)
         self.track = track
         self.translation = np.array(translation)
         self.perspective = perspective
