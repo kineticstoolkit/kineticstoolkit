@@ -86,13 +86,14 @@ class Player:
         Optional. Each key corresponds to an inerconnection between markers,
         where one interconnection is another dict with the following keys:
 
-        - ``Links``: list of lists of 2 strings, where each string is a marker
-          name. For example, to link Marker1 to Marker2 and
-          Marker1 to Marker3, Links would be::
+        - 'Links': list of lists strings, where each string is a marker
+          name. For example, to create a link that spans Marker1 and Marker2,
+          and another link that spans Marker3, Marker4 and Marker5,
+          interconnections['Links'] would be::
 
-              [['Marker1', 'Marker2'], ['Marker1', 'Marker3']]
+              [['Marker1', 'Marker2'], ['Marker3', 'Marker4', 'Marker5']]
 
-        - ``Color``: character or tuple that represents the color of the
+        - 'Color': character or tuple (RGB) that represents the color of the
           link. Color must be a valid value for matplotlib's
           plots.
 
@@ -612,34 +613,25 @@ class Player:
         # Draw the interconnections
         if self.interconnections is not None:
             for interconnection in self.interconnections:
-                n_links = len(self.interconnections[interconnection]["Links"])
-                coordinates = np.empty((3 * n_links, 4))
-                coordinates[:] = np.nan
-                for i_link in range(n_links):
-                    marker1 = self.interconnections[interconnection]["Links"][
-                        i_link
-                    ][0]
-                    marker2 = self.interconnections[interconnection]["Links"][
-                        i_link
-                    ][1]
-                    if marker1 in interconnection_markers:
-                        coordinates[3 * i_link] = interconnection_markers[
-                            marker1
-                        ]
-                    else:
-                        coordinates[3 * i_link] = np.nan
 
-                    if marker2 in interconnection_markers:
-                        coordinates[3 * i_link + 1] = interconnection_markers[
-                            marker2
-                        ]
-                    else:
-                        coordinates[3 * i_link + 1] = np.nan
+                coordinates = []
+                chains = self.interconnections[interconnection]["Links"]
 
-                coordinates = self._get_projection(coordinates)
+                for chain in chains:
+                    for marker in chain:
+
+                        try:
+                            coordinates.append(interconnection_markers[marker])
+                        except KeyError:
+                            coordinates.append(np.repeat(np.nan, 4))
+
+                    coordinates.append(np.repeat(np.nan, 4))
+
+                np_coordinates = np.array(coordinates)
+                np_coordinates = self._get_projection(np_coordinates)
 
                 self.objects["PlotInterconnections"][interconnection].set_data(
-                    coordinates[:, 0], coordinates[:, 1]
+                    np_coordinates[:, 0], np_coordinates[:, 1]
                 )
 
     def _update_plots(self) -> None:
