@@ -69,7 +69,7 @@ def create_cluster(
     This function, which has been introduced in 0.7, is still experimental and
     may change signature or behaviour in the future.
 
-    0.9.3: Parameters `marker_names` was changed to `names`
+    0.10.0: Parameters `marker_names` was changed to `names`
 
     See also
     --------
@@ -136,7 +136,7 @@ def extend_cluster(
     This function, which has been introduced in 0.7, is still experimental and
     may change signature or behaviour in the future.
 
-    0.9.3: Parameter `new_point` was changed to `name`
+    0.10.0: Parameter `new_point` was changed to `name`
 
     See also
     --------

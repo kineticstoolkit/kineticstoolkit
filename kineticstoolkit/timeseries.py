@@ -390,7 +390,50 @@ class TimeSeriesEvent:
         return {"Time": self.time, "Name": self.name}
 
 
-class TimeSeries:
+class MetaTimeSeries(type):
+    """A metaclass only to provide a proper class dir() function."""
+
+    @classmethod
+    def __dir__(cls):
+        return [
+            "add_data_info",
+            "add_event",
+            "copy",
+            "count_events",
+            "fill_missing_samples",
+            "from_dataframe",
+            "get_index_after_time",
+            "get_index_at_time",
+            "get_index_before_time",
+            "get_subset",
+            "get_ts_after_event",
+            "get_ts_after_index",
+            "get_ts_after_time",
+            "get_ts_before_event",
+            "get_ts_before_index",
+            "get_ts_before_time",
+            "get_ts_between_events",
+            "get_ts_between_indexes",
+            "get_ts_between_times",
+            "isnan",
+            "merge",
+            "plot",
+            "remove_data",
+            "remove_data_info",
+            "remove_event",
+            "rename_data",
+            "rename_event",
+            "resample",
+            "shift",
+            "sort_events",
+            "to_dataframe",
+            "trim_events",
+            "ui_edit_events",
+            "ui_sync",
+        ]
+
+
+class TimeSeries(metaclass=MetaTimeSeries):
     """
     A class that holds time, data series, events and metadata.
 
@@ -439,44 +482,10 @@ class TimeSeries:
         self.data_info = data_info.copy()
         self.events = events.copy()
 
-    def __dir__(self):
+    @classmethod
+    def __dir__(cls):
         """Generate the class directory."""
-        return [
-            "add_data_info",
-            "add_event",
-            "copy",
-            "count_events",
-            "fill_missing_samples",
-            "from_dataframe",
-            "get_index_after_time",
-            "get_index_at_time",
-            "get_index_before_time",
-            "get_subset",
-            "get_ts_after_event",
-            "get_ts_after_index",
-            "get_ts_after_time",
-            "get_ts_before_event",
-            "get_ts_before_index",
-            "get_ts_before_time",
-            "get_ts_between_events",
-            "get_ts_between_indexes",
-            "get_ts_between_times",
-            "isnan",
-            "merge",
-            "plot",
-            "remove_data",
-            "remove_data_info",
-            "remove_event",
-            "rename_data",
-            "rename_event",
-            "resample",
-            "shift",
-            "sort_events",
-            "to_dataframe",
-            "trim_events",
-            "ui_edit_events",
-            "ui_sync",
-        ]
+        return MetaTimeSeries.__dir__()
 
     def __str__(self):
         """
@@ -3651,7 +3660,7 @@ class TimeSeries:
 
     #%% Deprecated methods
     @deprecated(
-        since="0.9.3",
+        since="0.10.0",
         until="2024",
         details=(
             """
@@ -3669,7 +3678,7 @@ class TimeSeries:
         return self._get_event_index(name=name, occurrence=occurrence)
 
     @deprecated(
-        since="0.9.3",
+        since="0.10.0",
         until="2024",
         details=(
             """
@@ -3693,7 +3702,7 @@ class TimeSeries:
             raise e
 
     @deprecated(
-        since="0.9.3",
+        since="0.10.0",
         until="2024",
         details=(
             "Please use ts.get_ts_after_time() and address the first sample "
@@ -3714,7 +3723,7 @@ class TimeSeries:
             raise e
 
     @deprecated(
-        since="0.9.3",
+        since="0.10.0",
         until="2024",
         details=(
             "Please use ts.get_ts_after_event() and address the first sample "
@@ -3731,7 +3740,9 @@ class TimeSeries:
             raise e
 
     @deprecated(
-        since="0.9.3", until="2024", details=("Please use ts.shift() instead.")
+        since="0.10.0",
+        until="2024",
+        details=("Please use ts.shift() instead."),
     )
     def sync_event(
         self, name: str, occurrence: int = 0, *, in_place: bool = False
@@ -3750,7 +3761,7 @@ class TimeSeries:
             raise e
 
     @deprecated(
-        since="0.9.3",
+        since="0.10.0",
         until="2024",
         details=(
             "Please use ts.ui_edit_events() and add 'begin' and 'end' events "
