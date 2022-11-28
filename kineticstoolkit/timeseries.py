@@ -1715,7 +1715,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     def get_index_at_time(self, time: float) -> int:
         """
-        Get the time index that is the closest to the specified time.
+        Get the time index that is closest to the specified time.
 
         Parameters
         ----------
@@ -1731,6 +1731,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
 
 
         Example
@@ -1783,6 +1786,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
 
         Example
         -------
@@ -1862,8 +1868,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         See also
         --------
-        ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
 
         Example
         -------
@@ -1916,6 +1925,159 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 index += 1
 
         return index
+
+    def get_index_at_event(self, name: str, occurrence: int = 0) -> int:
+        """
+        Get the time index that is closest to the specified event occurrence.
+
+        Parameters
+        ----------
+        name
+            Event name
+        occurrence
+            Occurrence of the event. The default is 0.
+
+        Returns
+        -------
+        int
+            The index in the time vector.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ts.add_event(0.2, 'event')
+        >>> ts = ts.add_event(0.36, 'event')
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_index_at_event('event')
+        2
+
+        >>> ts.get_index_at_event('event', occurrence=1)
+        4
+
+        """
+        self._check_well_shaped()
+        check_types(TimeSeries.get_index_at_event, locals())
+
+        return self.get_index_at_time(
+            self.events[self._get_event_index(name, occurrence)].time
+        )
+
+    def get_index_before_event(self, name: str, occurrence: int = 0) -> int:
+        """
+        Get the time index that is just before the specified event occurrence.
+
+        Parameters
+        ----------
+        name
+            Event name
+        occurrence
+            Occurrence of the event. The default is 0.
+
+        Returns
+        -------
+        int
+            The index in the time vector.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ts.add_event(0.2, 'event')
+        >>> ts = ts.add_event(0.36, 'event')
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_index_before_event('event')
+        1
+
+        >>> ts.get_index_before_event('event', occurrence=1)
+        3
+
+        """
+        self._check_well_shaped()
+        check_types(TimeSeries.get_index_before_event, locals())
+
+        return self.get_index_before_time(
+            self.events[self._get_event_index(name, occurrence)].time
+        )
+
+    def get_index_after_event(self, name: str, occurrence: int = 0) -> int:
+        """
+        Get the time index that is just after the specified event occurrence.
+
+        Parameters
+        ----------
+        name
+            Event name
+        occurrence
+            Occurrence of the event. The default is 0.
+
+        Returns
+        -------
+        int
+            The index in the time vector.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ts.add_event(0.2, 'event')
+        >>> ts = ts.add_event(0.36, 'event')
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_index_after_event('event')
+        3
+
+        >>> ts.get_index_after_event('event', occurrence=1)
+        4
+
+        """
+        self._check_well_shaped()
+        check_types(TimeSeries.get_index_after_time, locals())
+
+        return self.get_index_after_time(
+            self.events[self._get_event_index(name, occurrence)].time
+        )
 
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False

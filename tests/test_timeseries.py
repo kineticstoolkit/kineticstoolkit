@@ -768,6 +768,33 @@ def test_get_index_after_time():
     assert ts.get_index_after_time(2, inclusive=True) == 4
 
 
+def test_get_index_at_event():
+    # doctests
+    ts = ktk.TimeSeries(time=np.arange(10) / 10)
+    ts.add_event(0.2, "event", in_place=True)
+    ts.add_event(0.36, "event", in_place=True)
+    assert ts.get_index_at_event("event") == 2
+    assert ts.get_index_at_event("event", occurrence=1) == 4
+
+
+def test_get_index_before_event():
+    # doctests
+    ts = ktk.TimeSeries(time=np.arange(10) / 10)
+    ts.add_event(0.2, "event", in_place=True)
+    ts.add_event(0.36, "event", in_place=True)
+    assert ts.get_index_before_event("event") == 1
+    assert ts.get_index_before_event("event", occurrence=1) == 3
+
+
+def test_get_index_after_event():
+    # doctests
+    ts = ktk.TimeSeries(time=np.arange(10) / 10)
+    ts.add_event(0.2, "event", in_place=True)
+    ts.add_event(0.36, "event", in_place=True)
+    assert ts.get_index_after_event("event") == 3
+    assert ts.get_index_after_event("event", occurrence=1) == 4
+
+
 #%% get_ts using index(es)
 def test_get_ts_before_index():
     ts = ktk.TimeSeries(time=np.arange(10) / 10)
