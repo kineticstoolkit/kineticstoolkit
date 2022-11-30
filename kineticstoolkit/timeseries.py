@@ -420,6 +420,7 @@ class MetaTimeSeries(type):
             "plot",
             "remove_data",
             "remove_data_info",
+            "remove_duplicate_events",
             "remove_event",
             "rename_data",
             "rename_event",
