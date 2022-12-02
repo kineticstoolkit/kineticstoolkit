@@ -42,6 +42,7 @@ import time
 import copy
 from typing import Any, Optional
 from numpy.typing import ArrayLike
+import warnings
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
@@ -203,9 +204,11 @@ class Player:
                         ]
 
                 else:
-                    raise ValueError(
-                        "TimeSeries data must be of shape Nx4 "
-                        "(markers) or Nx4x4 (rigid bodies)"
+                    warnings.warn(
+                        f"The data key {key} has a shape of "
+                        f"{one_ts.data[key].shape}. However, the Player can "
+                        "only show points (Nx4) and frames Nx4x4. Therefore, "
+                        f"{key} won't be shown in the Player."
                     )
         self._select_none()
         self.last_selected_marker = ""

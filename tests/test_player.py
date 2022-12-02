@@ -7,6 +7,7 @@ Tests for ktk.Player
 """
 import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
+import warnings
 
 
 def test_instanciate_and_to_html5():
@@ -42,6 +43,27 @@ def test_instanciate_and_to_html5():
     assert pl.to_html5() is not None
 
     pl.close()
+
+
+def test_issue137():
+    """
+    Player should complain, but not fail, if some TimeSeries are not Nx4 or
+    Nx4x4
+    """
+
+    # Load markers
+    kinematics = ktk.load(
+        ktk.doc.download("inversedynamics_kinematics.ktk.zip")
+    )
+
+    kinematics = kinematics["Kinematics"]["Markers"]
+    kinematics.data["test"] = kinematics.time
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", category=UserWarning)
+        pl = ktk.Player(kinematics)  # Shouldn't crash
+        plt.pause(0.01)
+        pl.close()
 
 
 if __name__ == "__main__":
