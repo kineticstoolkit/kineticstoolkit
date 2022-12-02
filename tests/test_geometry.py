@@ -169,6 +169,35 @@ def test_create_frames_get_local_global_coordinates():
     assert np.sum(np.abs(test_global - global_markers)) < 1e-10
 
 
+def test_get_local_global_broadcast():
+    """Test fix for issue #136"""
+    global_marker1 = np.array([[0.0, 0.0, 0.0, 1]])
+    global_marker2 = np.array([[1.0, 0.0, 0.0, 1]])
+    global_marker3 = np.array([[0.0, 1.0, 0.0, 1]])
+    global_markers = np.block(
+        [
+            global_marker1[:, :, np.newaxis],
+            global_marker2[:, :, np.newaxis],
+            global_marker3[:, :, np.newaxis],
+        ]
+    )
+    T = ktk.geometry.create_frames(
+        origin=global_marker1,
+        x=global_marker2 - global_marker1,
+        xy=global_marker3 - global_marker1,
+    )
+
+    # None of these calls should crash
+    ktk.geometry.get_local_coordinates(np.repeat(global_markers, 5, axis=0), T)
+    ktk.geometry.get_global_coordinates(
+        np.repeat(global_markers, 5, axis=0), T
+    )
+    ktk.geometry.get_local_coordinates(global_markers, np.repeat(T, 5, axis=0))
+    ktk.geometry.get_global_coordinates(
+        global_markers, np.repeat(T, 5, axis=0)
+    )
+
+
 def test_create_frames():
     """Test create_frames."""
     # Create identity

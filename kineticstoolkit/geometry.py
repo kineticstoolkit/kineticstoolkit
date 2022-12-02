@@ -438,6 +438,9 @@ def get_local_coordinates(
 
     global_coordinates = np.array(global_coordinates)
     reference_frames = np.array(reference_frames)
+    (global_coordinates, reference_frames) = _match_size(
+        global_coordinates, reference_frames
+    )
 
     n_samples = global_coordinates.shape[0]
 
@@ -506,6 +509,9 @@ def get_global_coordinates(
 
     local_coordinates = np.array(local_coordinates)
     reference_frames = np.array(reference_frames)
+    (local_coordinates, reference_frames) = _match_size(
+        local_coordinates, reference_frames
+    )
 
     global_coordinates = np.zeros(local_coordinates.shape)
     global_coordinates = matmul(reference_frames, local_coordinates)
