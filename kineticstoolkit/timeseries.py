@@ -425,6 +425,7 @@ class MetaTimeSeries(type):
             "rename_data",
             "rename_event",
             "resample",
+            "get_sample_rate",
             "shift",
             "sort_events",
             "to_dataframe",
