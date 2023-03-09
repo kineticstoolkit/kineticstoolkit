@@ -57,264 +57,6 @@ import kineticstoolkit as ktk  # For doctests
 WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
 
-def dataframe_to_dict_of_arrays(
-    dataframe: pd.DataFrame,
-) -> dict[str, np.ndarray]:
-    """
-    Convert a pandas DataFrame to a dict of numpy ndarrays.
-
-    This function mirrors the dict_of_arrays_to_dataframe function. It is
-    mainly used by the TimeSeries.from_dataframe method.
-
-    Parameters
-    ----------
-    pd_dataframe
-        The dataframe to be converted.
-
-    Returns
-    -------
-    dict[str, np.ndarray]
-
-
-    Examples
-    --------
-    In the simplest case, each dataframe column becomes a dict key.
-
-        >>> df = pd.DataFrame([[0, 3], [1, 4], [2, 5]])
-        >>> df.columns = ['column1', 'column2']
-        >>> df
-           column1  column2
-        0        0        3
-        1        1        4
-        2        2        5
-
-        >>> data = dataframe_to_dict_of_arrays(df)
-
-        >>> data['column1']
-        array([0, 1, 2])
-
-        >>> data['column2']
-        array([3, 4, 5])
-
-    If the dataframe contains similar column names with indices in brackets
-    (for example, Forces[0], Forces[1], Forces[2]), then these columns are
-    combined in a single array.
-
-        >>> df = pd.DataFrame([[0, 3, 6, 9], [1, 4, 7, 10], [2, 5, 8, 11]])
-        >>> df.columns = ['Forces[0]', 'Forces[1]', 'Forces[2]', 'Other']
-        >>> df
-           Forces[0]  Forces[1]  Forces[2]  Other
-        0          0          3          6      9
-        1          1          4          7     10
-        2          2          5          8     11
-
-        >>> data = dataframe_to_dict_of_arrays(df)
-
-        >>> data['Forces']
-        array([[0, 3, 6],
-               [1, 4, 7],
-               [2, 5, 8]])
-
-        >>> data['Other']
-        array([ 9, 10, 11])
-
-    """
-    # Remove spaces in indexes between brackets
-    columns = dataframe.columns
-    new_columns = []
-    for i_column, column in enumerate(columns):
-        splitted = column.split("[")
-        if len(splitted) > 1:  # There are brackets
-            new_columns.append(
-                splitted[0] + "[" + splitted[1].replace(" ", "")
-            )
-        else:
-            new_columns.append(column)
-    dataframe.columns = columns
-
-    # Search for the column names and their dimensions
-    # At the end, we end with something like:
-    #    dimensions['Data1'] = []
-    #    dimensions['Data2'] = [[0], [1], [2]]
-    #    dimensions['Data3'] = [[0,0],[0,1],[1,0],[1,1]]
-    dimensions = dict()  # type: dict[str, list]
-    for column in dataframe.columns:
-        splitted = column.split("[")
-        if len(splitted) == 1:  # No brackets
-            dimensions[column] = []
-        else:  # With brackets
-            key = splitted[0]
-            index = literal_eval("[" + splitted[1])
-
-            if key in dimensions:
-                dimensions[key].append(index)
-            else:
-                dimensions[key] = [index]
-
-    n_samples = len(dataframe)
-
-    # Assign the columns to the output
-    out = dict()  # type: dict[str, np.ndarray]
-    for key in dimensions:
-        if len(dimensions[key]) == 0:
-            out[key] = dataframe[key].to_numpy()
-        else:
-            highest_dims = np.max(np.array(dimensions[key]), axis=0)
-
-            columns = [
-                key + str(dim).replace(" ", "")
-                for dim in sorted(dimensions[key])
-            ]
-            out[key] = dataframe[columns].to_numpy()
-            out[key] = np.reshape(
-                out[key], [n_samples] + (highest_dims + 1).tolist()
-            )
-
-    return out
-
-
-def dict_of_arrays_to_dataframe(
-    dict_of_arrays: dict[str, np.ndarray]
-) -> pd.DataFrame:
-    """
-    Convert a dict of ndarray of any dimension to a pandas DataFrame.
-
-    This function mirrors the dataframe_to_dict_of_arrays function. It is
-    mainly used by the TimeSeries.to_dataframe method.
-
-    The rows in the output DataFrame correspond to the first dimension of the
-    numpy arrays.
-
-    - Vectors are converted to single-column DataFrames.
-    - 2-dimensional arrays are converted to multi-columns DataFrames.
-    - 3-dimensional (or more) arrays are also converted to DataFrames, but
-      indices in brackets are added to the column names.
-
-    Parameters
-    ----------
-    dict_of_array
-        A dict that contains numpy arrays. Each array must have the same
-        first dimension's size.
-
-    Returns
-    -------
-    DataFrame
-
-    Example
-    -------
-    >>> data = dict()
-    >>> data['Forces'] = np.arange(12).reshape((4, 3))
-    >>> data['Other'] = np.arange(4)
-
-    >>> data['Forces']
-    array([[ 0,  1,  2],
-           [ 3,  4,  5],
-           [ 6,  7,  8],
-           [ 9, 10, 11]])
-
-    >>> data['Other']
-    array([0, 1, 2, 3])
-
-    >>> df = dict_of_arrays_to_dataframe(data)
-
-    >>> df
-       Forces[0]  Forces[1]  Forces[2]  Other
-    0          0          1          2      0
-    1          3          4          5      1
-    2          6          7          8      2
-    3          9         10         11      3
-
-    It also works with higher dimensions:
-
-    >>> data = {'3d_data': np.arange(8).reshape((2, 2, 2))}
-
-    >>> data['3d_data']
-    array([[[0, 1],
-            [2, 3]],
-           [[4, 5],
-            [6, 7]]])
-
-    >>> df = dict_of_arrays_to_dataframe(data)
-
-    >>> df
-       3d_data[0,0]  3d_data[0,1]  3d_data[1,0]  3d_data[1,1]
-    0             0             1             2             3
-    1             4             5             6             7
-
-    """
-    # Init
-    df_out = pd.DataFrame()
-
-    # Go through data
-    the_keys = dict_of_arrays.keys()
-    for the_key in the_keys:
-
-        # Assign data
-        original_data = dict_of_arrays[the_key]
-
-        if original_data.shape[0] > 0:  # Not empty
-
-            original_data_shape = original_data.shape
-            data_length = original_data.shape[0]
-
-            reshaped_data = np.reshape(original_data, (data_length, -1))
-            reshaped_data_shape = reshaped_data.shape
-
-            df_data = pd.DataFrame(reshaped_data)
-
-            # Get the column names index from the shape of the original data
-            # The strategy here is to build matrices of indices, that have
-            # the same shape as the original data, then reshape these matrices
-            # the same way we reshaped the original data. Then we know where
-            # the original indices are in the new reshaped data.
-            original_indices = np.indices(original_data_shape[1:])
-            reshaped_indices = np.reshape(
-                original_indices, (-1, reshaped_data_shape[1])
-            )
-
-            # Hint for my future self:
-            # For a one-dimension series, reshaped_indices will be:
-            # [[0]].
-            # For a two-dimension series, reshaped_indices will be:
-            # [[0 1 2 ...]].
-            # For a three-dimension series, reshaped_indices will be:
-            # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
-            #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
-            # and so on.
-
-            # Assign column names
-            column_names = []
-            for i_column in range(0, len(df_data.columns)):
-                this_column_name = the_key
-                n_indices = np.shape(reshaped_indices)[0]
-                if n_indices > 0:
-                    # This data is expressed in more than one dimension.
-                    # We must add brackets to the column names to specify
-                    # the indices.
-                    this_column_name += "["
-
-                    for i_indice in range(0, n_indices):
-                        this_column_name += str(
-                            reshaped_indices[i_indice, i_column]
-                        )
-                        if i_indice == n_indices - 1:
-                            this_column_name += "]"
-                        else:
-                            this_column_name += ","
-
-                column_names.append(this_column_name)
-
-            df_data.columns = column_names
-
-        else:  # empty data
-            df_data = pd.DataFrame(columns=[the_key])
-
-        # Merge this dataframe with the output dataframe
-        df_out = pd.concat([df_out, df_data], axis=1)
-
-    return df_out
-
-
 @dataclass
 class TimeSeriesEvent:
     """
@@ -477,7 +219,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
     ):
-
         self.time = time.copy()
         self.data = data.copy()
         self.time_info = time_info.copy()
@@ -806,9 +547,28 @@ class TimeSeries(metaclass=MetaTimeSeries):
         if not np.array_equal(self.time, np.sort(self.time)):
             raise ValueError(
                 "The TimeSeries' time attribute is not always increasing, "
-                "which is required for the requested function. You can "
+                "which is required by the requested function. You can "
                 "resample the TimeSeries on an always increasing time vector "
                 "using ts = ts.resample(np.sort(ts.time))."
+            )
+
+    def _check_constant_sample_rate(self) -> None:
+        """
+        Check that the TimeSeries's sampling rate is constant.
+
+        Raises
+        ------
+        ValueError
+            If the TimeSeries's sampling rate is not constant.
+
+        """
+        if np.isnan(self.get_sample_rate()):
+            raise ValueError(
+                "The TimeSeries's sample rate is not constant, which is "
+                "required by the requested function. You can resample the "
+                "TimeSeries on a constant sample rate using "
+                "ts = ts.resample(np.linspace("
+                "np.min(ts.time), np.max(ts.time), len(ts.time)))."
             )
 
     def _check_not_empty_data(self) -> None:
@@ -2867,7 +2627,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 new_data[key][:] = np.nan
 
             else:  # Interpolate.
-
                 # Express nans as a range of times to
                 # remove from the final, interpolated timeseries
                 nan_indexes = np.argwhere(~index)
@@ -3007,7 +2766,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.resample(ts_out.time, fill_value="extrapolate", in_place=True)
 
         for key in data_keys:
-
             # Check if this key is a duplicate, then continue to next key if
             # required.
             if (key in ts_out.data) and (overwrite is False):
@@ -3132,7 +2890,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         max_missing_samples = int(max_missing_samples)
 
         for data in ts_out.data:
-
             # Fill missing samples
             is_visible = ~ts_out.isnan(data)
             ts = ts_out.get_subset(data)
@@ -3438,12 +3195,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts1 = ts1.shift(-click[0][0])
 
         else:  # Sync two TimeSeries together
-
             finished = False
             # list of axes:
             axes = []  # type: list[Any]
             while finished is False:
-
                 if len(axes) == 0:
                     axes.append(fig.add_subplot(2, 1, 1))
                     axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
@@ -3700,6 +3455,98 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 loc=legend_location, ncol=1 + int(len(labels) / 40)
             )  # Max 40 items per line
 
+    def _to_dataframe_and_info(
+        self,
+    ) -> tuple[pd.DataFrame, list[dict[str, any]]]:
+        """
+        Implements TimeSeries.to_dataframe with additional data_info.
+
+        The second element of the output tuple is a list where each element
+        corresponds to a column of the DataFrame, and each element is a copy
+        of the inner data_info dictionary for this data. For instance,
+        an element of the list could be: {'Unit': 'N'}.
+        """
+        # Init
+        df_out = pd.DataFrame()
+        info_out = []
+
+        # Go through data
+        the_keys = self.data.keys()
+        for the_key in the_keys:
+            # Assign data
+            original_data = self.data[the_key]
+
+            if original_data.shape[0] > 0:  # Not empty
+                original_data_shape = original_data.shape
+                data_length = original_data.shape[0]
+
+                reshaped_data = np.reshape(original_data, (data_length, -1))
+                reshaped_data_shape = reshaped_data.shape
+
+                df_data = pd.DataFrame(reshaped_data)
+
+                # Get the column names index from the shape of the original data
+                # The strategy here is to build matrices of indices, that have
+                # the same shape as the original data, then reshape these matrices
+                # the same way we reshaped the original data. Then we know where
+                # the original indices are in the new reshaped data.
+                original_indices = np.indices(original_data_shape[1:])
+                reshaped_indices = np.reshape(
+                    original_indices, (-1, reshaped_data_shape[1])
+                )
+
+                # Hint for my future self:
+                # For a one-dimension series, reshaped_indices will be:
+                # [[0]].
+                # For a two-dimension series, reshaped_indices will be:
+                # [[0 1 2 ...]].
+                # For a three-dimension series, reshaped_indices will be:
+                # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
+                #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
+                # and so on.
+
+                # Assign column names
+                column_names = []
+                for i_column in range(0, len(df_data.columns)):
+                    this_column_name = the_key
+                    n_indices = np.shape(reshaped_indices)[0]
+                    if n_indices > 0:
+                        # This data is expressed in more than one dimension.
+                        # We must add brackets to the column names to specify
+                        # the indices.
+                        this_column_name += "["
+
+                        for i_indice in range(0, n_indices):
+                            this_column_name += str(
+                                reshaped_indices[i_indice, i_column]
+                            )
+                            if i_indice == n_indices - 1:
+                                this_column_name += "]"
+                            else:
+                                this_column_name += ","
+
+                    column_names.append(this_column_name)
+
+                df_data.columns = column_names
+
+            else:  # empty data
+                df_data = pd.DataFrame(columns=[the_key])
+
+            # Merge this dataframe with the output dataframe
+            df_out = pd.concat([df_out, df_data], axis=1)
+
+            # Add the data_info that correspond to this key
+            for i in df_data.columns:
+                try:
+                    data_info = self.data_info[the_key]
+                    info_out.append(deepcopy(data_info))
+                except KeyError:
+                    info_out.append({})
+
+        df_out.index = self.time
+
+        return (df_out, info_out)
+
     def to_dataframe(self) -> pd.DataFrame:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
@@ -3751,10 +3598,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         """
         check_types(TimeSeries.to_dataframe, locals())
         self._check_well_shaped()
-
-        df = dict_of_arrays_to_dataframe(self.data)
-        df.index = self.time
-        return df
+        return self._to_dataframe_and_info()[0]
 
     def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
         """
@@ -3817,12 +3661,61 @@ class TimeSeries(metaclass=MetaTimeSeries):
         """
         check_types(TimeSeries.from_dataframe, locals())
 
-        ts = TimeSeries()
-        ts.data = dataframe_to_dict_of_arrays(dataframe)
-        ts.time = dataframe.index.to_numpy()
+        ts = TimeSeries(time=dataframe.index.to_numpy())
+
+        # Remove spaces in indexes between brackets
+        columns = dataframe.columns
+        new_columns = []
+        for i_column, column in enumerate(columns):
+            splitted = column.split("[")
+            if len(splitted) > 1:  # There are brackets
+                new_columns.append(
+                    splitted[0] + "[" + splitted[1].replace(" ", "")
+                )
+            else:
+                new_columns.append(column)
+        dataframe.columns = columns
+
+        # Search for the column names and their dimensions
+        # At the end, we end with something like:
+        #    dimensions['Data1'] = []
+        #    dimensions['Data2'] = [[0], [1], [2]]
+        #    dimensions['Data3'] = [[0,0],[0,1],[1,0],[1,1]]
+        dimensions = dict()  # type: dict[str, list]
+        for column in dataframe.columns:
+            splitted = column.split("[")
+            if len(splitted) == 1:  # No brackets
+                dimensions[column] = []
+            else:  # With brackets
+                key = splitted[0]
+                index = literal_eval("[" + splitted[1])
+
+                if key in dimensions:
+                    dimensions[key].append(index)
+                else:
+                    dimensions[key] = [index]
+
+        n_samples = len(dataframe)
+
+        # Assign the columns to the output
+        for key in dimensions:
+            if len(dimensions[key]) == 0:
+                ts.data[key] = dataframe[key].to_numpy()
+            else:
+                highest_dims = np.max(np.array(dimensions[key]), axis=0)
+
+                columns = [
+                    key + str(dim).replace(" ", "")
+                    for dim in sorted(dimensions[key])
+                ]
+                ts.data[key] = dataframe[columns].to_numpy()
+                ts.data[key] = np.reshape(
+                    ts.data[key], [n_samples] + (highest_dims + 1).tolist()
+                )
+
         return ts
 
-    #%% Deprecated methods
+    # %% Deprecated methods
     @deprecated(
         since="0.10.0",
         until="2024",

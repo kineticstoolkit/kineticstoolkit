@@ -45,14 +45,12 @@ import time
 import getpass
 import zipfile
 
-from typing import Any
-
 
 def __dir__():  # pragma: no cover
     return ["save", "load"]
 
 
-def save(filename: str, variable: Any) -> None:
+def save(filename: str, variable: any) -> None:
     """
     Save a variable to a ktk.zip file.
 
@@ -244,7 +242,7 @@ def _load_object_hook(obj):
         return obj
 
 
-def load(filename: str, *, include_metadata: bool = False) -> Any:
+def load(filename: str, *, include_metadata: bool = False) -> any:
     """
     Load a ktk.zip file.
 
@@ -506,12 +504,10 @@ def read_c3d(
     # ---------------------------------
     # Create the platforms TimeSeries
     if extract_force_plates and reader["data"]["platform"] != []:
-
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
         n_platforms = len(reader["data"]["platform"])
         for i_platform in range(n_platforms):
-
             force_unit = reader["data"]["platform"][0]["unit_force"]
 
             if force_unit != "N":
@@ -557,7 +553,9 @@ def read_c3d(
     return output
 
 
-def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
+def write_c3d(
+    filename: str, points: TimeSeries, analogs: TimeSeries | None = None
+) -> None:
     """
     Write points and analog data to a C3D file.
 
@@ -567,38 +565,39 @@ def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
         Path of the C3D file
 
     points
-        Points trajectories, where each point corresponds to a data key.
-        Each point position is expressed as an Nx4 point series. Events from
-        this TimeSeries are also added to the c3d.
+        Points trajectories, where data key corresponds to a point, expressed
+        as an Nx4 point series::
+            [
+                [x0, y0, z0, 1.0],
+                [x1, y1, z1, 1.0],
+                [x2, y2, z2, 1.0],
+                ...,
+            ]
+
+        Events from this TimeSeries are also added to the c3d.
+
+    analogs
+        Optional. Analog signals, where each data key is one series. Series
+        that are not unidimensional are converted to multiple unidimensional
+        series. For instance, if the shape of analogs.data['Forces'] is
+        1000x3, then three unidimensional series of length 1000 are created in
+        the C3D: Forces[0], Forces[1] and Forces[2].
+        
+        The sample rate of `analogs` must be an integer multiple of the
+        `points`'s sample rate. Also, `analogs.time[0]` must be the same as
+        `points.time[0]`.
 
     See also
     --------
     ktk.read_c3d
 
-    Note
-    ----
+    Notes
+    -----
     This function relies on `ezc3d`, which is available on
     conda-forge and on git-hub. Please install ezc3d before using
     write_c3d. https://github.com/pyomeca/ezc3d
 
     """
-    """
-    Additional parameters in development
-    ------------------------------------
-    analogs
-        Optional. Analog signals, where each data key is an unidimensional
-        array. Events from this TimeSeries are not added to the c3d.
-        
-    This is not released yet because more checking is required to match sizes,
-    sampling rates, etc. with useful warnings or error messages.
-    """
-    check_types(write_c3d, locals())
-
-    if "analogs" in kwargs:
-        analogs = kwargs["analogs"]
-    else:
-        analogs = None
-
     try:
         import ezc3d
     except ModuleNotFoundError:
@@ -608,50 +607,104 @@ def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
             "conda install -c conda-forge ezc3d"
         )
 
+    # Basic type check
+    check_types(write_c3d, locals())
+
     # Create an empty c3d structure
     c3d = ezc3d.c3d()
 
-    # Add the points
-    marker_list = []
-    marker_data = np.zeros((4, len(points.data), len(points.time)))
+    # Add the points, but first make some checks
+    points._check_not_empty_data()
+    points._check_constant_sample_rate()
 
-    for i_marker, marker in enumerate(points.data):
-        marker_list.append(marker)
-        marker_data[0, i_marker, :] = points.data[marker][:, 0]
-        marker_data[1, i_marker, :] = points.data[marker][:, 1]
-        marker_data[2, i_marker, :] = points.data[marker][:, 2]
-        marker_data[3, i_marker, :] = points.data[marker][:, 3]
+    point_rate = points.get_sample_rate()
+
+    point_unit = None
+    for key in points.data:
+        # Check that this is a series of points
+        if points.data[key].shape[1] != 4:
+            raise ValueError(f"Point {key} is not a Nx4 series of points.")
+        if not np.all(np.isclose(points.data[key][:, 3], 1.0)):
+            raise ValueError(f"Point {key} is not a series of [x, y, z, 1.0]")
+
+        # Check that units are all the same (or None)
+        if key not in points.data_info:
+            continue
+
+        if "Unit" not in points.data_info[key]:
+            continue
+
+        this_unit = points.data_info[key]["Unit"]
+
+        if this_unit is None:
+            continue
+
+        if point_unit is None:
+            point_unit = this_unit
+            continue
+
+        if point_unit != this_unit:
+            raise ValueError(
+                "Found different point units in the TimeSeries: "
+                f"{point_unit} and {this_unit}."
+            )
+
+    if point_unit is None:
+        point_unit = "m"  # Default
+
+    # Now format and add the points
+    point_list = []
+    point_data = np.zeros((4, len(points.data), len(points.time)))
+
+    for i_point, point in enumerate(points.data):
+        point_list.append(point)
+        point_data[0, i_point, :] = points.data[point][:, 0]
+        point_data[1, i_point, :] = points.data[point][:, 1]
+        point_data[2, i_point, :] = points.data[point][:, 2]
+        point_data[3, i_point, :] = points.data[point][:, 3]
 
     # Fill point data
-    c3d["header"]["points"]["first_frame"] = round(
-        points.time[0] * points.get_sample_rate()
-    )
-    c3d.add_parameter("POINT", "RATE", [points.get_sample_rate()])
-    c3d.add_parameter("POINT", "LABELS", [tuple(marker_list)])
-    c3d.add_parameter("POINT", "UNITS", "m")
+    c3d["header"]["points"]["first_frame"] = round(points.time[0] * point_rate)
+    c3d.add_parameter("POINT", "RATE", [point_rate])
+    c3d.add_parameter("POINT", "LABELS", [tuple(point_list)])
+    c3d.add_parameter("POINT", "UNITS", point_unit)
 
-    c3d["data"]["points"] = marker_data
+    c3d["data"]["points"] = point_data
 
     # Fill analog data
     if analogs is not None:
+        analogs._check_not_empty_data()
+        analogs._check_constant_sample_rate()
+        analog_rate = analogs.get_sample_rate()
 
-        c3d.add_parameter("ANALOG", "LABELS", list(analogs.data.keys()))
-        c3d.add_parameter("ANALOG", "RATE", [analogs.get_sample_rate()])
+        rate_ratio = analog_rate / point_rate
+        if ~np.isclose(rate_ratio, int(rate_ratio)):
+            raise ValueError(
+                "The sample rate of analogs must be an integer "
+                "multiple of the points sample rate."
+            )
+            
+        if ~np.isclose(analogs.time[0], points.time[0]):
+            raise ValueError(
+                "Points and analogs must share the same starting time. "
+                f"However, points.time[0] = {points.time[0]} whereas "
+                f"analogs.time[0] = {analogs.time[0]}."
+            )
+
+        # Since analogs are unidimensional, we will use the DataFrame exporter
+        # to get one column per analog value. This way, forces would become
+        # forces[0], forces[1], forces[2] and forces[3].
+        df_analogs, analogs_data_info = analogs._to_dataframe_and_info()
+
+        c3d.add_parameter("ANALOG", "LABELS", list(df_analogs.columns))
+        c3d.add_parameter("ANALOG", "RATE", [analog_rate])
         c3d.add_parameter(
             "ANALOG",
             "UNITS",
-            [
-                analogs.data_info[key]["Unit"]
-                if key in analogs.data_info
-                and "Unit" in analogs.data_info[key]
-                else ""
-                for key in analogs.data
-            ],
+            [_["Unit"] if "Unit" in _ else "" for _ in analogs_data_info],
         )
-        c3d.add_parameter("ANALOG", "USED", [len(analogs.data)])
-
-        analog_data = np.array([analogs.data[key] for key in analogs.data])
-        c3d["data"]["analogs"] = analog_data[np.newaxis]
+        c3d.add_parameter("ANALOG", "USED", [len(analogs_data_info)])
+        c3d["data"]["analogs"] = (df_analogs.to_numpy().T)[np.newaxis]
 
     # Write the data
     c3d.write(filename)
