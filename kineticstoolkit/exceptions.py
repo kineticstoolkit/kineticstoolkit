@@ -91,7 +91,6 @@ def check_types(function, args: dict[str, Any]):
 
             ok = False
             for one_expected_type in expected_type.split("|"):
-
                 if one_expected_type == "float":
                     # Just ensure that it's equal to its float version
                     try:

@@ -329,56 +329,68 @@ def test_write_c3d_weirdc3d():
         == 14
     )
     os.remove("test.c3d")
-    
+
 
 def test_write_c3d_analogs():
-    """Test the creation of a c3d file with points and analogs."""    
+    """Test the creation of a c3d file with points and analogs."""
     # When everything is clean
-    points = ktk.TimeSeries(time=np.linspace(0, 10, 10*240, endpoint=False))
+    points = ktk.TimeSeries(time=np.linspace(0, 10, 10 * 240, endpoint=False))
     points.data["point1"] = np.random.rand(points.time.shape[0], 4)
     points.data["point2"] = np.random.rand(points.time.shape[0], 4)
     points.data["point1"][:, 3] = 1
     points.data["point2"][:, 3] = 1
-    
-    analogs = ktk.TimeSeries(time=np.linspace(0, 10, 10*2400, endpoint=False))
+
+    analogs = ktk.TimeSeries(
+        time=np.linspace(0, 10, 10 * 2400, endpoint=False)
+    )
     analogs.data["emg1"] = np.random.rand(analogs.time.shape[0])
     analogs.data["forces"] = np.random.rand(analogs.time.shape[0], 3)
-    
+
     ktk.write_c3d("test.c3d", points=points, analogs=analogs)
     data = ktk.read_c3d("test.c3d")
     assert np.allclose(points.data["point1"], data["Points"].data["point1"])
     assert np.allclose(points.data["point2"], data["Points"].data["point2"])
     assert np.allclose(analogs.data["emg1"], data["Analogs"].data["emg1"])
-    assert np.allclose(analogs.data["forces"][:, 0], data["Analogs"].data["forces[0]"])
-    assert np.allclose(analogs.data["forces"][:, 1], data["Analogs"].data["forces[1]"])
-    assert np.allclose(analogs.data["forces"][:, 2], data["Analogs"].data["forces[2]"])    
+    assert np.allclose(
+        analogs.data["forces"][:, 0], data["Analogs"].data["forces[0]"]
+    )
+    assert np.allclose(
+        analogs.data["forces"][:, 1], data["Analogs"].data["forces[1]"]
+    )
+    assert np.allclose(
+        analogs.data["forces"][:, 2], data["Analogs"].data["forces[2]"]
+    )
     os.remove("test.c3d")
-    
+
     # When time vectors do not match
-    points = ktk.TimeSeries(time=np.linspace(0, 10, 10*240, endpoint=False))
+    points = ktk.TimeSeries(time=np.linspace(0, 10, 10 * 240, endpoint=False))
     points.data["point1"] = np.ones((points.time.shape[0], 4))
     points.data["point2"] = np.ones((points.time.shape[0], 4))
-    
-    analogs = ktk.TimeSeries(time=np.linspace(1, 11, 10*2400, endpoint=False))
+
+    analogs = ktk.TimeSeries(
+        time=np.linspace(1, 11, 10 * 2400, endpoint=False)
+    )
     analogs.data["emg1"] = np.zeros(analogs.time.shape[0])
     analogs.data["forces1"] = np.zeros((analogs.time.shape[0], 4))
 
-    try:    
+    try:
         ktk.write_c3d("test.c3d", points, analogs)
         raise ValueError("This should fail.")
     except ValueError:
         pass
-                            
+
     # When sample rate is invalid
-    points = ktk.TimeSeries(time=np.linspace(0, 10, 10*240, endpoint=False))
+    points = ktk.TimeSeries(time=np.linspace(0, 10, 10 * 240, endpoint=False))
     points.data["point1"] = np.ones((points.time.shape[0], 4))
     points.data["point2"] = np.ones((points.time.shape[0], 4))
-    
-    analogs = ktk.TimeSeries(time=np.linspace(0, 10, 10*2401, endpoint=False))
+
+    analogs = ktk.TimeSeries(
+        time=np.linspace(0, 10, 10 * 2401, endpoint=False)
+    )
     analogs.data["emg1"] = np.zeros(analogs.time.shape[0])
     analogs.data["forces1"] = np.zeros((analogs.time.shape[0], 4))
 
-    try:    
+    try:
         ktk.write_c3d("test.c3d", points, analogs)
         raise ValueError("This should fail.")
     except ValueError:

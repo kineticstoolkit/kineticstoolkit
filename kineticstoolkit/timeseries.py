@@ -3457,7 +3457,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     def _to_dataframe_and_info(
         self,
-    ) -> tuple[pd.DataFrame, list[dict[str, any]]]:
+    ) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
         """
         Implements TimeSeries.to_dataframe with additional data_info.
 

@@ -124,7 +124,6 @@ def detect_cycles(
     is_phase1 = True
 
     for i in range(time.shape[0]):
-
         if directions[0] == "rising":
             crossing1 = data[i] >= thresholds[0]
             crossing2 = data[i] <= thresholds[1]
@@ -133,12 +132,10 @@ def detect_cycles(
             crossing2 = data[i] >= thresholds[1]
 
         if is_phase1 and crossing1:
-
             is_phase1 = False
             events.append(TimeSeriesEvent(time[i], event_names[0]))
 
         elif (not is_phase1) and crossing2:
-
             is_phase1 = True
             events.append(TimeSeriesEvent(time[i], event_names[1]))
 
@@ -270,7 +267,6 @@ def time_normalize(
     i_cycle = 0
     break_now = False
     while True:
-
         # Get the begin time for this cycle
         try:
             event_index = ts._get_event_index(event_name1, i_cycle)
@@ -373,7 +369,6 @@ def time_normalize(
             ) * (span[1] - span[0]) + i_cycle * (span[1] - span[0])
 
         for i_event, event in enumerate(other_events):
-
             # Resample
             new_time = time_to_normalized_time(event.time)
             dest_ts = dest_ts.add_event(new_time, event.name)
@@ -610,7 +605,6 @@ def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     # Iteratively remove the cycle that is the most different from the
     # mean of the remaining cycles.
     while len(done_cycles) < n_cycles - 2:
-
         current_mean_cycle = np.nanmean(data, axis=0)
 
         rms = np.zeros(n_cycles)

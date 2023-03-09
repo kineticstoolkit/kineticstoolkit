@@ -304,7 +304,6 @@ def test_stack_unstack():
     data = ktk.cycles.stack(ts)
 
     for i_cycle in range(10):
-
         assert np.all(
             np.abs(
                 data["sin"][i_cycle] - np.sin(np.arange(100) / 100 * 2 * np.pi)

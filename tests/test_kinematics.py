@@ -126,7 +126,6 @@ def test_reconstruction_deprecated():
     }
 
     def process_probing_acquisition(file_name, rigid_body_name):
-
         # Load the markers
         markers_probing = ktk.kinematics.read_c3d_file(file_name)
 
@@ -226,7 +225,6 @@ def test_reconstruction():
     }
 
     def process_probing_acquisition(file_name, cluster, point_name):
-
         # Load the markers
         markers_probing = ktk.kinematics.read_c3d_file(file_name)
 

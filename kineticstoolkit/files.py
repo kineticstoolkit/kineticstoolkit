@@ -37,6 +37,7 @@ import kineticstoolkit.config
 import os
 import numpy as np
 import pandas as pd
+from typing import Any
 import warnings
 import shutil
 import json
@@ -50,7 +51,7 @@ def __dir__():  # pragma: no cover
     return ["save", "load"]
 
 
-def save(filename: str, variable: any) -> None:
+def save(filename: str, variable: Any) -> None:
     """
     Save a variable to a ktk.zip file.
 
@@ -242,7 +243,7 @@ def _load_object_hook(obj):
         return obj
 
 
-def load(filename: str, *, include_metadata: bool = False) -> any:
+def load(filename: str, *, include_metadata: bool = False) -> Any:
     """
     Load a ktk.zip file.
 
@@ -582,7 +583,7 @@ def write_c3d(
         series. For instance, if the shape of analogs.data['Forces'] is
         1000x3, then three unidimensional series of length 1000 are created in
         the C3D: Forces[0], Forces[1] and Forces[2].
-        
+
         The sample rate of `analogs` must be an integer multiple of the
         `points`'s sample rate. Also, `analogs.time[0]` must be the same as
         `points.time[0]`.
@@ -683,7 +684,7 @@ def write_c3d(
                 "The sample rate of analogs must be an integer "
                 "multiple of the points sample rate."
             )
-            
+
         if ~np.isclose(analogs.time[0], points.time[0]):
             raise ValueError(
                 "Points and analogs must share the same starting time. "

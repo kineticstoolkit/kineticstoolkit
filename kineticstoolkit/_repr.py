@@ -79,7 +79,6 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
 
     # Print each key value
     for key in the_dict:
-
         key_label = repr(key)
         if quotes is False and isinstance(key_label, str):
             key_label = key_label[1:-1]
