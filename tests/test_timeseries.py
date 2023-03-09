@@ -33,7 +33,7 @@ from kineticstoolkit.exceptions import (
     TimeSeriesEventNotFoundError,
 )
 
-#%% TimeSeriesEvent
+# %% TimeSeriesEvent
 
 
 def test_TimeSeriesEvent():
@@ -72,7 +72,7 @@ def test_TimeSeriesEvent():
     assert the_dict["Name"] == "event_name"
 
 
-#%% TimeSeries constructo, copy and checks
+# %% TimeSeries constructo, copy and checks
 
 
 def test_TimeSeries():
@@ -297,7 +297,7 @@ def test_check_not_empty_data():
     ts._check_not_empty_data()
 
 
-#%% From and to dataframe
+# %% From and to dataframe
 
 
 def test_from_to_dataframe():
@@ -380,7 +380,7 @@ def test_from_to_dataframe():
 #     assert np.all(df == df2)
 
 
-#%% Metadata
+# %% Metadata
 
 
 def test_add_remove_data_info():
@@ -442,7 +442,7 @@ def test_rename_remove_data():
     assert len(ts.data_info) == 0
 
 
-#%% Events
+# %% Events
 
 
 def test_add_event():
@@ -614,7 +614,7 @@ def test_get_event_indexes_count_index_time():
     assert ts.get_event_time("event2", 1) == 10.8
 
 
-#%% Sample rate, merge, resample
+# %% Sample rate, merge, resample
 
 
 def test_get_sample_rate():
@@ -726,7 +726,7 @@ def test_merge_and_resample():
     assert ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
 
 
-#%% get_index
+# %% get_index
 
 
 def test_get_index_at_time():
@@ -795,7 +795,7 @@ def test_get_index_after_event():
     assert ts.get_index_after_event("event", occurrence=1) == 4
 
 
-#%% get_ts using index(es)
+# %% get_ts using index(es)
 def test_get_ts_before_index():
     ts = ktk.TimeSeries(time=np.arange(10) / 10)
     assert np.array_equal(ts.get_ts_before_index(0).time, np.array([]))
@@ -842,7 +842,7 @@ def test_get_ts_between_indexes():
         pass
 
 
-#%% get_ts using time(s)
+# %% get_ts using time(s)
 
 
 def test_get_ts_before_time():
@@ -893,7 +893,7 @@ def test_get_ts_between_times():
         pass
 
 
-#%% get_ts using event(s)
+# %% get_ts using event(s)
 
 
 def test_get_ts_before_event():
@@ -956,7 +956,7 @@ def test_get_ts_between_events():
         pass
 
 
-#%% plot
+# %% plot
 
 
 def test_plot():
@@ -1016,7 +1016,7 @@ def test_plot():
     plt.close(fig)
 
 
-#%% Deprecated
+# %% Deprecated
 def test_get_ts_at_event___get_ts_at_time():
     ts = ktk.TimeSeries()
     ts.time = np.linspace(0, 99, 100)
@@ -1038,7 +1038,7 @@ def test_get_ts_at_event___get_ts_at_time():
     assert np.array_equal(new_ts.time, np.array([11]))
 
 
-#%% Main
+# %% Main
 if __name__ == "__main__":
     import pytest
 

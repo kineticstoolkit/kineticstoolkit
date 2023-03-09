@@ -159,7 +159,6 @@ class Player:
         perspective: bool = True,
         **kwargs,
     ):
-
         # Allow older variable names
         if "segments" in kwargs and interconnections == {}:
             interconnections = kwargs["segments"]
@@ -187,7 +186,6 @@ class Player:
                         self.markers.data_info[key] = one_ts.data_info[key]
 
                 elif one_ts.data[key].shape[1:] == (4, 4):
-
                     # Add the frames
                     self.rigid_bodies.data[key] = one_ts.data[key]
                     if key in one_ts.data_info:
@@ -582,7 +580,6 @@ class Player:
 
         if n_markers > 0:
             for i_marker, marker in enumerate(markers.data):
-
                 # Get this marker's color
                 if (
                     marker in markers.data_info
@@ -616,13 +613,11 @@ class Player:
         # Draw the interconnections
         if self.interconnections is not None:
             for interconnection in self.interconnections:
-
                 coordinates = []
                 chains = self.interconnections[interconnection]["Links"]
 
                 for chain in chains:
                     for marker in chain:
-
                         try:
                             coordinates.append(interconnection_markers[marker])
                         except KeyError:
@@ -950,7 +945,6 @@ class Player:
         self._update_plots()
 
     def _on_mouse_press(self, event):  # pragma: no cover
-
         if len(self.last_selected_marker) > 0:
             self._set_new_target(
                 self.markers.data[self.last_selected_marker][

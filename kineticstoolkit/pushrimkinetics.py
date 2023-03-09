@@ -81,7 +81,6 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
         file_format = "smartwheel"
 
     if file_format == "smartwheel":
-
         dataframe = pd.read_csv(filename, delimiter=None, header=None)
         if dataframe.shape[1] == 1:  # Retry with ; as separator
             dataframe = pd.read_csv(filename, delimiter=";", header=None)
@@ -109,7 +108,6 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
         ts = ts.add_data_info("Angle", "Unit", "rad")
 
     elif file_format == "racingwheel":
-
         dataframe = pd.read_csv(filename, delimiter=",")
         data = dataframe.to_numpy()
         time = data[:, 0]
@@ -125,7 +123,6 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
         ts = ts.add_data_info("Battery", "Unit", "raw")
 
     elif file_format == "smartwheeltxt":
-
         data = {
             "ch1": [],
             "ch2": [],
@@ -138,7 +135,6 @@ def read_file(filename: str, /, file_format: str = "") -> TimeSeries:
 
         length = 0
         with open(filename, "rb") as fid:
-
             while True:
                 try:
                     _ = fid.read(2)
@@ -231,7 +227,6 @@ def find_recovery_indices(Mz: np.ndarray, /) -> np.ndarray:
     threshold = 2.24  # (Nm): max tolerance for the remaining values.
 
     while np.nanmax(Mz) - np.nanmin(Mz) > threshold:
-
         # Remove 1% of data that are the farthest to the median:
 
         # Sort data
@@ -402,7 +397,6 @@ def calculate_forces_and_moments(
     """
     # Calculate the forces and moments and add to the output
     if transducer == "smartwheel":
-
         # Calculate the rotation angle to apply to the calculated kinetics
         if reference_frame == "wheel":
             theta = np.array([0.0])
@@ -470,7 +464,6 @@ def calculate_forces_and_moments(
         )
 
     elif transducer == "force_cell":
-
         # Calculate the rotation angle to apply to the calculated kinetics
         if reference_frame == "wheel":
             theta = np.array([0.0])

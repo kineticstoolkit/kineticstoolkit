@@ -610,7 +610,6 @@ def register_points(
     T[:, 3, 3] = np.ones(n_samples)
 
     for i_sample in range(n_samples):
-
         # Identify which global points are visible
         sample_global_points = global_points[i_sample]
         sample_global_points_missing = np.isnan(

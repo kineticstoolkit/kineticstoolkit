@@ -506,12 +506,10 @@ def read_c3d(
     # ---------------------------------
     # Create the platforms TimeSeries
     if extract_force_plates and reader["data"]["platform"] != []:
-
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
         n_platforms = len(reader["data"]["platform"])
         for i_platform in range(n_platforms):
-
             force_unit = reader["data"]["platform"][0]["unit_force"]
 
             if force_unit != "N":
@@ -634,7 +632,6 @@ def write_c3d(filename: str, points: TimeSeries, **kwargs) -> None:
 
     # Fill analog data
     if analogs is not None:
-
         c3d.add_parameter("ANALOG", "LABELS", list(analogs.data.keys()))
         c3d.add_parameter("ANALOG", "RATE", [analogs.get_sample_rate()])
         c3d.add_parameter(

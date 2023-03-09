@@ -248,12 +248,10 @@ def dict_of_arrays_to_dataframe(
     # Go through data
     the_keys = dict_of_arrays.keys()
     for the_key in the_keys:
-
         # Assign data
         original_data = dict_of_arrays[the_key]
 
         if original_data.shape[0] > 0:  # Not empty
-
             original_data_shape = original_data.shape
             data_length = original_data.shape[0]
 
@@ -477,7 +475,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
     ):
-
         self.time = time.copy()
         self.data = data.copy()
         self.time_info = time_info.copy()
@@ -2867,7 +2864,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 new_data[key][:] = np.nan
 
             else:  # Interpolate.
-
                 # Express nans as a range of times to
                 # remove from the final, interpolated timeseries
                 nan_indexes = np.argwhere(~index)
@@ -3007,7 +3003,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.resample(ts_out.time, fill_value="extrapolate", in_place=True)
 
         for key in data_keys:
-
             # Check if this key is a duplicate, then continue to next key if
             # required.
             if (key in ts_out.data) and (overwrite is False):
@@ -3132,7 +3127,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         max_missing_samples = int(max_missing_samples)
 
         for data in ts_out.data:
-
             # Fill missing samples
             is_visible = ~ts_out.isnan(data)
             ts = ts_out.get_subset(data)
@@ -3438,12 +3432,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts1 = ts1.shift(-click[0][0])
 
         else:  # Sync two TimeSeries together
-
             finished = False
             # list of axes:
             axes = []  # type: list[Any]
             while finished is False:
-
                 if len(axes) == 0:
                     axes.append(fig.add_subplot(2, 1, 1))
                     axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
@@ -3822,7 +3814,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts.time = dataframe.index.to_numpy()
         return ts
 
-    #%% Deprecated methods
+    # %% Deprecated methods
     @deprecated(
         since="0.10.0",
         until="2024",
