@@ -1978,7 +1978,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         ktk.TimeSeries.get_ts_between_times
         ktk.TimeSeries.get_ts_between_events
-        ktk.TimeSeries.ui_get_ts_between_clicks
         ktk.TimeSeries.get_ts_before_index
         ktk.TimeSeries.get_ts_after_index
 
@@ -2142,7 +2141,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         ktk.TimeSeries.get_ts_between_indexes
         ktk.TimeSeries.get_ts_between_events
-        ktk.TimeSeries.ui_get_ts_between_clicks
         ktk.TimeSeries.get_ts_before_time
         ktk.TimeSeries.get_ts_after_time
 
@@ -2331,7 +2329,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         ktk.TimeSeries.get_ts_between_indexes
         ktk.TimeSeries.get_ts_between_times
-        ktk.TimeSeries.ui_get_ts_between_clicks
         ktk.TimeSeries.get_ts_before_event
         ktk.TimeSeries.get_ts_after_event
 
@@ -2567,11 +2564,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         series of homogeneous matrices, and therefore won't generate an
         error or warning.
 
-        Warning
-        -------
-        This function, which was introduced in version 0.9, is still
-        experimental and may slightly change behaviour in future versions.
-
         See also
         --------
         ktk.TimeSeries.get_sample_rate
@@ -2698,9 +2690,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
             Optional. The data keys to merge from ts. If left empty, all the
             data keys are merged.
         resample
-            Optional. Set to True to resample the source TimeSeries, in case
-            the time vectors are not matched. If the time vectors are not
-            matched and resample is False, an exception is raised.
+            Optional. Set to True to resample the source TimeSeries to the
+            target one using a linear interpolation. If the time vectors are
+            not equivalent and resample is False, an exception is raised. To
+            resample using other methods than linear interpolation, please
+            resample the source TimeSeries manually before, using
+            TimeSeries.resample.
         overwrite
             Optional. If duplicates data keys are found and overwrite is True,
             then the source (ts) overwrites the destination. Otherwise
@@ -2718,14 +2713,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         See also
         --------
         ktk.TimeSeries.get_subset
+        ktk.TimeSeries.resample
 
         Notes
         -----
         - All events are also merged from both TimeSeries.
-
-        - The behaviour of the resampling option is not settled yet. At the
-          moment, a linear resampling is performed, but this may change in the
-          future.
 
         """
         check_types(TimeSeries.merge, locals())
@@ -2867,13 +2859,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ------
         ValueError
             If the sample rate is not constant.
-
-        Warning
-        -------
-        This function, which has been introduced in 0.1, is still experimental
-        and may change signature or behaviour in the future. In particular,
-        the desired behaviour of `max_missing_samples` is still to be precised
-        for points where the criteria is not met.
 
         See also
         --------

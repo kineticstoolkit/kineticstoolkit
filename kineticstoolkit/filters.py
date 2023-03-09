@@ -114,7 +114,6 @@ def savgol(
     See also
     --------
     ktk.filters.smooth
-    ktk.filters.median
 
     """
     check_types(savgol, locals())
@@ -179,7 +178,6 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     See also
     --------
     ktk.filters.savgol
-    ktk.filters.median
 
     """
     check_types(smooth, locals())
@@ -350,11 +348,6 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 
     window_length
         Optional. Kernel size, must be odd. The default is 3.
-
-    See also
-    --------
-    ktk.butter.smooth
-    ktk.butter.savgol
 
     Example
     -------

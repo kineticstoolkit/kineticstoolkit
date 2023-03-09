@@ -748,6 +748,97 @@ def test_merge_and_resample():
     assert ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
 
 
+def test_fill_missing_samples():
+    ts = ktk.TimeSeries(time=np.arange(10))
+    ts.data["data"] = np.sin(ts.time / 5)
+
+    # Test nothing to do
+    ts2 = ts.fill_missing_samples(0)
+    assert ts2._is_equivalent(ts)
+
+    # Test fill everything
+    ts2 = ts.copy()
+    ts2.data["data"][3:6] = np.nan
+    ts2.data["data"][-1] = np.nan
+    ts3 = ts2.fill_missing_samples(0)
+    assert np.all(
+        np.isclose(ts2.data["data"], ts3.data["data"])
+        == [True, True, True, False, False, False, True, True, True, False]
+    )
+    assert np.all(
+        ts3.isnan("data")
+        == [
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ]
+    )
+
+    # Test fill only small holes
+    ts3 = ts2.fill_missing_samples(1)
+    assert np.all(
+        np.isclose(ts2.data["data"], ts3.data["data"])
+        == [True, True, True, False, False, False, True, True, True, False]
+    )
+
+    assert np.all(
+        ts3.isnan("data")
+        == [False, False, False, True, True, True, False, False, False, False]
+    )
+
+    # Test fill up to exactly the largest hole
+    ts3 = ts2.fill_missing_samples(3)
+    assert np.all(
+        np.isclose(ts2.data["data"], ts3.data["data"])
+        == [True, True, True, False, False, False, True, True, True, False]
+    )
+    assert np.all(
+        ts3.isnan("data")
+        == [
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ]
+    )
+
+    # Test fill with the first one missing
+    ts2.data["data"][0:2] = np.nan
+    ts3 = ts2.fill_missing_samples(1)
+    assert np.all(
+        np.isclose(ts2.data["data"], ts3.data["data"])
+        == [False, False, True, False, False, False, True, True, True, False]
+    )
+    assert np.all(
+        ts3.isnan("data")
+        == [
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+        ]
+    )
+
+
 # %% get_index
 
 

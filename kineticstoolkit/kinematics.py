@@ -64,11 +64,8 @@ def create_cluster(
         dictionary where each entry represents the local position of a marker
         in an arbitrary coordinate system.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.7, is still experimental and
-    may change signature or behaviour in the future.
-
+    Note
+    -----
     0.10.0: Parameters `marker_names` was changed to `names`
 
     See also
@@ -131,11 +128,8 @@ def extend_cluster(
     dict[str, np.ndarray]
         A copy of the initial cluster, with the added point.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.7, is still experimental and
-    may change signature or behaviour in the future.
-
+    Note
+    ----
     0.10.0: Parameter `new_point` was changed to `name`
 
     See also
@@ -192,11 +186,6 @@ def track_cluster(
     -------
     TimeSeries
         A TimeSeries with the trajectories of all cluster points.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.7, is still experimental and
-    may change signature or behaviour in the future.
 
     See also
     --------

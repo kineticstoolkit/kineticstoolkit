@@ -591,12 +591,6 @@ def register_points(
         Array of shape Nx4x4, expressing a series of 4x4 homogeneous
         transforms.
 
-    Warning
-    -------
-    This function, which has been introduced in 0.4, is still experimental and
-    may change signature or behaviour in the future. Namely, the names of the
-    parameters may change in the future.
-
     """
     check_types(register_points, locals())
 

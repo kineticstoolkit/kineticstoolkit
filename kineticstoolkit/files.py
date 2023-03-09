@@ -334,8 +334,8 @@ def read_c3d(
 
     Notes
     -----
-    - This function relies on `ezc3d`, which is available on
-      conda-forge and on git-hub. Please install ezc3d before using
+    - This function relies on `ezc3d`, which is installed by default using
+      conda, but not using pip. Please install ezc3d before using
       read_c3d. https://github.com/pyomeca/ezc3d
 
     - As for any instrument, please check that your data loads correctly on
@@ -574,7 +574,6 @@ def write_c3d(
                 [x2, y2, z2, 1.0],
                 ...,
             ]
-
         Events from this TimeSeries are also added to the c3d.
 
     analogs
@@ -594,9 +593,29 @@ def write_c3d(
 
     Notes
     -----
-    This function relies on `ezc3d`, which is available on
-    conda-forge and on git-hub. Please install ezc3d before using
+    This function relies on `ezc3d`, which is installed by default using
+    conda, but not using pip. Please install ezc3d before using
     write_c3d. https://github.com/pyomeca/ezc3d
+
+    Example
+    -------
+    Create a simple c3d file with two markers sampled at 240 Hz and two
+    sinusoidal analog signals sampled at 1200 Hz, during 10 seconds::
+
+        import kineticstoolkit.lab as ktk
+        import numpy as np
+
+        points = ktk.TimeSeries()
+        points.time = np.linspace(0, 10, 10*240, endpoint=False)
+        points.data["Marker1"] = np.ones((2400, 4))
+        points.data["Marker2"] = np.ones((2400, 4))
+
+        analogs = ktk.TimeSeries()
+        analogs.time = np.linspace(0, 10, 10*2400, endpoint=False)
+        analogs.data["Signal1"] = np.sin(analogs.time)
+        analogs.data["Signal2"] = np.cos(analogs.time)
+
+        ktk.write_c3d("testfile.c3d", points=points, analogs=analogs)
 
     """
     try:

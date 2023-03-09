@@ -440,7 +440,7 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     return data
 
 
-def unstack(data: dict[str, ArrayLike], /) -> TimeSeries:
+def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
 
