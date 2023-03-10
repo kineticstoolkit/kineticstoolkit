@@ -37,7 +37,6 @@ setuptools.setup(
         "tqdm",
         "requests",  # To download documentation examples
         "requests-cache",  # To check for warning messages on import
-        # 'ffmpeg',  # Facultative, for matplotlib html5 animations
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -49,5 +48,5 @@ setuptools.setup(
         "Operating System :: POSIX",
         "Programming Language :: Python :: 3",
     ],
-    python_requires=">=3.8",
+    python_requires=">=3.10",
 )

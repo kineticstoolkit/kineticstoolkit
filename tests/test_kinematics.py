@@ -88,122 +88,19 @@ def test_read_n3d_file_deprecated():
     assert markers.data_info["GantD3"]["Unit"] == "m"
 
 
-def test_reconstruction_deprecated():
-    """Simplified copy of the tutorial."""
-
-    # Read the markers
-    markers = ktk.kinematics.read_c3d_file(
-        ktk.doc.download("kinematics_racing_propulsion.c3d")
-    )
-    rigid_body_definitions = dict()
-
-    # Read the static trial
-    markers_static = ktk.kinematics.read_c3d_file(
-        ktk.doc.download("kinematics_racing_static.c3d")
-    )
-
-    rigid_body_definitions["ArmR"] = ktk.kinematics.define_rigid_body(
-        markers_static, marker_names=["ArmR1", "ArmR2", "ArmR3"]
-    )
-
-    rigid_body_definitions["ForearmR"] = ktk.kinematics.define_rigid_body(
-        markers_static,
-        marker_names=[
-            "ForearmR1",
-            "ForearmR2",
-            "ForearmR3",
-            "LateralEpicondyleR",
-        ],
-    )
-
-    rigid_body_definitions["Probe"] = {
-        "Probe1": np.array([[0.0021213, -0.0158328, 0.0864285, 1.0]]),
-        "Probe2": np.array([[0.0021213, 0.0158508, 0.0864285, 1.0]]),
-        "Probe3": np.array([[0.0020575, 0.0160096, 0.1309445, 1.0]]),
-        "Probe4": np.array([[0.0021213, 0.0161204, 0.1754395, 1.0]]),
-        "Probe5": np.array([[0.0017070, -0.0155780, 0.1753805, 1.0]]),
-        "Probe6": np.array([[0.0017762, -0.0156057, 0.1308888, 1.0]]),
-    }
-
-    def process_probing_acquisition(file_name, rigid_body_name):
-        # Load the markers
-        markers_probing = ktk.kinematics.read_c3d_file(file_name)
-
-        # Track the reference rigid body
-        rigid_bodies_probing = ktk.kinematics.track_rigid_body(
-            markers_probing,
-            local_points=rigid_body_definitions[rigid_body_name],
-            label=rigid_body_name,
-        )
-
-        # Track the probe
-        rigid_bodies_probing = rigid_bodies_probing.merge(
-            ktk.kinematics.track_rigid_body(
-                markers_probing,
-                local_points=rigid_body_definitions["Probe"],
-                label="Probe",
-            )
-        )
-
-        # Return the local coordinates of the probed virtual marker
-        return ktk.kinematics.define_local_position(
-            rigid_bodies_probing,
-            source_name="Probe",
-            rigid_body_name=rigid_body_name,
-        )
-
-    rigid_body_definitions["ArmR"]["AcromionR"] = process_probing_acquisition(
-        ktk.doc.download("kinematics_racing_probing_acromion_R.c3d"),
-        "ArmR",
-    )
-
-    rigid_body_definitions["ArmR"][
-        "MedialEpicondyleR"
-    ] = process_probing_acquisition(
-        ktk.doc.download("kinematics_racing_probing_medial_epicondyle_R.c3d"),
-        "ArmR",
-    )
-
-    rigid_body_definitions["ForearmR"][
-        "RadialStyloidR"
-    ] = process_probing_acquisition(
-        ktk.doc.download("kinematics_racing_probing_radial_styloid_R.c3d"),
-        "ForearmR",
-    )
-
-    rigid_body_definitions["ForearmR"][
-        "UlnarStyloidR"
-    ] = process_probing_acquisition(
-        ktk.doc.download("kinematics_racing_probing_ulnar_styloid_R.c3d"),
-        "ForearmR",
-    )
-
-    rigid_bodies = ktk.TimeSeries()
-
-    for rigid_body_name in ["ArmR", "ForearmR"]:
-        rigid_bodies = rigid_bodies.merge(
-            ktk.kinematics.track_rigid_body(
-                markers,
-                local_points=rigid_body_definitions[rigid_body_name],
-                label=rigid_body_name,
-                include_markers=True,
-            )
-        )
-
-
 def test_reconstruction():
     """Simplified copy of the tutorial."""
     # Read the markers
-    markers = ktk.kinematics.read_c3d_file(
+    markers = ktk.read_c3d(
         ktk.doc.download("kinematics_racing_propulsion.c3d")
-    )
+    )["Points"]
 
     clusters = dict()
 
     # Read the static trial
-    markers_static = ktk.kinematics.read_c3d_file(
+    markers_static = ktk.read_c3d(
         ktk.doc.download("kinematics_racing_static.c3d")
-    )
+    )["Points"]
 
     clusters["ArmR"] = ktk.kinematics.create_cluster(
         markers_static,
@@ -226,11 +123,12 @@ def test_reconstruction():
 
     def process_probing_acquisition(file_name, cluster, point_name):
         # Load the markers
-        markers_probing = ktk.kinematics.read_c3d_file(file_name)
+        markers_probing = ktk.kinematics.read_c3d(file_name)["Points"]
 
         # Find the probe tip
-        markers_probing = ktk.kinematics.track_cluster(
-            markers_probing, clusters["Probe"]
+        markers_probing.merge(
+            ktk.kinematics.track_cluster(markers_probing, clusters["Probe"]),
+            in_place=True,
         )
 
         # Test bugfix #85

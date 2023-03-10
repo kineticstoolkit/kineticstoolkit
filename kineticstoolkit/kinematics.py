@@ -150,7 +150,14 @@ def extend_cluster(
     local_coordinates = geometry.get_local_coordinates(
         markers.data[name], frames
     )
-    cluster[name] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
+
+    if np.all(geometry.isnan(local_coordinates)):
+        warnings.warn(
+            f"The point {name} was invisible during the whole TimeSeries."
+        )
+    else:
+        cluster[name] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
+
     return cluster
 
 
@@ -331,190 +338,6 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
 
 
 # %% Deprecated
-@deprecated(
-    since="master", until="January 2023", details="Use create_cluster()."
-)
-def define_rigid_body(
-    kinematics: TimeSeries, marker_names: list[str]
-) -> dict[str, np.ndarray]:
-    """
-    Create a generic rigid body definition based on a static acquisition.
-
-    Parameters
-    ----------
-    kinematics
-        Markers trajectories during a static acquisition.
-    marker_names
-        The markers that define the rigid body.
-
-    Returns
-    -------
-    dict
-        dictionary where each entry represents the local position of a point
-        (e.g., marker name). The key is the name of the point, the value is a
-        1x4 array that indicates the local position of this point in the rigid
-        body's local coordinate system.
-
-    """
-    return create_cluster(kinematics, marker_names)
-
-
-@deprecated(
-    since="master", until="January 2023", details="Use track_clusters()."
-)
-def track_rigid_body(
-    kinematics: TimeSeries,
-    /,
-    local_points: dict[str, np.ndarray],
-    label: str = "Trajectory",
-    *,
-    include_rigid_body: bool = True,
-    include_markers: bool = False,
-) -> TimeSeries:
-    """
-    Track a rigid body from markers trajectories.
-
-    This function tracks the specified rigid body in a TimeSeries that
-    contains the required markers, and adds the tracked rigid body to a copy
-    of the input TimeSeries as a Nx4x4 series of frames.
-
-    Parameters
-    ----------
-    kinematics
-        TimeSeries that contains at least the trajectories of the markers
-        specified in rigid_body_definition.
-    local_points
-        A dict where each key is a point name and its corresponding value is
-        its local coordinates, as returned by
-        `ktk.kinematics.define_rigid_body()`.
-    label
-        Name of the rigid body, that will be the data key in the output
-        TimeSeries.
-    include_rigid_body: Optional.
-        Include the tracked rigid body in the output TimeSeries as an Nx4x4
-        series. The default is True.
-    include_markers: Optional.
-        Include the reconstructed markers in the output TimeSeries as a Nx4
-        series. Every marker of the rigid body definition is recontructed. The
-        default is False.
-
-    Returns
-    -------
-    TimeSeries
-        A TimeSeries that contains the trajectory of the tracked rigid body.
-    """
-    return track_rigid_bodies(
-        kinematics,
-        {label: local_points},
-        include_rigid_bodies=include_rigid_body,
-        include_markers=include_markers,
-    )
-
-
-@deprecated(
-    since="master", until="January 2023", details="No replacement yet."
-)
-def track_rigid_bodies(
-    markers: TimeSeries,
-    /,
-    definitions: dict[str, dict[str, np.ndarray]],
-    *,
-    include_rigid_bodies: bool = True,
-    include_markers: bool = False,
-) -> TimeSeries:
-    """
-    Track rigid bodies from markers trajectories.
-
-    Parameters
-    ----------
-    markers
-        TimeSeries that contains the trajectories of the markers specified
-        in the rigid body definitions.
-    definitions
-        A dict where each key is a rigid body name and its value is a dict
-        of local coordinates as returned by
-        `ktk.kinematics.define_rigid_body()`.
-    include_rigid_bodies: Optional.
-        Include the tracked rigid bodies in the output TimeSeries as an Nx4x4
-        series. The default is True.
-    include_markers: Optional.
-        Include the reconstructed markers in the output TimeSeries as a Nx4
-        series. Every marker of the rigid body definitions is recontructed. The
-        default is False.
-
-    Returns
-    -------
-    TimeSeries
-        A TimeSeries that contains the trajectory of the tracked rigid bodies.
-
-    """
-    out = markers.copy(copy_data=False, copy_data_info=False)
-    for cluster in definitions:
-        out.data[cluster] = _track_cluster_frames(
-            markers, definitions[cluster]
-        )
-    return out
-
-
-@deprecated(
-    since="master", until="January 2023", details="Use extend_cluster()."
-)
-def define_local_position(
-    kinematics: TimeSeries, source_name: str, rigid_body_name: str
-) -> np.ndarray:
-    """
-    Define a point's local position based on a static or probing acquisition.
-
-    Ideally, the acquisition should be a short static acquisition and every
-    required marker must be visible at the same time at least once.
-
-    Parameters
-    ----------
-    kinematics
-        TimeSeries of the static or probing acquisition, that contains the
-        required markers and/or rigid bodies.
-    source_name
-        Name of the marker or rigid body to express in local coordinates. This
-        name must be a data key in the kinematics TimeSeries and should refer
-        to a marker trajectory (Nx4 array) or a rigid body trajectory (Nx4x4
-        array).
-    rigid_body_name
-        Name of the reference rigid body. This name must be a data key in the
-        kinematics TimeSeries and should refer to a rigid body trajectory
-        (Nx4x4 array).
-
-    Returns
-    -------
-    np.ndarray
-        The position of the marker or rigid body origin in the local coordinate
-        system, as an Nx4 array.
-
-    """
-    marker_trajectory = kinematics.data[source_name]
-    if marker_trajectory.shape[1:] == (4,):
-        pass  # Marker trajectory
-    elif marker_trajectory.shape[1:] == (4, 4):
-        marker_trajectory = marker_trajectory[:, :, 3]  # frame trajectory
-
-    rigid_body_trajectory = kinematics.data[rigid_body_name]
-
-    local_points = geometry.get_local_coordinates(
-        marker_trajectory, rigid_body_trajectory
-    )
-    to_keep = ~geometry.isnan(local_points)
-
-    if np.all(to_keep is False):
-        warnings.warn(
-            "There are no frame where both the marker and body "
-            "are visible at the same time."
-        )
-
-    local_points = local_points[to_keep]
-    local_points = np.mean(local_points, axis=0)[np.newaxis]
-
-    return local_points
-
-
 @deprecated(
     since="0.9",
     until="2024",
