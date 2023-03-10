@@ -87,14 +87,17 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
         value = the_dict[key]
 
         # Print the value
-        if isinstance(value, dict):
-            value_label = "<dict with " + str(len(value)) + " entries>"
-        elif isinstance(value, list):
-            value_label = "<list of " + str(len(value)) + " items>"
-        elif isinstance(value, np.ndarray):
-            value_label = "<array of shape " + str(np.shape(value)) + ">"
-        else:
+        if widest + len(repr(value)) <= max_width:
             value_label = repr(value)
+        else:
+            if isinstance(value, dict):
+                value_label = "<dict with " + str(len(value)) + " entries>"
+            elif isinstance(value, list):
+                value_label = "<list of " + str(len(value)) + " items>"
+            elif isinstance(value, np.ndarray):
+                value_label = "<array of shape " + str(np.shape(value)) + ">"
+            else:
+                value_label = repr(value)
 
         # Remove line breaks and multiple-spaces
         value_label = " ".join(value_label.split())
