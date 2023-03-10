@@ -37,6 +37,28 @@ class TimeSeriesEventNotFoundError(Exception):
     """The requested event occurrence was not found."""
 
 
+def simplify_annotation_string(string: str) -> str:
+    """
+    Simplify an annotation to keep only the outer definitions.
+
+    Example
+    -------
+    >>> string = "list[str] | dict[str, list[int] | int] | None"
+    >>> simplify_annotation_string(string)
+    'list|dict|None'
+    """
+    n_open_brackets = 0
+    out_list = []
+    for c in string:
+        if c == "[":
+            n_open_brackets += 1
+        if n_open_brackets == 0 and c != " ":
+            out_list.append(c)
+        if c == "]":
+            n_open_brackets -= 1
+    return "".join(out_list)
+
+
 def check_types(function, args: dict[str, Any]):
     """
     Check that a function's arguments are of correct type.
@@ -79,15 +101,7 @@ def check_types(function, args: dict[str, Any]):
         if arg in annotations:
             value = args[arg]
             value_type = str(type(value)).split("'")[1]
-            expected_type = annotations[arg].replace(" ", "")
-            if expected_type.lower().startswith("list["):
-                expected_type = "list"
-            elif expected_type.lower().startswith("dict["):
-                expected_type = "dict"
-            elif expected_type.lower().startswith("tuple["):
-                expected_type = "tuple"
-            elif expected_type.lower().startswith("set["):
-                expected_type = "set"
+            expected_type = simplify_annotation_string(annotations[arg])
 
             ok = False
             for one_expected_type in expected_type.split("|"):
@@ -138,3 +152,10 @@ def check_types(function, args: dict[str, Any]):
 
             if not ok:
                 raise_type_error()
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+    import numpy as np
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

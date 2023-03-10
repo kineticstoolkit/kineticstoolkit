@@ -38,7 +38,7 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-from typing import Dict, Any
+from typing import Any
 
 
 def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:

@@ -30,10 +30,9 @@ __license__ = "Apache 2.0"
 import warnings
 import importlib
 import pkgutil
-from typing import List, Set
 
 
-def _import_extensions() -> List[str]:
+def _import_extensions() -> list[str]:
     """
     Import all installed kineticstoolkit extensions.
 
@@ -85,7 +84,7 @@ def _import_extensions() -> List[str]:
     return list(imported_extensions)
 
 
-imported_extensions = set()  # type: Set[str]
+imported_extensions = set()  # type: set[str]
 
 
 def __dir__():

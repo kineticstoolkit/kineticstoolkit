@@ -49,7 +49,6 @@ def __dir__():
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from typing import Optional
 from numpy.typing import ArrayLike
 from kineticstoolkit.exceptions import check_types
 
@@ -115,9 +114,9 @@ def matmul(op1: ArrayLike, op2: ArrayLike) -> np.ndarray:
 
 
 def create_transforms(
-    seq: Optional[str] = None,
-    angles: Optional[ArrayLike] = None,
-    translations: Optional[ArrayLike] = None,
+    seq: str | None = None,
+    angles: ArrayLike | None = None,
+    translations: ArrayLike | None = None,
     degrees=False,
 ) -> np.ndarray:
     """
@@ -304,12 +303,12 @@ def get_angles(
 
 def create_frames(
     origin: ArrayLike,
-    x: Optional[ArrayLike] = None,
-    y: Optional[ArrayLike] = None,
-    z: Optional[ArrayLike] = None,
-    xy: Optional[ArrayLike] = None,
-    xz: Optional[ArrayLike] = None,
-    yz: Optional[ArrayLike] = None,
+    x: ArrayLike | None = None,
+    y: ArrayLike | None = None,
+    z: ArrayLike | None = None,
+    xy: ArrayLike | None = None,
+    xz: ArrayLike | None = None,
+    yz: ArrayLike | None = None,
 ) -> np.ndarray:
     """
     Create an Nx4x4 series of frames based on series of points and vectors.

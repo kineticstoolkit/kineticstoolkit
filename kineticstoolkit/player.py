@@ -40,7 +40,7 @@ import numpy as np
 from numpy import sin, cos
 import time
 import copy
-from typing import Any, Optional
+from typing import Any
 from numpy.typing import ArrayLike
 import warnings
 
@@ -1009,10 +1009,10 @@ class Player:
 
     def to_html5(
         self,
-        start_index: Optional[int] = None,
-        stop_index: Optional[int] = None,
-        start_time: Optional[int] = None,
-        stop_time: Optional[int] = None,
+        start_index: int | None = None,
+        stop_index: int | None = None,
+        start_time: float | None = None,
+        stop_time: float | None = None,
         **kwargs,
     ):
         """

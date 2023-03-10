@@ -45,7 +45,7 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from typing import Any, Optional
+from typing import Any
 
 import warnings
 from ast import literal_eval
@@ -1107,7 +1107,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self,
         old_name: str,
         new_name: str,
-        occurrence: Optional[int] = None,
+        occurrence: int | None = None,
         *,
         in_place: bool = False,
     ) -> TimeSeries:
@@ -1187,7 +1187,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
     def remove_event(
         self,
         name: str,
-        occurrence: Optional[int] = None,
+        occurrence: int | None = None,
         *,
         in_place: bool = False,
     ) -> TimeSeries:
@@ -2526,7 +2526,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         new_time: np.ndarray,
         kind: str = "linear",
         *,
-        fill_value: Optional[np.ndarray | str] = None,
+        fill_value: np.ndarray | str | None = None,
         in_place: bool = False,
     ) -> TimeSeries:
         """

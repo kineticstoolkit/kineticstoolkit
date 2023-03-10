@@ -34,7 +34,6 @@ from kineticstoolkit.exceptions import (
     TimeSeriesEventNotFoundError,
 )
 import warnings
-from typing import Optional
 from numpy.typing import ArrayLike
 
 
@@ -195,7 +194,7 @@ def time_normalize(
     event_name2: str,
     *,
     n_points: int = 100,
-    span: Optional[list[int]] = None,
+    span: list[int] | None = None,
 ) -> TimeSeries:
     """
     Time-normalize cycles in a TimeSeries.
