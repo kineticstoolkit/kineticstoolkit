@@ -53,7 +53,7 @@ from numpy.typing import ArrayLike
 from kineticstoolkit.exceptions import check_types
 
 
-def matmul(op1: ArrayLike, op2: ArrayLike) -> np.ndarray:
+def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
 
@@ -111,6 +111,43 @@ def matmul(op1: ArrayLike, op2: ArrayLike) -> np.ndarray:
         result[i_sample] = perform_mul(op1[i_sample], op2[i_sample])
 
     return result
+
+
+def matinv(matrix_series: ArrayLike, /) -> np.ndarray:
+    """
+    Parameters
+    ----------
+    matrix_series
+        Nx4x4 series of homogeneous matrices.
+
+    Returns
+    -------
+    ArrayLike
+        The inverse Nx4x4 series of homogeneous matrices.
+
+    """
+    check_types(matrix_series, locals())
+
+    matrix_series = np.array(matrix_series)
+
+    index_is_nan = isnan(matrix_series)
+
+    # Check that all non-nan matrices are orthogonal
+    if (
+        np.allclose(np.linalg.det(matrix_series[~index_is_nan, 0:3, 0:3]), 1)
+        is False
+    ):
+        raise ValueError(
+            "At least one matrix of this series is not homogeneous."
+        )
+
+    out = np.array(matrix_series).copy()
+    out[~index_is_nan, 0:3, 0:3] = np.transpose(
+        matrix_series[~index_is_nan, 0:3, 0:3], (0, 2, 1)
+    )
+    out[~index_is_nan, 0:3, 3] = -matrix_series[~index_is_nan, 0:3, 3]
+
+    return out
 
 
 def create_transforms(
@@ -449,20 +486,7 @@ def get_local_coordinates(
     global_coordinates[nan_index] = 0
 
     # Invert the reference frame to obtain the inverse transformation
-    ref_rot = reference_frames[:, 0:3, 0:3]
-    ref_t = reference_frames[:, 0:3, 3]
-
-    # Inverse rotation : transpose.
-    inv_ref_rot = np.transpose(ref_rot, (0, 2, 1))
-
-    # Inverse translation : we inverse-rotate the translation.
-    inv_ref_t = np.zeros(ref_t.shape)
-    inv_ref_t = matmul(inv_ref_rot, -ref_t)
-
-    inv_ref_T = np.zeros((n_samples, 4, 4))  # init
-    inv_ref_T[:, 0:3, 0:3] = inv_ref_rot
-    inv_ref_T[:, 0:3, 3] = inv_ref_t
-    inv_ref_T[:, 3, 3] = np.ones(n_samples)
+    inv_ref_T = matinv(reference_frames)
 
     local_coordinates = np.zeros(global_coordinates.shape)  # init
     local_coordinates = matmul(inv_ref_T, global_coordinates)
