@@ -76,6 +76,25 @@ def test_matmul():
     assert np.sum(np.abs(result - np.array([3, 4, 5]))) < 1e-15
 
 
+def test_inv():
+    """Test inverse matrix series."""
+    # Series of 100 rotation matrices around the z axis, from 0 to
+    # 360 degrees, with a series of translations of (2,1,3).
+    T = ktk.geometry.create_transforms(
+        "z", np.linspace(0, 2 * np.pi, 100), translations=[[2, 1, 3]]
+    )
+    assert np.allclose(ktk.geometry.inv(ktk.geometry.inv(T)), T)
+
+    # See if the matrix is not a rigid transform
+    T[10, 0, 0] = 0.0
+
+    try:
+        ktk.geometry.inv(T)
+        raise ValueError("This should raise an error")
+    except ValueError:
+        pass
+
+
 def test_create_transforms():
     """Test create_transforms."""
     # Identity matrix

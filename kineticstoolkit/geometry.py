@@ -113,20 +113,32 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     return result
 
 
-def matinv(matrix_series: ArrayLike, /) -> np.ndarray:
+def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     """
+    Calculate series of inverse transform.
+    
+    This function calculates a series of inverse homogeneous transforms.
+    
     Parameters
     ----------
     matrix_series
-        Nx4x4 series of homogeneous matrices.
+        Nx4x4 series of homogeneous matrices, where each matrix is an
+        homogeneous transform.
 
     Returns
     -------
     ArrayLike
-        The inverse Nx4x4 series of homogeneous matrices.
+        The Nx4x4 series of inverse homogeneous matrices.
+        
+    Note
+    ----
+    This function requires (and checks) that each matrix really is an
+    homogeneous transform by evaluating the determinant of its rotation
+    component. It then calculates the inverse matrix quickly using the
+    transpose of the rotation component.
 
     """
-    check_types(matrix_series, locals())
+    check_types(inv, locals())
 
     matrix_series = np.array(matrix_series)
 
@@ -486,7 +498,7 @@ def get_local_coordinates(
     global_coordinates[nan_index] = 0
 
     # Invert the reference frame to obtain the inverse transformation
-    inv_ref_T = matinv(reference_frames)
+    inv_ref_T = inv(reference_frames)
 
     local_coordinates = np.zeros(global_coordinates.shape)  # init
     local_coordinates = matmul(inv_ref_T, global_coordinates)
