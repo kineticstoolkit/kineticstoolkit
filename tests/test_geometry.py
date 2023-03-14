@@ -78,6 +78,15 @@ def test_matmul():
 
 def test_inv():
     """Test inverse matrix series."""
+    # Try with simple rotations and translations
+    T = ktk.geometry.create_transforms(
+        "z", [90], degrees=True, translations=[[1, 0, 0]]
+    )
+    assert np.allclose(
+        T, [[0, -1, 0, 1], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
+    )
+    assert np.allclose(ktk.geometry.inv(T), np.linalg.inv(T))
+
     # Series of 100 rotation matrices around the z axis, from 0 to
     # 360 degrees, with a series of translations of (2,1,3).
     T = ktk.geometry.create_transforms(

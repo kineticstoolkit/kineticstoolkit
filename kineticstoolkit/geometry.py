@@ -116,9 +116,9 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
 def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     """
     Calculate series of inverse transform.
-    
+
     This function calculates a series of inverse homogeneous transforms.
-    
+
     Parameters
     ----------
     matrix_series
@@ -129,7 +129,7 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     -------
     ArrayLike
         The Nx4x4 series of inverse homogeneous matrices.
-        
+
     Note
     ----
     This function requires (and checks) that each matrix really is an
@@ -141,7 +141,6 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     check_types(inv, locals())
 
     matrix_series = np.array(matrix_series)
-
     index_is_nan = isnan(matrix_series)
 
     # Check that all non-nan matrices are orthogonal
@@ -153,11 +152,21 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
             "At least one matrix of this series is not homogeneous."
         )
 
-    out = np.array(matrix_series).copy()
-    out[~index_is_nan, 0:3, 0:3] = np.transpose(
-        matrix_series[~index_is_nan, 0:3, 0:3], (0, 2, 1)
-    )
-    out[~index_is_nan, 0:3, 3] = -matrix_series[~index_is_nan, 0:3, 3]
+    invR = np.zeros((matrix_series.shape[0], 3, 3))
+    invT = np.zeros((matrix_series.shape[0], 3))
+
+    # Inverse rotation
+    invR = np.transpose(matrix_series[:, 0:3, 0:3], (0, 2, 1))
+
+    # Inverse translation
+    invT = -matmul(invR, matrix_series[:, 0:3, 3])
+
+    # output
+    out = np.zeros(matrix_series.shape)
+    out[:, 0:3, 0:3] = invR
+    out[:, 0:3, 3] = invT
+    out[:, 3, 3] = 1
+    out[index_is_nan] = np.nan
 
     return out
 
