@@ -143,14 +143,7 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     matrix_series = np.array(matrix_series)
     index_is_nan = isnan(matrix_series)
 
-    # Check that all non-nan matrices are orthogonal
-    if (
-        np.allclose(np.linalg.det(matrix_series[~index_is_nan, 0:3, 0:3]), 1)
-        is False
-    ):
-        raise ValueError(
-            "At least one matrix of this series is not homogeneous."
-        )
+    _check_no_skewed_rotation(matrix_series, "matrix_series")
 
     invR = np.zeros((matrix_series.shape[0], 3, 3))
     invT = np.zeros((matrix_series.shape[0], 3))
@@ -340,6 +333,9 @@ def get_angles(
     check_types(get_angles, locals())
 
     T = np.array(T)
+
+    _check_no_skewed_rotation(T, "T")
+
     R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
     angles = R.as_euler(seq, degrees)
 
@@ -495,6 +491,9 @@ def get_local_coordinates(
 
     global_coordinates = np.array(global_coordinates)
     reference_frames = np.array(reference_frames)
+
+    _check_no_skewed_rotation(reference_frames, "reference_frames")
+
     (global_coordinates, reference_frames) = _match_size(
         global_coordinates, reference_frames
     )
@@ -553,6 +552,9 @@ def get_global_coordinates(
 
     local_coordinates = np.array(local_coordinates)
     reference_frames = np.array(reference_frames)
+
+    _check_no_skewed_rotation(reference_frames, "reference_frames")
+
     (local_coordinates, reference_frames) = _match_size(
         local_coordinates, reference_frames
     )
@@ -613,6 +615,40 @@ def _match_size(
         raise ValueError("Could not match first dimension of op1 and op2")
 
     return op1, op2
+
+
+def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
+    """
+    Check if all rotation matrices are orthogonal (det=1).
+
+    Parameters
+    ----------
+    matrix_series : array of shape Nx4x4
+        The input series. Inputs of other shapes are ignored.
+    param_name
+        Name of the parameters, to use in the error message.
+
+    Raises
+    ------
+    ValueError
+        If at least one skewed rotation matrix is found in the provided series.
+
+    """
+    if (
+        len(series.shape) == 3
+        and series.shape[1] == 4
+        and series.shape[2] == 4
+    ):
+        index_is_nan = isnan(series)
+        if not np.allclose(np.linalg.det(series[~index_is_nan, 0:3, 0:3]), 1):
+            raise ValueError(
+                f"Parameter {param_name} contains at least one rotation "
+                "component that is not orthogonal. This may happen, for "
+                "instance, if you attempted to resample or filter a "
+                "homogeneous transform, which is not possible directly. If "
+                "this is the case, then consider filtering quaternions or Euler "
+                "angles instead."
+            )
 
 
 def register_points(
