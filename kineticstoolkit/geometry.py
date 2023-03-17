@@ -168,6 +168,8 @@ def create_transforms(
     seq: str | None = None,
     angles: ArrayLike | None = None,
     translations: ArrayLike | None = None,
+    scales: ArrayLike | None = None,
+    *,
     degrees=False,
 ) -> np.ndarray:
     """
@@ -199,9 +201,15 @@ def create_transforms(
         angles and W is the length of `seq`.
 
     translations
-        Optional array_like or shape (N, 3) or (N, 4). This corresponds
+        Optional array_like of shape (N, 3) or (N, 4). This corresponds
         to the translation part of the generated series of homogeneous
         transforms.
+
+    scales
+        Optional array_like of shape (N, ) or (N, 3). For (N, ), this
+        corresponds to the scale to apply uniformly on the three axes. For
+        (N, 3), this is the scale to apply independently on x, y and z. By
+        default, no scale is included.
 
     degrees
         If True, then the given angles are in degrees. Default is False.
@@ -215,13 +223,13 @@ def create_transforms(
     --------
     ktk.geometry.create_frames
 
-    Example
-    -------
+    Examples
+    --------
     Create a series of two homogeneous transforms that rotates 0, then 90
     degrees around x:
 
         >>> import kineticstoolkit.lab as ktk
-        >>> ktk.geometry.create_transforms('x', [0, 90], degrees=True)
+        >>> ktk.geometry.create_transforms(seq='x', angles=[0, 90], degrees=True)
         array([[[ 1.,  0.,  0.,  0.],
                 [ 0.,  1.,  0.,  0.],
                 [ 0.,  0.,  1.,  0.],
@@ -231,6 +239,21 @@ def create_transforms(
                 [ 0.,  0., -1.,  0.],
                 [ 0.,  1.,  0.,  0.],
                 [ 0.,  0.,  0.,  1.]]])
+
+    Create an homogeneous transform that converts millimeters to meters
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> ktk.geometry.create_transforms(scales=[0.001])
+        array([[[0.001, 0.   , 0.   , 0.   ],
+                [0.   , 0.001, 0.   , 0.   ],
+                [0.   , 0.   , 0.001, 0.   ],
+                [0.   , 0.   , 0.   , 1.   ]]])
+
+    Apply this conversion to point (2000, 100, 0):
+        >>> import kineticstoolkit.lab as ktk
+        >>> T = ktk.geometry.create_transforms(scales=[0.001])
+        >>> ktk.geometry.matmul(T, [[2000, 100, 0, 1]])
+        array([[2. , 0.1, 0. , 1. ]])
 
     """
     check_types(create_transforms, locals())
@@ -248,7 +271,27 @@ def create_transforms(
     else:
         angles = np.array(angles)
 
+    # Condition scales
+    if scales is None:
+        scales = np.array([1])
+    else:
+        scales = np.array(scales)
+
+    # Repeat scales to the three dimensions if needed
+    if len(scales.shape) == 1:
+        scales = np.repeat(scales[np.newaxis], 3, axis=0).T
+
+    # Convert scales to a series of scaling matrices
+    temp = np.zeros((scales.shape[0], 4, 4))
+    temp[:, 0, 0] = scales[:, 0]
+    temp[:, 1, 1] = scales[:, 1]
+    temp[:, 2, 2] = scales[:, 2]
+    temp[:, 3, 3] = 1.0
+    scales = temp
+
     # Match sizes
+    translations, angles = _match_size(translations, angles)
+    translations, scales = _match_size(translations, scales)
     translations, angles = _match_size(translations, angles)
     n_samples = angles.shape[0]
 
@@ -258,13 +301,15 @@ def create_transforms(
     if len(R.shape) == 2:  # Single rotation: add the Time dimension.
         R = R[np.newaxis, ...]
 
-    # Construct the final series of transforms
+    # Construct the final series of transforms (without scaling)
     T = np.empty((n_samples, 4, 4))
     T[:, 0:3, 0:3] = R
     T[:, 0:3, 3] = translations
     T[:, 3, 0:3] = 0
     T[:, 3, 3] = 1
-    return T
+
+    # Return the scaling + transform
+    return T @ scales
 
 
 def get_angles(

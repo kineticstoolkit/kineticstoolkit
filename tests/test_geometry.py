@@ -124,6 +124,33 @@ def test_create_transforms():
         ),
     )
 
+    # Rotation of 90 degrees around the x axis with a scaling of 1000
+    T = ktk.geometry.create_transforms("x", [np.pi / 2], scales=[1000])
+    assert np.allclose(
+        T[0],
+        np.array(
+            [
+                [1000.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, -1000.0, 0.0],
+                [0.0, 1000.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ]
+        ),
+    )
+
+    # Rotation of 90 degrees around the x axis with a scaling of 1000 on x only
+    T = ktk.geometry.create_transforms("x", [np.pi / 2], scales=[[1, 1000, 1]])
+    assert np.allclose(
+        T[0],
+        np.array(
+            [
+                [1.0, 0.0, 0.0, 0.0],
+                [0.0, 0.0, -1.0, 0.0],
+                [0.0, 1000.0, 0.0, 0.0],
+                [0.0, 0.0, 0.0, 1.0],
+            ]
+        ),
+    )
     # Series of 100 rotation matrices around the z axis, from 0 to
     # 360 degrees, with a series of translations of 2 to the right.
     T = ktk.geometry.create_transforms(
