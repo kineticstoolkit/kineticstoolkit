@@ -247,9 +247,18 @@ def time_normalize(
     if span is None:
         span = [0, n_points]
 
-    # Find the final number of cycles
     if len(ts.events) < 2:
-        raise (ValueError("No cycle can be defined from these event names."))
+        raise ValueError("This TimeSeries does not have events.")
+    if ts.count_events(event_name1) == 0:
+        raise ValueError(
+            f"No occurrence of event `{event_name1}` was found in this "
+            "TimeSeries."
+        )
+    if ts.count_events(event_name2) == 0:
+        raise ValueError(
+            f"No occurrence of event `{event_name2}` was found in this "
+            "TimeSeries."
+        )
 
     # Initialize the destination TimeSeries
     dest_ts = ts.copy()
@@ -273,6 +282,9 @@ def time_normalize(
             break_now = True
         else:
             begin_time = ts.events[event_index].time
+
+        if break_now:
+            break
 
         # Get the end time for this cycle
         end_cycle = 0

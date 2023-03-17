@@ -245,6 +245,14 @@ def test_time_normalize():
     assert ts5.events[8].name == "_"
     assert np.allclose(ts5.events[8].time, 100 + 325)
 
+    # Test time_normalize with nonvalid event names - ValueError
+    # (issue #156)
+    try:
+        ktk.cycles.time_normalize(ts, "begin", "end")
+        raise ValueError("Should raise a ValueError.")
+    except ValueError:
+        pass
+
 
 # def test_normalize_extended():
 #     """
