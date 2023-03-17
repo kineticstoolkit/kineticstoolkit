@@ -43,6 +43,9 @@ def __dir__():
         "get_global_coordinates",
         "isnan",
         "register_points",
+        "rotate",
+        "translate",
+        "scale",
     ]
 
 
@@ -173,7 +176,10 @@ def create_transforms(
     degrees=False,
 ) -> np.ndarray:
     """
-    Create an Nx4x4 series of homogeneous transforms based on angle sequences.
+    Create series of transforms based on angles, translatations and scales.
+
+    Create an Nx4x4 series of homogeneous transform matrices based on series of
+    angles, translatations and scales.
 
     Parameters
     ----------
@@ -206,10 +212,8 @@ def create_transforms(
         transforms.
 
     scales
-        Optional array_like of shape (N, ) or (N, 3). For (N, ), this
-        corresponds to the scale to apply uniformly on the three axes. For
-        (N, 3), this is the scale to apply independently on x, y and z. By
-        default, no scale is included.
+        Optional array_like of shape (N, ) that corresponds to the scale to
+        apply uniformly on the three axes. By default, no scale is included.
 
     degrees
         If True, then the given angles are in degrees. Default is False.
@@ -221,7 +225,8 @@ def create_transforms(
 
     See also
     --------
-    ktk.geometry.create_frames
+    ktk.geometry.create_frames, ktk.geometry.rotate, ktk.geometry.translate,
+    ktk.geometry.scale
 
     Examples
     --------
@@ -249,12 +254,6 @@ def create_transforms(
                 [0.   , 0.   , 0.001, 0.   ],
                 [0.   , 0.   , 0.   , 1.   ]]])
 
-    Apply this conversion to point (2000, 100, 0):
-        >>> import kineticstoolkit.lab as ktk
-        >>> T = ktk.geometry.create_transforms(scales=[0.001])
-        >>> ktk.geometry.matmul(T, [[2000, 100, 0, 1]])
-        array([[2. , 0.1, 0. , 1. ]])
-
     """
     check_types(create_transforms, locals())
 
@@ -277,15 +276,11 @@ def create_transforms(
     else:
         scales = np.array(scales)
 
-    # Repeat scales to the three dimensions if needed
-    if len(scales.shape) == 1:
-        scales = np.repeat(scales[np.newaxis], 3, axis=0).T
-
     # Convert scales to a series of scaling matrices
     temp = np.zeros((scales.shape[0], 4, 4))
-    temp[:, 0, 0] = scales[:, 0]
-    temp[:, 1, 1] = scales[:, 1]
-    temp[:, 2, 2] = scales[:, 2]
+    temp[:, 0, 0] = scales
+    temp[:, 1, 1] = scales
+    temp[:, 2, 2] = scales
     temp[:, 3, 3] = 1.0
     scales = temp
 
@@ -310,6 +305,148 @@ def create_transforms(
 
     # Return the scaling + transform
     return T @ scales
+
+
+def rotate(
+    coordinates, /, seq: str, angles: ArrayLike, *, degrees: bool = False
+) -> np.ndarray:
+    """
+    Rotate a series of coordinates along given axes.
+
+    Parameters
+    ----------
+    coordinates
+        Array_like of shape (N, ...): the coordinates to rotate.
+
+    seq
+        Specifies sequence of axes for rotations. Up to 3 characters
+        belonging to the set {'X', 'Y', 'Z'} for intrinsic rotations (moving
+        axes), or {'x', 'y', 'z'} for extrinsic rotations (fixed axes).
+        Extrinsic and intrinsic rotations cannot be mixed in one function call.
+
+    angles
+        Array_like of shape (N,) or (N, [1 or 2 or 3]). Angles are
+        specified in radians (if degrees is False) or degrees (if degrees is
+        True).
+
+        For a single-character `seq`, `angles` can be:
+
+        - array_like with shape (N,), where each `angle[i]` corresponds to a
+          single rotation;
+        - array_like with shape (N, 1), where each `angle[i, 0]` corresponds
+          to a single rotation.
+
+        For 2- and 3-character `seq`, `angles` is an array_like with shape
+        (N, W) where each `angle[i, :]` corresponds to a sequence of Euler
+        angles and W is the length of `seq`.
+
+    degrees
+        If True, then the given angles are in degrees. Default is False.
+
+    Returns
+    -------
+    np.ndarray
+        Array_like of shape (N, ...): the rotated coordinates.
+
+    See also
+    --------
+    ktk.geometry.translate, ktk.geometry.scale, ktk.geometry.create_transforms,
+    ktk.geometry.matmul
+
+    Examples
+    --------
+    Rotate the point (1, 0, 0) by theta degrees around z, then by 45 degrees
+    around y, for theta in [0, 10, 20, 30, 40]:
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> angles = np.array([[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]])
+        >>> ktk.geometry.rotate([[1, 0, 0, 1]], 'zx', angles, degrees=True)
+        array([[1.        , 0.        , 0.        , 1.        ],
+               [0.98480775, 0.1227878 , 0.1227878 , 1.        ],
+               [0.93969262, 0.24184476, 0.24184476, 1.        ],
+               [0.8660254 , 0.35355339, 0.35355339, 1.        ],
+               [0.76604444, 0.45451948, 0.45451948, 1.        ]])
+
+    """
+    return matmul(create_transforms(seq, angles, degrees=degrees), coordinates)
+
+
+def translate(coordinates, /, translations):
+    """
+    Translate a series of coordinates.
+
+    Parameters
+    ----------
+    coordinates
+        Array_like of shape (N, ...): the coordinates to translate.
+
+    translations
+        Array_like of shape (N, 3) or (N, 4): the translation on each axe
+        (x, y, z).
+
+    Returns
+    -------
+    np.ndarray
+        Array_like of shape (N, ...): the translated coordinates.
+
+    See also
+    --------
+    ktk.geometry.rotate, ktk.geometry.scale, ktk.geometry.create_transforms,
+    ktk.geometry.matmul
+
+    Examples
+    --------
+    Translate the point (1, 0, 0) by (x, 1, 0), for x in [0, 1, 2, 3, 4]:
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> t = np.array([[0, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [4, 1, 0]])
+        >>> ktk.geometry.translate([[1, 0, 0, 1]], t)
+        array([[1., 1., 0., 1.],
+               [2., 1., 0., 1.],
+               [3., 1., 0., 1.],
+               [4., 1., 0., 1.],
+               [5., 1., 0., 1.]])
+    """
+    return matmul(create_transforms(translations=translations), coordinates)
+
+
+def scale(coordinates, /, scales):
+    """
+    Scale a series of coordinates.
+
+    Parameters
+    ----------
+    coordinates
+        Array_like of shape (N, ...): the coordinates to scale.
+
+    scales
+        Array_like of shape (N, ) that corresponds to the scale to apply
+        uniformly on the three axes.
+
+    Returns
+    -------
+    np.ndarray
+        Array_like of shape (N, ...): the translated coordinates.
+
+    See also
+    --------
+    ktk.geometry.rotate, ktk.geometry.translate,
+    ktk.geometry.create_transforms, ktk.geometry.matmul
+
+    Examples
+    --------
+    Scale the point (1, 0, 0) by x, for x in [0, 1, 2, 3, 4]:
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> s = np.array([0, 1, 2, 3, 4])
+        >>> ktk.geometry.scale([[1, 0, 0, 1]], s)
+        array([[0., 0., 0., 1.],
+               [1., 0., 0., 1.],
+               [2., 0., 0., 1.],
+               [3., 0., 0., 1.],
+               [4., 0., 0., 1.]])
+    """
+    return matmul(create_transforms(scales=scales), coordinates)
 
 
 def get_angles(
@@ -611,7 +748,7 @@ def get_global_coordinates(
 
 def isnan(array: ArrayLike, /) -> np.ndarray:
     """
-    Check which samples has at least one NaN.
+    Check which samples contain at least one NaN.
 
     Parameters
     ----------

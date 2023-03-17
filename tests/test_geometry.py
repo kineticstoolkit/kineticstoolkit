@@ -138,19 +138,6 @@ def test_create_transforms():
         ),
     )
 
-    # Rotation of 90 degrees around the x axis with a scaling of 1000 on x only
-    T = ktk.geometry.create_transforms("x", [np.pi / 2], scales=[[1, 1000, 1]])
-    assert np.allclose(
-        T[0],
-        np.array(
-            [
-                [1.0, 0.0, 0.0, 0.0],
-                [0.0, 0.0, -1.0, 0.0],
-                [0.0, 1000.0, 0.0, 0.0],
-                [0.0, 0.0, 0.0, 1.0],
-            ]
-        ),
-    )
     # Series of 100 rotation matrices around the z axis, from 0 to
     # 360 degrees, with a series of translations of 2 to the right.
     T = ktk.geometry.create_transforms(
@@ -161,6 +148,56 @@ def test_create_transforms():
         np.array([[1, 0, 0, 2], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]),
     )
     assert T.shape[0] == 100
+
+
+def rotate_translate_scale():
+    """
+    Test rotate, translate and scale.
+    The real test is in create_transforms, these tests are only to be sure
+    that these shortcut functions still work.
+    """
+    angles = np.array([[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]])
+    assert np.allclose(
+        ktk.geometry.rotate([[1, 0, 0, 1]], "zx", angles, degrees=True),
+        np.array(
+            [
+                [1.0, 0.0, 0.0, 1.0],
+                [0.98480775, 0.1227878, 0.1227878, 1.0],
+                [0.93969262, 0.24184476, 0.24184476, 1.0],
+                [0.8660254, 0.35355339, 0.35355339, 1.0],
+                [0.76604444, 0.45451948, 0.45451948, 1.0],
+            ]
+        ),
+        atol=1e-3,
+    )
+
+    t = np.array([[0, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [4, 1, 0]])
+    assert np.allclose(
+        ktk.geometry.translate([[1, 0, 0, 1]], t),
+        np.array(
+            [
+                [1.0, 1.0, 0.0, 1.0],
+                [2.0, 1.0, 0.0, 1.0],
+                [3.0, 1.0, 0.0, 1.0],
+                [4.0, 1.0, 0.0, 1.0],
+                [5.0, 1.0, 0.0, 1.0],
+            ]
+        ),
+    )
+
+    s = np.array([0, 1, 2, 3, 4])
+    assert np.allclose(
+        ktk.geometry.scale([[1, 0, 0, 1]], s),
+        np.array(
+            [
+                [0.0, 0.0, 0.0, 1.0],
+                [1.0, 0.0, 0.0, 1.0],
+                [2.0, 0.0, 0.0, 1.0],
+                [3.0, 0.0, 0.0, 1.0],
+                [4.0, 0.0, 0.0, 1.0],
+            ]
+        ),
+    )
 
 
 def test_create_frames_get_local_global_coordinates():
