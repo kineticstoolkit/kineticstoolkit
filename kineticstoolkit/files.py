@@ -300,13 +300,24 @@ def read_c3d(
     """
     Read point and analog data from a C3D file.
 
-    Point positions are returned in `output['Points']` as a TimeSeries, where
+    Point positions are returned in `output["Points"]` as a TimeSeries, where
     each point corresponds to a data key. Each point position is expressed as
-    an Nx4 point series.
+    an Nx4 point series::
+        [
+            [x0, y0, z0, 1.0],
+            [x1, y1, z1, 1.0],
+            [x2, y2, z2, 1.0],
+            ...,
+        ]
 
-    If available, analog data is returned in `output['Analogs']` as a
+    If available, analog data is returned in `output["Analogs"]` as a
     TimeSeries, where each analog signal is expressed as a unidimensional
-    series of length N.
+    array of length N.
+
+    Some applications store calculated values such as angles, forces, moments,
+    powers, etc. into the C3D file. Storing these data is application-specific
+    and is not standardized in the C3D file format (https://www.c3d.org).
+    This function reads these values as points regardless of their nature.
 
     Parameters
     ----------
@@ -314,41 +325,31 @@ def read_c3d(
         Path of the C3D file
 
     convert_point_unit
-        Optional. True to convert the point units to meters, even if they are
-        expressed in mm in the C3D file. False to keep points as is. If unset,
-        the function generates a warning if points were saved in any unit
-        other than meters. See notes below.
+        Optional. True to convert the point units to meters, if they are
+        expressed in other units such as mm in the C3D file. False to keep
+        points as is. When unset, if points are stored in a unit other than
+        meters, then a warning is issued. See caution note below.
 
     Returns
     -------
-    Dict of TimeSeries
+    dict[ktk.TimeSeries]
         A dict of TimeSeries, with keys being "Points" and if available,
         "Analogs".
 
-    Note
-    ----
-    Some applications include not only points and analogs in the C3D file,
-    but also calculated values such as angles, forces, moments, powers, etc.
-    These data are usually stored as point groups using a
-    method that is specific to the application and that is not standardized in
-    the C3D file format (https://www.c3d.org). Therefore, ktk.read_c3d() reads
-    these values as points regardless of their nature. By default, every point
-    is read in the same unit that is defined in the C3D (usually meters or
-    millimeters). If this unit is not "m", you will get a warning to set the
-    `convert_point_unit` parameters to either True or False (see caution note
-    below).
-    
     Caution
     -------
-    If your C3D file expressed points in another unit than meters (e.g., mm),
-    and that it also contains "special" calculated points such as angles,
-    powers, etc., then you need to be caution with the `convert_point_unit``
-    parameter:
-        - Setting `convert_point_unit` to False reads the file as is, but you
-          will need to manually convert your points to meters. This can be done
-          easily using ktk.geometry.scale.
-        - Setting `convert_point_unit` to True converts all points to meters,
-          but also scales every calculated angle, power, etc.
+    If, for a given C3D file, points are expressed in another unit than meters
+    (e.g., mm), and that this file also contains calculated points such as
+    angles, powers, etc., then you need to be cautious with the
+    `convert_point_unit` parameter:
+        
+    - Setting `convert_point_unit` to False reads the file as is, but you
+      then need to manually convert the points to meters. This can be done
+      easily using ktk.geometry.scale.
+    - Setting `convert_point_unit` to True scales all points to meters,
+      but also scales every calculated angle, power, etc. as they are read
+      as any other point.
+
     For these special cases, we recommend to set `convert_point_unit` to
     False, and then scale the points manually.
 
@@ -466,14 +467,53 @@ def read_c3d(
     labels = reader["parameters"]["POINT"]["LABELS"]["value"]
     n_points = reader["parameters"]["POINT"]["USED"]["value"][0]
 
-    if convert_point_unit and (point_unit == "mm"):
-        point_factor = 0.001
-        point_unit = "m"
-    elif point_unit == "m":
-        point_factor = 1
+    # Solve the point unit conversion mess (issue #147)
+    scales = {"mm": 0.001, "cm": 0.01, "dm": 0.1, "m": 1.0}
+
+    if convert_point_unit is None:
+        if point_unit == "m":
+            point_factor = 1.0
+            point_unit = "m"
+        elif point_unit in scales:
+            warnings.warn(
+                "In the specified file, points are expressed in "
+                f"{point_unit}. They were automatically converted to meters "
+                f"by scaling them by {scales[point_unit]}. Please note that "
+                "if this file also contains calculated values such as "
+                "angles, powers, etc., they were also (wrongly) scaled by "
+                f"{scales[point_unit]}. Consult "
+                "https://kineticstoolkit.uqam.ca/doc/api/ktk.read_c3d.html "
+                "for more information. You can mute this warning "
+                "by explicitely setting `convert_point_unit` to either True "
+                "or False."
+            )
+            point_factor = scales[point_unit]
+            point_unit = "m"
+        else:
+            warnings.warn(
+                "In the specified file, points are expressed in "
+                f"`{point_unit}`, which is not recognized by ktk.read_c3d. They "
+                "were left as is, without attempting to convert to meters. "
+                "You can mute this warning by setting `convert_point_unit` to "
+                "False."
+            )
+            point_factor = 1.0
+            # point_unit = Do not update
+
+    elif convert_point_unit is True:
+        try:
+            point_factor = scales[point_unit]
+            point_unit = "m"
+        except KeyError:
+            raise ValueError(
+                "In the specified file, points are expressed in "
+                f"`{point_unit}`, which is not recognized by ktk.read_c3d. "
+                "Please set `convert_point_unit` to None of False."
+            )
+
     else:
         point_factor = 1
-        warnings.warn(f"Point unit is {point_unit} instead of meters.")
+        # point_unit = Do not update
 
     for i_label in range(n_points):
         # Make sure it's UTF8, and strip leading and ending spaces

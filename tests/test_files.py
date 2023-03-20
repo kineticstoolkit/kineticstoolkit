@@ -26,6 +26,7 @@ import kineticstoolkit as ktk
 import numpy as np
 import pandas as pd
 import os
+import warnings
 
 
 def test_save_load():
@@ -113,7 +114,13 @@ def test_read_c3d():
     """Test read_c3d."""
     # Read the same file as the older kinematics.read_c3d_file
 
-    c3d = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))
+    # The warning thing is just to test that loading a file that were saved
+    # in mm rather than m launches the warning. I want to ensure that launching
+    # the warning doesn't crash something (e.g., inexistent strings in the
+    # f-strings).
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        c3d = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))
 
     markers = c3d["Points"]
     assert "Analogs" not in c3d
@@ -130,7 +137,7 @@ def test_read_c3d():
     # --------------------------------------------------
     # Test a file with more data in it (analogs, events)
     filename = ktk.doc.download("walk.c3d")
-    c3d = ktk.read_c3d(filename)
+    c3d = ktk.read_c3d(filename, convert_point_unit=True)
 
     assert len(c3d["Points"].time) == 221
     assert len(c3d["Points"].data) == 96
@@ -157,6 +164,7 @@ def test_read_c3d_testsuite1():
         test.append(
             ktk.read_c3d(
                 ktk.doc.download(f"c3d_test_suite/Sample01/Eb015{key}.c3d"),
+                convert_point_unit=True,
                 extract_force_plates=True,
             )
         )
@@ -187,6 +195,7 @@ def test_read_c3d_testsuite2():
         test.append(
             ktk.read_c3d(
                 ktk.doc.download(f"c3d_test_suite/Sample02/{key}.c3d"),
+                convert_point_unit=True,
                 extract_force_plates=True,
             )
         )
@@ -215,6 +224,7 @@ def test_read_c3d_testsuite8():
         test.append(
             ktk.read_c3d(
                 ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d"),
+                convert_point_unit=True,
                 extract_force_plates=True,
             )
         )
@@ -272,6 +282,7 @@ def test_write_c3d_testsuite8():
     ]:
         data = ktk.read_c3d(
             ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d"),
+            convert_point_unit=True,
             extract_force_plates=False,
         )
         ktk.write_c3d(
@@ -305,7 +316,7 @@ def test_write_c3d_weirdc3d():
     For now, tests with analogs are commented until the next release of ezc3d
     """
     filename = ktk.doc.download("walk.c3d")
-    c3d = ktk.read_c3d(filename)
+    c3d = ktk.read_c3d(filename, convert_point_unit=True)
     ktk.write_c3d(
         "test.c3d",
         points=c3d["Points"],
@@ -334,15 +345,13 @@ def test_write_c3d_weirdc3d():
 def test_write_c3d_analogs():
     """Test the creation of a c3d file with points and analogs."""
     # When everything is clean
-    points = ktk.TimeSeries(time=np.linspace(0, 10, 10 * 240, endpoint=False))
+    points = ktk.TimeSeries(time=np.linspace(0, 1, 1 * 240, endpoint=False))
     points.data["point1"] = np.random.rand(points.time.shape[0], 4)
     points.data["point2"] = np.random.rand(points.time.shape[0], 4)
     points.data["point1"][:, 3] = 1
     points.data["point2"][:, 3] = 1
 
-    analogs = ktk.TimeSeries(
-        time=np.linspace(0, 10, 10 * 2400, endpoint=False)
-    )
+    analogs = ktk.TimeSeries(time=np.linspace(0, 1, 1 * 2400, endpoint=False))
     analogs.data["emg1"] = np.random.rand(analogs.time.shape[0])
     analogs.data["forces"] = np.random.rand(analogs.time.shape[0], 3)
 
@@ -380,13 +389,11 @@ def test_write_c3d_analogs():
         pass
 
     # When sample rate is invalid
-    points = ktk.TimeSeries(time=np.linspace(0, 10, 10 * 240, endpoint=False))
+    points = ktk.TimeSeries(time=np.linspace(0, 1, 1 * 240, endpoint=False))
     points.data["point1"] = np.ones((points.time.shape[0], 4))
     points.data["point2"] = np.ones((points.time.shape[0], 4))
 
-    analogs = ktk.TimeSeries(
-        time=np.linspace(0, 10, 10 * 2401, endpoint=False)
-    )
+    analogs = ktk.TimeSeries(time=np.linspace(0, 1, 1 * 2401, endpoint=False))
     analogs.data["emg1"] = np.zeros(analogs.time.shape[0])
     analogs.data["forces1"] = np.zeros((analogs.time.shape[0], 4))
 
@@ -395,16 +402,6 @@ def test_write_c3d_analogs():
         raise ValueError("This should fail.")
     except ValueError:
         pass
-
-
-def test_issue147():
-    """
-    Test that issue 147 stays solved.
-
-    https://github.com/felixchenier/kineticstoolkit/issues/147
-
-    """
-    c3d = ktk.read_c3d("../data/c3d_test_suite/others/issue147.c3d")
 
 
 if __name__ == "__main__":
