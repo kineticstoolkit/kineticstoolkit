@@ -294,7 +294,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 def read_c3d(
     filename: str,
     *,
-    convert_point_unit: bool = True,
+    convert_point_unit: bool | None = None,
     **kwargs,
 ) -> dict[str, TimeSeries]:
     """
@@ -315,13 +315,42 @@ def read_c3d(
 
     convert_point_unit
         Optional. True to convert the point units to meters, even if they are
-        expressed in mm in the C3D file.
+        expressed in mm in the C3D file. False to keep points as is. If unset,
+        the function generates a warning if points were saved in any unit
+        other than meters. See notes below.
 
     Returns
     -------
     Dict of TimeSeries
         A dict of TimeSeries, with keys being "Points" and if available,
         "Analogs".
+
+    Note
+    ----
+    Some applications include not only points and analogs in the C3D file,
+    but also calculated values such as angles, forces, moments, powers, etc.
+    These data are usually stored as point groups using a
+    method that is specific to the application and that is not standardized in
+    the C3D file format (https://www.c3d.org). Therefore, ktk.read_c3d() reads
+    these values as points regardless of their nature. By default, every point
+    is read in the same unit that is defined in the C3D (usually meters or
+    millimeters). If this unit is not "m", you will get a warning to set the
+    `convert_point_unit` parameters to either True or False (see caution note
+    below).
+    
+    Caution
+    -------
+    If your C3D file expressed points in another unit than meters (e.g., mm),
+    and that it also contains "special" calculated points such as angles,
+    powers, etc., then you need to be caution with the `convert_point_unit``
+    parameter:
+        - Setting `convert_point_unit` to False reads the file as is, but you
+          will need to manually convert your points to meters. This can be done
+          easily using ktk.geometry.scale.
+        - Setting `convert_point_unit` to True converts all points to meters,
+          but also scales every calculated angle, power, etc.
+    For these special cases, we recommend to set `convert_point_unit` to
+    False, and then scale the points manually.
 
     Warning
     -------
@@ -330,7 +359,7 @@ def read_c3d(
 
     See also
     --------
-    ktk.write_c3d
+    ktk.write_c3d, ktk.geometry.scale
 
     Notes
     -----

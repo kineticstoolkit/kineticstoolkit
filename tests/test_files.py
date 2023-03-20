@@ -397,6 +397,16 @@ def test_write_c3d_analogs():
         pass
 
 
+def test_issue147():
+    """
+    Test that issue 147 stays solved.
+
+    https://github.com/felixchenier/kineticstoolkit/issues/147
+
+    """
+    c3d = ktk.read_c3d("../data/c3d_test_suite/others/issue147.c3d")
+
+
 if __name__ == "__main__":
     import pytest
 
