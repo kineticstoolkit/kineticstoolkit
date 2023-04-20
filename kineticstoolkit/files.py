@@ -342,7 +342,7 @@ def read_c3d(
     (e.g., mm), and that this file also contains calculated points such as
     angles, powers, etc., then you need to be cautious with the
     `convert_point_unit` parameter:
-        
+
     - Setting `convert_point_unit` to False reads the file as is, but you
       then need to manually convert the points to meters. This can be done
       easily using ktk.geometry.scale.

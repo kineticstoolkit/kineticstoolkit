@@ -138,42 +138,57 @@ class MetaTimeSeries(type):
     @classmethod
     def __dir__(cls):
         return [
-            "add_data_info",
-            "add_event",
             "copy",
+            # Add/remove data info
+            "add_data_info",
+            "remove_data_info",
+            # Data management
+            "get_subset",
+            "merge",
+            "rename_data",
+            "remove_data",
+            # Time management
+            "shift",
+            "get_sample_rate",
+            "resample",
+            # Event management
+            "add_event",
+            "rename_event",
+            "remove_event",
             "count_events",
-            "fill_missing_samples",
-            "from_dataframe",
-            "get_index_after_time",
+            "remove_duplicate_events",
+            "sort_events",
+            "trim_events",
+            # Get index from time
             "get_index_at_time",
             "get_index_before_time",
-            "get_subset",
-            "get_ts_after_event",
-            "get_ts_after_index",
-            "get_ts_after_time",
-            "get_ts_before_event",
+            "get_index_after_time",
+            # Get index from event
+            "get_index_at_event",
+            "get_index_before_event",
+            "get_index_after_event",
+            # Get TimeSeries from index
             "get_ts_before_index",
-            "get_ts_before_time",
-            "get_ts_between_events",
+            "get_ts_after_index",
             "get_ts_between_indexes",
+            # Get TimeSeries from time
+            "get_ts_before_time",
+            "get_ts_after_time",
             "get_ts_between_times",
+            # Get TimeSeries from event
+            "get_ts_before_event",
+            "get_ts_after_event",
+            "get_ts_between_events",
+            # Missing data
             "isnan",
-            "merge",
-            "plot",
-            "remove_data",
-            "remove_data_info",
-            "remove_duplicate_events",
-            "remove_event",
-            "rename_data",
-            "rename_event",
-            "resample",
-            "get_sample_rate",
-            "shift",
-            "sort_events",
-            "to_dataframe",
-            "trim_events",
+            "fill_missing_samples",
+            # Interactive and plotting
             "ui_edit_events",
             "ui_sync",
+            "plot",
+            # Dataframe
+            "from_dataframe",
+            "to_dataframe",
         ]
 
 
