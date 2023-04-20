@@ -3743,7 +3743,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         API. A similar way to achieve the same result would be to do::
 
             temp = ts.sort_events()
-            times = [e.time e in temp.events if e.name == name]
+            times = [e.time for e in temp.events if e.name == name]
             time = times[occurrence]
             """
         ),
