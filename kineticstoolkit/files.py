@@ -713,7 +713,9 @@ def write_c3d(
         # Check that this is a series of points
         if points.data[key].shape[1] != 4:
             raise ValueError(f"Point {key} is not a Nx4 series of points.")
-        if not np.all(np.isclose(points.data[key][:, 3], 1.0)):
+        if not np.all(
+            np.isclose(points.data[key][:, 3], 1.0), where=~points.isnan(key)
+        ):
             raise ValueError(f"Point {key} is not a series of [x, y, z, 1.0]")
 
         # Check that units are all the same (or None)
