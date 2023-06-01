@@ -45,6 +45,7 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
+from numpy.typing import ArrayLike
 from typing import Any
 
 import warnings
@@ -2538,10 +2539,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     def resample(
         self,
-        new_time: np.ndarray,
+        new_time_or_freq: ArrayLike | float,
         kind: str = "linear",
         *,
-        fill_value: np.ndarray | str | None = None,
+        fill_value: ArrayLike | str | None = None,
         in_place: bool = False,
     ) -> TimeSeries:
         """
@@ -2549,8 +2550,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         Parameters
         ----------
-        new_time
-            The new time vector to resample the TimeSeries to.
+        new_time_or_freq
+            As an array, defines the new time vector to resample the TimeSeries
+            to. As a flot, defines the new sample rate to resample the
+            TimeSeries to.
         kind
             Optional. The interpolation method. This input may take any value
             supported by scipy.interpolate.interp1d, such as 'linear',
@@ -2587,31 +2590,54 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         >>> ts = ktk.TimeSeries(time=np.arange(6.))
         >>> ts.data['data'] = ts.time ** 2
-        >>> ts.data['data_with_nans'] = ts.time ** 2
-        >>> ts.data['data_with_nans'][3] = np.nan
         >>> ts.time
         array([0., 1., 2., 3., 4., 5.])
         >>> ts.data['data']
         array([ 0.,  1.,  4.,  9., 16., 25.])
-        >>> ts.data['data_with_nans']
-        array([ 0.,  1.,  4., nan, 16., 25.])
 
-        >>> ts = ts.resample(np.arange(0, 5.5, 0.5))
+        # Example 1: Resampling at 2 Hz using a new time
+        >>> ts1 = ts.resample(np.arange(0, 5.5, 0.5))
 
-        >>> ts.time
+        >>> ts1.time
         array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. ])
 
-        >>> ts.data['data']
+        >>> ts1.data['data']
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5, 25. ])
 
-        >>> ts.data['data_with_nans']
-        array([ 0. ,  0.5,  1. ,  2.5,  4. ,  nan,  nan,  nan, 16. , 20.5, 25. ])
+        # Example 2: Resampling at 2.5 Hz using a new sample rate
+
+        >>> ts2 = ts.resample(2.5)
+
+        >>> ts2.time
+        array([0. , 0.4, 0.8, 1.2, 1.6, 2. , 2.4, 2.8, 3.2, 3.6, 4. , 4.4, 4.8])
+
+        >>> ts2.data['data']
+        array([ 0. ,  0.4,  0.8,  1.6,  2.8,  4. ,  6. ,  8. , 10.4, 13.2, 16. , 19.6, 23.2])
 
         """
         check_types(TimeSeries.resample, locals())
         self._check_well_shaped()
 
         ts = self if in_place else self.copy()
+
+        # Create the new time vector if a frequency was provided instead
+        if isinstance(new_time_or_freq, float) or isinstance(
+            new_time_or_freq, int
+        ):
+            # We specifically use arange instead of linspace, because what
+            # is defined is a frequency, not a number of points.
+            new_time = np.arange(
+                ts.time[0],
+                ts.time[-1] + 1 / new_time_or_freq,
+                1 / new_time_or_freq,
+            )
+            # Work around the numerical instability of using arange with floats
+            # by ensuring that the time point is not higher than the original
+            # last time point
+            if new_time[-1] > ts.time[-1]:
+                new_time = new_time[:-1]
+        else:
+            new_time = new_time_or_freq  # type: ignore
 
         if np.any(np.isnan(new_time)):
             raise ValueError("new_time must not contain nans")

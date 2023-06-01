@@ -826,10 +826,13 @@ def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
             raise ValueError(
                 f"Parameter {param_name} contains at least one rotation "
                 "component that is not orthogonal. This may happen, for "
-                "instance, if you attempted to resample or filter a "
-                "homogeneous transform, which is not possible directly. If "
-                "this is the case, then consider filtering quaternions or Euler "
-                "angles instead."
+                "instance, if you attempted to average, resample, or filter a "
+                "homogeneous transform, which is usually forbidden. If this "
+                "is the case, then consider filtering quaternions or Euler "
+                "angles instead. If you created a homogeneous transform from "
+                "3D marker trajectories, then average/resample/filter the "
+                "marker trajectories before creating the transform, instead "
+                "of averaging/resampling/filtering the transform."
             )
 
 
