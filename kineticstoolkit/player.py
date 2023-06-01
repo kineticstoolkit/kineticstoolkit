@@ -29,8 +29,10 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
+REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 
 from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.decorators import deprecated
 import kineticstoolkit.geometry as geometry
 
 import matplotlib.pyplot as plt
@@ -359,7 +361,10 @@ class Player:
 
         # Add the animation timer
         self.anim = animation.FuncAnimation(
-            self.objects["Figure"], self._on_timer, interval=33
+            self.objects["Figure"],
+            self._on_timer,
+            frames=self.n_indexes,
+            interval=33,
         )  # 30 ips
         self.running = False
 
@@ -1007,72 +1012,39 @@ class Player:
             )
             self._update_plots()
 
-    def to_html5(
+    @deprecated(
+        since="0.12",
+        until="2024",
+        details="This method has been removed because it did not return html5 and "
+        "was mainly a hack for representing videos in tutorials. The "
+        "supported way to use the Player is interactively.",
+    )
+    def to_html5(self, **kwargs):
+        return self._to_animation()
+
+    def _to_animation(
         self,
-        start_index: int | None = None,
-        stop_index: int | None = None,
-        start_time: float | None = None,
-        stop_time: float | None = None,
-        **kwargs,
     ):
         """
-        Create an html5 video for displaying in Jupyter notebooks.
+        Create a matplotlib FuncAnimation for displaying in Jupyter notebooks.
 
         Parameters
         ----------
-        start_index
-            Start index in the exported video. Default is the beginning.
-
-        stop_index
-            Stop index in the exported video. Negative numbers to count from
-            the end. Default is the end.
-
-        start_time
-            Start time in the exported video. Default is the beginning.
-            Ignored if start_index is set.
-
-        stop_time
-            Stop time in the exported video. Default is the end.
-            Ignored if stop_index is set.
+        No parameter.
 
         Returns
         -------
-        A matplotlib animation object for displaying as html5.
-
-        Warnings
-        --------
-        This function, which has been introduced in 0.4, is still experimental
-        and may change signature or behaviour in the future.
+        An html5 string containing the video.
 
         """
-        # Allow old arguments
-        if "start_frame" in kwargs:
-            start_index = kwargs["start_frame"]
-        if "stop_frame" in kwargs:
-            stop_index = kwargs["stop_frame"]
-
         mpl.rcParams["animation.html"] = "html5"
-
-        if start_index is None:
-            if start_time is None:
-                start_index = 0
-            else:
-                start_index = int(np.argmin(np.abs(self.time - start_time)))
-
-        if stop_index is None:
-            if stop_time is None:
-                stop_index = -1
-            else:
-                stop_index = int(np.argmin(np.abs(self.time - stop_time)))
-
-        if stop_index < 0:
-            stop_index = self.n_indexes + stop_index + 1
 
         self.playback_speed = 0
         self.objects["Figure"].set_size_inches(6, 4.5)  # Half size
-        self._set_index(start_index)
+        self._set_index(0)
         self.running = True
-        self.anim.save_count = stop_index - start_index
+        #        self.anim.frames = stop_index - start_index
+        #        self.anim.save_count = stop_index - start_index
         self.anim.event_source.start()
         plt.close(self.objects["Figure"])
         return self.anim
