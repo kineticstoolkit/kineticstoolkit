@@ -748,6 +748,36 @@ def test_merge_and_resample():
     assert ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
 
 
+def test_resample_using_frequency():
+    """Test resample using a frequency instead of a new time."""
+    ts1 = ktk.TimeSeries()
+    ts1.time = np.linspace(0, 100, 10000, endpoint=False)  # Sampled at 100Hz
+    ts1.data["signal1"] = np.sin(ts1.time)
+
+    # Resample at 50Hz
+    ts2 = ts1.resample(50)
+    assert np.allclose(ts1.time[0::2], ts2.time)
+
+    # Resample at 25Hz
+    ts2 = ts1.resample(25.0)
+    assert np.allclose(ts1.time[0::4], ts2.time)
+
+    # Resample at an uneven number
+    ts2 = ts1.resample(10.468)
+    assert np.abs(ts2.time[-1] - ts1.time[-1]) < 1 / 10.468
+
+
+def test_resample_with_nans():
+    ts = ktk.TimeSeries(time=np.arange(10.0))
+    ts.data["data"] = ts.time**2
+    ts.data["data"][[0, 1, 5, 8, 9]] = np.nan
+    ts1 = ts.resample(2.0)
+    assert np.allclose(
+        np.isnan(ts1.data["data"]),
+        [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1],
+    )
+
+
 def test_fill_missing_samples():
     ts = ktk.TimeSeries(time=np.arange(10))
     ts.data["data"] = np.sin(ts.time / 5)

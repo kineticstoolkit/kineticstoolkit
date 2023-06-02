@@ -2539,30 +2539,39 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     def resample(
         self,
-        new_time_or_freq: ArrayLike | float,
+        target: ArrayLike | float,
         kind: str = "linear",
         *,
-        fill_value: ArrayLike | str | None = None,
         in_place: bool = False,
+        **kwargs,
     ) -> TimeSeries:
         """
         Resample the TimeSeries.
 
+        Resample every data of the TimeSeries over a new frequency or new
+        series of times, using the interpolation method provided by parameter
+        `kind`. This method does not fill missing data and does not
+        extrapolate. When some data could not be interpolated, for example:
+
+        - The TimeSeries data contains missing values (nan)
+        - The target time range exceeds the original time range, which
+          would results in extrapolation.
+
+        Then the parts of the data that cannot be interpolated are replaced
+        with missing values (nan).
+
         Parameters
         ----------
-        new_time_or_freq
-            As an array, defines the new time vector to resample the TimeSeries
-            to. As a flot, defines the new sample rate to resample the
-            TimeSeries to.
+        target
+            To resample to a target frequency, use a float that represents
+            the sample rate of the output TimeSeries, in Hz. To resample to
+            specific times, use an array of float that will become the time
+            property of the output TimeSeries.
         kind
             Optional. The interpolation method. This input may take any value
             supported by scipy.interpolate.interp1d, such as 'linear',
             'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous',
             'next'. Additionally, kind can be 'pchip'.
-        fill_value
-            Optional. The fill value to use if new_time vector contains point
-            outside the current TimeSeries' time vector. Use 'extrapolate' to
-            extrapolate.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -2585,51 +2594,72 @@ class TimeSeries(metaclass=MetaTimeSeries):
         See also
         --------
         ktk.TimeSeries.get_sample_rate
+        ktk.TimeSeries.fill_missing_samples
 
         Example
         --------
-        >>> ts = ktk.TimeSeries(time=np.arange(6.))
+        >>> ts = ktk.TimeSeries(time=np.arange(10.))
         >>> ts.data['data'] = ts.time ** 2
         >>> ts.time
-        array([0., 1., 2., 3., 4., 5.])
+        array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
         >>> ts.data['data']
-        array([ 0.,  1.,  4.,  9., 16., 25.])
+        array([ 0.,  1.,  4.,  9., 16., 25., 36., 49., 64., 81.])
 
-        # Example 1: Resampling at 2 Hz using a new time
-        >>> ts1 = ts.resample(np.arange(0, 5.5, 0.5))
+        # Example 1: Resampling at 2 Hz
+
+        >>> ts1 = ts.resample(2.0)
 
         >>> ts1.time
-        array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. ])
+        array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5, 6. , 6.5, 7. , 7.5, 8. , 8.5, 9. ])
 
         >>> ts1.data['data']
-        array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5, 25. ])
+        array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5, 25. , 30.5, 36. , 42.5, 49. , 56.5, 64. , 72.5, 81. ])
 
-        # Example 2: Resampling at 2.5 Hz using a new sample rate
-
-        >>> ts2 = ts.resample(2.5)
+        # Example 2: Resampling on new times
+        >>> ts2 = ts.resample([0.0, 0.5, 1.0, 1.5, 2.0])
 
         >>> ts2.time
-        array([0. , 0.4, 0.8, 1.2, 1.6, 2. , 2.4, 2.8, 3.2, 3.6, 4. , 4.4, 4.8])
+        array([0. , 0.5, 1. , 1.5, 2. ])
 
         >>> ts2.data['data']
-        array([ 0. ,  0.4,  0.8,  1.6,  2.8,  4. ,  6. ,  8. , 10.4, 13.2, 16. , 19.6, 23.2])
+        array([0. , 0.5, 1. , 2.5, 4. ])
+
+        # Example 3: Resampling at 2 Hz with missing data in the original ts
+        >>> ts.data['data'][[0, 1, 5, 8, 9]] = np.nan
+        >>> ts.data['data']
+        array([nan, nan,  4.,  9., 16., nan, 36., 49., nan, nan])
+
+        >>> ts3 = ts.resample(2.0)
+
+        >>> ts3.time
+        array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5, 6. , 6.5, 7. , 7.5, 8. , 8.5, 9. ])
+
+        >>> ts3.data['data']
+        array([ nan,  nan,  nan,  nan,  4. ,  6.5,  9. , 12.5, 16. ,  nan,  nan, nan, 36. , 42.5, 49. ,  nan,  nan,  nan,  nan])
 
         """
+        if "fill_value" in kwargs:
+            warnings.warn(
+                "fill_value parameter has been removed in version 0.12 "
+                "because its behavior was unclear and it was ignored in many "
+                "situations "
+                "(https://github.com/felixchenier/kineticstoolkit/issues/174)."
+            )
+
         check_types(TimeSeries.resample, locals())
         self._check_well_shaped()
 
         ts = self if in_place else self.copy()
 
-        # Create the new time vector if a frequency was provided instead
-        if isinstance(new_time_or_freq, float) or isinstance(
-            new_time_or_freq, int
-        ):
+        # --------------------------------------------------------------
+        # Create the new time if a frequency was provided instead
+        if isinstance(target, float) or isinstance(target, int):
             # We specifically use arange instead of linspace, because what
             # is defined is a frequency, not a number of points.
             new_time = np.arange(
                 ts.time[0],
-                ts.time[-1] + 1 / new_time_or_freq,
-                1 / new_time_or_freq,
+                ts.time[-1] + 1 / target,
+                1 / target,
             )
             # Work around the numerical instability of using arange with floats
             # by ensuring that the time point is not higher than the original
@@ -2637,7 +2667,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if new_time[-1] > ts.time[-1]:
                 new_time = new_time[:-1]
         else:
-            new_time = new_time_or_freq  # type: ignore
+            new_time = np.array(target)  # type: ignore
+        # --------------------------------------------------------------
 
         if np.any(np.isnan(new_time)):
             raise ValueError("new_time must not contain nans")
@@ -2649,63 +2680,49 @@ class TimeSeries(metaclass=MetaTimeSeries):
             index = ~ts.isnan(key)
 
             if sum(index) < 3:  # Only Nans, cannot interpolate.
-                warnings.warn(
-                    f'Warning: Almost only NaNs found in signal "{key}.'
-                )
                 # We generate an array of nans of the expected size.
                 new_shape = [len(new_time)]
                 for i in range(1, len(self.data[key].shape)):
                     new_shape.append(self.data[key].shape[i])
                 new_data[key] = np.empty(new_shape)
                 new_data[key][:] = np.nan
+                continue
 
-            else:  # Interpolate.
-                # Express nans as a range of times to
-                # remove from the final, interpolated timeseries
-                nan_indexes = np.argwhere(~index)
-                time_ranges_to_remove = []  # type: list[tuple[int, int]]
-                length = ts.time.shape[0]
-                for i in nan_indexes:
-                    if i > 0 and i < length - 1:
-                        time_range = (ts.time[i - 1], ts.time[i + 1])
-                    elif i == 0:
-                        time_range = (-np.inf, ts.time[i + 1])
-                    else:
-                        time_range = (ts.time[i - 1], np.inf)
-                    time_ranges_to_remove.append(time_range)
-
-                if kind == "pchip":
-                    P = sp.interpolate.PchipInterpolator(
-                        ts.time[index],
-                        ts.data[key][index],
-                        axis=0,
-                        extrapolate=(
-                            True if fill_value == "extrapolate" else False
-                        ),
-                    )
-                    new_data[key] = P(new_time)
+            # Express nans as a range of times to
+            # remove from the final, interpolated timeseries
+            nan_indexes = np.argwhere(~index)
+            time_ranges_to_remove = []  # type: list[tuple[int, int]]
+            length = ts.time.shape[0]
+            for i in nan_indexes:
+                if i > 0 and i < length - 1:
+                    time_range = (ts.time[i - 1], ts.time[i + 1])
+                elif i == 0:
+                    time_range = (-np.inf, ts.time[i + 1])
                 else:
-                    f = sp.interpolate.interp1d(
-                        ts.time[index],
-                        ts.data[key][index],
-                        axis=0,
-                        fill_value=fill_value,
-                        kind=kind,
-                    )
-                    try:
-                        new_data[key] = f(new_time)
-                    except ValueError as e:
-                        raise ValueError(
-                            f"The following exception was raised: {e} ."
-                            "You may want to retry with using "
-                            "fill_value='extrapolate'."
-                        )
+                    time_range = (ts.time[i - 1], np.inf)
+                time_ranges_to_remove.append(time_range)
 
-                # Put back nans
-                for j in time_ranges_to_remove:
-                    new_data[key][
-                        (new_time > j[0]) & (new_time < j[1])
-                    ] = np.nan
+            if kind == "pchip":
+                P = sp.interpolate.PchipInterpolator(
+                    ts.time[index],
+                    ts.data[key][index],
+                    axis=0,
+                    extrapolate=True,
+                )
+                new_data[key] = P(new_time)
+            else:
+                f = sp.interpolate.interp1d(
+                    ts.time[index],
+                    ts.data[key][index],
+                    axis=0,
+                    fill_value="extrapolate",
+                    kind=kind,
+                )
+                new_data[key] = f(new_time)
+
+            # Put back nans in the originally missing data
+            for j in time_ranges_to_remove:
+                new_data[key][(new_time > j[0]) & (new_time < j[1])] = np.nan
 
         ts.time = new_time
         ts.data = new_data
@@ -2796,7 +2813,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             )
 
         if must_resample is True:
-            ts.resample(ts_out.time, fill_value="extrapolate", in_place=True)
+            ts.resample(ts_out.time, in_place=True)
 
         for key in data_keys:
             # Check if this key is a duplicate, then continue to next key if
@@ -2921,7 +2938,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts = ts_out.get_subset(data)
             ts.data[data] = ts.data[data][is_visible]
             ts.time = ts.time[is_visible]
-            ts = ts.resample(ts_out.time, method, fill_value="extrapolate")
+            ts = ts.resample(ts_out.time, method)
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:
