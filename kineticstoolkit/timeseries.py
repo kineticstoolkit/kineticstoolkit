@@ -65,6 +65,14 @@ class TimeSeriesEvent:
 
     This class is rarely used by itself, it is easier to use `TimeSeries`'
     methods to manage events.
+    
+    Attributes
+    ----------
+    time : float
+        Event time.
+        
+    name : str
+        Event name. Does not need to be unique.
 
     Example
     -------

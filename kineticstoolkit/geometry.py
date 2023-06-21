@@ -844,10 +844,10 @@ def register_points(
 
     Parameters
     ----------
-    global_points : array of shape Nx4xM
-        Destination points as a series of N sets of M points.
-    local_points : array of shape Nx4xM
-        Local points as a series of N sets of M points.
+    global_points
+        Destination points as an Nx4xM series of N sets of M points.
+    local_points
+        Local points as an array of shape Nx4xM series of N sets of M points.
         global_points and local_points must have the same shape.
 
     Returns

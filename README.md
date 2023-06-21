@@ -1,7 +1,6 @@
 # Kinetics Toolkit
 
-- **is an online resource for students and researchers** to learn about 3D biomechanical data processing using Python;
-- **is an open-source Python package** that does (only) the heavy lifting of this processing, so users stay in control of their data.
+An open-source Python package to facilitate research in biomechanics.
 
 <div align="center">
 
@@ -17,3 +16,22 @@
 - Website: https://kineticstoolkit.uqam.ca
 - Repository for the Python package: https://github.com/felixchenier/kineticstoolkit
 - Repository for the website: https://github.com/felixchenier/kineticstoolkit_doc
+
+![](https://kineticstoolkit.uqam.ca/doc/_images/frontpage.gif)
+
+Kinetics Toolkit is an open-source Python package to facilitate research in biomechanics. It provides tools for:
+
+- TimeSeries analysis, including data, time and event management, time-domain and frequency-domain noise filtering, and cycle management;
+- File management, including reading/writing C3D, CSV and any file supported by Pandas;
+- Rigid body geometry, including manipulation of series of points, vectors, frames and homogeneous transforms, coordinate system changes, and 3D angle extraction;
+- Interactive visualization of 3D markers and rigid bodies;
+- Kinematic operations such as reconstruction of occluded, removed or probed markers;
+- And more using extensions.
+
+It is a programming library, and programming can be hard for new users. Therefore, we also provide the free, electronic book Biomechanical Analysis using Python and Kinetics Toolkit, which guides new programmers from the basics to advanced, generic 3D biomechanical analysis. This book covers:
+
+- The Python programming language, including arithmetics, variables, numbers, strings, functions, conditions, lists, loops and dictionaries;
+- Matplotlib, to generate print-quality graphics and to analyze curves interactively;
+- NumPy basics, including n-dimensional arrays, arithmetics, trigonometry, infinity/nan, statistical functions, comparisons, logical operators, indexing, slicing and filtering arrays.
+
+It also covers all the features of Kinetics Toolkit, with reproducible examples based on real, downloadable data.

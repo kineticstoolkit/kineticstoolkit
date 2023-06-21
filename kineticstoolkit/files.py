@@ -303,6 +303,7 @@ def read_c3d(
     Point positions are returned in `output["Points"]` as a TimeSeries, where
     each point corresponds to a data key. Each point position is expressed as
     an Nx4 point series::
+        
         [
             [x0, y0, z0, 1.0],
             [x1, y1, z1, 1.0],
@@ -637,12 +638,14 @@ def write_c3d(
     points
         Points trajectories, where data key corresponds to a point, expressed
         as an Nx4 point series::
+            
             [
                 [x0, y0, z0, 1.0],
                 [x1, y1, z1, 1.0],
                 [x2, y2, z2, 1.0],
                 ...,
             ]
+        
         Events from this TimeSeries are also added to the c3d.
 
     analogs
