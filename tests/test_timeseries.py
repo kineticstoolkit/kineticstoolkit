@@ -887,7 +887,7 @@ def test_get_index_before_time():
     assert ts.get_index_before_time(0.9) == 1
     assert ts.get_index_before_time(1) == 1
     assert ts.get_index_before_time(1.1) == 2
-    assert ts.get_index_before_time(1.1, inclusive=True) == 3
+    assert ts.get_index_before_time(1.0, inclusive=True) == 2
     try:
         ts.get_index_before_time(0)
         raise Exception("This should fail.")
@@ -900,7 +900,6 @@ def test_get_index_after_time():
     # doctests
     ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
     assert ts.get_index_after_time(0.9) == 2
-    assert ts.get_index_after_time(0.9, inclusive=True) == 1
     assert ts.get_index_after_time(1) == 3
     assert ts.get_index_after_time(1, inclusive=True) == 2
     try:
@@ -941,7 +940,12 @@ def test_get_index_after_event():
 # %% get_ts using index(es)
 def test_get_ts_before_index():
     ts = ktk.TimeSeries(time=np.arange(10) / 10)
-    assert np.array_equal(ts.get_ts_before_index(0).time, np.array([]))
+    try:
+        assert np.array_equal(ts.get_ts_before_index(0).time, np.array([]))
+        raise Exception("This should raise a TimeSeriesRangeError.")
+    except TimeSeriesRangeError:
+        pass
+
     assert np.array_equal(
         ts.get_ts_before_index(0, inclusive=True).time, np.array([0.0])
     )
@@ -950,13 +954,18 @@ def test_get_ts_before_index():
         ts.get_ts_before_index(1, inclusive=True).time, np.array([0.0, 0.1])
     )
     assert np.array_equal(
-        ts.get_ts_before_index(10, inclusive=True).time, ts.time
+        ts.get_ts_before_index(9, inclusive=True).time, ts.time
     )
 
 
 def test_get_ts_after_index():
     ts = ktk.TimeSeries(time=np.arange(10) / 10)
-    assert np.array_equal(ts.get_ts_after_index(9).time, np.array([]))
+    try:
+        assert np.array_equal(ts.get_ts_after_index(9).time, np.array([]))
+        raise Exception("This should raise a TimeSeriesRangeError.")
+    except TimeSeriesRangeError:
+        pass
+    
     assert np.array_equal(
         ts.get_ts_after_index(9, inclusive=True).time, np.array([0.9])
     )
@@ -1020,8 +1029,21 @@ def test_get_ts_between_times():
     assert np.array_equal(new_ts.time, np.arange(10, dtype=float))
 
     # Test that inclusive works
-    new_ts = ts.get_ts_between_times(4.5, 7.5, inclusive=True)
+    new_ts = ts.get_ts_between_times(4.5, 8.0, inclusive=True)
+    assert new_ts.time.tolist() == [5.0, 6.0, 7.0, 8.0]
+
+    # Test that inclusive works (2)
+    new_ts = ts.get_ts_between_times(4.0, 8.0, inclusive=True)
     assert new_ts.time.tolist() == [4.0, 5.0, 6.0, 7.0, 8.0]
+
+    # Test that double inclusive works
+    new_ts = ts.get_ts_between_times(4.0, 8.0, inclusive=[True, False])
+    assert new_ts.time.tolist() == [4.0, 5.0, 6.0, 7.0]
+
+    # Test that double inclusive works (2)
+    new_ts = ts.get_ts_between_times(4.0, 8.0, inclusive=[False, True])
+    assert new_ts.time.tolist() == [5.0, 6.0, 7.0, 8.0]
+    
     # Check that interverting times fails
     try:
         ts.get_ts_between_times(7.5, 4.5)
@@ -1085,6 +1107,15 @@ def test_get_ts_between_events():
     # Test that inclusive works
     new_ts = ts.get_ts_between_events("event2", "event2", 0, 2, inclusive=True)
     assert new_ts.time.tolist() == [4.0, 5.0, 6.0, 7.0, 8.0]
+
+    # Test that multiple inclusive work
+    new_ts = ts.get_ts_between_events("event2", "event2", 0, 2, inclusive=[True, False])
+    assert new_ts.time.tolist() == [4.0, 5.0, 6.0, 7.0]
+
+    # Test that multiple inclusive work
+    new_ts = ts.get_ts_between_events("event2", "event2", 0, 2, inclusive=[False, True])
+    assert new_ts.time.tolist() == [5.0, 6.0, 7.0, 8.0]
+
     # Check that interverting times fails
     try:
         ts.get_ts_between_events("event2", "event1", 0, 1)

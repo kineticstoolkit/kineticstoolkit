@@ -47,6 +47,7 @@ import limitedinteraction as li
 from dataclasses import dataclass
 from numpy.typing import ArrayLike
 from typing import Any
+from collections.abc import Sequence
 
 import warnings
 from ast import literal_eval
@@ -65,12 +66,12 @@ class TimeSeriesEvent:
 
     This class is rarely used by itself, it is easier to use `TimeSeries`'
     methods to manage events.
-    
+
     Attributes
     ----------
     time : float
         Event time.
-        
+
     name : str
         Event name. Does not need to be unique.
 
@@ -1590,7 +1591,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         2
 
         >>> ts.get_index_before_time(1.1, inclusive=True)
-        3
+        2
 
         """
         self._check_well_shaped()
@@ -1604,30 +1605,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         self._check_increasing_time()
 
-        # Start higher, then decrease until the condition matches
-        start_index = min(self.get_index_at_time(time) + 1, len(self.time) - 1)
-
-        index = min(len(self.time) - 1, start_index)
         if inclusive:
-            while True:
-                if index < 0:
-                    _raise()
-                if self.time[index] <= time:
-                    break
-                index -= 1
-            # Ensure to include the transition sample
-            if self.time[index] < time:
-                index += 1
-
+            mask = np.nonzero(self.time <= time)
         else:
-            while True:
-                if index < 0:
-                    _raise()
-                if self.time[index] < time:
-                    break
-                index -= 1
+            mask = np.nonzero(self.time < time)
 
-        return index
+        if mask[0].shape == (0,):
+            _raise()
+
+        return int(mask[0][-1])
 
     def get_index_after_time(
         self, time: float, *, inclusive: bool = False
@@ -1668,7 +1654,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         2
 
         >>> ts.get_index_after_time(0.9, inclusive=True)
-        1
+        2
 
         >>> ts.get_index_after_time(1)
         3
@@ -1688,29 +1674,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         self._check_increasing_time()
 
-        # Start lower, then increase until the condition matches
-        index = max(self.get_index_at_time(time) - 1, 0)
-
         if inclusive:
-            while True:
-                if index >= len(self.time):
-                    _raise()
-                if self.time[index] >= time:
-                    break
-                index += 1
-            # Ensure to include the transition sample
-            if self.time[index] > time:
-                index -= 1
-
+            mask = np.nonzero(self.time >= time)
         else:
-            while True:
-                if index >= len(self.time):
-                    _raise()
-                if self.time[index] > time:
-                    break
-                index += 1
+            mask = np.nonzero(self.time > time)
 
-        return index
+        if mask[0].shape == (0,):
+            _raise()
+
+        return int(mask[0][0])
 
     def get_index_at_event(self, name: str, occurrence: int = 0) -> int:
         """
@@ -1763,7 +1735,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
             self.events[self._get_event_index(name, occurrence)].time
         )
 
-    def get_index_before_event(self, name: str, occurrence: int = 0) -> int:
+    def get_index_before_event(
+        self, name: str, occurrence: int = 0, inclusive: bool = False
+    ) -> int:
         """
         Get the time index that is just before the specified event occurrence.
 
@@ -1773,6 +1747,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
             Event name
         occurrence
             Occurrence of the event. The default is 0.
+        inclusive
+            True to allow including one sample after the event if needed, to
+            make sure that the event time is part of the returned TimeSeries's
+            time. False to make sure that the returned TimeSeries does not
+            include the event time. Default is False.
 
         Returns
         -------
@@ -1806,15 +1785,27 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_index_before_event('event', occurrence=1)
         3
 
+        >>> ts.get_index_before_event('event', occurrence=0, inclusive=True)
+        2
+
         """
         self._check_well_shaped()
         check_types(TimeSeries.get_index_before_event, locals())
 
-        return self.get_index_before_time(
-            self.events[self._get_event_index(name, occurrence)].time
-        )
+        if inclusive is False:
+            return self.get_index_before_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=False,
+            )
+        else:
+            return self.get_index_after_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=True,
+            )
 
-    def get_index_after_event(self, name: str, occurrence: int = 0) -> int:
+    def get_index_after_event(
+        self, name: str, occurrence: int = 0, inclusive: bool = False
+    ) -> int:
         """
         Get the time index that is just after the specified event occurrence.
 
@@ -1824,6 +1815,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
             Event name
         occurrence
             Occurrence of the event. The default is 0.
+        inclusive
+            True to allow including one sample before the event if needed, to
+            make sure that the event time is part of the output TimeSeries's
+            time. False to make sure that the returned TimeSeries does not
+            include the event time. Default is False.
 
         Returns
         -------
@@ -1857,13 +1853,23 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_index_after_event('event', occurrence=1)
         4
 
+        >>> ts.get_index_after_event('event', inclusive=True)
+        2
+
         """
         self._check_well_shaped()
         check_types(TimeSeries.get_index_after_time, locals())
 
-        return self.get_index_after_time(
-            self.events[self._get_event_index(name, occurrence)].time
-        )
+        if inclusive is False:
+            return self.get_index_after_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=False,
+            )
+        else:
+            return self.get_index_before_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=True,
+            )
 
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False
@@ -1903,21 +1909,20 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0. , 0.1, 0.2])
 
         """
-        check_types(TimeSeries.get_ts_before_index, locals())
+        check_types(TimeSeries.get_ts_between_indexes, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
-        out_ts = self.copy(copy_data=False, copy_time=False)
-
-        index += int(inclusive)
-        if index >= len(self.time):
-            return self.copy()
-
-        index_range = range(index)
-        out_ts.time = self.time[index_range]
-        for the_data in self.data:
-            out_ts.data[the_data] = self.data[the_data][index_range]
-        return out_ts
+        if (inclusive and (index < 0)) or (
+            not inclusive and (index <= 0)
+        ):
+            raise TimeSeriesRangeError(
+                "Negative indexing is not supported in TimeSeries."
+            )            
+        
+        return self.get_ts_between_indexes(
+            0, index, inclusive=[True, inclusive]
+        )
 
     def get_ts_after_index(
         self, index: int, *, inclusive: bool = False
@@ -1957,26 +1962,29 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
-        check_types(TimeSeries.get_ts_after_index, locals())
+        check_types(TimeSeries.get_ts_between_indexes, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
-        out_ts = self.copy(copy_data=False, copy_time=False)
-
-        index -= int(inclusive)
-
-        if index <= 0:
-            return self.copy()
-
-        index_range = range(index + 1, len(self.time))
-
-        out_ts.time = self.time[index_range]
-        for the_data in self.data:
-            out_ts.data[the_data] = self.data[the_data][index_range]
-        return out_ts
+        if (inclusive and (index > self.time.shape[0]-1)) or (
+            not inclusive and (index >= self.time.shape[0]-1)
+        ):
+            raise TimeSeriesRangeError(
+                "There is no data in this TimeSeries after the specified "
+                f"index of {index} since the time of this TimeSeries has a "
+                f"shape of {self.time.shape}."
+            )
+            
+        return self.get_ts_between_indexes(
+            index, self.time.shape[0] - 1, inclusive=[inclusive, True]
+        )
 
     def get_ts_between_indexes(
-        self, index1: int, index2: int, *, inclusive: bool = False
+        self,
+        index1: int,
+        index2: int,
+        *,
+        inclusive: bool | Sequence[bool] = False,
     ) -> TimeSeries:
         """
         Get a TimeSeries between two specified time indexes.
@@ -2017,14 +2025,20 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_ts_between_indexes(2, 5, inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5])
 
+        >>> ts.get_ts_between_indexes(2, 5, inclusive=[True, False]).time
+        array([0.2, 0.3, 0.4])
         """
         check_types(TimeSeries.get_ts_between_indexes, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
-        out_ts = self.copy(copy_data=False, copy_time=False)
+        # Ensure to work with a sequence of `inclusive`
+        try:
+            seq_inclusive = [inclusive[0], inclusive[1]]  # type: ignore
+        except TypeError:
+            seq_inclusive = [inclusive, inclusive]  # type: ignore
 
-        if index2 <= index1:
+        if index2 < index1:
             raise ValueError(
                 "The parameter index2 must be higher than index1. "
                 f"However, index2 is {index2} while index1 is {index1}."
@@ -2035,17 +2049,18 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 f"The specified index1 of {index1} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
-        index1 -= int(inclusive)
+        index1 -= int(seq_inclusive[0])
 
         if index2 < 0 or index2 >= len(self.time):
             raise TimeSeriesRangeError(
                 f"The specified index2 of {index2} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
-        index2 += int(inclusive)
+        index2 += int(seq_inclusive[1])
 
         index_range = range(index1 + 1, index2)
 
+        out_ts = self.copy(copy_data=False, copy_time=False)
         out_ts.time = self.time[index_range]
         for the_data in self.data.keys():
             out_ts.data[the_data] = self.data[the_data][index_range]
@@ -2093,8 +2108,18 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self._check_well_shaped()
         self._check_increasing_time()
 
-        index = self.get_index_before_time(time, inclusive=inclusive)
-        return self.get_ts_before_index(index, inclusive=True)
+        if (inclusive and (time < self.time[0])) or (
+            not inclusive and (time <= self.time[0])
+        ):
+            raise TimeSeriesRangeError(
+                "There is no data in this TimeSeries before the specified "
+                f"time of {time} since the begin time of this TimeSeries is "
+                "{self.time[-1]}."
+            )
+
+        return self.get_ts_between_times(
+            self.time[0], time, inclusive=[True, inclusive]
+        )
 
     def get_ts_after_time(
         self, time: float, *, inclusive: bool = False
@@ -2113,6 +2138,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data after that time
 
         See also
         --------
@@ -2133,18 +2163,30 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_ts_after_time(0.3, inclusive=True).time
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_after_time(0.25, inclusive=True).time
-        array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
         """
         check_types(TimeSeries.get_ts_after_time, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
-        index = self.get_index_after_time(time, inclusive=inclusive)
-        return self.get_ts_after_index(index, inclusive=True)
+        if (inclusive and (time > self.time[-1])) or (
+            not inclusive and (time >= self.time[-1])
+        ):
+            raise TimeSeriesRangeError(
+                "There is no data in this TimeSeries after the specified time "
+                f"of {time} since the end time of this TimeSeries is "
+                "{self.time[-1]}."
+            )
+
+        return self.get_ts_between_times(
+            time, self.time[-1], inclusive=[inclusive, True]
+        )
 
     def get_ts_between_times(
-        self, time1: float, time2: float, *, inclusive: bool = False
+        self,
+        time1: float,
+        time2: float,
+        *,
+        inclusive: bool | Sequence[bool] = False,
     ) -> TimeSeries:
         """
         Get a TimeSeries between two specified times.
@@ -2180,19 +2222,28 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_ts_between_times(0.2, 0.5, inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5])
 
+        >>> ts.get_ts_between_times(0.2, 0.5, inclusive=[True, False]).time
+        array([0.2, 0.3, 0.4])
         """
         check_types(TimeSeries.get_ts_between_times, locals())
         self._check_well_shaped()
         self._check_increasing_time()
+
+        # Ensure to work with a sequence of `inclusive`
+        try:
+            seq_inclusive = [inclusive[0], inclusive[1]]  # type: ignore
+        except TypeError:
+            seq_inclusive = [inclusive, inclusive]  # type: ignore
 
         if time2 <= time1:
             raise ValueError(
                 "The parameters time2 must be higher than time1. "
                 f"However, time2 is {time2} while time1 is {time1}."
             )
-        new_ts = self.get_ts_after_time(time1, inclusive=inclusive)
-        new_ts = new_ts.get_ts_before_time(time2, inclusive=inclusive)
-        return new_ts
+
+        index1 = self.get_index_after_time(time1, inclusive=seq_inclusive[0])
+        index2 = self.get_index_before_time(time2, inclusive=seq_inclusive[1])
+        return self.get_ts_between_indexes(index1, index2, inclusive=True)
 
     def get_ts_before_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
@@ -2246,10 +2297,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         check_types(TimeSeries.get_ts_before_event, locals())
         self._check_well_shaped()
 
-        time = self.events[self._get_event_index(name, occurrence)].time
         try:
-            retval = self.get_ts_before_time(time, inclusive=inclusive)
+            retval = self.get_ts_before_index(
+                self.get_index_before_event(
+                    name, occurrence, inclusive=inclusive
+                ),
+                inclusive=True,
+            )
         except TimeSeriesRangeError:
+            time = self.events[self._get_event_index(name, occurrence)].time
             raise TimeSeriesRangeError(
                 f"There is no data before the occurrence {occurrence} of "
                 f"event '{name}', which happens at {time} "
@@ -2310,10 +2366,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         check_types(TimeSeries.get_ts_after_event, locals())
         self._check_well_shaped()
 
-        time = self.events[self._get_event_index(name, occurrence)].time
         try:
-            retval = self.get_ts_after_time(time, inclusive=inclusive)
+            retval = self.get_ts_after_index(
+                self.get_index_after_event(
+                    name, occurrence, inclusive=inclusive
+                ),
+                inclusive=True,
+            )
         except TimeSeriesRangeError:
+            time = self.events[self._get_event_index(name, occurrence)].time
             raise TimeSeriesRangeError(
                 f"There is no data after the occurrence {occurrence} of "
                 f"event '{name}', which happens at {time} "
@@ -2329,7 +2390,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         occurrence1: int = 0,
         occurrence2: int = 0,
         *,
-        inclusive: bool = False,
+        inclusive: bool | Sequence[bool] = False,
     ) -> TimeSeries:
         """
         Get a TimeSeries between two specified events.
@@ -2375,6 +2436,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
         check_types(TimeSeries.get_ts_between_events, locals())
         self._check_well_shaped()
 
+        # Ensure to work with a sequence of `inclusive`
+        try:
+            seq_inclusive = [inclusive[0], inclusive[1]]  # type: ignore
+        except TypeError:
+            seq_inclusive = [inclusive, inclusive]  # type: ignore
+
         time1 = self.events[self._get_event_index(name1, occurrence1)].time
         time2 = self.events[self._get_event_index(name2, occurrence2)].time
 
@@ -2387,9 +2454,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 f"{self.time_info['Unit']}."
             )
 
-        ts = self.get_ts_after_event(name1, occurrence1, inclusive=inclusive)
-        ts = ts.get_ts_before_event(name2, occurrence2, inclusive=inclusive)
-        return ts
+        index1 = self.get_index_after_event(
+            name1, occurrence1, inclusive=seq_inclusive[0]
+        )
+        index2 = self.get_index_before_event(
+            name2, occurrence2, inclusive=seq_inclusive[1]
+        )
+        return self.get_ts_between_indexes(index1, index2, inclusive=True)
 
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
