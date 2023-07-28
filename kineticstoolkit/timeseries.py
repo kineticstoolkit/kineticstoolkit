@@ -1913,13 +1913,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self._check_well_shaped()
         self._check_increasing_time()
 
-        if (inclusive and (index < 0)) or (
-            not inclusive and (index <= 0)
-        ):
+        if (inclusive and (index < 0)) or (not inclusive and (index <= 0)):
             raise TimeSeriesRangeError(
                 "Negative indexing is not supported in TimeSeries."
-            )            
-        
+            )
+
         return self.get_ts_between_indexes(
             0, index, inclusive=[True, inclusive]
         )
@@ -1966,15 +1964,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self._check_well_shaped()
         self._check_increasing_time()
 
-        if (inclusive and (index > self.time.shape[0]-1)) or (
-            not inclusive and (index >= self.time.shape[0]-1)
+        if (inclusive and (index > self.time.shape[0] - 1)) or (
+            not inclusive and (index >= self.time.shape[0] - 1)
         ):
             raise TimeSeriesRangeError(
                 "There is no data in this TimeSeries after the specified "
                 f"index of {index} since the time of this TimeSeries has a "
                 f"shape of {self.time.shape}."
             )
-            
+
         return self.get_ts_between_indexes(
             index, self.time.shape[0] - 1, inclusive=[inclusive, True]
         )
@@ -2174,7 +2172,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             raise TimeSeriesRangeError(
                 "There is no data in this TimeSeries after the specified time "
                 f"of {time} since the end time of this TimeSeries is "
-                "{self.time[-1]}."
+                f"{self.time[-1]}."
             )
 
         return self.get_ts_between_times(
@@ -2235,9 +2233,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         except TypeError:
             seq_inclusive = [inclusive, inclusive]  # type: ignore
 
-        if time2 <= time1:
+        if time2 < time1:
             raise ValueError(
-                "The parameters time2 must be higher than time1. "
+                "The parameters time2 must be higher or equal to time1. "
                 f"However, time2 is {time2} while time1 is {time1}."
             )
 
