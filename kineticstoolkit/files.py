@@ -468,6 +468,20 @@ def read_c3d(
     labels = reader["parameters"]["POINT"]["LABELS"]["value"]
     n_points = reader["parameters"]["POINT"]["USED"]["value"][0]
 
+    # Check if labels2, labels3, labels4,.... exist.
+    # https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm
+    exist_labels = True
+    cont_labels = 2
+    while exist_labels:
+        str_labels = "LABELS" + str(cont_labels)
+        try:
+            labels_additional = reader["parameters"]["POINT"][str_labels]["value"]
+            labels.extend(labels_additional)
+            cont_labels += 1
+        except KeyError:
+            labels_additional = []
+            exist_labels = False
+
     # Solve the point unit conversion mess (issue #147)
     scales = {"mm": 0.001, "cm": 0.01, "dm": 0.1, "m": 1.0}
 
@@ -527,9 +541,10 @@ def read_c3d(
             )
             points = points.add_data_info(key, "Unit", point_unit)
 
-    points.time = (
-        np.arange(points.data[key].shape[0]) / point_rate + start_time
-    )
+    if n_points > 0:
+        points.time = (
+            np.arange(points.data[key].shape[0]) / point_rate + start_time
+        )
 
     # Add events
     for i_event, event_name in enumerate(event_names):
@@ -545,6 +560,24 @@ def read_c3d(
     units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
     n_analogs = reader["parameters"]["ANALOG"]["USED"]["value"][0]
 
+    # Check if labels2, labels3, labels4,.... exist.
+    # https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm
+    # In contrast to the points case, units is an array of strings.
+    exist_labels = True
+    cont_labels = 2
+    while exist_labels:
+        str_labels = "LABELS" + str(cont_labels)
+        str_units = "UNITS" + str(cont_labels)
+        # print(f'Checking for {str_labels} and {str_units}')
+        try:
+            labels_additional = reader["parameters"]["ANALOG"][str_labels]["value"]
+            units_additional = reader["parameters"]["ANALOG"][str_units]["value"]
+            labels.extend(labels_additional)
+            units.extend(units_additional)
+            cont_labels += 1
+        except KeyError:
+            labels_additional = []
+            exist_labels = False
     if len(labels) > 0:  # There are analogs
         analogs = TimeSeries()
 
@@ -560,10 +593,10 @@ def read_c3d(
                     units[i_label].encode("utf-8", "ignore").decode("utf-8"),
                     in_place=True,
                 )
-
-        analogs.time = (
-            np.arange(analogs.data[key].shape[0]) / analog_rate + start_time
-        )
+        if n_analogs > 0:
+            analogs.time = (
+                np.arange(analogs.data[key].shape[0]) / analog_rate + start_time
+            )
 
         # Add events
         for i_event, event_name in enumerate(event_names):

@@ -34,3 +34,5 @@ tests/htmlcov
 output.csv
 doc/_build
 workspace
+kineticstoolkit.egg-info
+.idea
