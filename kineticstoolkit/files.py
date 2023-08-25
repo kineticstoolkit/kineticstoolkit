@@ -225,7 +225,6 @@ def _load_object_hook(obj):
         elif to_class == "pandas.DataFrame":
             return pd.DataFrame(
                 obj["data"],
-                dtype=obj["dtypes"],
                 columns=obj["columns"],
                 index=obj["index"],
             )

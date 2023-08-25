@@ -110,8 +110,8 @@ def test_save_load():
 
     # Test that saving a file that can't be loaded back fails at save time.
     test = pd.DataFrame()
-    test["ints"] = [1,2,3,4]
-    test["classification"] = [1,1,2,2]
+    test["ints"] = [1, 2, 3, 4]
+    test["classification"] = [1, 1, 2, 2]
     test = test.groupby("classification").mean()
     # The index here has a title, but this is not supported by KTK
     try:
@@ -119,7 +119,6 @@ def test_save_load():
         raise AssertionError("Test failed.")
     except ValueError:
         pass
-    
 
 
 def test_read_c3d():
