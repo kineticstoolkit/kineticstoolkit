@@ -108,18 +108,6 @@ def test_save_load():
     d = ktk.load("test.ktk.zip")
     assert d == c
 
-    # Test that saving a file that can't be loaded back fails at save time.
-    test = pd.DataFrame()
-    test["ints"] = [1, 2, 3, 4]
-    test["classification"] = [1, 1, 2, 2]
-    test = test.groupby("classification").mean()
-    # The index here has a title, but this is not supported by KTK
-    try:
-        ktk.save("test.ktk.zip", test)  # Should generate a ValueError
-        raise AssertionError("Test failed.")
-    except ValueError:
-        pass
-
 
 def test_read_c3d():
     """Test read_c3d."""

@@ -88,8 +88,14 @@ def save(filename: str, variable: Any) -> None:
 
     Caution
     -------
-    Tuples are also supported but will be loaded back as lists, without
+    - Tuples are also supported but will be loaded back as lists, without
     warning.
+    - Complex Pandas Series (e.g., series or different types) may not be
+    supported. Only the following attributes of the Series are saved:
+    name, index, and the data itself.
+    - Complex Pandas DataFrames (e.g., multiindex, columns of different types)
+    may not be supported. Only the following attributes of the DataFrame are
+    saved: columns, index, and the data itself.
 
     See also
     --------
@@ -129,7 +135,6 @@ def save(filename: str, variable: Any) -> None:
                 return {
                     "class__": "pandas.Series",
                     "name": str(obj.name),
-                    "dtype": str(obj.dtype),
                     "index": obj.index.tolist(),
                     "data": obj.tolist(),
                 }
@@ -138,7 +143,6 @@ def save(filename: str, variable: Any) -> None:
                 return {
                     "class__": "pandas.DataFrame",
                     "columns": obj.columns.tolist(),
-                    "dtypes": [str(dtype) for dtype in obj.dtypes],
                     "index": obj.index.tolist(),
                     "data": obj.to_numpy().tolist(),
                 }
@@ -194,16 +198,6 @@ def save(filename: str, variable: Any) -> None:
     shutil.move(temp_folder + ".zip", filename)
     shutil.rmtree(temp_folder)
 
-    # Ensure that the file can be loaded back
-    try:
-        check_variable = load(filename)
-    except:
-        raise ValueError(
-            "This variable cannot be saved using Kinetics Toolkit."
-        )
-
-    # TODO Ensure that the loaded data is equal (or is_close) to the saved data
-
 
 def _load_object_hook(obj):
     if "class__" in obj:
@@ -232,7 +226,6 @@ def _load_object_hook(obj):
         elif to_class == "pandas.Series":
             return pd.Series(
                 obj["data"],
-                dtype=obj["dtype"],
                 name=obj["name"],
                 index=obj["index"],
             )
