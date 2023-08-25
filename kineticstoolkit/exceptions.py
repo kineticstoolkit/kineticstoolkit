@@ -116,7 +116,7 @@ def check_types(function, args: dict[str, Any]):
                         pass
 
                 elif one_expected_type == "int":
-                    if isinstance(value, int):
+                    if isinstance(value, int) or isinstance(value, np.integer):
                         ok = True
 
                 elif one_expected_type == "bool":

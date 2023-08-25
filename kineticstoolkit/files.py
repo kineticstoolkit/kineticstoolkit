@@ -88,8 +88,14 @@ def save(filename: str, variable: Any) -> None:
 
     Caution
     -------
-    Tuples are also supported but will be loaded back as lists, without
+    - Tuples are also supported but will be loaded back as lists, without
     warning.
+    - Complex Pandas Series (e.g., series or different types) may not be
+    supported. Only the following attributes of the Series are saved:
+    name, index, and the data itself.
+    - Complex Pandas DataFrames (e.g., multiindex, columns of different types)
+    may not be supported. Only the following attributes of the DataFrame are
+    saved: columns, index, and the data itself.
 
     See also
     --------
@@ -129,7 +135,6 @@ def save(filename: str, variable: Any) -> None:
                 return {
                     "class__": "pandas.Series",
                     "name": str(obj.name),
-                    "dtype": str(obj.dtype),
                     "index": obj.index.tolist(),
                     "data": obj.tolist(),
                 }
@@ -138,7 +143,6 @@ def save(filename: str, variable: Any) -> None:
                 return {
                     "class__": "pandas.DataFrame",
                     "columns": obj.columns.tolist(),
-                    "dtypes": [str(dtype) for dtype in obj.dtypes],
                     "index": obj.index.tolist(),
                     "data": obj.to_numpy().tolist(),
                 }
@@ -194,16 +198,6 @@ def save(filename: str, variable: Any) -> None:
     shutil.move(temp_folder + ".zip", filename)
     shutil.rmtree(temp_folder)
 
-    # Ensure that the file can be loaded back
-    try:
-        check_variable = load(filename)
-    except:
-        raise ValueError(
-            "This variable cannot be saved using Kinetics Toolkit."
-        )
-
-    # TODO Ensure that the loaded data is equal (or is_close) to the saved data
-
 
 def _load_object_hook(obj):
     if "class__" in obj:
@@ -225,7 +219,6 @@ def _load_object_hook(obj):
         elif to_class == "pandas.DataFrame":
             return pd.DataFrame(
                 obj["data"],
-                dtype=obj["dtypes"],
                 columns=obj["columns"],
                 index=obj["index"],
             )
@@ -233,7 +226,6 @@ def _load_object_hook(obj):
         elif to_class == "pandas.Series":
             return pd.Series(
                 obj["data"],
-                dtype=obj["dtype"],
                 name=obj["name"],
                 index=obj["index"],
             )
@@ -475,8 +467,22 @@ def read_c3d(
     point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
     point_start = reader["header"]["points"]["first_frame"]
     start_time = point_start / point_rate
-    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
     n_points = reader["parameters"]["POINT"]["USED"]["value"][0]
+
+    labels = reader["parameters"]["POINT"]["LABELS"]["value"]
+    # Check if labels2, labels3, labels4,.... exist.
+    # https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm
+    i_additional_labels = 2
+    while True:
+        str_labels = f"LABELS{i_additional_labels}"
+        try:
+            additional_labels = reader["parameters"]["POINT"][str_labels][
+                "value"
+            ]
+        except KeyError:
+            break
+        labels.extend(additional_labels)
+        i_additional_labels += 1
 
     # Solve the point unit conversion mess (issue #147)
     scales = {"mm": 0.001, "cm": 0.01, "dm": 0.1, "m": 1.0}
@@ -537,9 +543,10 @@ def read_c3d(
             )
             points = points.add_data_info(key, "Unit", point_unit)
 
-    points.time = (
-        np.arange(points.data[key].shape[0]) / point_rate + start_time
-    )
+    if n_points > 0:
+        points.time = (
+            np.arange(points.data[key].shape[0]) / point_rate + start_time
+        )
 
     # Add events
     for i_event, event_name in enumerate(event_names):
@@ -554,6 +561,26 @@ def read_c3d(
     analog_rate = reader["parameters"]["ANALOG"]["RATE"]["value"][0]
     units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
     n_analogs = reader["parameters"]["ANALOG"]["USED"]["value"][0]
+
+    # Check if labels2, labels3, labels4,.... exist.
+    # https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm
+    # In contrast to the points case, units is an array of strings.
+    i_additional_labels = 2
+    while True:
+        str_labels = f"LABELS{i_additional_labels}"
+        str_units = f"UNITS{i_additional_labels}"
+        try:
+            additional_labels = reader["parameters"]["ANALOG"][str_labels][
+                "value"
+            ]
+            additional_units = reader["parameters"]["ANALOG"][str_units][
+                "value"
+            ]
+        except KeyError:
+            break
+        labels.extend(additional_labels)
+        units.extend(additional_units)
+        i_additional_labels += 1
 
     if len(labels) > 0:  # There are analogs
         analogs = TimeSeries()
@@ -570,10 +597,11 @@ def read_c3d(
                     units[i_label].encode("utf-8", "ignore").decode("utf-8"),
                     in_place=True,
                 )
-
-        analogs.time = (
-            np.arange(analogs.data[key].shape[0]) / analog_rate + start_time
-        )
+        if n_analogs > 0:
+            analogs.time = (
+                np.arange(analogs.data[key].shape[0]) / analog_rate
+                + start_time
+            )
 
         # Add events
         for i_event, event_name in enumerate(event_names):

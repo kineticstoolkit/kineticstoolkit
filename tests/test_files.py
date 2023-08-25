@@ -108,19 +108,6 @@ def test_save_load():
     d = ktk.load("test.ktk.zip")
     assert d == c
 
-    # Test that saving a file that can't be loaded back fails at save time.
-    test = pd.DataFrame()
-    test["ints"] = [1,2,3,4]
-    test["classification"] = [1,1,2,2]
-    test = test.groupby("classification").mean()
-    # The index here has a title, but this is not supported by KTK
-    try:
-        ktk.save("test.ktk.zip", test)  # Should generate a ValueError
-        raise AssertionError("Test failed.")
-    except ValueError:
-        pass
-    
-
 
 def test_read_c3d():
     """Test read_c3d."""
@@ -252,6 +239,18 @@ def test_read_c3d_testsuite8():
 
 # Note: We do not run testsuite36 because floats in FRAMES is not supported by
 # ezc3d.
+
+
+def test_read_c3d_more_than_255_analogs():
+    """https://github.com/felixchenier/kineticstoolkit/issues/191"""
+    test = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/others/sample_256plus_channels.c3d"),
+        convert_point_unit=True,
+    )
+    assert len(test["Points"].data) == 18
+    assert len(test["Points"].events) == 16
+    assert len(test["Analogs"].data) == 275
+    assert len(test["Analogs"].events) == 16
 
 
 def test_read_write_c3d():
