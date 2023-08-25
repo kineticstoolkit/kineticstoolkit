@@ -33,6 +33,7 @@ from kineticstoolkit.exceptions import (
     check_types,
     TimeSeriesEventNotFoundError,
 )
+from kineticstoolkit.tools import tqdm
 import warnings
 from numpy.typing import ArrayLike
 
@@ -122,7 +123,7 @@ def detect_cycles(
 
     is_phase1 = True
 
-    for i in range(time.shape[0]):
+    for i in tqdm(range(time.shape[0]), desc="Detecting cycles", delay=1):
         if directions[0] == "rising":
             crossing1 = data[i] >= thresholds[0]
             crossing2 = data[i] <= thresholds[1]
@@ -145,7 +146,11 @@ def detect_cycles(
     # Remove cycles where criteria are not reached.
     valid_events = []
 
-    for i_event in range(0, len(events) - 1, 2):
+    for i_event in tqdm(
+        range(0, len(events) - 1, 2),
+        desc="Removing cycles that do not match the specified criteria",
+        delay=1,
+    ):
         time1 = events[i_event].time
         time2 = events[i_event + 1].time
         try:

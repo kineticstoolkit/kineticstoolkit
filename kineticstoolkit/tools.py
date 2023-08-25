@@ -33,6 +33,26 @@ from kineticstoolkit.exceptions import check_types
 import warnings
 
 
+def tqdm(the_range, *args, **kwargs):
+    """
+    Return a range or a tqdm's progress bar range if tqdm is installed.
+
+    Parameters
+    ----------
+    The same as tqdm.tqdm, with the first begin the range.
+
+    Returns
+    -------
+    the_range if tqdm is not installed. tqdm.tqdm if tqdm is installed.
+    """
+    try:
+        import tqdm  # noqa
+
+        return tqdm.tqdm(the_range, *args, **kwargs)
+    except ModuleNotFoundError:
+        return the_range
+
+
 def change_defaults(
     change_ipython_dict_repr: bool = True,
     change_matplotlib_defaults: bool = True,

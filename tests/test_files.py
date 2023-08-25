@@ -253,6 +253,18 @@ def test_read_c3d_testsuite8():
 # ezc3d.
 
 
+def test_read_c3d_more_than_255_analogs():
+    """https://github.com/felixchenier/kineticstoolkit/issues/191"""
+    test = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/others/sample_256plus_channels.c3d"),
+        convert_point_unit=True,
+    )
+    assert len(test["Points"].data) == 18
+    assert len(test["Points"].events) == 16
+    assert len(test["Analogs"].data) == 275
+    assert len(test["Analogs"].events) == 16
+
+
 def test_read_write_c3d():
     """
     Test that writing and reading back a c3d file yields the same results.
