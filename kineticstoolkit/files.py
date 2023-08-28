@@ -297,6 +297,7 @@ def read_c3d(
     filename: str,
     *,
     convert_point_unit: bool | None = None,
+    event_name_format: str = "{name}",
     **kwargs,
 ) -> dict[str, TimeSeries]:
     """
@@ -332,6 +333,16 @@ def read_c3d(
         expressed in other units such as mm in the C3D file. False to keep
         points as is. When unset, if points are stored in a unit other than
         meters, then a warning is issued. See caution note below.
+
+    event_name_format
+        Optional. The template used to name the output TimeSeries events. It
+        can contain these placeholders: {name} and {context}. Its default
+        value is "{name}", which means that every event in the C3D will be
+        identified by its name in the resulting TimeSeries. For C3D files that
+        separate the event names (e.g., "heel_strike") from their context
+        (e.g., "left"), it may be be useful to set an alternate value for
+        this parameter. For example, "{context}_{name}" would name the events
+        "left_heel_strike", "right_toe_off", etc.
 
     Returns
     -------
@@ -457,6 +468,11 @@ def read_c3d(
         event_names = []
         event_times = []
 
+    try:
+        event_contexts = reader["parameters"]["EVENT"]["CONTEXTS"]["value"]
+    except KeyError:
+        event_contexts = ["" for _ in event_names]
+
     # ---------------------------------
     # Create the points TimeSeries
     points = TimeSeries()
@@ -549,8 +565,16 @@ def read_c3d(
         )
 
     # Add events
-    for i_event, event_name in enumerate(event_names):
-        points.add_event(event_times[i_event], event_name, in_place=True)
+    for i_event in range(len(event_names)):
+        event_time = event_times[i_event]
+        event_name = event_name_format
+        event_name = event_name.replace("{name}", event_names[i_event])
+        event_name = event_name.replace("{context}", event_contexts[i_event])
+        points.add_event(
+            event_time,
+            event_name,
+            in_place=True,
+        )
     points.sort_events(in_place=True)
 
     # Add to output
