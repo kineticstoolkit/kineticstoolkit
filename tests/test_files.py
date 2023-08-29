@@ -253,6 +253,31 @@ def test_read_c3d_more_than_255_analogs():
     assert len(test["Analogs"].events) == 16
 
 
+def test_read_c3d_event_name_format():
+    """https://github.com/felixchenier/kineticstoolkit/issues/194"""
+    # Load a file with contexts, but without reading contexts
+    test = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/others/sample_256plus_channels.c3d"),
+        convert_point_unit=True,
+    )
+    assert test["Points"].events[0].name == "Foot Strike"
+
+    # Load a file with contexts, reading contexts
+    test = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/others/sample_256plus_channels.c3d"),
+        convert_point_unit=True,
+        include_event_context=True,
+    )
+    assert test["Points"].events[0].name == "Right:Foot Strike"
+
+    # Load a file without contexts, ensure that it reads ok.
+    test = ktk.read_c3d(
+        ktk.doc.download("walk.c3d"),
+        convert_point_unit=True,
+    )
+    assert test["Points"].events[0].name == "Foot Strike"
+
+
 def test_read_write_c3d():
     """
     Test that writing and reading back a c3d file yields the same results.

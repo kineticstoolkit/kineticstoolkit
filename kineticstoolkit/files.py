@@ -297,6 +297,7 @@ def read_c3d(
     filename: str,
     *,
     convert_point_unit: bool | None = None,
+    include_event_context: bool = False,
     **kwargs,
 ) -> dict[str, TimeSeries]:
     """
@@ -332,6 +333,14 @@ def read_c3d(
         expressed in other units such as mm in the C3D file. False to keep
         points as is. When unset, if points are stored in a unit other than
         meters, then a warning is issued. See caution note below.
+
+    include_event_context
+        Optional. True to include the event context, for C3D files that use
+        this field. If False, the events in the output TimeSeries are named
+        after the events names in the C3D files, e.g.: "Start", "Heel Strike",
+        "Toe Off". If True, the events in the output TimeSeries are named using
+        this scheme "context:name", e.g.,: "General:Start",
+        "Right:Heel strike", "Left:Toe Off". The default is False.
 
     Returns
     -------
@@ -457,6 +466,11 @@ def read_c3d(
         event_names = []
         event_times = []
 
+    try:
+        event_contexts = reader["parameters"]["EVENT"]["CONTEXTS"]["value"]
+    except KeyError:
+        event_contexts = ["" for _ in event_names]
+
     # ---------------------------------
     # Create the points TimeSeries
     points = TimeSeries()
@@ -549,8 +563,17 @@ def read_c3d(
         )
 
     # Add events
-    for i_event, event_name in enumerate(event_names):
-        points.add_event(event_times[i_event], event_name, in_place=True)
+    for i_event in range(len(event_names)):
+        event_time = event_times[i_event]
+        if include_event_context:
+            event_name = event_contexts[i_event] + ":" + event_names[i_event]
+        else:
+            event_name = event_names[i_event]
+        points.add_event(
+            event_time,
+            event_name,
+            in_place=True,
+        )
     points.sort_events(in_place=True)
 
     # Add to output
