@@ -297,7 +297,7 @@ def read_c3d(
     filename: str,
     *,
     convert_point_unit: bool | None = None,
-    event_name_format: str = "{name}",
+    include_event_context: bool = False,
     **kwargs,
 ) -> dict[str, TimeSeries]:
     """
@@ -334,15 +334,13 @@ def read_c3d(
         points as is. When unset, if points are stored in a unit other than
         meters, then a warning is issued. See caution note below.
 
-    event_name_format
-        Optional. The template used to name the output TimeSeries events. It
-        can contain these placeholders: {name} and {context}. Its default
-        value is "{name}", which means that every event in the C3D will be
-        identified by its name in the resulting TimeSeries. For C3D files that
-        separate the event names (e.g., "heel_strike") from their context
-        (e.g., "left"), it may be be useful to set an alternate value for
-        this parameter. For example, "{context}_{name}" would name the events
-        "left_heel_strike", "right_toe_off", etc.
+    include_event_context
+        Optional. True to include the event context, for C3D files that use
+        this field. If False, the events in the output TimeSeries are named
+        after the events names in the C3D files, e.g.: "Start", "Heel Strike",
+        "Toe Off". If True, the events in the output TimeSeries are named using
+        this scheme "context:name", e.g.,: "General:Start",
+        "Right:Heel strike", "Left:Toe Off". The default is False.
 
     Returns
     -------
@@ -567,9 +565,10 @@ def read_c3d(
     # Add events
     for i_event in range(len(event_names)):
         event_time = event_times[i_event]
-        event_name = event_name_format
-        event_name = event_name.replace("{name}", event_names[i_event])
-        event_name = event_name.replace("{context}", event_contexts[i_event])
+        if include_event_context:
+            event_name = event_contexts[i_event] + ":" + event_names[i_event]
+        else:
+            event_name = event_names[i_event]
         points.add_event(
             event_time,
             event_name,
