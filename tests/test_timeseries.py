@@ -1178,9 +1178,7 @@ def test_get_ts_after_event():
 
     new_ts = ts.get_ts_after_event("event", 1)
     assert np.allclose(new_ts.time, [9.0])
-    assert np.allclose(
-        new_ts.data["data"], [0.9]
-    )
+    assert np.allclose(new_ts.data["data"], [0.9])
 
     new_ts = ts.get_ts_after_event("event", 1, inclusive=True)
     assert np.allclose(new_ts.time, [8.0, 9.0])

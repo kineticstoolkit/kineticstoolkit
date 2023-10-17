@@ -326,25 +326,13 @@ def time_normalize(
 
         # Resample this cycle on span + 1
         # (and get the first points after)
-        try:
-            subts = subts.resample(
-                np.linspace(
-                    extended_begin_time,
-                    extended_end_time,
-                    span[1] - span[0] + 1,
-                )
+        subts = subts.resample(
+            np.linspace(
+                extended_begin_time,
+                extended_end_time,
+                span[1] - span[0] + 1,
             )
-        except ValueError:
-            subts = subts_backup  # In case the try messed with subts
-            subts = subts.resample(
-                np.linspace(
-                    extended_begin_time,
-                    extended_end_time,
-                    span[1] - span[0] + 1,
-                ),
-                fill_value="extrapolate",
-            )
-            warnings.warn(f"Cycle {i_cycle} has been extrapolated.")
+        )
 
         # Keep only the first points (the last one belongs to the next cycle)
         subts = subts.get_ts_between_indexes(

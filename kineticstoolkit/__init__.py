@@ -86,7 +86,7 @@ try:
         "kineticstoolkit",
         backend="filesystem",
         use_temp=True,
-        expire_after=timedelta(hours=1),
+        expire_after=timedelta(hours=24),
     )
     res = session.get(
         "https://kineticstoolkit.uqam.ca/api/import_check.php",

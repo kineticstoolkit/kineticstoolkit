@@ -1700,11 +1700,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         int
             The index in the time vector.
 
-        Raises
-        ------
-        TimeSeriesRangeError
-            If the resulting index would be outside the TimeSeries range.
-
         See also
         --------
         ktk.TimeSeries.get_index_before_time
@@ -1889,6 +1884,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data before the specified index.
+
         See also
         --------
         ktk.TimeSeries.get_ts_before_time
@@ -1939,6 +1939,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data after the specified index.
 
         See also
         --------
@@ -1992,7 +1997,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
         index1, index2
             Time indexes
         inclusive
-            Optional. True to include the given time indexes.
+            Optional. Either a bool or a sequence of two bools. Used to
+            specify which indexes are returned:
+
+            - False or [False, False] (default): index1 < index < index2
+            - True or [True, True]: index1 <= index <= index2
+            - [True, False]: index1 <= index < index2
+            - [False, True]: index1 < index <= index2
 
         Returns
         -------
@@ -2002,7 +2013,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Raises
         ------
         TimeSeriesRangeError
-            If `index` is out of the TimeSeries time range.
+            If there is no data between the specified indexes.
+
 
         See also
         --------
@@ -2082,6 +2094,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data before the specified time.
+
         See also
         --------
         ktk.TimeSeries.get_ts_before_index
@@ -2140,7 +2157,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Raises
         ------
         TimeSeriesRangeError
-            If there is no data after that time
+            If there is no data after the specified index.
 
         See also
         --------
@@ -2194,12 +2211,23 @@ class TimeSeries(metaclass=MetaTimeSeries):
         time1, time2
             Times to look for in the TimeSeries' time vector.
         inclusive
-            Optional. True to include the given time in the comparison.
+            Optional. Either a bool or a sequence of two bools. Used to
+            specify which times are returned:
+
+            - False or [False, False] (default): time1 < time < time2
+            - True or [True, True]: time1 <= time <= time2
+            - [True, False]: time1 <= time < time2
+            - [False, True]: time1 < time <= time2
 
         Returns
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data between the specified times.
 
         See also
         --------
@@ -2263,6 +2291,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data before the specified event.
 
         See also
         --------
@@ -2333,6 +2366,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data after the specified event.
+
         See also
         --------
         ktk.TimeSeries.get_ts_after_index
@@ -2401,12 +2439,23 @@ class TimeSeries(metaclass=MetaTimeSeries):
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0.
         inclusive
-            Optional. True to include the given time in the comparison.
+            Optional. Either a bool or a sequence of two bools. Used to
+            specify which times are returned:
+                
+            - False or [False, False] (default): event1.time < time < event2.time
+            - True or [True, True]: event1.time <= time <= event2.time
+            - [True, False]: event1.time <= time < event2.time
+            - [False, True]: event1.time < time <= event2.time
 
         Returns
         -------
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data between the specified events.
 
         See also
         --------
