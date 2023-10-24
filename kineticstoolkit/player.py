@@ -169,6 +169,22 @@ class Player:
         if "current_frame" in kwargs:
             current_index = kwargs["current_frame"]
 
+        # Ensure that ts contains TimeSeries, and that they are non-empty
+        if len(ts) == 0:
+            raise ValueError(
+                "You must provide at least one TimeSeries (e.g., markers, "
+                "frames) when you create a Player."
+            )
+        for one_ts in ts:
+            if not isinstance(one_ts, TimeSeries):
+                raise TypeError(
+                    "Player only accepts TimeSeries as data inputs."
+                )
+            if len(one_ts.time) == 0:
+                raise ValueError(
+                    "At least one of the provided TimeSeries has zero samples."
+                )
+
         # ---------------------------------------------------------------
         # Set self.n_indexes and self.time, and verify that we have at least
         # markers or rigid bodies.

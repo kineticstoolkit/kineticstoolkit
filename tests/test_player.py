@@ -8,6 +8,7 @@ Tests for ktk.Player
 import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
 import warnings
+import numpy as np
 
 
 def test_instanciate_and_to_html5():
@@ -64,6 +65,34 @@ def test_issue137():
         pl = ktk.Player(kinematics)  # Shouldn't crash
         plt.pause(0.01)
         pl.close()
+
+
+def test_issue177():
+    """
+    Clarify the error message when ktk.Player is instanciated without a valid
+    TimeSeries.
+    """
+    try:
+        ktk.Player()
+        raise AssertionError("Should generate a ValueError.")
+    except ValueError:
+        pass
+    try:
+        ktk.Player(10)
+        raise AssertionError("Should generate a TypeError.")
+    except TypeError:
+        pass
+    try:
+        ktk.Player(ktk.TimeSeries(time=np.arange(10)), 10)
+        raise AssertionError("Should generate a TypeError.")
+    except TypeError:
+        pass
+    try:
+        ktk.Player(ktk.TimeSeries())
+        raise AssertionError("Should generate a ValueError.")
+    except ValueError:
+        pass
+    ktk.Player(ktk.TimeSeries(time=np.arange(10)))  # Should be ok
 
 
 if __name__ == "__main__":
