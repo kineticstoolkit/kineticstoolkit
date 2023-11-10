@@ -26,8 +26,8 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        $CONDA/bin/conda install -c conda-forge kineticstoolkit --only-deps
-        $CONDA/bin/conda install -c conda-forge pytest mypy coverage flake8
+        $CONDA/bin/conda install -c conda-forge kineticstoolkit --only-deps -y
+        $CONDA/bin/conda install -c conda-forge pytest mypy coverage flake8 -y
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
