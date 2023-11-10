@@ -31,4 +31,4 @@ jobs:
         $CONDA/bin/mamba install -c conda-forge pytest mypy -y
     - name: Test with coverage
       run: |
-        cd tests; $CONDA/bin/pytest
+        $CONDA/bin/pytest tests --ignore=interactive
