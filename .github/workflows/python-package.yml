@@ -31,4 +31,4 @@ jobs:
         $CONDA/bin/mamba install -c conda-forge pytest mypy coverage -y
     - name: Test with coverage
       run: |
-        $CONDA/bin/coverage html
+        cd tests; $CONDA/bin/coverage run --source ../kineticstoolkit --omit ../kineticstoolkit/external/* -m pytest --ignore=interactive 
