@@ -28,7 +28,7 @@ jobs:
       run: |
         $CONDA/bin/conda install -c conda-forge mamba -y
         $CONDA/bin/mamba install -c conda-forge kineticstoolkit --only-deps -y
-        $CONDA/bin/mamba install -c conda-forge pytest mypy coverage -y
+        $CONDA/bin/mamba install -c conda-forge pytest mypy -y
     - name: Test with coverage
       run: |
-        cd tests; $CONDA/bin/coverage run --source ../kineticstoolkit --omit ../kineticstoolkit/external/* -m pytest --ignore=interactive 
+        cd tests; pytest
