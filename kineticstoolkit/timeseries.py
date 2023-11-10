@@ -433,7 +433,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 f"However, the current time type is {type(self.time)}."
             )
 
-        if not np.alltrue(~np.isnan(self.time)):
+        if not np.all(~np.isnan(self.time)):
             raise TypeError(
                 "A TimeSeries' time attribute must not contain nans. "
                 f"However, a total of {np.sum(~np.isnan(self.time.shape))} "
@@ -792,6 +792,103 @@ class TimeSeries(metaclass=MetaTimeSeries):
             self._raise_data_key_error(data_key)
         return ts
 
+    def add_data(
+        self,
+        data_key: str,
+        data_value: ArrayLike,
+        *,
+        overwrite: bool = False,
+        in_place: bool = False,
+    ) -> TimeSeries:
+        """
+        Add new data to the TimeSeries.
+
+        Parameters
+        ----------
+        data_key
+            Name of the data key.
+        data
+            Any data that can be converted to a NumPy array
+        overwrite
+            Optional. True to overwrite if there is already a data key of this
+            name in the TimeSeries. Default is False.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the added data.
+
+        Raises
+        ------
+        ValueError
+            - If data with this key already exists and overwrite is False.
+            - If the size of the data (first dimension) does not match the size
+              of existing data or the existing time.
+            - If data is a pandas DataFrame and its index does not match the
+              existing time.
+
+        Note
+        ----
+        If the TimeSeries' time attribute is still unset, a matching time is
+        created with a period of 1 second.
+
+        """
+        check_types(TimeSeries.add_data, locals())
+        self._check_well_shaped()
+
+        ts = self if in_place else self.copy()
+
+        # Cast data
+        data_to_add = np.array(data_value)  # Will be set at the very end
+        time_to_set = np.array([])  # Will be set at the very end
+
+        # If this is a Pandas DataFrame, check that its index is compatible
+        # with the (maybe) existing time. Create the time based on the index
+        # if time is None.
+        if isinstance(data_value, pd.DataFrame):
+            if ts.time.shape[0] == 0:
+                time_to_set = np.array(data_value.time)
+            elif (ts.time.shape[0] != data_to_add.shape[0]) or (
+                not np.allclose(ts.time, np.array(data_value.index))
+            ):
+                raise ValueError(
+                    "The index of the provided DataFrame does not match "
+                    "this TimeSeries' time attribute. This error was raised "
+                    "to prevent merging unsynchronized data. If you are "
+                    "confident that this DataFrame's data does match this "
+                    "TimeSeries, then set its index to this TimeSeries' time "
+                    "before adding it: "
+                    "the_dataframe.index = the_timeseries.time"
+                )
+
+        # For every other type, check that the dimensions fit at least.
+        else:
+            if ts.time.shape[0] == 0:
+                time_to_set = np.arange(data_to_add.shape[0], dtype=float)
+            elif ts.time.shape[0] != data_to_add.shape[0]:
+                raise ValueError(
+                    f"This data has {data_to_add.shape[0]} samples while "
+                    f"this TimeSeries has {ts.time.shape[0]} samples."
+                )
+
+        # Check that we would not overwrite by mistake
+        if (data_key in self.data) and (overwrite is False):
+            raise ValueError(
+                f"A data with key '{data_key}' already exists in this "
+                "TimeSeries. Either use another key name or set overwrite to "
+                "True."
+            )
+
+        # Add the data and set time if needed
+        if time_to_set.shape[0] != 0:
+            ts.time = time_to_set
+        ts.data[data_key] = data_to_add
+        return ts
+
     def rename_data(
         self, old_data_key: str, new_data_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -820,7 +917,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             If this data key could not be found in the TimeSeries' data
             attribute.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.remove_data
 
@@ -3534,9 +3631,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
         labels = df.columns.to_list()
 
         axes = plt.gca()
+        # Don't know why I need to disable mypy on these lines.
         axes.set_prop_cycle(
-            mpl.cycler(linewidth=[1, 2, 3, 4])
-            * mpl.cycler(linestyle=["-", "--", "-.", ":"])
+            mpl.cycler(linewidth=[1, 2, 3, 4])  # type: ignore
+            * mpl.cycler(linestyle=["-", "--", "-.", ":"])  # type: ignore
             * plt.rcParams["axes.prop_cycle"]
         )
 

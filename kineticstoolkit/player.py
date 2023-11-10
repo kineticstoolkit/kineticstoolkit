@@ -378,7 +378,7 @@ class Player:
         # Add the animation timer
         self.anim = animation.FuncAnimation(
             self.objects["Figure"],
-            self._on_timer,
+            self._on_timer,  # type: ignore
             frames=self.n_indexes,
             interval=33,
         )  # 30 ips
@@ -488,7 +488,7 @@ class Player:
     def _first_refresh(self) -> None:
         """Draw the stuff and set the axis size."""
         self._update_plots()
-        plt.axis([-1.5, 1.5, -1, 1])
+        plt.axis((-1.5, 1.5, -1.0, 1.0))
 
     def _get_projection(self, points_3d: np.ndarray) -> np.ndarray:
         """

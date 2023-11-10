@@ -134,7 +134,8 @@ def set_color_order(setting: str | list[Any]) -> None:
     else:
         raise (ValueError("This setting is not recognized."))
 
-    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)
+    # Don't know why I need to disable mypy on this line.
+    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)  # type: ignore
 
 
 def get_credentials() -> tuple[str, str]:

@@ -427,6 +427,68 @@ def test_add_remove_data_info():
     assert len(ts.data_info["Force"]) == 1
 
 
+def test_add_data():
+    ts = ktk.TimeSeries()
+    assert ts.time.shape[0] == 0
+
+    # Adding data and populating a corresponding time value
+    ts.add_data("data1", np.eye(3), in_place=True)
+    assert np.allclose(ts.time, [0, 1, 2])
+    assert np.allclose(ts.data["data1"], np.eye(3))
+
+    # Adding data that already exists
+    try:
+        ts.add_data("data1", 2 * np.eye(3), in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Adding data that already exists but with overwrite = True
+    ts.add_data("data1", 3 * np.eye(3), overwrite=True, in_place=True)
+    assert np.allclose(ts.time, [0, 1, 2])
+    assert np.allclose(ts.data["data1"], 3 * np.eye(3))
+
+    # Adding matching data
+    ts.add_data("data2", 2 * np.eye(3), in_place=True)
+    assert np.allclose(ts.time, [0, 1, 2])
+    assert np.allclose(ts.data["data2"], 2 * np.eye(3))
+
+    # Adding non-matching data
+    try:
+        ts.add_data("data3", 3 * np.eye(4), in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Adding a DataFrame with matching indexes
+    df = pd.DataFrame(5 * np.eye(3))
+    ts.add_data("data3", df, in_place=True)
+    assert np.allclose(ts.time, [0, 1, 2])
+    assert np.allclose(ts.data["data3"], 5 * np.eye(3))
+
+    # Adding a DataFrame with matching size but mismatching indexes
+    df.index = np.arange(3) / 10
+    try:
+        ts.add_data("data4", df, in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Doing the suggested action in the error message to make it pass
+    df.index = ts.time
+    ts.add_data("data4", df, in_place=True)
+    assert np.allclose(ts.time, [0, 1, 2])
+    assert np.allclose(ts.data["data4"], 5 * np.eye(3))
+
+    # Adding a DataFrame with mismatching size
+    df = pd.DataFrame(6 * np.eye(4))
+    try:
+        ts.add_data("data5", df, in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+
 def test_rename_remove_data():
     ts = ktk.TimeSeries(time=np.arange(10))
     ts.data["Force"] = np.arange(10)
