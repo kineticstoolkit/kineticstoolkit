@@ -28,11 +28,11 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies
       run: |
-        $CONDA/bin/conda install -c conda-forge mamba -y
-        $CONDA/bin/mamba install -c conda-forge kineticstoolkit --only-deps -y
-        $CONDA/bin/mamba install -c conda-forge pytest mypy -y
+        '$CONDA/bin/conda' install -c conda-forge mamba -y
+        '$CONDA/bin/mamba' install -c conda-forge kineticstoolkit --only-deps -y
+        '$CONDA/bin/mamba' install -c conda-forge pytest mypy -y
     - name: Test with pytest and crash on warnings
       run: |
         export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
-        $CONDA/bin/pytest tests --ignore=tests/interactive -W error::RuntimeWarning
+        '$CONDA/bin/pytest' tests --ignore='tests/interactive' -W error::RuntimeWarning
 
