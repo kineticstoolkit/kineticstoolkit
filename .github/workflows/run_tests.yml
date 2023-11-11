@@ -35,7 +35,7 @@ jobs:
         conda install -c conda-forge kineticstoolkit --only-deps -y
     - name: Test with pytest and crash on warnings
       run: |
-        export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
-        
+        ln -s ${{ github.workspace }} ktk_path
+        export PYTHONPATH=$PYTHONPATH:ktk_path
         pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
 
