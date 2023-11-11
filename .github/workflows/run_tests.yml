@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
   
 jobs:
-  build:
+  unittests:
     defaults:
       run:
         shell: bash -l {0}
@@ -33,7 +33,20 @@ jobs:
       run: |
         conda install -c conda-forge python=${{ matrix.python-version }} mamba pytest -y
         mamba install -c conda-forge kineticstoolkit --only-deps -y
-    - name: Test with pytest and crash on warnings
+    - name: Test with pytest and crash on warnings (macos)
+      if: matrix.os == 'macos-latest'
+      run: |
+        export PYTHONPATH=":kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Test with pytest and crash on warnings (linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        export PYTHONPATH=":kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Test with pytest and crash on warnings (windows)
+      if: matrix.os == 'windows-latest'
       run: |
         export PYTHONPATH=";kineticstoolkit"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
