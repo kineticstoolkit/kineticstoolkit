@@ -5,10 +5,11 @@ name: run_tests
 
 on:
   push:
-    branches: [ "testing" ]
+    branches: [ "master" ]
   pull_request:
-    branches: [ "testing" ]
-
+    branches: [ "master" ]
+  workflow_dispatch:
+  
 jobs:
   build:
 
