@@ -36,4 +36,5 @@ jobs:
     - name: Test with pytest and crash on warnings
       run: |
         export PYTHONPATH=$PYTHONPATH:kineticstoolkit
-        cd tests; coverage run --source ../kineticstoolkit --omit ../kineticstoolkit/external/* -m pytest --ignore=interactive
+        cd tests
+        coverage run --source ../kineticstoolkit --omit ../kineticstoolkit/external/* -m pytest --ignore=interactive
