@@ -1,4 +1,4 @@
-name: Merge to master
+name: merge_testing_into_master
 on:
   workflow_run:
     workflows: ["run_tests"]
