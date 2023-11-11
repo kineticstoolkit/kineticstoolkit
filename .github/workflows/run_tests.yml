@@ -31,10 +31,9 @@ jobs:
         activate-environment: anaconda-client-env
     - name: Install dependencies
       run: |
-        conda install -c conda-forge python=${{ matrix.python-version }} pytest coverage mamba -y
+        conda install -c conda-forge python=${{ matrix.python-version }} mamba pytest -y
         mamba install -c conda-forge kineticstoolkit --only-deps -y
-    - name: Test with pytest via coverage
+    - name: Test with pytest and crash on warnings
       run: |
-        export PYTHONPATH=$PYTHONPATH:kineticstoolkit
-        cd tests
-        coverage run --source ../kineticstoolkit -m pytest --ignore=interactive
+        cd kineticstoolkit
+        pytest ../tests --ignore='../tests/interactive' -W error::RuntimeWarning
