@@ -29,7 +29,7 @@ jobs:
         $CONDA/bin/conda install -c conda-forge mamba -y
         $CONDA/bin/mamba install -c conda-forge kineticstoolkit --only-deps -y
         $CONDA/bin/mamba install -c conda-forge pytest mypy -y
-    - name: Test with coverage
+    - name: Test with pytest
       run: |
         export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
-        $CONDA/bin/pytest tests --ignore=interactive
+        $CONDA/bin/pytest tests --ignore=tests/interactive
