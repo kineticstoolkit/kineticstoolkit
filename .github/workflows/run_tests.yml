@@ -22,17 +22,17 @@ jobs:
         
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v3
+    - name: Setup conda
+      uses: conda-incubator/setup-miniconda@v2
       with:
-        python-version: ${{ matrix.python-version }}
+        activate-environment: anaconda-client-env
     - name: Install dependencies
       run: |
-        $CONDA'/bin/conda' install -c conda-forge mamba -y
-        $CONDA'/bin/mamba' install -c conda-forge kineticstoolkit --only-deps -y
-        $CONDA'/bin/mamba' install -c conda-forge pytest mypy -y
+        conda install -c conda-forge mamba -y
+        mamba install -c conda-forge kineticstoolkit --only-deps -y
+        mamba install -c conda-forge pytest mypy -y
     - name: Test with pytest and crash on warnings
       run: |
         export PYTHONPATH=$PYTHONPATH:${{ github.workspace }}
-        $CONDA'/bin/pytest' tests --ignore='tests/interactive' -W error::RuntimeWarning
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
 
