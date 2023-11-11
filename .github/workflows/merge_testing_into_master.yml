@@ -1,0 +1,20 @@
+name: Merge to master
+on:
+  workflow_run:
+    workflows: ["run_tests"]
+    types:
+      - completed
+jobs:
+  merge-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Merge testing -> master
+        uses: devmasx/merge-branch@master
+        with:
+          type: now
+          target_branch: master
+          message: Merge testing into master
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          
