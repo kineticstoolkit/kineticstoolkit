@@ -35,5 +35,6 @@ jobs:
         mamba install -c conda-forge kineticstoolkit --only-deps -y
     - name: Test with pytest and crash on warnings
       run: |
-        cd kineticstoolkit
-        pytest ../tests --ignore='../tests/interactive' -W error::RuntimeWarning
+        export PYTHONPATH=$PYTHONPATH:kineticstoolkit
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
