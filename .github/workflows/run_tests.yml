@@ -37,4 +37,4 @@ jobs:
       run: |
         export PYTHONPATH=$PYTHONPATH:kineticstoolkit
         cd tests
-        coverage run --source ../kineticstoolkit --omit ../kineticstoolkit/external/* -m pytest --ignore=interactive
+        coverage run --source ../kineticstoolkit -m pytest --ignore=interactive
