@@ -23,12 +23,12 @@ def test_instanciate_and_to_html5():
 
     # The player can be instanciated to show markers
     pl = ktk.Player(kinematics["Markers"], target=[-5, 0, 0])
-    plt.pause(0.01)
+    plt.pause(0.2)
     pl.close()
 
     # The player can be instanciated to show rigid bodies
     pl = ktk.Player(kinematics["ReferenceFrames"], target=[-5, 0, 0])
-    plt.pause(0.01)
+    plt.pause(0.2)
     pl.close()
 
     # Or the player can be instanciated to show both markers and rigid bodies
@@ -38,7 +38,7 @@ def test_instanciate_and_to_html5():
         target=[-5, 0, 0],
         up="z",
     )
-    plt.pause(0.01)
+    plt.pause(0.2)
 
     # Test that to_html5 doesn't crash
     assert pl.to_html5() is not None
@@ -63,7 +63,7 @@ def test_issue137():
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", category=UserWarning)
         pl = ktk.Player(kinematics)  # Shouldn't crash
-        plt.pause(0.01)
+        plt.pause(0.2)
         pl.close()
 
 
