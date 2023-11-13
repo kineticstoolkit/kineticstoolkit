@@ -171,14 +171,7 @@ def test_check_well_typed():
     ts = ktk.TimeSeries()  # Should pass
     ts._check_well_typed()
 
-    ts.time = [1, 2, 3]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass since #206
     ts._check_well_typed()
 
     ts.data["test1"] = np.array([1, 2, 3])
@@ -199,14 +192,14 @@ def test_check_well_typed():
     except TypeError:
         pass
 
-    ts.time = np.array([1.0, 2.0, 2.0])  # Should fail
+    ts.time = [1.0, 2.0, 2.0]  # Should fail
     try:
         ts._check_well_typed()
         raise Exception("This should fail.")
     except TypeError:
         pass
 
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts.add_data_info("test1", "Unit", "N", in_place=True)
     ts.add_data_info("test2", "Unit", "N", in_place=True)
     ts._check_well_typed()
@@ -256,7 +249,7 @@ def test_check_well_shaped():
     ts = ktk.TimeSeries()  # Should pass
     ts._check_well_shaped()
 
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_well_shaped()
 
     ts.data["test1"] = np.array([1, 2, 3])
@@ -281,35 +274,35 @@ def test_check_not_empty_time():
         raise Exception("This should fail.")
     except ValueError:
         pass
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_not_empty_time()
 
 
 def test_check_increasing_time():
-    ts = ktk.TimeSeries(time=np.array([0.0, 2.0, 1.0]))  # Should fail
+    ts = ktk.TimeSeries(time=[0.0, 2.0, 1.0])  # Should fail
     try:
         ts._check_increasing_time()
         raise Exception("This should fail.")
     except ValueError:
         pass
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_increasing_time
 
 
 def test_check_constant_sample_rate():
-    ts = ktk.TimeSeries(time=np.array([0.0, 1.0, 3.0]))  # Should fail
+    ts = ktk.TimeSeries(time=[0.0, 1.0, 3.0])  # Should fail
     try:
         ts._check_constant_sample_rate()
         raise Exception("This should fail.")
     except ValueError:
         pass
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_constant_sample_rate()
 
 
 def test_check_not_empty_data():
     ts = ktk.TimeSeries()
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should fail
+    ts.time = [1.0, 2.0, 3.0]  # Should fail
     try:
         ts._check_not_empty_data()
         raise Exception("This should fail.")
@@ -705,19 +698,19 @@ def test_get_sample_rate():
     ts = ktk.TimeSeries()
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0.0, 0.1, 0.2, 0.3])
+    ts.time = [0.0, 0.1, 0.2, 0.3]
     assert ts.get_sample_rate() == 10.0
 
-    ts.time = np.array([0, 0.1, 0.3, 0.4])
+    ts.time = [0.0, 0.1, 0.3, 0.4]
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0])
+    ts.time = [0]
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0.0, 0.2, 0.1])
+    ts.time = [0.0, 0.2, 0.1]
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0.0, 0.1])
+    ts.time = [0.0, 0.1]
     assert ts.get_sample_rate() == 10.0
 
 
@@ -935,7 +928,7 @@ def test_fill_missing_samples():
 
 
 def test_get_index_at_time():
-    ts = ktk.TimeSeries(time=np.array([0.2, 0.5, 1, 1.5, 2]))
+    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     assert ts.get_index_at_time(0) == 0
     assert ts.get_index_at_time(0.2) == 0
     assert ts.get_index_at_time(0.9) == 2
@@ -945,7 +938,7 @@ def test_get_index_at_time():
 
 
 def test_get_index_before_time():
-    ts = ktk.TimeSeries(time=np.array([0.2, 0.5, 1, 1.5, 2]))
+    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     try:
         ts.get_index_before_time(0)
         raise AssertionError("This should fail.")
@@ -961,7 +954,7 @@ def test_get_index_before_time():
 
 def test_get_index_after_time():
     # doctests
-    ts = ktk.TimeSeries(time=np.array([0.2, 0.5, 1, 1.5, 2]))
+    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     assert ts.get_index_after_time(-10) == 0
     assert ts.get_index_after_time(0.9) == 2
     assert ts.get_index_after_time(1) == 3

@@ -38,17 +38,14 @@ from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
 )
-from kineticstoolkit._timeseries.classes import (
-    TimeSeriesDataDict,
-    TimeSeriesEvent,
-    TimeSeriesEventList,
-)
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy as sp
 import pandas as pd
 import limitedinteraction as li
+from dataclasses import dataclass
 from numpy.typing import ArrayLike
 from typing import Any
 from collections.abc import Sequence
@@ -70,7 +67,7 @@ class MetaTimeSeries(type):
     def __dir__(cls):
         return [
             "copy",
-            # Add/remove data info
+            # Data info management
             "add_data_info",
             "remove_data_info",
             # Data management
@@ -123,6 +120,127 @@ class MetaTimeSeries(type):
         ]
 
 
+class TimeSeriesDataDict(dict):
+    """Data dictionary that checks sizes and converts to NumPy arrays."""
+
+    def __init__(self, ts):
+        """Initialize the class, with the parent TimeSeries as an argument."""
+        self._ts = ts
+
+    def __setitem__(self, key, value):
+        """
+        Overload setting an element.
+
+        Ensure that the key is a string and that the value's size is consistent
+        with the TimeSeries' time and already present data. We only check the
+        first data because this function would have already failed before if
+        all data were to have different first dimension sizes.
+
+        """
+        if not isinstance(key, str):
+            raise ValueError("Data key must be a string.")
+        value = np.array(value)
+
+        if (self._ts.time.shape[0]) > 0 and (
+            value.shape[0] != self._ts.time.shape[0]
+        ):
+            raise ValueError("Size mismatch")
+
+        if (len(self) > 0) and (
+            value.shape[0] != self[list(self.keys())[0]].shape[0]
+        ):
+            raise ValueError("Size mismatch")
+
+        super(TimeSeriesDataDict, self).__setitem__(key, value)
+
+
+@dataclass
+class TimeSeriesEvent:
+    """
+    Define an event in a timeseries.
+
+    This class is rarely used by itself, it is easier to use `TimeSeries`'
+    methods to manage events.
+
+    Attributes
+    ----------
+    time : float
+        Event time.
+
+    name : str
+        Event name. Does not need to be unique.
+
+    Example
+    -------
+    >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+    >>> event
+    TimeSeriesEvent(time=1.5, name='event_name')
+
+    """
+
+    time: float = 0.0
+    name: str = "event"
+
+    def __lt__(self, other):
+        """Define < operator."""
+        return self.time < other.time
+
+    def __le__(self, other):
+        """Define <= operator."""
+        return self.time <= other.time
+
+    def __gt__(self, other):
+        """Define > operator."""
+        return self.time > other.time
+
+    def __ge__(self, other):
+        """Define >= operator."""
+        return self.time >= other.time
+
+    def _to_tuple(self) -> tuple[float, str]:
+        """
+        Convert a TimeSeriesEvent to a tuple.
+
+        Example
+        -------
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event._to_tuple()
+        (1.5, 'event_name')
+
+        """
+        return (self.time, self.name)
+
+    def _to_list(self) -> list[float | str]:
+        """
+        Convert a TimeSeriesEvent to a list.
+
+        Example
+        -------
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event._to_list()
+        [1.5, 'event_name']
+
+        """
+        return [self.time, self.name]
+
+    def _to_dict(self) -> dict[str, float | str]:
+        """
+        Convert a TimeSeriesEvent to a dict.
+
+        Example
+        -------
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event._to_dict()
+        {'Time': 1.5, 'Name': 'event_name'}
+
+        """
+        return {"Time": self.time, "Name": self.name}
+
+
+class TimeSeriesEventList(list):
+    """Event list that ensures that every element is a TimeSeriesEvent."""
+
+
 class TimeSeries(metaclass=MetaTimeSeries):
     """
     A class that holds time, data series, events and metadata.
@@ -157,20 +275,39 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     """
 
+    # %% Initialization and properties
+
     def __init__(
         self,
-        time: np.ndarray = np.array([]),
+        time: ArrayLike = [],
         time_info: dict[str, Any] = {"Unit": "s"},
         data: dict[str, np.ndarray] = {},
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
     ):
-        self.time = time.copy()
+        self._time = np.array(time)
         self.data = data.copy()
         self.time_info = time_info.copy()
         self.data_info = data_info.copy()
         self.events = events.copy()
 
+    # Properties
+    @property
+    def time(self):
+        """Time Property."""
+        return self._time
+
+    @time.setter
+    def time(self, value):
+        self._time = np.array(value)
+
+    @time.deleter
+    def time(self):
+        del self._time
+
+
+    # %% Dunders
+    
     @classmethod
     def __dir__(cls):
         """Generate the class directory."""
@@ -203,21 +340,352 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         return self._is_equivalent(ts)
+    
+    # %% Private check functions
 
-    # Properties
+    def _is_equivalent(
+        self, ts, *, equal: bool = True, atol: float = 1e-8, rtol: float = 1e-5
+    ):
+        """
+        Test is two TimeSeries are equal or equivalent.
 
-    # Import check methods
-    from kineticstoolkit._timeseries.checks import (
-        _is_equivalent,
-        _check_well_typed,
-        _check_well_shaped,
-        _check_not_empty_time,
-        _check_increasing_time,
-        _check_constant_sample_rate,
-        _check_not_empty_data,
-        _raise_data_key_error,
-        _raise_data_info_key_error,
-    )
+        Parameters
+        ----------
+        ts
+            The TimeSeries to compare to.
+        equal
+            Optional. True to test for complete equality, False to compare
+            withint a given tolerance.
+        atol
+            Optional. Absolute tolerance if using equal=False.
+        rtol
+            Optional. Relative tolerance if using equal=False.
+
+        Returns
+        -------
+        bool
+            True if the TimeSeries are equivalent.
+
+        """
+        if equal:
+            atol = 0
+            rtol = 0
+
+        def compare(var1, var2, atol, rtol):
+            if var1.size == 0 and var2.size == 0:
+                return np.equal(var1.shape, var2.shape)
+            elif var1.size == 0 and var2.size != 0:
+                return False
+            elif var1.size != 0 and var2.size == 0:
+                return False
+            else:
+                return np.allclose(
+                    var1, var2, atol=atol, rtol=rtol, equal_nan=True
+                )
+
+        try:
+            ts._check_well_typed()
+        except AttributeError:
+            print("The variable begin compared is not a TimeSeries.")
+
+        if not compare(self.time, ts.time, atol=atol, rtol=rtol):
+            print("Time is not equal")
+            return False
+
+        for data in [self.data, ts.data]:
+            for one_data in data:
+                try:
+                    if not compare(
+                        self.data[one_data],
+                        ts.data[one_data],
+                        atol=atol,
+                        rtol=rtol,
+                    ):
+                        print(f"{one_data} is not equal")
+                        return False
+                except KeyError:
+                    print(f"{one_data} is missing in one of the TimeSeries")
+                    return False
+                except ValueError:
+                    print(
+                        f"{one_data} does not have the same size in both "
+                        "TimeSeries"
+                    )
+                    return False
+
+        if self.time_info != ts.time_info:
+            print("time_info is not equal")
+            return False
+
+        if self.data_info != ts.data_info:
+            print("data_info is not equal")
+            return False
+
+        if self.events != ts.events:
+            print("events is not equal")
+            return False
+
+        return True
+
+    def _check_well_typed(self) -> None:
+        """
+        Check that every element of every attribute has correct type.
+
+        This is the most basic check: Every component of a TimeSeries must
+        be of the correct type at each step of a code. Therefore, any other
+        check* starts by calling this function. This is not a performance hit
+        because apart from interactive functions (which are not affected by
+        test overhead), the check functions are run in case of error only,
+        to help the users in fixing their code.
+
+        *except _check_increasing_time, which is run in proprocessing and not
+        only in failures.
+
+        Raises
+        ------
+        AttributeError
+            If the TimeSeries' miss some attributes.
+
+        TypeError
+            If the TimeSeries' attributes are of wrong type.
+
+        """
+        # Ensure that the TimeSeries has all its attributes
+        try:
+            self.time
+        except AttributeError:
+            raise AttributeError(
+                "This TimeSeries does not have a time attribute anymore."
+            )
+
+        try:
+            self.data
+        except AttributeError:
+            raise AttributeError(
+                "This TimeSeries does not have a data attribute anymore."
+            )
+
+        try:
+            self.events
+        except AttributeError:
+            raise AttributeError(
+                "This TimeSeries does not have a events attribute anymore."
+            )
+
+        try:
+            self.time_info
+        except AttributeError:
+            raise AttributeError(
+                "This TimeSeries does not have a time_info attribute anymore."
+            )
+
+        try:
+            self.data_info
+        except AttributeError:
+            raise AttributeError(
+                "This TimeSeries does not have a data_info attribute anymore."
+            )
+
+        # Ensure that time is a numpy array of dimension 1.
+        if not isinstance(self.time, np.ndarray):
+            raise TypeError(
+                "A TimeSeries' time attribute must be a numpy array. "
+                f"However, the current time type is {type(self.time)}."
+            )
+
+        if not np.all(~np.isnan(self.time)):
+            raise TypeError(
+                "A TimeSeries' time attribute must not contain nans. "
+                f"However, a total of {np.sum(~np.isnan(self.time.shape))} "
+                f"nans were found among the {self.time.shape[0]} samples of "
+                "the TimeSeries."
+            )
+
+        if not np.array_equal(np.unique(self.time), np.sort(self.time)):
+            raise TypeError(
+                "A TimeSeries' time attribute must not contain duplicates. "
+                f"However, while the TimeSeries has {len(self.time)} samples, "
+                f"only {len(np.unique(self.time))} are unique."
+            )
+
+        # Ensure that the data attribute is a dict
+        if not isinstance(self.data, dict):
+            raise TypeError(
+                "The TimeSeries data attribute must be a dict. However, "
+                "this TimeSeries' data attribute is of type "
+                f"{type(self.data)}."
+            )
+
+        # Ensure that each data are numpy arrays
+        for key in self.data:
+            data = self.data[key]
+
+            if not isinstance(data, np.ndarray):
+                raise TypeError(
+                    "A TimeSeries' data attribute must contain only numpy "
+                    "arrays. However, at least one of the TimeSeries data "
+                    f"is not an array: the data named {key} contains a "
+                    f"value of type {type(data)}."
+                )
+
+        # Ensure that events is a list of TimeSeriesEvent
+        if not isinstance(self.events, list):
+            raise TypeError(
+                "The TimeSeries' events attribute must be a list. "
+                "However, this TimeSeries' events attribute is of type "
+                f"{type(self.events)}."
+            )
+
+        # Ensure that all events are an instance of TimeSeriesEvent
+        for i_event, event in enumerate(self.events):
+            if not isinstance(event, TimeSeriesEvent):
+                raise TypeError(
+                    "The TimeSeries' events attribute must be a list of "
+                    "TimeSeriesEvent. However, at least one element of this "
+                    f"list is not: element {i_event} is "
+                    f"of type {type(event)}."
+                )
+
+        # Ensure that TimeInfo is a dict
+        if not isinstance(self.time_info, dict):
+            raise TypeError(
+                "The TimeSeries' time_info attribute must be a dict. "
+                "However, this TimeSeries' time_info attribute is of type "
+                f"{type(self.time_info)}."
+            )
+
+        # Ensure that DataInfo is a dict
+        if not isinstance(self.data_info, dict):
+            raise TypeError(
+                "The TimeSeries' data_info attribute must be a dict. "
+                "However, this TimeSeries' data_info attribute is of type "
+                f"{type(self.data_info)}."
+            )
+
+        # Ensure that every element of DataInfo is a dict
+        for key in self.data_info:
+            if not isinstance(self.data_info[key], dict):
+                raise TypeError(
+                    "Each element of a TimeSeries' data_info attribute must "
+                    f"be a dict. However, the element '{key}' of this "
+                    "TimeSeries' data_info attribute is of type "
+                    f"{type(self.data_info[key])}."
+                )
+
+    def _check_well_shaped(self) -> None:
+        """
+        Check that the TimeSeries' time and data shapes concord.
+
+        Raises
+        ------
+        ValueError
+            If the TimeSeries' time and data do not concord in shape.
+
+        """
+        self._check_well_typed()
+        if len(self.time.shape) != 1:
+            raise TypeError(
+                "A TimeSeries' time attribute must be a numpy array of "
+                "dimension 1. However, the current time shape is "
+                f"{self.time.shape}, which is a dimension of "
+                f"{len(self.time.shape)}."
+            )
+
+        for key in self.data:
+            data = self.data[key]
+            # Ensure that it's coherent in shape with time
+            if data.shape[0] != self.time.shape[0]:
+                raise ValueError(
+                    "Every data of a TimeSeries must have its first "
+                    "dimension corresponding to time. At least one of the "
+                    "TimeSeries data has a dimension problem: the data "
+                    f"named '{key}' has a shape of {data.shape} while the "
+                    f"time's shape is {self.time.shape}."
+                )
+
+    def _check_not_empty_time(self) -> None:
+        """
+        Check that the TimeSeries' time vector is not empty.
+
+        Raises
+        ------
+        ValueError
+            If the TimeSeries time is empty
+
+        """
+        if self.time.shape[0] == 0:
+            raise ValueError(
+                "The TimeSeries is empty: the length of its time "
+                "attribute is 0."
+            )
+
+    def _check_increasing_time(self) -> None:
+        """
+        Check that the TimeSeries' time vector is always increasing.
+
+        Raises
+        ------
+        ValueError
+            If the TimeSeries' time is not always increasing.
+
+        """
+        if not np.array_equal(self.time, np.sort(self.time)):
+            raise ValueError(
+                "The TimeSeries' time attribute is not always increasing, "
+                "which is required by the requested function. You can "
+                "resample the TimeSeries on an always increasing time vector "
+                "using ts = ts.resample(np.sort(ts.time))."
+            )
+
+    def _check_constant_sample_rate(self) -> None:
+        """
+        Check that the TimeSeries's sampling rate is constant.
+
+        Raises
+        ------
+        ValueError
+            If the TimeSeries's sampling rate is not constant.
+
+        """
+        if np.isnan(self.get_sample_rate()):
+            raise ValueError(
+                "The TimeSeries's sample rate is not constant, which is "
+                "required by the requested function. You can resample the "
+                "TimeSeries on a constant sample rate using "
+                "ts = ts.resample(np.linspace("
+                "np.min(ts.time), np.max(ts.time), len(ts.time)))."
+            )
+
+    def _check_not_empty_data(self) -> None:
+        """
+        Check that the TimeSeries's data dict is not empty.
+
+        Raises
+        ------
+        ValueError:
+            If the TimeSeries as no time
+
+        """
+        if len(self.data) == 0:
+            raise ValueError(
+                "The TimeSeries is empty: it does not contain any data."
+            )
+
+    def _raise_data_key_error(self, data_key) -> None:
+        raise KeyError(
+            f"The key '{data_key}' was not found among the "
+            f"{len(self.data)} key(s) of the TimeSeries' "
+            "data_info attribute."
+        )
+
+    def _raise_data_info_key_error(self, data_key, info_key) -> None:
+        raise KeyError(
+            f"The key '{info_key}' was not found among the "
+            f"{len(self.data_info[data_key])} key(s) of the TimeSeries' "
+            f"data_info[{data_key}] attribute."
+        )
+        
+    # %% Copy
 
     def copy(
         self,
@@ -272,6 +740,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if copy_events:
                 ts.events = deepcopy(self.events)
             return ts
+        
+    # %% Data info management
 
     def add_data_info(
         self,
@@ -302,7 +772,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The TimeSeries with the added data info.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.remove_data_info
 
@@ -356,7 +826,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         KeyError
             If this data_info could not be found.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.add_data_info
 
@@ -385,6 +855,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         except KeyError:
             self._raise_data_key_error(data_key)
         return ts
+    
+    # %% Data management
 
     def add_data(
         self,
@@ -578,7 +1050,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             If this data key could not be found in the TimeSeries' data
             attribute.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.rename_data
 
@@ -619,6 +1091,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             pass  # It's okay if there was no data info for this data_key
 
         return ts
+    
+    # %% Event management
 
     def _get_event_indexes(self, name: str) -> list[int]:
         """
@@ -784,7 +1258,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             A copy of the TimeSeries with the added event.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.rename_event
         ktk.TimeSeries.remove_event
@@ -850,7 +1324,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The TimeSeries with the renamed event.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.remove_event
@@ -928,7 +1402,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The TimeSeries with the removed event.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
@@ -1085,7 +1559,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The TimeSeries with the sorted events.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
@@ -1146,7 +1620,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The TimeSeries without the trimmed events.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
@@ -1190,6 +1664,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if event.time <= np.max(ts.time) and event.time >= np.min(ts.time):
                 ts.add_event(event.time, event.name, in_place=True)
         return ts
+    
+    # %% get_index methods
 
     def get_index_at_time(self, time: float) -> int:
         """
@@ -1205,7 +1681,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         int
             The index in the time vector.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_after_time
@@ -1260,7 +1736,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If the resulting index would be outside the TimeSeries range.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_index_at_time
         ktk.TimeSeries.get_index_after_time
@@ -1329,7 +1805,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If the resulting index would be outside the TimeSeries range.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_at_time
@@ -1391,7 +1867,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         int
             The index in the time vector.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_at_time
@@ -1449,7 +1925,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If the resulting index would be outside the TimeSeries range.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_at_time
@@ -1517,7 +1993,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If the resulting index would be outside the TimeSeries range.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_index_before_time
         ktk.TimeSeries.get_index_at_time
@@ -1556,6 +2032,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 self.events[self._get_event_index(name, occurrence)].time,
                 inclusive=True,
             )
+        
+    # %% get_ts methods
 
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False
@@ -1580,7 +2058,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data before the specified index.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_before_time
         ktk.TimeSeries.get_ts_before_event
@@ -1636,7 +2114,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data after the specified index.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_after_time
         ktk.TimeSeries.get_ts_after_event
@@ -1707,7 +2185,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             If there is no data between the specified indexes.
 
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_between_times
         ktk.TimeSeries.get_ts_between_events
@@ -1790,7 +2268,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data before the specified time.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_before_index
         ktk.TimeSeries.get_ts_before_event
@@ -1850,7 +2328,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data after the specified index.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_after_index
         ktk.TimeSeries.get_ts_after_event
@@ -1920,7 +2398,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data between the specified times.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_between_indexes
         ktk.TimeSeries.get_ts_between_events
@@ -1988,7 +2466,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data before the specified event.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_before_index
         ktk.TimeSeries.get_ts_before_time
@@ -2062,7 +2540,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data after the specified event.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_after_index
         ktk.TimeSeries.get_ts_after_time
@@ -2148,7 +2626,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeriesRangeError
             If there is no data between the specified events.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_between_indexes
         ktk.TimeSeries.get_ts_between_times
@@ -2199,6 +2677,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             name2, occurrence2, inclusive=seq_inclusive[1]
         )
         return self.get_ts_between_indexes(index1, index2, inclusive=True)
+    
+    # %% Time management
 
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
@@ -2218,7 +2698,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The TimeSeries with the time being shifted.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.ui_sync
 
@@ -2248,76 +2728,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             event.time += time
         ts.time += time
         return ts
-
-    def get_subset(self, data_keys: str | list[str]) -> TimeSeries:
-        """
-        Return a subset of the TimeSeries.
-
-        This method returns a TimeSeries that contains only selected data
-        keys. The corresponding data_info keys are copied in the new
-        TimeSeries. All events are also copied in the new TimeSeries.
-
-        Parameters
-        ----------
-        data_keys
-            The data keys to extract from the timeseries.
-
-        Returns
-        -------
-        TimeSeries
-            A copy of the TimeSeries, minus the unspecified data keys.
-
-        Raises
-        ------
-        KeyError
-            If one or more data keys could not be found in the TimeSeries
-            data.
-
-        See also
-        --------
-        ktk.TimeSeries.merge
-
-        Example
-        -------
-            >>> ts = ktk.TimeSeries(time = np.arange(10))
-            >>> ts.data['signal1'] = ts.time
-            >>> ts.data['signal2'] = ts.time**2
-            >>> ts.data['signal3'] = ts.time**3
-            >>> ts.data.keys()
-            dict_keys(['signal1', 'signal2', 'signal3'])
-
-            >>> ts2 = ts.get_subset(['signal1', 'signal3'])
-            >>> ts2.data.keys()
-            dict_keys(['signal1', 'signal3'])
-
-        """
-        check_types(TimeSeries.get_subset, locals())
-        self._check_well_shaped()
-
-        if isinstance(data_keys, str):
-            data_keys = [data_keys]
-
-        ts = TimeSeries()
-        ts.time = self.time.copy()
-        ts.time_info = deepcopy(self.time_info)
-        ts.events = deepcopy(self.events)
-
-        for key in data_keys:
-            try:
-                ts.data[key] = self.data[key].copy()
-            except KeyError:
-                raise KeyError(
-                    f"The key '{key}' could not be found among the "
-                    f"{len(self.data)} data entries of the TimeSeries"
-                )
-
-            try:
-                ts.data_info[key] = deepcopy(self.data_info[key])
-            except KeyError:
-                pass
-
-        return ts
-
+    
     def get_sample_rate(self) -> float:
         """
         Get the sample rate in samples/s.
@@ -2337,7 +2748,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         for now, but it could change in the future based on discussions and
         particular use cases.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.resample
 
@@ -2408,7 +2819,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         series of homogeneous matrices, and therefore won't generate an
         error or warning.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_sample_rate
         ktk.TimeSeries.fill_missing_samples
@@ -2545,6 +2956,77 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts.data = new_data
         return ts
 
+    # %% Subsetting and merging
+
+    def get_subset(self, data_keys: str | list[str]) -> TimeSeries:
+        """
+        Return a subset of the TimeSeries.
+
+        This method returns a TimeSeries that contains only selected data
+        keys. The corresponding data_info keys are copied in the new
+        TimeSeries. All events are also copied in the new TimeSeries.
+
+        Parameters
+        ----------
+        data_keys
+            The data keys to extract from the timeseries.
+
+        Returns
+        -------
+        TimeSeries
+            A copy of the TimeSeries, minus the unspecified data keys.
+
+        Raises
+        ------
+        KeyError
+            If one or more data keys could not be found in the TimeSeries
+            data.
+
+        See Also
+        --------
+        ktk.TimeSeries.merge
+
+        Example
+        -------
+            >>> ts = ktk.TimeSeries(time = np.arange(10))
+            >>> ts.data['signal1'] = ts.time
+            >>> ts.data['signal2'] = ts.time**2
+            >>> ts.data['signal3'] = ts.time**3
+            >>> ts.data.keys()
+            dict_keys(['signal1', 'signal2', 'signal3'])
+
+            >>> ts2 = ts.get_subset(['signal1', 'signal3'])
+            >>> ts2.data.keys()
+            dict_keys(['signal1', 'signal3'])
+
+        """
+        check_types(TimeSeries.get_subset, locals())
+        self._check_well_shaped()
+
+        if isinstance(data_keys, str):
+            data_keys = [data_keys]
+
+        ts = TimeSeries()
+        ts.time = self.time.copy()
+        ts.time_info = deepcopy(self.time_info)
+        ts.events = deepcopy(self.events)
+
+        for key in data_keys:
+            try:
+                ts.data[key] = self.data[key].copy()
+            except KeyError:
+                raise KeyError(
+                    f"The key '{key}' could not be found among the "
+                    f"{len(self.data)} data entries of the TimeSeries"
+                )
+
+            try:
+                ts.data_info[key] = deepcopy(self.data_info[key])
+            except KeyError:
+                pass
+
+        return ts
+
     def merge(
         self,
         ts: TimeSeries,
@@ -2585,7 +3067,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The merged TimeSeries.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_subset
         ktk.TimeSeries.resample
@@ -2659,6 +3141,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts_out.sort_events(in_place=True)
         return ts_out
 
+    # %% Missing sample management
+
     def isnan(self, data_key: str) -> np.ndarray:
         """
         Return a boolean array of missing samples.
@@ -2675,7 +3159,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             values represent missing samples (samples that contain at least
             one nan value).
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.fill_missing_samples
 
@@ -2735,7 +3219,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ValueError
             If the sample rate is not constant.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.isnan
 
@@ -2774,6 +3258,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts_out.data[data] = ts.data[data]
 
         return ts_out
+    
+    # %% Graphical user interfaces
 
     def ui_edit_events(
         self,
@@ -2805,7 +3291,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         This function, which has been introduced in 0.6, is still experimental
         and may change signature or behaviour in the future.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
@@ -3011,7 +3497,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         This function, which has been introduced in 0.1, is still experimental
         and may change signature or behaviour in the future.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.shift
 
@@ -3315,6 +3801,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
             axes.legend(
                 loc=legend_location, ncol=1 + int(len(labels) / 40)
             )  # Max 40 items per line
+
+    # %% Dataframe interaction
 
     def _to_dataframe_and_info(
         self,
@@ -3735,6 +4223,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             min(times), max(times), inclusive=inclusive
         )
 
+# %% Main
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
