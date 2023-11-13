@@ -28,7 +28,7 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
+from kineticstoolkit._timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.exceptions import (
     check_types,
     TimeSeriesEventNotFoundError,

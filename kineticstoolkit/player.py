@@ -31,7 +31,7 @@ __license__ = "Apache 2.0"
 
 REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 
-from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit._timeseries import TimeSeries
 from kineticstoolkit.decorators import deprecated
 import kineticstoolkit.geometry as geometry
 

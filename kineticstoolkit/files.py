@@ -30,7 +30,7 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit._timeseries import TimeSeries
 from kineticstoolkit.exceptions import check_types
 import kineticstoolkit.config
 
@@ -111,7 +111,7 @@ def save(filename: str, variable: Any) -> None:
 
             elif (
                 str(type(obj))
-                == "<class 'kineticstoolkit.timeseries.TimeSeries'>"
+                == "<class 'kineticstoolkit._timeseries.TimeSeries'>"
             ):
                 out = {}
                 out["class__"] = "ktk.TimeSeries"
