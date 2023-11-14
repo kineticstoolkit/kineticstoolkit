@@ -167,11 +167,50 @@ def test_copy():
     assert ts2.events[2].time == 100
 
 
-def test_check_well_typed():
-    ts = ktk.TimeSeries()  # Should pass
-    ts._check_well_typed()
+def test_time_property():
+    ts = ktk.TimeSeries()
 
-    ts.time = [1.0, 2.0, 3.0]  # Should pass since #206
+    # Check type casting to NumPy array
+    ts.time = [1.0, 2.0, 3.0]
+    assert np.allclose(ts.time, [1.0, 2.0, 3.0])
+    assert isinstance(ts.time, np.ndarray)
+
+    # Check failing on 0 or >1 dimension
+    try:
+        ts.time = 0
+        raise AssertionError("This should fail.")
+    except AttributeError:
+        pass
+    try:
+        ts.time = [[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]]
+        raise AssertionError("This should fail.")
+    except AttributeError:
+        pass
+
+    # Check failing on duplicate time
+    try:
+        ts.time = [1.0, 2.0, 2.0]  # Should fail
+        raise AssertionError("This should fail.")
+    except AttributeError:
+        pass
+
+    # Check failing on time with NaNs
+    try:
+        ts.time = [1.0, np.nan, 3.0]
+        raise AssertionError("This should fail.")
+    except AttributeError:
+        pass
+
+    # Check failing on delete
+    try:
+        del ts.time
+        raise AssertionError("This should fail.")
+    except AttributeError:
+        pass
+
+
+def test_check_well_typed():
+    ts = ktk.TimeSeries()
     ts._check_well_typed()
 
     ts.data["test1"] = np.array([1, 2, 3])
@@ -184,20 +223,6 @@ def test_check_well_typed():
 
     ts.data["test2"] = np.array([1, 2, 3])  # Should pass
     ts._check_well_typed()
-
-    ts.time[1] = np.nan  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.time = [1.0, 2.0, 2.0]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
 
     ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts.add_data_info("test1", "Unit", "N", in_place=True)
@@ -250,7 +275,6 @@ def test_check_well_shaped():
     ts._check_well_shaped()
 
     ts.time = [1.0, 2.0, 3.0]  # Should pass
-    ts._check_well_shaped()
 
     ts.data["test1"] = np.array([1, 2, 3])
     ts.data["test2"] = np.array([1, 2, 3])  # Should pass
