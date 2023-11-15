@@ -285,7 +285,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
     ):
-        self._time = np.array(time)
+        self.time = time
         self.data = data.copy()
         self.time_info = time_info.copy()
         self.data_info = data_info.copy()
@@ -299,7 +299,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     @time.setter
     def time(self, value):
-        self._time = np.array(value)
+        self._time = np.array(value, copy=True)
 
     @time.deleter
     def time(self):
