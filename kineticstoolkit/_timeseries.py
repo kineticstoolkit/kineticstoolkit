@@ -294,46 +294,20 @@ class TimeSeries(metaclass=MetaTimeSeries):
     # Properties
     @property
     def time(self):
-        """Time Property. Setting it always creates new numpy array (copy)."""
+        """Time Property."""
         return self._time
 
     @time.setter
     def time(self, value):
-        # Typecast to NumPy array
-        value = np.array(value, copy=True)
-
-        # Ensure that it has one dimension
-        if len(value.shape) != 1:
-            raise AttributeError(
-                "A TimeSeries' time property must be an array of one "
-                f"dimension. The provided value has {len(value.shape)} "
-                "dimensions."
-            )
-
-        # Ensure that it has no nan
-        if not np.all(~np.isnan(value)):
-            raise AttributeError(
-                "A TimeSeries' time property cannot contain nans. "
-                f"However, a total of {np.sum(np.isnan(value))} "
-                f"nans were found among the {value.shape[0]} samples of "
-                "the provided value."
-            )
-        self._time = value
-
-        # Ensure that it has no duplicate value
-        if not np.array_equal(np.unique(value), np.sort(value)):
-            raise AttributeError(
-                "A TimeSeries' time property must not contain duplicate "
-                f"values. However, only {len(np.unique(value))} values out of "
-                f"{len(value)} are unique."
-            )
+        self._time = np.array(value)
 
     @time.deleter
     def time(self):
-        raise AttributeError("time property cannot be deleted.")
+        del self._time
+
 
     # %% Dunders
-
+    
     @classmethod
     def __dir__(cls):
         """Generate the class directory."""
@@ -366,7 +340,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         return self._is_equivalent(ts)
-
+    
     # %% Private check functions
 
     def _is_equivalent(
@@ -457,9 +431,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         """
         Check that every element of every attribute has correct type.
 
-        This will progressively become empty as each attribute of the
-        TimeSeries will become a property and checks will be done on assign
-        time.
+        This is the most basic check: Every component of a TimeSeries must
+        be of the correct type at each step of a code. Therefore, any other
+        check* starts by calling this function. This is not a performance hit
+        because apart from interactive functions (which are not affected by
+        test overhead), the check functions are run in case of error only,
+        to help the users in fixing their code.
+
+        *except _check_increasing_time, which is run in proprocessing and not
+        only in failures.
 
         Raises
         ------
@@ -471,7 +451,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         # Ensure that the TimeSeries has all its attributes
-        # - time property cannot be deleted anymore.
+        try:
+            self.time
+        except AttributeError:
+            raise AttributeError(
+                "This TimeSeries does not have a time attribute anymore."
+            )
+
         try:
             self.data
         except AttributeError:
@@ -501,9 +487,26 @@ class TimeSeries(metaclass=MetaTimeSeries):
             )
 
         # Ensure that time is a numpy array of dimension 1.
-        # - Always a numpy array (property)
-        # - No nan (property)
-        # - No duplicate time
+        if not isinstance(self.time, np.ndarray):
+            raise TypeError(
+                "A TimeSeries' time attribute must be a numpy array. "
+                f"However, the current time type is {type(self.time)}."
+            )
+
+        if not np.all(~np.isnan(self.time)):
+            raise TypeError(
+                "A TimeSeries' time attribute must not contain nans. "
+                f"However, a total of {np.sum(~np.isnan(self.time.shape))} "
+                f"nans were found among the {self.time.shape[0]} samples of "
+                "the TimeSeries."
+            )
+
+        if not np.array_equal(np.unique(self.time), np.sort(self.time)):
+            raise TypeError(
+                "A TimeSeries' time attribute must not contain duplicates. "
+                f"However, while the TimeSeries has {len(self.time)} samples, "
+                f"only {len(np.unique(self.time))} are unique."
+            )
 
         # Ensure that the data attribute is a dict
         if not isinstance(self.data, dict):
@@ -580,6 +583,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_typed()
+        if len(self.time.shape) != 1:
+            raise TypeError(
+                "A TimeSeries' time attribute must be a numpy array of "
+                "dimension 1. However, the current time shape is "
+                f"{self.time.shape}, which is a dimension of "
+                f"{len(self.time.shape)}."
+            )
 
         for key in self.data:
             data = self.data[key]
@@ -674,7 +684,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             f"{len(self.data_info[data_key])} key(s) of the TimeSeries' "
             f"data_info[{data_key}] attribute."
         )
-
+        
     # %% Copy
 
     def copy(
@@ -730,7 +740,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if copy_events:
                 ts.events = deepcopy(self.events)
             return ts
-
+        
     # %% Data info management
 
     def add_data_info(
@@ -845,7 +855,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         except KeyError:
             self._raise_data_key_error(data_key)
         return ts
-
+    
     # %% Data management
 
     def add_data(
@@ -1081,7 +1091,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             pass  # It's okay if there was no data info for this data_key
 
         return ts
-
+    
     # %% Event management
 
     def _get_event_indexes(self, name: str) -> list[int]:
@@ -1654,7 +1664,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if event.time <= np.max(ts.time) and event.time >= np.min(ts.time):
                 ts.add_event(event.time, event.name, in_place=True)
         return ts
-
+    
     # %% get_index methods
 
     def get_index_at_time(self, time: float) -> int:
@@ -2022,7 +2032,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 self.events[self._get_event_index(name, occurrence)].time,
                 inclusive=True,
             )
-
+        
     # %% get_ts methods
 
     def get_ts_before_index(
@@ -2667,7 +2677,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             name2, occurrence2, inclusive=seq_inclusive[1]
         )
         return self.get_ts_between_indexes(index1, index2, inclusive=True)
-
+    
     # %% Time management
 
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
@@ -2718,7 +2728,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             event.time += time
         ts.time += time
         return ts
-
+    
     def get_sample_rate(self) -> float:
         """
         Get the sample rate in samples/s.
@@ -3248,7 +3258,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts_out.data[data] = ts.data[data]
 
         return ts_out
-
+    
     # %% Graphical user interfaces
 
     def ui_edit_events(
@@ -4212,7 +4222,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         return self.get_ts_between_times(
             min(times), max(times), inclusive=inclusive
         )
-
 
 # %% Main
 
