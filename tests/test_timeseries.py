@@ -167,23 +167,53 @@ def test_copy():
     assert ts2.events[2].time == 100
 
 
+def test_time_property():
+    # Set time on constructor
+    ts = ktk.TimeSeries(time=[1, 2, 3])
+    assert isinstance(ts.time, np.ndarray)
+    assert np.array_equal(ts.time, [1, 2, 3])
+
+    # Set time on assignment
+    ts = ktk.TimeSeries()
+    ts.time = [1, 2, 3]
+    assert isinstance(ts.time, np.ndarray)
+    assert np.array_equal(ts.time, [1, 2, 3])
+
+
+def test_data_property():
+    # Set data on contstructor
+    ts = ktk.TimeSeries(data={"data1": [1, 2, 3], "data2": [4, 5, 6]})
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.data["data1"], np.ndarray)
+    assert isinstance(ts.data["data2"], np.ndarray)
+    assert np.array_equal(ts.data["data1"], [1, 2, 3])
+    assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+    # Set data on whole assignment
+    ts = ktk.TimeSeries()
+    ts.data = {"data1": [1, 2, 3], "data2": [4, 5, 6]}
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.data["data1"], np.ndarray)
+    assert isinstance(ts.data["data2"], np.ndarray)
+    assert np.array_equal(ts.data["data1"], [1, 2, 3])
+    assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+    # Set data on dict setter
+    ts = ktk.TimeSeries()
+    ts.data["data1"] = [1, 2, 3]
+    ts.data["data2"] = [4, 5, 6]
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.data["data1"], np.ndarray)
+    assert isinstance(ts.data["data2"], np.ndarray)
+    assert np.array_equal(ts.data["data1"], [1, 2, 3])
+    assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+
 def test_check_well_typed():
-    ts = ktk.TimeSeries()  # Should pass
-    ts._check_well_typed()
-
-    ts.time = [1.0, 2.0, 3.0]  # Should pass since #206
-    ts._check_well_typed()
-
+    ts = ktk.TimeSeries()
+    ts.time = [1.0, 2.0, 3.0]
     ts.data["test1"] = np.array([1, 2, 3])
-    ts.data["test2"] = [1, 2, 3]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
-    ts._check_well_typed()
+    ts.data["test2"] = [1, 2, 3]
 
     ts.time[1] = np.nan  # Should fail
     try:

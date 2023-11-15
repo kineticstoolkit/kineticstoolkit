@@ -41,7 +41,9 @@ import numpy as np
 from typing import Any
 
 
-def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
+def _format_dict_entries(
+    the_dict: Any, quotes: bool = True, overrides={}
+) -> str:
     """
     Format a dict nicely on screen.
 
@@ -60,6 +62,10 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
     quotes:
         False to remove quotes from keys when they are strings. Default is
         True.
+    overrides:
+        Optional. Dictionary of entry names to override. For example, if a
+        class has private attributes that should be accessed using properties,
+        e.g.: {"_data": "data", "_time": "time"}.
 
     Returns
     -------
@@ -79,7 +85,7 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
 
     # Print each key value
     for key in the_dict:
-        key_label = repr(key)
+        key_label = repr(overrides.get(key, key))
         if quotes is False and isinstance(key_label, str):
             key_label = key_label[1:-1]
         key_label = " " * (widest - len(key_label)) + key_label
@@ -114,7 +120,7 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
     return out
 
 
-def _format_class_attributes(obj):
+def _format_class_attributes(obj, overrides):
     """
     Format a class that has attributes nicely on screen.
 
@@ -130,6 +136,10 @@ def _format_class_attributes(obj):
     ----------
     obj: Any
         The class instance.
+    overrides:
+        Optional. Dictionary of entry names to override. For example, if a
+        class has private attributes that should be accessed using properties,
+        e.g.: {"_data": "data", "_time": "time"}.
 
     Returns
     -------
@@ -141,7 +151,9 @@ def _format_class_attributes(obj):
     out = class_name + " with attributes:\n"
 
     # Return the list of attributes
-    out += _format_dict_entries(obj.__dict__, quotes=False)
+    out += _format_dict_entries(
+        obj.__dict__, quotes=False, overrides=overrides
+    )
     return out
 
 

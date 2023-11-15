@@ -123,34 +123,14 @@ class MetaTimeSeries(type):
 class TimeSeriesDataDict(dict):
     """Data dictionary that checks sizes and converts to NumPy arrays."""
 
-    def __init__(self, ts):
-        """Initialize the class, with the parent TimeSeries as an argument."""
-        self._ts = ts
+    def __init__(self, source: dict = {}):
+        """Initialize the class using a source dictionary."""
+        for key in source:
+            self[key] = source[key]
 
     def __setitem__(self, key, value):
-        """
-        Overload setting an element.
-
-        Ensure that the key is a string and that the value's size is consistent
-        with the TimeSeries' time and already present data. We only check the
-        first data because this function would have already failed before if
-        all data were to have different first dimension sizes.
-
-        """
-        if not isinstance(key, str):
-            raise ValueError("Data key must be a string.")
-        value = np.array(value)
-
-        if (self._ts.time.shape[0]) > 0 and (
-            value.shape[0] != self._ts.time.shape[0]
-        ):
-            raise ValueError("Size mismatch")
-
-        if (len(self) > 0) and (
-            value.shape[0] != self[list(self.keys())[0]].shape[0]
-        ):
-            raise ValueError("Size mismatch")
-
+        """Cast the added data as a NumPy array."""
+        value = np.array(value, copy=True)
         super(TimeSeriesDataDict, self).__setitem__(key, value)
 
 
@@ -286,7 +266,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         events: list[TimeSeriesEvent] = [],
     ):
         self.time = time
-        self.data = data.copy()
+        self.data = data
         self.time_info = time_info.copy()
         self.data_info = data_info.copy()
         self.events = events.copy()
@@ -303,11 +283,23 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     @time.deleter
     def time(self):
-        del self._time
+        raise AttributeError("time property cannot be deleted.")
 
+    @property
+    def data(self):
+        """Data Property."""
+        return self._data
+
+    @data.setter
+    def data(self, value):
+        self._data = TimeSeriesDataDict(value)
+
+    @data.deleter
+    def data(self):
+        raise AttributeError("data property cannot be deleted.")
 
     # %% Dunders
-    
+
     @classmethod
     def __dir__(cls):
         """Generate the class directory."""
@@ -324,11 +316,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
             TimeSeries
 
         """
-        return kineticstoolkit._repr._format_class_attributes(self)
+        return kineticstoolkit._repr._format_class_attributes(
+            self, overrides={"_time": "time", "_data": "data"}
+        )
 
     def __repr__(self):
         """Generate the class representation."""
-        return kineticstoolkit._repr._format_class_attributes(self)
+        return str(self)
 
     def __eq__(self, ts):
         """
@@ -340,7 +334,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         return self._is_equivalent(ts)
-    
+
     # %% Private check functions
 
     def _is_equivalent(
@@ -684,7 +678,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             f"{len(self.data_info[data_key])} key(s) of the TimeSeries' "
             f"data_info[{data_key}] attribute."
         )
-        
+
     # %% Copy
 
     def copy(
@@ -740,7 +734,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if copy_events:
                 ts.events = deepcopy(self.events)
             return ts
-        
+
     # %% Data info management
 
     def add_data_info(
@@ -855,7 +849,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         except KeyError:
             self._raise_data_key_error(data_key)
         return ts
-    
+
     # %% Data management
 
     def add_data(
@@ -1091,7 +1085,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             pass  # It's okay if there was no data info for this data_key
 
         return ts
-    
+
     # %% Event management
 
     def _get_event_indexes(self, name: str) -> list[int]:
@@ -1664,7 +1658,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             if event.time <= np.max(ts.time) and event.time >= np.min(ts.time):
                 ts.add_event(event.time, event.name, in_place=True)
         return ts
-    
+
     # %% get_index methods
 
     def get_index_at_time(self, time: float) -> int:
@@ -2032,7 +2026,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 self.events[self._get_event_index(name, occurrence)].time,
                 inclusive=True,
             )
-        
+
     # %% get_ts methods
 
     def get_ts_before_index(
@@ -2677,7 +2671,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             name2, occurrence2, inclusive=seq_inclusive[1]
         )
         return self.get_ts_between_indexes(index1, index2, inclusive=True)
-    
+
     # %% Time management
 
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
@@ -2728,7 +2722,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             event.time += time
         ts.time += time
         return ts
-    
+
     def get_sample_rate(self) -> float:
         """
         Get the sample rate in samples/s.
@@ -3258,7 +3252,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts_out.data[data] = ts.data[data]
 
         return ts_out
-    
+
     # %% Graphical user interfaces
 
     def ui_edit_events(
@@ -4222,6 +4216,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         return self.get_ts_between_times(
             min(times), max(times), inclusive=inclusive
         )
+
 
 # %% Main
 
