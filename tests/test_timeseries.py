@@ -451,6 +451,12 @@ def test_add_remove_data_info():
     assert ts.data_info["Force"]["Unit"] == "N"
     assert ts.data_info["Force"]["Other"] == "hello"
 
+    # Check if overwrite works (change to try/except in version 1.0)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ts.add_data_info("Force", "Other", 111, in_place=True)
+    ts.add_data_info("Force", "Other", 111, in_place=True, overwrite=True)
+
     # Test removing non-existing data_info (should not work)
     try:
         ts = ts.remove_data_info("Nonexisting", "Other")

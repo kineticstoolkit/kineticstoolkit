@@ -756,6 +756,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         info_key: str,
         value: Any,
         *,
+        overwrite: bool = False,
         in_place: bool = False,
     ) -> TimeSeries:
         """
@@ -800,6 +801,21 @@ class TimeSeries(metaclass=MetaTimeSeries):
         check_types(TimeSeries.add_data_info, locals())
 
         ts = self if in_place else self.copy()
+
+        try:
+            self.data_info[data_key][info_key]
+            # It worked, therefore this data already exists.
+            if overwrite is False:
+                warnings.warn(
+                    f"A data info with same data_key ({data_key}) and "
+                    f"info_key ({info_key}) already exists in ths TimeSeries. "
+                    "Please use overwrite=True to suppress this warning. "
+                    "This warning will become an error in Kinetics Toolkit "
+                    "1.0."
+                )
+        except KeyError:
+            pass  # This data does not exist yet.
+
         try:
             ts.data_info[data_key][info_key] = value
         except KeyError:
@@ -911,6 +927,19 @@ class TimeSeries(metaclass=MetaTimeSeries):
               of existing data or the existing time.
             - If data is a pandas DataFrame and its index does not match the
               existing time.
+
+        Example
+        -------
+        >> ts = ktk.TimeSeries()
+        >> ts = ts.add_data("data1", [1.0, 2.0, 3.0])
+        >> ts = ts.add_data("data2", [4.0, 5.0, 6.0])
+        >> ts
+        TimeSeries with attributes:
+                 time: array([], dtype=float64)
+                 data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
+            time_info: {'Unit': 's'}
+            data_info: {}
+               events: []
 
         """
         check_types(TimeSeries.add_data, locals())
