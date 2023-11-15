@@ -130,8 +130,15 @@ class TimeSeriesDataDict(dict):
 
     def __setitem__(self, key, value):
         """Cast the added data as a NumPy array."""
-        value = np.array(value, copy=True)
-        super(TimeSeriesDataDict, self).__setitem__(key, value)
+        to_set = np.array(value, copy=True)
+
+        if len(to_set.shape) == 0:
+            raise AttributeError(
+                "Data must be an array. However, a value of "
+                f"{value} was provided."
+            )
+
+        super(TimeSeriesDataDict, self).__setitem__(key, to_set)
 
 
 @dataclass
@@ -279,7 +286,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     @time.setter
     def time(self, value):
-        self._time = np.array(value, copy=True)
+        to_set = np.array(value, copy=True)
+        if len(to_set.shape) != 1:
+            raise AttributeError(
+                "Time must be a unidimensional array. However, a value of "
+                f"{value} was provided."
+            )
+        self._time = to_set
 
     @time.deleter
     def time(self):
@@ -863,6 +876,14 @@ class TimeSeries(metaclass=MetaTimeSeries):
         """
         Add new data to the TimeSeries.
 
+        Functionally, both of these lines are equivalent::
+            timeseries.data["name"] = value
+            timeseries = timeseries.add_data(name, value)
+
+        However, using add_data performs additional checks to ensure that no
+        existing data is overwritten, and that time is matching for all data.
+        See Raises section for more information on these checks.
+
         Parameters
         ----------
         data_key
@@ -891,48 +912,46 @@ class TimeSeries(metaclass=MetaTimeSeries):
             - If data is a pandas DataFrame and its index does not match the
               existing time.
 
-        Note
-        ----
-        If the TimeSeries' time attribute is still unset, a matching time is
-        created with a period of 1 second.
-
         """
         check_types(TimeSeries.add_data, locals())
-        self._check_well_shaped()
 
         ts = self if in_place else self.copy()
 
         # Cast data
         data_to_add = np.array(data_value)  # Will be set at the very end
-        time_to_set = np.array([])  # Will be set at the very end
 
-        # If this is a Pandas DataFrame, check that its index is compatible
-        # with the (maybe) existing time. Create the time based on the index
-        # if time is None.
-        if isinstance(data_value, pd.DataFrame):
-            if ts.time.shape[0] == 0:
-                time_to_set = np.array(data_value.time)
-            elif (ts.time.shape[0] != data_to_add.shape[0]) or (
-                not np.allclose(ts.time, np.array(data_value.index))
-            ):
-                raise ValueError(
-                    "The index of the provided DataFrame does not match "
-                    "this TimeSeries' time attribute. This error was raised "
-                    "to prevent merging unsynchronized data. If you are "
-                    "confident that this DataFrame's data does match this "
-                    "TimeSeries, then set its index to this TimeSeries' time "
-                    "before adding it: "
-                    "the_dataframe.index = the_timeseries.time"
-                )
+        # Check that the data fits with the TimeSeries' time (if it exists)
+        if ts.time.shape[0] != 0:
+            # If this is a Pandas DataFrame, check that its index is fully
+            # compatible with time
+            if isinstance(data_value, pd.DataFrame):
+                if (ts.time.shape[0] != data_to_add.shape[0]) or (
+                    not np.allclose(ts.time, np.array(data_value.index))
+                ):
+                    raise ValueError(
+                        "The index of the provided DataFrame does not match "
+                        "this TimeSeries' time attribute. This error was raised "
+                        "to prevent merging unsynchronized data. If you are "
+                        "confident that this DataFrame's data does match this "
+                        "TimeSeries, then set its index to this TimeSeries' time "
+                        "before adding it: "
+                        "the_dataframe.index = the_timeseries.time"
+                    )
 
-        # For every other type, check that the dimensions fit at least.
-        else:
-            if ts.time.shape[0] == 0:
-                time_to_set = np.arange(data_to_add.shape[0], dtype=float)
+            # For every other type, check that the dimensions fit at least.
             elif ts.time.shape[0] != data_to_add.shape[0]:
                 raise ValueError(
                     f"This data has {data_to_add.shape[0]} samples while "
-                    f"this TimeSeries has {ts.time.shape[0]} samples."
+                    f"this TimeSeries' time has {ts.time.shape[0]} samples."
+                )
+
+        # Check that the data fits with other data (if it exists)
+        for key in ts.data:
+            if ts.data[key].shape[0] != data_to_add.shape[0]:
+                raise ValueError(
+                    f"This data has {data_to_add.shape[0]} samples while "
+                    f"this TimeSeries' data {key} has {ts.data[key].shape[0]} "
+                    "samples."
                 )
 
         # Check that we would not overwrite by mistake
@@ -943,9 +962,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "True."
             )
 
-        # Add the data and set time if needed
-        if time_to_set.shape[0] != 0:
-            ts.time = time_to_set
+        # Add the data
         ts.data[data_key] = data_to_add
         return ts
 

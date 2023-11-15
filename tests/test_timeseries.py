@@ -72,7 +72,7 @@ def test_TimeSeriesEvent():
     assert the_dict["Name"] == "event_name"
 
 
-# %% TimeSeries constructo, copy and checks
+# %% TimeSeries constructor, copy and checks
 
 
 def test_TimeSeries():
@@ -179,6 +179,13 @@ def test_time_property():
     assert isinstance(ts.time, np.ndarray)
     assert np.array_equal(ts.time, [1, 2, 3])
 
+    # Set a non-array
+    try:
+        ts.time = 0
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
 
 def test_data_property():
     # Set data on contstructor
@@ -207,6 +214,13 @@ def test_data_property():
     assert isinstance(ts.data["data2"], np.ndarray)
     assert np.array_equal(ts.data["data1"], [1, 2, 3])
     assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+    # Set a non-array
+    try:
+        ts.data["data1"] = 0
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
 
 
 def test_check_well_typed():
@@ -450,13 +464,14 @@ def test_add_remove_data_info():
     assert len(ts.data_info["Force"]) == 1
 
 
+# %% Data
+
+
 def test_add_data():
     ts = ktk.TimeSeries()
-    assert ts.time.shape[0] == 0
 
     # Adding data and populating a corresponding time value
     ts.add_data("data1", np.eye(3), in_place=True)
-    assert np.allclose(ts.time, [0, 1, 2])
     assert np.allclose(ts.data["data1"], np.eye(3))
 
     # Adding data that already exists
@@ -468,12 +483,10 @@ def test_add_data():
 
     # Adding data that already exists but with overwrite = True
     ts.add_data("data1", 3 * np.eye(3), overwrite=True, in_place=True)
-    assert np.allclose(ts.time, [0, 1, 2])
     assert np.allclose(ts.data["data1"], 3 * np.eye(3))
 
     # Adding matching data
     ts.add_data("data2", 2 * np.eye(3), in_place=True)
-    assert np.allclose(ts.time, [0, 1, 2])
     assert np.allclose(ts.data["data2"], 2 * np.eye(3))
 
     # Adding non-matching data
@@ -485,8 +498,8 @@ def test_add_data():
 
     # Adding a DataFrame with matching indexes
     df = pd.DataFrame(5 * np.eye(3))
+    ts.time = [0, 1, 2]
     ts.add_data("data3", df, in_place=True)
-    assert np.allclose(ts.time, [0, 1, 2])
     assert np.allclose(ts.data["data3"], 5 * np.eye(3))
 
     # Adding a DataFrame with matching size but mismatching indexes
@@ -504,6 +517,7 @@ def test_add_data():
     assert np.allclose(ts.data["data4"], 5 * np.eye(3))
 
     # Adding a DataFrame with mismatching size
+    ts = ktk.TimeSeries(data={"data1": [0, 1, 2]})
     df = pd.DataFrame(6 * np.eye(4))
     try:
         ts.add_data("data5", df, in_place=True)
