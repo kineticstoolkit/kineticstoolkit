@@ -63,7 +63,7 @@ def download(filename: str, **kwargs) -> str:
 
     Note
     ----
-    The ``**kwargs`` arguments are for debugging and internal use only.
+    The `**kwargs` arguments are for debugging and internal use only.
 
     """
     # Additional information for developers:

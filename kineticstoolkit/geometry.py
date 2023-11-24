@@ -185,8 +185,8 @@ def create_transforms(
     ----------
     seq
         Optional. Specifies sequence of axes for rotations. Up to 3 characters
-        belonging to the set {'X', 'Y', 'Z'} for intrinsic rotations (moving
-        axes), or {'x', 'y', 'z'} for extrinsic rotations (fixed axes).
+        belonging to the set {"X", "Y", "Z"} for intrinsic rotations (moving
+        axes), or {"x", "y", "z"} for extrinsic rotations (fixed axes).
         Extrinsic and intrinsic rotations cannot be mixed in one function call.
         Required if angles is specified.
 
@@ -223,7 +223,7 @@ def create_transforms(
     np.ndarray
         An Nx4x4 series of homogeneous transforms.
 
-    See also
+    See Also
     --------
     ktk.geometry.create_frames, ktk.geometry.rotate, ktk.geometry.translate,
     ktk.geometry.scale
@@ -234,7 +234,7 @@ def create_transforms(
     degrees around x:
 
         >>> import kineticstoolkit.lab as ktk
-        >>> ktk.geometry.create_transforms(seq='x', angles=[0, 90], degrees=True)
+        >>> ktk.geometry.create_transforms(seq="x", angles=[0, 90], degrees=True)
         array([[[ 1.,  0.,  0.,  0.],
                 [ 0.,  1.,  0.,  0.],
                 [ 0.,  0.,  1.,  0.],
@@ -320,8 +320,8 @@ def rotate(
 
     seq
         Specifies sequence of axes for rotations. Up to 3 characters
-        belonging to the set {'X', 'Y', 'Z'} for intrinsic rotations (moving
-        axes), or {'x', 'y', 'z'} for extrinsic rotations (fixed axes).
+        belonging to the set {"X", "Y", "Z"} for intrinsic rotations (moving
+        axes), or {"x", "y", "z"} for extrinsic rotations (fixed axes).
         Extrinsic and intrinsic rotations cannot be mixed in one function call.
 
     angles
@@ -348,7 +348,7 @@ def rotate(
     np.ndarray
         Array_like of shape (N, ...): the rotated coordinates.
 
-    See also
+    See Also
     --------
     ktk.geometry.translate, ktk.geometry.scale, ktk.geometry.create_transforms,
     ktk.geometry.matmul
@@ -360,7 +360,7 @@ def rotate(
 
         >>> import kineticstoolkit.lab as ktk
         >>> angles = np.array([[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]])
-        >>> ktk.geometry.rotate([[1, 0, 0, 1]], 'zx', angles, degrees=True)
+        >>> ktk.geometry.rotate([[1, 0, 0, 1]], "zx", angles, degrees=True)
         array([[1.        , 0.        , 0.        , 1.        ],
                [0.98480775, 0.1227878 , 0.1227878 , 1.        ],
                [0.93969262, 0.24184476, 0.24184476, 1.        ],
@@ -389,7 +389,7 @@ def translate(coordinates, /, translations):
     np.ndarray
         Array_like of shape (N, ...): the translated coordinates.
 
-    See also
+    See Also
     --------
     ktk.geometry.rotate, ktk.geometry.scale, ktk.geometry.create_transforms,
     ktk.geometry.matmul
@@ -428,7 +428,7 @@ def scale(coordinates, /, scales):
     np.ndarray
         Array_like of shape (N, ...): the translated coordinates.
 
-    See also
+    See Also
     --------
     ktk.geometry.rotate, ktk.geometry.translate,
     ktk.geometry.create_transforms, ktk.geometry.matmul
@@ -465,8 +465,8 @@ def get_angles(
         An Nx4x4 series of transformation matrices.
 
     seq
-        3 characters belonging to the set {'X', 'Y', 'Z'} for intrinsic
-        rotations (moving axes), or {'x', 'y', 'z'} for extrinsic rotations
+        3 characters belonging to the set {"X", "Y", "Z"} for intrinsic
+        rotations (moving axes), or {"x", "y", "z"} for extrinsic rotations
         (fixed axes). Adjacent axes cannot be the same. Extrinsic and
         intrinsic rotations cannot be mixed in one function call.
 
@@ -579,7 +579,7 @@ def create_frames(
     np.ndarray
         Series of frames (Nx4x4).
 
-    See also
+    See Also
     --------
     ktk.geometry.create_transforms
 
@@ -664,7 +664,7 @@ def get_local_coordinates(
         Series of local coordinates in the same shape than
         `global_coordinates`.
 
-    See also
+    See Also
     --------
     ktk.geometry.get_global_coordinates
 
@@ -725,7 +725,7 @@ def get_global_coordinates(
         Series of global coordinates in the same shape than
         `local_coordinates`.
 
-    See also
+    See Also
     --------
     ktk.geometry.get_local_coordinates
 

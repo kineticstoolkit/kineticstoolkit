@@ -187,7 +187,7 @@ def track_cluster(
         tracked cluster's local coordinate system. The default is False.
     lcs_name
         Optional. Name of the TimeSeries data entry for the tracked local
-        coordinate system. The default is 'LCS'.
+        coordinate system. The default is "LCS".
 
     Returns
     -------

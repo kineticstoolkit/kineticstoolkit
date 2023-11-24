@@ -70,7 +70,7 @@ def detect_cycles(
       corresponds to the start of phase 1
     - event_names[1]:
       corresponds to the start of phase 2
-    - '_':
+    - "_":
       corresponds to the end of the cycle.
 
     Parameters
@@ -82,14 +82,14 @@ def detect_cycles(
         unidimensional.
     event_names
         Optional. Event names to add in the output TimeSeries. Default is
-        ['phase1', 'phase2'].
+        ["phase1", "phase2"].
     thresholds
         Optional. Values to cross to register phase changes. Default is
         [0., 1.].
     directions
         Optional. Directions to cross thresholds to register phase changes.
-        Either ['rising', 'falling'] or ['falling', 'rising']. Default is
-        ['rising', 'falling'].
+        Either ["rising", "falling"] or ["falling", "rising"]. Default is
+        ["rising", "falling"].
     min_durations
         Optional. Minimal phase durations in seconds. Default is [0., 0.].
     max_durations
@@ -209,7 +209,7 @@ def time_normalize(
     put end to end. For example, for a TimeSeries that contains three
     cycles, a time normalization with 100 points will give a TimeSeries
     of length 300. The TimeSeries' events are also time-normalized, including
-    event_name1 but with event_name2 renamed as '_'.
+    event_name1 but with event_name2 renamed as "_".
 
     Parameters
     ----------
@@ -519,14 +519,14 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 #     >>> import kineticstoolkit.lab as ktk
 #     >>> # Create a TimeSeries with different time-normalized events
 #     >>> ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
-#     >>> ts = ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
-#     >>> ts = ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
-#     >>> ts = ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
-#     >>> ts = ts.add_event(382, 'event1')  # 2nd occ. event1 at 82% of cycle 3
+#     >>> ts = ts.add_event(9, "event1")    # event1 at 9% of cycle 0
+#     >>> ts = ts.add_event(110, "event1")  # event1 at 10% of cycle 1
+#     >>> ts = ts.add_event(312, "event1")  # event1 at 12% of cycle 3
+#     >>> ts = ts.add_event(382, "event1")  # 2nd occ. event1 at 82% of cycle 3
 
 #     >>> # Stack these events
 #     >>> events = ktk.cycles.stack_events(ts)
-#     >>> events['event1']
+#     >>> events["event1"]
 #     [[9.0], [10.0], [], [12.0, 82.0]]
 
 #     """

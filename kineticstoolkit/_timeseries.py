@@ -159,7 +159,7 @@ class TimeSeriesEvent:
 
     Example
     -------
-    >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+    >>> event = ktk.TimeSeriesEvent(time=1.5, name="event_name")
     >>> event
     TimeSeriesEvent(time=1.5, name='event_name')
 
@@ -190,7 +190,7 @@ class TimeSeriesEvent:
 
         Example
         -------
-        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name="event_name")
         >>> event._to_tuple()
         (1.5, 'event_name')
 
@@ -203,7 +203,7 @@ class TimeSeriesEvent:
 
         Example
         -------
-        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name="event_name")
         >>> event._to_list()
         [1.5, 'event_name']
 
@@ -216,7 +216,7 @@ class TimeSeriesEvent:
 
         Example
         -------
-        >>> event = ktk.TimeSeriesEvent(time=1.5, name='event_name')
+        >>> event = ktk.TimeSeriesEvent(time=1.5, name="event_name")
         >>> event._to_dict()
         {'Time': 1.5, 'Name': 'event_name'}
 
@@ -242,13 +242,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
         which first dimension corresponds to time.
 
     time_info : dict[str, Any]
-        Contains metadata relative to time. The default is {'Unit': 's'}
+        Contains metadata relative to time. The default is {"Unit": "s"}
 
     data_info : dict[str, dict[str, Any]]
         Contains facultative metadata relative to data. For example, the
-        data_info attribute could indicate the unit of data['Forces']::
+        data_info attribute could indicate the unit of data["Forces"]::
 
-            data['Forces'] = {'Unit': 'N'}
+            data["Forces"] = {"Unit": "N"}
 
         To facilitate the management of data_info, please use
         `ktk.TimeSeries.add_data_info`.
@@ -787,13 +787,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_data_info('Forces', 'Unit', 'N')
-        >>> ts = ts.add_data_info('Marker1', 'Color', [43, 2, 255])
+        >>> ts = ts.add_data_info("Forces", "Unit", "N")
+        >>> ts = ts.add_data_info("Marker1", "Color", [43, 2, 255])
 
-        >>> ts.data_info['Forces']
+        >>> ts.data_info["Forces"]
         {'Unit': 'N'}
 
-        >>> ts.data_info['Marker1']
+        >>> ts.data_info["Marker1"]
         {'Color': [43, 2, 255]}
 
         """
@@ -856,12 +856,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_data_info('Forces', 'Unit', 'N')
-        >>> ts.data_info['Forces']
+        >>> ts = ts.add_data_info("Forces", "Unit", "N")
+        >>> ts.data_info["Forces"]
         {'Unit': 'N'}
 
-        >>> ts = ts.remove_data_info('Forces', 'Unit')
-        >>> ts.data_info['Forces']
+        >>> ts = ts.remove_data_info("Forces", "Unit")
+        >>> ts.data_info["Forces"]
         {}
 
         """
@@ -892,7 +892,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         """
         Add new data to the TimeSeries.
 
-        Functionally, both of these lines are equivalent::
+        Conceptually, these two lines are equivalent::
+
             timeseries.data["name"] = value
             timeseries = timeseries.add_data(name, value)
 
@@ -1030,8 +1031,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts.data['test'] = np.arange(10)
-        >>> ts = ts.add_data_info('test', 'Unit', 'm')
+        >>> ts = ts.add_data("test", np.arange(10))
+        >>> ts = ts.add_data_info("test", "Unit", "m")
 
         >>> ts.data
         {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -1039,7 +1040,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.data_info
         {'test': {'Unit': 'm'}}
 
-        >>> ts = ts.rename_data('test', 'signal')
+        >>> ts = ts.rename_data("test", "signal")
 
         >>> ts.data
         {'signal': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -1096,10 +1097,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         Example
         -------
-        >>> # Prepare a test TimeSeries with data 'test'
+        >>> # Prepare a test TimeSeries with data "test"
         >>> ts = ktk.TimeSeries()
-        >>> ts.data['test'] = np.arange(10)
-        >>> ts = ts.add_data_info('test', 'Unit', 'm')
+        >>> ts = ts.add_data("test", np.arange(10))
+        >>> ts = ts.add_data_info("test", "Unit", "m")
 
         >>> ts.data
         {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -1107,8 +1108,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.data_info
         {'test': {'Unit': 'm'}}
 
-        >>> # Now remove data 'test'
-        >>> ts = ts.remove_data('test')
+        >>> # Now remove data "test"
+        >>> ts = ts.remove_data("test")
 
         >>> ts.data
         {}
@@ -1281,9 +1282,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Parameters
         ----------
         time
-            The time of the event, in the same unit as `time_info['Unit']`.
+            The time of the event, in the same unit as `time_info["Unit"]`.
         name
-            Optional. The name of the event. The default is 'event'.
+            Optional. The name of the event. The default is "event".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -1309,9 +1310,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(5.5, 'event1')
-        >>> ts = ts.add_event(10.8, 'event2')
-        >>> ts = ts.add_event(2.3, 'event2')
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(2.3, "event2")
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
@@ -1375,22 +1376,22 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(5.5, 'event1')
-        >>> ts = ts.add_event(10.8, 'event2')
-        >>> ts = ts.add_event(2.3, 'event2')
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(2.3, "event2")
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
          TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts = ts.rename_event('event2', 'event3')
+        >>> ts = ts.rename_event("event2", "event3")
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event3'),
          TimeSeriesEvent(time=2.3, name='event3')]
 
-        >>> ts = ts.rename_event('event3', 'event4', occurrence=0)
+        >>> ts = ts.rename_event("event3", "event4", occurrence=0)
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event3'),
@@ -1454,21 +1455,21 @@ class TimeSeries(metaclass=MetaTimeSeries):
         -------
         >>> # Instanciate a timeseries with some events
         >>> ts = ktk.TimeSeries()
-        >>> ts = ts.add_event(5.5, 'event1')
-        >>> ts = ts.add_event(10.8, 'event2')
-        >>> ts = ts.add_event(2.3, 'event2')
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(2.3, "event2")
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
          TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts = ts.remove_event('event1')
+        >>> ts = ts.remove_event("event1")
         >>> ts.events
         [TimeSeriesEvent(time=10.8, name='event2'),
          TimeSeriesEvent(time=2.3, name='event2')]
 
-        >>> ts = ts.remove_event('event2', 1)
+        >>> ts = ts.remove_event("event2", 1)
         >>> ts.events
         [TimeSeriesEvent(time=2.3, name='event2')]
 
@@ -1511,6 +1512,17 @@ class TimeSeries(metaclass=MetaTimeSeries):
         -------
         int
             The number of occurrences.
+
+        Example
+        -------
+        >>> # Instanciate a timeseries with some events
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(2.3, "event2")
+
+        >>> ts.count_events("event2")
+        2
 
         """
         self._check_well_typed()
@@ -1610,10 +1622,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(100)/10)
-        >>> ts = ts.add_event(2, 'two')
-        >>> ts = ts.add_event(1, 'one')
-        >>> ts = ts.add_event(3, 'three')
-        >>> ts = ts.add_event(3, 'three')
+        >>> ts = ts.add_event(2, "two")
+        >>> ts = ts.add_event(1, "one")
+        >>> ts = ts.add_event(3, "three")
+        >>> ts = ts.add_event(3, "three")
 
         >>> ts.events
         [TimeSeriesEvent(time=2, name='two'),
@@ -1918,15 +1930,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts = ts.add_event(0.2, 'event')
-        >>> ts = ts.add_event(0.36, 'event')
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.36, "event")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_index_at_event('event')
+        >>> ts.get_index_at_event("event")
         2
 
-        >>> ts.get_index_at_event('event', occurrence=1)
+        >>> ts.get_index_at_event("event", occurrence=1)
         4
 
         """
@@ -1976,18 +1988,18 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts = ts.add_event(0.2, 'event')
-        >>> ts = ts.add_event(0.36, 'event')
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.36, "event")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_index_before_event('event')
+        >>> ts.get_index_before_event("event")
         1
 
-        >>> ts.get_index_before_event('event', occurrence=1)
+        >>> ts.get_index_before_event("event", occurrence=1)
         3
 
-        >>> ts.get_index_before_event('event', occurrence=0, inclusive=True)
+        >>> ts.get_index_before_event("event", occurrence=0, inclusive=True)
         2
 
         """
@@ -2044,18 +2056,18 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts = ts.add_event(0.2, 'event')
-        >>> ts = ts.add_event(0.36, 'event')
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.36, "event")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_index_after_event('event')
+        >>> ts.get_index_after_event("event")
         3
 
-        >>> ts.get_index_after_event('event', occurrence=1)
+        >>> ts.get_index_after_event("event", occurrence=1)
         4
 
-        >>> ts.get_index_after_event('event', inclusive=True)
+        >>> ts.get_index_after_event("event", inclusive=True)
         2
 
         """
@@ -2516,21 +2528,21 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts = ts.add_event(0.2, 'event')
-        >>> ts = ts.add_event(0.35, 'event')
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.35, "event")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_before_event('event').time
+        >>> ts.get_ts_before_event("event").time
         array([0. , 0.1])
 
-        >>> ts.get_ts_before_event('event', inclusive=True).time
+        >>> ts.get_ts_before_event("event", inclusive=True).time
         array([0. , 0.1, 0.2])
 
-        >>> ts.get_ts_before_event('event', 1).time
+        >>> ts.get_ts_before_event("event", 1).time
         array([0. , 0.1, 0.2, 0.3])
 
-        >>> ts.get_ts_before_event('event', 1, inclusive=True).time
+        >>> ts.get_ts_before_event("event", 1, inclusive=True).time
         array([0. , 0.1, 0.2, 0.3, 0.4])
 
         """
@@ -2590,21 +2602,21 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts = ts.add_event(0.2, 'event')
-        >>> ts = ts.add_event(0.35, 'event')
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.35, "event")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_after_event('event').time
+        >>> ts.get_ts_after_event("event").time
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_after_event('event', inclusive=True).time
+        >>> ts.get_ts_after_event("event", inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_after_event('event', 1).time
+        >>> ts.get_ts_after_event("event", 1).time
         array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_after_event('event', 1, inclusive=True).time
+        >>> ts.get_ts_after_event("event", 1, inclusive=True).time
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
@@ -2676,15 +2688,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
-        >>> ts = ts.add_event(0.2, 'event')
-        >>> ts = ts.add_event(0.55, 'event')
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.55, "event")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
-        >>> ts.get_ts_between_events('event', 'event', 0, 1).time
+        >>> ts.get_ts_between_events("event", "event", 0, 1).time
         array([0.3, 0.4, 0.5])
 
-        >>> ts.get_ts_between_events('event', 'event', 0, 1, \
+        >>> ts.get_ts_between_events("event", "event", 0, 1, \
                                      inclusive=True).time
         array([0.2, 0.3, 0.4, 0.5, 0.6])
 
@@ -2792,6 +2804,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
         --------
         ktk.TimeSeries.resample
 
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(100)/10)  # 100 samples at 10 Hz
+        >>> ts.get_sample_rate()
+        10.0
+
         """
         check_types(TimeSeries.get_sample_rate, locals())
         self._check_well_shaped()
@@ -2837,9 +2855,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
             property of the output TimeSeries.
         kind
             Optional. The interpolation method. This input may take any value
-            supported by scipy.interpolate.interp1d, such as 'linear',
-            'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous',
-            'next'. Additionally, kind can be 'pchip'.
+            supported by scipy.interpolate.interp1d, such as "linear",
+            "nearest", "zero", "slinear", "quadratic", "cubic", "previous",
+            "next". Additionally, kind can be "pchip".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -2867,10 +2885,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         --------
         >>> ts = ktk.TimeSeries(time=np.arange(10.))
-        >>> ts.data['data'] = ts.time ** 2
+        >>> ts = ts.add_data("data", ts.time ** 2)
         >>> ts.time
         array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
-        >>> ts.data['data']
+        >>> ts.data["data"]
         array([ 0.,  1.,  4.,  9., 16., 25., 36., 49., 64., 81.])
 
         # Example 1: Resampling at 2 Hz
@@ -2880,7 +2898,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts1.time
         array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5, 6. , 6.5, 7. , 7.5, 8. , 8.5, 9. ])
 
-        >>> ts1.data['data']
+        >>> ts1.data["data"]
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5, 25. , 30.5, 36. , 42.5, 49. , 56.5, 64. , 72.5, 81. ])
 
         # Example 2: Resampling on new times
@@ -2889,12 +2907,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts2.time
         array([0. , 0.5, 1. , 1.5, 2. ])
 
-        >>> ts2.data['data']
+        >>> ts2.data["data"]
         array([0. , 0.5, 1. , 2.5, 4. ])
 
         # Example 3: Resampling at 2 Hz with missing data in the original ts
-        >>> ts.data['data'][[0, 1, 5, 8, 9]] = np.nan
-        >>> ts.data['data']
+        >>> ts.data["data"][[0, 1, 5, 8, 9]] = np.nan
+        >>> ts.data["data"]
         array([nan, nan,  4.,  9., 16., nan, 36., 49., nan, nan])
 
         >>> ts3 = ts.resample(2.0)
@@ -2902,7 +2920,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts3.time
         array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5, 6. , 6.5, 7. , 7.5, 8. , 8.5, 9. ])
 
-        >>> ts3.data['data']
+        >>> ts3.data["data"]
         array([ nan,  nan,  nan,  nan,  4. ,  6.5,  9. , 12.5, 16. ,  nan,  nan, nan, 36. , 42.5, 49. ,  nan,  nan,  nan,  nan])
 
         """
@@ -3029,13 +3047,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
             >>> ts = ktk.TimeSeries(time = np.arange(10))
-            >>> ts.data['signal1'] = ts.time
-            >>> ts.data['signal2'] = ts.time**2
-            >>> ts.data['signal3'] = ts.time**3
+            >>> ts = ts.add_data("signal1", ts.time)
+            >>> ts = ts.add_data("signal2", ts.time**2)
+            >>> ts = ts.add_data("signal3", ts.time**3)
             >>> ts.data.keys()
             dict_keys(['signal1', 'signal2', 'signal3'])
 
-            >>> ts2 = ts.get_subset(['signal1', 'signal3'])
+            >>> ts2 = ts.get_subset(["signal1", "signal3"])
             >>> ts2.data.keys()
             dict_keys(['signal1', 'signal3'])
 
@@ -3206,12 +3224,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example
         -------
         >>> ts = ktk.TimeSeries(time=np.arange(4))
-        >>> ts.data['Data'] = np.zeros((4, 2))
-        >>> ts.data['Data'][2, :] = np.nan
+        >>> ts = ts.add_data("data", np.zeros((4, 2)))
+        >>> ts.data["data"][2, :] = np.nan
         >>> ts.data
-        {'Data': array([[ 0.,  0.], [ 0.,  0.], [nan, nan], [ 0.,  0.]])}
+        {'data': array([[ 0.,  0.], [ 0.,  0.], [nan, nan], [ 0.,  0.]])}
 
-        >>> ts.isnan('Data')
+        >>> ts.isnan("data")
         array([False, False,  True, False])
 
         """
@@ -3241,9 +3259,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
             zero to fill all missing samples.
         method
             Optional. The interpolation method. This input may take any value
-            supported by scipy.interpolate.interp1d, such as 'linear',
-            'nearest', 'zero', 'slinear', 'quadratic', 'cubic', 'previous' or
-            'next'.
+            supported by scipy.interpolate.interp1d, such as "linear",
+            "nearest", "zero", "slinear", "quadratic", "cubic", "previous" or
+            "next".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -3700,20 +3718,20 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Additional positional and keyboard arguments are passed to
         matplotlib's ``pyplot.plot`` function::
 
-            ts.plot(['Forces'], '--')
+            ts.plot(["Forces"], "--")
 
         plots the forces using a dashed line style.
 
         Example
         -------
-        For a TimeSeries ``ts`` with data keys being 'Forces', 'Moments' and
-        'Angle'::
+        For a TimeSeries ``ts`` with data keys being "Forces", "Moments" and
+        "Angle"::
 
             ts.plot()
 
         plots all data (Forces, Moments and Angle), whereas::
 
-            ts.plot(['Forces', 'Moments'])
+            ts.plot(["Forces", "Moments"])
 
         plots only the forces and moments, without plotting the angle.
 
@@ -3853,7 +3871,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         The second element of the output tuple is a list where each element
         corresponds to a column of the DataFrame, and each element is a copy
         of the inner data_info dictionary for this data. For instance,
-        an element of the list could be: {'Unit': 'N'}.
+        an element of the list could be: {"Unit": "N"}.
         """
         # Init
         df_out = pd.DataFrame()
@@ -3960,9 +3978,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example with unidimensional data:
 
         >>> ts = ktk.TimeSeries(time=np.arange(3) / 10)
-        >>> ts.data['Data'] = np.array([0.0, 2.0, 3.0])
+        >>> ts = ts.add_data("test", np.array([0.0, 2.0, 3.0]))
         >>> ts.to_dataframe()
-             Data
+             test
         0.0   0.0
         0.1   2.0
         0.2   3.0
@@ -3970,15 +3988,15 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Example with multidimensional data:
 
         >>> ts = ktk.TimeSeries(time=np.arange(4) / 10)
-        >>> ts.data['Data'] = np.repeat([[0.0, 2.0, 3.0]], 4, axis=0)
-        >>> ts.data['Data']
+        >>> ts = ts.add_data("test", np.repeat([[0.0, 2.0, 3.0]], 4, axis=0))
+        >>> ts.data["test"]
         array([[0., 2., 3.],
                [0., 2., 3.],
                [0., 2., 3.],
                [0., 2., 3.]])
 
         >>> ts.to_dataframe()
-              Data[0]  Data[1]  Data[2]
+              test[0]  test[1]  test[2]
          0.0      0.0      2.0      3.0
          0.1      0.0      2.0      3.0
          0.2      0.0      2.0      3.0
@@ -3997,9 +4015,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         [0], [1], [0,0], [0,1], etc. are converted to multidimensional
         arrays. For example, if a DataFrame has these column names::
 
-            'Forces[0]', 'Forces[1]', 'Forces[2]', 'Forces[3]'
+            "Forces[0]", "Forces[1]", "Forces[2]", "Forces[3]"
 
-        then a single data key is created ('Forces') and the shape of the
+        then a single data key is created ("Forces") and the shape of the
         data is Nx4.
 
         Parameters
@@ -4023,29 +4041,29 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         >>> import pandas as pd
         >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
-        >>> df.columns = ['data1', 'data2']
+        >>> df.columns = ["test1", "test2"]
         >>> df
-           data1  data2
+           test1  test2
         0    1.0    2.0
         1    3.0    4.0
         2    5.0    6.0
 
         >>> ts = ktk.TimeSeries.from_dataframe(df)
         >>> ts.data
-        {'data1': array([1., 3., 5.]), 'data2': array([2., 4., 6.])}
+        {'test1': array([1., 3., 5.]), 'test2': array([2., 4., 6.])}
 
         Example with multidimensional data:
 
-        >>> df.columns = ['data[0]', 'data[1]']
+        >>> df.columns = ["test[0]", "test[1]"]
         >>> df
-           data[0]  data[1]
+           test[0]  test[1]
         0      1.0      2.0
         1      3.0      4.0
         2      5.0      6.0
 
         >>> ts = ktk.TimeSeries.from_dataframe(df)
         >>> ts.data
-        {'data': array([[1., 2.], [3., 4.], [5., 6.]])}
+        {'test': array([[1., 2.], [3., 4.], [5., 6.]])}
 
         """
         check_types(TimeSeries.from_dataframe, locals())

@@ -97,7 +97,7 @@ def save(filename: str, variable: Any) -> None:
     may not be supported. Only the following attributes of the DataFrame are
     saved: columns, index, and the data itself.
 
-    See also
+    See Also
     --------
     ktk.load
 
@@ -269,7 +269,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     Any
         The loaded variable.
 
-    See also
+    See Also
     --------
     ktk.save
 
@@ -370,7 +370,7 @@ def read_c3d(
     This function, which has been introduced in version 0.9, is still
     experimental and its behaviour or API may change slightly in the future.
 
-    See also
+    See Also
     --------
     ktk.write_c3d, ktk.geometry.scale
 
@@ -401,13 +401,13 @@ def read_c3d(
     these data are returned in output["ForcePlates"] as a TimeSeries following
     this structure:
 
-      - 'Forces0': Nx4 series of force vectors on platform 0.
-      - 'Forces1': Nx4 series of force vectors on platform 1.
-      - 'Forces2': Nx4 series of force vectors on platform 2.
+      - "Forces0": Nx4 series of force vectors on platform 0.
+      - "Forces1": Nx4 series of force vectors on platform 1.
+      - "Forces2": Nx4 series of force vectors on platform 2.
       - ...
-      - 'Moments0': Nx4 series of moment vectors on platform 0.
-      - 'Moments1': Nx4 series of moment vectors on platform 2.
-      - 'Moments2': Nx4 series of moment vectors on platform 3.
+      - "Moments0": Nx4 series of moment vectors on platform 0.
+      - "Moments1": Nx4 series of moment vectors on platform 2.
+      - "Moments2": Nx4 series of moment vectors on platform 3.
       - ...
         
     """
@@ -712,7 +712,7 @@ def write_c3d(
     analogs
         Optional. Analog signals, where each data key is one series. Series
         that are not unidimensional are converted to multiple unidimensional
-        series. For instance, if the shape of analogs.data['Forces'] is
+        series. For instance, if the shape of analogs.data["Forces"] is
         1000x3, then three unidimensional series of length 1000 are created in
         the C3D: Forces[0], Forces[1] and Forces[2].
 
@@ -720,7 +720,7 @@ def write_c3d(
         `points`'s sample rate. Also, `analogs.time[0]` must be the same as
         `points.time[0]`.
 
-    See also
+    See Also
     --------
     ktk.read_c3d
 

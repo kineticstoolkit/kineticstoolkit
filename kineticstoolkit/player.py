@@ -89,14 +89,14 @@ class Player:
         Optional. Each key corresponds to an inerconnection between markers,
         where one interconnection is another dict with the following keys:
 
-        - 'Links': list of lists strings, where each string is a marker
+        - "Links": list of lists strings, where each string is a marker
           name. For example, to create a link that spans Marker1 and Marker2,
           and another link that spans Marker3, Marker4 and Marker5,
-          interconnections['Links'] would be::
+          interconnections["Links"] would be::
 
-              [['Marker1', 'Marker2'], ['Marker3', 'Marker4', 'Marker5']]
+              [["Marker1", "Marker2"], ["Marker3", "Marker4", "Marker5"]]
 
-        - 'Color': character or tuple (RGB) that represents the color of the
+        - "Color": character or tuple (RGB) that represents the color of the
           link. Color must be a valid value for matplotlib's
           plots.
 
@@ -111,7 +111,7 @@ class Player:
 
     up
         Optional. Defines the ground plane by setting which axis is up. May be
-        {'x', 'y', 'z', '-x', '-y', '-z'}. Default is 'y'.
+        {"x", "y", "z", "-x", "-y", "-z"}. Default is "y".
 
     zoom
         Optional. Sets the initial camera zoom.
@@ -351,6 +351,7 @@ class Player:
         self._first_refresh()
 
     def __dir__(self):
+        """Return directory."""
         return ["to_html5", "close"]
 
     def _create_figure(self) -> None:

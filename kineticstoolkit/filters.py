@@ -215,8 +215,8 @@ def butter(
     order
         Optional. Order of the filter. Default is 2.
     btype
-        Optional. Can be either 'lowpass', 'highpass', 'bandpass' or
-        'bandstop'. Default is 'lowpass'.
+        Optional. Can be either "lowpass", "highpass", "bandpass" or
+        "bandstop". Default is "lowpass".
     filtfilt
         Optional. If True, the filter is applied two times in reverse direction
         to eliminate time lag. If False, the filter is applied only in forward
@@ -294,12 +294,12 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
-    >>> ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+    >>> ts = ts.add_data("test", np.array([0.0, 0.0, 1.0, 1.0, 0.0]))
 
     >>> # Source data
     >>> ts.time
     array([0. , 0.1, 0.2, 0.3, 0.4])
-    >>> ts.data['data']
+    >>> ts.data["test"]
     array([0., 0., 1., 1., 0.])
 
     >>> # First derivative
@@ -307,7 +307,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
 
     >>> ts1.time
     array([0.05, 0.15, 0.25, 0.35])
-    >>> ts1.data['data']
+    >>> ts1.data["test"]
     array([  0.,  10.,   0., -10.])
 
     >>> # Second derivative
@@ -315,7 +315,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
 
     >>> ts2.time
     array([0.1, 0.2, 0.3])
-    >>> ts2.data['data']
+    >>> ts2.data["test"]
     array([ 100., -100., -100.])
 
     """
@@ -351,10 +351,10 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 
     Example
     -------
-    >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
-    >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
-    >>> ts = ktk.filters.median(ts)
-    >>> ts.data['data1']
+    >>> ts = ktk.TimeSeries(time=np.arange(0, 6))
+    >>> ts = ts.add_data("test", [10., 11., 11., 20., 14., 15.])
+    >>> ts2 = ktk.filters.median(ts)
+    >>> ts2.data["test"]
     array([10., 11., 11., 14., 15., 15.])
 
     """
