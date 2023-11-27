@@ -400,7 +400,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
     TimeSeries with attributes:
-             time: array([0, 1, 2, 3, 4])
+             time: array([0., 1., 2., 3., 4.])
              data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
         time_info: {'Unit': 's'}
         data_info: {}
@@ -4437,7 +4437,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
         TimeSeries with attributes:
-                 time: array([0, 1, 2, 3, 4])
+                 time: array([0., 1., 2., 3., 4.])
                  data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
             time_info: {'Unit': 's'}
             data_info: {}
@@ -4465,7 +4465,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         )
 
         if time.shape[0] == 0:
-            ts.time = np.arange(ts.data[data_key].shape[0])
+            ts.time = np.arange(ts.data[data_key].shape[0]) * 1.0  # floats
         else:
             ts.time = time
 
