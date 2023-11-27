@@ -65,6 +65,7 @@ class MetaTimeSeries(type):
 
     @classmethod
     def __dir__(cls):
+        """Return the directory for the TimeSeries."""
         return [
             "copy",
             # Data info management
@@ -114,9 +115,10 @@ class MetaTimeSeries(type):
             "ui_edit_events",
             "ui_sync",
             "plot",
-            # Dataframe
-            "from_dataframe",
+            # IO
             "to_dataframe",
+            "from_dataframe",
+            "from_array",
         ]
 
 
@@ -293,7 +295,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         data_info: {}
            events: []
 
-    See also: TimeSeries.copy
+    See Also: TimeSeries.copy
 
     4. Creating a TimeSeries from a Pandas DataFrame::
 
@@ -322,7 +324,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
     >>> ts.data
     {'x': array([0., 1., 2., 3., 4.]), 'y': array([5., 6., 7., 8., 9.]), 'z': array([0., 0., 0., 0., 0.])}
 
-    See also: TimeSeries.from_dataframe
+    See Also: TimeSeries.from_dataframe
 
     5. Creating a multidimensional TimeSeries from a Pandas DataFrame (using
     brackets in column names)::
@@ -348,7 +350,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
            [3., 8., 0.],
            [4., 9., 0.]])}
 
-    See also: TimeSeries.from_dataframe
+    See Also: TimeSeries.from_dataframe
 
     6. Creating a multidimensional TimeSeries of higher order from a Pandas
     DataFrame (using brackets and commas in column names)::
@@ -390,7 +392,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
            [0.3, 8. ],
            [0.4, 9. ]])}
 
-    See also: TimeSeries.from_dataframe
+    See Also: TimeSeries.from_dataframe
 
     7. Creating a TimeSeries from any array (results in a TimeSeries with a
     single data key named "data" and with a matching time property with a
@@ -412,7 +414,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         data_info: {}
            events: []
 
-    See also: TimeSerise.from_array
+    See Also: TimeSerise.from_array
 
     """
 
@@ -424,7 +426,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         *,
         time: ArrayLike = [],
         time_info: dict[str, Any] = {"Unit": "s"},
-        data: dict[str, np.ndarray] = {},
+        data: dict[str, ArrayLike] = {},
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
     ):
@@ -467,7 +469,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         # Else, it's an array (thanks to runtime static tests)
         _assign_self(
             TimeSeries.from_array(
-                src,
+                np.array(src),
                 time=time,
                 time_info=time_info,
                 data_info=data_info,
@@ -4063,7 +4065,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self,
     ) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
         """
-        Implements TimeSeries.to_dataframe with additional data_info.
+        Implement TimeSeries.to_dataframe with additional data_info.
 
         The second element of the output tuple is a list where each element
         corresponds to a column of the DataFrame, and each element is a copy
@@ -4166,7 +4168,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         pd.DataFrame
             DataFrame with the index as the TimeSeries' time.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.from_dataframe
 
@@ -4204,6 +4206,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self._check_well_shaped()
         return self._to_dataframe_and_info()[0]
 
+    @staticmethod
     def from_dataframe(
         dataframe: pd.DataFrame,
         /,
@@ -4241,7 +4244,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             The converted TimeSeries.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.to_dataframe
 
@@ -4390,6 +4393,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return ts
 
+    @staticmethod
     def from_array(
         array: ArrayLike,
         /,
@@ -4450,17 +4454,22 @@ class TimeSeries(metaclass=MetaTimeSeries):
                events: []
 
         """
+        check_types(TimeSeries.from_array, locals())
+
         time = np.array(time)
-        data = np.array(array)
-        if time.shape[0] == 0:
-            time = np.arange(data.shape[0])
-        return TimeSeries(
-            time=time,
-            data={data_key: data},
+        ts = TimeSeries(
+            data={data_key: array},
             time_info=time_info,
             data_info=data_info,
             events=events,
         )
+
+        if time.shape[0] == 0:
+            ts.time = np.arange(ts.data[data_key].shape[0])
+        else:
+            ts.time = time
+
+        return ts
 
     # %% Deprecated methods
     @deprecated(
@@ -4593,7 +4602,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         TimeSeries
             A new TimeSeries that fulfils the specified conditions.
 
-        See also
+        See Also
         --------
         ktk.TimeSeries.get_ts_between_indexes
         ktk.TimeSeries.get_ts_between_times
@@ -4627,6 +4636,5 @@ class TimeSeries(metaclass=MetaTimeSeries):
 if __name__ == "__main__":  # pragma: no cover
     import doctest
     import numpy as np
-    import kineticstoolkit.lab as ktk
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

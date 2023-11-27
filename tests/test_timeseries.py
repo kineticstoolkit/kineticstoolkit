@@ -356,7 +356,7 @@ def test_check_not_empty_data():
     ts._check_not_empty_data()
 
 
-# %% From and to dataframe
+# %% From array, from and to dataframe
 
 
 def test_from_to_dataframe():
@@ -437,6 +437,85 @@ def test_from_to_dataframe():
 
 #     df2 = ts.to_dataframe()
 #     assert np.all(df == df2)
+
+
+def test_from_array():
+    # From array
+    ts = ktk.TimeSeries.from_array(
+        [1, 2, 3],
+        time=[5, 6, 7],
+        data_key="oh",
+        time_info={"oh": "ah"},
+        data_info={"oh": {"ah": "eh"}},
+        events=[ktk.TimeSeriesEvent(1, "a")],
+    )
+    assert np.array_equal(ts.time, [5, 6, 7])
+    assert np.array_equal(ts.data["oh"], [1, 2, 3])
+    assert ts.time_info == {"oh": "ah"}
+    assert ts.data_info == {"oh": {"ah": "eh"}}
+    assert ts.events == [ktk.TimeSeriesEvent(1, "a")]
+
+
+# %% Different constructors (using original doctests)
+def test_constructor_variants():
+    # From TimeSeries
+    ts1 = ktk.TimeSeries(
+        time=np.arange(0, 10), data={"test": np.arange(0, 10)}
+    )
+    ts2 = ktk.TimeSeries(ts1)
+    assert ts1 == ts2
+
+    # From DataFrame
+    df = pd.DataFrame()
+    df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    df["x"] = [0.0, 1.0, 2.0, 3.0, 4.0]
+    df["y"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    df["z"] = [0.0, 0.0, 0.0, 0.0, 0.0]
+    ts = ktk.TimeSeries(df)
+    assert np.array_equal(ts.time, df.index)
+    assert np.array_equal(ts.data["x"], df["x"])
+    assert np.array_equal(ts.data["y"], df["y"])
+    assert np.array_equal(ts.data["z"], df["z"])
+
+    df = pd.DataFrame()
+    df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    df["point[0]"] = [0.0, 1.0, 2.0, 3.0, 4.0]
+    df["point[1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    df["point[2]"] = [0.0, 0.0, 0.0, 0.0, 0.0]
+    ts = ktk.TimeSeries(df)
+    assert np.array_equal(ts.time, df.index)
+    assert np.array_equal(ts.data["point"][:, 0], df["point[0]"])
+    assert np.array_equal(ts.data["point"][:, 1], df["point[1]"])
+    assert np.array_equal(ts.data["point"][:, 2], df["point[2]"])
+
+    df = pd.DataFrame()
+    df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    df["rot[0,0]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["rot[0,1]"] = -np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["rot[1,0]"] = np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["rot[1,1]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["trans[0]"] = [0.0, 0.1, 0.2, 0.3, 0.4]
+    df["trans[1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    ts = ktk.TimeSeries(df)
+    assert np.array_equal(ts.time, df.index)
+    assert np.array_equal(ts.data["rot"][:, 0, 0], df["rot[0,0]"])
+    assert np.array_equal(ts.data["rot"][:, 0, 1], df["rot[0,1]"])
+    assert np.array_equal(ts.data["rot"][:, 1, 0], df["rot[1,0]"])
+    assert np.array_equal(ts.data["rot"][:, 1, 1], df["rot[1,1]"])
+    assert np.array_equal(ts.data["trans"][:, 0], df["trans[0]"])
+    assert np.array_equal(ts.data["trans"][:, 1], df["trans[1]"])
+
+    # From array
+    ts = ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
+    assert np.array_equal(ts.time, np.arange(5) * 1.0)
+    assert np.array_equal(ts.data["data"], [0.1, 0.2, 0.3, 0.4, 0.5])
+
+    ts = ktk.TimeSeries(
+        [0.1, 0.2, 0.3, 0.4, 0.5],
+        time=[0.1, 0.2, 0.3, 0.4, 0.5],
+    )
+    assert np.array_equal(ts.time, [0.1, 0.2, 0.3, 0.4, 0.5])
+    assert np.array_equal(ts.data["data"], [0.1, 0.2, 0.3, 0.4, 0.5])
 
 
 # %% Metadata
