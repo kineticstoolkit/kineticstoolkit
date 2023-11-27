@@ -255,14 +255,14 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     events : list[TimeSeriesEvent]
         list of events.
-            
+
     Examples
     --------
     A TimeSeries can be constructed from another TimeSeries, a Pandas DataFrame
     or any array with at least one dimension.
-    
+
     1. Creating an empty TimeSeries::
-        
+
     >>> ktk.TimeSeries()
     TimeSeries with attributes:
              time: array([], dtype=float64)
@@ -270,9 +270,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         time_info: {'Unit': 's'}
         data_info: {}
            events: []
-           
+
     2. Creating a TimeSeries an allocating time and data::
-        
+
     >>> ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
     TimeSeries with attributes:
              time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
@@ -280,9 +280,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
         time_info: {'Unit': 's'}
         data_info: {}
            events: []
-           
+
     3. Creating a TimeSeries as a copy of another TimeSeries::
-        
+
     >>> ts1 = ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
     >>> ts2 = ktk.TimeSeries(ts1)
     >>> ts2
@@ -292,9 +292,11 @@ class TimeSeries(metaclass=MetaTimeSeries):
         time_info: {'Unit': 's'}
         data_info: {}
            events: []
-        
+
+    See also: TimeSeries.copy
+
     4. Creating a TimeSeries from a Pandas DataFrame::
-    
+
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
     >>> df["x"] = [0., 1., 2., 3., 4.]
@@ -307,7 +309,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
     0.2  2.0  7.0  0.0
     0.3  3.0  8.0  0.0
     0.4  4.0  9.0  0.0
-    
+
     >>> ts = ktk.TimeSeries(df)
     >>> ts
     TimeSeries with attributes:
@@ -318,44 +320,39 @@ class TimeSeries(metaclass=MetaTimeSeries):
            events: []
 
     >>> ts.data
-    {
-        'x': array([0., 1., 2., 3.])
-        'y': array([5., 6., 7., 8.])
-        'z': array([0., 0., 0., 0.])
-    }
-    
+    {'x': array([0., 1., 2., 3., 4.]), 'y': array([5., 6., 7., 8., 9.]), 'z': array([0., 0., 0., 0., 0.])}
+
+    See also: TimeSeries.from_dataframe
+
     5. Creating a multidimensional TimeSeries from a Pandas DataFrame (using
     brackets in column names)::
-        
+
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
     >>> df["point[0]"] = [0., 1., 2., 3., 4.]
     >>> df["point[1]"] = [5., 6., 7., 8., 9.]
     >>> df["point[2]"] = [0., 0., 0., 0., 0.]
     >>> df
-       point[0]  point[1]  point[2]
-    0       0.0       5.0       0.0
-    1       1.0       6.0       0.0
-    2       2.0       7.0       0.0
-    3       3.0       8.0       0.0
-    4       4.0       9.0       0.0    
-    
+         point[0]  point[1]  point[2]
+    0.0       0.0       5.0       0.0
+    0.1       1.0       6.0       0.0
+    0.2       2.0       7.0       0.0
+    0.3       3.0       8.0       0.0
+    0.4       4.0       9.0       0.0
+
     >>> ts = ktk.TimeSeries(df)
     >>> ts.data
-    {
-        'point': <array of shape (5, 3)>
-    }
-    
-    >>> ts.data["point"]
-    array([[0., 5., 0.],
+    {'point': array([[0., 5., 0.],
            [1., 6., 0.],
            [2., 7., 0.],
            [3., 8., 0.],
-           [4., 9., 0.]])
+           [4., 9., 0.]])}
+
+    See also: TimeSeries.from_dataframe
 
     6. Creating a multidimensional TimeSeries of higher order from a Pandas
     DataFrame (using brackets and commas in column names)::
-    
+
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
     >>> df["rot[0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
@@ -371,41 +368,34 @@ class TimeSeries(metaclass=MetaTimeSeries):
     0.2  0.980067 -0.198669  0.198669  0.980067       0.2       7.0
     0.3  0.955336 -0.295520  0.295520  0.955336       0.3       8.0
     0.4  0.921061 -0.389418  0.389418  0.921061       0.4       9.0
-    
+
     >>> ts = ktk.TimeSeries(df)
     >>> ts.data
-    {
-          'rot': <array of shape (5, 2, 2)>
-        'trans': <array of shape (5, 2)>
-    }
-
-    >>> ts.data["rot"]
-    array([[[ 1.        , -0.        ],
+    {'rot': array([[[ 1.        , -0.        ],
             [ 0.        ,  1.        ]],
-
+    <BLANKLINE>
            [[ 0.99500417, -0.09983342],
             [ 0.09983342,  0.99500417]],
-
+    <BLANKLINE>
            [[ 0.98006658, -0.19866933],
             [ 0.19866933,  0.98006658]],
-
+    <BLANKLINE>
            [[ 0.95533649, -0.29552021],
             [ 0.29552021,  0.95533649]],
-
+    <BLANKLINE>
            [[ 0.92106099, -0.38941834],
-            [ 0.38941834,  0.92106099]]])
-    
-    >>> ts.data["trans"]
-    array([[0. , 5. ],
+            [ 0.38941834,  0.92106099]]]), 'trans': array([[0. , 5. ],
            [0.1, 6. ],
            [0.2, 7. ],
            [0.3, 8. ],
-           [0.4, 9. ]])
-    
+           [0.4, 9. ]])}
+
+    See also: TimeSeries.from_dataframe
+
     7. Creating a TimeSeries from any array (results in a TimeSeries with a
     single data key named "data" and with a matching time property with a
-    period of 1 second)::
-        
+    period of 1 second - unless time attribute is also defined)::
+
     >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
     TimeSeries with attributes:
              time: array([0, 1, 2, 3, 4])
@@ -414,25 +404,76 @@ class TimeSeries(metaclass=MetaTimeSeries):
         data_info: {}
            events: []
 
+    >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5])
+    TimeSeries with attributes:
+             time: array([0.1, 0.2, 0.3, 0.4, 0.5])
+             data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+        time_info: {'Unit': 's'}
+        data_info: {}
+           events: []
+
+    See also: TimeSerise.from_array
+
     """
 
     # %% Initialization and properties
 
     def __init__(
         self,
-#        src: None | TimeSeries | pd.DataFrame | ArrayLike,
-#        *,
+        src: None | TimeSeries | pd.DataFrame | ArrayLike = None,
+        *,
         time: ArrayLike = [],
         time_info: dict[str, Any] = {"Unit": "s"},
         data: dict[str, np.ndarray] = {},
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
     ):
-        self.time = time
-        self.data = data
-        self.time_info = time_info.copy()
-        self.data_info = data_info.copy()
-        self.events = events.copy()
+        # Default constructor
+        if src is None:
+            self.time = time
+            self.data = data
+            self.time_info = time_info.copy()
+            self.data_info = data_info.copy()
+            self.events = events.copy()
+            return
+
+        # Else, construct based on a source:
+        def _assign_self(src):
+            self.time = src.time
+            self.data = src.data
+            self.time_info = src.time_info.copy()
+            self.data_info = src.data_info.copy()
+            self.events = src.events.copy()
+
+        # If src is compatible with a TimeSeries, then assign it.
+        try:
+            _assign_self(src)
+            return
+        except AttributeError:
+            pass  # It was not a TimeSeries, or something compatible.
+
+        # From DataFrame
+        if isinstance(src, pd.DataFrame):
+            _assign_self(
+                TimeSeries.from_dataframe(
+                    src,
+                    time_info=time_info,
+                    data_info=data_info,
+                    events=events,
+                )
+            )
+            return
+
+        # Else, it's an array (thanks to runtime static tests)
+        _assign_self(
+            TimeSeries.from_array(
+                src,
+                time=time,
+                time_info=time_info,
+                data_info=data_info,
+                events=events,
+            )
+        )
 
     # Properties
     @property
@@ -4016,7 +4057,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 loc=legend_location, ncol=1 + int(len(labels) / 40)
             )  # Max 40 items per line
 
-    # %% Dataframe interaction
+    # %% Input/Output
 
     def _to_dataframe_and_info(
         self,
@@ -4163,7 +4204,14 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self._check_well_shaped()
         return self._to_dataframe_and_info()[0]
 
-    def from_dataframe(dataframe: pd.DataFrame, /) -> TimeSeries:
+    def from_dataframe(
+        dataframe: pd.DataFrame,
+        /,
+        *,
+        time_info: dict[str, Any] = {"Unit": "s"},
+        data_info: dict[str, dict[str, Any]] = {},
+        events: list[TimeSeriesEvent] = [],
+    ) -> TimeSeries:
         """
         Create a new TimeSeries from a Pandas Dataframe.
 
@@ -4181,6 +4229,12 @@ class TimeSeries(metaclass=MetaTimeSeries):
         dataframe
             A Pandas DataFrame where the index corresponds to time, and
             where each column corresponds to a data key.
+        time_info
+            Optional. Will be copied to the TimeSeries' time_info attribute.
+        data_info
+            Optional. Will be copied to the TimeSeries' data_info attribute.
+        events
+            Optional. Will be copied to the TimeSeries' events attribute.
 
         Returns
         -------
@@ -4193,7 +4247,9 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         Examples
         --------
-        Example with unidimensional data:
+        **Example with unidimensional data**
+
+        Create a DataFrame with two series of 3 samples:
 
         >>> import pandas as pd
         >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
@@ -4204,12 +4260,17 @@ class TimeSeries(metaclass=MetaTimeSeries):
         1    3.0    4.0
         2    5.0    6.0
 
+        Convert to a TimeSeries:
+
         >>> ts = ktk.TimeSeries.from_dataframe(df)
         >>> ts.data
         {'test1': array([1., 3., 5.]), 'test2': array([2., 4., 6.])}
 
-        Example with multidimensional data:
+        **Example with multidimensional data**
 
+        Create a DataFrame with one series of 3 samples of dimension 2:
+
+        >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
         >>> df.columns = ["test[0]", "test[1]"]
         >>> df
            test[0]  test[1]
@@ -4217,14 +4278,65 @@ class TimeSeries(metaclass=MetaTimeSeries):
         1      3.0      4.0
         2      5.0      6.0
 
+        Convert to a TimeSeries:
+
         >>> ts = ktk.TimeSeries.from_dataframe(df)
         >>> ts.data
         {'test': array([[1., 2.], [3., 4.], [5., 6.]])}
 
+        **Example with even more dimensions**
+
+        Create a DataFrame with one series of 5 samples of dimension 2x2 (rot)
+        and one series of 5 samples of dimension 2 (trans):
+
+        >>> df = pd.DataFrame()
+        >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+        >>> df["rot[0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["rot[0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["rot[1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["rot[1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["trans[0]"] = [0., 0.1, 0.2, 0.3, 0.4]
+        >>> df["trans[1]"] = [5., 6., 7., 8., 9.]
+        >>> df
+             rot[0,0]  rot[0,1]  rot[1,0]  rot[1,1]  trans[0]  trans[1]
+        0.0  1.000000 -0.000000  0.000000  1.000000       0.0       5.0
+        0.1  0.995004 -0.099833  0.099833  0.995004       0.1       6.0
+        0.2  0.980067 -0.198669  0.198669  0.980067       0.2       7.0
+        0.3  0.955336 -0.295520  0.295520  0.955336       0.3       8.0
+        0.4  0.921061 -0.389418  0.389418  0.921061       0.4       9.0
+
+        Convert to a TimeSeries:
+
+        >>> ts = ktk.TimeSeries(df)
+        >>> ts.data
+        {'rot': array([[[ 1.        , -0.        ],
+                [ 0.        ,  1.        ]],
+        <BLANKLINE>
+               [[ 0.99500417, -0.09983342],
+                [ 0.09983342,  0.99500417]],
+        <BLANKLINE>
+               [[ 0.98006658, -0.19866933],
+                [ 0.19866933,  0.98006658]],
+        <BLANKLINE>
+               [[ 0.95533649, -0.29552021],
+                [ 0.29552021,  0.95533649]],
+        <BLANKLINE>
+               [[ 0.92106099, -0.38941834],
+                [ 0.38941834,  0.92106099]]]), 'trans': array([[0. , 5. ],
+               [0.1, 6. ],
+               [0.2, 7. ],
+               [0.3, 8. ],
+               [0.4, 9. ]])}
+
         """
         check_types(TimeSeries.from_dataframe, locals())
 
-        ts = TimeSeries(time=dataframe.index.to_numpy())
+        ts = TimeSeries(
+            time=dataframe.index.to_numpy(),
+            time_info=time_info,
+            data_info=data_info,
+            events=events,
+        )
 
         # Remove spaces in indexes between brackets
         columns = dataframe.columns
@@ -4277,6 +4389,78 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 )
 
         return ts
+
+    def from_array(
+        array: ArrayLike,
+        /,
+        *,
+        data_key: str = "data",
+        time: ArrayLike = [],
+        time_info: dict[str, Any] = {"Unit": "s"},
+        data_info: dict[str, dict[str, Any]] = {},
+        events: list[TimeSeriesEvent] = [],
+    ) -> TimeSeries:
+        """
+        Create a new TimeSeries from an array.
+
+        Parameters
+        ----------
+        array
+            An array or list where the first dimension corresponds to time.
+        data_key
+            The name of the data (used as the key in the TimeSeries' data
+            attribute).
+        time
+            Optional. An array that indicates the time for each sample. Its
+            length must match the first dimension of the data array. If None
+            (default), a matching time attribute of with a period of one second
+            is created.
+        time_info
+            Optional. Will be copied to the TimeSeries' time_info attribute.
+        data_info
+            Optional. Will be copied to the TimeSeries' data_info attribute.
+        events
+            Optional. Will be copied to the TimeSeries' events attribute.
+
+        Returns
+        -------
+        TimeSeries
+            The new TimeSeries.
+
+        Examples
+        --------
+        **Using default time**
+
+        >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
+        TimeSeries with attributes:
+                 time: array([0, 1, 2, 3, 4])
+                 data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+            time_info: {'Unit': 's'}
+            data_info: {}
+               events: []
+
+        **Specifiying time**
+
+        >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5])
+        TimeSeries with attributes:
+                 time: array([0.1, 0.2, 0.3, 0.4, 0.5])
+                 data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+            time_info: {'Unit': 's'}
+            data_info: {}
+               events: []
+
+        """
+        time = np.array(time)
+        data = np.array(array)
+        if time.shape[0] == 0:
+            time = np.arange(data.shape[0])
+        return TimeSeries(
+            time=time,
+            data={data_key: data},
+            time_info=time_info,
+            data_info=data_info,
+            events=events,
+        )
 
     # %% Deprecated methods
     @deprecated(
@@ -4443,5 +4627,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
 if __name__ == "__main__":  # pragma: no cover
     import doctest
     import numpy as np
+    import kineticstoolkit.lab as ktk
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
