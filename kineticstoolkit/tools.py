@@ -14,8 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
-
 """Provide miscelleanous helper functions."""
 
 __author__ = "Félix Chénier"
@@ -28,7 +26,6 @@ import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
 import kineticstoolkit.ext
-from kineticstoolkit.exceptions import check_types
 
 import warnings
 
@@ -115,8 +112,6 @@ def change_defaults(
         import kineticstoolkit.lab as ktk
 
     """
-    check_types(change_defaults, locals())
-
     if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython
         try:

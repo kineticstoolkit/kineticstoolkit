@@ -14,6 +14,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from __future__ import annotations
+
+# For post-evaluation of TimeSeries type hints. Will change post-Python 3.12.
+
 
 """
 Provide the TimeSeries and TimeSeriesEvent classes.
@@ -22,9 +26,6 @@ The classes defined in this module are accessible directly from the toplevel
 Kinetics Toolkit's namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)
 
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -34,7 +35,6 @@ __license__ = "Apache 2.0"
 import kineticstoolkit._repr
 from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.exceptions import (
-    check_types,
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
 )
@@ -926,9 +926,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
             A deep copy of the TimeSeries.
 
         """
-        check_types(TimeSeries.copy, locals())
-        self._check_well_typed()
-
         if copy_data and copy_time_info and copy_data_info and copy_events:
             # General case
             return deepcopy(self)
@@ -996,9 +993,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         {'Color': [43, 2, 255]}
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.add_data_info, locals())
-
         ts = self if in_place else self.copy()
 
         try:
@@ -1064,9 +1058,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         {}
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.remove_data_info, locals())
-
         ts = self if in_place else self.copy()
         try:
             data_info = ts.data_info[data_key]
@@ -1142,8 +1133,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
                events: []
 
         """
-        check_types(TimeSeries.add_data, locals())
-
         ts = self if in_place else self.copy()
 
         # Cast data
@@ -1248,9 +1237,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         {'signal': {'Unit': 'm'}}
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.rename_data, locals())
-
         ts = self if in_place else self.copy()
         try:
             ts.data[new_data_key] = ts.data.pop(old_data_key)
@@ -1317,9 +1303,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         {}
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.remove_data, locals())
-
         ts = self if in_place else self.copy()
         try:
             ts.data.pop(data_key)
@@ -1349,9 +1332,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
             The occurrences of this event.
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries._get_event_indexes, locals())
-
         # list all events with correct name
         event_times = []
         event_indexes = []
@@ -1388,9 +1368,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
             If the specified occurrence could not be found.
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries._get_event_index, locals())
-
         occurrence = int(occurrence)
 
         if occurrence < 0:
@@ -1439,9 +1416,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts = ts.add_event(2.0, "event3")
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries._get_duplicate_event_indexes, locals())
-
         # Sort all events in a dict with key being tuple(time, name)
         sorted_events = {}  # type: dict[tuple[float, str], list[int]]
         for i_event, event in enumerate(self.events):
@@ -1519,9 +1493,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
          TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.add_event, locals())
-
         ts = self if in_place else self.copy()
 
         if unique:
@@ -1597,9 +1568,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.rename_event, locals())
-
         ts = self if in_place else self.copy()
 
         if old_name == new_name:
@@ -1673,9 +1641,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         [TimeSeriesEvent(time=2.3, name='event2')]
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.remove_event, locals())
-
         ts = self if in_place else self.copy()
 
         if occurrence is None:  # Remove all occurrences
@@ -1724,9 +1689,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         2
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.count_events, locals())
-
         indexes = self._get_event_indexes(name)
         return len(indexes)
 
@@ -1780,9 +1742,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
          TimeSeriesEvent(time=2.0, name='event3')]
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.remove_duplicate_events, locals())
-
         ts = self if in_place else self.copy()
         duplicates = ts._get_duplicate_event_indexes()
         for event_index in duplicates[-1::-1]:
@@ -1846,9 +1805,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
          TimeSeriesEvent(time=3, name='three')]
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.sort_events, locals())
-
         ts = self if in_place else self.copy()
         if unique:
             ts.remove_duplicate_events(in_place=True)
@@ -1904,9 +1860,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
          TimeSeriesEvent(time=9, name='event')]
 
         """
-        self._check_well_typed()
-        check_types(TimeSeries.trim_events, locals())
-
         ts = self if in_place else self.copy()
 
         events = deepcopy(ts.events)
@@ -1959,8 +1912,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_shaped()
-        check_types(TimeSeries.get_index_at_time, locals())
-
         self._check_not_empty_time()
         return int(np.argmin(np.abs(self.time - float(time))))
 
@@ -2013,15 +1964,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_shaped()
-        check_types(TimeSeries.get_index_before_time, locals())
+        self._check_increasing_time()
 
         def _raise():
             raise TimeSeriesRangeError(
                 f"There is no data before the requested time of {time} "
                 f"{self.time_info['Unit']}."
             )
-
-        self._check_increasing_time()
 
         if inclusive:
             mask = np.nonzero(self.time <= time)
@@ -2082,15 +2031,13 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_shaped()
-        check_types(TimeSeries.get_index_after_time, locals())
+        self._check_increasing_time()
 
         def _raise():
             raise TimeSeriesRangeError(
                 f"There is no data before the requested time of {time} "
                 f"{self.time_info['Unit']}."
             )
-
-        self._check_increasing_time()
 
         if inclusive:
             mask = np.nonzero(self.time >= time)
@@ -2142,7 +2089,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_shaped()
-        check_types(TimeSeries.get_index_at_event, locals())
 
         return self.get_index_at_time(
             self.events[self._get_event_index(name, occurrence)].time
@@ -2203,7 +2149,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_shaped()
-        check_types(TimeSeries.get_index_before_event, locals())
 
         if inclusive is False:
             return self.get_index_before_time(
@@ -2271,7 +2216,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         self._check_well_shaped()
-        check_types(TimeSeries.get_index_after_time, locals())
 
         if inclusive is False:
             return self.get_index_after_time(
@@ -2329,7 +2273,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0. , 0.1, 0.2])
 
         """
-        check_types(TimeSeries.get_ts_between_indexes, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2385,7 +2328,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
-        check_types(TimeSeries.get_ts_between_indexes, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2458,7 +2400,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_ts_between_indexes(2, 5, inclusive=[True, False]).time
         array([0.2, 0.3, 0.4])
         """
-        check_types(TimeSeries.get_ts_between_indexes, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2539,7 +2480,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0. , 0.1, 0.2, 0.3])
 
         """
-        check_types(TimeSeries.get_ts_before_time, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2599,7 +2539,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
-        check_types(TimeSeries.get_ts_after_time, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2671,7 +2610,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         >>> ts.get_ts_between_times(0.2, 0.5, inclusive=[True, False]).time
         array([0.2, 0.3, 0.4])
         """
-        check_types(TimeSeries.get_ts_between_times, locals())
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2745,7 +2683,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0. , 0.1, 0.2, 0.3, 0.4])
 
         """
-        check_types(TimeSeries.get_ts_before_event, locals())
         self._check_well_shaped()
 
         try:
@@ -2819,7 +2756,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
-        check_types(TimeSeries.get_ts_after_event, locals())
         self._check_well_shaped()
 
         try:
@@ -2900,7 +2836,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([0.2, 0.3, 0.4, 0.5, 0.6])
 
         """
-        check_types(TimeSeries.get_ts_between_events, locals())
         self._check_well_shaped()
 
         # Ensure to work with a sequence of `inclusive`
@@ -2971,7 +2906,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         [TimeSeriesEvent(time=0.55, name='start')]
 
         """
-        check_types(TimeSeries.shift, locals())
         self._check_well_shaped()
 
         ts = self if in_place else self.copy()
@@ -3010,7 +2944,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         10.0
 
         """
-        check_types(TimeSeries.get_sample_rate, locals())
         self._check_well_shaped()
 
         if self.time.shape[0] <= 1:
@@ -3131,7 +3064,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "(https://github.com/felixchenier/kineticstoolkit/issues/174)."
             )
 
-        check_types(TimeSeries.resample, locals())
         self._check_well_shaped()
 
         ts = self if in_place else self.copy()
@@ -3257,7 +3189,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
             dict_keys(['signal1', 'signal3'])
 
         """
-        check_types(TimeSeries.get_subset, locals())
         self._check_well_shaped()
 
         if isinstance(data_keys, str):
@@ -3334,7 +3265,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         - All events are also merged from both TimeSeries.
 
         """
-        check_types(TimeSeries.merge, locals())
         self._check_well_shaped()
         ts._check_well_shaped()
 
@@ -3432,7 +3362,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         array([False, False,  True, False])
 
         """
-        check_types(TimeSeries.isnan, locals())
         self._check_well_shaped()
 
         values = self.data[data_key].copy()
@@ -3481,7 +3410,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ktk.TimeSeries.isnan
 
         """
-        check_types(TimeSeries.fill_missing_samples, locals())
         self._check_well_shaped()
 
         if np.isnan(self.get_sample_rate()):
@@ -3561,7 +3489,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Matplotlib must be in interactive mode for this function to work.
 
         """
-        check_types(TimeSeries.ui_edit_events, locals())
         self._check_well_shaped()
         self._check_not_empty_time()
         self._check_not_empty_data()
@@ -3763,7 +3690,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Matplotlib must be in interactive mode for this method to work.
 
         """
-        check_types(TimeSeries.ui_sync, locals())
         self._check_well_shaped()
         self._check_not_empty_time()
         self._check_not_empty_data()
@@ -3935,7 +3861,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
         plots only the forces and moments, without plotting the angle.
 
         """
-        check_types(TimeSeries.plot, locals())
         self._check_well_shaped()
 
         # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
@@ -4202,7 +4127,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
          0.3      0.0      2.0      3.0
 
         """
-        check_types(TimeSeries.to_dataframe, locals())
         self._check_well_shaped()
         return self._to_dataframe_and_info()[0]
 
@@ -4332,8 +4256,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
                [0.4, 9. ]])}
 
         """
-        check_types(TimeSeries.from_dataframe, locals())
-
         ts = TimeSeries(
             time=dataframe.index.to_numpy(),
             time_info=time_info,
@@ -4454,8 +4376,6 @@ class TimeSeries(metaclass=MetaTimeSeries):
                events: []
 
         """
-        check_types(TimeSeries.from_array, locals())
-
         time = np.array(time)
         ts = TimeSeries(
             data={data_key: array},

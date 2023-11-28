@@ -18,9 +18,6 @@
 """
 Provide documentation tools to learn using Kinetics Toolkit.
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -28,7 +25,6 @@ __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.config as config
-from kineticstoolkit.exceptions import check_types
 import os
 
 
@@ -69,8 +65,6 @@ def download(filename: str, **kwargs) -> str:
     # Additional information for developers:
     # kwargs may include force_download=True, to force download from github.
     # In standard case, the local git version is used to save on download time.
-    check_types(download, locals())
-
     if "force_download" not in kwargs:
         kwargs["force_download"] = False
 

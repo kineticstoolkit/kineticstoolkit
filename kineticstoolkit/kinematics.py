@@ -18,9 +18,6 @@
 """
 Provide functions related to kinematics analysis.
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -30,7 +27,6 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.exceptions import check_types
 
 import numpy as np
 import warnings
@@ -74,8 +70,6 @@ def create_cluster(
     ktk.kinematics.track_cluster
 
     """
-    check_types(create_cluster, locals())
-
     n_samples = len(markers.time)
     n_markers = len(names)
 
@@ -138,8 +132,6 @@ def extend_cluster(
     ktk.kinematics.track_cluster
 
     """
-    check_types(extend_cluster, locals())
-
     # Ensure to convert every cluster element to a numpy array
     new_cluster = {}
     for key in cluster:
@@ -200,8 +192,6 @@ def track_cluster(
     ktk.kinematics.track_cluster
 
     """
-    check_types(track_cluster, locals())
-
     out = markers.copy(copy_data=False, copy_data_info=False)
     unit = _get_marker_unit(markers)
 
@@ -290,8 +280,6 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     developed.
 
     """
-    check_types(write_trc_file, locals())
-
     markers = markers.copy()
     markers.fill_missing_samples(0)
 

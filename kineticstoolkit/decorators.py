@@ -46,7 +46,7 @@ import warnings
 import textwrap
 
 
-def _inject_in_docstring(docstring: str, text: str) -> str:
+def _inject_in_docstring(docstring: str | None, text: str) -> str:
     """Inject a string into the top of a docstring, after line 1."""
     if docstring == "" or docstring is None:
         return text

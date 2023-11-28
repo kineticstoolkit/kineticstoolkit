@@ -32,6 +32,20 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+# Check types in real time
+from numbers import Integral, Real
+from beartype.claw import beartype_this_package
+from beartype import BeartypeConf, BeartypeViolationVerbosity
+
+beartype_this_package(
+    conf=BeartypeConf(
+        hint_overrides={int: Integral, float: Real},
+        violation_param_type=TypeError,
+        violation_return_type=TypeError,
+        violation_verbosity=BeartypeViolationVerbosity.MINIMUM,
+    )
+)
+
 # Import classes
 from kineticstoolkit._timeseries import TimeSeries as TimeSeries  # noqa
 from kineticstoolkit._timeseries import (

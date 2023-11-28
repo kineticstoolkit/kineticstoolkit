@@ -18,9 +18,6 @@
 """
 Provide standard filters for TimeSeries.
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -32,7 +29,6 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.exceptions import check_types
 
 
 import kineticstoolkit as ktk  # for doctests
@@ -116,7 +112,6 @@ def savgol(
     ktk.filters.smooth
 
     """
-    check_types(savgol, locals())
     _validate_input(ts)
 
     tsout = ts.copy()
@@ -180,7 +175,6 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     ktk.filters.savgol
 
     """
-    check_types(smooth, locals())
     _validate_input(ts)
 
     tsout = savgol(ts, window_length=window_length, poly_order=0)
@@ -234,7 +228,6 @@ def butter(
         filter.
 
     """
-    check_types(butter, locals())
     _validate_input(ts)
 
     ts = ts.copy()
@@ -319,7 +312,6 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     array([ 100., -100., -100.])
 
     """
-    check_types(deriv, locals())
     _validate_input(ts)
 
     out_ts = ts.copy()
@@ -358,7 +350,6 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     array([10., 11., 11., 14., 15., 15.])
 
     """
-    check_types(median, locals())
     out_ts = ts.copy()
     for key in ts.data:
         window_shape = [1 for i in range(len(ts.data[key].shape))]
