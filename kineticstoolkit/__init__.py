@@ -33,10 +33,7 @@ __license__ = "Apache 2.0"
 
 
 # Import classes
-from kineticstoolkit._timeseries import TimeSeries as TimeSeries  # noqa
-from kineticstoolkit._timeseries import (
-    TimeSeriesEvent as TimeSeriesEvent,
-)  # noqa
+from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
 from kineticstoolkit.player import Player as Player  # noqa
 
 # Import functions

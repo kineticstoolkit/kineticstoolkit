@@ -30,7 +30,7 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit._timeseries import TimeSeries
+from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.exceptions import check_types
 import kineticstoolkit.config
 
@@ -109,10 +109,7 @@ def save(filename: str, variable: Any) -> None:
             if isinstance(obj, np.ndarray):
                 return {"class__": "numpy.array", "value": obj.tolist()}
 
-            elif (
-                str(type(obj))
-                == "<class 'kineticstoolkit._timeseries.TimeSeries'>"
-            ):
+            elif isinstance(obj, TimeSeries):
                 out = {}
                 out["class__"] = "ktk.TimeSeries"
                 out["time"] = obj.time.tolist()
