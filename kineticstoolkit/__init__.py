@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -33,13 +33,13 @@ __license__ = "Apache 2.0"
 
 
 # Check types in real time
-from numbers import Integral, Real
+from numbers import Integral, Real, Complex
 from beartype.claw import beartype_this_package
 from beartype import BeartypeConf, BeartypeViolationVerbosity
 
 beartype_this_package(
     conf=BeartypeConf(
-        hint_overrides={int: Integral, float: Real},
+        hint_overrides={int: Integral, float: Real, complex: Complex},
         violation_param_type=TypeError,
         violation_return_type=TypeError,
         violation_verbosity=BeartypeViolationVerbosity.MINIMUM,

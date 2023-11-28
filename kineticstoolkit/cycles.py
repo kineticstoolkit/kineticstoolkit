@@ -31,8 +31,8 @@ from kineticstoolkit.exceptions import (
     TimeSeriesEventNotFoundError,
 )
 from kineticstoolkit.tools import tqdm
+from kineticstoolkit._typing import ArrayLike
 import warnings
-from numpy.typing import ArrayLike
 
 
 def __dir__():

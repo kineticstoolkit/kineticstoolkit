@@ -43,7 +43,7 @@ from numpy import sin, cos
 import time
 import copy
 from typing import Any
-from numpy.typing import ArrayLike
+from kineticstoolkit._typing import ArrayLike
 import warnings
 
 # To fit the new viewpoint on selecting a new marker

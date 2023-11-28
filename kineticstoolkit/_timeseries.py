@@ -38,6 +38,7 @@ from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
 )
+from kineticstoolkit._typing import ArrayLike
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -46,7 +47,6 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from numpy.typing import ArrayLike
 from typing import Any
 from collections.abc import Sequence
 

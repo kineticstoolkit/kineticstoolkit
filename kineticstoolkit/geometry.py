@@ -49,7 +49,7 @@ def __dir__():
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from numpy.typing import ArrayLike
+from kineticstoolkit._typing import ArrayLike
 
 
 def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
