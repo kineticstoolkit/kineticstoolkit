@@ -29,7 +29,7 @@ from beartype import (
     beartype,
     BeartypeConf,
     BeartypeViolationVerbosity,
-    BeartypeTypeOverrides,
+    BeartypeHintOverrides,
 )
 
 
@@ -51,7 +51,7 @@ else:  # runtime
 # is explicit and therefore better in this case.
 typecheck = beartype(
     conf=BeartypeConf(
-        hint_overrides=BeartypeTypeOverrides(
+        hint_overrides=BeartypeHintOverrides(
             {int: Integral, float: Real, complex: Complex}
         ),
         violation_param_type=TypeError,
