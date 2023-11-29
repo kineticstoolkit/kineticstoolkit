@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +19,14 @@
 Provide functions related to kinematics analysis.
 """
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
+from kineticstoolkit.typing_ import typecheck
 from kineticstoolkit.decorators import deprecated
 
 import numpy as np
@@ -33,6 +34,7 @@ import warnings
 import struct  # To unpack data from N3D files
 
 
+@typecheck
 def __dir__():
     return [
         "create_cluster",
@@ -41,6 +43,7 @@ def __dir__():
     ]
 
 
+@typecheck
 def create_cluster(
     markers: TimeSeries, /, names: list[str]
 ) -> dict[str, np.ndarray]:
@@ -101,6 +104,7 @@ def create_cluster(
     return output
 
 
+@typecheck
 def extend_cluster(
     markers: TimeSeries, /, cluster: dict[str, np.ndarray], name: str
 ) -> dict[str, np.ndarray]:
@@ -153,6 +157,7 @@ def extend_cluster(
     return cluster
 
 
+@typecheck
 def track_cluster(
     markers: TimeSeries,
     /,
@@ -211,6 +216,7 @@ def track_cluster(
     return out
 
 
+@typecheck
 def _track_cluster_frames(
     markers: TimeSeries, cluster: dict[str, np.ndarray]
 ) -> np.ndarray:
@@ -240,6 +246,7 @@ def _track_cluster_frames(
     return frames
 
 
+@typecheck
 def _get_marker_unit(markers: TimeSeries) -> None | str:
     """Get markers unit, raise ValueError if not all have the same unit."""
     unit = None
@@ -261,6 +268,7 @@ def _get_marker_unit(markers: TimeSeries) -> None | str:
     return unit
 
 
+@typecheck
 def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
@@ -334,6 +342,7 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
         "since it can also read analog data."
     ),
 )
+@typecheck
 def read_c3d_file(filename: str) -> TimeSeries:
     """
     Read markers from a C3D file.
@@ -373,6 +382,7 @@ def read_c3d_file(filename: str) -> TimeSeries:
         "since it can also write analog data."
     ),
 )
+@typecheck
 def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     """
     Write a markers TimeSeries to a C3D file.
@@ -400,6 +410,7 @@ def write_c3d_file(filename: str, markers: TimeSeries) -> None:
     until="2024",
     details=("This function has been moved to the n3d extension."),
 )
+@typecheck
 def read_n3d_file(filename: str, labels: list[str] = []) -> TimeSeries:
     """
     Read markers from an NDI N3D file.

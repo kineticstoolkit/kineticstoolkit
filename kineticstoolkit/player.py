@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,11 +21,9 @@ Provides the Player class to visualize markers and rigid bodies in 3d.
 The Player class is accessible directly from the toplevel Kinetics Toolkit
 namespace (i.e., ktk.Player).
 """
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -33,6 +31,7 @@ REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.decorators import deprecated
+from kineticstoolkit.typing_ import typecheck, ArrayLike
 import kineticstoolkit.geometry as geometry
 
 import matplotlib.pyplot as plt
@@ -43,7 +42,6 @@ from numpy import sin, cos
 import time
 import copy
 from typing import Any
-from kineticstoolkit._typing import ArrayLike
 import warnings
 
 # To fit the new viewpoint on selecting a new marker
@@ -142,6 +140,7 @@ class Player:
 
     """
 
+    @typecheck
     def __init__(
         self,
         *ts: TimeSeries,
@@ -350,10 +349,12 @@ class Player:
         self._create_ground_plane()
         self._first_refresh()
 
+    @typecheck
     def __dir__(self):
         """Return directory."""
         return ["to_html5", "close"]
 
+    @typecheck
     def _create_figure(self) -> None:
         """Create the player's figure."""
         # Create the figure and axes
@@ -406,6 +407,7 @@ class Player:
             "motion_notify_event", self._on_mouse_motion
         )
 
+    @typecheck
     def _create_interconnections(self) -> None:
         """Create the interconnections plots in the player's figure."""
         if self.interconnections is not None:
@@ -422,6 +424,7 @@ class Player:
                     0
                 ]
 
+    @typecheck
     def _create_markers(self) -> None:
         """Create the markers plots in the player's figure."""
         colors = {
@@ -449,6 +452,7 @@ class Player:
                 "Axes"
             ].plot(np.nan, np.nan, ".", c=colors[color], markersize=12)[0]
 
+    @typecheck
     def _create_ground_plane(self) -> None:
         # Create the ground plane matrix
         gp_size = 30  # blocks
@@ -486,11 +490,13 @@ class Player:
             ]
         )
 
+    @typecheck
     def _first_refresh(self) -> None:
         """Draw the stuff and set the axis size."""
         self._update_plots()
         plt.axis((-1.5, 1.5, -1.0, 1.0))
 
+    @typecheck
     def _get_projection(self, points_3d: np.ndarray) -> np.ndarray:
         """
         Get a 3d --> 2d projection of a list of points.
@@ -582,6 +588,7 @@ class Player:
         # Return only x and y
         return rotated_points_3d[:, 0:2]
 
+    @typecheck
     def _update_markers_and_interconnections(self) -> None:
         # Get a Nx4 matrices of every marker at the current index
         markers = self.markers
@@ -654,6 +661,7 @@ class Player:
                     np_coordinates[:, 0], np_coordinates[:, 1]
                 )
 
+    @typecheck
     def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
         self._update_markers_and_interconnections()
@@ -746,6 +754,7 @@ class Player:
 
         self.objects["Figure"].canvas.draw()
 
+    @typecheck
     def _set_new_target(self, target: ArrayLike) -> None:
         """Set new target and adapts translation and zoom consequently."""
         target = np.array(target)
@@ -795,6 +804,7 @@ class Player:
 
     # ------------------------------------
     # Helper functions
+    @typecheck
     def _set_index(self, index: int) -> None:
         """Set current index to a given index and update plots."""
         if index >= self.n_indexes:
@@ -811,11 +821,13 @@ class Player:
             if not np.isnan(np.sum(new_target)):
                 self.target = new_target
 
+    @typecheck
     def _set_time(self, time: float) -> None:
         """Set current index to a given time and update plots."""
         index = int(np.argmin(np.abs(self.time - time)))
         self._set_index(index)
 
+    @typecheck
     def _select_none(self) -> None:
         """Deselect every markers."""
         if self.markers is not None:
@@ -830,6 +842,7 @@ class Player:
                         marker, "Color", "w"
                     )
 
+    @typecheck
     def close(self) -> None:
         """Close the Player and its associated window."""
         plt.close(self.objects["Figure"])
@@ -837,10 +850,12 @@ class Player:
 
     # ------------------------------------
     # Callbacks
+    @typecheck
     def _on_close(self, _) -> None:  # pragma: no cover
         # Release all references to objects
         self.close()
 
+    @typecheck
     def _on_timer(self, _) -> None:  # pragma: no cover
         if self.running is True:
             # We check self.running because the garbage collector may take time
@@ -863,6 +878,7 @@ class Player:
         else:
             self.anim.event_source.stop()
 
+    @typecheck
     def _on_pick(self, event):  # pragma: no cover
         """Callback for marker selection."""
         if event.mouseevent.button == 1:
@@ -887,6 +903,7 @@ class Player:
 
             self._update_plots()
 
+    @typecheck
     def _on_key(self, event):  # pragma: no cover
         """Callback for keyboard key pressed."""
         if event.key == " ":
@@ -955,10 +972,12 @@ class Player:
 
         self._update_plots()
 
+    @typecheck
     def _on_release(self, event):  # pragma: no cover
         if event.key == "shift":
             self.state["ShiftPressed"] = False
 
+    @typecheck
     def _on_scroll(self, event):  # pragma: no cover
         if event.button == "up":
             self.zoom *= 1.05
@@ -966,6 +985,7 @@ class Player:
             self.zoom /= 1.05
         self._update_plots()
 
+    @typecheck
     def _on_mouse_press(self, event):  # pragma: no cover
         if len(self.last_selected_marker) > 0:
             self._set_new_target(
@@ -986,6 +1006,7 @@ class Player:
         elif event.button == 3:
             self.state["MouseRightPressed"] = True
 
+    @typecheck
     def _on_mouse_release(self, event):  # pragma: no cover
         if event.button == 1:
             self.state["MouseLeftPressed"] = False
@@ -994,6 +1015,7 @@ class Player:
         elif event.button == 3:
             self.state["MouseRightPressed"] = False
 
+    @typecheck
     def _on_mouse_motion(self, event):  # pragma: no cover
         # Pan:
         if (
@@ -1036,9 +1058,11 @@ class Player:
         "was mainly a hack for representing videos in tutorials. The "
         "supported way to use the Player is interactively.",
     )
+    @typecheck
     def to_html5(self, **kwargs):
         return self._to_animation()
 
+    @typecheck
     def _to_animation(
         self,
     ):

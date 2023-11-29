@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,10 +31,11 @@ from kineticstoolkit.exceptions import (
     TimeSeriesEventNotFoundError,
 )
 from kineticstoolkit.tools import tqdm
-from kineticstoolkit._typing import ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, typecheck
 import warnings
 
 
+@typecheck
 def __dir__():
     return [
         "detect_cycles",
@@ -45,6 +46,7 @@ def __dir__():
     ]
 
 
+@typecheck
 def detect_cycles(
     ts: TimeSeries,
     data_key: str,
@@ -188,6 +190,7 @@ def detect_cycles(
     return tsout
 
 
+@typecheck
 def time_normalize(
     ts: TimeSeries,
     event_name1: str,
@@ -394,6 +397,7 @@ def time_normalize(
     return dest_ts
 
 
+@typecheck
 def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
@@ -435,6 +439,7 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     return data
 
 
+@typecheck
 def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
@@ -538,6 +543,7 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 #     return out
 
 
+@typecheck
 def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     """
     Get the indexes of the most repeatable cycles in array.

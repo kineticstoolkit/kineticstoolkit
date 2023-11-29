@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -24,16 +24,15 @@ Note
 This module is addressed to Kinetics Toolkit's developers only.
 
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.config
+from kineticstoolkit.typing_ import typecheck
+
 
 import os
 import subprocess
@@ -42,6 +41,7 @@ import webbrowser
 import doctest
 
 
+@typecheck
 def run_unit_tests() -> None:  # pragma: no cover
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
@@ -73,6 +73,7 @@ def run_unit_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
+@typecheck
 def run_style_formatter() -> None:  # pragma: no cover
     """Run style formatter (black)."""
     print("Running black...")
@@ -82,6 +83,7 @@ def run_style_formatter() -> None:  # pragma: no cover
     )
 
 
+@typecheck
 def run_static_type_checker() -> None:  # pragma: no cover
     """Run static typing checker (mypy)."""
     # Run pytest in another process to ensure that the workspace is and stays
@@ -102,6 +104,7 @@ def run_static_type_checker() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
+@typecheck
 def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
     print("Running doc tests...")
@@ -120,6 +123,7 @@ def run_doc_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
+@typecheck
 def compile_for_pypi() -> None:  # pragma: no cover
     """Compile for PyPi."""
     shutil.rmtree(
@@ -135,6 +139,7 @@ def compile_for_pypi() -> None:  # pragma: no cover
     )
 
 
+@typecheck
 def upload_to_pypi() -> None:  # pragma: no cover
     """Upload to PyPi. Only works on macOS for now."""
     root_folder = kineticstoolkit.config.root_folder
@@ -149,6 +154,7 @@ def upload_to_pypi() -> None:  # pragma: no cover
     )
 
 
+@typecheck
 def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     run_style_formatter()

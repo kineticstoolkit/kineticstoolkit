@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,13 +17,14 @@
 """Provide miscelleanous helper functions."""
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
 import kineticstoolkit.config
-import kineticstoolkit._repr as _repr
+import kineticstoolkit.repr_ as repr_
+from kineticstoolkit.typing_ import typecheck
 import kineticstoolkit.gui
 import kineticstoolkit.ext
 
@@ -50,6 +51,7 @@ def tqdm(the_range, *args, **kwargs):
         return the_range
 
 
+@typecheck
 def change_defaults(
     change_ipython_dict_repr: bool = True,
     change_matplotlib_defaults: bool = True,
@@ -120,7 +122,7 @@ def change_defaults(
             _ip = _IPython.get_ipython()
             formatter = _ip.display_formatter.formatters["text/plain"]
             formatter.for_type(
-                dict, lambda n, p, cycle: _repr._ktk_format_dict(n, p, cycle)
+                dict, lambda n, p, cycle: repr_._ktk_format_dict(n, p, cycle)
             )
         except Exception:
             pass

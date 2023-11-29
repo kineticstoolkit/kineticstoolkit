@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-kineticstoolkit._repr.py
+kineticstoolkit.repr_.py
 ------------------------
 
 Format the console output of dictionaries and classes with attributes.
@@ -32,15 +32,17 @@ It also provides helper functions to nicely format the repr() of data classes.
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
 import numpy as np
 from typing import Any
+from kineticstoolkit.typing_ import typecheck
 
 
+@typecheck
 def _format_dict_entries(
     the_dict: Any, quotes: bool = True, overrides={}
 ) -> str:
@@ -120,6 +122,7 @@ def _format_dict_entries(
     return out
 
 
+@typecheck
 def _format_class_attributes(obj, overrides):
     """
     Format a class that has attributes nicely on screen.
@@ -157,6 +160,7 @@ def _format_class_attributes(obj, overrides):
     return out
 
 
+@typecheck
 def _ktk_format_dict(value, p, cycle):
     """Format a dict nicely on screen in ipython."""
     try:

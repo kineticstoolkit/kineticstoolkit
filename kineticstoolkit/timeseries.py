@@ -16,7 +16,8 @@
 # limitations under the License.
 from __future__ import annotations
 
-# For post-evaluation of TimeSeries type hints. Will change post-Python 3.12.
+# Still importing annotations for post-evaluation of TimeSeries type hints.
+# Will change post-Python 3.12.
 
 
 """
@@ -32,13 +33,13 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit._repr
+import kineticstoolkit.repr_
 from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
 )
-from kineticstoolkit._typing import ArrayLike
+from kineticstoolkit.typing_ import typecheck, ArrayLike
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -187,6 +188,7 @@ class TimeSeriesEvent:
         """Define >= operator."""
         return self.time >= other.time
 
+    @typecheck
     def _to_tuple(self) -> tuple[float, str]:
         """
         Convert a TimeSeriesEvent to a tuple.
@@ -200,6 +202,7 @@ class TimeSeriesEvent:
         """
         return (self.time, self.name)
 
+    @typecheck
     def _to_list(self) -> list[float | str]:
         """
         Convert a TimeSeriesEvent to a list.
@@ -213,6 +216,7 @@ class TimeSeriesEvent:
         """
         return [self.time, self.name]
 
+    @typecheck
     def _to_dict(self) -> dict[str, float | str]:
         """
         Convert a TimeSeriesEvent to a dict.
@@ -421,6 +425,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Initialization and properties
 
+    @typecheck
     def __init__(
         self,
         src: None | TimeSeries | pd.DataFrame | ArrayLike = None,
@@ -529,7 +534,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             TimeSeries
 
         """
-        return kineticstoolkit._repr._format_class_attributes(
+        return kineticstoolkit.repr_._format_class_attributes(
             self, overrides={"_time": "time", "_data": "data"}
         )
 
@@ -550,6 +555,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Private check functions
 
+    @typecheck
     def _is_equivalent(
         self, ts, *, equal: bool = True, atol: float = 1e-8, rtol: float = 1e-5
     ):
@@ -634,6 +640,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return True
 
+    @typecheck
     def _check_well_typed(self) -> None:
         """
         Check that every element of every attribute has correct type.
@@ -779,6 +786,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                     f"{type(self.data_info[key])}."
                 )
 
+    @typecheck
     def _check_well_shaped(self) -> None:
         """
         Check that the TimeSeries' time and data shapes concord.
@@ -810,6 +818,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                     f"time's shape is {self.time.shape}."
                 )
 
+    @typecheck
     def _check_not_empty_time(self) -> None:
         """
         Check that the TimeSeries' time vector is not empty.
@@ -826,6 +835,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "attribute is 0."
             )
 
+    @typecheck
     def _check_increasing_time(self) -> None:
         """
         Check that the TimeSeries' time vector is always increasing.
@@ -844,6 +854,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "using ts = ts.resample(np.sort(ts.time))."
             )
 
+    @typecheck
     def _check_constant_sample_rate(self) -> None:
         """
         Check that the TimeSeries's sampling rate is constant.
@@ -863,6 +874,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "np.min(ts.time), np.max(ts.time), len(ts.time)))."
             )
 
+    @typecheck
     def _check_not_empty_data(self) -> None:
         """
         Check that the TimeSeries's data dict is not empty.
@@ -878,6 +890,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "The TimeSeries is empty: it does not contain any data."
             )
 
+    @typecheck
     def _raise_data_key_error(self, data_key) -> None:
         raise KeyError(
             f"The key '{data_key}' was not found among the "
@@ -885,6 +898,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             "data_info attribute."
         )
 
+    @typecheck
     def _raise_data_info_key_error(self, data_key, info_key) -> None:
         raise KeyError(
             f"The key '{info_key}' was not found among the "
@@ -894,6 +908,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Copy
 
+    @typecheck
     def copy(
         self,
         *,
@@ -947,6 +962,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Data info management
 
+    @typecheck
     def add_data_info(
         self,
         data_key: str,
@@ -1016,6 +1032,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.data_info[data_key] = {info_key: value}
         return ts
 
+    @typecheck
     def remove_data_info(
         self, data_key: str, info_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -1072,6 +1089,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Data management
 
+    @typecheck
     def add_data(
         self,
         data_key: str,
@@ -1185,6 +1203,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts.data[data_key] = data_to_add
         return ts
 
+    @typecheck
     def rename_data(
         self, old_data_key: str, new_data_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -1251,6 +1270,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return ts
 
+    @typecheck
     def remove_data(
         self, data_key: str, *, in_place: bool = False
     ) -> TimeSeries:
@@ -1318,6 +1338,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Event management
 
+    @typecheck
     def _get_event_indexes(self, name: str) -> list[int]:
         """
         Get a list of index of all occurrences of an event.
@@ -1346,6 +1367,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         event_indexes = [event_indexes[i] for i in sorted_indexes]
         return event_indexes
 
+    @typecheck
     def _get_event_index(self, name: str, occurrence: int = 0) -> int:
         """
         Get the events index of a given occurrence of an event name.
@@ -1388,6 +1410,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 "this event name were found."
             )
 
+    @typecheck
     def _get_duplicate_event_indexes(self) -> list[int]:
         """
         Find events with same name and same time.
@@ -1442,6 +1465,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return sorted(out)
 
+    @typecheck
     def add_event(
         self,
         time: float,
@@ -1505,6 +1529,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts.events.append(TimeSeriesEvent(time, name))
         return ts
 
+    @typecheck
     def rename_event(
         self,
         old_name: str,
@@ -1583,6 +1608,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.events[index].name = new_name
         return ts
 
+    @typecheck
     def remove_event(
         self,
         name: str,
@@ -1664,6 +1690,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.events.pop(event_index)
         return ts
 
+    @typecheck
     def count_events(self, name: str) -> int:
         """
         Count the number of occurrence of a given event name.
@@ -1693,6 +1720,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         indexes = self._get_event_indexes(name)
         return len(indexes)
 
+    @typecheck
     def remove_duplicate_events(self, *, in_place: bool = False) -> TimeSeries:
         """
         Remove events with same name and time so that each event gets unique.
@@ -1749,6 +1777,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.events.pop(event_index)
         return ts
 
+    @typecheck
     def sort_events(
         self, *, unique: bool = False, in_place: bool = False
     ) -> TimeSeries:
@@ -1812,6 +1841,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts.events = sorted(ts.events)
         return ts
 
+    @typecheck
     def trim_events(self, *, in_place: bool = False) -> TimeSeries:
         """
         Delete the events that are outside the TimeSeries' time vector.
@@ -1872,6 +1902,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% get_index methods
 
+    @typecheck
     def get_index_at_time(self, time: float) -> int:
         """
         Get the time index that is closest to the specified time.
@@ -1916,6 +1947,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         self._check_not_empty_time()
         return int(np.argmin(np.abs(self.time - float(time))))
 
+    @typecheck
     def get_index_before_time(
         self, time: float, *, inclusive: bool = False
     ) -> int:
@@ -1983,6 +2015,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return int(mask[0][-1])
 
+    @typecheck
     def get_index_after_time(
         self, time: float, *, inclusive: bool = False
     ) -> int:
@@ -2050,6 +2083,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return int(mask[0][0])
 
+    @typecheck
     def get_index_at_event(self, name: str, occurrence: int = 0) -> int:
         """
         Get the time index that is closest to the specified event occurrence.
@@ -2095,6 +2129,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             self.events[self._get_event_index(name, occurrence)].time
         )
 
+    @typecheck
     def get_index_before_event(
         self, name: str, occurrence: int = 0, inclusive: bool = False
     ) -> int:
@@ -2162,6 +2197,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
                 inclusive=True,
             )
 
+    @typecheck
     def get_index_after_event(
         self, name: str, occurrence: int = 0, inclusive: bool = False
     ) -> int:
@@ -2231,6 +2267,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% get_ts methods
 
+    @typecheck
     def get_ts_before_index(
         self, index: int, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2286,6 +2323,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             0, index, inclusive=[True, inclusive]
         )
 
+    @typecheck
     def get_ts_after_index(
         self, index: int, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2345,6 +2383,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             index, self.time.shape[0] - 1, inclusive=[inclusive, True]
         )
 
+    @typecheck
     def get_ts_between_indexes(
         self,
         index1: int,
@@ -2438,6 +2477,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             out_ts.data[the_data] = self.data[the_data][index_range]
         return out_ts
 
+    @typecheck
     def get_ts_before_time(
         self, time: float, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2497,6 +2537,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             self.time[0], time, inclusive=[True, inclusive]
         )
 
+    @typecheck
     def get_ts_after_time(
         self, time: float, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2556,6 +2597,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             time, self.time[-1], inclusive=[inclusive, True]
         )
 
+    @typecheck
     def get_ts_between_times(
         self,
         time1: float,
@@ -2630,6 +2672,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         index2 = self.get_index_before_time(time2, inclusive=seq_inclusive[1])
         return self.get_ts_between_indexes(index1, index2, inclusive=True)
 
+    @typecheck
     def get_ts_before_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2703,6 +2746,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         else:
             return retval
 
+    @typecheck
     def get_ts_after_event(
         self, name: str, occurrence: int = 0, *, inclusive: bool = False
     ) -> TimeSeries:
@@ -2776,6 +2820,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         else:
             return retval
 
+    @typecheck
     def get_ts_between_events(
         self,
         name1: str,
@@ -2867,6 +2912,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Time management
 
+    @typecheck
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
         Shift time and events.time.
@@ -2915,6 +2961,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         ts.time += time
         return ts
 
+    @typecheck
     def get_sample_rate(self) -> float:
         """
         Get the sample rate in samples/s.
@@ -2956,6 +3003,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         else:
             return np.nan
 
+    @typecheck
     def resample(
         self,
         target: ArrayLike | float,
@@ -3148,6 +3196,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Subsetting and merging
 
+    @typecheck
     def get_subset(self, data_keys: str | list[str]) -> TimeSeries:
         """
         Return a subset of the TimeSeries.
@@ -3216,6 +3265,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return ts
 
+    @typecheck
     def merge(
         self,
         ts: TimeSeries,
@@ -3331,6 +3381,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Missing sample management
 
+    @typecheck
     def isnan(self, data_key: str) -> np.ndarray:
         """
         Return a boolean array of missing samples.
@@ -3371,6 +3422,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             values = np.sum(values, 1)  # type: ignore
         return np.isnan(values)
 
+    @typecheck
     def fill_missing_samples(
         self,
         max_missing_samples: int,
@@ -3447,6 +3499,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Graphical user interfaces
 
+    @typecheck
     def ui_edit_events(
         self,
         name: str | list[str] = [],
@@ -3646,6 +3699,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
             ts.plot(data_keys, _raise_on_no_data=True)
             plt.axis(axes)
 
+    @typecheck
     def ui_sync(
         self,
         data_keys: str | list[str] = [],
@@ -3819,6 +3873,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return ts1
 
+    @typecheck
     def plot(
         self,
         data_keys: str | list[str] = [],
@@ -3987,6 +4042,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     # %% Input/Output
 
+    @typecheck
     def _to_dataframe_and_info(
         self,
     ) -> tuple[pd.DataFrame, list[dict[str, Any]]]:
@@ -4079,6 +4135,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         return (df_out, info_out)
 
+    @typecheck
     def to_dataframe(self) -> pd.DataFrame:
         """
         Create a DataFrame by reshaping all data to one bidimensional table.
@@ -4132,6 +4189,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         return self._to_dataframe_and_info()[0]
 
     @staticmethod
+    @typecheck
     def from_dataframe(
         dataframe: pd.DataFrame,
         /,
@@ -4317,6 +4375,7 @@ class TimeSeries(metaclass=MetaTimeSeries):
         return ts
 
     @staticmethod
+    @typecheck
     def from_array(
         array: ArrayLike,
         /,

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,12 +23,14 @@ Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
 
 """
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
 import kineticstoolkit.config
+from kineticstoolkit.typing_ import typecheck
+
 
 import os
 import numpy as np
@@ -43,10 +45,12 @@ import getpass
 import zipfile
 
 
+@typecheck
 def __dir__():  # pragma: no cover
     return ["save", "load"]
 
 
+@typecheck
 def save(filename: str, variable: Any) -> None:
     """
     Save a variable to a ktk.zip file.
@@ -237,6 +241,7 @@ def _load_object_hook(obj):
         return obj
 
 
+@typecheck
 def load(filename: str, *, include_metadata: bool = False) -> Any:
     """
     Load a ktk.zip file.
@@ -283,6 +288,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
         return data
 
 
+@typecheck
 def read_c3d(
     filename: str,
     *,
@@ -673,6 +679,7 @@ def read_c3d(
     return output
 
 
+@typecheck
 def write_c3d(
     filename: str, points: TimeSeries, analogs: TimeSeries | None = None
 ) -> None:

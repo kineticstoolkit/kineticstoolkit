@@ -32,20 +32,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-# Check types in real time
-from numbers import Integral, Real, Complex
-from beartype.claw import beartype_this_package
-from beartype import BeartypeConf, BeartypeViolationVerbosity
-
-beartype_this_package(
-    conf=BeartypeConf(
-        hint_overrides={int: Integral, float: Real, complex: Complex},
-        violation_param_type=TypeError,
-        violation_return_type=TypeError,
-        violation_verbosity=BeartypeViolationVerbosity.MINIMUM,
-    )
-)
-
 # Import classes
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent  # noqa
 from kineticstoolkit.player import Player as Player  # noqa
@@ -53,7 +39,7 @@ from kineticstoolkit.player import Player as Player  # noqa
 # Import functions
 from kineticstoolkit.tools import change_defaults  # noqa
 from kineticstoolkit.files import load, save, read_c3d, write_c3d  # noqa
-from kineticstoolkit import _repr  # noqa
+from kineticstoolkit import repr_  # noqa
 from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
 
 # Import modules

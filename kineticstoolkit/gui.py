@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,16 +27,18 @@ from __future__ import annotations
 
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 import kineticstoolkit.config as config
+from kineticstoolkit.typing_ import typecheck
 import limitedinteraction as li
 import matplotlib as mpl
 from typing import Any
 
 
+@typecheck
 def message(message: str = "", **kwargs) -> None:
     """
     Show a message window.
@@ -56,6 +58,7 @@ def message(message: str = "", **kwargs) -> None:
     )
 
 
+@typecheck
 def button_dialog(
     message: str = "Please select an option.",
     choices: list[str] = ["Cancel", "OK"],
@@ -89,6 +92,7 @@ def button_dialog(
     )
 
 
+@typecheck
 def set_color_order(setting: str | list[Any]) -> None:
     """
     Define the standard color order for matplotlib.
@@ -136,71 +140,3 @@ def set_color_order(setting: str | list[Any]) -> None:
 
     # Don't know why I need to disable mypy on this line.
     mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)  # type: ignore
-
-
-def get_credentials() -> tuple[str, str]:
-    """
-    Ask the user's username and password.
-
-    Returns
-    -------
-    tuple[str]
-        A tuple of two strings containing the username and password,
-        respectively, or an empty tuple if the user closed the window.
-
-    """
-    return li.input_dialog(
-        "Please enter your credentials",
-        descriptions=["Username:", "Password:"],
-        masked=[False, True],
-        icon="lock",
-    )
-
-
-def get_folder(initial_folder: str = ".") -> str:
-    """
-    Get folder interactively using a file dialog window.
-
-    Parameters
-    ----------
-    initial_folder
-        Optional. The initial folder of the file dialog.
-
-    Returns
-    -------
-    str
-        The full path of the selected folder. An empty string is returned if
-        the user cancelled.
-
-    """
-    return li.get_folder(
-        initial_folder,
-        icon=[
-            config.root_folder + "/kineticstoolkit/logo.png",
-            config.root_folder + "/kineticstoolkit/logo_hires.png",
-        ],
-    )
-
-
-def get_filename(initial_folder: str = ".") -> str:
-    """
-    Get file name interactively using a file dialog window.
-
-    Parameters
-    ----------
-    initial_folder
-        Optional. The initial folder of the file dialog.
-
-    Returns
-    -------
-    str
-        The full path of the selected file. An empty string is returned if the
-        user cancelled.
-    """
-    return li.get_filename(
-        initial_folder,
-        icon=[
-            config.root_folder + "/kineticstoolkit/logo.png",
-            config.root_folder + "/kineticstoolkit/logo_hires.png",
-        ],
-    )

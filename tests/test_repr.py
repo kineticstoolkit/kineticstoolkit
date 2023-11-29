@@ -22,7 +22,7 @@ Unit tests for the _repr module.
 
 """
 
-import kineticstoolkit._repr as _repr
+import kineticstoolkit.repr_ as repr_
 
 
 def test_format_dict_entries():
@@ -33,11 +33,11 @@ def test_format_dict_entries():
         "key2": "value2",
     }
     assert (
-        _repr._format_dict_entries(d)
+        repr_._format_dict_entries(d)
         == "    'key1': 'value1'\n    'key2': 'value2'\n"
     )
     assert (
-        _repr._format_dict_entries(d, quotes=False)
+        repr_._format_dict_entries(d, quotes=False)
         == "    key1: 'value1'\n    key2: 'value2'\n"
     )
 
@@ -48,7 +48,7 @@ def test_format_dict_entries():
         3.0: "A" * 200,
     }
     assert (
-        _repr._format_dict_entries(d)
+        repr_._format_dict_entries(d)
         == "    '1': 'value1'\n      2: 'value2'\n    3.0: 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA...\n"
     )
 

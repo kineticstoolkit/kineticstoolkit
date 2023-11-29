@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2023 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@
 Provide standard filters for TimeSeries.
 """
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2023 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -29,15 +29,18 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
+from kineticstoolkit.typing_ import typecheck
 
 
 import kineticstoolkit as ktk  # for doctests
 
 
+@typecheck
 def __dir__():
     return ["savgol", "smooth", "butter", "deriv", "median"]
 
 
+@typecheck
 def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     """Interpolate NaNs in a given data key in a TimeSeries."""
     ts = ts.get_subset(key)
@@ -54,6 +57,7 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     return (ts, nan_index)
 
 
+@typecheck
 def _validate_input(ts):
     """
     Check that time is not null, that sample rate is constant, and that
@@ -71,6 +75,7 @@ def _validate_input(ts):
         warnings.warn("It seems that unit is not 's'.")
 
 
+@typecheck
 def savgol(
     ts: TimeSeries, /, *, window_length: int, poly_order: int, deriv: int = 0
 ) -> TimeSeries:
@@ -142,6 +147,7 @@ def savgol(
     return tsout
 
 
+@typecheck
 def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
@@ -181,6 +187,7 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     return tsout
 
 
+@typecheck
 def butter(
     ts: TimeSeries,
     /,
@@ -257,6 +264,7 @@ def butter(
     return ts
 
 
+@typecheck
 def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
@@ -327,6 +335,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     return out_ts
 
 
+@typecheck
 def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.
