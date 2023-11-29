@@ -74,6 +74,7 @@ class MetaTimeSeries(type):
             # Data management
             "get_subset",
             "merge",
+            "add_data",
             "rename_data",
             "remove_data",
             # Time management
