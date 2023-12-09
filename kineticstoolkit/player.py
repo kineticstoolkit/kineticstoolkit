@@ -33,6 +33,7 @@ REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.decorators import deprecated
+from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 
 import matplotlib.pyplot as plt
@@ -159,15 +160,18 @@ class Player:
         target: ArrayLike = (0.0, 0.0, 0.0),
         track: bool = False,
         perspective: bool = True,
-        **kwargs,
+        **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
-        # Allow older variable names
+        # Allow older parameter names
         if "segments" in kwargs and interconnections == {}:
             interconnections = kwargs["segments"]
         if "segment_width" in kwargs:
             interconnection_width = kwargs["segment_width"]
         if "current_frame" in kwargs:
             current_index = kwargs["current_frame"]
+
+        # Warn if Matplotlib is not interactive
+        check_interactive_backend()
 
         # Ensure that ts contains TimeSeries, and that they are non-empty
         if len(ts) == 0:

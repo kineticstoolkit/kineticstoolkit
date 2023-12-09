@@ -38,6 +38,7 @@ from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
 )
+from kineticstoolkit.tools import check_interactive_backend
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -3606,6 +3607,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Matplotlib must be in interactive mode for this function to work.
 
         """
+        check_interactive_backend()
+
         check_types(TimeSeries.ui_edit_events, locals())
         self._check_well_shaped()
         self._check_not_empty_time()
@@ -3808,6 +3811,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Matplotlib must be in interactive mode for this method to work.
 
         """
+        check_interactive_backend()
+
         check_types(TimeSeries.ui_sync, locals())
         self._check_well_shaped()
         self._check_not_empty_time()

@@ -36,3 +36,4 @@ doc/_build
 workspace
 kineticstoolkit.egg-info
 .idea
+.jupyter
