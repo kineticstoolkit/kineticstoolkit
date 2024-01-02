@@ -23,14 +23,13 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-
+import matplotlib as mpl
+import warnings
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
 import kineticstoolkit.ext
 from kineticstoolkit.exceptions import check_types
-
-import warnings
 
 
 def tqdm(the_range, *args, **kwargs):
@@ -51,6 +50,40 @@ def tqdm(the_range, *args, **kwargs):
         return tqdm.tqdm(the_range, *args, **kwargs)
     except ModuleNotFoundError:
         return the_range
+
+
+def check_interactive_backend() -> None:
+    """
+    Warns if Matplotlib is not using an interactive backend.
+
+    To disable these warnings, for instance if we are generating documentation
+    and we need the Player to show a figure, set
+    ktk.config.interactive_backend_warning to False
+    """
+    if kineticstoolkit.config.interactive_backend_warning is False:
+        return
+
+    warn = lambda: warnings.warn(
+        "This function requires that Matplotlib uses an interactive "
+        "backend. Try typing `%matplotlib qt5` before running this "
+        "function."
+    )
+
+    try:
+        mpl.backends
+    except AttributeError:  # No backend has been initialized
+        warn()
+        return
+
+    try:
+        mpl.backends.backend
+    except AttributeError:  # No backend has been initialized
+        warn()
+        return
+
+    if "inline" in mpl.backends.backend:
+        warn()
+        return
 
 
 def change_defaults(

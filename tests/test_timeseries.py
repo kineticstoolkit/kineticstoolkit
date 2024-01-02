@@ -71,6 +71,41 @@ def test_TimeSeriesEvent():
     assert the_dict["Time"] == 1.5
     assert the_dict["Name"] == "event_name"
 
+    # Test append with a compatible class
+    class O(object):
+        pass
+
+    o = O()
+    o.time = 1.0
+    o.name = "test"
+    ts = ktk.TimeSeries()
+    ts.events.append(o)
+    assert ts.events[0].time == 1.0
+    assert ts.events[0].name == "test"
+
+    try:
+        ts.events.append(0)  # It's not an event
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
+    # Test extend with a list of compatible classes
+    event = ktk.TimeSeriesEvent(time=1.5, name="event_name")
+
+    ts = ktk.TimeSeries()
+    ts.events.extend([o, event])
+
+    assert ts.events[0].time == 1.0
+    assert ts.events[0].name == "test"
+    assert ts.events[1].time == 1.5
+    assert ts.events[1].name == "event_name"
+
+    try:
+        ts.events.extend([1, 2, 3])  # It's not an event
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
 
 # %% TimeSeries constructor, copy and checks
 
@@ -273,20 +308,6 @@ def test_check_well_typed():
     ts = ktk.TimeSeries()
     ts.add_event(0, in_place=True)  # Should pass
     ts._check_well_typed()
-
-    ts.events = "test"  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.events = [ktk.TimeSeriesEvent(0), "test"]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
 
 
 def test_check_well_shaped():

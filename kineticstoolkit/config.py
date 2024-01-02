@@ -43,6 +43,7 @@ def __dir__() -> list[str]:
         "temp_folder",
         "version",
         "pythonpath",
+        "interactive_backend_warning",
     ]
 
 
@@ -86,3 +87,6 @@ except Exception:
 env = os.environ.copy()
 if "SPY_PYTHONPATH" in env and "PYTHONPATH" not in env:
     env["PYTHONPATH"] = env["SPY_PYTHONPATH"]
+
+# Others
+interactive_backend_warning = True

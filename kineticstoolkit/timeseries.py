@@ -38,6 +38,7 @@ from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
 )
+from kineticstoolkit.tools import check_interactive_backend
 
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -123,11 +124,45 @@ class MetaTimeSeries(type):
         ]
 
 
+class TimeSeriesEventList(list):
+    """Event list that ensures every element is a TimeSeriesEvent."""
+
+    def __init__(
+        self, source: list = [], *, time: float = 0.0, name: str = "event"
+    ):
+        """Initialize the class instance using a source list."""
+        for element in source:
+            self.append(element)
+
+    def __setitem__(self, index, value):
+        """Cast the value to a TimeSeriesEvent."""
+        try:
+            event = TimeSeriesEvent(time=value.time, name=value.name)
+        except AttributeError:
+            raise AttributeError(
+                f"The provided value {value} cannot be interpreted as a "
+                "TimeSeriesEvent, because it does not have `time` and `name` "
+                "attributes."
+            )
+        super(TimeSeriesEventList, self).__setitem__(index, event)
+
+    def append(self, value):
+        """Ensure the appended value is a TimeSeriesEvent."""
+        super(TimeSeriesEventList, self).append(None)
+        self[-1] = value  # Calls __setitem__ which does the check
+
+    def extend(self, values):
+        """Ensure the extended values are TimeSeriesEvent."""
+        for value in values:
+            self.append(value)  # Calls append that calls __setitem__ that
+            # does the check.
+
+
 class TimeSeriesDataDict(dict):
     """Data dictionary that checks sizes and converts to NumPy arrays."""
 
     def __init__(self, source: dict = {}):
-        """Initialize the class using a source dictionary."""
+        """Initialize the class instance using a source dictionary."""
         for key in source:
             self[key] = source[key]
 
@@ -225,10 +260,6 @@ class TimeSeriesEvent:
 
         """
         return {"Time": self.time, "Name": self.name}
-
-
-class TimeSeriesEventList(list):
-    """Event list that ensures that every element is a TimeSeriesEvent."""
 
 
 class TimeSeries(metaclass=MetaTimeSeries):
@@ -511,6 +542,19 @@ class TimeSeries(metaclass=MetaTimeSeries):
     def data(self):
         raise AttributeError("data property cannot be deleted.")
 
+    @property
+    def events(self):
+        """Data Property."""
+        return self._events
+
+    @events.setter
+    def events(self, value):
+        self._events = TimeSeriesEventList(value)
+
+    @events.deleter
+    def events(self):
+        raise AttributeError("events property cannot be deleted.")
+
     # %% Dunders
 
     @classmethod
@@ -530,7 +574,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         """
         return kineticstoolkit._repr._format_class_attributes(
-            self, overrides={"_time": "time", "_data": "data"}
+            self,
+            overrides={"_time": "time", "_data": "data", "_events": "events"},
         )
 
     def __repr__(self):
@@ -3562,6 +3607,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Matplotlib must be in interactive mode for this function to work.
 
         """
+        check_interactive_backend()
+
         check_types(TimeSeries.ui_edit_events, locals())
         self._check_well_shaped()
         self._check_not_empty_time()
@@ -3764,6 +3811,8 @@ class TimeSeries(metaclass=MetaTimeSeries):
         Matplotlib must be in interactive mode for this method to work.
 
         """
+        check_interactive_backend()
+
         check_types(TimeSeries.ui_sync, locals())
         self._check_well_shaped()
         self._check_not_empty_time()
