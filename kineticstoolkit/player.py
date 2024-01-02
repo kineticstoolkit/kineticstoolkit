@@ -166,6 +166,8 @@ class Player:
         self._source_timeseries[group] = [_.copy() for _ in ts]
         self._source_interconnections = dict()
         self._source_interconnections[group] = interconnections
+        self._merge_timeseries()
+        self._merge_interconnections()
 
         self.current_index = current_index
         if current_time is not None:
@@ -194,17 +196,9 @@ class Player:
         return self._source_timeseries
 
     @property
-    def merged_timeseries(self) -> TimeSeries:
+    def timeseries(self) -> TimeSeries:
         """The TimeSeries, merged and prefixed by group name."""
-        out = TimeSeries()
-        for group in self.source_timeseries:
-            for ts in self.source_timeseries[group]:
-                for key in ts.data:
-                    temp_ts = ts.get_subset(key)
-                    if group != "":
-                        temp_ts.rename_data(key, f"{group}:{key}", in_place=True)
-                    out.merge(temp_ts, in_place=True)
-        return out
+        return self._timeseries
 
     @property
     def source_interconnections(self) -> dict[str, dict[str, dict[str, Any]]]:
@@ -212,24 +206,64 @@ class Player:
         return self._source_interconnections
 
     @property
-    def merged_interconnections(self) -> dict[str, dict[str, Any]]:
+    def interconnections(self) -> dict[str, dict[str, Any]]:
         """The merged interconnections, renamed to match merged_timeseries."""
-        out = {}
+        return self._interconnections
+
+    # %% Update functions on data init/change
+
+    def _merge_timeseries(self) -> None:
+        """Update self._timeseries."""
+        self._timeseries = TimeSeries()
+
+        # Then add every point or frame
+        for group in self.source_timeseries:
+            for ts in self.source_timeseries[group]:
+                n_indexes = len(ts.time)  # only for the global origin below
+                for key in ts.data:
+                    temp_ts = ts.get_subset(key)
+                    if group != "":
+                        new_key = f"{group}:{key}"
+                        temp_ts.rename_data(key, new_key, in_place=True)
+                    else:
+                        new_key = key
+
+                    self._timeseries.merge(temp_ts, in_place=True)
+
+                    # If it's a frame, also add a point to its origin
+                    if temp_ts.data[new_key].shape[1:] == (4, 4):
+                        self._timeseries.add_data(
+                            f"[{new_key}] origin",
+                            temp_ts.data[new_key][:, :, 3],
+                            in_place=True,
+                        )
+
+        # Add the origin
+        self._timeseries.add_data(
+            "Global",
+            np.repeat(np.eye(4, 4)[np.newaxis, :, :], n_indexes, axis=0),
+            in_place=True,
+        )
+
+
+    def _merge_interconnections(self) -> None:
+        """Update self._interconnections."""
+        self._interconnections = {}
         for group in self.source_interconnections:
             # Go through every body segment
             for body_name in self.source_interconnections[group]:
-                out_key = body_name if group == "" else f"{group}:{body_name}"
-                out[out_key] = dict()
-                out[out_key]["Color"] = self.source_interconnections[group][
-                    body_name
-                ]["Color"]
-                out[out_key]["Links"] = []
+                body_key = body_name if group == "" else f"{group}:{body_name}"
+                self._interconnections[body_key] = dict()
+                self._interconnections[body_key][
+                    "Color"
+                ] = self.source_interconnections[group][body_name]["Color"]
+                self._interconnections[body_key]["Links"] = []
 
                 # Go through every link of this segment
                 for i_link, link in enumerate(
                     self.source_interconnections[group][body_name]
                 ):
-                    out[out_key]["Links"].append(
+                    self._interconnections[body_key]["Links"].append(
                         [
                             f"{group}:{s}"
                             for s in self.source_interconnections[group][
@@ -237,106 +271,22 @@ class Player:
                             ]["Links"][i_link]
                         ]
                     )
-        return out
 
     def continue_init(self):
         """temp."""
-        ts = self.merged_timeseries
-
-        # ---------------------------------------------------------------
-        # Set self.n_indexes and self.time, and verify that we have at least
-        # markers or rigid bodies.
+        ts = self.timeseries
 
         # FIXME! With the Player API, the Player should be
         # functionning without any TimeSeries (just showing nothing).
 
-        self.time = ts.time
-        self.n_indexes = len(self.time)
+        
+        self._points = None  #FIXME! to remove
+        self._frames = None  #FIXME! to remove
 
         # ---------------------------------------------------------------
         # Decompose the input TimeSeries' contents into points and frames
-
-        # FIXME! This should be changed to a proper function that is
-        # run automatically on each Player.add() or Player.remove() function.
-        self._points = TimeSeries()
-        self._frames = TimeSeries()
-
-        for key in ts.data:
-            if ts.data[key].shape[1:] == (4,):
-                self._points.data[key] = ts.data[key]
-                if key in ts.data_info:
-                    self._points.data_info[key] = ts.data_info[key]
-
-            elif ts.data[key].shape[1:] == (4, 4):
-                # Add the frames
-                self._frames.data[key] = ts.data[key]
-                if key in ts.data_info:
-                    self._frames.data_info[key] = ts.data_info[key]
-
-                # Add the frame origins as "markers"
-                key_label = f"[{key}] origin"
-                self._points.data[key_label] = ts.data[key][:, :, 3]
-                if key in ts.data_info:
-                    self._points.data_info[key_label] = ts.data_info[
-                        key
-                    ]
-
-            else:
-                warnings.warn(
-                    f"The data key {key} has a shape of "
-                    f"{ts.data[key].shape}. However, the Player can "
-                    "only show points (Nx4) and frames Nx4x4. Therefore, "
-                    f"{key} won't be shown in the Player."
-                )
-
         self._select_none()
         self.last_selected_marker = ""
-
-        # Add the origin to the rigid bodies
-        self._frames.data["Global"] = np.repeat(
-            np.eye(4, 4)[np.newaxis, :, :], self.n_indexes, axis=0
-        )
-
-        # Rotate everything according to the up input, so that the end result
-        # is y up:
-        #
-        #    |y
-        #    |
-        #    +---- x
-        #   /
-        # z/
-        if self.up == "x":
-            rotation = geometry.create_transforms("z", [90], degrees=True)
-        elif self.up == "y":
-            rotation = np.eye(4)[np.newaxis]
-        elif self.up == "z":
-            rotation = geometry.create_transforms("x", [-90], degrees=True)
-        elif self.up == "-x":
-            rotation = geometry.create_transforms("z", [-90], degrees=True)
-        elif self.up == "-y":
-            rotation = geometry.create_transforms("z", [-180], degrees=True)
-        elif self.up == "-z":
-            rotation = geometry.create_transforms("x", [90], degrees=True)
-        else:
-            raise ValueError(
-                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
-            )
-        for key in self._points.data:
-            self._points.data[key] = geometry.get_global_coordinates(
-                self._points.data[key], rotation
-            )
-        for key in self._frames.data:
-            self._frames.data[key] = geometry.get_global_coordinates(
-                self._frames.data[key], rotation
-            )
-
-        # Camera target
-        target1x4 = np.ones((1, 4))
-        target1x4[0, 0:3] = self.target
-        self.target = geometry.get_global_coordinates(target1x4, rotation)[0]
-
-        self.playback_speed = 1.0  # 0.0 to show all samples
-        #  self._anim = None  # Will initialize in _create_figure
 
         # Init objects
         self._objects = dict()  # type: dict[str, Any]
@@ -367,7 +317,7 @@ class Player:
         self._state["TranslationOnMousePress"] = (0.0, 0.0)
         self._state["AzimutOnMousePress"] = 0.0
         self._state["ElevationOnMousePress"] = 0.0
-        self._state["SelfTimeOnPlay"] = self.time[0]
+        self._state["SelfTimeOnPlay"] = self.timeseries.time[0]
         self._state["SystemTimeOnLastUpdate"] = time.time()
 
         self._help_text = """
@@ -432,7 +382,7 @@ class Player:
         self._anim = animation.FuncAnimation(
             self._objects["Figure"],
             self._on_timer,  # type: ignore
-            frames=self.n_indexes,
+            frames=len(self.timeseries.time),
             interval=33,
         )  # 30 ips
         self._running = False
@@ -460,14 +410,14 @@ class Player:
 
     def _create_interconnections(self) -> None:
         """Create the interconnections plots in the player's figure."""
-        for interconnection in self.merged_interconnections:
+        for interconnection in self.interconnections:
             self._objects["PlotInterconnections"][
                 interconnection
             ] = self._objects["Axes"].plot(
                 np.nan,
                 np.nan,
                 "-",
-                c=self.merged_interconnections[interconnection]["Color"],
+                c=self.interconnections[interconnection]["Color"],
                 linewidth=self.interconnection_width,
             )[
                 0
@@ -684,9 +634,9 @@ class Player:
             )
 
         # Draw the interconnections
-        for interconnection in self.merged_interconnections:
+        for interconnection in self.interconnections:
             coordinates = []
-            chains = self.merged_interconnections[interconnection]["Links"]
+            chains = self.interconnections[interconnection]["Links"]
 
             for chain in chains:
                 for marker in chain:
@@ -700,12 +650,55 @@ class Player:
             np_coordinates = np.array(coordinates)
             np_coordinates = self._get_projection(np_coordinates)
 
-            self._objects["PlotInterconnections"][
-                interconnection
-            ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
+            self._objects["PlotInterconnections"][interconnection].set_data(
+                np_coordinates[:, 0], np_coordinates[:, 1]
+            )
 
     def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
+        
+        self._points = TimeSeries()
+        self._frames = TimeSeries()
+        
+        for key in self.timeseries.data:
+            if self.timeseries.data[key].shape[1:] == (4,):
+                self._points.data[key] = self.timeseries.data[key]
+            elif self.timeseries.data[key].shape[1:] == (4,4):
+                self._frames.data[key] = self.timeseries.data[key]
+        
+        # Rotate everything according to the up input, so that the end result
+        # is y up:
+        #
+        #    |y
+        #    |
+        #    +---- x
+        #   /
+        # z/
+        if self.up == "x":
+            rotation = geometry.create_transforms("z", [90], degrees=True)
+        elif self.up == "y":
+            rotation = np.eye(4)[np.newaxis]
+        elif self.up == "z":
+            rotation = geometry.create_transforms("x", [-90], degrees=True)
+        elif self.up == "-x":
+            rotation = geometry.create_transforms("z", [-90], degrees=True)
+        elif self.up == "-y":
+            rotation = geometry.create_transforms("z", [-180], degrees=True)
+        elif self.up == "-z":
+            rotation = geometry.create_transforms("x", [90], degrees=True)
+        else:
+            raise ValueError(
+                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
+            )
+        for key in self._points.data:
+            self._points.data[key] = geometry.get_global_coordinates(
+                self._points.data[key], rotation
+            )
+        for key in self._frames.data:
+            self._frames.data[key] = geometry.get_global_coordinates(
+                self._frames.data[key], rotation
+            )
+        
         self._update_markers_and_interconnections()
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
@@ -788,8 +781,8 @@ class Player:
         # Update the window title
         try:
             self._objects["Figure"].canvas.manager.set_window_title(
-                f"{self.current_index}/{self.n_indexes}: "
-                + "%2.2f s." % self.time[self.current_index]
+                f"{self.current_index}/{len(self.timeseries.time)}: "
+                + "%2.2f s." % self.timeseries.time[self.current_index]
             )
         except AttributeError:
             pass
@@ -847,8 +840,8 @@ class Player:
     # Helper functions
     def _set_index(self, index: int) -> None:
         """Set current index to a given index and update plots."""
-        if index >= self.n_indexes:
-            self.current_index = self.n_indexes - 1
+        if index >= len(self.timeseries.time):
+            self.current_index = len(self.timeseries.time) - 1
         elif index < 0:
             self.current_index = 0
         else:
@@ -863,7 +856,7 @@ class Player:
 
     def _set_time(self, time: float) -> None:
         """Set current index to a given time and update plots."""
-        index = int(np.argmin(np.abs(self.time - time)))
+        index = int(np.argmin(np.abs(self.timeseries.time - time)))
         self._set_index(index)
 
     def _select_none(self) -> None:
@@ -902,7 +895,7 @@ class Player:
             # self._running makes sure that we effectively stop.
             current_index = self.current_index
             self._set_time(
-                self.time[self.current_index]
+                self.timeseries.time[self.current_index]
                 + self.playback_speed
                 * (time.time() - self._state["SystemTimeOnLastUpdate"])
             )
@@ -942,7 +935,7 @@ class Player:
         if event.key == " ":
             if self._running is False:
                 self._state["SystemTimeOnLastUpdate"] = time.time()
-                self._state["SelfTimeOnPlay"] = self.time[self.current_index]
+                self._state["SelfTimeOnPlay"] = self.timeseries.time[self.current_index]
                 self._running = True
                 self._anim.event_source.start()
             else:
@@ -953,13 +946,13 @@ class Player:
             self._set_index(self.current_index - 1)
 
         elif event.key == "shift+left":
-            self._set_time(self.time[self.current_index] - 1)
+            self._set_time(self.timeseries.time[self.current_index] - 1)
 
         elif event.key == "right":
             self._set_index(self.current_index + 1)
 
         elif event.key == "shift+right":
-            self._set_time(self.time[self.current_index] + 1)
+            self._set_time(self.timeseries.time[self.current_index] + 1)
 
         elif event.key == "-":
             self.playback_speed /= 2
