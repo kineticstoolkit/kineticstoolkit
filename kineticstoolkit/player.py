@@ -29,7 +29,6 @@ __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.decorators import deprecated
@@ -50,6 +49,38 @@ import warnings
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
 
+REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
+
+HELP_TEXT = """
+    ktk.Player help
+    ----------------------------------------------------
+    KEYBOARD COMMANDS
+    show/hide this help : h
+    previous index      : left
+    next index          : right
+    previous second     : shift+left
+    next second         : shift+right
+    play/pause          : space
+    2x playback speed   : +
+    0.5x playback speed : -
+    toggle track        : t
+    toggle perspective  : d (depth)
+    ----------------------------------------------------
+    MOUSE COMMANDS
+    select a marker     : left-click
+    3d rotate           : left-drag
+    pan                 : middle-drag or shift+left-drag
+    zoom                : right-drag or wheel
+"""
+
+"""
+NOTES ON THE REFRESH PRIORITY
+
+Adding data using Player.add, Player.remove or Player.clear
+->
+_merge_timeseries
+_merge_interconnections
+"""
 
 class Player:
     # FIXME! Update this docstring.
@@ -85,7 +116,7 @@ class Player:
     current_index
         Optional. Sets the inital index number to show.
 
-    marker_radius
+    point_radius
         Optional. Sets the marker radius as defined by matplotlib.
 
     axis_length
@@ -142,7 +173,7 @@ class Player:
         target: ArrayLike = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
-        marker_radius: float = 0.008,
+        point_radius: float = 0.008,  #FIXME! Not used anywhere.
         axis_length: float = 0.1,
         axis_width: float = 3.0,
         interconnection_width: float = 1.5,
@@ -172,6 +203,7 @@ class Player:
         self.current_index = current_index
         if current_time is not None:
             self.current_time = current_time
+
         self.playback_speed = playback_speed
         self.up = up
         self.zoom = zoom
@@ -181,14 +213,66 @@ class Player:
         self.target = target
         self.perspective = perspective
         self.track = track
-        self.marker_radius = marker_radius
+        self.point_radius = point_radius
         self.axis_length = axis_length
         self.axis_width = axis_width
         self.interconnection_width = interconnection_width
         self.grid_color = grid_color
         self.background_color = background_color
 
-        self.continue_init()  # temp
+        self._points = None  # FIXME! to remove
+        self._frames = None  # FIXME! to remove
+
+        self._select_none()
+        self.last_selected_marker = ""
+        self._running = False
+
+        self._colors = ["r", "g", "b", "y", "c", "m", "w"]
+
+        # Init mouse navigation state
+        self._state = dict()  # type: dict[str, Any]
+        self._state["ShiftPressed"] = False
+        self._state["MouseLeftPressed"] = False
+        self._state["MouseMiddlePressed"] = False
+        self._state["MouseRightPressed"] = False
+        self._state["MousePositionOnPress"] = (0.0, 0.0)
+        self._state["MousePositionOnMiddlePress"] = (0.0, 0.0)
+        self._state["MousePositionOnRightPress"] = (0.0, 0.0)
+        self._state["TranslationOnMousePress"] = (0.0, 0.0)
+        self._state["AzimutOnMousePress"] = 0.0
+        self._state["ElevationOnMousePress"] = 0.0
+        self._state["SelfTimeOnPlay"] = self.timeseries.time[0]
+        self._state["SystemTimeOnLastUpdate"] = time.time()
+
+        # Create the figure and prepare its contents
+        self._figure_contents = dict()  # type: dict[str, Any]        
+
+        (
+            self._figure_contents["Figure"],
+            self._figure_contents["Axes"],
+            self._figure_contents["Anim"],
+        ) = self._create_empty_figure()
+
+        self._figure_contents[
+            "InterconnectionPlots"
+        ] = self._create_empty_interconnection_plots()
+
+        self._figure_contents["PointPlots"] = self._create_empty_point_plots()
+
+        self._ground_plane = self._create_ground_plane()
+
+        self._figure_contents["PlotRigidBodiesX"] = None
+        self._figure_contents["PlotRigidBodiesY"] = None
+        self._figure_contents["PlotRigidBodiesZ"] = None
+        self._figure_contents["PlotGroundPlane"] = None
+
+        self._figure_contents["HelpText"] = None
+
+        self._update_plots()  # Draw everything once
+        # Set limits once it's drawn
+        self._figure_contents["Axes"].set_xlim([-1.5, 1.5])
+        self._figure_contents["Axes"].set_ylim([-1.0, 1.0])
+
 
     @property
     def source_timeseries(self) -> dict[str, list[TimeSeries]]:
@@ -209,6 +293,10 @@ class Player:
     def interconnections(self) -> dict[str, dict[str, Any]]:
         """The merged interconnections, renamed to match merged_timeseries."""
         return self._interconnections
+
+    def __dir__(self):
+        """Return directory."""
+        return ["close"]
 
     # %% Update functions on data init/change
 
@@ -245,7 +333,6 @@ class Player:
             in_place=True,
         )
 
-
     def _merge_interconnections(self) -> None:
         """Update self._interconnections."""
         self._interconnections = {}
@@ -272,96 +359,18 @@ class Player:
                         ]
                     )
 
-    def continue_init(self):
-        """temp."""
-        ts = self.timeseries
+    #%% Empty object creation
 
-        # FIXME! With the Player API, the Player should be
-        # functionning without any TimeSeries (just showing nothing).
-
-        
-        self._points = None  #FIXME! to remove
-        self._frames = None  #FIXME! to remove
-
-        # ---------------------------------------------------------------
-        # Decompose the input TimeSeries' contents into points and frames
-        self._select_none()
-        self.last_selected_marker = ""
-
-        # Init objects
-        self._objects = dict()  # type: dict[str, Any]
-        self._colors = ["r", "g", "b", "y", "c", "m", "w"]
-        self._objects["PlotMarkers"] = dict()
-        for color in self._colors:
-            self._objects["PlotMarkers"][color] = None  # Not selected
-            self._objects["PlotMarkers"][color + "s"] = None  # Selected
-        self._objects["PlotRigidBodiesX"] = None
-        self._objects["PlotRigidBodiesY"] = None
-        self._objects["PlotRigidBodiesZ"] = None
-        self._objects["PlotGroundPlane"] = None
-        self._objects["PlotInterconnections"] = dict()
-
-        self._objects["Figure"] = None
-        self._objects["Axes"] = None
-        self._objects["Help"] = None
-
-        # Init mouse navigation state
-        self._state = dict()  # type: dict[str, Any]
-        self._state["ShiftPressed"] = False
-        self._state["MouseLeftPressed"] = False
-        self._state["MouseMiddlePressed"] = False
-        self._state["MouseRightPressed"] = False
-        self._state["MousePositionOnPress"] = (0.0, 0.0)
-        self._state["MousePositionOnMiddlePress"] = (0.0, 0.0)
-        self._state["MousePositionOnRightPress"] = (0.0, 0.0)
-        self._state["TranslationOnMousePress"] = (0.0, 0.0)
-        self._state["AzimutOnMousePress"] = 0.0
-        self._state["ElevationOnMousePress"] = 0.0
-        self._state["SelfTimeOnPlay"] = self.timeseries.time[0]
-        self._state["SystemTimeOnLastUpdate"] = time.time()
-
-        self._help_text = """
-            ktk.Player help
-            ----------------------------------------------------
-            KEYBOARD COMMANDS
-            show/hide this help : h
-            previous index      : left
-            next index          : right
-            previous second     : shift+left
-            next second         : shift+right
-            play/pause          : space
-            2x playback speed   : +
-            0.5x playback speed : -
-            toggle track        : t
-            toggle perspective  : d (depth)
-            ----------------------------------------------------
-            MOUSE COMMANDS
-            select a marker     : left-click
-            3d rotate           : left-drag
-            pan                 : middle-drag or shift+left-drag
-            zoom                : right-drag or wheel
-            """
-
-        self._create_figure()
-        self._create_interconnections()
-        self._create_markers()
-        self._create_ground_plane()
-        self._first_refresh()
-
-    def __dir__(self):
-        """Return directory."""
-        return ["close"]
-
-    def _create_figure(self) -> None:
-        """Create the player's figure."""
+    def _create_empty_figure(self) -> tuple:
+        """Create figure and return Figure, Axes and AnimationTimer."""
         # Create the figure and axes
-        self._objects["Figure"], self._objects["Axes"] = plt.subplots(
+        (fig, ax) = plt.subplots(
             num=None, figsize=(12, 9), facecolor="k", edgecolor="w"
         )
 
         # Remove the toolbar
         try:  # Try, setVisible method not always there
-            self._objects["Figure"].canvas.toolbar.setVisible(False)
+            fig.canvas.toolbar.setVisible(False)
         except AttributeError:
             pass
 
@@ -372,59 +381,44 @@ class Player:
         plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
 
         # Remove the background for faster plotting
-        self._objects["Axes"].set_axis_off()
+        ax.set_axis_off()
 
         # Add the animation timer
-
-        # FIXME! All attributes should be initialized in the constructor.
-        # Not everywhere like now.
-
-        self._anim = animation.FuncAnimation(
-            self._objects["Figure"],
+        anim = animation.FuncAnimation(
+            fig,
             self._on_timer,  # type: ignore
             frames=len(self.timeseries.time),
             interval=33,
         )  # 30 ips
-        self._running = False
 
         # Connect the callback functions
-        self._objects["Figure"].canvas.mpl_connect("pick_event", self._on_pick)
-        self._objects["Figure"].canvas.mpl_connect(
-            "key_press_event", self._on_key
-        )
-        self._objects["Figure"].canvas.mpl_connect(
-            "key_release_event", self._on_release
-        )
-        self._objects["Figure"].canvas.mpl_connect(
-            "scroll_event", self._on_scroll
-        )
-        self._objects["Figure"].canvas.mpl_connect(
-            "button_press_event", self._on_mouse_press
-        )
-        self._objects["Figure"].canvas.mpl_connect(
-            "button_release_event", self._on_mouse_release
-        )
-        self._objects["Figure"].canvas.mpl_connect(
-            "motion_notify_event", self._on_mouse_motion
-        )
+        fig.canvas.mpl_connect("pick_event", self._on_pick)
+        fig.canvas.mpl_connect("key_press_event", self._on_key)
+        fig.canvas.mpl_connect("key_release_event", self._on_release)
+        fig.canvas.mpl_connect("scroll_event", self._on_scroll)
+        fig.canvas.mpl_connect("button_press_event", self._on_mouse_press)
+        fig.canvas.mpl_connect("button_release_event", self._on_mouse_release)
+        fig.canvas.mpl_connect("motion_notify_event", self._on_mouse_motion)
 
-    def _create_interconnections(self) -> None:
-        """Create the interconnections plots in the player's figure."""
+        return (fig, ax, anim)
+
+    def _create_empty_interconnection_plots(self) -> dict:
+        """Create empty interconnection plots and return it."""
+        out = dict()
         for interconnection in self.interconnections:
-            self._objects["PlotInterconnections"][
-                interconnection
-            ] = self._objects["Axes"].plot(
+            out[interconnection] = self._figure_contents["Axes"].plot(
                 np.nan,
                 np.nan,
                 "-",
                 c=self.interconnections[interconnection]["Color"],
                 linewidth=self.interconnection_width,
-            )[
-                0
-            ]
+            )[0]
+        return out
 
-    def _create_markers(self) -> None:
-        """Create the markers plots in the player's figure."""
+    def _create_empty_point_plots(self) -> dict:
+        """Create empty point plots of different colors."""
+        out = dict()
+
         colors = {
             "r": [1, 0, 0],
             "g": [0, 1, 0],
@@ -436,7 +430,7 @@ class Player:
         }
 
         for color in self._colors:
-            self._objects["PlotMarkers"][color] = self._objects["Axes"].plot(
+            out[color] = self._figure_contents["Axes"].plot(
                 np.nan,
                 np.nan,
                 ".",
@@ -445,12 +439,14 @@ class Player:
                 pickradius=5,
                 picker=True,
             )[0]
-        for color in self._colors:
-            self._objects["PlotMarkers"][color + "s"] = self._objects[
-                "Axes"
-            ].plot(np.nan, np.nan, ".", c=colors[color], markersize=12)[0]
 
-    def _create_ground_plane(self) -> None:
+            out[color + "s"] = self._figure_contents["Axes"].plot(
+                np.nan, np.nan, ".", c=colors[color], markersize=12
+            )[0]
+
+        return out
+
+    def _create_ground_plane(self) -> np.ndarray:
         # Create the ground plane matrix
         gp_size = 30  # blocks
         gp_div = 4  # blocks per meter
@@ -478,7 +474,7 @@ class Player:
             ]
         )
         gp_1 = np.ones(6 * gp_size)
-        self._ground_plane = np.hstack(
+        return np.hstack(
             [
                 gp_x[:, np.newaxis],
                 gp_y[:, np.newaxis],
@@ -487,10 +483,6 @@ class Player:
             ]
         )
 
-    def _first_refresh(self) -> None:
-        """Draw the stuff and set the axis size."""
-        self._update_plots()
-        plt.axis((-1.5, 1.5, -1.0, 1.0))
 
     def _get_projection(self, points_3d: np.ndarray) -> np.ndarray:
         """
@@ -620,7 +612,7 @@ class Player:
         for color in self._colors:
             # Unselected markers
             markers_data[color] = self._get_projection(markers_data[color])
-            self._objects["PlotMarkers"][color].set_data(
+            self._figure_contents["PointPlots"][color].set_data(
                 markers_data[color][:, 0], markers_data[color][:, 1]
             )
 
@@ -628,7 +620,7 @@ class Player:
             markers_data[color + "s"] = self._get_projection(
                 markers_data[color + "s"]
             )
-            self._objects["PlotMarkers"][color + "s"].set_data(
+            self._figure_contents["PointPlots"][color + "s"].set_data(
                 markers_data[color + "s"][:, 0],
                 markers_data[color + "s"][:, 1],
             )
@@ -650,22 +642,22 @@ class Player:
             np_coordinates = np.array(coordinates)
             np_coordinates = self._get_projection(np_coordinates)
 
-            self._objects["PlotInterconnections"][interconnection].set_data(
-                np_coordinates[:, 0], np_coordinates[:, 1]
-            )
+            self._figure_contents["InterconnectionPlots"][
+                interconnection
+            ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
 
     def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
-        
+
         self._points = TimeSeries()
         self._frames = TimeSeries()
-        
+
         for key in self.timeseries.data:
             if self.timeseries.data[key].shape[1:] == (4,):
                 self._points.data[key] = self.timeseries.data[key]
-            elif self.timeseries.data[key].shape[1:] == (4,4):
+            elif self.timeseries.data[key].shape[1:] == (4, 4):
                 self._frames.data[key] = self.timeseries.data[key]
-        
+
         # Rotate everything according to the up input, so that the end result
         # is y up:
         #
@@ -698,7 +690,7 @@ class Player:
             self._frames.data[key] = geometry.get_global_coordinates(
                 self._frames.data[key], rotation
             )
-        
+
         self._update_markers_and_interconnections()
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
@@ -737,57 +729,73 @@ class Player:
 
         # Update the ground plane
         gp = self._get_projection(self._ground_plane)
-        if self._objects["PlotGroundPlane"] is None:  # Create the plot
-            self._objects["PlotGroundPlane"] = self._objects["Axes"].plot(
-                gp[:, 0], gp[:, 1], c=[0.3, 0.3, 0.3], linewidth=1
-            )[0]
+        if self._figure_contents["PlotGroundPlane"] is None:  # Create the plot
+            self._figure_contents["PlotGroundPlane"] = self._figure_contents[
+                "Axes"
+            ].plot(gp[:, 0], gp[:, 1], c=[0.3, 0.3, 0.3], linewidth=1)[0]
         else:  # Update the plot
-            self._objects["PlotGroundPlane"].set_data(gp[:, 0], gp[:, 1])
+            self._figure_contents["PlotGroundPlane"].set_data(
+                gp[:, 0], gp[:, 1]
+            )
 
         # Create or update the rigid bodies plot
         rbx_data = self._get_projection(rbx_data)
         rby_data = self._get_projection(rby_data)
         rbz_data = self._get_projection(rbz_data)
-        if self._objects["PlotRigidBodiesX"] is None:  # Create the plot
-            self._objects["PlotRigidBodiesX"] = self._objects["Axes"].plot(
+        if (
+            self._figure_contents["PlotRigidBodiesX"] is None
+        ):  # Create the plot
+            self._figure_contents["PlotRigidBodiesX"] = self._figure_contents[
+                "Axes"
+            ].plot(
                 rbx_data[:, 0],
                 rbx_data[:, 1],
                 c="r",
                 linewidth=self.axis_width,
-            )[0]
-            self._objects["PlotRigidBodiesY"] = self._objects["Axes"].plot(
+            )[
+                0
+            ]
+            self._figure_contents["PlotRigidBodiesY"] = self._figure_contents[
+                "Axes"
+            ].plot(
                 rby_data[:, 0],
                 rby_data[:, 1],
                 c="g",
                 linewidth=self.axis_width,
-            )[0]
-            self._objects["PlotRigidBodiesZ"] = self._objects["Axes"].plot(
+            )[
+                0
+            ]
+            self._figure_contents["PlotRigidBodiesZ"] = self._figure_contents[
+                "Axes"
+            ].plot(
                 rbz_data[:, 0],
                 rbz_data[:, 1],
                 c="b",
                 linewidth=self.axis_width,
-            )[0]
+            )[
+                0
+            ]
         else:  # Update the plot
-            self._objects["PlotRigidBodiesX"].set_data(
+            self._figure_contents["PlotRigidBodiesX"].set_data(
                 rbx_data[:, 0], rbx_data[:, 1]
             )
-            self._objects["PlotRigidBodiesY"].set_data(
+            self._figure_contents["PlotRigidBodiesY"].set_data(
                 rby_data[:, 0], rby_data[:, 1]
             )
-            self._objects["PlotRigidBodiesZ"].set_data(
+            self._figure_contents["PlotRigidBodiesZ"].set_data(
                 rbz_data[:, 0], rbz_data[:, 1]
             )
 
         # Update the window title
         try:
-            self._objects["Figure"].canvas.manager.set_window_title(
+            self._figure_contents["Figure"].canvas.manager.set_window_title(
                 f"{self.current_index}/{len(self.timeseries.time)}: "
                 + "%2.2f s." % self.timeseries.time[self.current_index]
             )
         except AttributeError:
             pass
 
-        self._objects["Figure"].canvas.draw()
+        self._figure_contents["Figure"].canvas.draw()
 
     def _set_new_target(self, target: ArrayLike) -> None:
         """Set new target and adapts translation and zoom consequently."""
@@ -875,8 +883,8 @@ class Player:
 
     def close(self) -> None:
         """Close the Player and its associated window."""
-        plt.close(self._objects["Figure"])
-        self._objects = {}
+        plt.close(self._figure_contents["Figure"])
+        self._figure_contents = {}
 
     # ------------------------------------
     # Callbacks
@@ -907,14 +915,14 @@ class Player:
 
             self._update_plots()
         else:
-            self._anim.event_source.stop()
+            self._figure_contents["Anim"].event_source.stop()
 
     def _on_pick(self, event):  # pragma: no cover
         """Implement callback for marker selection."""
         if event.mouseevent.button == 1:
             index = event.ind
             selected_marker = list(self._points.data.keys())[index[0]]
-            self._objects["Axes"].set_title(selected_marker)
+            self._figure_contents["Axes"].set_title(selected_marker)
 
             # Mark selected
             self._select_none()
@@ -935,12 +943,14 @@ class Player:
         if event.key == " ":
             if self._running is False:
                 self._state["SystemTimeOnLastUpdate"] = time.time()
-                self._state["SelfTimeOnPlay"] = self.timeseries.time[self.current_index]
+                self._state["SelfTimeOnPlay"] = self.timeseries.time[
+                    self.current_index
+                ]
                 self._running = True
-                self._anim.event_source.start()
+                self._figure_contents["Anim"].event_source.start()
             else:
                 self._running = False
-                self._anim.event_source.stop()
+                self._figure_contents["Anim"].event_source.stop()
 
         elif event.key == "left":
             self._set_index(self.current_index - 1)
@@ -956,42 +966,52 @@ class Player:
 
         elif event.key == "-":
             self.playback_speed /= 2
-            self._objects["Axes"].set_title(
+            self._figure_contents["Axes"].set_title(
                 f"Playback set to {self.playback_speed}x"
             )
 
         elif event.key == "+":
             self.playback_speed *= 2
-            self._objects["Axes"].set_title(
+            self._figure_contents["Axes"].set_title(
                 f"Playback set to {self.playback_speed}x"
             )
 
         elif event.key == "h":
-            if self._objects["Help"] is None:
-                self._objects["Help"] = self._objects["Axes"].text(
+            if self._figure_contents["HelpText"] is None:
+                self._figure_contents["HelpText"] = self._figure_contents[
+                    "Axes"
+                ].text(
                     -1.5,
                     -1,
-                    self._help_text,
+                    HELP_TEXT,
                     color=[0, 1, 0],
                     fontfamily="monospace",
                 )
             else:
-                self._objects["Help"].remove()
-                self._objects["Help"] = None
+                self._figure_contents["HelpText"].remove()
+                self._figure_contents["HelpText"] = None
 
         elif event.key == "d":
             self.perspective = not self.perspective
             if self.perspective is True:
-                self._objects["Axes"].set_title("Camera set to perspective")
+                self._figure_contents["Axes"].set_title(
+                    "Camera set to perspective"
+                )
             else:
-                self._objects["Axes"].set_title("Camera set to orthogonal")
+                self._figure_contents["Axes"].set_title(
+                    "Camera set to orthogonal"
+                )
 
         elif event.key == "t":
             self.track = not self.track
             if self.track is True:
-                self._objects["Axes"].set_title("Marker tracking activated")
+                self._figure_contents["Axes"].set_title(
+                    "Marker tracking activated"
+                )
             else:
-                self._objects["Axes"].set_title("Marker tracking deactivated")
+                self._figure_contents["Axes"].set_title(
+                    "Marker tracking deactivated"
+                )
 
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
@@ -1092,14 +1112,14 @@ class Player:
         mpl.rcParams["animation.html"] = "html5"
 
         self.playback_speed = 0
-        self._objects["Figure"].set_size_inches(6, 4.5)  # Half size
+        self._figure_contents["Figure"].set_size_inches(6, 4.5)  # Half size
         self._set_index(0)
         self._running = True
-        #        self._anim.frames = stop_index - start_index
-        #        self._anim.save_count = stop_index - start_index
-        self._anim.event_source.start()
-        plt.close(self._objects["Figure"])
-        return self._anim
+        #        self._figure_contents["Anim"].frames = stop_index - start_index
+        #        self._figure_contents["Anim"].save_count = stop_index - start_index
+        self._figure_contents["Anim"].event_source.start()
+        plt.close(self._figure_contents["Figure"])
+        return self._figure_contents["Anim"]
 
     @deprecated(
         since="0.12",
