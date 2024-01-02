@@ -52,32 +52,13 @@ import scipy.optimize as optim
 
 
 class Player:
+    # FIXME! Update this docstring.
     """
     A class that allows visualizing markers and rigid bodies in 3D.
 
-    ``player = ktk.Player(parameters)`` creates and launches an interactive
-    Player instance. Once the window is open, pressing ``h`` brings this help
-    overlay::
-
-            ktk.Player help
-            ----------------------------------------------------
-            KEYBOARD COMMANDS
-            show/hide this help : h
-            previous index      : left
-            next index          : right
-            previous second     : shift+left
-            next second         : shift+right
-            play/pause          : space
-            2x playback speed   : +
-            0.5x playback speed : -
-            toggle track        : t
-            toggle perspective  : d (depth)
-            ----------------------------------------------------
-            MOUSE COMMANDS
-            select a marker     : left-click
-            3d rotate           : left-drag
-            pan                 : middle-drag or shift+left-drag
-            zoom                : right-drag or wheel
+    `player = ktk.Player(parameters)` creates and launches an interactive
+    Player instance. Once the window is open, press `h` to show a help
+    overlay.
 
     Parameters
     ----------
@@ -143,23 +124,30 @@ class Player:
 
     """
 
+    # %% Init and properties getters and setters
+
     def __init__(
         self,
         *ts: TimeSeries,
         interconnections: dict[str, dict[str, Any]] = {},
+        group: str = "",
         current_index: int = 0,
-        marker_radius: float = 0.008,
-        axis_length: float = 0.1,
-        axis_width: float = 3.0,
-        interconnection_width: float = 1.5,
+        current_time: float | None = None,
+        playback_speed: float = 1.0,
         up: str = "y",
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
         translation: ArrayLike = (0.0, 0.0),
         target: ArrayLike = (0.0, 0.0, 0.0),
-        track: bool = False,
         perspective: bool = True,
+        track: bool = False,
+        marker_radius: float = 0.008,
+        axis_length: float = 0.1,
+        axis_width: float = 3.0,
+        interconnection_width: float = 1.5,
+        grid_color: tuple[float, float, float] | None = (0.8, 0.8, 0.8),
+        background_color: tuple[float, float, float] = (0.0, 0.0, 0.0),
         **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
         # Allow older parameter names
@@ -173,21 +161,87 @@ class Player:
         # Warn if Matplotlib is not interactive
         check_interactive_backend()
 
-        # Ensure that ts contains TimeSeries, and that they are non-empty
-        if len(ts) == 0:
-            raise ValueError(
-                "You must provide at least one TimeSeries (e.g., markers, "
-                "frames) when you create a Player."
-            )
-        for one_ts in ts:
-            if not isinstance(one_ts, TimeSeries):
-                raise TypeError(
-                    "Player only accepts TimeSeries as data inputs."
-                )
-            if len(one_ts.time) == 0:
-                raise ValueError(
-                    "At least one of the provided TimeSeries has zero samples."
-                )
+        # Assign properties
+        self._source_timeseries = dict()
+        self._source_timeseries[group] = [_.copy() for _ in ts]
+        self._source_interconnections = dict()
+        self._source_interconnections[group] = interconnections
+
+        self.current_index = current_index
+        if current_time is not None:
+            self.current_time = current_time
+        self.playback_speed = playback_speed
+        self.up = up
+        self.zoom = zoom
+        self.azimuth = azimuth
+        self.elevation = elevation
+        self.translation = translation
+        self.target = target
+        self.perspective = perspective
+        self.track = track
+        self.marker_radius = marker_radius
+        self.axis_length = axis_length
+        self.axis_width = axis_width
+        self.interconnection_width = interconnection_width
+        self.grid_color = grid_color
+        self.background_color = background_color
+
+        self.continue_init()  # temp
+
+    @property
+    def source_timeseries(self) -> dict[str, list[TimeSeries]]:
+        """The source TimeSeries, separated in groups."""
+        return self._source_timeseries
+
+    @property
+    def merged_timeseries(self) -> TimeSeries:
+        """The TimeSeries, merged and prefixed by group name."""
+        out = TimeSeries()
+        for group in self.source_timeseries:
+            for ts in self.source_timeseries[group]:
+                for key in ts.data:
+                    temp_ts = ts.get_subset(key)
+                    if group != "":
+                        temp_ts.rename_data(key, f"{group}:{key}", in_place=True)
+                    out.merge(temp_ts, in_place=True)
+        return out
+
+    @property
+    def source_interconnections(self) -> dict[str, dict[str, dict[str, Any]]]:
+        """The source interconnections, separated in groups."""
+        return self._source_interconnections
+
+    @property
+    def merged_interconnections(self) -> dict[str, dict[str, Any]]:
+        """The merged interconnections, renamed to match merged_timeseries."""
+        out = {}
+        for group in self.source_interconnections:
+            # Go through every body segment
+            for body_name in self.source_interconnections[group]:
+                out_key = body_name if group == "" else f"{group}:{body_name}"
+                out[out_key] = dict()
+                out[out_key]["Color"] = self.source_interconnections[group][
+                    body_name
+                ]["Color"]
+                out[out_key]["Links"] = []
+
+                # Go through every link of this segment
+                for i_link, link in enumerate(
+                    self.source_interconnections[group][body_name]
+                ):
+                    out[out_key]["Links"].append(
+                        [
+                            f"{group}:{s}"
+                            for s in self.source_interconnections[group][
+                                body_name
+                            ]["Links"][i_link]
+                        ]
+                    )
+        return out
+
+    def continue_init(self):
+        """temp."""
+        ts = self.merged_timeseries
 
         # ---------------------------------------------------------------
         # Set self.n_indexes and self.time, and verify that we have at least
@@ -196,8 +250,8 @@ class Player:
         # FIXME! With the Player API, the Player should be
         # functionning without any TimeSeries (just showing nothing).
 
-        self.time = ts[0].time
-        self.n_indexes = len(ts[0].time)
+        self.time = ts.time
+        self.n_indexes = len(self.time)
 
         # ---------------------------------------------------------------
         # Decompose the input TimeSeries' contents into points and frames
@@ -207,34 +261,34 @@ class Player:
         self._points = TimeSeries()
         self._frames = TimeSeries()
 
-        for one_ts in ts:
-            for key in one_ts.data:
-                if one_ts.data[key].shape[1:] == (4,):
-                    self._points.data[key] = one_ts.data[key]
-                    if key in one_ts.data_info:
-                        self._points.data_info[key] = one_ts.data_info[key]
+        for key in ts.data:
+            if ts.data[key].shape[1:] == (4,):
+                self._points.data[key] = ts.data[key]
+                if key in ts.data_info:
+                    self._points.data_info[key] = ts.data_info[key]
 
-                elif one_ts.data[key].shape[1:] == (4, 4):
-                    # Add the frames
-                    self._frames.data[key] = one_ts.data[key]
-                    if key in one_ts.data_info:
-                        self._frames.data_info[key] = one_ts.data_info[key]
+            elif ts.data[key].shape[1:] == (4, 4):
+                # Add the frames
+                self._frames.data[key] = ts.data[key]
+                if key in ts.data_info:
+                    self._frames.data_info[key] = ts.data_info[key]
 
-                    # Add the frame origins as "markers"
-                    key_label = f"[{key}] origin"
-                    self._points.data[key_label] = one_ts.data[key][:, :, 3]
-                    if key in one_ts.data_info:
-                        self._points.data_info[key_label] = one_ts.data_info[
-                            key
-                        ]
+                # Add the frame origins as "markers"
+                key_label = f"[{key}] origin"
+                self._points.data[key_label] = ts.data[key][:, :, 3]
+                if key in ts.data_info:
+                    self._points.data_info[key_label] = ts.data_info[
+                        key
+                    ]
 
-                else:
-                    warnings.warn(
-                        f"The data key {key} has a shape of "
-                        f"{one_ts.data[key].shape}. However, the Player can "
-                        "only show points (Nx4) and frames Nx4x4. Therefore, "
-                        f"{key} won't be shown in the Player."
-                    )
+            else:
+                warnings.warn(
+                    f"The data key {key} has a shape of "
+                    f"{ts.data[key].shape}. However, the Player can "
+                    "only show points (Nx4) and frames Nx4x4. Therefore, "
+                    f"{key} won't be shown in the Player."
+                )
+
         self._select_none()
         self.last_selected_marker = ""
 
@@ -251,17 +305,17 @@ class Player:
         #    +---- x
         #   /
         # z/
-        if up == "x":
+        if self.up == "x":
             rotation = geometry.create_transforms("z", [90], degrees=True)
-        elif up == "y":
+        elif self.up == "y":
             rotation = np.eye(4)[np.newaxis]
-        elif up == "z":
+        elif self.up == "z":
             rotation = geometry.create_transforms("x", [-90], degrees=True)
-        elif up == "-x":
+        elif self.up == "-x":
             rotation = geometry.create_transforms("z", [-90], degrees=True)
-        elif up == "-y":
+        elif self.up == "-y":
             rotation = geometry.create_transforms("z", [-180], degrees=True)
-        elif up == "-z":
+        elif self.up == "-z":
             rotation = geometry.create_transforms("x", [90], degrees=True)
         else:
             raise ValueError(
@@ -278,26 +332,9 @@ class Player:
 
         # Camera target
         target1x4 = np.ones((1, 4))
-        target1x4[0, 0:3] = target
+        target1x4[0, 0:3] = self.target
         self.target = geometry.get_global_coordinates(target1x4, rotation)[0]
 
-        # ---------------------------------------------------------------
-        # Assign the interconnections
-        self.interconnections = interconnections
-
-        # ---------------------------------------------------------------
-        # Other initalizations
-        self.current_index = current_index
-        self.marker_radius = marker_radius
-        self.axis_length = axis_length
-        self.axis_width = axis_width
-        self.interconnection_width = interconnection_width
-        self.zoom = zoom
-        self.azimuth = azimuth
-        self.elevation = elevation
-        self.track = track
-        self.translation = np.array(translation)
-        self.perspective = perspective
         self.playback_speed = 1.0  # 0.0 to show all samples
         #  self._anim = None  # Will initialize in _create_figure
 
@@ -423,19 +460,18 @@ class Player:
 
     def _create_interconnections(self) -> None:
         """Create the interconnections plots in the player's figure."""
-        if self.interconnections is not None:
-            for interconnection in self.interconnections:
-                self._objects["PlotInterconnections"][
-                    interconnection
-                ] = self._objects["Axes"].plot(
-                    np.nan,
-                    np.nan,
-                    "-",
-                    c=self.interconnections[interconnection]["Color"],
-                    linewidth=self.interconnection_width,
-                )[
-                    0
-                ]
+        for interconnection in self.merged_interconnections:
+            self._objects["PlotInterconnections"][
+                interconnection
+            ] = self._objects["Axes"].plot(
+                np.nan,
+                np.nan,
+                "-",
+                c=self.merged_interconnections[interconnection]["Color"],
+                linewidth=self.interconnection_width,
+            )[
+                0
+            ]
 
     def _create_markers(self) -> None:
         """Create the markers plots in the player's figure."""
@@ -648,26 +684,25 @@ class Player:
             )
 
         # Draw the interconnections
-        if self.interconnections is not None:
-            for interconnection in self.interconnections:
-                coordinates = []
-                chains = self.interconnections[interconnection]["Links"]
+        for interconnection in self.merged_interconnections:
+            coordinates = []
+            chains = self.merged_interconnections[interconnection]["Links"]
 
-                for chain in chains:
-                    for marker in chain:
-                        try:
-                            coordinates.append(interconnection_markers[marker])
-                        except KeyError:
-                            coordinates.append(np.repeat(np.nan, 4))
+            for chain in chains:
+                for marker in chain:
+                    try:
+                        coordinates.append(interconnection_markers[marker])
+                    except KeyError:
+                        coordinates.append(np.repeat(np.nan, 4))
 
-                    coordinates.append(np.repeat(np.nan, 4))
+                coordinates.append(np.repeat(np.nan, 4))
 
-                np_coordinates = np.array(coordinates)
-                np_coordinates = self._get_projection(np_coordinates)
+            np_coordinates = np.array(coordinates)
+            np_coordinates = self._get_projection(np_coordinates)
 
-                self._objects["PlotInterconnections"][
-                    interconnection
-                ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
+            self._objects["PlotInterconnections"][
+                interconnection
+            ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
 
     def _update_plots(self) -> None:
         """Update the plots, or draw it if not plot has been drawn before."""
