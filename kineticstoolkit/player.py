@@ -41,7 +41,7 @@ from matplotlib import animation
 import numpy as np
 from numpy import sin, cos
 import time
-import copy
+from copy import deepcopy
 from typing import Any
 from numpy.typing import ArrayLike
 import warnings
@@ -81,6 +81,7 @@ Adding data using Player.add, Player.remove or Player.clear
 _merge_timeseries
 _merge_interconnections
 """
+
 
 class Player:
     # FIXME! Update this docstring.
@@ -173,7 +174,7 @@ class Player:
         target: ArrayLike = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
-        point_radius: float = 0.008,  #FIXME! Not used anywhere.
+        point_radius: float = 0.008,  # FIXME! Not used anywhere.
         axis_length: float = 0.1,
         axis_width: float = 3.0,
         interconnection_width: float = 1.5,
@@ -193,12 +194,11 @@ class Player:
         check_interactive_backend()
 
         # Assign properties
-        self._source_timeseries = dict()
-        self._source_timeseries[group] = [_.copy() for _ in ts]
-        self._source_interconnections = dict()
-        self._source_interconnections[group] = interconnections
-        self._merge_timeseries()
-        self._merge_interconnections()
+        self._source_timeseries = {}
+        self._source_interconnections = {}
+        self._merged_timeseries = TimeSeries()
+        self._merged_interconnections = {}
+        self._oriented_timeseries = TimeSeries()
 
         self.current_index = current_index
         if current_time is not None:
@@ -223,6 +223,10 @@ class Player:
         self._points = None  # FIXME! to remove
         self._frames = None  # FIXME! to remove
 
+        # Add the TimeSeries
+        # FIXME! Should be at the end.
+        self.add(*ts, group=group, interconnections=interconnections)
+
         self._select_none()
         self.last_selected_marker = ""
         self._running = False
@@ -230,49 +234,50 @@ class Player:
         self._colors = ["r", "g", "b", "y", "c", "m", "w"]
 
         # Init mouse navigation state
-        self._state = dict()  # type: dict[str, Any]
-        self._state["ShiftPressed"] = False
-        self._state["MouseLeftPressed"] = False
-        self._state["MouseMiddlePressed"] = False
-        self._state["MouseRightPressed"] = False
-        self._state["MousePositionOnPress"] = (0.0, 0.0)
-        self._state["MousePositionOnMiddlePress"] = (0.0, 0.0)
-        self._state["MousePositionOnRightPress"] = (0.0, 0.0)
-        self._state["TranslationOnMousePress"] = (0.0, 0.0)
-        self._state["AzimutOnMousePress"] = 0.0
-        self._state["ElevationOnMousePress"] = 0.0
-        self._state["SelfTimeOnPlay"] = self.timeseries.time[0]
-        self._state["SystemTimeOnLastUpdate"] = time.time()
+        self._state = {
+            "ShiftPressed": False,
+            "MouseLeftPressed": False,
+            "MouseMiddlePressed": False,
+            "MouseRightPressed": False,
+            "MousePositionOnPress": (0.0, 0.0),
+            "MousePositionOnMiddlePress": (0.0, 0.0),
+            "MousePositionOnRightPress": (0.0, 0.0),
+            "TranslationOnMousePress": (0.0, 0.0),
+            "AzimutOnMousePress": 0.0,
+            "ElevationOnMousePress": 0.0,
+            "SelfTimeOnPlay": self.merged_timeseries.time[0],
+            "SystemTimeOnLastUpdate": time.time(),
+        }
 
         # Create the figure and prepare its contents
-        self._figure_contents = dict()  # type: dict[str, Any]        
+        (fig, axes, anim) = self._create_empty_figure()
+        self._mpl_objects = {
+            "Figure": fig,
+            "Axes": axes,
+            "Anim": anim,
+        }
 
-        (
-            self._figure_contents["Figure"],
-            self._figure_contents["Axes"],
-            self._figure_contents["Anim"],
-        ) = self._create_empty_figure()
-
-        self._figure_contents[
+        self._mpl_objects[
             "InterconnectionPlots"
         ] = self._create_empty_interconnection_plots()
 
-        self._figure_contents["PointPlots"] = self._create_empty_point_plots()
+        self._mpl_objects["PointPlots"] = self._create_empty_point_plots()
 
         self._ground_plane = self._create_ground_plane()
 
-        self._figure_contents["PlotRigidBodiesX"] = None
-        self._figure_contents["PlotRigidBodiesY"] = None
-        self._figure_contents["PlotRigidBodiesZ"] = None
-        self._figure_contents["PlotGroundPlane"] = None
+        self._mpl_objects["PlotRigidBodiesX"] = None
+        self._mpl_objects["PlotRigidBodiesY"] = None
+        self._mpl_objects["PlotRigidBodiesZ"] = None
+        self._mpl_objects["PlotGroundPlane"] = None
 
-        self._figure_contents["HelpText"] = None
+        self._mpl_objects["HelpText"] = None
 
         self._update_plots()  # Draw everything once
         # Set limits once it's drawn
-        self._figure_contents["Axes"].set_xlim([-1.5, 1.5])
-        self._figure_contents["Axes"].set_ylim([-1.0, 1.0])
+        self._mpl_objects["Axes"].set_xlim([-1.5, 1.5])
+        self._mpl_objects["Axes"].set_ylim([-1.0, 1.0])
 
+    # Read-only properties
 
     @property
     def source_timeseries(self) -> dict[str, list[TimeSeries]]:
@@ -280,9 +285,9 @@ class Player:
         return self._source_timeseries
 
     @property
-    def timeseries(self) -> TimeSeries:
+    def merged_timeseries(self) -> TimeSeries:
         """The TimeSeries, merged and prefixed by group name."""
-        return self._timeseries
+        return self._merged_timeseries
 
     @property
     def source_interconnections(self) -> dict[str, dict[str, dict[str, Any]]]:
@@ -290,19 +295,68 @@ class Player:
         return self._source_interconnections
 
     @property
-    def interconnections(self) -> dict[str, dict[str, Any]]:
+    def merged_interconnections(self) -> dict[str, dict[str, Any]]:
         """The merged interconnections, renamed to match merged_timeseries."""
-        return self._interconnections
+        return self._merged_interconnections
+
+    # Read-write properties
+
+    @property
+    def up(self) -> str:
+        """Get up value."""
+        return self._up
+
+    @up.setter
+    def up(self, value: str):
+        """Set up value."""
+        if value in {"x", "y", "z", "-x", "-y", "-z"}:
+            self._up = value
+        else:
+            raise ValueError(
+                'up must be either "x", "y", "z", "-x", "-y", or "-z"}'
+            )
+        self._orient_timeseries()
 
     def __dir__(self):
         """Return directory."""
         return ["close"]
 
+    # %% Add/remove/clear functions
+    def add(
+        self,
+        *ts: TimeSeries,
+        interconnections: dict[str, dict[str, Any]] = {},
+        group: str = "",
+    ) -> None:
+        """Add a group of TimeSeries and/or interconnections to the Player."""
+        # FIXME! Get a better docstring
+        if len(ts) > 0:
+            if group in self._source_timeseries:
+                self._source_timeseries[group].extend([_.copy() for _ in ts])
+            else:
+                self._source_timeseries[group] = [_.copy() for _ in ts]
+
+        if len(interconnections) > 0:
+            if group in self._source_interconnections:
+                # Merge
+                for key in interconnections:
+                    self._source_interconnections[group][key] = deepcopy(
+                        interconnections[key]
+                    )
+            else:
+                # Assign directly without merging
+                self._source_interconnections[group] = deepcopy(
+                    interconnections
+                )
+
+        self._merge_timeseries()
+        self._merge_interconnections()
+
     # %% Update functions on data init/change
 
     def _merge_timeseries(self) -> None:
-        """Update self._timeseries."""
-        self._timeseries = TimeSeries()
+        """Update self._merged_timeseries."""
+        self._merged_timeseries = TimeSeries()
 
         # Then add every point or frame
         for group in self.source_timeseries:
@@ -316,41 +370,44 @@ class Player:
                     else:
                         new_key = key
 
-                    self._timeseries.merge(temp_ts, in_place=True)
+                    self._merged_timeseries.merge(temp_ts, in_place=True)
 
                     # If it's a frame, also add a point to its origin
                     if temp_ts.data[new_key].shape[1:] == (4, 4):
-                        self._timeseries.add_data(
+                        self._merged_timeseries.add_data(
                             f"[{new_key}] origin",
                             temp_ts.data[new_key][:, :, 3],
                             in_place=True,
                         )
 
         # Add the origin
-        self._timeseries.add_data(
+        self._merged_timeseries.add_data(
             "Global",
             np.repeat(np.eye(4, 4)[np.newaxis, :, :], n_indexes, axis=0),
             in_place=True,
         )
 
+        # Continue updating
+        self._orient_timeseries()
+
     def _merge_interconnections(self) -> None:
-        """Update self._interconnections."""
-        self._interconnections = {}
+        """Update self._merged_interconnections."""
+        self._merged_interconnections = {}
         for group in self.source_interconnections:
             # Go through every body segment
             for body_name in self.source_interconnections[group]:
                 body_key = body_name if group == "" else f"{group}:{body_name}"
-                self._interconnections[body_key] = dict()
-                self._interconnections[body_key][
+                self._merged_interconnections[body_key] = dict()
+                self._merged_interconnections[body_key][
                     "Color"
                 ] = self.source_interconnections[group][body_name]["Color"]
-                self._interconnections[body_key]["Links"] = []
+                self._merged_interconnections[body_key]["Links"] = []
 
                 # Go through every link of this segment
                 for i_link, link in enumerate(
                     self.source_interconnections[group][body_name]
                 ):
-                    self._interconnections[body_key]["Links"].append(
+                    self._merged_interconnections[body_key]["Links"].append(
                         [
                             f"{group}:{s}"
                             for s in self.source_interconnections[group][
@@ -359,7 +416,46 @@ class Player:
                         ]
                     )
 
-    #%% Empty object creation
+    def _orient_timeseries(self) -> None:
+        """
+        Update self._oriented_timeseries based on up property.
+
+        Rotate everything according to the up input, so that the end result
+        is y up:
+
+           |y
+           |
+           +---- x
+          /
+        z/
+
+        """
+        self._oriented_timeseries = self.merged_timeseries.copy()
+
+        if self.up == "x":
+            rotation = geometry.create_transforms("z", [90], degrees=True)
+        elif self.up == "y":
+            rotation = np.eye(4)[np.newaxis]
+        elif self.up == "z":
+            rotation = geometry.create_transforms("x", [-90], degrees=True)
+        elif self.up == "-x":
+            rotation = geometry.create_transforms("z", [-90], degrees=True)
+        elif self.up == "-y":
+            rotation = geometry.create_transforms("z", [-180], degrees=True)
+        elif self.up == "-z":
+            rotation = geometry.create_transforms("x", [90], degrees=True)
+        else:
+            raise ValueError(
+                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
+            )
+        for key in self._oriented_timeseries.data:
+            self._oriented_timeseries.data[
+                key
+            ] = geometry.get_global_coordinates(
+                self._oriented_timeseries.data[key], rotation
+            )
+
+    # %% Empty object creation
 
     def _create_empty_figure(self) -> tuple:
         """Create figure and return Figure, Axes and AnimationTimer."""
@@ -387,7 +483,7 @@ class Player:
         anim = animation.FuncAnimation(
             fig,
             self._on_timer,  # type: ignore
-            frames=len(self.timeseries.time),
+            frames=len(self.merged_timeseries.time),
             interval=33,
         )  # 30 ips
 
@@ -405,12 +501,12 @@ class Player:
     def _create_empty_interconnection_plots(self) -> dict:
         """Create empty interconnection plots and return it."""
         out = dict()
-        for interconnection in self.interconnections:
-            out[interconnection] = self._figure_contents["Axes"].plot(
+        for interconnection in self.merged_interconnections:
+            out[interconnection] = self._mpl_objects["Axes"].plot(
                 np.nan,
                 np.nan,
                 "-",
-                c=self.interconnections[interconnection]["Color"],
+                c=self.merged_interconnections[interconnection]["Color"],
                 linewidth=self.interconnection_width,
             )[0]
         return out
@@ -430,7 +526,7 @@ class Player:
         }
 
         for color in self._colors:
-            out[color] = self._figure_contents["Axes"].plot(
+            out[color] = self._mpl_objects["Axes"].plot(
                 np.nan,
                 np.nan,
                 ".",
@@ -440,7 +536,7 @@ class Player:
                 picker=True,
             )[0]
 
-            out[color + "s"] = self._figure_contents["Axes"].plot(
+            out[color + "s"] = self._mpl_objects["Axes"].plot(
                 np.nan, np.nan, ".", c=colors[color], markersize=12
             )[0]
 
@@ -482,7 +578,6 @@ class Player:
                 gp_1[:, np.newaxis],
             ]
         )
-
 
     def _get_projection(self, points_3d: np.ndarray) -> np.ndarray:
         """
@@ -612,7 +707,7 @@ class Player:
         for color in self._colors:
             # Unselected markers
             markers_data[color] = self._get_projection(markers_data[color])
-            self._figure_contents["PointPlots"][color].set_data(
+            self._mpl_objects["PointPlots"][color].set_data(
                 markers_data[color][:, 0], markers_data[color][:, 1]
             )
 
@@ -620,15 +715,15 @@ class Player:
             markers_data[color + "s"] = self._get_projection(
                 markers_data[color + "s"]
             )
-            self._figure_contents["PointPlots"][color + "s"].set_data(
+            self._mpl_objects["PointPlots"][color + "s"].set_data(
                 markers_data[color + "s"][:, 0],
                 markers_data[color + "s"][:, 1],
             )
 
         # Draw the interconnections
-        for interconnection in self.interconnections:
+        for interconnection in self.merged_interconnections:
             coordinates = []
-            chains = self.interconnections[interconnection]["Links"]
+            chains = self.merged_interconnections[interconnection]["Links"]
 
             for chain in chains:
                 for marker in chain:
@@ -642,7 +737,7 @@ class Player:
             np_coordinates = np.array(coordinates)
             np_coordinates = self._get_projection(np_coordinates)
 
-            self._figure_contents["InterconnectionPlots"][
+            self._mpl_objects["InterconnectionPlots"][
                 interconnection
             ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
 
@@ -652,44 +747,11 @@ class Player:
         self._points = TimeSeries()
         self._frames = TimeSeries()
 
-        for key in self.timeseries.data:
-            if self.timeseries.data[key].shape[1:] == (4,):
-                self._points.data[key] = self.timeseries.data[key]
-            elif self.timeseries.data[key].shape[1:] == (4, 4):
-                self._frames.data[key] = self.timeseries.data[key]
-
-        # Rotate everything according to the up input, so that the end result
-        # is y up:
-        #
-        #    |y
-        #    |
-        #    +---- x
-        #   /
-        # z/
-        if self.up == "x":
-            rotation = geometry.create_transforms("z", [90], degrees=True)
-        elif self.up == "y":
-            rotation = np.eye(4)[np.newaxis]
-        elif self.up == "z":
-            rotation = geometry.create_transforms("x", [-90], degrees=True)
-        elif self.up == "-x":
-            rotation = geometry.create_transforms("z", [-90], degrees=True)
-        elif self.up == "-y":
-            rotation = geometry.create_transforms("z", [-180], degrees=True)
-        elif self.up == "-z":
-            rotation = geometry.create_transforms("x", [90], degrees=True)
-        else:
-            raise ValueError(
-                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
-            )
-        for key in self._points.data:
-            self._points.data[key] = geometry.get_global_coordinates(
-                self._points.data[key], rotation
-            )
-        for key in self._frames.data:
-            self._frames.data[key] = geometry.get_global_coordinates(
-                self._frames.data[key], rotation
-            )
+        for key in self._oriented_timeseries.data:
+            if self._oriented_timeseries.data[key].shape[1:] == (4,):
+                self._points.data[key] = self._oriented_timeseries.data[key]
+            elif self._oriented_timeseries.data[key].shape[1:] == (4, 4):
+                self._frames.data[key] = self._oriented_timeseries.data[key]
 
         self._update_markers_and_interconnections()
 
@@ -729,23 +791,19 @@ class Player:
 
         # Update the ground plane
         gp = self._get_projection(self._ground_plane)
-        if self._figure_contents["PlotGroundPlane"] is None:  # Create the plot
-            self._figure_contents["PlotGroundPlane"] = self._figure_contents[
+        if self._mpl_objects["PlotGroundPlane"] is None:  # Create the plot
+            self._mpl_objects["PlotGroundPlane"] = self._mpl_objects[
                 "Axes"
             ].plot(gp[:, 0], gp[:, 1], c=[0.3, 0.3, 0.3], linewidth=1)[0]
         else:  # Update the plot
-            self._figure_contents["PlotGroundPlane"].set_data(
-                gp[:, 0], gp[:, 1]
-            )
+            self._mpl_objects["PlotGroundPlane"].set_data(gp[:, 0], gp[:, 1])
 
         # Create or update the rigid bodies plot
         rbx_data = self._get_projection(rbx_data)
         rby_data = self._get_projection(rby_data)
         rbz_data = self._get_projection(rbz_data)
-        if (
-            self._figure_contents["PlotRigidBodiesX"] is None
-        ):  # Create the plot
-            self._figure_contents["PlotRigidBodiesX"] = self._figure_contents[
+        if self._mpl_objects["PlotRigidBodiesX"] is None:  # Create the plot
+            self._mpl_objects["PlotRigidBodiesX"] = self._mpl_objects[
                 "Axes"
             ].plot(
                 rbx_data[:, 0],
@@ -755,7 +813,7 @@ class Player:
             )[
                 0
             ]
-            self._figure_contents["PlotRigidBodiesY"] = self._figure_contents[
+            self._mpl_objects["PlotRigidBodiesY"] = self._mpl_objects[
                 "Axes"
             ].plot(
                 rby_data[:, 0],
@@ -765,7 +823,7 @@ class Player:
             )[
                 0
             ]
-            self._figure_contents["PlotRigidBodiesZ"] = self._figure_contents[
+            self._mpl_objects["PlotRigidBodiesZ"] = self._mpl_objects[
                 "Axes"
             ].plot(
                 rbz_data[:, 0],
@@ -776,35 +834,35 @@ class Player:
                 0
             ]
         else:  # Update the plot
-            self._figure_contents["PlotRigidBodiesX"].set_data(
+            self._mpl_objects["PlotRigidBodiesX"].set_data(
                 rbx_data[:, 0], rbx_data[:, 1]
             )
-            self._figure_contents["PlotRigidBodiesY"].set_data(
+            self._mpl_objects["PlotRigidBodiesY"].set_data(
                 rby_data[:, 0], rby_data[:, 1]
             )
-            self._figure_contents["PlotRigidBodiesZ"].set_data(
+            self._mpl_objects["PlotRigidBodiesZ"].set_data(
                 rbz_data[:, 0], rbz_data[:, 1]
             )
 
         # Update the window title
         try:
-            self._figure_contents["Figure"].canvas.manager.set_window_title(
-                f"{self.current_index}/{len(self.timeseries.time)}: "
-                + "%2.2f s." % self.timeseries.time[self.current_index]
+            self._mpl_objects["Figure"].canvas.manager.set_window_title(
+                f"{self.current_index}/{len(self.merged_timeseries.time)}: "
+                + "%2.2f s." % self.merged_timeseries.time[self.current_index]
             )
         except AttributeError:
             pass
 
-        self._figure_contents["Figure"].canvas.draw()
+        self._mpl_objects["Figure"].canvas.draw()
 
     def _set_new_target(self, target: ArrayLike) -> None:
         """Set new target and adapts translation and zoom consequently."""
         target = np.array(target)
         if np.sum(np.isnan(target)) > 0:
             return
-        initial_translation = copy.deepcopy(self.translation)
-        initial_zoom = copy.deepcopy(self.zoom)
-        initial_target = copy.deepcopy(self.target)
+        initial_translation = deepcopy(self.translation)
+        initial_zoom = deepcopy(self.zoom)
+        initial_target = deepcopy(self.target)
 
         n_markers = len(self._points.data)
         markers = np.empty((n_markers, 4))
@@ -848,8 +906,8 @@ class Player:
     # Helper functions
     def _set_index(self, index: int) -> None:
         """Set current index to a given index and update plots."""
-        if index >= len(self.timeseries.time):
-            self.current_index = len(self.timeseries.time) - 1
+        if index >= len(self.merged_timeseries.time):
+            self.current_index = len(self.merged_timeseries.time) - 1
         elif index < 0:
             self.current_index = 0
         else:
@@ -864,7 +922,7 @@ class Player:
 
     def _set_time(self, time: float) -> None:
         """Set current index to a given time and update plots."""
-        index = int(np.argmin(np.abs(self.timeseries.time - time)))
+        index = int(np.argmin(np.abs(self.merged_timeseries.time - time)))
         self._set_index(index)
 
     def _select_none(self) -> None:
@@ -883,8 +941,8 @@ class Player:
 
     def close(self) -> None:
         """Close the Player and its associated window."""
-        plt.close(self._figure_contents["Figure"])
-        self._figure_contents = {}
+        plt.close(self._mpl_objects["Figure"])
+        self._mpl_objects = {}
 
     # ------------------------------------
     # Callbacks
@@ -903,7 +961,7 @@ class Player:
             # self._running makes sure that we effectively stop.
             current_index = self.current_index
             self._set_time(
-                self.timeseries.time[self.current_index]
+                self.merged_timeseries.time[self.current_index]
                 + self.playback_speed
                 * (time.time() - self._state["SystemTimeOnLastUpdate"])
             )
@@ -915,14 +973,14 @@ class Player:
 
             self._update_plots()
         else:
-            self._figure_contents["Anim"].event_source.stop()
+            self._mpl_objects["Anim"].event_source.stop()
 
     def _on_pick(self, event):  # pragma: no cover
         """Implement callback for marker selection."""
         if event.mouseevent.button == 1:
             index = event.ind
             selected_marker = list(self._points.data.keys())[index[0]]
-            self._figure_contents["Axes"].set_title(selected_marker)
+            self._mpl_objects["Axes"].set_title(selected_marker)
 
             # Mark selected
             self._select_none()
@@ -943,44 +1001,42 @@ class Player:
         if event.key == " ":
             if self._running is False:
                 self._state["SystemTimeOnLastUpdate"] = time.time()
-                self._state["SelfTimeOnPlay"] = self.timeseries.time[
+                self._state["SelfTimeOnPlay"] = self.merged_timeseries.time[
                     self.current_index
                 ]
                 self._running = True
-                self._figure_contents["Anim"].event_source.start()
+                self._mpl_objects["Anim"].event_source.start()
             else:
                 self._running = False
-                self._figure_contents["Anim"].event_source.stop()
+                self._mpl_objects["Anim"].event_source.stop()
 
         elif event.key == "left":
             self._set_index(self.current_index - 1)
 
         elif event.key == "shift+left":
-            self._set_time(self.timeseries.time[self.current_index] - 1)
+            self._set_time(self.merged_timeseries.time[self.current_index] - 1)
 
         elif event.key == "right":
             self._set_index(self.current_index + 1)
 
         elif event.key == "shift+right":
-            self._set_time(self.timeseries.time[self.current_index] + 1)
+            self._set_time(self.merged_timeseries.time[self.current_index] + 1)
 
         elif event.key == "-":
             self.playback_speed /= 2
-            self._figure_contents["Axes"].set_title(
+            self._mpl_objects["Axes"].set_title(
                 f"Playback set to {self.playback_speed}x"
             )
 
         elif event.key == "+":
             self.playback_speed *= 2
-            self._figure_contents["Axes"].set_title(
+            self._mpl_objects["Axes"].set_title(
                 f"Playback set to {self.playback_speed}x"
             )
 
         elif event.key == "h":
-            if self._figure_contents["HelpText"] is None:
-                self._figure_contents["HelpText"] = self._figure_contents[
-                    "Axes"
-                ].text(
+            if self._mpl_objects["HelpText"] is None:
+                self._mpl_objects["HelpText"] = self._mpl_objects["Axes"].text(
                     -1.5,
                     -1,
                     HELP_TEXT,
@@ -988,28 +1044,26 @@ class Player:
                     fontfamily="monospace",
                 )
             else:
-                self._figure_contents["HelpText"].remove()
-                self._figure_contents["HelpText"] = None
+                self._mpl_objects["HelpText"].remove()
+                self._mpl_objects["HelpText"] = None
 
         elif event.key == "d":
             self.perspective = not self.perspective
             if self.perspective is True:
-                self._figure_contents["Axes"].set_title(
+                self._mpl_objects["Axes"].set_title(
                     "Camera set to perspective"
                 )
             else:
-                self._figure_contents["Axes"].set_title(
-                    "Camera set to orthogonal"
-                )
+                self._mpl_objects["Axes"].set_title("Camera set to orthogonal")
 
         elif event.key == "t":
             self.track = not self.track
             if self.track is True:
-                self._figure_contents["Axes"].set_title(
+                self._mpl_objects["Axes"].set_title(
                     "Marker tracking activated"
                 )
             else:
-                self._figure_contents["Axes"].set_title(
+                self._mpl_objects["Axes"].set_title(
                     "Marker tracking deactivated"
                 )
 
@@ -1112,14 +1166,14 @@ class Player:
         mpl.rcParams["animation.html"] = "html5"
 
         self.playback_speed = 0
-        self._figure_contents["Figure"].set_size_inches(6, 4.5)  # Half size
+        self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
         self._set_index(0)
         self._running = True
-        #        self._figure_contents["Anim"].frames = stop_index - start_index
-        #        self._figure_contents["Anim"].save_count = stop_index - start_index
-        self._figure_contents["Anim"].event_source.start()
-        plt.close(self._figure_contents["Figure"])
-        return self._figure_contents["Anim"]
+        #        self._mpl_objects["Anim"].frames = stop_index - start_index
+        #        self._mpl_objects["Anim"].save_count = stop_index - start_index
+        self._mpl_objects["Anim"].event_source.start()
+        plt.close(self._mpl_objects["Figure"])
+        return self._mpl_objects["Anim"]
 
     @deprecated(
         since="0.12",
