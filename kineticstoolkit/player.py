@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-Provides the Player class to visualize markers and rigid bodies in 3d.
+Provides the Player class to visualize points and frames in 3d.
 
 The Player class is accessible directly from the toplevel Kinetics Toolkit
 namespace (i.e., ktk.Player).
@@ -33,6 +33,7 @@ __license__ = "Apache 2.0"
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.tools import check_interactive_backend
+import kineticstoolkit._repr
 import kineticstoolkit.geometry as geometry
 
 import matplotlib.pyplot as plt
@@ -46,10 +47,11 @@ from typing import Any
 from numpy.typing import ArrayLike
 import warnings
 
-# To fit the new viewpoint on selecting a new marker
+# To fit the new viewpoint on selecting a new point
 import scipy.optimize as optim
 
 REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
+COLORS = ["r", "g", "b", "y", "c", "m", "w"]
 
 HELP_TEXT = """
     ktk.Player help
@@ -67,11 +69,56 @@ HELP_TEXT = """
     toggle perspective  : d (depth)
     ----------------------------------------------------
     MOUSE COMMANDS
-    select a marker     : left-click
+    select a point      : left-click
     3d rotate           : left-drag
     pan                 : middle-drag or shift+left-drag
     zoom                : right-drag or wheel
 """
+
+
+def _create_ground_plane() -> np.ndarray:
+    """
+    Create a ground plane matrix to be shown by a Player.
+
+    Returns an array of form::
+        x0 x1 x2 x3 x4 ...
+        y0 y1 y2 y3 y4 ...
+        z0 z1 z2 z3 z4 ...
+        1. 1. 1. 1. 1. ...
+
+    """
+    # Create the ground plane matrix
+    gp_size = 30  # blocks
+    gp_div = 4  # blocks per meter
+    gp_x = np.block(
+        [
+            np.tile([-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size),
+            np.repeat(
+                np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size),
+                3,
+            ),
+        ]
+    )
+    gp_y = np.zeros(6 * gp_size)
+    gp_z = np.block(
+        [
+            np.repeat(
+                np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size),
+                3,
+            ),
+            np.tile([-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size),
+        ]
+    )
+    gp_1 = np.ones(6 * gp_size)
+    return np.hstack(
+        [
+            gp_x[:, np.newaxis],
+            gp_y[:, np.newaxis],
+            gp_z[:, np.newaxis],
+            gp_1[:, np.newaxis],
+        ]
+    )
+
 
 """
 NOTES ON THE REFRESH PRIORITY
@@ -86,7 +133,7 @@ _merge_interconnections
 class Player:
     # FIXME! Update this docstring.
     """
-    A class that allows visualizing markers and rigid bodies in 3D.
+    A class that allows visualizing points and frames in 3D.
 
     `player = ktk.Player(parameters)` creates and launches an interactive
     Player instance. Once the window is open, press `h` to show a help
@@ -95,20 +142,20 @@ class Player:
     Parameters
     ----------
     *ts
-        Contains the markers and rigid bodies to visualize, where each data
-        key is either a marker position expressed as Nx4 array, or a frame
+        Contains the points and frames to visualize, where each data
+        key is either a point position expressed as Nx4 array, or a frame
         expressed as a Nx4x4 array. Multiple TimeSeries can be provided.
 
     interconnections
-        Optional. Each key corresponds to an inerconnection between markers,
+        Optional. Each key corresponds to an inerconnection between points,
         where one interconnection is another dict with the following keys:
 
-        - "Links": list of lists strings, where each string is a marker
-          name. For example, to create a link that spans Marker1 and Marker2,
-          and another link that spans Marker3, Marker4 and Marker5,
+        - "Links": list of lists strings, where each string is a point
+          name. For example, to create a link that spans Point1 and Point2,
+          and another link that spans Point3, Point4 and Point5,
           interconnections["Links"] would be::
 
-              [["Marker1", "Marker2"], ["Marker3", "Marker4", "Marker5"]]
+              [["Point1", "Point2"], ["Point3", "Point4", "Point5"]]
 
         - "Color": character or tuple (RGB) that represents the color of the
           link. Color must be a valid value for matplotlib's
@@ -118,7 +165,7 @@ class Player:
         Optional. Sets the inital index number to show.
 
     point_radius
-        Optional. Sets the marker radius as defined by matplotlib.
+        Optional. Sets the point radius as defined by matplotlib.
 
     axis_length
         Optional. Sets the rigid body size in meters.
@@ -144,7 +191,7 @@ class Player:
 
     track
         Optional. False to keep the scene static, True to track the last
-        selected marker when changing index.
+        selected point when changing index.
 
     perspective
         Optional. True to draw the scene using perspective, False to draw the
@@ -162,7 +209,6 @@ class Player:
         self,
         *ts: TimeSeries,
         interconnections: dict[str, dict[str, Any]] = {},
-        group: str = "",
         current_index: int = 0,
         current_time: float | None = None,
         playback_speed: float = 1.0,
@@ -194,25 +240,33 @@ class Player:
         check_interactive_backend()
 
         # Assign properties
-        self._source_timeseries = {}
-        self._source_interconnections = {}
-        self._merged_timeseries = TimeSeries()
-        self._merged_interconnections = {}
-        self._oriented_timeseries = TimeSeries()
+        if len(ts) == 0:
+            self._contents = TimeSeries(time=[0])
+        else:
+            self._contents = TimeSeries()
+            for one_ts in ts:
+                self._contents.merge(one_ts, in_place=True)
+        self._oriented_points = TimeSeries(time=self._contents.time)
+        self._oriented_frames = TimeSeries(time=self._contents.time)
 
-        self.current_index = current_index
+        self._interconnections = interconnections
+        self._extended_interconnections = {}
+
+        self._current_index = current_index
+
+        # FIXME! transform to property correctly
         if current_time is not None:
             self.current_time = current_time
 
         self.playback_speed = playback_speed
-        self.up = up
-        self.zoom = zoom
-        self.azimuth = azimuth
-        self.elevation = elevation
-        self.translation = translation
-        self.target = target
-        self.perspective = perspective
-        self.track = track
+        self._up = up
+        self._zoom = zoom
+        self._azimuth = azimuth
+        self._elevation = elevation
+        self._translation = translation
+        self._target = target
+        self._perspective = perspective
+        self._track = track
         self.point_radius = point_radius
         self.axis_length = axis_length
         self.axis_width = axis_width
@@ -220,18 +274,12 @@ class Player:
         self.grid_color = grid_color
         self.background_color = background_color
 
-        self._points = None  # FIXME! to remove
-        self._frames = None  # FIXME! to remove
-
-        # Add the TimeSeries
-        # FIXME! Should be at the end.
-        self.add(*ts, group=group, interconnections=interconnections)
+        self._oriented_points = None  # FIXME! to remove
+        self._oriented_frames = None  # FIXME! to remove
 
         self._select_none()
-        self.last_selected_marker = ""
+        self.last_selected_point = ""
         self._running = False
-
-        self._colors = ["r", "g", "b", "y", "c", "m", "w"]
 
         # Init mouse navigation state
         self._state = {
@@ -245,7 +293,6 @@ class Player:
             "TranslationOnMousePress": (0.0, 0.0),
             "AzimutOnMousePress": 0.0,
             "ElevationOnMousePress": 0.0,
-            "SelfTimeOnPlay": self.merged_timeseries.time[0],
             "SystemTimeOnLastUpdate": time.time(),
         }
 
@@ -257,50 +304,14 @@ class Player:
             "Anim": anim,
         }
 
-        self._mpl_objects[
-            "InterconnectionPlots"
-        ] = self._create_empty_interconnection_plots()
+        self._ground_plane = _create_ground_plane()
 
-        self._mpl_objects["PointPlots"] = self._create_empty_point_plots()
+        # FIXME! Call refresh instead
+        self._orient_contents()
+        self._extend_interconnections()
+        self.refresh()
 
-        self._ground_plane = self._create_ground_plane()
-
-        self._mpl_objects["PlotRigidBodiesX"] = None
-        self._mpl_objects["PlotRigidBodiesY"] = None
-        self._mpl_objects["PlotRigidBodiesZ"] = None
-        self._mpl_objects["PlotGroundPlane"] = None
-
-        self._mpl_objects["HelpText"] = None
-
-        self._update_plots()  # Draw everything once
-        # Set limits once it's drawn
-        self._mpl_objects["Axes"].set_xlim([-1.5, 1.5])
-        self._mpl_objects["Axes"].set_ylim([-1.0, 1.0])
-
-    # Read-only properties
-
-    @property
-    def source_timeseries(self) -> dict[str, list[TimeSeries]]:
-        """The source TimeSeries, separated in groups."""
-        return self._source_timeseries
-
-    @property
-    def merged_timeseries(self) -> TimeSeries:
-        """The TimeSeries, merged and prefixed by group name."""
-        return self._merged_timeseries
-
-    @property
-    def source_interconnections(self) -> dict[str, dict[str, dict[str, Any]]]:
-        """The source interconnections, separated in groups."""
-        return self._source_interconnections
-
-    @property
-    def merged_interconnections(self) -> dict[str, dict[str, Any]]:
-        """The merged interconnections, renamed to match merged_timeseries."""
-        return self._merged_interconnections
-
-    # Read-write properties
-
+    # Properties
     @property
     def up(self) -> str:
         """Get up value."""
@@ -315,110 +326,273 @@ class Player:
             raise ValueError(
                 'up must be either "x", "y", "z", "-x", "-y", or "-z"}'
             )
-        self._orient_timeseries()
+        self._orient_contents()
+        self.refresh()
+
+    @property
+    def zoom(self) -> float:
+        """Get zoom value."""
+        return self._zoom
+
+    @zoom.setter
+    def zoom(self, value: float):
+        """Set zoom value."""
+        self._zoom = value
+        self._fast_refresh()
+
+    @property
+    def azimuth(self) -> float:
+        """Get azimuth value."""
+        return self._azimuth
+
+    @azimuth.setter
+    def azimuth(self, value: float):
+        """Set azimuth value."""
+        self._azimuth = value
+        self._fast_refresh()
+
+    @property
+    def elevation(self) -> float:
+        """Get elevation value."""
+        return self._elevation
+
+    @elevation.setter
+    def elevation(self, value: float):
+        """Set elevation value."""
+        self._elevation = value
+        self._fast_refresh()
+
+    @property
+    def translation(self) -> float:
+        """Get translation value."""
+        return self._translation
+
+    @translation.setter
+    def translation(self, value: float):
+        """Set translation value."""
+        self._translation = value
+        self._fast_refresh()
+
+    @property
+    def target(self) -> float:
+        """Get target value."""
+        return self._target
+
+    @target.setter
+    def target(self, value: float):
+        """Set target value."""
+        self._target = value
+        self._fast_refresh()
+
+    @property
+    def perspective(self) -> float:
+        """Get perspective value."""
+        return self._perspective
+
+    @perspective.setter
+    def perspective(self, value: float):
+        """Set perspective value."""
+        self._perspective = value
+        self._fast_refresh()
+
+    @property
+    def track(self) -> bool:
+        """Get track value."""
+        return self._track
+
+    @track.setter
+    def track(self, value: bool):
+        """Set perspective value."""
+        self._track = value
+        self._fast_refresh()
+
+    @property
+    def current_index(self) -> int:
+        """Get current_index value."""
+        return self._current_index
+
+    @current_index.setter
+    def current_index(self, value: int):
+        """Set current_index value."""
+        if value >= len(self._contents.time):
+            self._current_index = len(self._contents.time) - 1
+            warnings.warn(
+                "Index must be lower than the number of samples "
+                f"({len(self._contents.time)}), however a value of {value} "
+                "has been received. The current index has been set to "
+                f"{self._current_index}."
+            )
+        elif value < 0:
+            self._current_index = 0
+            warnings.warn(
+                f"Index must be higher than 0, however a value of {value} has "
+                "been received. The current index has been set to 0."
+            )
+        else:
+            self._current_index = value
+        self._fast_refresh()
 
     def __dir__(self):
         """Return directory."""
         return ["close"]
 
-    # %% Add/remove/clear functions
-    def add(
-        self,
-        *ts: TimeSeries,
-        interconnections: dict[str, dict[str, Any]] = {},
-        group: str = "",
-    ) -> None:
-        """Add a group of TimeSeries and/or interconnections to the Player."""
-        # FIXME! Get a better docstring
-        if len(ts) > 0:
-            if group in self._source_timeseries:
-                self._source_timeseries[group].extend([_.copy() for _ in ts])
-            else:
-                self._source_timeseries[group] = [_.copy() for _ in ts]
-
-        if len(interconnections) > 0:
-            if group in self._source_interconnections:
-                # Merge
-                for key in interconnections:
-                    self._source_interconnections[group][key] = deepcopy(
-                        interconnections[key]
-                    )
-            else:
-                # Assign directly without merging
-                self._source_interconnections[group] = deepcopy(
-                    interconnections
-                )
-
-        self._merge_timeseries()
-        self._merge_interconnections()
-
-    # %% Update functions on data init/change
-
-    def _merge_timeseries(self) -> None:
-        """Update self._merged_timeseries."""
-        self._merged_timeseries = TimeSeries()
-
-        # Then add every point or frame
-        for group in self.source_timeseries:
-            for ts in self.source_timeseries[group]:
-                n_indexes = len(ts.time)  # only for the global origin below
-                for key in ts.data:
-                    temp_ts = ts.get_subset(key)
-                    if group != "":
-                        new_key = f"{group}:{key}"
-                        temp_ts.rename_data(key, new_key, in_place=True)
-                    else:
-                        new_key = key
-
-                    self._merged_timeseries.merge(temp_ts, in_place=True)
-
-                    # If it's a frame, also add a point to its origin
-                    if temp_ts.data[new_key].shape[1:] == (4, 4):
-                        self._merged_timeseries.add_data(
-                            f"[{new_key}] origin",
-                            temp_ts.data[new_key][:, :, 3],
-                            in_place=True,
-                        )
-
-        # Add the origin
-        self._merged_timeseries.add_data(
-            "Global",
-            np.repeat(np.eye(4, 4)[np.newaxis, :, :], n_indexes, axis=0),
-            in_place=True,
+    def __str__(self) -> str:
+        """Print a textual description of the Player properties."""
+        return (
+            f"current_index : {self.current_index}\n"
+            f"playback_speed : {self.playback_speed:.2f}\n"
+            f"up : {self.up}\n"
         )
+# """    
+#             current_index: int = 0,
+#             current_time: float | None = None,
+#             playback_speed: float = 1.0,
+#             up: str = "y",
+#             zoom: float = 1.0,
+#             azimuth: float = 0.0,
+#             elevation: float = 0.2,
+#             translation: ArrayLike = (0.0, 0.0),
+#             target: ArrayLike = (0.0, 0.0, 0.0),
+#             perspective: bool = True,
+#             track: bool = False,
+#             point_radius: float = 0.008,  # FIXME! Not used anywhere.
+#             axis_length: float = 0.1,
+#             axis_width: float = 3.0,
+#             interconnection_width: float = 1.5,
+#             grid_color: tuple[float, float, float] | None = (0.8, 0.8, 0.8),
+#             background_color: tuple[float, float, float] = (0.0, 0.0, 0.0),
+# """
+        # return kineticstoolkit._repr._format_class_attributes(
+        #     self,
+        #     overrides={
+        #         "_current_index": "current_index",
+        #         "_up": "up",
+        #         "_zoom": "zoom",
+        #         "_azimuth": "azimuth",
+        #         "_elevation": "elevation",
+        #         "_translation": "translation",
+        #         "_target": "target",
+        #         "_perspective": "perspective",
+        #         "_track": "track",
+        #     },
+        #     hide_private=True,
+        # )
 
-        # Continue updating
-        self._orient_timeseries()
+    def __repr__(self) -> str:
+        """Generate the class representation."""
+        return str(self)
 
-    def _merge_interconnections(self) -> None:
-        """Update self._merged_interconnections."""
-        self._merged_interconnections = {}
-        for group in self.source_interconnections:
-            # Go through every body segment
-            for body_name in self.source_interconnections[group]:
-                body_key = body_name if group == "" else f"{group}:{body_name}"
-                self._merged_interconnections[body_key] = dict()
-                self._merged_interconnections[body_key][
+    def _create_empty_figure(self) -> tuple:
+        """Create figure and return Figure, Axes and AnimationTimer."""
+        # Create the figure and axes
+        (fig, ax) = plt.subplots(num=None, figsize=(12, 9))
+        fig.set_facecolor("k")
+
+        # Remove the toolbar
+        try:  # Try, setVisible method not always there
+            fig.canvas.toolbar.setVisible(False)
+        except AttributeError:
+            pass
+
+        plt.tight_layout()
+
+        # Add the animation timer
+        anim = animation.FuncAnimation(
+            fig,
+            self._on_timer,  # type: ignore
+            frames=len(self._contents.time),
+            interval=33,
+        )  # 30 ips
+
+        # Connect the callback functions
+        fig.canvas.mpl_connect("pick_event", self._on_pick)
+        fig.canvas.mpl_connect("key_press_event", self._on_key)
+        fig.canvas.mpl_connect("key_release_event", self._on_release)
+        fig.canvas.mpl_connect("scroll_event", self._on_scroll)
+        fig.canvas.mpl_connect("button_press_event", self._on_mouse_press)
+        fig.canvas.mpl_connect("button_release_event", self._on_mouse_release)
+        fig.canvas.mpl_connect("motion_notify_event", self._on_mouse_motion)
+
+        return (fig, ax, anim)
+
+    # %% Contents getters/setters
+
+    # We use proper setters and getters to be absolutely sure the contents
+    # could not be modified without adapting the Player to this new contents.
+    # (e.g., rebuild the interconnection plots)
+
+    def get_contents(self) -> TimeSeries:
+        """Get contents value."""
+        return self._contents
+
+    def set_contents(self, value: TimeSeries) -> None:
+        """Set contents value."""
+        self._contents = value
+        self._orient_contents()
+        self._extend_interconnections()
+        self.refresh()
+
+    def get_interconnections(self) -> dict[str, dict[str, Any]]:
+        """Get interconnections value."""
+        return self._interconnections
+
+    def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
+        """Set interconnections value."""
+        self._interconnections = value
+        self._extend_interconnections()
+        self.refresh()
+
+    def _extend_interconnections(self) -> None:
+        """Update self._extended_interconnections. Does not refresh."""
+        # Make a set of all patterns matched by the * in interconnection
+        # point names.
+        patterns = set()
+        keys = list(self._contents.data.keys())
+        for body_name in self._interconnections:
+            for i_link, link in enumerate(
+                self._interconnections[body_name]["Links"]
+            ):
+                for i_point, point in enumerate(link):
+                    if point.startswith("*"):
+                        for key in keys:
+                            if key.endswith(point[1:]):
+                                patterns.add(
+                                    key[: (len(key) - len(point) + 1)]
+                                )
+                    elif point.endswith("*"):
+                        for key in keys:
+                            if key.startswith(point[:-1]):
+                                patterns.add(
+                                    key[(len(key) - len(point) + 1) :]
+                                )
+
+        # Extend every * to every pattern
+        self._extended_interconnections = dict()
+        for pattern in patterns:
+            for body_name in self._interconnections:
+                body_key = f"{pattern}{body_name}"
+                self._extended_interconnections[body_key] = dict()
+                self._extended_interconnections[body_key][
                     "Color"
-                ] = self.source_interconnections[group][body_name]["Color"]
-                self._merged_interconnections[body_key]["Links"] = []
+                ] = self._interconnections[body_name]["Color"]
 
                 # Go through every link of this segment
+                self._extended_interconnections[body_key]["Links"] = []
                 for i_link, link in enumerate(
-                    self.source_interconnections[group][body_name]
+                    self._interconnections[body_name]
                 ):
-                    self._merged_interconnections[body_key]["Links"].append(
+                    self._extended_interconnections[body_key]["Links"].append(
                         [
-                            f"{group}:{s}"
-                            for s in self.source_interconnections[group][
-                                body_name
-                            ]["Links"][i_link]
+                            s.replace("*", pattern)
+                            for s in self._interconnections[body_name][
+                                "Links"
+                            ][i_link]
                         ]
                     )
 
-    def _orient_timeseries(self) -> None:
+    def _orient_contents(self) -> None:
         """
-        Update self._oriented_timeseries based on up property.
+        Update self._oriented_points and _oriented_frames.
 
         Rotate everything according to the up input, so that the end result
         is y up:
@@ -429,8 +603,11 @@ class Player:
           /
         z/
 
+        Does not refresh.
+
         """
-        self._oriented_timeseries = self.merged_timeseries.copy()
+        self._oriented_points = self._contents.copy(copy_data=False)
+        self._oriented_frames = self._contents.copy(copy_data=False)
 
         if self.up == "x":
             rotation = geometry.create_transforms("z", [90], degrees=True)
@@ -448,138 +625,24 @@ class Player:
             raise ValueError(
                 "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
             )
-        for key in self._oriented_timeseries.data:
-            self._oriented_timeseries.data[
-                key
-            ] = geometry.get_global_coordinates(
-                self._oriented_timeseries.data[key], rotation
-            )
 
-    # %% Empty object creation
+        for key in self._contents.data:
+            if self._contents.data[key].shape[1:] == (4,):
+                self._oriented_points.data[
+                    key
+                ] = geometry.get_global_coordinates(
+                    self._contents.data[key], rotation
+                )
+            elif self._contents.data[key].shape[1:] == (4, 4):
+                self._oriented_frames.data[
+                    key
+                ] = geometry.get_global_coordinates(
+                    self._contents.data[key], rotation
+                )
 
-    def _create_empty_figure(self) -> tuple:
-        """Create figure and return Figure, Axes and AnimationTimer."""
-        # Create the figure and axes
-        (fig, ax) = plt.subplots(
-            num=None, figsize=(12, 9), facecolor="k", edgecolor="w"
-        )
+    # %% Projection and update
 
-        # Remove the toolbar
-        try:  # Try, setVisible method not always there
-            fig.canvas.toolbar.setVisible(False)
-        except AttributeError:
-            pass
-
-        plt.tight_layout()
-
-        # Add the title
-        title_obj = plt.title("Player")
-        plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
-
-        # Remove the background for faster plotting
-        ax.set_axis_off()
-
-        # Add the animation timer
-        anim = animation.FuncAnimation(
-            fig,
-            self._on_timer,  # type: ignore
-            frames=len(self.merged_timeseries.time),
-            interval=33,
-        )  # 30 ips
-
-        # Connect the callback functions
-        fig.canvas.mpl_connect("pick_event", self._on_pick)
-        fig.canvas.mpl_connect("key_press_event", self._on_key)
-        fig.canvas.mpl_connect("key_release_event", self._on_release)
-        fig.canvas.mpl_connect("scroll_event", self._on_scroll)
-        fig.canvas.mpl_connect("button_press_event", self._on_mouse_press)
-        fig.canvas.mpl_connect("button_release_event", self._on_mouse_release)
-        fig.canvas.mpl_connect("motion_notify_event", self._on_mouse_motion)
-
-        return (fig, ax, anim)
-
-    def _create_empty_interconnection_plots(self) -> dict:
-        """Create empty interconnection plots and return it."""
-        out = dict()
-        for interconnection in self.merged_interconnections:
-            out[interconnection] = self._mpl_objects["Axes"].plot(
-                np.nan,
-                np.nan,
-                "-",
-                c=self.merged_interconnections[interconnection]["Color"],
-                linewidth=self.interconnection_width,
-            )[0]
-        return out
-
-    def _create_empty_point_plots(self) -> dict:
-        """Create empty point plots of different colors."""
-        out = dict()
-
-        colors = {
-            "r": [1, 0, 0],
-            "g": [0, 1, 0],
-            "b": [0.3, 0.3, 1],
-            "y": [1, 1, 0],
-            "m": [1, 0, 1],
-            "c": [0, 1, 1],
-            "w": [0.8, 0.8, 0.8],
-        }
-
-        for color in self._colors:
-            out[color] = self._mpl_objects["Axes"].plot(
-                np.nan,
-                np.nan,
-                ".",
-                c=colors[color],
-                markersize=4,
-                pickradius=5,
-                picker=True,
-            )[0]
-
-            out[color + "s"] = self._mpl_objects["Axes"].plot(
-                np.nan, np.nan, ".", c=colors[color], markersize=12
-            )[0]
-
-        return out
-
-    def _create_ground_plane(self) -> np.ndarray:
-        # Create the ground plane matrix
-        gp_size = 30  # blocks
-        gp_div = 4  # blocks per meter
-        gp_x = np.block(
-            [
-                np.tile(
-                    [-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size
-                ),
-                np.repeat(
-                    np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size),
-                    3,
-                ),
-            ]
-        )
-        gp_y = np.zeros(6 * gp_size)
-        gp_z = np.block(
-            [
-                np.repeat(
-                    np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size),
-                    3,
-                ),
-                np.tile(
-                    [-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size
-                ),
-            ]
-        )
-        gp_1 = np.ones(6 * gp_size)
-        return np.hstack(
-            [
-                gp_x[:, np.newaxis],
-                gp_y[:, np.newaxis],
-                gp_z[:, np.newaxis],
-                gp_1[:, np.newaxis],
-            ]
-        )
-
-    def _get_projection(self, points_3d: np.ndarray) -> np.ndarray:
+    def _project_to_camera(self, points_3d: np.ndarray) -> np.ndarray:
         """
         Get a 3d --> 2d projection of a list of points.
 
@@ -670,188 +733,147 @@ class Player:
         # Return only x and y
         return rotated_points_3d[:, 0:2]
 
-    def _update_markers_and_interconnections(self) -> None:
-        # Get a Nx4 matrices of every marker at the current index
-        markers = self._points
-        if markers is None:
+    def _update_points_and_interconnections(self) -> None:
+        # Get a Nx4 matrices of every point at the current index
+        points = self._oriented_points
+        if points is None:
             return
         else:
-            n_markers = len(markers.data)
+            n_points = len(points.data)
 
-        markers_data = dict()  # Used to draw the markers with different colors
-        interconnection_markers = dict()  # Used to draw the interconnections
+        points_data = dict()  # Used to draw the points with different colors
+        interconnection_points = dict()  # Used to draw the interconnections
 
-        for color in self._colors:
-            markers_data[color] = np.empty([n_markers, 4])
-            markers_data[color][:] = np.nan
+        for color in COLORS:
+            points_data[color] = np.empty([n_points, 4])
+            points_data[color][:] = np.nan
 
-            markers_data[color + "s"] = np.empty([n_markers, 4])
-            markers_data[color + "s"][:] = np.nan
+            points_data[color + "s"] = np.empty([n_points, 4])
+            points_data[color + "s"][:] = np.nan
 
-        if n_markers > 0:
-            for i_marker, marker in enumerate(markers.data):
-                # Get this marker's color
+        if n_points > 0:
+            for i_point, point in enumerate(points.data):
+                # Get this point's color
                 if (
-                    marker in markers.data_info
-                    and "Color" in markers.data_info[marker]
+                    point in points.data_info
+                    and "Color" in points.data_info[point]
                 ):
-                    color = markers.data_info[marker]["Color"]
+                    color = points.data_info[point]["Color"]
                 else:
                     color = "w"
 
-                these_coordinates = markers.data[marker][self.current_index]
-                markers_data[color][i_marker] = these_coordinates
-                interconnection_markers[marker] = these_coordinates
+                these_coordinates = points.data[point][self.current_index]
+                points_data[color][i_point] = these_coordinates
+                interconnection_points[point] = these_coordinates
 
-        # Update the markers plot
-        for color in self._colors:
-            # Unselected markers
-            markers_data[color] = self._get_projection(markers_data[color])
+        # Update the points plot
+        for color in COLORS:
+            # Unselected points
+            points_data[color] = self._project_to_camera(points_data[color])
             self._mpl_objects["PointPlots"][color].set_data(
-                markers_data[color][:, 0], markers_data[color][:, 1]
+                points_data[color][:, 0], points_data[color][:, 1]
             )
 
-            # Selected markers
-            markers_data[color + "s"] = self._get_projection(
-                markers_data[color + "s"]
+            # Selected points
+            points_data[color + "s"] = self._project_to_camera(
+                points_data[color + "s"]
             )
             self._mpl_objects["PointPlots"][color + "s"].set_data(
-                markers_data[color + "s"][:, 0],
-                markers_data[color + "s"][:, 1],
+                points_data[color + "s"][:, 0],
+                points_data[color + "s"][:, 1],
             )
 
         # Draw the interconnections
-        for interconnection in self.merged_interconnections:
+        for interconnection in self._extended_interconnections:
             coordinates = []
-            chains = self.merged_interconnections[interconnection]["Links"]
+            chains = self._extended_interconnections[interconnection]["Links"]
 
             for chain in chains:
-                for marker in chain:
+                for point in chain:
                     try:
-                        coordinates.append(interconnection_markers[marker])
+                        coordinates.append(interconnection_points[point])
                     except KeyError:
                         coordinates.append(np.repeat(np.nan, 4))
 
                 coordinates.append(np.repeat(np.nan, 4))
 
             np_coordinates = np.array(coordinates)
-            np_coordinates = self._get_projection(np_coordinates)
+            np_coordinates = self._project_to_camera(np_coordinates)
 
             self._mpl_objects["InterconnectionPlots"][
                 interconnection
             ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
 
-    def _update_plots(self) -> None:
-        """Update the plots, or draw it if not plot has been drawn before."""
-
-        self._points = TimeSeries()
-        self._frames = TimeSeries()
-
-        for key in self._oriented_timeseries.data:
-            if self._oriented_timeseries.data[key].shape[1:] == (4,):
-                self._points.data[key] = self._oriented_timeseries.data[key]
-            elif self._oriented_timeseries.data[key].shape[1:] == (4, 4):
-                self._frames.data[key] = self._oriented_timeseries.data[key]
-
-        self._update_markers_and_interconnections()
+    def _fast_refresh(self) -> None:
+        """Update plot data, assuming all plots have already been created."""
+        self._update_points_and_interconnections()
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
         # at the current index
-        rigid_bodies = self._frames
-        n_rigid_bodies = len(rigid_bodies.data)
-        rbx_data = np.empty([n_rigid_bodies * 3, 4])
-        rby_data = np.empty([n_rigid_bodies * 3, 4])
-        rbz_data = np.empty([n_rigid_bodies * 3, 4])
+        frames = self._oriented_frames
+        n_frames = len(frames.data)
+        framex_data = np.empty([n_frames * 3, 4])
+        framey_data = np.empty([n_frames * 3, 4])
+        framez_data = np.empty([n_frames * 3, 4])
 
-        for i_rigid_body, rigid_body in enumerate(rigid_bodies.data):
+        for i_rigid_body, rigid_body in enumerate(frames.data):
             # Origin
-            rbx_data[i_rigid_body * 3] = rigid_bodies.data[rigid_body][
+            framex_data[i_rigid_body * 3] = frames.data[rigid_body][
                 self.current_index, :, 3
             ]
-            rby_data[i_rigid_body * 3] = rigid_bodies.data[rigid_body][
+            framey_data[i_rigid_body * 3] = frames.data[rigid_body][
                 self.current_index, :, 3
             ]
-            rbz_data[i_rigid_body * 3] = rigid_bodies.data[rigid_body][
+            framez_data[i_rigid_body * 3] = frames.data[rigid_body][
                 self.current_index, :, 3
             ]
             # Direction
-            rbx_data[i_rigid_body * 3 + 1] = rigid_bodies.data[rigid_body][
+            framex_data[i_rigid_body * 3 + 1] = frames.data[rigid_body][
                 self.current_index
             ] @ np.array([self.axis_length, 0, 0, 1])
-            rby_data[i_rigid_body * 3 + 1] = rigid_bodies.data[rigid_body][
+            framey_data[i_rigid_body * 3 + 1] = frames.data[rigid_body][
                 self.current_index
             ] @ np.array([0, self.axis_length, 0, 1])
-            rbz_data[i_rigid_body * 3 + 1] = rigid_bodies.data[rigid_body][
+            framez_data[i_rigid_body * 3 + 1] = frames.data[rigid_body][
                 self.current_index
             ] @ np.array([0, 0, self.axis_length, 1])
-            # NaN to cut the line between the different rigid bodies
-            rbx_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
-            rby_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
-            rbz_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
+            # NaN to cut the line between the different frames
+            framex_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
+            framey_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
+            framez_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
 
         # Update the ground plane
-        gp = self._get_projection(self._ground_plane)
-        if self._mpl_objects["PlotGroundPlane"] is None:  # Create the plot
-            self._mpl_objects["PlotGroundPlane"] = self._mpl_objects[
-                "Axes"
-            ].plot(gp[:, 0], gp[:, 1], c=[0.3, 0.3, 0.3], linewidth=1)[0]
-        else:  # Update the plot
-            self._mpl_objects["PlotGroundPlane"].set_data(gp[:, 0], gp[:, 1])
+        gp = self._project_to_camera(self._ground_plane)
+        self._mpl_objects["GroundPlanePlot"].set_data(gp[:, 0], gp[:, 1])
 
-        # Create or update the rigid bodies plot
-        rbx_data = self._get_projection(rbx_data)
-        rby_data = self._get_projection(rby_data)
-        rbz_data = self._get_projection(rbz_data)
-        if self._mpl_objects["PlotRigidBodiesX"] is None:  # Create the plot
-            self._mpl_objects["PlotRigidBodiesX"] = self._mpl_objects[
-                "Axes"
-            ].plot(
-                rbx_data[:, 0],
-                rbx_data[:, 1],
-                c="r",
-                linewidth=self.axis_width,
-            )[
-                0
-            ]
-            self._mpl_objects["PlotRigidBodiesY"] = self._mpl_objects[
-                "Axes"
-            ].plot(
-                rby_data[:, 0],
-                rby_data[:, 1],
-                c="g",
-                linewidth=self.axis_width,
-            )[
-                0
-            ]
-            self._mpl_objects["PlotRigidBodiesZ"] = self._mpl_objects[
-                "Axes"
-            ].plot(
-                rbz_data[:, 0],
-                rbz_data[:, 1],
-                c="b",
-                linewidth=self.axis_width,
-            )[
-                0
-            ]
-        else:  # Update the plot
-            self._mpl_objects["PlotRigidBodiesX"].set_data(
-                rbx_data[:, 0], rbx_data[:, 1]
-            )
-            self._mpl_objects["PlotRigidBodiesY"].set_data(
-                rby_data[:, 0], rby_data[:, 1]
-            )
-            self._mpl_objects["PlotRigidBodiesZ"].set_data(
-                rbz_data[:, 0], rbz_data[:, 1]
-            )
+        # Create or update the frame plot
+        framex_data = self._project_to_camera(framex_data)
+        framey_data = self._project_to_camera(framey_data)
+        framez_data = self._project_to_camera(framez_data)
+        self._mpl_objects["FrameXPlot"].set_data(
+            framex_data[:, 0], framex_data[:, 1]
+        )
+        self._mpl_objects["FrameYPlot"].set_data(
+            framey_data[:, 0], framey_data[:, 1]
+        )
+        self._mpl_objects["FrameZPlot"].set_data(
+            framez_data[:, 0], framez_data[:, 1]
+        )
 
         # Update the window title
         try:
             self._mpl_objects["Figure"].canvas.manager.set_window_title(
-                f"{self.current_index}/{len(self.merged_timeseries.time)}: "
-                + "%2.2f s." % self.merged_timeseries.time[self.current_index]
+                f"{self.current_index}/{len(self._contents.time)}: "
+                + "%2.2f s." % self._contents.time[self.current_index]
             )
         except AttributeError:
             pass
+
+        # Update the help text if any
+        if self._mpl_objects["HelpText"] is not None:
+            self._mpl_objects["HelpText"].set_text(
+                repr(self) + "\n\n" + HELP_TEXT
+            )
 
         self._mpl_objects["Figure"].canvas.draw()
 
@@ -864,33 +886,31 @@ class Player:
         initial_zoom = deepcopy(self.zoom)
         initial_target = deepcopy(self.target)
 
-        n_markers = len(self._points.data)
-        markers = np.empty((n_markers, 4))
-        for i_marker, marker in enumerate(self._points.data):
-            markers[i_marker] = self._points.data[marker][self.current_index]
+        n_points = len(self._oriented_points.data)
+        points = np.empty((n_points, 4))
+        for i_point, point in enumerate(self._oriented_points.data):
+            points[i_point] = self._oriented_points.data[point][
+                self.current_index
+            ]
 
-        initial_projected_markers = self._get_projection(markers)
-        # Do not consider markers that are not in the screen
-        initial_projected_markers[
-            initial_projected_markers[:, 0] < -1.5
+        initial_projected_points = self._project_to_camera(points)
+        # Do not consider points that are not in the screen
+        initial_projected_points[
+            initial_projected_points[:, 0] < -1.5
         ] = np.nan
-        initial_projected_markers[
-            initial_projected_markers[:, 0] > 1.5
+        initial_projected_points[initial_projected_points[:, 0] > 1.5] = np.nan
+        initial_projected_points[
+            initial_projected_points[:, 1] < -1.0
         ] = np.nan
-        initial_projected_markers[
-            initial_projected_markers[:, 1] < -1.0
-        ] = np.nan
-        initial_projected_markers[
-            initial_projected_markers[:, 1] > 1.0
-        ] = np.nan
+        initial_projected_points[initial_projected_points[:, 1] > 1.0] = np.nan
         self.target = target
 
         def error_function(input):
             self.translation = input[0:2]
             self.zoom = input[2]
-            new_projected_markers = self._get_projection(markers)
+            new_projected_points = self._project_to_camera(points)
             error = np.nanmean(
-                (initial_projected_markers - new_projected_markers) ** 2
+                (initial_projected_points - new_projected_points) ** 2
             )
             return error
 
@@ -906,15 +926,15 @@ class Player:
     # Helper functions
     def _set_index(self, index: int) -> None:
         """Set current index to a given index and update plots."""
-        if index >= len(self.merged_timeseries.time):
-            self.current_index = len(self.merged_timeseries.time) - 1
+        if index >= len(self._contents.time):
+            self.current_index = len(self._contents.time) - 1
         elif index < 0:
             self.current_index = 0
         else:
             self.current_index = index
 
-        if self.track is True and self._points is not None:
-            new_target = self._points.data[self.last_selected_marker][
+        if self.track is True and self._oriented_points is not None:
+            new_target = self._oriented_points.data[self.last_selected_point][
                 self.current_index
             ]
             if not np.isnan(np.sum(new_target)):
@@ -922,27 +942,24 @@ class Player:
 
     def _set_time(self, time: float) -> None:
         """Set current index to a given time and update plots."""
-        index = int(np.argmin(np.abs(self.merged_timeseries.time - time)))
+        index = int(np.argmin(np.abs(self._contents.time - time)))
         self._set_index(index)
 
     def _select_none(self) -> None:
-        """Deselect every markers."""
-        if self._points is not None:
-            for marker in self._points.data:
+        """Deselect every points."""
+        if self._oriented_points is not None:
+            for point in self._oriented_points.data:
                 try:
                     # Keep 1st character, remove the possible 's'
-                    self._points.data_info[marker][
+                    self._oriented_points.data_info[point][
                         "Color"
-                    ] = self._points.data_info[marker]["Color"][0]
+                    ] = self._oriented_points.data_info[point]["Color"][0]
                 except KeyError:
-                    self._points = self._points.add_data_info(
-                        marker, "Color", "w"
+                    self._oriented_points = (
+                        self._oriented_points.add_data_info(
+                            point, "Color", "w"
+                        )
                     )
-
-    def close(self) -> None:
-        """Close the Player and its associated window."""
-        plt.close(self._mpl_objects["Figure"])
-        self._mpl_objects = {}
 
     # ------------------------------------
     # Callbacks
@@ -961,7 +978,7 @@ class Player:
             # self._running makes sure that we effectively stop.
             current_index = self.current_index
             self._set_time(
-                self.merged_timeseries.time[self.current_index]
+                self._contents.time[self.current_index]
                 + self.playback_speed
                 * (time.time() - self._state["SystemTimeOnLastUpdate"])
             )
@@ -971,39 +988,37 @@ class Player:
                 self._set_index(self.current_index + 1)
             self._state["SystemTimeOnLastUpdate"] = time.time()
 
-            self._update_plots()
+            self._fast_refresh()
         else:
             self._mpl_objects["Anim"].event_source.stop()
 
     def _on_pick(self, event):  # pragma: no cover
-        """Implement callback for marker selection."""
+        """Implement callback for point selection."""
         if event.mouseevent.button == 1:
             index = event.ind
-            selected_marker = list(self._points.data.keys())[index[0]]
-            self._mpl_objects["Axes"].set_title(selected_marker)
+            selected_point = list(self._oriented_points.data.keys())[index[0]]
+            self._mpl_objects["Axes"].set_title(selected_point)
 
             # Mark selected
             self._select_none()
-            self._points.data_info[selected_marker]["Color"] = (
-                self._points.data_info[selected_marker]["Color"][0] + "s"
+            self._oriented_points.data_info[selected_point]["Color"] = (
+                self._oriented_points.data_info[selected_point]["Color"][0]
+                + "s"
             )
 
             # Set as new target
-            self.last_selected_marker = selected_marker
+            self.last_selected_point = selected_point
             self._set_new_target(
-                self._points.data[selected_marker][self.current_index]
+                self._oriented_points.data[selected_point][self.current_index]
             )
 
-            self._update_plots()
+            self._fast_refresh()
 
     def _on_key(self, event):  # pragma: no cover
         """Implement callback for keyboard key pressed."""
         if event.key == " ":
             if self._running is False:
                 self._state["SystemTimeOnLastUpdate"] = time.time()
-                self._state["SelfTimeOnPlay"] = self.merged_timeseries.time[
-                    self.current_index
-                ]
                 self._running = True
                 self._mpl_objects["Anim"].event_source.start()
             else:
@@ -1014,13 +1029,13 @@ class Player:
             self._set_index(self.current_index - 1)
 
         elif event.key == "shift+left":
-            self._set_time(self.merged_timeseries.time[self.current_index] - 1)
+            self._set_time(self._contents.time[self.current_index] - 1)
 
         elif event.key == "right":
             self._set_index(self.current_index + 1)
 
         elif event.key == "shift+right":
-            self._set_time(self.merged_timeseries.time[self.current_index] + 1)
+            self._set_time(self._contents.time[self.current_index] + 1)
 
         elif event.key == "-":
             self.playback_speed /= 2
@@ -1039,7 +1054,7 @@ class Player:
                 self._mpl_objects["HelpText"] = self._mpl_objects["Axes"].text(
                     -1.5,
                     -1,
-                    HELP_TEXT,
+                    "",
                     color=[0, 1, 0],
                     fontfamily="monospace",
                 )
@@ -1059,18 +1074,16 @@ class Player:
         elif event.key == "t":
             self.track = not self.track
             if self.track is True:
-                self._mpl_objects["Axes"].set_title(
-                    "Marker tracking activated"
-                )
+                self._mpl_objects["Axes"].set_title("Point tracking activated")
             else:
                 self._mpl_objects["Axes"].set_title(
-                    "Marker tracking deactivated"
+                    "Point tracking deactivated"
                 )
 
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
 
-        self._update_plots()
+        self._fast_refresh()
 
     def _on_release(self, event):  # pragma: no cover
         if event.key == "shift":
@@ -1081,12 +1094,12 @@ class Player:
             self.zoom *= 1.05
         elif event.button == "down":
             self.zoom /= 1.05
-        self._update_plots()
+        self._fast_refresh()
 
     def _on_mouse_press(self, event):  # pragma: no cover
-        if len(self.last_selected_marker) > 0:
+        if len(self.last_selected_point) > 0:
             self._set_new_target(
-                self._points.data[self.last_selected_marker][
+                self._oriented_points.data[self.last_selected_point][
                     self.current_index
                 ]
             )
@@ -1124,7 +1137,7 @@ class Player:
                 + (event.y - self._state["MousePositionOnPress"][1])
                 / (100 * self.zoom),
             )
-            self._update_plots()
+            self._fast_refresh()
 
         # Rotation:
         elif (
@@ -1138,7 +1151,7 @@ class Player:
                 self._state["ElevationOnMousePress"]
                 - (event.y - self._state["MousePositionOnPress"][1]) / 250
             )
-            self._update_plots()
+            self._fast_refresh()
 
         # Zoom:
         elif self._state["MouseRightPressed"]:
@@ -1146,7 +1159,7 @@ class Player:
                 self._state["ZoomOnMousePress"]
                 + (event.y - self._state["MousePositionOnPress"][1]) / 250
             )
-            self._update_plots()
+            self._fast_refresh()
 
     def _to_animation(
         self,
@@ -1175,6 +1188,118 @@ class Player:
         plt.close(self._mpl_objects["Figure"])
         return self._mpl_objects["Anim"]
 
+    # %% Public methods
+
+    def close(self) -> None:
+        """Close the Player and its associated window."""
+        plt.close(self._mpl_objects["Figure"])
+        self._mpl_objects = {}
+
+    def refresh(self):
+        """
+        Perform a full refresh of the Player.
+
+        Normally, this function does not need to be called by the user. Use it
+        if for an unknown reason, the Player is not refreshed as it should.
+        You can also report this need as a bug in the issue tracker:
+        https://github.com/kineticstoolkit/kineticstoolkit/issues
+
+        """
+        # Clear and rebuild the mpl plots.
+        self._mpl_objects["InterconnectionPlots"] = dict()
+        self._mpl_objects["PointPlots"] = dict()
+        self._mpl_objects["GroundPlanePlot"] = None
+        self._mpl_objects["FrameXPlot"] = None
+        self._mpl_objects["FrameYPlot"] = None
+        self._mpl_objects["FrameZPlot"] = None
+        self._mpl_objects["GroundPlanePlot"] = None
+        self._mpl_objects["HelpText"] = None
+
+        self._mpl_objects["Axes"].clear()
+
+        # Reset axes properties
+        self._mpl_objects["Axes"].set_axis_off()
+
+        # Create the ground plane
+        self._mpl_objects["GroundPlanePlot"] = self._mpl_objects["Axes"].plot(
+            np.nan, np.nan, c=[0.3, 0.3, 0.3], linewidth=1
+        )[0]
+
+        # Create the interconnection plots
+        for interconnection in self._extended_interconnections:
+            self._mpl_objects["InterconnectionPlots"][
+                interconnection
+            ] = self._mpl_objects["Axes"].plot(
+                np.nan,
+                np.nan,
+                "-",
+                c=self._extended_interconnections[interconnection]["Color"],
+                linewidth=self.interconnection_width,
+            )[
+                0
+            ]
+
+        # Create the frame plots
+        self._mpl_objects["FrameXPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c="r",
+            linewidth=self.axis_width,
+        )[0]
+        self._mpl_objects["FrameYPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c="g",
+            linewidth=self.axis_width,
+        )[0]
+        self._mpl_objects["FrameZPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c="b",
+            linewidth=self.axis_width,
+        )[0]
+
+        # Create the point plots
+        colors = {
+            "r": [1, 0, 0],
+            "g": [0, 1, 0],
+            "b": [0.3, 0.3, 1],
+            "y": [1, 1, 0],
+            "m": [1, 0, 1],
+            "c": [0, 1, 1],
+            "w": [0.8, 0.8, 0.8],
+        }
+
+        for color in COLORS:
+            self._mpl_objects["PointPlots"][color] = self._mpl_objects[
+                "Axes"
+            ].plot(
+                np.nan,
+                np.nan,
+                ".",
+                c=colors[color],
+                markersize=4,
+                pickradius=5,
+                picker=True,
+            )[
+                0
+            ]
+
+            self._mpl_objects["PointPlots"][color + "s"] = self._mpl_objects[
+                "Axes"
+            ].plot(np.nan, np.nan, ".", c=colors[color], markersize=12)[0]
+
+        # Add the title
+        title_obj = plt.title("Player")
+        plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
+
+        self._fast_refresh()  # Draw everything once
+
+        # Set limits once it's drawn
+        self._mpl_objects["Axes"].set_xlim([-1.5, 1.5])
+        self._mpl_objects["Axes"].set_ylim([-1.0, 1.0])
+
+    # %% Deprecated methods
     @deprecated(
         since="0.12",
         until="2024",
