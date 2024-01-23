@@ -76,60 +76,6 @@ HELP_TEXT = """
 """
 
 
-def _create_ground_plane() -> np.ndarray:
-    """
-    Create a ground plane matrix to be shown by a Player.
-
-    Returns an array of form::
-        x0 x1 x2 x3 x4 ...
-        y0 y1 y2 y3 y4 ...
-        z0 z1 z2 z3 z4 ...
-        1. 1. 1. 1. 1. ...
-
-    """
-    # Create the ground plane matrix
-    gp_size = 30  # blocks
-    gp_div = 4  # blocks per meter
-    gp_x = np.block(
-        [
-            np.tile([-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size),
-            np.repeat(
-                np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size),
-                3,
-            ),
-        ]
-    )
-    gp_y = np.zeros(6 * gp_size)
-    gp_z = np.block(
-        [
-            np.repeat(
-                np.linspace(-gp_size / gp_div, gp_size / gp_div, gp_size),
-                3,
-            ),
-            np.tile([-gp_size / gp_div, gp_size / gp_div, np.nan], gp_size),
-        ]
-    )
-    gp_1 = np.ones(6 * gp_size)
-    return np.hstack(
-        [
-            gp_x[:, np.newaxis],
-            gp_y[:, np.newaxis],
-            gp_z[:, np.newaxis],
-            gp_1[:, np.newaxis],
-        ]
-    )
-
-
-"""
-NOTES ON THE REFRESH PRIORITY
-
-Adding data using Player.add, Player.remove or Player.clear
-->
-_merge_timeseries
-_merge_interconnections
-"""
-
-
 class Player:
     # FIXME! Update this docstring.
     """
@@ -164,11 +110,11 @@ class Player:
     current_index
         Optional. Sets the inital index number to show.
 
-    point_radius
+    point_size
         Optional. Sets the point radius as defined by matplotlib.
 
-    axis_length
-        Optional. Sets the rigid body size in meters.
+    frame_size
+        Optional. Sets the frame size in meters.
 
     up
         Optional. Defines the ground plane by setting which axis is up. May be
@@ -220,12 +166,15 @@ class Player:
         target: ArrayLike = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
-        point_radius: float = 0.008,  # FIXME! Not used anywhere.
-        axis_length: float = 0.1,
-        axis_width: float = 3.0,
+        point_size: float = 4.0,
         interconnection_width: float = 1.5,
-        grid_color: tuple[float, float, float] | None = (0.8, 0.8, 0.8),
-        background_color: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        frame_size: float = 0.1,
+        frame_width: float = 3.0,
+        grid_size: float = 10.0,
+        grid_subdivision_size: float = 1.0,
+        grid_origin: ArrayLike = (0.0, 0.0, 0.0, 1.0),
+        grid_color: ArrayLike | None = (0.8, 0.8, 0.8),
+        background_color: ArrayLike = (0.0, 0.0, 0.0),
         **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
         # Allow older parameter names
@@ -240,16 +189,15 @@ class Player:
         check_interactive_backend()
 
         # Assign properties
-        if len(ts) == 0:
-            self._contents = TimeSeries(time=[0])
-        else:
-            self._contents = TimeSeries()
-            for one_ts in ts:
-                self._contents.merge(one_ts, in_place=True)
+
+        # Empty content for now. We add the final content after all
+        # initializations.
+        self._contents = TimeSeries(time=[0])
+        self._grid = np.array([])
         self._oriented_points = TimeSeries(time=self._contents.time)
         self._oriented_frames = TimeSeries(time=self._contents.time)
 
-        self._interconnections = interconnections
+        self._interconnections = {}
         self._extended_interconnections = {}
 
         self._current_index = current_index
@@ -258,7 +206,7 @@ class Player:
         if current_time is not None:
             self.current_time = current_time
 
-        self.playback_speed = playback_speed
+        self._playback_speed = playback_speed
         self._up = up
         self._zoom = zoom
         self._azimuth = azimuth
@@ -267,15 +215,15 @@ class Player:
         self._target = target
         self._perspective = perspective
         self._track = track
-        self.point_radius = point_radius
-        self.axis_length = axis_length
-        self.axis_width = axis_width
-        self.interconnection_width = interconnection_width
+        self._point_size = point_size
+        self._interconnection_width = interconnection_width
+        self._frame_size = frame_size
+        self._frame_width = frame_width
+        self._grid_size = grid_size
+        self._grid_subdivision_size = grid_subdivision_size
+        self._grid_origin = grid_origin
         self.grid_color = grid_color
         self.background_color = background_color
-
-        self._oriented_points = None  # FIXME! to remove
-        self._oriented_frames = None  # FIXME! to remove
 
         self._select_none()
         self.last_selected_point = ""
@@ -304,14 +252,53 @@ class Player:
             "Anim": anim,
         }
 
-        self._ground_plane = _create_ground_plane()
+        # Add the true contents using the public interface so that everything
+        # is refreshed automatically
+        temp_ts = TimeSeries()
+        for one_ts in ts:
+            temp_ts.merge(one_ts, in_place=True)
 
-        # FIXME! Call refresh instead
-        self._orient_contents()
-        self._extend_interconnections()
-        self.refresh()
+        self.set_contents(temp_ts)
+        self.set_interconnections(interconnections)
+        self.grid_origin = grid_origin  # Refresh grid
+
+    @property
+    def current_index(self) -> int:
+        """Get current_index value."""
+        return self._current_index
+
+    @current_index.setter
+    def current_index(self, value: int):
+        """Set current_index value."""
+        if value >= len(self._contents.time):
+            self._current_index = len(self._contents.time) - 1
+            warnings.warn(
+                "Index must be lower than the number of samples "
+                f"({len(self._contents.time)}), however a value of {value} "
+                "has been received. The current index has been set to "
+                f"{self._current_index}."
+            )
+        elif value < 0:
+            self._current_index = 0
+            warnings.warn(
+                f"Index must be higher than 0, however a value of {value} has "
+                "been received. The current index has been set to 0."
+            )
+        else:
+            self._current_index = value
+        self._fast_refresh()
 
     # Properties
+    @property
+    def playback_speed(self) -> float:
+        """Get playback_speed value."""
+        return self._playback_speed
+
+    @playback_speed.setter
+    def playback_speed(self, value: float):
+        """Set playback_speed value."""
+        self._playback_speed = value
+
     @property
     def up(self) -> str:
         """Get up value."""
@@ -363,34 +350,34 @@ class Player:
         self._fast_refresh()
 
     @property
-    def translation(self) -> float:
+    def translation(self) -> ArrayLike:
         """Get translation value."""
         return self._translation
 
     @translation.setter
-    def translation(self, value: float):
+    def translation(self, value: ArrayLike):
         """Set translation value."""
-        self._translation = value
+        self._translation = np.array(value[0:2])
         self._fast_refresh()
 
     @property
-    def target(self) -> float:
+    def target(self) -> ArrayLike:
         """Get target value."""
         return self._target
 
     @target.setter
-    def target(self, value: float):
+    def target(self, value: ArrayLike):
         """Set target value."""
-        self._target = value
+        self._target = np.array(value[0:3])
         self._fast_refresh()
 
     @property
-    def perspective(self) -> float:
+    def perspective(self) -> bool:
         """Get perspective value."""
         return self._perspective
 
     @perspective.setter
-    def perspective(self, value: float):
+    def perspective(self, value: bool):
         """Set perspective value."""
         self._perspective = value
         self._fast_refresh()
@@ -407,30 +394,84 @@ class Player:
         self._fast_refresh()
 
     @property
-    def current_index(self) -> int:
-        """Get current_index value."""
-        return self._current_index
+    def point_size(self) -> float:
+        """Get point_size value."""
+        return self._point_size
 
-    @current_index.setter
-    def current_index(self, value: int):
-        """Set current_index value."""
-        if value >= len(self._contents.time):
-            self._current_index = len(self._contents.time) - 1
-            warnings.warn(
-                "Index must be lower than the number of samples "
-                f"({len(self._contents.time)}), however a value of {value} "
-                "has been received. The current index has been set to "
-                f"{self._current_index}."
-            )
-        elif value < 0:
-            self._current_index = 0
-            warnings.warn(
-                f"Index must be higher than 0, however a value of {value} has "
-                "been received. The current index has been set to 0."
-            )
-        else:
-            self._current_index = value
+    @point_size.setter
+    def point_size(self, value: float):
+        """Set point_size value."""
+        self._point_size = value
+        self.refresh()
+
+    @property
+    def interconnection_width(self) -> float:
+        """Get interconnection_width value."""
+        return self._interconnection_width
+
+    @interconnection_width.setter
+    def interconnection_width(self, value: float):
+        """Set interconnection_width value."""
+        self._interconnection_width = value
+        self.refresh()
+
+    @property
+    def frame_size(self) -> float:
+        """Get frame_size value."""
+        return self._frame_size
+
+    @frame_size.setter
+    def frame_size(self, value: float):
+        """Set frame_size value."""
+        self._frame_size = value
         self._fast_refresh()
+
+    @property
+    def frame_width(self) -> float:
+        """Get frame_width value."""
+        return self._frame_width
+
+    @frame_width.setter
+    def frame_width(self, value: float):
+        """Set frame_width value."""
+        self._frame_width = value
+        self.refresh()
+
+    @property
+    def grid_size(self) -> float:
+        """Get grid_size value."""
+        return self._grid_size
+
+    @grid_size.setter
+    def grid_size(self, value: float):
+        """Set grid_size value."""
+        self._grid_size = value
+        self._update_grid()
+        self.refresh()
+
+    @property
+    def grid_subdivision_size(self) -> float:
+        """Get grid_subdivision_size value."""
+        return self._grid_subdivision_size
+
+    @grid_subdivision_size.setter
+    def grid_subdivision_size(self, value: float):
+        """Set grid_subdivision_size value."""
+        self._grid_subdivision_size = value
+        self._update_grid()
+        self.refresh()
+
+    @property
+    def grid_origin(self) -> np.ndarray:
+        """Get grid_origin value."""
+        return self._grid_origin
+
+    @grid_origin.setter
+    def grid_origin(self, value: float):
+        """Set grid_origin value."""
+        self._grid_origin = np.array(value)
+        self._update_grid()
+        self.refresh()
 
     def __dir__(self):
         """Return directory."""
@@ -439,44 +480,21 @@ class Player:
     def __str__(self) -> str:
         """Print a textual description of the Player properties."""
         return (
+            "ktk.Player with current properties:\n"
+            "---\n"
             f"current_index : {self.current_index}\n"
-            f"playback_speed : {self.playback_speed:.2f}\n"
-            f"up : {self.up}\n"
+            f"playback_speed : {self.playback_speed:.3f}\n"
+            "---\n"
+            f"up : '{self.up}'\n"
+            f"zoom : {self.zoom:.3f}\n"
+            f"azimuth : {self.azimuth:.3f}\n"
+            f"elevation : {self.elevation:.3f}\n"
+            f"translation : {self.translation}\n"
+            f"target : {self.target}\n"
+            f"perspective : {self.perspective}\n"
+            "---\n"
+            f"track : {self.track}\n"
         )
-# """    
-#             current_index: int = 0,
-#             current_time: float | None = None,
-#             playback_speed: float = 1.0,
-#             up: str = "y",
-#             zoom: float = 1.0,
-#             azimuth: float = 0.0,
-#             elevation: float = 0.2,
-#             translation: ArrayLike = (0.0, 0.0),
-#             target: ArrayLike = (0.0, 0.0, 0.0),
-#             perspective: bool = True,
-#             track: bool = False,
-#             point_radius: float = 0.008,  # FIXME! Not used anywhere.
-#             axis_length: float = 0.1,
-#             axis_width: float = 3.0,
-#             interconnection_width: float = 1.5,
-#             grid_color: tuple[float, float, float] | None = (0.8, 0.8, 0.8),
-#             background_color: tuple[float, float, float] = (0.0, 0.0, 0.0),
-# """
-        # return kineticstoolkit._repr._format_class_attributes(
-        #     self,
-        #     overrides={
-        #         "_current_index": "current_index",
-        #         "_up": "up",
-        #         "_zoom": "zoom",
-        #         "_azimuth": "azimuth",
-        #         "_elevation": "elevation",
-        #         "_translation": "translation",
-        #         "_target": "target",
-        #         "_perspective": "perspective",
-        #         "_track": "track",
-        #     },
-        #     hide_private=True,
-        # )
 
     def __repr__(self) -> str:
         """Generate the class representation."""
@@ -527,7 +545,14 @@ class Player:
 
     def set_contents(self, value: TimeSeries) -> None:
         """Set contents value."""
-        self._contents = value
+        # Ensure that there is at least one sample so that the Player does not
+        # crash and shows nothing instead.
+        if len(value.time) > 0:
+            self._contents = value.copy()
+        else:
+            warnings.warn("The provided TimeSeries is empty.")
+            self._contents = TimeSeries(time=[0])
+
         self._orient_contents()
         self._extend_interconnections()
         self.refresh()
@@ -538,7 +563,7 @@ class Player:
 
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
         """Set interconnections value."""
-        self._interconnections = value
+        self._interconnections = deepcopy(value)
         self._extend_interconnections()
         self.refresh()
 
@@ -590,9 +615,29 @@ class Player:
                         ]
                     )
 
+    def _up_rotation(self) -> np.ndarray:
+        """Return a 1x4x4 rotation matrix according to the 'up' attribute."""
+        if self.up == "x":
+            return geometry.create_transforms("z", [90], degrees=True)
+        elif self.up == "y":
+            return np.eye(4)[np.newaxis]
+        elif self.up == "z":
+            return geometry.create_transforms("x", [-90], degrees=True)
+        elif self.up == "-x":
+            return geometry.create_transforms("z", [-90], degrees=True)
+        elif self.up == "-y":
+            return geometry.create_transforms("z", [-180], degrees=True)
+        elif self.up == "-z":
+            return geometry.create_transforms("x", [90], degrees=True)
+        else:
+            raise ValueError(
+                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
+            )
+
+
     def _orient_contents(self) -> None:
         """
-        Update self._oriented_points and _oriented_frames.
+        Update self._oriented_points and _oriented_frames
 
         Rotate everything according to the up input, so that the end result
         is y up:
@@ -603,42 +648,39 @@ class Player:
           /
         z/
 
-        Does not refresh.
+        Also add the global origin to _oriented_frames. Does not refresh.
 
         """
         self._oriented_points = self._contents.copy(copy_data=False)
         self._oriented_frames = self._contents.copy(copy_data=False)
 
-        if self.up == "x":
-            rotation = geometry.create_transforms("z", [90], degrees=True)
-        elif self.up == "y":
-            rotation = np.eye(4)[np.newaxis]
-        elif self.up == "z":
-            rotation = geometry.create_transforms("x", [-90], degrees=True)
-        elif self.up == "-x":
-            rotation = geometry.create_transforms("z", [-90], degrees=True)
-        elif self.up == "-y":
-            rotation = geometry.create_transforms("z", [-180], degrees=True)
-        elif self.up == "-z":
-            rotation = geometry.create_transforms("x", [90], degrees=True)
-        else:
-            raise ValueError(
-                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
-            )
+        contents = self._contents.copy()
+        # Add the global reference frame
+        origin_name = "Origin"
+        while origin_name in contents.data:
+            origin_name += "_"
+        contents.data[origin_name] = np.repeat(
+            np.eye(4)[np.newaxis], len(contents.time), axis=0
+        )
 
-        for key in self._contents.data:
-            if self._contents.data[key].shape[1:] == (4,):
+        rotation = self._up_rotation()
+
+        # Orient points and frames
+        for key in contents.data:
+            if contents.data[key].shape[1:] == (4,):
                 self._oriented_points.data[
                     key
                 ] = geometry.get_global_coordinates(
-                    self._contents.data[key], rotation
+                    contents.data[key], rotation
                 )
-            elif self._contents.data[key].shape[1:] == (4, 4):
+            elif contents.data[key].shape[1:] == (4, 4):
                 self._oriented_frames.data[
                     key
                 ] = geometry.get_global_coordinates(
-                    self._contents.data[key], rotation
+                    contents.data[key], rotation
                 )
+
+
 
     # %% Projection and update
 
@@ -732,6 +774,67 @@ class Player:
 
         # Return only x and y
         return rotated_points_3d[:, 0:2]
+
+    def _update_grid(self) -> None:
+        """
+        (Re)-create the grid.
+    
+        First create a ground plane matrix in the form:
+            [
+                [x1, 0, z1],
+                [x2, 0, z2],
+                [nan, nan, nan],
+                [x3, 0, z3],
+                [x4, 0, z4],
+                [nan, nan, nan, nan],
+                ...
+            ]
+    
+        The grid is on the x and z axes, at y=0, as to be shown in Matplotlib.
+        
+        Then translate it according to the 'up' attribute and 'grid_origin'.
+        
+        A full refresh must be called after to recreate the Matplotlib plot
+        using the correct width.
+        
+        """
+        # Build the grid as an xz plane with y being up.
+        temp_grid = []
+    
+        # z-to-z lines
+        for x in np.arange(
+            -self._grid_size / 2,
+            self._grid_size / 2 + self._grid_subdivision_size,
+            self._grid_subdivision_size,
+        ):
+            for z in np.arange(
+                -self._grid_size / 2,
+                self._grid_size / 2 + self._grid_subdivision_size,
+                self._grid_subdivision_size,
+            ):
+                temp_grid.append([x, 0., z, 1.])
+            temp_grid.append([np.nan, np.nan, np.nan, np.nan])
+    
+        # x-to-x lines
+        for z in np.arange(
+            -self._grid_size / 2,
+            self._grid_size / 2 + self._grid_subdivision_size,
+            self._grid_subdivision_size,
+        ):
+            for x in np.arange(
+                -self._grid_size / 2,
+                self._grid_size / 2 + self._grid_subdivision_size,
+                self._grid_subdivision_size,
+            ):
+                temp_grid.append([x, 0., z, 1.])
+            temp_grid.append([np.nan, np.nan, np.nan, np.nan])
+            
+        self._grid = np.array(temp_grid)
+        
+        # Translate the grid
+        translation = geometry.get_global_coordinates(self._grid_origin[np.newaxis], self._up_rotation())        
+        self._grid += translation
+        
 
     def _update_points_and_interconnections(self) -> None:
         # Get a Nx4 matrices of every point at the current index
@@ -830,21 +933,22 @@ class Player:
             # Direction
             framex_data[i_rigid_body * 3 + 1] = frames.data[rigid_body][
                 self.current_index
-            ] @ np.array([self.axis_length, 0, 0, 1])
+            ] @ np.array([self.frame_size, 0, 0, 1])
             framey_data[i_rigid_body * 3 + 1] = frames.data[rigid_body][
                 self.current_index
-            ] @ np.array([0, self.axis_length, 0, 1])
+            ] @ np.array([0, self.frame_size, 0, 1])
             framez_data[i_rigid_body * 3 + 1] = frames.data[rigid_body][
                 self.current_index
-            ] @ np.array([0, 0, self.axis_length, 1])
+            ] @ np.array([0, 0, self.frame_size, 1])
             # NaN to cut the line between the different frames
             framex_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
             framey_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
             framez_data[i_rigid_body * 3 + 2] = np.repeat(np.nan, 4)
 
         # Update the ground plane
-        gp = self._project_to_camera(self._ground_plane)
-        self._mpl_objects["GroundPlanePlot"].set_data(gp[:, 0], gp[:, 1])
+        if len(self._grid) > 0:
+            gp = self._project_to_camera(self._grid)
+            self._mpl_objects["GroundPlanePlot"].set_data(gp[:, 0], gp[:, 1])
 
         # Create or update the frame plot
         framex_data = self._project_to_camera(framex_data)
@@ -868,12 +972,6 @@ class Player:
             )
         except AttributeError:
             pass
-
-        # Update the help text if any
-        if self._mpl_objects["HelpText"] is not None:
-            self._mpl_objects["HelpText"].set_text(
-                repr(self) + "\n\n" + HELP_TEXT
-            )
 
         self._mpl_objects["Figure"].canvas.draw()
 
@@ -906,8 +1004,8 @@ class Player:
         self.target = target
 
         def error_function(input):
-            self.translation = input[0:2]
-            self.zoom = input[2]
+            self._translation = input[0:2]
+            self._zoom = input[2]
             new_projected_points = self._project_to_camera(points)
             error = np.nanmean(
                 (initial_projected_points - new_projected_points) ** 2
@@ -918,9 +1016,9 @@ class Player:
             error_function, np.hstack((self.translation, self.zoom))
         )
         if res.success is False:
-            self.translation = initial_translation
-            self.zoom = initial_zoom
-            self.target = initial_target
+            self._translation = initial_translation
+            self._zoom = initial_zoom
+            self._target = initial_target
 
     # ------------------------------------
     # Helper functions
@@ -1054,7 +1152,7 @@ class Player:
                 self._mpl_objects["HelpText"] = self._mpl_objects["Axes"].text(
                     -1.5,
                     -1,
-                    "",
+                    HELP_TEXT,
                     color=[0, 1, 0],
                     fontfamily="monospace",
                 )
@@ -1234,7 +1332,7 @@ class Player:
                 np.nan,
                 "-",
                 c=self._extended_interconnections[interconnection]["Color"],
-                linewidth=self.interconnection_width,
+                linewidth=self._interconnection_width,
             )[
                 0
             ]
@@ -1244,19 +1342,19 @@ class Player:
             np.nan,
             np.nan,
             c="r",
-            linewidth=self.axis_width,
+            linewidth=self.frame_width,
         )[0]
         self._mpl_objects["FrameYPlot"] = self._mpl_objects["Axes"].plot(
             np.nan,
             np.nan,
             c="g",
-            linewidth=self.axis_width,
+            linewidth=self.frame_width,
         )[0]
         self._mpl_objects["FrameZPlot"] = self._mpl_objects["Axes"].plot(
             np.nan,
             np.nan,
             c="b",
-            linewidth=self.axis_width,
+            linewidth=self.frame_width,
         )[0]
 
         # Create the point plots
@@ -1278,8 +1376,8 @@ class Player:
                 np.nan,
                 ".",
                 c=colors[color],
-                markersize=4,
-                pickradius=5,
+                markersize=self._point_size,
+                pickradius=1.1 * self._point_size,
                 picker=True,
             )[
                 0
@@ -1287,7 +1385,15 @@ class Player:
 
             self._mpl_objects["PointPlots"][color + "s"] = self._mpl_objects[
                 "Axes"
-            ].plot(np.nan, np.nan, ".", c=colors[color], markersize=12)[0]
+            ].plot(
+                np.nan,
+                np.nan,
+                ".",
+                c=colors[color],
+                markersize=3 * self._point_size,
+            )[
+                0
+            ]
 
         # Add the title
         title_obj = plt.title("Player")
