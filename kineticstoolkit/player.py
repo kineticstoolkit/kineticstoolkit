@@ -171,9 +171,10 @@ class Player:
         frame_size: float = 0.1,
         frame_width: float = 3.0,
         grid_size: float = 10.0,
+        grid_width: float = 1.0,
         grid_subdivision_size: float = 1.0,
         grid_origin: ArrayLike = (0.0, 0.0, 0.0, 1.0),
-        grid_color: ArrayLike | None = (0.8, 0.8, 0.8),
+        grid_color: ArrayLike = (0.3, 0.3, 0.3),
         background_color: ArrayLike = (0.0, 0.0, 0.0),
         **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
@@ -220,10 +221,11 @@ class Player:
         self._frame_size = frame_size
         self._frame_width = frame_width
         self._grid_size = grid_size
+        self._grid_width = grid_width
         self._grid_subdivision_size = grid_subdivision_size
         self._grid_origin = grid_origin
-        self.grid_color = grid_color
-        self.background_color = background_color
+        self._grid_color = grid_color
+        self._background_color = background_color
 
         self._select_none()
         self.last_selected_point = ""
@@ -350,24 +352,25 @@ class Player:
         self._fast_refresh()
 
     @property
-    def translation(self) -> ArrayLike:
-        """Get translation value."""
-        return self._translation
+    def translation(self) -> tuple[float, float]:
+        """Get translation value as (x, y)."""
+        return tuple(self._translation)
 
     @translation.setter
     def translation(self, value: ArrayLike):
-        """Set translation value."""
+        """Set translation value using (x, y) or (x, y, ...)."""
+        # Store as ndarray[x, y]
         self._translation = np.array(value[0:2])
         self._fast_refresh()
 
     @property
-    def target(self) -> ArrayLike:
-        """Get target value."""
-        return self._target
+    def target(self) -> tuple[float, float, float]:
+        """Get target value as (x, y, z)."""
+        return tuple(self._target)
 
     @target.setter
     def target(self, value: ArrayLike):
-        """Set target value."""
+        """Set target value using (x, y, z) or (x, y, z, 1.0)."""
         self._target = np.array(value[0:3])
         self._fast_refresh()
 
@@ -450,6 +453,18 @@ class Player:
         self.refresh()
 
     @property
+    def grid_width(self) -> float:
+        """Get grid_width value."""
+        return self._grid_width
+
+    @grid_width.setter
+    def grid_width(self, value: float):
+        """Set grid_width value."""
+        self._grid_width = value
+        self._update_grid()
+        self.refresh()
+
+    @property
     def grid_subdivision_size(self) -> float:
         """Get grid_subdivision_size value."""
         return self._grid_subdivision_size
@@ -472,6 +487,34 @@ class Player:
         self._grid_origin = np.array(value)
         self._update_grid()
         self.refresh()
+
+    @property
+    def grid_color(self) -> tuple[float, float, float]:
+        """Get grid_color value."""
+        return tuple(self._grid_color)
+
+    @grid_color.setter
+    def grid_color(self, value: ArrayLike):
+        """Set grid_color value."""
+        if len(value) != 3:
+            raise ValueError("grid_color must be an (R, G, B) tuple.")
+        self._grid_color = tuple(value)
+        self._update_grid()
+        self.refresh()
+
+    @property
+    def background_color(self) -> tuple[float, float, float]:
+        """Get background_color value."""
+        return tuple(self._background_color)
+
+    @background_color.setter
+    def background_color(self, value: ArrayLike):
+        """Set background_color value."""
+        if len(value) != 3:
+            raise ValueError("background_color must be an (R, G, B) tuple.")
+        self._background_color = tuple(value)
+        self.refresh()
+
 
     def __dir__(self):
         """Return directory."""
@@ -634,7 +677,6 @@ class Player:
                 "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
             )
 
-
     def _orient_contents(self) -> None:
         """
         Update self._oriented_points and _oriented_frames
@@ -679,8 +721,6 @@ class Player:
                 ] = geometry.get_global_coordinates(
                     contents.data[key], rotation
                 )
-
-
 
     # %% Projection and update
 
@@ -778,7 +818,7 @@ class Player:
     def _update_grid(self) -> None:
         """
         (Re)-create the grid.
-    
+
         First create a ground plane matrix in the form:
             [
                 [x1, 0, z1],
@@ -789,18 +829,18 @@ class Player:
                 [nan, nan, nan, nan],
                 ...
             ]
-    
+
         The grid is on the x and z axes, at y=0, as to be shown in Matplotlib.
-        
+
         Then translate it according to the 'up' attribute and 'grid_origin'.
-        
+
         A full refresh must be called after to recreate the Matplotlib plot
         using the correct width.
-        
+
         """
         # Build the grid as an xz plane with y being up.
         temp_grid = []
-    
+
         # z-to-z lines
         for x in np.arange(
             -self._grid_size / 2,
@@ -812,9 +852,9 @@ class Player:
                 self._grid_size / 2 + self._grid_subdivision_size,
                 self._grid_subdivision_size,
             ):
-                temp_grid.append([x, 0., z, 1.])
+                temp_grid.append([x, 0.0, z, 1.0])
             temp_grid.append([np.nan, np.nan, np.nan, np.nan])
-    
+
         # x-to-x lines
         for z in np.arange(
             -self._grid_size / 2,
@@ -826,15 +866,17 @@ class Player:
                 self._grid_size / 2 + self._grid_subdivision_size,
                 self._grid_subdivision_size,
             ):
-                temp_grid.append([x, 0., z, 1.])
+                temp_grid.append([x, 0.0, z, 1.0])
             temp_grid.append([np.nan, np.nan, np.nan, np.nan])
-            
+
         self._grid = np.array(temp_grid)
-        
+
         # Translate the grid
-        translation = geometry.get_global_coordinates(self._grid_origin[np.newaxis], self._up_rotation())        
+        translation = geometry.get_global_coordinates(
+            self._grid_origin[np.newaxis], self._up_rotation()
+        )[0]
+        translation[3] = 0  # Not a position, but a vector
         self._grid += translation
-        
 
     def _update_points_and_interconnections(self) -> None:
         # Get a Nx4 matrices of every point at the current index
@@ -948,7 +990,7 @@ class Player:
         # Update the ground plane
         if len(self._grid) > 0:
             gp = self._project_to_camera(self._grid)
-            self._mpl_objects["GroundPlanePlot"].set_data(gp[:, 0], gp[:, 1])
+            self._mpl_objects["GridPlot"].set_data(gp[:, 0], gp[:, 1])
 
         # Create or update the frame plot
         framex_data = self._project_to_camera(framex_data)
@@ -1306,21 +1348,25 @@ class Player:
         # Clear and rebuild the mpl plots.
         self._mpl_objects["InterconnectionPlots"] = dict()
         self._mpl_objects["PointPlots"] = dict()
-        self._mpl_objects["GroundPlanePlot"] = None
+        self._mpl_objects["GridPlot"] = None
         self._mpl_objects["FrameXPlot"] = None
         self._mpl_objects["FrameYPlot"] = None
         self._mpl_objects["FrameZPlot"] = None
-        self._mpl_objects["GroundPlanePlot"] = None
+        self._mpl_objects["GridPlot"] = None
         self._mpl_objects["HelpText"] = None
 
         self._mpl_objects["Axes"].clear()
+        self._mpl_objects["Figure"].set_facecolor(self._background_color)
 
         # Reset axes properties
         self._mpl_objects["Axes"].set_axis_off()
 
         # Create the ground plane
-        self._mpl_objects["GroundPlanePlot"] = self._mpl_objects["Axes"].plot(
-            np.nan, np.nan, c=[0.3, 0.3, 0.3], linewidth=1
+        self._mpl_objects["GridPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            linewidth=self._grid_width,
+            color=self._grid_color,
         )[0]
 
         # Create the interconnection plots
