@@ -14,9 +14,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
 
 """Provide miscelleanous helper functions."""
+from __future__ import annotations
+
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -29,9 +30,10 @@ import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
 import kineticstoolkit.ext
-from kineticstoolkit.exceptions import check_types
+from kineticstoolkit.typing_ import typecheck
 
 
+@typecheck
 def tqdm(the_range, *args, **kwargs):
     """
     Return a range or a tqdm's progress bar range if tqdm is installed.
@@ -52,6 +54,7 @@ def tqdm(the_range, *args, **kwargs):
         return the_range
 
 
+@typecheck
 def check_interactive_backend() -> None:
     """
     Warns if Matplotlib is not using an interactive backend.
@@ -86,6 +89,7 @@ def check_interactive_backend() -> None:
         return
 
 
+@typecheck
 def change_defaults(
     change_ipython_dict_repr: bool = True,
     change_matplotlib_defaults: bool = True,
@@ -148,8 +152,6 @@ def change_defaults(
         import kineticstoolkit.lab as ktk
 
     """
-    check_types(change_defaults, locals())
-
     if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython
         try:

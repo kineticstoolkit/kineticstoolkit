@@ -22,15 +22,18 @@ Note
 ----
 As a convention, the first dimension of every array is always N and corresponds
 to time.
-
 """
 from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2021 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
+
+import numpy as np
+import scipy.spatial.transform as transform
+import kineticstoolkit.external.icp as icp
+from kineticstoolkit.typing_ import typecheck, ArrayLike
 
 
 def __dir__():
@@ -49,13 +52,7 @@ def __dir__():
     ]
 
 
-import numpy as np
-import scipy.spatial.transform as transform
-import kineticstoolkit.external.icp as icp
-from numpy.typing import ArrayLike
-from kineticstoolkit.exceptions import check_types
-
-
+@typecheck
 def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
@@ -90,8 +87,6 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
            [16.,  9.]])
 
     """
-    check_types(matmul, locals())
-
     op1 = np.array(op1)
     op2 = np.array(op2)
 
@@ -116,6 +111,7 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     return result
 
 
+@typecheck
 def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     """
     Calculate series of inverse transform.
@@ -141,8 +137,6 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     transpose of the rotation component.
 
     """
-    check_types(inv, locals())
-
     matrix_series = np.array(matrix_series)
     index_is_nan = isnan(matrix_series)
 
@@ -167,6 +161,7 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     return out
 
 
+@typecheck
 def create_transforms(
     seq: str | None = None,
     angles: ArrayLike | None = None,
@@ -255,8 +250,6 @@ def create_transforms(
                 [0.   , 0.   , 0.   , 1.   ]]])
 
     """
-    check_types(create_transforms, locals())
-
     # Condition translations
     if translations is None:
         translations = np.zeros((1, 3))
@@ -307,6 +300,7 @@ def create_transforms(
     return T @ scales
 
 
+@typecheck
 def rotate(
     coordinates, /, seq: str, angles: ArrayLike, *, degrees: bool = False
 ) -> np.ndarray:
@@ -371,6 +365,7 @@ def rotate(
     return matmul(create_transforms(seq, angles, degrees=degrees), coordinates)
 
 
+@typecheck
 def translate(coordinates, /, translations):
     """
     Translate a series of coordinates.
@@ -410,6 +405,7 @@ def translate(coordinates, /, translations):
     return matmul(create_transforms(translations=translations), coordinates)
 
 
+@typecheck
 def scale(coordinates, /, scales):
     """
     Scale a series of coordinates.
@@ -449,6 +445,7 @@ def scale(coordinates, /, scales):
     return matmul(create_transforms(scales=scales), coordinates)
 
 
+@typecheck
 def get_angles(
     T: ArrayLike, seq: str, degrees: bool = False, flip: bool = False
 ) -> np.ndarray:
@@ -512,8 +509,6 @@ def get_angles(
     `seq` parameter.
 
     """
-    check_types(get_angles, locals())
-
     T = np.array(T)
 
     _check_no_skewed_rotation(T, "T")
@@ -537,6 +532,7 @@ def get_angles(
     return angles
 
 
+@typecheck
 def create_frames(
     origin: ArrayLike,
     x: ArrayLike | None = None,
@@ -584,7 +580,6 @@ def create_frames(
     ktk.geometry.create_transforms
 
     """
-    check_types(create_frames, locals())
 
     def normalize(v):
         """Normalize series of vectors."""
@@ -638,6 +633,7 @@ def create_frames(
     return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
+@typecheck
 def get_local_coordinates(
     global_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
@@ -669,8 +665,6 @@ def get_local_coordinates(
     ktk.geometry.get_global_coordinates
 
     """
-    check_types(get_local_coordinates, locals())
-
     global_coordinates = np.array(global_coordinates)
     reference_frames = np.array(reference_frames)
 
@@ -699,6 +693,7 @@ def get_local_coordinates(
     return local_coordinates
 
 
+@typecheck
 def get_global_coordinates(
     local_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
@@ -730,8 +725,6 @@ def get_global_coordinates(
     ktk.geometry.get_local_coordinates
 
     """
-    check_types(get_global_coordinates, locals())
-
     local_coordinates = np.array(local_coordinates)
     reference_frames = np.array(reference_frames)
 
@@ -746,6 +739,7 @@ def get_global_coordinates(
     return global_coordinates
 
 
+@typecheck
 def isnan(array: ArrayLike, /) -> np.ndarray:
     """
     Check which samples contain at least one NaN.
@@ -762,14 +756,13 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
         True for the samples that contain at least one NaN.
 
     """
-    check_types(isnan, locals())
-
     temp = np.isnan(array)
     while len(temp.shape) > 1:
         temp = temp.sum(axis=1) > 0
     return temp
 
 
+@typecheck
 def _match_size(
     op1: np.ndarray, op2: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -799,6 +792,7 @@ def _match_size(
     return op1, op2
 
 
+@typecheck
 def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
     """
     Check if all rotation matrices are orthogonal (det=1).
@@ -836,6 +830,7 @@ def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
             )
 
 
+@typecheck
 def register_points(
     global_points: ArrayLike, local_points: ArrayLike
 ) -> np.ndarray:
@@ -857,8 +852,6 @@ def register_points(
         transforms.
 
     """
-    check_types(register_points, locals())
-
     global_points = np.array(global_points)
     local_points = np.array(local_points)
 

@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 kineticstoolkit._repr.py
 ------------------------
@@ -30,6 +29,7 @@ and becomes unmanagable when the dict becomes larger.
 It also provides helper functions to nicely format the repr() of data classes.
 
 """
+from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"

@@ -17,7 +17,6 @@
 
 """
 Provide configuration values for Kinetics Toolkit's inner working.
-
 """
 from __future__ import annotations
 

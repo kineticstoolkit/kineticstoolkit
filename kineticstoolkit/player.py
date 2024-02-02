@@ -23,7 +23,6 @@ namespace (i.e., ktk.Player).
 """
 from __future__ import annotations
 
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -44,13 +43,14 @@ from numpy import sin, cos
 import time
 import copy
 from typing import Any
-from numpy.typing import ArrayLike
+from kineticstoolkit.typing_ import typecheck, ArrayLike
 import warnings
 
 # To fit the new viewpoint on selecting a new marker
 import scipy.optimize as optim
 
 
+@typecheck
 class Player:
     """
     A class that allows visualizing markers and rigid bodies in 3D.
