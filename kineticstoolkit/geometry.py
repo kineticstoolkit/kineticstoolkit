@@ -87,8 +87,8 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
            [16.,  9.]])
 
     """
-    op1 = np.array(op1)
-    op2 = np.array(op2)
+    op1_array = np.array(op1)
+    op2_array = np.array(op2)
 
     def perform_mul(op1, op2):
         if isinstance(op1, np.ndarray) and isinstance(op2, np.ndarray):
@@ -96,17 +96,19 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
         else:
             return op1 * op2  # In the case where we have a series of floats.
 
-    (op1, op2) = _match_size(op1, op2)
+    (op1_array, op2_array) = _match_size(op1_array, op2_array)
 
-    n_samples = op1.shape[0]
+    n_samples = op1_array.shape[0]
 
     # Get the expected shape by performing the first multiplication
-    temp = perform_mul(op1[0], op2[0])
+    temp = perform_mul(op1_array[0], op2_array[0])
     result = np.empty((n_samples, *temp.shape))
 
     # Perform the multiplication
     for i_sample in range(n_samples):
-        result[i_sample] = perform_mul(op1[i_sample], op2[i_sample])
+        result[i_sample] = perform_mul(
+            op1_array[i_sample], op2_array[i_sample]
+        )
 
     return result
 
@@ -252,39 +254,45 @@ def create_transforms(
     """
     # Condition translations
     if translations is None:
-        translations = np.zeros((1, 3))
+        translations_array = np.zeros((1, 3))
     else:
-        translations = np.array(translations)
+        translations_array = np.array(translations)
 
     # Condition angles
     if angles is None:
-        angles = np.array([0])
+        angles_array = np.array([0])
         seq = "x"
     else:
-        angles = np.array(angles)
+        angles_array = np.array(angles)
 
     # Condition scales
     if scales is None:
-        scales = np.array([1])
+        scales_array = np.array([1])
     else:
-        scales = np.array(scales)
+        scales_array = np.array(scales)
 
     # Convert scales to a series of scaling matrices
-    temp = np.zeros((scales.shape[0], 4, 4))
-    temp[:, 0, 0] = scales
-    temp[:, 1, 1] = scales
-    temp[:, 2, 2] = scales
+    temp = np.zeros((scales_array.shape[0], 4, 4))
+    temp[:, 0, 0] = scales_array
+    temp[:, 1, 1] = scales_array
+    temp[:, 2, 2] = scales_array
     temp[:, 3, 3] = 1.0
-    scales = temp
+    scales_array = temp
 
     # Match sizes
-    translations, angles = _match_size(translations, angles)
-    translations, scales = _match_size(translations, scales)
-    translations, angles = _match_size(translations, angles)
-    n_samples = angles.shape[0]
+    translations_array, angles_array = _match_size(
+        translations_array, angles_array
+    )
+    translations_array, scales_array = _match_size(
+        translations_array, scales_array
+    )
+    translations_array, angles_array = _match_size(
+        translations_array, angles_array
+    )
+    n_samples = angles_array.shape[0]
 
     # Create the rotation matrix
-    rotation = transform.Rotation.from_euler(seq, angles, degrees)
+    rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
     R = rotation.as_matrix()
     if len(R.shape) == 2:  # Single rotation: add the Time dimension.
         R = R[np.newaxis, ...]
@@ -292,12 +300,12 @@ def create_transforms(
     # Construct the final series of transforms (without scaling)
     T = np.empty((n_samples, 4, 4))
     T[:, 0:3, 0:3] = R
-    T[:, 0:3, 3] = translations
+    T[:, 0:3, 3] = translations_array
     T[:, 3, 0:3] = 0
     T[:, 3, 3] = 1
 
     # Return the scaling + transform
-    return T @ scales
+    return T @ scales_array
 
 
 @typecheck
@@ -665,27 +673,25 @@ def get_local_coordinates(
     ktk.geometry.get_global_coordinates
 
     """
-    global_coordinates = np.array(global_coordinates)
-    reference_frames = np.array(reference_frames)
+    global_coordinates_array = np.array(global_coordinates)
+    reference_frames_array = np.array(reference_frames)
 
-    _check_no_skewed_rotation(reference_frames, "reference_frames")
+    _check_no_skewed_rotation(reference_frames_array, "reference_frames")
 
-    (global_coordinates, reference_frames) = _match_size(
-        global_coordinates, reference_frames
+    (global_coordinates_array, reference_frames_array) = _match_size(
+        global_coordinates_array, reference_frames_array
     )
-
-    n_samples = global_coordinates.shape[0]
 
     # Transform NaNs in global coordinates to zeros to perform the operation,
     # then put back NaNs in the corresponding local coordinates.
-    nan_index = np.isnan(global_coordinates)
-    global_coordinates[nan_index] = 0
+    nan_index = np.isnan(global_coordinates_array)
+    global_coordinates_array[nan_index] = 0
 
     # Invert the reference frame to obtain the inverse transformation
-    inv_ref_T = inv(reference_frames)
+    inv_ref_T = inv(reference_frames_array)
 
-    local_coordinates = np.zeros(global_coordinates.shape)  # init
-    local_coordinates = matmul(inv_ref_T, global_coordinates)
+    local_coordinates = np.zeros(global_coordinates_array.shape)  # init
+    local_coordinates = matmul(inv_ref_T, global_coordinates_array)
 
     # Put back the NaNs
     local_coordinates[nan_index] = np.nan
@@ -725,17 +731,19 @@ def get_global_coordinates(
     ktk.geometry.get_local_coordinates
 
     """
-    local_coordinates = np.array(local_coordinates)
-    reference_frames = np.array(reference_frames)
+    local_coordinates_array = np.array(local_coordinates)
+    reference_frames_array = np.array(reference_frames)
 
-    _check_no_skewed_rotation(reference_frames, "reference_frames")
+    _check_no_skewed_rotation(reference_frames_array, "reference_frames")
 
-    (local_coordinates, reference_frames) = _match_size(
-        local_coordinates, reference_frames
+    (local_coordinates_array, reference_frames_array) = _match_size(
+        local_coordinates_array, reference_frames_array
     )
 
-    global_coordinates = np.zeros(local_coordinates.shape)
-    global_coordinates = matmul(reference_frames, local_coordinates)
+    global_coordinates = np.zeros(local_coordinates_array.shape)
+    global_coordinates = matmul(
+        reference_frames_array, local_coordinates_array
+    )
     return global_coordinates
 
 

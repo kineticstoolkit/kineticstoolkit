@@ -33,6 +33,8 @@ import warnings
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.typing_ import typecheck
 
+import kineticstoolkit as ktk  # For doctests
+
 
 def __dir__():
     return ["savgol", "smooth", "butter", "deriv", "median"]

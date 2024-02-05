@@ -29,12 +29,13 @@ setuptools.setup(
     },
     install_requires=[
         "pandas",
-        "pyqt5",
+        "pyqt5",  # For Player and interactive functions
         "scipy",
         "matplotlib",
         "scikit-learn",
         "limitedinteraction",  # For UI
-        "tqdm",
+        "tqdm",  # For progress bars
+        "beartype>=0.17",  # For real-time static type check
         "requests",  # To download documentation examples
         "requests-cache",  # To check for warning messages on import
     ],

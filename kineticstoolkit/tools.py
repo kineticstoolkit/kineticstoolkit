@@ -79,12 +79,12 @@ def check_interactive_backend() -> None:
         return
 
     try:
-        mpl.backends.backend
+        mpl.backends.backend  # type:ignore
     except AttributeError:  # No backend has been initialized
         warn()
         return
 
-    if "inline" in mpl.backends.backend:
+    if "inline" in mpl.backends.backend:  # type:ignore
         warn()
         return
 

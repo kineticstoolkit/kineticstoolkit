@@ -61,70 +61,6 @@ WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
 
 @typecheck
-class MetaTimeSeries(type):
-    """A metaclass only to provide a proper class dir() function."""
-
-    @classmethod
-    def __dir__(cls):
-        """Return the directory for the TimeSeries."""
-        return [
-            "copy",
-            # Data info management
-            "add_data_info",
-            "remove_data_info",
-            # Data management
-            "get_subset",
-            "merge",
-            "add_data",
-            "rename_data",
-            "remove_data",
-            # Time management
-            "shift",
-            "get_sample_rate",
-            "resample",
-            # Event management
-            "add_event",
-            "rename_event",
-            "remove_event",
-            "count_events",
-            "remove_duplicate_events",
-            "sort_events",
-            "trim_events",
-            # Get index from time
-            "get_index_at_time",
-            "get_index_before_time",
-            "get_index_after_time",
-            # Get index from event
-            "get_index_at_event",
-            "get_index_before_event",
-            "get_index_after_event",
-            # Get TimeSeries from index
-            "get_ts_before_index",
-            "get_ts_after_index",
-            "get_ts_between_indexes",
-            # Get TimeSeries from time
-            "get_ts_before_time",
-            "get_ts_after_time",
-            "get_ts_between_times",
-            # Get TimeSeries from event
-            "get_ts_before_event",
-            "get_ts_after_event",
-            "get_ts_between_events",
-            # Missing data
-            "isnan",
-            "fill_missing_samples",
-            # Interactive and plotting
-            "ui_edit_events",
-            "ui_sync",
-            "plot",
-            # IO
-            "to_dataframe",
-            "from_dataframe",
-            "from_array",
-        ]
-
-
-@typecheck
 class TimeSeriesEventList(list):
     """Event list that ensures every element is a TimeSeriesEvent."""
 
@@ -266,7 +202,7 @@ class TimeSeriesEvent:
 
 
 @typecheck
-class TimeSeries(metaclass=MetaTimeSeries):
+class TimeSeries:
     """
     A class that holds time, data series, events and metadata.
 
@@ -563,8 +499,62 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
     @classmethod
     def __dir__(cls):
-        """Generate the class directory."""
-        return MetaTimeSeries.__dir__()
+        """Return the directory for the TimeSeries."""
+        return [
+            "copy",
+            # Data info management
+            "add_data_info",
+            "remove_data_info",
+            # Data management
+            "get_subset",
+            "merge",
+            "add_data",
+            "rename_data",
+            "remove_data",
+            # Time management
+            "shift",
+            "get_sample_rate",
+            "resample",
+            # Event management
+            "add_event",
+            "rename_event",
+            "remove_event",
+            "count_events",
+            "remove_duplicate_events",
+            "sort_events",
+            "trim_events",
+            # Get index from time
+            "get_index_at_time",
+            "get_index_before_time",
+            "get_index_after_time",
+            # Get index from event
+            "get_index_at_event",
+            "get_index_before_event",
+            "get_index_after_event",
+            # Get TimeSeries from index
+            "get_ts_before_index",
+            "get_ts_after_index",
+            "get_ts_between_indexes",
+            # Get TimeSeries from time
+            "get_ts_before_time",
+            "get_ts_after_time",
+            "get_ts_between_times",
+            # Get TimeSeries from event
+            "get_ts_before_event",
+            "get_ts_after_event",
+            "get_ts_between_events",
+            # Missing data
+            "isnan",
+            "fill_missing_samples",
+            # Interactive and plotting
+            "ui_edit_events",
+            "ui_sync",
+            "plot",
+            # IO
+            "to_dataframe",
+            "from_dataframe",
+            "from_array",
+        ]
 
     def __str__(self):
         """
@@ -1177,10 +1167,10 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
         Example
         -------
-        >> ts = ktk.TimeSeries()
-        >> ts = ts.add_data("data1", [1.0, 2.0, 3.0])
-        >> ts = ts.add_data("data2", [4.0, 5.0, 6.0])
-        >> ts
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_data("data1", [1.0, 2.0, 3.0])
+        >>> ts = ts.add_data("data2", [4.0, 5.0, 6.0])
+        >>> ts
         TimeSeries with attributes:
                  time: array([], dtype=float64)
                  data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
@@ -4644,6 +4634,5 @@ class TimeSeries(metaclass=MetaTimeSeries):
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
-    import numpy as np
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
