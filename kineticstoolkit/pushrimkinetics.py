@@ -18,6 +18,7 @@
 """
 Deprecated module. Please use the kineticstoolkit_pushrimkinetics extension.
 """
+from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"

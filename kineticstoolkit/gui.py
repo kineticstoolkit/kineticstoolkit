@@ -25,18 +25,19 @@ for Kinetics Toolkit's own use.
 """
 from __future__ import annotations
 
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 import kineticstoolkit.config as config
+from kineticstoolkit.typing_ import typecheck
 import limitedinteraction as li
 import matplotlib as mpl
 from typing import Any
 
 
+@typecheck
 def message(message: str = "", **kwargs) -> None:
     """
     Show a message window.
@@ -56,6 +57,7 @@ def message(message: str = "", **kwargs) -> None:
     )
 
 
+@typecheck
 def button_dialog(
     message: str = "Please select an option.",
     choices: list[str] = ["Cancel", "OK"],
@@ -89,6 +91,7 @@ def button_dialog(
     )
 
 
+@typecheck
 def set_color_order(setting: str | list[Any]) -> None:
     """
     Define the standard color order for matplotlib.
@@ -138,6 +141,7 @@ def set_color_order(setting: str | list[Any]) -> None:
     mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)  # type: ignore
 
 
+@typecheck
 def get_credentials() -> tuple[str, str]:
     """
     Ask the user's username and password.
@@ -157,6 +161,7 @@ def get_credentials() -> tuple[str, str]:
     )
 
 
+@typecheck
 def get_folder(initial_folder: str = ".") -> str:
     """
     Get folder interactively using a file dialog window.
@@ -182,6 +187,7 @@ def get_folder(initial_folder: str = ".") -> str:
     )
 
 
+@typecheck
 def get_filename(initial_folder: str = ".") -> str:
     """
     Get file name interactively using a file dialog window.

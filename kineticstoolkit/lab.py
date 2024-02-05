@@ -30,7 +30,6 @@ To get started, please consult Kinetics Toolkit's
 """
 from __future__ import annotations
 
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"

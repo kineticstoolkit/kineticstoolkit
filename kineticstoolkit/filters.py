@@ -20,7 +20,6 @@ Provide standard filters for TimeSeries.
 """
 from __future__ import annotations
 
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -32,16 +31,16 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.exceptions import check_types
+from kineticstoolkit.typing_ import typecheck
 
-
-import kineticstoolkit as ktk  # for doctests
+import kineticstoolkit as ktk  # For doctests
 
 
 def __dir__():
     return ["savgol", "smooth", "butter", "deriv", "median"]
 
 
+@typecheck
 def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     """Interpolate NaNs in a given data key in a TimeSeries."""
     ts = ts.get_subset(key)
@@ -58,6 +57,7 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     return (ts, nan_index)
 
 
+@typecheck
 def _validate_input(ts):
     """
     Check that time is not null, that sample rate is constant, and that
@@ -75,6 +75,7 @@ def _validate_input(ts):
         warnings.warn("It seems that unit is not 's'.")
 
 
+@typecheck
 def savgol(
     ts: TimeSeries, /, *, window_length: int, poly_order: int, deriv: int = 0
 ) -> TimeSeries:
@@ -111,12 +112,11 @@ def savgol(
         If sample rate is not constant, or if there is no data to
         filter.
 
-    See also
+    See Also
     --------
     ktk.filters.smooth
 
     """
-    check_types(savgol, locals())
     _validate_input(ts)
 
     tsout = ts.copy()
@@ -147,6 +147,7 @@ def savgol(
     return tsout
 
 
+@typecheck
 def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
@@ -175,18 +176,18 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
         If sample rate is not constant, or if there is no data to
         filter.
 
-    See also
+    See Also
     --------
     ktk.filters.savgol
 
     """
-    check_types(smooth, locals())
     _validate_input(ts)
 
     tsout = savgol(ts, window_length=window_length, poly_order=0)
     return tsout
 
 
+@typecheck
 def butter(
     ts: TimeSeries,
     /,
@@ -234,7 +235,6 @@ def butter(
         filter.
 
     """
-    check_types(butter, locals())
     _validate_input(ts)
 
     ts = ts.copy()
@@ -264,6 +264,7 @@ def butter(
     return ts
 
 
+@typecheck
 def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
@@ -319,7 +320,6 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     array([ 100., -100., -100.])
 
     """
-    check_types(deriv, locals())
     _validate_input(ts)
 
     out_ts = ts.copy()
@@ -335,6 +335,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     return out_ts
 
 
+@typecheck
 def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.
@@ -358,7 +359,6 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     array([10., 11., 11., 14., 15., 15.])
 
     """
-    check_types(median, locals())
     out_ts = ts.copy()
     for key in ts.data:
         window_shape = [1 for i in range(len(ts.data[key].shape))]

@@ -17,7 +17,6 @@
 
 """
 Identify cycles and time-normalize data.
-
 """
 from __future__ import annotations
 
@@ -29,13 +28,9 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.exceptions import (
-    check_types,
-    TimeSeriesEventNotFoundError,
-)
+from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
 from kineticstoolkit.tools import tqdm
-import warnings
-from numpy.typing import ArrayLike
+from kineticstoolkit.typing_ import typecheck, ArrayLike
 
 
 def __dir__():
@@ -48,6 +43,7 @@ def __dir__():
     ]
 
 
+@typecheck
 def detect_cycles(
     ts: TimeSeries,
     data_key: str,
@@ -108,8 +104,6 @@ def detect_cycles(
         A copy of `ts` with the events added.
 
     """
-    check_types(detect_cycles, locals())
-
     # lowercase directions[0] once
     directions[0] = directions[0].lower()  # type: ignore
     if directions[0] != "rising" and directions[0] != "falling":
@@ -193,6 +187,7 @@ def detect_cycles(
     return tsout
 
 
+@typecheck
 def time_normalize(
     ts: TimeSeries,
     event_name1: str,
@@ -246,8 +241,6 @@ def time_normalize(
     119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.
 
     """
-    check_types(time_normalize, locals())
-
     # Optional span
     if span is None:
         span = [0, n_points]
@@ -401,6 +394,7 @@ def time_normalize(
     return dest_ts
 
 
+@typecheck
 def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     """
     Stack time-normalized TimeSeries' data into a dict of arrays.
@@ -427,8 +421,6 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     ktk.cycles.unstack
 
     """
-    check_types(stack, locals())
-
     if np.mod(len(ts.time), n_points) != 0:
         raise (
             ValueError("It seems that this TimeSeries is not time-normalized.")
@@ -444,6 +436,7 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     return data
 
 
+@typecheck
 def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
@@ -467,8 +460,6 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     ktk.cycles.stack
 
     """
-    check_types(unstack, locals())
-
     ts = TimeSeries()
     for key in data.keys():
         current_data = np.array(data[key])
@@ -549,6 +540,7 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 #     return out
 
 
+@typecheck
 def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     """
     Get the indexes of the most repeatable cycles in array.
@@ -593,8 +585,6 @@ def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     [1, 3, 0, 2]
 
     """
-    check_types(most_repeatable_cycles, locals())
-
     data = np.array(data)
     n_cycles = data.shape[0]
     out_cycles = []  # type: list[int]

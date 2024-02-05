@@ -20,10 +20,8 @@ Provide functions to load and save data.
 
 The classes defined in this module are accessible directly from the toplevel
 Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
-
 """
 from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020 Félix Chénier"
@@ -31,8 +29,8 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.exceptions import check_types
 import kineticstoolkit.config
+from kineticstoolkit.typing_ import typecheck
 
 import os
 import numpy as np
@@ -51,6 +49,7 @@ def __dir__():  # pragma: no cover
     return ["save", "load"]
 
 
+@typecheck
 def save(filename: str, variable: Any) -> None:
     """
     Save a variable to a ktk.zip file.
@@ -102,7 +101,6 @@ def save(filename: str, variable: Any) -> None:
     ktk.load
 
     """
-    check_types(save, locals())
 
     class CustomEncoder(json.JSONEncoder):
         def default(self, obj):
@@ -242,6 +240,7 @@ def _load_object_hook(obj):
         return obj
 
 
+@typecheck
 def load(filename: str, *, include_metadata: bool = False) -> Any:
     """
     Load a ktk.zip file.
@@ -271,8 +270,6 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     ktk.save
 
     """
-    check_types(load, locals())
-
     archive = zipfile.ZipFile(filename, "r")
 
     data = json.loads(
@@ -290,6 +287,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
         return data
 
 
+@typecheck
 def read_c3d(
     filename: str,
     *,
@@ -408,8 +406,6 @@ def read_c3d(
       - ...
         
     """
-    check_types(read_c3d, locals())
-
     try:
         import ezc3d
     except ModuleNotFoundError:
@@ -429,6 +425,11 @@ def read_c3d(
         convert_moment_unit = kwargs["convert_moment_unit"]
     else:
         convert_moment_unit = True
+
+    if "return_ezc3d" in kwargs:
+        return_ezc3d = kwargs["return_ezc3d"]
+    else:
+        return_ezc3d = False
 
     # Create the output
     output = {}
@@ -452,6 +453,9 @@ def read_c3d(
 
     else:
         raise FileNotFoundError(f"File {filename} was not found.")
+
+    if return_ezc3d:
+        output["C3D"] = reader
 
     # ---------------------------------
     # List the events
@@ -682,6 +686,7 @@ def read_c3d(
     return output
 
 
+@typecheck
 def write_c3d(
     filename: str, points: TimeSeries, analogs: TimeSeries | None = None
 ) -> None:
@@ -756,10 +761,6 @@ def write_c3d(
             "to use this function. Please install it using: "
             "conda install -c conda-forge ezc3d"
         )
-
-    # Basic type check
-    check_types(write_c3d, locals())
-
     # Create an empty c3d structure
     c3d = ezc3d.c3d()
 
