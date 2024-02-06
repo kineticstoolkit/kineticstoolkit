@@ -35,6 +35,7 @@ setuptools.setup(
         "scikit-learn",
         "limitedinteraction",  # For UI
         "tqdm",
+        "beartype >=0.17",
         "requests",  # To download documentation examples
         "requests-cache",  # To check for warning messages on import
     ],
