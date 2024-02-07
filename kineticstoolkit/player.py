@@ -151,6 +151,35 @@ class Player:
 
     # %% Init and properties getters and setters
 
+    # Internal variables - for mypy
+    _being_constructed: bool
+    _contents: TimeSeries
+    _oriented_points: TimeSeries
+    _oriented_frames: TimeSeries
+    _interconnections: dict[str, dict[str, Any]]
+    _extended_interconnections: dict[str, dict[str, Any]]
+    _current_index: int
+    _current_time: float
+    _playback_speed: float
+    _up: str
+    _zoom: float
+    _azimuth: float
+    _elevation: float
+    _translation: np.ndarray
+    _target: np.ndarray
+    _perspective: bool
+    _track: bool
+    _point_size: float
+    _interconnection_width: float
+    _frame_size: float
+    _frame_width: float
+    _grid_size: float
+    _grid_width: float
+    _grid_subdivision_size: float
+    _grid_origin: np.ndarray
+    _grid_color: tuple[float, float, float]
+    _background_color: tuple[float, float, float]
+
     def __init__(
         self,
         *ts: TimeSeries,
@@ -162,8 +191,8 @@ class Player:
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
-        translation: ArrayLike = (0.0, 0.0),
-        target: ArrayLike = (0.0, 0.0, 0.0),
+        translation: tuple[float, float] | ArrayLike = (0.0, 0.0),
+        target: tuple[float, float, float] | ArrayLike = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
         point_size: float = 4.0,
@@ -173,9 +202,10 @@ class Player:
         grid_size: float = 10.0,
         grid_width: float = 1.0,
         grid_subdivision_size: float = 1.0,
-        grid_origin: ArrayLike = (0.0, 0.0, 0.0, 1.0),
-        grid_color: ArrayLike = (0.3, 0.3, 0.3),
-        background_color: ArrayLike = (0.0, 0.0, 0.0),
+        grid_origin: tuple[float, float, float] | ArrayLike = (0.0, 0.0, 0.0),
+        grid_color: tuple[float, float, float] | ArrayLike = (0.3, 0.3, 0.3),
+        background_color: tuple[float, float, float]
+        | ArrayLike = (0.0, 0.0, 0.0),
         **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
         # Allow older parameter names
@@ -191,41 +221,44 @@ class Player:
 
         # Assign properties
 
-        # Empty content for now. We add the final content after all
+        # Empty content for now. We set the final content after all
         # initializations.
+        self._being_constructed = True
+
         self._contents = TimeSeries(time=[0])
         self._grid = np.array([])
         self._oriented_points = TimeSeries(time=self._contents.time)
         self._oriented_frames = TimeSeries(time=self._contents.time)
 
-        self._interconnections = {}
-        self._extended_interconnections = {}
+        self._interconnections = interconnections  # Just to put stuff for now
+        self._extended_interconnections = interconnections  # idem
 
-        self._current_index = current_index
+        # Assign standard properties
+        self.current_index = current_index
 
         # FIXME! transform to property correctly
         if current_time is not None:
             self.current_time = current_time
 
-        self._playback_speed = playback_speed
-        self._up = up
-        self._zoom = zoom
-        self._azimuth = azimuth
-        self._elevation = elevation
-        self._translation = translation
-        self._target = target
-        self._perspective = perspective
-        self._track = track
-        self._point_size = point_size
-        self._interconnection_width = interconnection_width
-        self._frame_size = frame_size
-        self._frame_width = frame_width
-        self._grid_size = grid_size
-        self._grid_width = grid_width
-        self._grid_subdivision_size = grid_subdivision_size
-        self._grid_origin = grid_origin
-        self._grid_color = grid_color
-        self._background_color = background_color
+        self.playback_speed = playback_speed
+        self.up = up
+        self.zoom = zoom
+        self.azimuth = azimuth
+        self.elevation = elevation
+        self.translation = translation
+        self.target = target
+        self.perspective = perspective
+        self.track = track
+        self.point_size = point_size
+        self.interconnection_width = interconnection_width
+        self.frame_size = frame_size
+        self.frame_width = frame_width
+        self.grid_size = grid_size
+        self.grid_width = grid_width
+        self.grid_subdivision_size = grid_subdivision_size
+        self.grid_origin = grid_origin
+        self.grid_color = grid_color
+        self.background_color = background_color
 
         self._select_none()
         self.last_selected_point = ""
@@ -256,6 +289,8 @@ class Player:
 
         # Add the true contents using the public interface so that everything
         # is refreshed automatically
+        self._being_constructed = False
+
         temp_ts = TimeSeries()
         for one_ts in ts:
             temp_ts.merge(one_ts, in_place=True)
@@ -288,7 +323,9 @@ class Player:
             )
         else:
             self._current_index = value
-        self._fast_refresh()
+
+        if not self._being_constructed:
+            self._fast_refresh()
 
     # Properties
     @property
@@ -315,8 +352,10 @@ class Player:
             raise ValueError(
                 'up must be either "x", "y", "z", "-x", "-y", or "-z"}'
             )
-        self._orient_contents()
-        self.refresh()
+
+        if not self._being_constructed:
+            self._orient_contents()
+            self.refresh()
 
     @property
     def zoom(self) -> float:
@@ -327,7 +366,8 @@ class Player:
     def zoom(self, value: float):
         """Set zoom value."""
         self._zoom = value
-        self._fast_refresh()
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
     def azimuth(self) -> float:
@@ -338,7 +378,8 @@ class Player:
     def azimuth(self, value: float):
         """Set azimuth value."""
         self._azimuth = value
-        self._fast_refresh()
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
     def elevation(self) -> float:
@@ -349,30 +390,40 @@ class Player:
     def elevation(self, value: float):
         """Set elevation value."""
         self._elevation = value
-        self._fast_refresh()
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
-    def translation(self) -> tuple[float, float]:
+    def translation(self):
         """Get translation value as (x, y)."""
-        return tuple(self._translation)
+        return (self._translation[0], self._translation[1])
 
     @translation.setter
-    def translation(self, value: ArrayLike):
+    def translation(self, value):
         """Set translation value using (x, y) or (x, y, ...)."""
-        # Store as ndarray[x, y]
-        self._translation = np.array(value[0:2])
-        self._fast_refresh()
+        self._set_translation(value)
+
+    def _set_translation(self, value: tuple[float, float] | ArrayLike):
+        """Workaround for having runtime static type checking."""
+        self._translation = np.array(value)[0:2]
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
-    def target(self) -> tuple[float, float, float]:
+    def target(self):
         """Get target value as (x, y, z)."""
         return tuple(self._target)
 
     @target.setter
-    def target(self, value: ArrayLike):
+    def target(self, value):
         """Set target value using (x, y, z) or (x, y, z, 1.0)."""
-        self._target = np.array(value[0:3])
-        self._fast_refresh()
+        self._set_target(value)
+
+    def _set_target(self, value: tuple[float, float, float] | ArrayLike):
+        """Workaround for having runtime static type checking."""
+        self._target = np.array(value)[0:3]
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
     def perspective(self) -> bool:
@@ -383,7 +434,8 @@ class Player:
     def perspective(self, value: bool):
         """Set perspective value."""
         self._perspective = value
-        self._fast_refresh()
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
     def track(self) -> bool:
@@ -394,7 +446,8 @@ class Player:
     def track(self, value: bool):
         """Set perspective value."""
         self._track = value
-        self._fast_refresh()
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
     def point_size(self) -> float:
@@ -405,7 +458,8 @@ class Player:
     def point_size(self, value: float):
         """Set point_size value."""
         self._point_size = value
-        self.refresh()
+        if not self._being_constructed:
+            self.refresh()
 
     @property
     def interconnection_width(self) -> float:
@@ -416,7 +470,8 @@ class Player:
     def interconnection_width(self, value: float):
         """Set interconnection_width value."""
         self._interconnection_width = value
-        self.refresh()
+        if not self._being_constructed:
+            self.refresh()
 
     @property
     def frame_size(self) -> float:
@@ -427,7 +482,8 @@ class Player:
     def frame_size(self, value: float):
         """Set frame_size value."""
         self._frame_size = value
-        self._fast_refresh()
+        if not self._being_constructed:
+            self._fast_refresh()
 
     @property
     def frame_width(self) -> float:
@@ -438,7 +494,8 @@ class Player:
     def frame_width(self, value: float):
         """Set frame_width value."""
         self._frame_width = value
-        self.refresh()
+        if not self._being_constructed:
+            self.refresh()
 
     @property
     def grid_size(self) -> float:
@@ -449,8 +506,9 @@ class Player:
     def grid_size(self, value: float):
         """Set grid_size value."""
         self._grid_size = value
-        self._update_grid()
-        self.refresh()
+        if not self._being_constructed:
+            self._update_grid()
+            self.refresh()
 
     @property
     def grid_width(self) -> float:
@@ -461,8 +519,9 @@ class Player:
     def grid_width(self, value: float):
         """Set grid_width value."""
         self._grid_width = value
-        self._update_grid()
-        self.refresh()
+        if not self._being_constructed:
+            self._update_grid()
+            self.refresh()
 
     @property
     def grid_subdivision_size(self) -> float:
@@ -473,48 +532,75 @@ class Player:
     def grid_subdivision_size(self, value: float):
         """Set grid_subdivision_size value."""
         self._grid_subdivision_size = value
-        self._update_grid()
-        self.refresh()
+        if not self._being_constructed:
+            self._update_grid()
+            self.refresh()
 
     @property
-    def grid_origin(self) -> np.ndarray:
+    def grid_origin(self):
         """Get grid_origin value."""
-        return self._grid_origin
+        return tuple(self._grid_origin)
 
     @grid_origin.setter
-    def grid_origin(self, value: float):
+    def grid_origin(self, value):
         """Set grid_origin value."""
-        self._grid_origin = np.array(value)
-        self._update_grid()
-        self.refresh()
+        self._set_grid_origin(value)
+
+    def _set_grid_origin(self, value: tuple[float, float, float] | ArrayLike):
+        """Workaround for having runtime static type checking."""
+        self._grid_origin = np.array(value)[0:3]
+        if not self._being_constructed:
+            self._update_grid()
+            self.refresh()
 
     @property
-    def grid_color(self) -> tuple[float, float, float]:
+    def grid_color(self):
         """Get grid_color value."""
-        return tuple(self._grid_color)
+        return self._grid_color
 
     @grid_color.setter
-    def grid_color(self, value: ArrayLike):
+    def grid_color(self, value):
         """Set grid_color value."""
-        if len(value) != 3:
+        self._set_grid_color(value)
+
+    def _set_grid_color(self, value: tuple[float, float, float] | ArrayLike):
+        """Workaround for having runtime static type checking."""
+        array_value = np.array(value)
+        if len(array_value) != 3:
             raise ValueError("grid_color must be an (R, G, B) tuple.")
-        self._grid_color = tuple(value)
-        self._update_grid()
-        self.refresh()
+        self._grid_color = (
+            float(array_value[0]),
+            float(array_value[1]),
+            float(array_value[2]),
+        )
+        if not self._being_constructed:
+            self._update_grid()
+            self.refresh()
 
     @property
-    def background_color(self) -> tuple[float, float, float]:
+    def background_color(self):
         """Get background_color value."""
-        return tuple(self._background_color)
+        return self._background_color
 
     @background_color.setter
-    def background_color(self, value: ArrayLike):
+    def background_color(self, value):
         """Set background_color value."""
-        if len(value) != 3:
-            raise ValueError("background_color must be an (R, G, B) tuple.")
-        self._background_color = tuple(value)
-        self.refresh()
+        self._set_background_color(value)
 
+    def _set_background_color(
+        self, value: tuple[float, float, float] | ArrayLike
+    ):
+        """Workaround for having runtime static type checking."""
+        array_value = np.array(value)
+        if len(array_value) != 3:
+            raise ValueError("background_color must be an (R, G, B) tuple.")
+        self._background_color = (
+            float(array_value[0]),
+            float(array_value[1]),
+            float(array_value[2]),
+        )
+        if not self._being_constructed:
+            self.refresh()
 
     def __dir__(self):
         """Return directory."""
@@ -532,8 +618,8 @@ class Player:
             f"zoom : {self.zoom:.3f}\n"
             f"azimuth : {self.azimuth:.3f}\n"
             f"elevation : {self.elevation:.3f}\n"
-            f"translation : {self.translation}\n"
-            f"target : {self.target}\n"
+            f"translation : ({self.translation[0]:.3f}, {self.translation[1]:.3f})\n"
+            f"target : ({self.target[0]:.3f}, {self.target[1]:.3f}, {self.target[2]:.3f})\n"
             f"perspective : {self.perspective}\n"
             "---\n"
             f"track : {self.track}\n"
@@ -551,7 +637,7 @@ class Player:
 
         # Remove the toolbar
         try:  # Try, setVisible method not always there
-            fig.canvas.toolbar.setVisible(False)
+            fig.canvas.toolbar.setVisible(False)  # type: ignore
         except AttributeError:
             pass
 
@@ -873,7 +959,15 @@ class Player:
 
         # Translate the grid
         translation = geometry.get_global_coordinates(
-            self._grid_origin[np.newaxis], self._up_rotation()
+            [
+                [
+                    self._grid_origin[0],
+                    self._grid_origin[1],
+                    self._grid_origin[2],
+                    1.0,
+                ]
+            ],
+            self._up_rotation(),
         )[0]
         translation[3] = 0  # Not a position, but a vector
         self._grid += translation
@@ -1120,8 +1214,10 @@ class Player:
             self._set_time(
                 self._contents.time[self.current_index]
                 + self.playback_speed
-                * (time.time() - self._state["SystemTimeOnLastUpdate"])
+                * (time.time() - self._state["SystemTimeOnLastUpdate"])  # type: ignore
             )
+            # Type ignored because mypy considers
+            # self._state["SystemTimeOnLastUpdate"] as an "object"
             if current_index == self.current_index:
                 # The time wasn't enough to advance a frame. Articifically
                 # advance a frame.
