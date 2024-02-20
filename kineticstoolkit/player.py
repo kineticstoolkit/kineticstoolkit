@@ -204,8 +204,11 @@ class Player:
         grid_subdivision_size: float = 1.0,
         grid_origin: tuple[float, float, float] | ArrayLike = (0.0, 0.0, 0.0),
         grid_color: tuple[float, float, float] | ArrayLike = (0.3, 0.3, 0.3),
-        background_color: tuple[float, float, float]
-        | ArrayLike = (0.0, 0.0, 0.0),
+        background_color: tuple[float, float, float] | ArrayLike = (
+            0.0,
+            0.0,
+            0.0,
+        ),
         **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
         # Allow older parameter names
@@ -355,7 +358,7 @@ class Player:
 
         if not self._being_constructed:
             self._orient_contents()
-            self.refresh()
+            self._refresh()
 
     @property
     def zoom(self) -> float:
@@ -459,7 +462,7 @@ class Player:
         """Set point_size value."""
         self._point_size = value
         if not self._being_constructed:
-            self.refresh()
+            self._refresh()
 
     @property
     def interconnection_width(self) -> float:
@@ -471,7 +474,7 @@ class Player:
         """Set interconnection_width value."""
         self._interconnection_width = value
         if not self._being_constructed:
-            self.refresh()
+            self._refresh()
 
     @property
     def frame_size(self) -> float:
@@ -495,7 +498,7 @@ class Player:
         """Set frame_width value."""
         self._frame_width = value
         if not self._being_constructed:
-            self.refresh()
+            self._refresh()
 
     @property
     def grid_size(self) -> float:
@@ -508,7 +511,7 @@ class Player:
         self._grid_size = value
         if not self._being_constructed:
             self._update_grid()
-            self.refresh()
+            self._refresh()
 
     @property
     def grid_width(self) -> float:
@@ -521,7 +524,7 @@ class Player:
         self._grid_width = value
         if not self._being_constructed:
             self._update_grid()
-            self.refresh()
+            self._refresh()
 
     @property
     def grid_subdivision_size(self) -> float:
@@ -534,7 +537,7 @@ class Player:
         self._grid_subdivision_size = value
         if not self._being_constructed:
             self._update_grid()
-            self.refresh()
+            self._refresh()
 
     @property
     def grid_origin(self):
@@ -551,7 +554,7 @@ class Player:
         self._grid_origin = np.array(value)[0:3]
         if not self._being_constructed:
             self._update_grid()
-            self.refresh()
+            self._refresh()
 
     @property
     def grid_color(self):
@@ -575,7 +578,7 @@ class Player:
         )
         if not self._being_constructed:
             self._update_grid()
-            self.refresh()
+            self._refresh()
 
     @property
     def background_color(self):
@@ -600,7 +603,7 @@ class Player:
             float(array_value[2]),
         )
         if not self._being_constructed:
-            self.refresh()
+            self._refresh()
 
     def __dir__(self):
         """Return directory."""
@@ -684,7 +687,7 @@ class Player:
 
         self._orient_contents()
         self._extend_interconnections()
-        self.refresh()
+        self._refresh()
 
     def get_interconnections(self) -> dict[str, dict[str, Any]]:
         """Get interconnections value."""
@@ -694,7 +697,7 @@ class Player:
         """Set interconnections value."""
         self._interconnections = deepcopy(value)
         self._extend_interconnections()
-        self.refresh()
+        self._refresh()
 
     def _extend_interconnections(self) -> None:
         """Update self._extended_interconnections. Does not refresh."""
@@ -726,9 +729,9 @@ class Player:
             for body_name in self._interconnections:
                 body_key = f"{pattern}{body_name}"
                 self._extended_interconnections[body_key] = dict()
-                self._extended_interconnections[body_key][
-                    "Color"
-                ] = self._interconnections[body_name]["Color"]
+                self._extended_interconnections[body_key]["Color"] = (
+                    self._interconnections[body_name]["Color"]
+                )
 
                 # Go through every link of this segment
                 self._extended_interconnections[body_key]["Links"] = []
@@ -796,16 +799,16 @@ class Player:
         # Orient points and frames
         for key in contents.data:
             if contents.data[key].shape[1:] == (4,):
-                self._oriented_points.data[
-                    key
-                ] = geometry.get_global_coordinates(
-                    contents.data[key], rotation
+                self._oriented_points.data[key] = (
+                    geometry.get_global_coordinates(
+                        contents.data[key], rotation
+                    )
                 )
             elif contents.data[key].shape[1:] == (4, 4):
-                self._oriented_frames.data[
-                    key
-                ] = geometry.get_global_coordinates(
-                    contents.data[key], rotation
+                self._oriented_frames.data[key] = (
+                    geometry.get_global_coordinates(
+                        contents.data[key], rotation
+                    )
                 )
 
     # %% Projection and update
@@ -1111,6 +1114,122 @@ class Player:
 
         self._mpl_objects["Figure"].canvas.draw()
 
+    def _refresh(self):
+        """
+        Perform a full refresh of the Player.
+
+        Normally, this function does not need to be called by the user. Use it
+        if the Player is not refreshed as it should. You may report this need
+        as a bug in the issue tracker:
+        https://github.com/kineticstoolkit/kineticstoolkit/issues
+
+        """
+        # Clear and rebuild the mpl plots.
+        self._mpl_objects["InterconnectionPlots"] = dict()
+        self._mpl_objects["PointPlots"] = dict()
+        self._mpl_objects["GridPlot"] = None
+        self._mpl_objects["FrameXPlot"] = None
+        self._mpl_objects["FrameYPlot"] = None
+        self._mpl_objects["FrameZPlot"] = None
+        self._mpl_objects["GridPlot"] = None
+        self._mpl_objects["HelpText"] = None
+
+        self._mpl_objects["Axes"].clear()
+        self._mpl_objects["Figure"].set_facecolor(self._background_color)
+
+        # Reset axes properties
+        self._mpl_objects["Axes"].set_axis_off()
+
+        # Create the ground plane
+        self._mpl_objects["GridPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            linewidth=self._grid_width,
+            color=self._grid_color,
+        )[0]
+
+        # Create the interconnection plots
+        for interconnection in self._extended_interconnections:
+            self._mpl_objects["InterconnectionPlots"][
+                interconnection
+            ] = self._mpl_objects["Axes"].plot(
+                np.nan,
+                np.nan,
+                "-",
+                c=self._extended_interconnections[interconnection]["Color"],
+                linewidth=self._interconnection_width,
+            )[
+                0
+            ]
+
+        # Create the frame plots
+        self._mpl_objects["FrameXPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c="r",
+            linewidth=self.frame_width,
+        )[0]
+        self._mpl_objects["FrameYPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c="g",
+            linewidth=self.frame_width,
+        )[0]
+        self._mpl_objects["FrameZPlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c="b",
+            linewidth=self.frame_width,
+        )[0]
+
+        # Create the point plots
+        colors = {
+            "r": [1, 0, 0],
+            "g": [0, 1, 0],
+            "b": [0.3, 0.3, 1],
+            "y": [1, 1, 0],
+            "m": [1, 0, 1],
+            "c": [0, 1, 1],
+            "w": [0.8, 0.8, 0.8],
+        }
+
+        for color in COLORS:
+            self._mpl_objects["PointPlots"][color] = self._mpl_objects[
+                "Axes"
+            ].plot(
+                np.nan,
+                np.nan,
+                ".",
+                c=colors[color],
+                markersize=self._point_size,
+                pickradius=1.1 * self._point_size,
+                picker=True,
+            )[
+                0
+            ]
+
+            self._mpl_objects["PointPlots"][color + "s"] = self._mpl_objects[
+                "Axes"
+            ].plot(
+                np.nan,
+                np.nan,
+                ".",
+                c=colors[color],
+                markersize=3 * self._point_size,
+            )[
+                0
+            ]
+
+        # Add the title
+        title_obj = plt.title("Player")
+        plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
+
+        self._fast_refresh()  # Draw everything once
+
+        # Set limits once it's drawn
+        self._mpl_objects["Axes"].set_xlim([-1.5, 1.5])
+        self._mpl_objects["Axes"].set_ylim([-1.0, 1.0])
+
     def _set_new_target(self, target: ArrayLike) -> None:
         """Set new target and adapts translation and zoom consequently."""
         target = np.array(target)
@@ -1129,13 +1248,13 @@ class Player:
 
         initial_projected_points = self._project_to_camera(points)
         # Do not consider points that are not in the screen
-        initial_projected_points[
-            initial_projected_points[:, 0] < -1.5
-        ] = np.nan
+        initial_projected_points[initial_projected_points[:, 0] < -1.5] = (
+            np.nan
+        )
         initial_projected_points[initial_projected_points[:, 0] > 1.5] = np.nan
-        initial_projected_points[
-            initial_projected_points[:, 1] < -1.0
-        ] = np.nan
+        initial_projected_points[initial_projected_points[:, 1] < -1.0] = (
+            np.nan
+        )
         initial_projected_points[initial_projected_points[:, 1] > 1.0] = np.nan
         self.target = target
 
@@ -1185,9 +1304,9 @@ class Player:
             for point in self._oriented_points.data:
                 try:
                     # Keep 1st character, remove the possible 's'
-                    self._oriented_points.data_info[point][
-                        "Color"
-                    ] = self._oriented_points.data_info[point]["Color"][0]
+                    self._oriented_points.data_info[point]["Color"] = (
+                        self._oriented_points.data_info[point]["Color"][0]
+                    )
                 except KeyError:
                     self._oriented_points = (
                         self._oriented_points.add_data_info(
@@ -1425,127 +1544,63 @@ class Player:
         return self._mpl_objects["Anim"]
 
     # %% Public methods
+    def view_plane(self, axis: str) -> None:
+        """
+        Set the current view to a standard plane.
+
+        Parameters
+        ----------
+        axis
+            Can be either "x", "-x", "y", "-y", "z" or "-z". For instance, if
+            x points forward and z points left, then axis="x" sets the current
+            view to the frontal plane, while axis="z" sets the current view
+            to the sagittal plane.
+
+        """
+        from_plus_x = geometry.create_transforms("YXZ", [[90, 0,0]], degrees=True)
+        from_minus_x = geometry.create_transforms("YXZ", [[-90, 0, 0]], degrees=True)
+        from_plus_y = geometry.create_transforms("YXZ", [[0,90,0]], degrees=True)
+        from_minus_y = geometry.create_transforms("YXZ", [[0,-90,0]], degrees=True)
+        from_plus_z = geometry.create_transforms("YXZ", [[0,0,0]], degrees=True)
+        from_minus_z = geometry.create_transforms("YXZ", [[180,0,0]], degrees=True)
+
+        # Set a "from rotation" matrix following x anterior, y up and z right
+        if axis == "x":
+            from_rot = from_plus_x
+        elif axis == "-x":
+            from_rot = from_minus_x
+        elif axis == "y":
+            from_rot = from_plus_y
+        elif axis == "-y":
+            from_rot = from_minus_y
+        elif axis == "z":  # sagittal plane, right view
+            from_rot = from_plus_z
+        elif axis == "-z":  # sagittal plane, left view
+            from_rot = from_minus_z
+        else:
+            raise ValueError(
+                "Parameter axis can be either "
+                '"x", "-x", "y", "-y", "z" or "-z".'
+            )
+
+        # Rotate this matrix according to the up vector of the Player
+        from_rot = geometry.get_local_coordinates(
+            from_rot, self._up_rotation()
+        )
+        
+        # Ignore gimbal lock warnings
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            angles = geometry.get_angles(from_rot, "YXZ")
+            
+        self.elevation = angles[0, 1]
+        self.azimuth = angles[0, 0]
+        
 
     def close(self) -> None:
         """Close the Player and its associated window."""
         plt.close(self._mpl_objects["Figure"])
         self._mpl_objects = {}
-
-    def refresh(self):
-        """
-        Perform a full refresh of the Player.
-
-        Normally, this function does not need to be called by the user. Use it
-        if for an unknown reason, the Player is not refreshed as it should.
-        You can also report this need as a bug in the issue tracker:
-        https://github.com/kineticstoolkit/kineticstoolkit/issues
-
-        """
-        # Clear and rebuild the mpl plots.
-        self._mpl_objects["InterconnectionPlots"] = dict()
-        self._mpl_objects["PointPlots"] = dict()
-        self._mpl_objects["GridPlot"] = None
-        self._mpl_objects["FrameXPlot"] = None
-        self._mpl_objects["FrameYPlot"] = None
-        self._mpl_objects["FrameZPlot"] = None
-        self._mpl_objects["GridPlot"] = None
-        self._mpl_objects["HelpText"] = None
-
-        self._mpl_objects["Axes"].clear()
-        self._mpl_objects["Figure"].set_facecolor(self._background_color)
-
-        # Reset axes properties
-        self._mpl_objects["Axes"].set_axis_off()
-
-        # Create the ground plane
-        self._mpl_objects["GridPlot"] = self._mpl_objects["Axes"].plot(
-            np.nan,
-            np.nan,
-            linewidth=self._grid_width,
-            color=self._grid_color,
-        )[0]
-
-        # Create the interconnection plots
-        for interconnection in self._extended_interconnections:
-            self._mpl_objects["InterconnectionPlots"][
-                interconnection
-            ] = self._mpl_objects["Axes"].plot(
-                np.nan,
-                np.nan,
-                "-",
-                c=self._extended_interconnections[interconnection]["Color"],
-                linewidth=self._interconnection_width,
-            )[
-                0
-            ]
-
-        # Create the frame plots
-        self._mpl_objects["FrameXPlot"] = self._mpl_objects["Axes"].plot(
-            np.nan,
-            np.nan,
-            c="r",
-            linewidth=self.frame_width,
-        )[0]
-        self._mpl_objects["FrameYPlot"] = self._mpl_objects["Axes"].plot(
-            np.nan,
-            np.nan,
-            c="g",
-            linewidth=self.frame_width,
-        )[0]
-        self._mpl_objects["FrameZPlot"] = self._mpl_objects["Axes"].plot(
-            np.nan,
-            np.nan,
-            c="b",
-            linewidth=self.frame_width,
-        )[0]
-
-        # Create the point plots
-        colors = {
-            "r": [1, 0, 0],
-            "g": [0, 1, 0],
-            "b": [0.3, 0.3, 1],
-            "y": [1, 1, 0],
-            "m": [1, 0, 1],
-            "c": [0, 1, 1],
-            "w": [0.8, 0.8, 0.8],
-        }
-
-        for color in COLORS:
-            self._mpl_objects["PointPlots"][color] = self._mpl_objects[
-                "Axes"
-            ].plot(
-                np.nan,
-                np.nan,
-                ".",
-                c=colors[color],
-                markersize=self._point_size,
-                pickradius=1.1 * self._point_size,
-                picker=True,
-            )[
-                0
-            ]
-
-            self._mpl_objects["PointPlots"][color + "s"] = self._mpl_objects[
-                "Axes"
-            ].plot(
-                np.nan,
-                np.nan,
-                ".",
-                c=colors[color],
-                markersize=3 * self._point_size,
-            )[
-                0
-            ]
-
-        # Add the title
-        title_obj = plt.title("Player")
-        plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
-
-        self._fast_refresh()  # Draw everything once
-
-        # Set limits once it's drawn
-        self._mpl_objects["Axes"].set_xlim([-1.5, 1.5])
-        self._mpl_objects["Axes"].set_ylim([-1.0, 1.0])
 
     # %% Deprecated methods
     @deprecated(
