@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2022 Laboratoire de recherche en mobilité et sport adapté
+# Copyright 2022-2024 Laboratoire de recherche en mobilité et sport adapté
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -21,9 +21,7 @@ OpenSim wrappers for Kinetics Toolkit
 """
 
 __author__ = "Karla Brottet, Félix Chénier"
-__copyright__ = (
-    "Copyright (C) 2022 Laboratoire de recherche en mobilité et sport adapté"
-)
+__copyright__ = "Copyright (C) 2022-2024 Laboratoire de recherche en mobilité et sport adapté"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 

@@ -15,16 +15,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-__author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
-__email__ = "chenier.felix@uqam.ca"
-__license__ = "Apache 2.0"
-
 """
 Unit tests for the pushrimkinetics module.
 
 Most of the tests are the tutorial itself.
 """
+
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__email__ = "chenier.felix@uqam.ca"
+__license__ = "Apache 2.0"
 
 import kineticstoolkit as ktk
 import numpy as np

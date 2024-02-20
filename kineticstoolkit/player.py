@@ -1700,4 +1700,5 @@ class Player:
         "supported way to use the Player is interactively.",
     )
     def to_html5(self, **kwargs):
+        """Return an animation for the tutorials."""
         return self._to_animation()
