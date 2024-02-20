@@ -244,10 +244,6 @@ class Player:
         # Assign standard properties
         self.current_index = current_index
 
-        # FIXME! transform to property correctly
-        if current_time is not None:
-            self.current_time = current_time
-
         self.playback_speed = playback_speed
 
         self.up = up  # We set directly because setters need both being set
@@ -312,6 +308,11 @@ class Player:
         self.set_interconnections(interconnections)
         self.grid_origin = grid_origin  # Refresh grid
 
+        # Now that everything is loaded, we can set the current time if
+        # needed.
+        if current_time is not None:
+            self.current_time = current_time
+
     @property
     def current_index(self) -> int:
         """Get current_index value."""
@@ -320,25 +321,31 @@ class Player:
     @current_index.setter
     def current_index(self, value: int):
         """Set current_index value."""
-        if value >= len(self._contents.time):
-            self._current_index = len(self._contents.time) - 1
-            warnings.warn(
-                "Index must be lower than the number of samples "
-                f"({len(self._contents.time)}), however a value of {value} "
-                "has been received. The current index has been set to "
-                f"{self._current_index}."
-            )
-        elif value < 0:
+        try:
+            self._current_index = value % len(self._contents.time)
+        except AttributeError:  # No self._contents.time
             self._current_index = 0
-            warnings.warn(
-                f"Index must be higher than 0, however a value of {value} has "
-                "been received. The current index has been set to 0."
-            )
-        else:
-            self._current_index = value
 
         if not self._being_constructed:
+            if self.track is True and self._oriented_points is not None:
+                new_target = self._oriented_points.data[
+                    self.last_selected_point
+                ][self.current_index]
+                if not np.isnan(np.sum(new_target)):
+                    self.target = new_target
+
             self._fast_refresh()
+
+    @property
+    def current_time(self) -> float:
+        """Get current_time value."""
+        return self._contents.time[self._current_index]
+
+    @current_time.setter
+    def current_time(self, value: float):
+        """Set current_time value."""
+        index = int(np.argmin(np.abs(self._contents.time - value)))
+        self.current_index = index
 
     # Properties
     @property
@@ -1345,22 +1352,6 @@ class Player:
 
     # ------------------------------------
     # Helper functions
-    def _set_index(self, index: int) -> None:
-        """Set current index to a given index and update plots."""
-        self.current_index = index % len(self._contents.time)
-
-        if self.track is True and self._oriented_points is not None:
-            new_target = self._oriented_points.data[self.last_selected_point][
-                self.current_index
-            ]
-            if not np.isnan(np.sum(new_target)):
-                self.target = new_target
-
-    def _set_time(self, time: float) -> None:
-        """Set current index to a given time and update plots."""
-        index = int(np.argmin(np.abs(self._contents.time - time)))
-        self._set_index(index)
-
     def _select_none(self) -> None:
         """Deselect every points."""
         if self._oriented_points is not None:
@@ -1393,17 +1384,15 @@ class Player:
             # and we will end up with still a few timer callbacks. Checking
             # self._running makes sure that we effectively stop.
             current_index = self.current_index
-            self._set_time(
-                self._contents.time[self.current_index]
-                + self.playback_speed
-                * (time.time() - self._state["SystemTimeOnLastUpdate"])  # type: ignore
+            self.current_time += self.playback_speed * (
+                time.time() - self._state["SystemTimeOnLastUpdate"]  # type: ignore
             )
             # Type ignored because mypy considers
             # self._state["SystemTimeOnLastUpdate"] as an "object"
             if current_index == self.current_index:
                 # The time wasn't enough to advance a frame. Articifically
                 # advance a frame.
-                self._set_index(self.current_index + 1)
+                self.current_index += 1
             self._state["SystemTimeOnLastUpdate"] = time.time()
 
             self._fast_refresh()
@@ -1444,16 +1433,16 @@ class Player:
                 self._mpl_objects["Anim"].event_source.stop()
 
         elif event.key == "left":
-            self._set_index(self.current_index - 1)
+            self.current_index -= 1
 
         elif event.key == "shift+left":
-            self._set_time(self._contents.time[self.current_index] - 1)
+            self.current_time -= 1
 
         elif event.key == "right":
-            self._set_index(self.current_index + 1)
+            self.current_index += 1
 
         elif event.key == "shift+right":
-            self._set_time(self._contents.time[self.current_index] + 1)
+            self.current_time += 1
 
         elif event.key == "-":
             self.playback_speed /= 2
@@ -1620,7 +1609,7 @@ class Player:
 
         self.playback_speed = 0
         self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
-        self._set_index(0)
+        self.current_index = 0
         self._running = True
         #        self._mpl_objects["Anim"].frames = stop_index - start_index
         #        self._mpl_objects["Anim"].save_count = stop_index - start_index
@@ -1646,8 +1635,7 @@ class Player:
             self.azimuth = self._initial_azimuth
             self.perspective = self._initial_perspective
             return
-        
-        
+
         # Set a "from rotation" matrix following x anterior, y up and z right
         if plane.lower() == "front":
             from_rot = geometry.create_transforms(

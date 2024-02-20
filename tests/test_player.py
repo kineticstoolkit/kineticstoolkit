@@ -149,7 +149,9 @@ def test_scripting():
     }
 
     # In this file, the up axis is z:
-    p = ktk.Player(markers, up="z", interconnections=interconnections)
+    p = ktk.Player(
+        markers, up="z", anterior="-y", interconnections=interconnections
+    )
 
     # %% Front view
     p.azimuth = 0.0
@@ -214,6 +216,14 @@ def test_scripting():
     p.close()
 
     # %%
+
+
+def test_set_current_time():
+    """Test that setting the current time on construction works."""
+    # In this file, the up axis is z:
+    filename = ktk.doc.download("kinematics_tennis_serve.c3d")
+    markers = ktk.read_c3d(filename)["Points"]
+    p = ktk.Player(markers, current_time=2.5)
 
 
 if __name__ == "__main__":
