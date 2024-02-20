@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -715,12 +715,14 @@ class Player:
 
     def set_contents(self, value: TimeSeries) -> None:
         """Set contents value."""
+        # First reset index to 0 to be sure that we won't end up out of bounds
+        self._current_index = 0
+
         # Ensure that there is at least one sample so that the Player does not
         # crash and shows nothing instead.
         if len(value.time) > 0:
             self._contents = value.copy()
         else:
-            warnings.warn("The provided TimeSeries is empty.")
             self._contents = TimeSeries(time=[0])
 
         self._orient_contents()
@@ -1340,12 +1342,7 @@ class Player:
     # Helper functions
     def _set_index(self, index: int) -> None:
         """Set current index to a given index and update plots."""
-        if index >= len(self._contents.time):
-            self.current_index = len(self._contents.time) - 1
-        elif index < 0:
-            self.current_index = 0
-        else:
-            self.current_index = index
+        self.current_index = index % len(self._contents.time)
 
         if self.track is True and self._oriented_points is not None:
             new_target = self._oriented_points.data[self.last_selected_point][
