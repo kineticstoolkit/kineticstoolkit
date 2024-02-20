@@ -164,6 +164,10 @@ def test_scripting():
     p.azimuth = 0.0
     p.elevation = np.pi / 2
 
+    # or
+
+    p.set_view("top")
+
     # %% Standard view
     p.elevation = 0.1
     p.azimuth = np.pi / 4

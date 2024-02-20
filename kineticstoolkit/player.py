@@ -162,6 +162,7 @@ class Player:
     _current_time: float
     _playback_speed: float
     _up: str
+    _anterior: str
     _zoom: float
     _azimuth: float
     _elevation: float
@@ -188,9 +189,11 @@ class Player:
         current_time: float | None = None,
         playback_speed: float = 1.0,
         up: str = "y",
+        anterior: str = "x",
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
+        view: str = "",
         translation: tuple[float, float] | ArrayLike = (0.0, 0.0),
         target: tuple[float, float, float] | ArrayLike = (0.0, 0.0, 0.0),
         perspective: bool = True,
@@ -244,7 +247,9 @@ class Player:
             self.current_time = current_time
 
         self.playback_speed = playback_speed
-        self.up = up
+
+        self._up = up  # We set directly because setters need both being set
+        self._anterior = anterior
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
@@ -355,6 +360,39 @@ class Player:
             raise ValueError(
                 'up must be either "x", "y", "z", "-x", "-y", or "-z"}'
             )
+
+        if self._up[-1] == self._anterior[-1]:
+            # up and anterior cannot be the same axis.
+            if value[-1] != "x":
+                self._anterior = "x"
+            else:
+                self._anterior = "y"
+
+        if not self._being_constructed:
+            self._orient_contents()
+            self._refresh()
+
+    @property
+    def anterior(self) -> str:
+        """Get anterior value."""
+        return self._anterior
+
+    @anterior.setter
+    def anterior(self, value: str):
+        """Set anterior value."""
+        if value in {"x", "y", "z", "-x", "-y", "-z"}:
+            self._anterior = value
+        else:
+            raise ValueError(
+                'anterior must be either "x", "y", "z", "-x", "-y", or "-z"}'
+            )
+
+        if self._anterior[-1] == self._up[-1]:
+            # up and anterior cannot be the same axis.
+            if value[-1] != "y":
+                self._up = "y"
+            else:
+                self._up = "z"
 
         if not self._being_constructed:
             self._orient_contents()
@@ -747,28 +785,51 @@ class Player:
                         ]
                     )
 
-    def _up_rotation(self) -> np.ndarray:
-        """Return a 1x4x4 rotation matrix according to the 'up' attribute."""
+    def _general_rotation(self) -> np.ndarray:
+        """Return a 1x4x4 rotation matrix from up and anterior attributes."""
+        # Create a frame based on these specs
         if self.up == "x":
-            return geometry.create_transforms("z", [90], degrees=True)
+            up = [[1, 0, 0, 0]]
         elif self.up == "y":
-            return np.eye(4)[np.newaxis]
+            up = [[0, 1, 0, 0]]
         elif self.up == "z":
-            return geometry.create_transforms("x", [-90], degrees=True)
+            up = [[0, 0, 1, 0]]
         elif self.up == "-x":
-            return geometry.create_transforms("z", [-90], degrees=True)
+            up = [[-1, 0, 0, 0]]
         elif self.up == "-y":
-            return geometry.create_transforms("z", [-180], degrees=True)
+            up = [[0, -1, 0, 0]]
         elif self.up == "-z":
-            return geometry.create_transforms("x", [90], degrees=True)
+            up = [[0, 0, -1, 0]]
         else:
             raise ValueError(
                 "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
             )
 
+        if self.anterior == "x":
+            anterior = [[1, 0, 0, 0]]
+        elif self.anterior == "y":
+            anterior = [[0, 1, 0, 0]]
+        elif self.anterior == "z":
+            anterior = [[0, 0, 1, 0]]
+        elif self.anterior == "-x":
+            anterior = [[-1, 0, 0, 0]]
+        elif self.anterior == "-y":
+            anterior = [[0, -1, 0, 0]]
+        elif self.anterior == "-z":
+            anterior = [[0, 0, -1, 0]]
+        else:
+            raise ValueError(
+                "anterior must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
+            )
+
+        inverse_transform = geometry.create_frames(
+            origin=[[0, 0, 0, 1]], x=anterior, xy=up
+        )
+        return geometry.inv(inverse_transform)
+
     def _orient_contents(self) -> None:
         """
-        Update self._oriented_points and _oriented_frames
+        Update self._oriented_points and _oriented_frames.
 
         Rotate everything according to the up input, so that the end result
         is y up:
@@ -794,7 +855,7 @@ class Player:
             np.eye(4)[np.newaxis], len(contents.time), axis=0
         )
 
-        rotation = self._up_rotation()
+        rotation = self._general_rotation()
 
         # Orient points and frames
         for key in contents.data:
@@ -970,7 +1031,7 @@ class Player:
                     1.0,
                 ]
             ],
-            self._up_rotation(),
+            self._general_rotation(),
         )[0]
         translation[3] = 0  # Not a position, but a vector
         self._grid += translation
@@ -1435,6 +1496,25 @@ class Player:
                     "Point tracking deactivated"
                 )
 
+        elif event.key == "1":
+            self.set_view("front")
+            self._mpl_objects["Axes"].set_title("Front view")
+        elif event.key == "2":
+            self.set_view("back")
+            self._mpl_objects["Axes"].set_title("Back view")
+        elif event.key == "3":
+            self.set_view("right")
+            self._mpl_objects["Axes"].set_title("Right view")
+        elif event.key == "4":
+            self.set_view("left")
+            self._mpl_objects["Axes"].set_title("Left view")
+        elif event.key == "5":
+            self.set_view("top")
+            self._mpl_objects["Axes"].set_title("Top view")
+        elif event.key == "6":
+            self.set_view("bottom")
+            self._mpl_objects["Axes"].set_title("Bottom view")
+
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
 
@@ -1544,58 +1624,59 @@ class Player:
         return self._mpl_objects["Anim"]
 
     # %% Public methods
-    def view_plane(self, axis: str) -> None:
+    def set_view(self, plane: str) -> None:
         """
         Set the current view to a standard plane.
 
         Parameters
         ----------
-        axis
-            Can be either "x", "-x", "y", "-y", "z" or "-z". For instance, if
-            x points forward and z points left, then axis="x" sets the current
-            view to the frontal plane, while axis="z" sets the current view
-            to the sagittal plane.
+        plane
+            Can be either "front", "back", "right", "left", "top" or "bottom".
 
         """
-        from_plus_x = geometry.create_transforms("YXZ", [[90, 0,0]], degrees=True)
-        from_minus_x = geometry.create_transforms("YXZ", [[-90, 0, 0]], degrees=True)
-        from_plus_y = geometry.create_transforms("YXZ", [[0,90,0]], degrees=True)
-        from_minus_y = geometry.create_transforms("YXZ", [[0,-90,0]], degrees=True)
-        from_plus_z = geometry.create_transforms("YXZ", [[0,0,0]], degrees=True)
-        from_minus_z = geometry.create_transforms("YXZ", [[180,0,0]], degrees=True)
-
         # Set a "from rotation" matrix following x anterior, y up and z right
-        if axis == "x":
-            from_rot = from_plus_x
-        elif axis == "-x":
-            from_rot = from_minus_x
-        elif axis == "y":
-            from_rot = from_plus_y
-        elif axis == "-y":
-            from_rot = from_minus_y
-        elif axis == "z":  # sagittal plane, right view
-            from_rot = from_plus_z
-        elif axis == "-z":  # sagittal plane, left view
-            from_rot = from_minus_z
+        if plane.lower() == "front":
+            from_rot = geometry.create_transforms(
+                "YXZ", [[90, 0, 0]], degrees=True
+            )
+        elif plane.lower() == "back":
+            from_rot = geometry.create_transforms(
+                "YXZ", [[-90, 0, 0]], degrees=True
+            )
+        elif plane.lower() == "top":
+            from_rot = geometry.create_transforms(
+                "YXZ", [[0, 90, 0]], degrees=True
+            )
+        elif plane.lower() == "bottom":
+            from_rot = geometry.create_transforms(
+                "YXZ", [[0, -90, 0]], degrees=True
+            )
+        elif plane.lower() == "right":
+            from_rot = geometry.create_transforms(
+                "YXZ", [[0, 0, 0]], degrees=True
+            )
+        elif plane.lower() == "left":
+            from_rot = geometry.create_transforms(
+                "YXZ", [[180, 0, 0]], degrees=True
+            )
         else:
             raise ValueError(
-                "Parameter axis can be either "
-                '"x", "-x", "y", "-y", "z" or "-z".'
+                "Parameter plane can be either "
+                '"front", "back", "right", "left", "top" or "bottom".'
             )
 
         # Rotate this matrix according to the up vector of the Player
-        from_rot = geometry.get_local_coordinates(
-            from_rot, self._up_rotation()
-        )
-        
+        # from_rot = geometry.get_global_coordinates(
+        #     from_rot, self._general_rotation()
+        # )
+
         # Ignore gimbal lock warnings
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             angles = geometry.get_angles(from_rot, "YXZ")
-            
+
         self.elevation = angles[0, 1]
         self.azimuth = angles[0, 0]
-        
 
     def close(self) -> None:
         """Close the Player and its associated window."""
