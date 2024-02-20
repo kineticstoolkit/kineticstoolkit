@@ -24,7 +24,7 @@ namespace (i.e., ktk.Player).
 from __future__ import annotations
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -32,7 +32,6 @@ __license__ = "Apache 2.0"
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.tools import check_interactive_backend
-import kineticstoolkit._repr
 import kineticstoolkit.geometry as geometry
 
 import matplotlib.pyplot as plt
@@ -166,9 +165,12 @@ class Player:
     _zoom: float
     _azimuth: float
     _elevation: float
+    _perspective: bool
+    _initial_elevation: float
+    _initial_azimuth: float
+    _initial_perspective: bool
     _translation: np.ndarray
     _target: np.ndarray
-    _perspective: bool
     _track: bool
     _point_size: float
     _interconnection_width: float
@@ -248,14 +250,17 @@ class Player:
 
         self.playback_speed = playback_speed
 
-        self._up = up  # We set directly because setters need both being set
-        self._anterior = anterior
+        self.up = up  # We set directly because setters need both being set
+        self.anterior = anterior
         self.zoom = zoom
         self.azimuth = azimuth
         self.elevation = elevation
+        self.perspective = perspective
+        self._initial_elevation = elevation
+        self._initial_azimuth = azimuth
+        self._initial_perspective = perspective
         self.translation = translation
         self.target = target
-        self.perspective = perspective
         self.track = track
         self.point_size = point_size
         self.interconnection_width = interconnection_width
@@ -361,14 +366,14 @@ class Player:
                 'up must be either "x", "y", "z", "-x", "-y", or "-z"}'
             )
 
-        if self._up[-1] == self._anterior[-1]:
-            # up and anterior cannot be the same axis.
-            if value[-1] != "x":
-                self._anterior = "x"
-            else:
-                self._anterior = "y"
-
         if not self._being_constructed:
+            if self._up[-1] == self._anterior[-1]:
+                # up and anterior cannot be the same axis.
+                if value[-1] != "x":
+                    self._anterior = "x"
+                else:
+                    self._anterior = "y"
+
             self._orient_contents()
             self._refresh()
 
@@ -387,14 +392,14 @@ class Player:
                 'anterior must be either "x", "y", "z", "-x", "-y", or "-z"}'
             )
 
-        if self._anterior[-1] == self._up[-1]:
-            # up and anterior cannot be the same axis.
-            if value[-1] != "y":
-                self._up = "y"
-            else:
-                self._up = "z"
-
         if not self._being_constructed:
+            if self._anterior[-1] == self._up[-1]:
+                # up and anterior cannot be the same axis.
+                if value[-1] != "y":
+                    self._up = "y"
+                else:
+                    self._up = "z"
+
             self._orient_contents()
             self._refresh()
 
@@ -1494,23 +1499,26 @@ class Player:
                 )
 
         elif event.key == "1":
-            self.set_view("front")
-            self._mpl_objects["Axes"].set_title("Front view")
-        elif event.key == "2":
             self.set_view("back")
-            self._mpl_objects["Axes"].set_title("Back view")
+            self._mpl_objects["Axes"].set_title("Back view, orthogonal")
+        elif event.key == "2":
+            self.set_view("front")
+            self._mpl_objects["Axes"].set_title("Front view, orthogonal")
         elif event.key == "3":
-            self.set_view("right")
-            self._mpl_objects["Axes"].set_title("Right view")
-        elif event.key == "4":
             self.set_view("left")
-            self._mpl_objects["Axes"].set_title("Left view")
+            self._mpl_objects["Axes"].set_title("Left view, orthogonal")
+        elif event.key == "4":
+            self.set_view("right")
+            self._mpl_objects["Axes"].set_title("Right view, orthogonal")
         elif event.key == "5":
             self.set_view("top")
-            self._mpl_objects["Axes"].set_title("Top view")
+            self._mpl_objects["Axes"].set_title("Top view, orthogonal")
         elif event.key == "6":
             self.set_view("bottom")
-            self._mpl_objects["Axes"].set_title("Bottom view")
+            self._mpl_objects["Axes"].set_title("Bottom view, orthogonal")
+        elif event.key == "0":
+            self.set_view("initial")
+            self._mpl_objects["Axes"].set_title("Initial view")
 
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
@@ -1623,39 +1631,54 @@ class Player:
     # %% Public methods
     def set_view(self, plane: str) -> None:
         """
-        Set the current view to a standard plane.
+        Set the current view to an orthogonal view in a given plane.
 
         Parameters
         ----------
         plane
-            Can be either "front", "back", "right", "left", "top" or "bottom".
+            Can be either "front", "back", "right", "left", "top", "bottom" or
+            "initial". In the latter case, the view is reset to the initial
+            view at Player creation.
 
         """
+        if plane.lower() == "initial":
+            self.elevation = self._initial_elevation
+            self.azimuth = self._initial_azimuth
+            self.perspective = self._initial_perspective
+            return
+        
+        
         # Set a "from rotation" matrix following x anterior, y up and z right
         if plane.lower() == "front":
             from_rot = geometry.create_transforms(
                 "YXZ", [[90, 0, 0]], degrees=True
             )
+            self.perspective = False
         elif plane.lower() == "back":
             from_rot = geometry.create_transforms(
                 "YXZ", [[-90, 0, 0]], degrees=True
             )
+            self.perspective = False
         elif plane.lower() == "top":
             from_rot = geometry.create_transforms(
                 "YXZ", [[0, 90, 0]], degrees=True
             )
+            self.perspective = False
         elif plane.lower() == "bottom":
             from_rot = geometry.create_transforms(
                 "YXZ", [[0, -90, 0]], degrees=True
             )
+            self.perspective = False
         elif plane.lower() == "right":
             from_rot = geometry.create_transforms(
                 "YXZ", [[0, 0, 0]], degrees=True
             )
+            self.perspective = False
         elif plane.lower() == "left":
             from_rot = geometry.create_transforms(
                 "YXZ", [[180, 0, 0]], degrees=True
             )
+            self.perspective = False
         else:
             raise ValueError(
                 "Parameter plane can be either "

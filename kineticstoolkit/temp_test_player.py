@@ -88,4 +88,6 @@ interconnections["TrunkPelvis"] = {
 }
 
 # In this file, the up axis is z:
-p = ktk.Player(markers, markers2, up="z", interconnections=interconnections)
+p = ktk.Player(
+    markers, markers2, up="z", anterior="-y", interconnections=interconnections
+)
