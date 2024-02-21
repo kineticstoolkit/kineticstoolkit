@@ -1425,12 +1425,9 @@ class Player:
         """Implement callback for keyboard key pressed."""
         if event.key == " ":
             if self._running is False:
-                self._state["SystemTimeOnLastUpdate"] = time.time()
-                self._running = True
-                self._mpl_objects["Anim"].event_source.start()
+                self.play()
             else:
-                self._running = False
-                self._mpl_objects["Anim"].event_source.stop()
+                self.pause()
 
         elif event.key == "left":
             self.current_index -= 1
@@ -1618,9 +1615,24 @@ class Player:
         return self._mpl_objects["Anim"]
 
     # %% Public methods
+    def play(self) -> None:
+        """Start the animation."""
+        self._state["SystemTimeOnLastUpdate"] = time.time()
+        self._running = True
+        self._mpl_objects["Anim"].event_source.start()
+
+    def pause(self) -> None:
+        """Pause the animation."""
+        self._running = False
+        self._mpl_objects["Anim"].event_source.stop()
+
     def set_view(self, plane: str) -> None:
         """
         Set the current view to an orthogonal view in a given plane.
+
+        Ensure that the player's `up` and `anterior` properties are set to the
+        correct axes beforehand. By default, the `up` is "y" and `anterior`
+        is "x".
 
         Parameters
         ----------

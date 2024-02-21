@@ -231,6 +231,11 @@ def test_scripting():
     # %% Keep only seconds 4 to 5
     p.set_contents(markers.get_ts_between_times(4.0, 5.0))
 
+    # %% Play and pause
+    p.play()
+    plt.pause(0.5)
+    p.pause()
+
     # %% Close
     p.close()
 
