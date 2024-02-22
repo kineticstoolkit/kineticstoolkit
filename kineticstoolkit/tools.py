@@ -34,27 +34,6 @@ from kineticstoolkit.typing_ import typecheck
 
 
 @typecheck
-def tqdm(the_range, *args, **kwargs):
-    """
-    Return a range or a tqdm's progress bar range if tqdm is installed.
-
-    Parameters
-    ----------
-    The same as tqdm.tqdm, with the first begin the range.
-
-    Returns
-    -------
-    the_range if tqdm is not installed. tqdm.tqdm if tqdm is installed.
-    """
-    try:
-        import tqdm  # noqa
-
-        return tqdm.tqdm(the_range, *args, **kwargs)
-    except ModuleNotFoundError:
-        return the_range
-
-
-@typecheck
 def check_interactive_backend() -> None:
     """
     Warns if Matplotlib is not using an interactive backend.

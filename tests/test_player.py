@@ -28,6 +28,7 @@ import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
 import warnings
 import numpy as np
+import os
 
 
 def test_instanciate_and_to_html5():
@@ -244,10 +245,47 @@ def test_scripting():
 
 def test_set_current_time():
     """Test that setting the current time on construction works."""
-    # In this file, the up axis is z:
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
     p = ktk.Player(markers, current_time=2.5)
+
+
+def test_to_png_mp4():
+    """Test that to_png and to_mp4 work."""
+    filename = ktk.doc.download("kinematics_tennis_serve.c3d")
+    markers = ktk.read_c3d(filename)["Points"]
+    p = ktk.Player(markers.get_ts_between_times(0, 0.1))
+    p.to_mp4("test.mp4")
+    p.to_png("test.png")
+    assert os.path.exists("test.mp4")
+    assert os.path.exists("test.png")
+    os.remove("test.mp4")
+    os.remove("test.png")
+
+
+def test_old_parameter_names():
+    """Test the old parameter names."""
+    filename = ktk.doc.download("kinematics_tennis_serve.c3d")
+    markers = ktk.read_c3d(filename)["Points"]
+
+    p = ktk.Player(
+        markers,
+        segments={
+            "Head": {
+                "Color": [1, 0.5, 1],
+                "Links": [
+                    ["*C7", "*LFHD", "*RFHD", "*C7"],
+                    ["*C7", "*LBHD", "*RBHD", "*C7"],
+                    ["*LBHD", "*LFHD"],
+                    ["*RBHD", "*RFHD"],
+                ],
+            }
+        },
+        segment_width=0,
+        current_frame=10,
+    )
+    plt.pause(0.2)
+    p.close()
 
 
 if __name__ == "__main__":

@@ -29,7 +29,7 @@ __license__ = "Apache 2.0"
 import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
-from kineticstoolkit.tools import tqdm
+from tqdm import tqdm
 from kineticstoolkit.typing_ import typecheck, ArrayLike
 
 

@@ -34,6 +34,7 @@ from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 
+from tqdm import tqdm
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 from matplotlib import animation
@@ -657,7 +658,7 @@ class Player:
 
     def __dir__(self):
         """Return directory."""
-        return ["close"]
+        return ["play", "pause", "set_view", "close", "to_png", "to_mp4"]
 
     def __str__(self) -> str:
         """Print a textual description of the Player properties."""
@@ -696,14 +697,6 @@ class Player:
 
         plt.tight_layout()
 
-        # Add the animation timer
-        anim = animation.FuncAnimation(
-            fig,
-            self._on_timer,  # type: ignore
-            frames=len(self._contents.time),
-            interval=33,
-        )  # 30 ips
-
         # Connect the callback functions
         fig.canvas.mpl_connect("pick_event", self._on_pick)
         fig.canvas.mpl_connect("key_press_event", self._on_key)
@@ -712,6 +705,14 @@ class Player:
         fig.canvas.mpl_connect("button_press_event", self._on_mouse_press)
         fig.canvas.mpl_connect("button_release_event", self._on_mouse_release)
         fig.canvas.mpl_connect("motion_notify_event", self._on_mouse_motion)
+
+        # Create the animation
+        anim = animation.FuncAnimation(
+            fig,
+            self._on_timer,  # type: ignore
+            interval=33,
+            cache_frame_data=False,
+        )  # 30 ips
 
         return (fig, ax, anim)
 
@@ -1296,7 +1297,7 @@ class Player:
             ]
 
         # Add the title
-        title_obj = plt.title("Player")
+        title_obj = plt.title("Player", fontfamily="monospace")
         plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
 
         self._fast_refresh()  # Draw everything once
@@ -1383,6 +1384,7 @@ class Player:
             # however the garbage collector may take time deleting the timer
             # and we will end up with still a few timer callbacks. Checking
             # self._running makes sure that we effectively stop.
+            current_system_time = time.time()
             current_index = self.current_index
             self.current_time += self.playback_speed * (
                 time.time() - self._state["SystemTimeOnLastUpdate"]  # type: ignore
@@ -1393,9 +1395,7 @@ class Player:
                 # The time wasn't enough to advance a frame. Articifically
                 # advance a frame.
                 self.current_index += 1
-            self._state["SystemTimeOnLastUpdate"] = time.time()
-
-            self._fast_refresh()
+            self._state["SystemTimeOnLastUpdate"] = current_system_time
         else:
             self._mpl_objects["Anim"].event_source.stop()
 
@@ -1587,9 +1587,7 @@ class Player:
             )
             self._fast_refresh()
 
-    def _to_animation(
-        self,
-    ):
+    def _to_anim(self) -> animation.FuncAnimation:
         """
         Create a matplotlib FuncAnimation for displaying in Jupyter notebooks.
 
@@ -1605,14 +1603,33 @@ class Player:
         mpl.rcParams["animation.html"] = "html5"
 
         self.playback_speed = 0
-        self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
+        #        self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
+        self.pause()
         self.current_index = 0
-        self._running = True
-        #        self._mpl_objects["Anim"].frames = stop_index - start_index
-        #        self._mpl_objects["Anim"].save_count = stop_index - start_index
-        self._mpl_objects["Anim"].event_source.start()
-        plt.close(self._mpl_objects["Figure"])
+        self.play()
         return self._mpl_objects["Anim"]
+
+    def _to_animation(
+        self,
+    ) -> animation.FuncAnimation:
+        """
+        Create a matplotlib FuncAnimation for displaying in Jupyter notebooks.
+
+        This also closes the figure so that Jupyter does not show both
+        the animation and the figure.
+
+        Parameters
+        ----------
+        No parameter.
+
+        Returns
+        -------
+        A FuncAnimation to be displayed by Jupyter notebook.
+
+        """
+        anim = self._to_anim()
+        plt.close(self._mpl_objects["Figure"])
+        return anim
 
     # %% Public methods
     def play(self) -> None:
@@ -1685,12 +1702,8 @@ class Player:
                 '"front", "back", "right", "left", "top" or "bottom".'
             )
 
-        # Rotate this matrix according to the up vector of the Player
-        # from_rot = geometry.get_global_coordinates(
-        #     from_rot, self._general_rotation()
-        # )
-
-        # Ignore gimbal lock warnings
+        # Ignore gimbal lock warnings, gimbal locks are ok since SciPy
+        # behaviour is well documented in those case (3rd angle set to 0).
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             angles = geometry.get_angles(from_rot, "YXZ")
@@ -1702,6 +1715,79 @@ class Player:
         """Close the Player and its associated window."""
         plt.close(self._mpl_objects["Figure"])
         self._mpl_objects = {}
+
+    def to_png(self, filename: str) -> None:
+        """
+        Save the current view to a PNG image file.
+
+        Parameters
+        ----------
+        filename
+            Name of the image file to save.
+
+        Returns
+        -------
+        None
+
+        """
+        self._mpl_objects["Figure"].savefig(filename)
+
+    def to_mp4(self, filename: str) -> None:
+        """
+        Save the current view to an MP4 video file.
+
+        Parameters
+        ----------
+        filename
+            Name of the video file to save.
+
+        Returns
+        -------
+        None
+
+        """
+
+        # We create a specific animation and callback, since all processing
+        # will be done offline. We set a very long delay between frames but
+        # this is just so that the animation didn't advance by itself by the
+        # time recording has started.
+        def advance(args):
+            self.current_index = args
+            self._mpl_objects["Axes"].set_title(
+                f"{self.current_index}/{len(self._contents.time)}: "
+                f"{self.current_time:.3f} s."
+            )
+            self._fast_refresh()
+
+        def progress_callback(current_frame: int, total_frames: int):
+            print(f"Saving frame {current_frame}/{total_frames}")
+
+        anim = animation.FuncAnimation(
+            self._mpl_objects["Figure"],
+            advance,  # type: ignore
+            frames=len(self._contents.time),
+            interval=1e6,
+        )  # 30 ips
+
+        fps = self._contents.get_sample_rate()
+        if np.isnan(fps):
+            fps = 30
+        writervideo = animation.FFMpegWriter(fps=int(fps))
+
+        self.pause()
+        self.current_index = 0
+
+        progress_bar = tqdm(range(len(self._contents.time) - 1))
+        update_progress_bar = lambda i, n: progress_bar.update(1)
+
+        anim.save(
+            filename, writer=writervideo, progress_callback=update_progress_bar
+        )
+        anim.event_source.stop()
+        progress_bar.close()
+
+        self._mpl_objects["Axes"].set_title("")
+        self.current_index = 0
 
     # %% Deprecated methods
     @deprecated(
