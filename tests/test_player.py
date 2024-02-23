@@ -121,16 +121,19 @@ def test_scripting():
     # Download and read markers from a sample C3D file
     if not init():
         return
+    # %%
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
 
-    # # Create another person
-    # markers2 = markers.copy()
-    # keys = list(markers2.data.keys())
-    # for key in keys:
-    #     markers2.data[key] += [[1.0, 0.0, 0.0, 0.0]]
-    #     markers2.rename_data(key, key.replace("Derrick", "Viktor"), in_place=True)
+    # Create another person
+    markers2 = markers.copy()
+    keys = list(markers2.data.keys())
+    for key in keys:
+        markers2.data[key] += [[2.0, 2.0, 0.0, 0.0]]
+        markers2.rename_data(
+            key, key.replace("Derrick", "Viktor"), in_place=True
+        )
 
     interconnections = dict()  # Will contain all segment definitions
 
@@ -208,7 +211,11 @@ def test_scripting():
 
     # In this file, the up axis is z:
     p = ktk.Player(
-        markers, up="z", anterior="-y", interconnections=interconnections
+        markers,
+        markers2,
+        up="z",
+        anterior="-y",
+        interconnections=interconnections,
     )
 
     # %% Front view

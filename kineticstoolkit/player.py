@@ -756,7 +756,7 @@ class Player:
         """Update self._extended_interconnections. Does not refresh."""
         # Make a set of all patterns matched by the * in interconnection
         # point names.
-        patterns = set()
+        patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
         keys = list(self._contents.data.keys())
         for body_name in self._interconnections:
             for i_link, link in enumerate(
@@ -1297,7 +1297,7 @@ class Player:
             ]
 
         # Add the title
-        title_obj = plt.title("Player", fontfamily="monospace")
+        title_obj = plt.title("", fontfamily="monospace")
         plt.setp(title_obj, color=[0, 1, 0])  # Set a green title
 
         self._fast_refresh()  # Draw everything once
