@@ -26,6 +26,7 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
+import matplotlib as mpl
 import warnings
 import numpy as np
 import os
@@ -33,6 +34,7 @@ import os
 
 def test_instanciate_and_to_html5():
     """Test that instanciating a Player does not crash."""
+    mpl.use("Qt5Agg")
 
     # Load markers
     kinematics = ktk.load(
@@ -70,6 +72,8 @@ def test_issue137():
     """
     Player should not fail if some TimeSeries are not Nx4 or Nx4x4
     """
+    mpl.use("Qt5Agg")
+
     kinematics = ktk.load(
         ktk.doc.download("inversedynamics_kinematics.ktk.zip")
     )
@@ -84,6 +88,8 @@ def test_scripting():
     """Test that every property assignation works or crashes as expected."""
     # %%
     # Download and read markers from a sample C3D file
+    mpl.use("Qt5Agg")
+
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
 
@@ -245,6 +251,8 @@ def test_scripting():
 
 def test_set_current_time():
     """Test that setting the current time on construction works."""
+    mpl.use("Qt5Agg")
+
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
     p = ktk.Player(markers, current_time=2.5)
@@ -252,6 +260,8 @@ def test_set_current_time():
 
 def test_to_png_mp4():
     """Test that to_png and to_mp4 work."""
+    mpl.use("Qt5Agg")
+
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
     p = ktk.Player(markers.get_ts_between_times(0, 0.1))
@@ -265,6 +275,8 @@ def test_to_png_mp4():
 
 def test_old_parameter_names():
     """Test the old parameter names."""
+    mpl.use("Qt5Agg")
+
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
 
