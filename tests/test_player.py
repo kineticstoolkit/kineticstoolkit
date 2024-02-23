@@ -32,9 +32,39 @@ import numpy as np
 import os
 
 
+def init() -> bool:
+    """
+    Initialize the graphic aggrator to Qt5Agg.
+
+    This tries to ask Matplotlib to use Qt5Agg, which sets the interactive
+    mode and therefore prevents a warning telling that Player must be used
+    in interactive mode.
+
+    If it fails, it's ok, unless we are running on macOS. For weird reasons,
+    macOS headless mode on GitHub's continuous integration fails with bus
+    errors or segmentation faults. Since KTK is primlarily developed on macOS,
+    it does not bother me that the Player is not tested specifically on macOS
+    during continuous integration, because it is tested locally. It is still
+    tested on Linux and Windows.
+
+    Returns
+    -------
+    bool
+        True if the test must be run, False if it must not be run.
+
+    """
+    try:
+        mpl.use("Qt5Agg")
+    except ImportError:
+        if ktk.config.is_mac:
+            return False
+    return True
+
+
 def test_instanciate_and_to_html5():
     """Test that instanciating a Player does not crash."""
-    mpl.use("Qt5Agg")
+    if not init():
+        return
 
     # Load markers
     kinematics = ktk.load(
@@ -72,7 +102,8 @@ def test_issue137():
     """
     Player should not fail if some TimeSeries are not Nx4 or Nx4x4
     """
-    mpl.use("Qt5Agg")
+    if not init():
+        return
 
     kinematics = ktk.load(
         ktk.doc.download("inversedynamics_kinematics.ktk.zip")
@@ -88,7 +119,8 @@ def test_scripting():
     """Test that every property assignation works or crashes as expected."""
     # %%
     # Download and read markers from a sample C3D file
-    mpl.use("Qt5Agg")
+    if not init():
+        return
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
@@ -251,7 +283,8 @@ def test_scripting():
 
 def test_set_current_time():
     """Test that setting the current time on construction works."""
-    mpl.use("Qt5Agg")
+    if not init():
+        return
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
@@ -260,7 +293,8 @@ def test_set_current_time():
 
 def test_to_png_mp4():
     """Test that to_png and to_mp4 work."""
-    mpl.use("Qt5Agg")
+    if not init():
+        return
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
@@ -275,7 +309,8 @@ def test_to_png_mp4():
 
 def test_old_parameter_names():
     """Test the old parameter names."""
-    mpl.use("Qt5Agg")
+    if not init():
+        return
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
