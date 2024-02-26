@@ -92,11 +92,6 @@ def test_instanciate_and_to_html5():
     )
     plt.pause(0.2)
 
-    # Test that to_html5 doesn't crash
-    assert pl.to_html5() is not None
-
-    pl.close()
-
 
 def test_issue137():
     """

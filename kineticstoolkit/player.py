@@ -66,6 +66,10 @@ HELP_TEXT = """
     0.5x playback speed : -
     toggle track        : t
     toggle perspective  : d (depth)
+    set back/front view : 1/2
+    set left/right view : 3/4
+    set top/bottom view : 5/6
+    set initial view    : 0
     ----------------------------------------------------
     MOUSE COMMANDS
     select a point      : left-click
@@ -183,6 +187,7 @@ class Player:
     _grid_origin: np.ndarray
     _grid_color: tuple[float, float, float]
     _background_color: tuple[float, float, float]
+    _title: str
 
     def __init__(
         self,
@@ -269,6 +274,7 @@ class Player:
         self.grid_origin = grid_origin
         self.grid_color = grid_color
         self.background_color = background_color
+        self.title = ""
 
         self._select_none()
         self.last_selected_point = ""
@@ -655,6 +661,18 @@ class Player:
         )
         if not self._being_constructed:
             self._refresh()
+
+    @property
+    def title(self) -> str:
+        """Get title."""
+        return self._title
+
+    @title.setter
+    def title(self, value: str):
+        """Set title."""
+        self._title = value
+        if not self._being_constructed:
+            self._mpl_objects["Axes"].set_title(value, pad=-20)
 
     def __dir__(self):
         """Return directory."""
@@ -1404,7 +1422,7 @@ class Player:
         if event.mouseevent.button == 1:
             index = event.ind
             selected_point = list(self._oriented_points.data.keys())[index[0]]
-            self._mpl_objects["Axes"].set_title(selected_point)
+            self.title = selected_point
 
             # Mark selected
             self._select_none()
@@ -1443,15 +1461,11 @@ class Player:
 
         elif event.key == "-":
             self.playback_speed /= 2
-            self._mpl_objects["Axes"].set_title(
-                f"Playback set to {self.playback_speed}x"
-            )
+            self.title = f"Playback set to {self.playback_speed}x"
 
         elif event.key == "+":
             self.playback_speed *= 2
-            self._mpl_objects["Axes"].set_title(
-                f"Playback set to {self.playback_speed}x"
-            )
+            self.title = f"Playback set to {self.playback_speed}x"
 
         elif event.key == "h":
             if self._mpl_objects["HelpText"] is None:
@@ -1469,42 +1483,38 @@ class Player:
         elif event.key == "d":
             self.perspective = not self.perspective
             if self.perspective is True:
-                self._mpl_objects["Axes"].set_title(
-                    "Camera set to perspective"
-                )
+                self.title = "Camera set to perspective"
             else:
-                self._mpl_objects["Axes"].set_title("Camera set to orthogonal")
+                self.title = "Camera set to orthogonal"
 
         elif event.key == "t":
             self.track = not self.track
             if self.track is True:
-                self._mpl_objects["Axes"].set_title("Point tracking activated")
+                self.title = "Point tracking activated"
             else:
-                self._mpl_objects["Axes"].set_title(
-                    "Point tracking deactivated"
-                )
+                self.title = "Point tracking deactivated"
 
         elif event.key == "1":
             self.set_view("back")
-            self._mpl_objects["Axes"].set_title("Back view, orthogonal")
+            self.title = "Back view, orthogonal"
         elif event.key == "2":
             self.set_view("front")
-            self._mpl_objects["Axes"].set_title("Front view, orthogonal")
+            self.title = "Front view, orthogonal"
         elif event.key == "3":
             self.set_view("left")
-            self._mpl_objects["Axes"].set_title("Left view, orthogonal")
+            self.title = "Left view, orthogonal"
         elif event.key == "4":
             self.set_view("right")
-            self._mpl_objects["Axes"].set_title("Right view, orthogonal")
+            self.title = "Right view, orthogonal"
         elif event.key == "5":
             self.set_view("top")
-            self._mpl_objects["Axes"].set_title("Top view, orthogonal")
+            self.title = "Top view, orthogonal"
         elif event.key == "6":
             self.set_view("bottom")
-            self._mpl_objects["Axes"].set_title("Bottom view, orthogonal")
+            self.title = "Bottom view, orthogonal"
         elif event.key == "0":
             self.set_view("initial")
-            self._mpl_objects["Axes"].set_title("Initial view")
+            self.title = "Initial view"
 
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
@@ -1587,31 +1597,7 @@ class Player:
             )
             self._fast_refresh()
 
-    def _to_anim(self) -> animation.FuncAnimation:
-        """
-        Create a matplotlib FuncAnimation for displaying in Jupyter notebooks.
-
-        Parameters
-        ----------
-        No parameter.
-
-        Returns
-        -------
-        A FuncAnimation to be displayed by Jupyter notebook.
-
-        """
-        mpl.rcParams["animation.html"] = "html5"
-
-        self.playback_speed = 0
-        #        self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
-        self.pause()
-        self.current_index = 0
-        self.play()
-        return self._mpl_objects["Anim"]
-
-    def _to_animation(
-        self,
-    ) -> animation.FuncAnimation:
+    def _to_animation(self):
         """
         Create a matplotlib FuncAnimation for displaying in Jupyter notebooks.
 
@@ -1627,9 +1613,18 @@ class Player:
         A FuncAnimation to be displayed by Jupyter notebook.
 
         """
-        anim = self._to_anim()
+        try:
+            from IPython.display import Video
+        except ModuleNotFoundError:
+            raise RuntimeError(
+                "This function must be run in an IPython session."
+            )
+
+        self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
+        self._mpl_objects["Figure"].tight_layout()
+        self.to_mp4("temp.mp4", show_progress_bar=False)
         plt.close(self._mpl_objects["Figure"])
-        return anim
+        return Video("temp.mp4", embed=True, html_attributes="loop autoplay")
 
     # %% Public methods
     def play(self) -> None:
@@ -1732,7 +1727,7 @@ class Player:
         """
         self._mpl_objects["Figure"].savefig(filename)
 
-    def to_mp4(self, filename: str) -> None:
+    def to_mp4(self, filename: str, *, show_progress_bar: bool = True) -> None:
         """
         Save the current view to an MP4 video file.
 
@@ -1740,6 +1735,9 @@ class Player:
         ----------
         filename
             Name of the video file to save.
+        show_progress_bar
+            Optional. True to show a progress bar while creating the video
+            file.
 
         Returns
         -------
@@ -1753,7 +1751,7 @@ class Player:
         # time recording has started.
         def advance(args):
             self.current_index = args
-            self._mpl_objects["Axes"].set_title(
+            self.title = (
                 f"{self.current_index}/{len(self._contents.time)}: "
                 f"{self.current_time:.3f} s."
             )
@@ -1777,16 +1775,21 @@ class Player:
         self.pause()
         self.current_index = 0
 
-        progress_bar = tqdm(range(len(self._contents.time) - 1))
-        update_progress_bar = lambda i, n: progress_bar.update(1)
+        if show_progress_bar:
+            progress_bar = tqdm(range(len(self._contents.time) - 1))
+            update_progress_bar = lambda i, n: progress_bar.update(1)
+        else:
+            update_progress_bar = lambda i, n: None
 
         anim.save(
             filename, writer=writervideo, progress_callback=update_progress_bar
         )
         anim.event_source.stop()
-        progress_bar.close()
 
-        self._mpl_objects["Axes"].set_title("")
+        if show_progress_bar:
+            progress_bar.close()
+
+        self.title = ""
         self.current_index = 0
 
     # %% Deprecated methods
