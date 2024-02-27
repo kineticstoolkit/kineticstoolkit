@@ -1613,18 +1613,34 @@ class Player:
         A FuncAnimation to be displayed by Jupyter notebook.
 
         """
-        try:
-            from IPython.display import Video
-        except ModuleNotFoundError:
-            raise RuntimeError(
-                "This function must be run in an IPython session."
-            )
+        mpl.rcParams["animation.html"] = "html5"
 
+        self.playback_speed = 0
         self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
         self._mpl_objects["Figure"].tight_layout()
-        self.to_mp4("temp.mp4", show_progress_bar=False)
+        self.pause()
+        self.index = 0
+
+        # We create a specific animation and callback, since all processing
+        # will be done offline. We set a very long delay between frames but
+        # this is just so that the animation didn't advance by itself by the
+        # time recording has started.
+        def advance(args):
+            self.title = (
+                f"{self.current_index}/{len(self._contents.time)}: "
+                f"{self.current_time:.3f} s."
+            )
+            self.current_index = args
+
+        anim = animation.FuncAnimation(
+            self._mpl_objects["Figure"],
+            advance,  # type: ignore
+            frames=len(self._contents.time),
+            interval=33,
+        )  # 30 ips
+
         plt.close(self._mpl_objects["Figure"])
-        return Video("temp.mp4", embed=True, html_attributes="loop autoplay")
+        return anim
 
     # %% Public methods
     def play(self) -> None:
@@ -1750,12 +1766,11 @@ class Player:
         # this is just so that the animation didn't advance by itself by the
         # time recording has started.
         def advance(args):
-            self.current_index = args
             self.title = (
                 f"{self.current_index}/{len(self._contents.time)}: "
                 f"{self.current_time:.3f} s."
             )
-            self._fast_refresh()
+            self.current_index = args
 
         def progress_callback(current_frame: int, total_frames: int):
             print(f"Saving frame {current_frame}/{total_frames}")
