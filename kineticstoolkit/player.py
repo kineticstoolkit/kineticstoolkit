@@ -36,7 +36,6 @@ import kineticstoolkit.geometry as geometry
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-import matplotlib as mpl
 from matplotlib import animation
 import numpy as np
 from numpy import sin, cos
@@ -676,7 +675,7 @@ class Player:
 
     def __dir__(self):
         """Return directory."""
-        return ["play", "pause", "set_view", "close", "to_png", "to_mp4"]
+        return ["play", "pause", "set_view", "close", "to_image", "to_video"]
 
     def __str__(self) -> str:
         """Print a textual description of the Player properties."""
@@ -1713,14 +1712,17 @@ class Player:
         plt.close(self._mpl_objects["Figure"])
         self._mpl_objects = {}
 
-    def to_png(self, filename: str) -> None:
+    def to_image(self, filename: str) -> None:
         """
-        Save the current view to a PNG image file.
+        Save the current view to an image file.
+
+        Any format supported by Matplotlib can be used.
 
         Parameters
         ----------
         filename
-            Name of the image file to save.
+            Name of the image file to save (e.g., "file.png", "file.jpeg",
+            "file.pdf", "file.svg", "file.tiff")
 
         Returns
         -------
@@ -1729,7 +1731,14 @@ class Player:
         """
         self._mpl_objects["Figure"].savefig(filename)
 
-    def to_mp4(self, filename: str, *, show_progress_bar: bool = True) -> None:
+    def to_video(
+        self,
+        filename: str,
+        *,
+        fps: int | None = None,
+        downsample: int = 1,
+        show_progress_bar: bool = True,
+    ) -> None:
         """
         Save the current view to an MP4 video file.
 
@@ -1737,6 +1746,20 @@ class Player:
         ----------
         filename
             Name of the video file to save.
+        fps
+            Optional. Frames per second of the output video. Default is None,
+            which means that fps matches the current playback speed of the
+            Player (the content's sample rate multiplied by the playback_speed
+            property). This attribute does not affect the number of images in
+            the output video: it only affects the playback speed of the output
+            video.
+        downsample
+            Optional. Use it to reduce the file size on acquisitions at high
+            sample rates. Default is 1, which means that the video is not
+            downsampled: each index is exported as one frame of the output
+            video. A value of 2 divides the number of frames by 2, which means
+            that every other index is skipped. A value of 3 divides the number
+            of frames by 3, etc.
         show_progress_bar
             Optional. True to show a progress bar while creating the video
             file.
@@ -1746,38 +1769,46 @@ class Player:
         None
 
         """
+        if downsample < 1:
+            raise ValueError(
+                "Parameter downsample must be stricly higher than 0."
+            )
+
+        n_samples = int(len(self._contents.time) / downsample)
 
         # We create a specific animation and callback, since all processing
         # will be done offline. We set a very long delay between frames but
         # this is just so that the animation didn't advance by itself by the
         # time recording has started.
         def advance(args):
+            self.current_index = args * downsample
             self.title = (
-                f"{self.current_index}/{len(self._contents.time)}: "
+                f"{self.current_index}/{(n_samples - 1) * downsample}: "
                 f"{self.current_time:.3f} s."
             )
-            self.current_index = args
-
-        def progress_callback(current_frame: int, total_frames: int):
-            print(f"Saving frame {current_frame}/{total_frames}")
 
         anim = animation.FuncAnimation(
             self._mpl_objects["Figure"],
             advance,  # type: ignore
-            frames=len(self._contents.time),
+            frames=n_samples,
             interval=1e6,
         )  # 30 ips
 
-        fps = self._contents.get_sample_rate()
-        if np.isnan(fps):
-            fps = 30
-        writervideo = animation.FFMpegWriter(fps=int(fps))
+        if fps is None:
+            fps = int(
+                self._contents.get_sample_rate()
+                * self.playback_speed
+                / downsample
+            )
+            if np.isnan(fps):
+                fps = 30
+        writervideo = animation.FFMpegWriter(fps=fps)
 
         self.pause()
         self.current_index = 0
 
         if show_progress_bar:
-            progress_bar = tqdm(range(len(self._contents.time) - 1))
+            progress_bar = tqdm(n_samples - 1)
             update_progress_bar = lambda i, n: progress_bar.update(1)
         else:
             update_progress_bar = lambda i, n: None
@@ -1792,15 +1823,3 @@ class Player:
 
         self.title = ""
         self.current_index = 0
-
-    # %% Deprecated methods
-    @deprecated(
-        since="0.12",
-        until="2024",
-        details="This method has been removed because it did not return html5 and "
-        "was mainly a hack for representing videos in tutorials. The "
-        "supported way to use the Player is interactively.",
-    )
-    def to_html5(self, **kwargs):
-        """Return an animation for the tutorials."""
-        return self._to_animation()
