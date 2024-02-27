@@ -1624,7 +1624,9 @@ class Player:
         self._mpl_objects["Figure"].tight_layout()
         self.to_mp4("temp.mp4", show_progress_bar=False)
         plt.close(self._mpl_objects["Figure"])
-        return Video("temp.mp4", embed=True, html_attributes="loop autoplay")
+        return Video(
+            "temp.mp4", embed=True, html_attributes="controls loop autoplay"
+        )
 
     # %% Public methods
     def play(self) -> None:
@@ -1750,12 +1752,11 @@ class Player:
         # this is just so that the animation didn't advance by itself by the
         # time recording has started.
         def advance(args):
-            self.current_index = args
             self.title = (
                 f"{self.current_index}/{len(self._contents.time)}: "
                 f"{self.current_time:.3f} s."
             )
-            self._fast_refresh()
+            self.current_index = args
 
         def progress_callback(current_frame: int, total_frames: int):
             print(f"Saving frame {current_frame}/{total_frames}")
