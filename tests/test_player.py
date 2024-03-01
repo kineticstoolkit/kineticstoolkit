@@ -61,7 +61,7 @@ def init() -> bool:
     return True
 
 
-def test_instanciate_and_to_html5():
+def test_instanciate():
     """Test that instanciating a Player does not crash."""
     if not init():
         return
@@ -213,6 +213,66 @@ def test_scripting():
         interconnections=interconnections,
     )
 
+    # Check that the leading wildcard propagated well to the two subjects
+    # Trailign wildcard is tested in test_interconnection_wildcard_as_suffix
+    try:
+        assert p._extended_interconnections["Derrick:LLowerLimb"]["Links"] == [
+            ["Derrick:LTOE", "Derrick:LHEE", "Derrick:LANK", "Derrick:LTOE"],
+            ["Derrick:LANK", "Derrick:LKNE", "Derrick:LASI"],
+        ]
+        assert p._extended_interconnections["Derrick:RLowerLimb"]["Links"] == [
+            ["Derrick:RTOE", "Derrick:RHEE", "Derrick:RANK", "Derrick:RTOE"],
+            ["Derrick:RANK", "Derrick:RKNE", "Derrick:RASI"],
+        ]
+        assert p._extended_interconnections["Derrick:LUpperLimb"]["Links"] == [
+            ["Derrick:LSHO", "Derrick:LELB", "Derrick:LWRA", "Derrick:LFIN"],
+            ["Derrick:LELB", "Derrick:LWRB", "Derrick:LFIN"],
+        ]
+        assert p._extended_interconnections["Derrick:RUpperLimb"]["Links"] == [
+            ["Derrick:RSHO", "Derrick:RELB", "Derrick:RWRA", "Derrick:RFIN"],
+            ["Derrick:RELB", "Derrick:RWRB", "Derrick:RFIN"],
+        ]
+        assert p._extended_interconnections["Derrick:Head"]["Links"] == [
+            ["Derrick:C7", "Derrick:LFHD", "Derrick:RFHD", "Derrick:C7"],
+            ["Derrick:C7", "Derrick:LBHD", "Derrick:RBHD", "Derrick:C7"],
+        ]
+        assert p._extended_interconnections["Derrick:TrunkPelvis"][
+            "Links"
+        ] == [
+            ["Derrick:LASI", "Derrick:STRN", "Derrick:RASI"],
+            ["Derrick:STRN", "Derrick:CLAV"],
+        ]
+
+        assert p._extended_interconnections["Viktor:LLowerLimb"]["Links"] == [
+            ["Viktor:LTOE", "Viktor:LHEE", "Viktor:LANK", "Viktor:LTOE"],
+            ["Viktor:LANK", "Viktor:LKNE", "Viktor:LASI"],
+        ]
+        assert p._extended_interconnections["Viktor:RLowerLimb"]["Links"] == [
+            ["Viktor:RTOE", "Viktor:RHEE", "Viktor:RANK", "Viktor:RTOE"],
+            ["Viktor:RANK", "Viktor:RKNE", "Viktor:RASI"],
+        ]
+        assert p._extended_interconnections["Viktor:LUpperLimb"]["Links"] == [
+            ["Viktor:LSHO", "Viktor:LELB", "Viktor:LWRA", "Viktor:LFIN"],
+            ["Viktor:LELB", "Viktor:LWRB", "Viktor:LFIN"],
+        ]
+        assert p._extended_interconnections["Viktor:RUpperLimb"]["Links"] == [
+            ["Viktor:RSHO", "Viktor:RELB", "Viktor:RWRA", "Viktor:RFIN"],
+            ["Viktor:RELB", "Viktor:RWRB", "Viktor:RFIN"],
+        ]
+        assert p._extended_interconnections["Viktor:Head"]["Links"] == [
+            ["Viktor:C7", "Viktor:LFHD", "Viktor:RFHD", "Viktor:C7"],
+            ["Viktor:C7", "Viktor:LBHD", "Viktor:RBHD", "Viktor:C7"],
+        ]
+        assert p._extended_interconnections["Viktor:TrunkPelvis"]["Links"] == [
+            ["Viktor:LASI", "Viktor:STRN", "Viktor:RASI"],
+            ["Viktor:STRN", "Viktor:CLAV"],
+        ]
+
+    except:
+        raise AssertionError(
+            "The _extended_interconnections is not as expected."
+        )
+
     # %% Front view
     p.azimuth = 0.0
     p.elevation = 0.0
@@ -290,23 +350,190 @@ def test_set_current_time():
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
-    p = ktk.Player(markers, current_time=2.5)
+    ktk.Player(markers, current_time=2.5)
 
 
-def test_to_png_mp4():
-    """Test that to_png and to_mp4 work."""
+def test_to_image_video():
+    """Test that to_image and to_video work."""
     if not init():
         return
 
     filename = ktk.doc.download("kinematics_tennis_serve.c3d")
     markers = ktk.read_c3d(filename)["Points"]
     p = ktk.Player(markers.get_ts_between_times(0, 0.1))
-    p.to_mp4("test.mp4")
-    p.to_png("test.png")
+    p.to_video("test.mp4")
+    p.to_video("test.mp4", fps=30)
+    p.to_video("test.mp4", fps=30, downsample=4)
+    p.to_image("test.png")
     assert os.path.exists("test.mp4")
     assert os.path.exists("test.png")
     os.remove("test.mp4")
     os.remove("test.png")
+
+
+def test_interconnection_wildcards_as_suffix():
+    if not init():
+        return
+
+    filename = ktk.doc.download("kinematics_tennis_serve.c3d")
+    markers = ktk.read_c3d(filename)["Points"]
+    keys = list(markers.data.keys())
+    for key in keys:
+        markers.data[key] += [[2.0, 2.0, 0.0, 0.0]]
+        markers.rename_data(key, key.replace("Derrick:", ""), in_place=True)
+
+    # Create another person
+    markers2 = markers.copy()
+    keys = list(markers2.data.keys())
+    for key in keys:
+        markers.rename_data(key, f"{key}_Derrick", in_place=True)
+        markers2.data[key] += [[2.0, 2.0, 0.0, 0.0]]
+        markers2.rename_data(key, f"{key}_Viktor", in_place=True)
+
+    interconnections = dict()  # Will contain all segment definitions
+
+    interconnections["LLowerLimb"] = {
+        "Color": [0, 0.5, 1],  # In RGB format (here, greenish blue)
+        "Links": [  # List of lines that span lists of markers
+            ["LTOE*", "LHEE*", "LANK*", "LTOE*"],
+            ["LANK*", "LKNE*", "LASI*"],
+            ["LKNE*", "LPSI*"],
+        ],
+    }
+
+    interconnections["RLowerLimb"] = {
+        "Color": [0, 0.5, 1],
+        "Links": [
+            ["RTOE*", "RHEE*", "RANK*", "RTOE*"],
+            ["RANK*", "RKNE*", "RASI*"],
+            ["RKNE*", "RPSI*"],
+        ],
+    }
+
+    interconnections["LUpperLimb"] = {
+        "Color": [0, 0.5, 1],
+        "Links": [
+            ["LSHO*", "LELB*", "LWRA*", "LFIN*"],
+            ["LELB*", "LWRB*", "LFIN*"],
+            ["LWRA*", "LWRB*"],
+        ],
+    }
+
+    interconnections["RUpperLimb"] = {
+        "Color": [1, 0.5, 0],
+        "Links": [
+            ["RSHO*", "RELB*", "RWRA*", "RFIN*"],
+            ["RELB*", "RWRB*", "RFIN*"],
+            ["RWRA*", "RWRB*"],
+        ],
+    }
+
+    interconnections["Head"] = {
+        "Color": [1, 0.5, 1],
+        "Links": [
+            ["C7*", "LFHD*", "RFHD*", "C7*"],
+            ["C7*", "LBHD*", "RBHD*", "C7*"],
+            ["LBHD*", "LFHD*"],
+            ["RBHD*", "RFHD*"],
+        ],
+    }
+
+    interconnections["TrunkPelvis"] = {
+        "Color": [0.5, 1, 0.5],
+        "Links": [
+            ["LASI*", "STRN*", "RASI*"],
+            ["STRN*", "CLAV*"],
+            ["LPSI*", "T10*", "RPSI*"],
+            ["T10*", "C7*"],
+            ["LASI*", "LSHO*", "LPSI*"],
+            ["RASI*", "RSHO*", "RPSI*"],
+            [
+                "LPSI*",
+                "LASI*",
+                "RASI*",
+                "RPSI*",
+                "LPSI*",
+            ],
+            [
+                "LSHO*",
+                "CLAV*",
+                "RSHO*",
+                "C7*",
+                "LSHO*",
+            ],
+        ],
+    }
+
+    # In this file, the up axis is z:
+    p = ktk.Player(
+        markers,
+        markers2,
+        up="z",
+        anterior="-y",
+        interconnections=interconnections,
+    )
+
+    # This check is a bit flaky because implementing the same function
+    # differently would make this test fail even if the function works. But
+    # I like false-positives better than false-negatives for tests.
+    try:
+        assert p._extended_interconnections["_ViktorLLowerLimb"]["Links"] == [
+            ["LTOE_Viktor", "LHEE_Viktor", "LANK_Viktor", "LTOE_Viktor"],
+            ["LANK_Viktor", "LKNE_Viktor", "LASI_Viktor"],
+        ]
+        assert p._extended_interconnections["_ViktorRLowerLimb"]["Links"] == [
+            ["RTOE_Viktor", "RHEE_Viktor", "RANK_Viktor", "RTOE_Viktor"],
+            ["RANK_Viktor", "RKNE_Viktor", "RASI_Viktor"],
+        ]
+        assert p._extended_interconnections["_ViktorLUpperLimb"]["Links"] == [
+            ["LSHO_Viktor", "LELB_Viktor", "LWRA_Viktor", "LFIN_Viktor"],
+            ["LELB_Viktor", "LWRB_Viktor", "LFIN_Viktor"],
+        ]
+        assert p._extended_interconnections["_ViktorRUpperLimb"]["Links"] == [
+            ["RSHO_Viktor", "RELB_Viktor", "RWRA_Viktor", "RFIN_Viktor"],
+            ["RELB_Viktor", "RWRB_Viktor", "RFIN_Viktor"],
+        ]
+        assert p._extended_interconnections["_ViktorHead"]["Links"] == [
+            ["C7_Viktor", "LFHD_Viktor", "RFHD_Viktor", "C7_Viktor"],
+            ["C7_Viktor", "LBHD_Viktor", "RBHD_Viktor", "C7_Viktor"],
+        ]
+        assert p._extended_interconnections["_ViktorTrunkPelvis"]["Links"] == [
+            ["LASI_Viktor", "STRN_Viktor", "RASI_Viktor"],
+            ["STRN_Viktor", "CLAV_Viktor"],
+        ]
+
+        assert p._extended_interconnections["_DerrickLLowerLimb"]["Links"] == [
+            ["LTOE_Derrick", "LHEE_Derrick", "LANK_Derrick", "LTOE_Derrick"],
+            ["LANK_Derrick", "LKNE_Derrick", "LASI_Derrick"],
+        ]
+        assert p._extended_interconnections["_DerrickRLowerLimb"]["Links"] == [
+            ["RTOE_Derrick", "RHEE_Derrick", "RANK_Derrick", "RTOE_Derrick"],
+            ["RANK_Derrick", "RKNE_Derrick", "RASI_Derrick"],
+        ]
+        assert p._extended_interconnections["_DerrickLUpperLimb"]["Links"] == [
+            ["LSHO_Derrick", "LELB_Derrick", "LWRA_Derrick", "LFIN_Derrick"],
+            ["LELB_Derrick", "LWRB_Derrick", "LFIN_Derrick"],
+        ]
+        assert p._extended_interconnections["_DerrickRUpperLimb"]["Links"] == [
+            ["RSHO_Derrick", "RELB_Derrick", "RWRA_Derrick", "RFIN_Derrick"],
+            ["RELB_Derrick", "RWRB_Derrick", "RFIN_Derrick"],
+        ]
+        assert p._extended_interconnections["_DerrickHead"]["Links"] == [
+            ["C7_Derrick", "LFHD_Derrick", "RFHD_Derrick", "C7_Derrick"],
+            ["C7_Derrick", "LBHD_Derrick", "RBHD_Derrick", "C7_Derrick"],
+        ]
+        assert p._extended_interconnections["_DerrickTrunkPelvis"][
+            "Links"
+        ] == [
+            ["LASI_Derrick", "STRN_Derrick", "RASI_Derrick"],
+            ["STRN_Derrick", "CLAV_Derrick"],
+        ]
+
+    except:
+        raise AssertionError(
+            "The _extended_interconnections dictionary is not as expected."
+        )
+    p.close()
 
 
 def test_old_parameter_names():

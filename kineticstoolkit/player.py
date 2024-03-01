@@ -30,7 +30,6 @@ __license__ = "Apache 2.0"
 
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 
@@ -96,15 +95,28 @@ class Player:
         expressed as a Nx4x4 array. Multiple TimeSeries can be provided.
 
     interconnections
-        Optional. Each key corresponds to an inerconnection between points,
+        Optional. Each key corresponds to an interconnection between points,
         where one interconnection is another dict with the following keys:
 
         - "Links": list of lists strings, where each string is a point
-          name. For example, to create a link that spans Point1 and Point2,
-          and another link that spans Point3, Point4 and Point5,
-          interconnections["Links"] would be::
+          name. For example, to create a link that connects Point1 to Point2,
+          and another link that spans Point3, Point4 and Point5::
 
-              [["Point1", "Point2"], ["Point3", "Point4", "Point5"]]
+              interconnections["Example"]["Links"] = [
+                  ["Point1", "Point2"],
+                  ["Point3", "Point4", "Point5"]
+              ]
+
+          Point names can include wildcards (*) either as a prefix or as a
+          suffix. This is useful to apply a single set of interconnections to
+          multiple bodies. For instance, if the Player's contents includes
+          these points: [Body1_HipR, Body1_HipL, Body1_L5S1, Body2_HipR,
+          Body2_HipL, Body2_L5S1], we could link L5S1 and both hips at once
+          using::
+
+              interconnections["Pelvis"]["Links"] = [
+                  ["*_HipR", "*_HipL", "*_L5S1"]
+              ]
 
         - "Color": character or tuple (RGB) that represents the color of the
           link. Color must be a valid value for matplotlib's
@@ -186,7 +198,7 @@ class Player:
     _grid_origin: np.ndarray
     _grid_color: tuple[float, float, float]
     _background_color: tuple[float, float, float]
-    _title: str
+    _text_info: str
 
     def __init__(
         self,
@@ -273,7 +285,7 @@ class Player:
         self.grid_origin = grid_origin
         self.grid_color = grid_color
         self.background_color = background_color
-        self.title = ""
+        self.text_info = ""
 
         self._select_none()
         self.last_selected_point = ""
@@ -321,7 +333,7 @@ class Player:
 
     @property
     def current_index(self) -> int:
-        """Get current_index value."""
+        """Read/write current_index."""
         return self._current_index
 
     @current_index.setter
@@ -344,7 +356,7 @@ class Player:
 
     @property
     def current_time(self) -> float:
-        """Get current_time value."""
+        """Read/write current_time."""
         return self._contents.time[self._current_index]
 
     @current_time.setter
@@ -356,7 +368,7 @@ class Player:
     # Properties
     @property
     def playback_speed(self) -> float:
-        """Get playback_speed value."""
+        """Read/write playback_speed."""
         return self._playback_speed
 
     @playback_speed.setter
@@ -366,7 +378,7 @@ class Player:
 
     @property
     def up(self) -> str:
-        """Get up value."""
+        """Read/write up."""
         return self._up
 
     @up.setter
@@ -392,7 +404,7 @@ class Player:
 
     @property
     def anterior(self) -> str:
-        """Get anterior value."""
+        """Read/write anterior."""
         return self._anterior
 
     @anterior.setter
@@ -418,7 +430,7 @@ class Player:
 
     @property
     def zoom(self) -> float:
-        """Get zoom value."""
+        """Read/write zoom."""
         return self._zoom
 
     @zoom.setter
@@ -430,7 +442,7 @@ class Player:
 
     @property
     def azimuth(self) -> float:
-        """Get azimuth value."""
+        """Read/write azimuth."""
         return self._azimuth
 
     @azimuth.setter
@@ -442,7 +454,7 @@ class Player:
 
     @property
     def elevation(self) -> float:
-        """Get elevation value."""
+        """Read/write elevation."""
         return self._elevation
 
     @elevation.setter
@@ -454,7 +466,7 @@ class Player:
 
     @property
     def translation(self):
-        """Get translation value as (x, y)."""
+        """Read/write translation as (x, y)."""
         return (self._translation[0], self._translation[1])
 
     @translation.setter
@@ -470,7 +482,7 @@ class Player:
 
     @property
     def target(self):
-        """Get target value as (x, y, z)."""
+        """Read/write target as (x, y, z)."""
         return tuple(self._target)
 
     @target.setter
@@ -486,7 +498,7 @@ class Player:
 
     @property
     def perspective(self) -> bool:
-        """Get perspective value."""
+        """Read/write perspective."""
         return self._perspective
 
     @perspective.setter
@@ -498,7 +510,7 @@ class Player:
 
     @property
     def track(self) -> bool:
-        """Get track value."""
+        """Read/write track."""
         return self._track
 
     @track.setter
@@ -510,7 +522,7 @@ class Player:
 
     @property
     def point_size(self) -> float:
-        """Get point_size value."""
+        """Read/write point_size."""
         return self._point_size
 
     @point_size.setter
@@ -522,7 +534,7 @@ class Player:
 
     @property
     def interconnection_width(self) -> float:
-        """Get interconnection_width value."""
+        """Read/write interconnection_width."""
         return self._interconnection_width
 
     @interconnection_width.setter
@@ -534,7 +546,7 @@ class Player:
 
     @property
     def frame_size(self) -> float:
-        """Get frame_size value."""
+        """Read/write frame_size."""
         return self._frame_size
 
     @frame_size.setter
@@ -546,7 +558,7 @@ class Player:
 
     @property
     def frame_width(self) -> float:
-        """Get frame_width value."""
+        """Read/write frame_width."""
         return self._frame_width
 
     @frame_width.setter
@@ -558,7 +570,7 @@ class Player:
 
     @property
     def grid_size(self) -> float:
-        """Get grid_size value."""
+        """Read/write grid_size."""
         return self._grid_size
 
     @grid_size.setter
@@ -571,7 +583,7 @@ class Player:
 
     @property
     def grid_width(self) -> float:
-        """Get grid_width value."""
+        """Read/write grid_width."""
         return self._grid_width
 
     @grid_width.setter
@@ -584,7 +596,7 @@ class Player:
 
     @property
     def grid_subdivision_size(self) -> float:
-        """Get grid_subdivision_size value."""
+        """Read/write grid_subdivision_size."""
         return self._grid_subdivision_size
 
     @grid_subdivision_size.setter
@@ -597,7 +609,7 @@ class Player:
 
     @property
     def grid_origin(self):
-        """Get grid_origin value."""
+        """Read/write grid_origin."""
         return tuple(self._grid_origin)
 
     @grid_origin.setter
@@ -614,7 +626,7 @@ class Player:
 
     @property
     def grid_color(self):
-        """Get grid_color value."""
+        """Read/write grid_color."""
         return self._grid_color
 
     @grid_color.setter
@@ -638,7 +650,7 @@ class Player:
 
     @property
     def background_color(self):
-        """Get background_color value."""
+        """Read/write background_color."""
         return self._background_color
 
     @background_color.setter
@@ -662,14 +674,14 @@ class Player:
             self._refresh()
 
     @property
-    def title(self) -> str:
-        """Get title."""
-        return self._title
+    def text_info(self) -> str:
+        """Read/write the text info on top of the figure."""
+        return self._text_info
 
-    @title.setter
-    def title(self, value: str):
-        """Set title."""
-        self._title = value
+    @text_info.setter
+    def text_info(self, value: str):
+        """Set text_info."""
+        self._text_info = value
         if not self._being_constructed:
             self._mpl_objects["Axes"].set_title(value, pad=-20)
 
@@ -780,7 +792,13 @@ class Player:
                 self._interconnections[body_name]["Links"]
             ):
                 for i_point, point in enumerate(link):
-                    if point.startswith("*"):
+                    if point.startswith("*") and point.endswith("*"):
+                        raise ValueError(
+                            f"Point {point} found in interconnections. "
+                            "Only one wildcard can be used, either as a "
+                            "prefix or as a suffix."
+                        )
+                    elif point.startswith("*"):
                         for key in keys:
                             if key.endswith(point[1:]):
                                 patterns.add(
@@ -789,10 +807,7 @@ class Player:
                     elif point.endswith("*"):
                         for key in keys:
                             if key.startswith(point[:-1]):
-                                patterns.add(
-                                    key[(len(key) - len(point) + 1) :]
-                                )
-
+                                patterns.add(key[(len(point) - 1) :])
         # Extend every * to every pattern
         self._extended_interconnections = dict()
         for pattern in patterns:
@@ -1421,7 +1436,7 @@ class Player:
         if event.mouseevent.button == 1:
             index = event.ind
             selected_point = list(self._oriented_points.data.keys())[index[0]]
-            self.title = selected_point
+            self.text_info = selected_point
 
             # Mark selected
             self._select_none()
@@ -1460,11 +1475,11 @@ class Player:
 
         elif event.key == "-":
             self.playback_speed /= 2
-            self.title = f"Playback set to {self.playback_speed}x"
+            self.text_info = f"Playback set to {self.playback_speed}x"
 
         elif event.key == "+":
             self.playback_speed *= 2
-            self.title = f"Playback set to {self.playback_speed}x"
+            self.text_info = f"Playback set to {self.playback_speed}x"
 
         elif event.key == "h":
             if self._mpl_objects["HelpText"] is None:
@@ -1482,38 +1497,38 @@ class Player:
         elif event.key == "d":
             self.perspective = not self.perspective
             if self.perspective is True:
-                self.title = "Camera set to perspective"
+                self.text_info = "Camera set to perspective"
             else:
-                self.title = "Camera set to orthogonal"
+                self.text_info = "Camera set to orthogonal"
 
         elif event.key == "t":
             self.track = not self.track
             if self.track is True:
-                self.title = "Point tracking activated"
+                self.text_info = "Point tracking activated"
             else:
-                self.title = "Point tracking deactivated"
+                self.text_info = "Point tracking deactivated"
 
         elif event.key == "1":
             self.set_view("back")
-            self.title = "Back view, orthogonal"
+            self.text_info = "Back view, orthogonal"
         elif event.key == "2":
             self.set_view("front")
-            self.title = "Front view, orthogonal"
+            self.text_info = "Front view, orthogonal"
         elif event.key == "3":
             self.set_view("left")
-            self.title = "Left view, orthogonal"
+            self.text_info = "Left view, orthogonal"
         elif event.key == "4":
             self.set_view("right")
-            self.title = "Right view, orthogonal"
+            self.text_info = "Right view, orthogonal"
         elif event.key == "5":
             self.set_view("top")
-            self.title = "Top view, orthogonal"
+            self.text_info = "Top view, orthogonal"
         elif event.key == "6":
             self.set_view("bottom")
-            self.title = "Bottom view, orthogonal"
+            self.text_info = "Bottom view, orthogonal"
         elif event.key == "0":
             self.set_view("initial")
-            self.title = "Initial view"
+            self.text_info = "Initial view"
 
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
@@ -1782,7 +1797,7 @@ class Player:
         # time recording has started.
         def advance(args):
             self.current_index = args * downsample
-            self.title = (
+            self.text_info = (
                 f"{self.current_index}/{(n_samples - 1) * downsample}: "
                 f"{self.current_time:.3f} s."
             )
@@ -1821,5 +1836,5 @@ class Player:
         if show_progress_bar:
             progress_bar.close()
 
-        self.title = ""
+        self.text_info = ""
         self.current_index = 0
