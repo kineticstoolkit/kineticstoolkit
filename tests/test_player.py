@@ -296,6 +296,8 @@ def test_scripting():
     p.perspective = True
 
     # %% Styling points and interconnections
+    p.default_point_color = "r"
+    p.default_point_color = [1, 0, 0]
     p.point_size = 8.0
     p.interconnection_width = 5.0
 
