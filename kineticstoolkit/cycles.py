@@ -30,7 +30,7 @@ import numpy as np
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
 from tqdm import tqdm
-from kineticstoolkit.typing_ import typecheck, ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, check_type
 
 
 def __dir__():
@@ -43,7 +43,6 @@ def __dir__():
     ]
 
 
-@typecheck
 def detect_cycles(
     ts: TimeSeries,
     data_key: str,
@@ -104,6 +103,65 @@ def detect_cycles(
         A copy of `ts` with the events added.
 
     """
+    check_type("ts", ts, TimeSeries)
+    check_type("data_key", data_key, str)
+    event_names = check_type(
+        "event_names",
+        event_names,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=str,
+    )
+    thresholds = check_type(
+        "thresholds",
+        thresholds,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=float,
+    )
+    directions = check_type(
+        "directions",
+        directions,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=str,
+    )
+    min_durations = check_type(
+        "min_durations",
+        min_durations,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=float,
+    )
+    max_durations = check_type(
+        "max_durations",
+        max_durations,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=float,
+    )
+    min_peak_heights = check_type(
+        "min_peak_heights",
+        min_peak_heights,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=float,
+    )
+    max_peak_heights = check_type(
+        "max_peak_heights",
+        max_peak_heights,
+        list,
+        cast=True,
+        seq_length=2,
+        seq_value_type=float,
+    )
+
     # lowercase directions[0] once
     directions[0] = directions[0].lower()  # type: ignore
     if directions[0] != "rising" and directions[0] != "falling":
