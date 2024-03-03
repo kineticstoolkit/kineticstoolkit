@@ -46,9 +46,9 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from kineticstoolkit.typing_ import ArrayLike, check_param, cast_param
+from kineticstoolkit.typing_ import check_param, cast_param
+from numpy.typing import ArrayLike
 from typing import Any
-from collections.abc import Sequence
 from numbers import Real
 
 import warnings
@@ -1191,7 +1191,6 @@ class TimeSeries:
 
         """
         check_param("data_key", data_key, str)
-        data_to_add = cast_param("data_value", data_value, np.ndarray)
         check_param("overwrite", overwrite, bool)
         check_param("in_place", in_place, bool)
         ts = self if in_place else self.copy()

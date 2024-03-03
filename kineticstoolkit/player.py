@@ -40,7 +40,8 @@ from numpy import sin, cos
 import time
 from copy import deepcopy
 from typing import Any
-from kineticstoolkit.typing_ import ArrayLike, check_param, cast_param
+from kineticstoolkit.typing_ import check_param, cast_param
+from numpy.typing import ArrayLike
 import warnings
 
 # To fit the new viewpoint on selecting a new point

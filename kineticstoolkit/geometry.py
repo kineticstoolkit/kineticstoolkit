@@ -32,7 +32,8 @@ __license__ = "Apache 2.0"
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.typing_ import ArrayLike, check_param
+from kineticstoolkit.typing_ import check_param
+from numpy.typing import ArrayLike
 
 
 def __dir__():

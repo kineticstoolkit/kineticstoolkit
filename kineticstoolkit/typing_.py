@@ -18,41 +18,13 @@
 """
 Typing module to typecheck everything in realtime using beartype.
 """
-from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from typing import NewType, TYPE_CHECKING
-from numpy.typing import ArrayLike as npt_ArrayLike
-import numpy as np
 from numbers import Integral, Real, Complex
-from beartype import (
-    beartype,
-    BeartypeConf,
-    BeartypeViolationVerbosity,
-    BeartypeHintOverrides,
-)
-
-typecheck = beartype(
-    conf=BeartypeConf(
-        hint_overrides=BeartypeHintOverrides(
-            {int: Integral, float: Real, complex: Complex}
-        ),
-        violation_param_type=TypeError,
-        violation_return_type=TypeError,
-        violation_verbosity=BeartypeViolationVerbosity.MINIMAL,
-    )
-)
-
-# Define custom types so that beartype, sphinx,
-# mypy and the user are all happy
-if TYPE_CHECKING:  # mypy is running
-    ArrayLike = npt_ArrayLike
-else:  # runtime
-    ArrayLike = NewType("ArrayLike", npt_ArrayLike)  # mypy cries
 
 
 # Custom check function
@@ -73,10 +45,7 @@ def cast_param(
     See check_types for the list of parameters.
 
     """
-    if expected_type == np.ndarray:  # We do not cast arrays using their type
-        value = np.array(value)
-    else:
-        value = expected_type(value)
+    value = expected_type(value)
 
     check_param(
         name=name,
@@ -152,12 +121,14 @@ def check_param(
 
     """
     if isinstance(expected_type, tuple):
-        expected_type = tuple([PARAM_MAPPING.get(_, _) for _ in expected_type])
+        mapped_expected_type = tuple(
+            [PARAM_MAPPING.get(_, _) for _ in expected_type]
+        )
     else:
-        expected_type = PARAM_MAPPING.get(expected_type, expected_type)
+        mapped_expected_type = PARAM_MAPPING.get(expected_type, expected_type)  # type: ignore
 
     # Check type
-    if not isinstance(value, expected_type):
+    if not isinstance(value, mapped_expected_type):  # type: ignore
         raise ValueError(
             f"{name} must be of type {expected_type}, however it is of type "
             f"{type(value)}, with a value of {value}."
@@ -166,18 +137,20 @@ def check_param(
     if contents_type is not None:
 
         if isinstance(contents_type, tuple):
-            contents_type = tuple(
+            mapped_contents_type = tuple(
                 [PARAM_MAPPING.get(_, _) for _ in contents_type]
             )
         else:
-            contents_type = PARAM_MAPPING.get(contents_type, contents_type)
+            mapped_contents_type = PARAM_MAPPING.get(
+                contents_type, contents_type
+            )  # type: ignore
 
         if isinstance(value, dict):
             value_list = value.values()
         else:
             value_list = value
         for element in value_list:
-            if not isinstance(element, contents_type):
+            if not isinstance(element, mapped_contents_type):  # type: ignore
                 raise ValueError(
                     f"{name} must contain only elements of type "
                     f"{contents_type}, however it contains a value of type "
@@ -210,20 +183,22 @@ def check_param(
         for i_dim, dim in enumerate(shape):
             if dim != -1 and dim != value_shape[i_dim]:
                 raise ValueError(
-                    f"Dimension {i_dim} of {value} must be {dim}, however it "
-                    f"is {value_shape[i_dim]} ({value} has a shape of "
+                    f"Dimension {i_dim} of {name} must be {dim}, however it "
+                    f"is {value_shape[i_dim]} since {value} has a shape of "
                     f"{value_shape}."
                 )
 
     if key_type is not None:
 
         if isinstance(key_type, tuple):
-            key_type = tuple([PARAM_MAPPING.get(_, _) for _ in key_type])
+            mapped_key_type = tuple(
+                [PARAM_MAPPING.get(_, _) for _ in key_type]
+            )
         else:
-            key_type = PARAM_MAPPING.get(key_type, key_type)
+            mapped_key_type = PARAM_MAPPING.get(key_type, key_type)  # type: ignore
 
         for key in value:
-            if not isinstance(key, key_type):
+            if not isinstance(key, mapped_key_type):  # type: ignore
                 raise ValueError(
                     f"{name} must contain only keys of type "
                     f"{key_type}, however it contains a key of type "
