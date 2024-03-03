@@ -16,8 +16,6 @@
 # limitations under the License.
 
 """Provide functions related to exceptions. For internal use only."""
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022-2024 Félix Chénier"

@@ -18,7 +18,6 @@
 """
 Provide standard filters for TimeSeries.
 """
-from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -31,7 +30,7 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.typing_ import typecheck
+from kineticstoolkit.typing_ import check_param, cast_param
 
 import kineticstoolkit as ktk  # For doctests
 
@@ -40,7 +39,6 @@ def __dir__():
     return ["savgol", "smooth", "butter", "deriv", "median"]
 
 
-@typecheck
 def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     """Interpolate NaNs in a given data key in a TimeSeries."""
     ts = ts.get_subset(key)
@@ -57,7 +55,6 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
     return (ts, nan_index)
 
 
-@typecheck
 def _validate_input(ts):
     """
     Check that time is not null, that sample rate is constant, and that
@@ -75,7 +72,6 @@ def _validate_input(ts):
         warnings.warn("It seems that unit is not 's'.")
 
 
-@typecheck
 def savgol(
     ts: TimeSeries, /, *, window_length: int, poly_order: int, deriv: int = 0
 ) -> TimeSeries:
@@ -117,6 +113,10 @@ def savgol(
     ktk.filters.smooth
 
     """
+    check_param("ts", ts, TimeSeries)
+    check_param("window_length", window_length, int)
+    check_param("poly_order", poly_order, int)
+    check_param("deriv", deriv, int)
     _validate_input(ts)
 
     tsout = ts.copy()
@@ -147,7 +147,6 @@ def savgol(
     return tsout
 
 
-@typecheck
 def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     """
     Apply a smoothing (moving average) filter on a TimeSeries.
@@ -181,17 +180,18 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
     ktk.filters.savgol
 
     """
+    check_param("ts", ts, TimeSeries)
+    check_param("window_length", window_length, int)
     _validate_input(ts)
 
     tsout = savgol(ts, window_length=window_length, poly_order=0)
     return tsout
 
 
-@typecheck
 def butter(
     ts: TimeSeries,
     /,
-    fc: float | list[float],
+    fc: float | tuple[float, float],
     *,
     order: int = 2,
     btype: str = "lowpass",
@@ -211,8 +211,8 @@ def butter(
         Input TimeSeries.
     fc
         Cut-off frequency in Hz. This is a float for single-frequency filters
-        (lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
-        for two-frequency filters (bandpass, bandstop).
+        (lowpass, highpass), or a tuple of two floats (e.g., (10., 13.)
+        for two-frequency filters (bandpass, bandstop)).
     order
         Optional. Order of the filter. Default is 2.
     btype
@@ -235,6 +235,17 @@ def butter(
         filter.
 
     """
+    check_param("ts", ts, TimeSeries)
+    try:
+        check_param("fc", fc, float)
+    except ValueError:
+        try:
+            fc = cast_param("fc", fc, tuple, length=2, contents_type=float)
+        except ValueError:
+            raise ValueError("fc must be an integer or a tuple or 2 floats.")
+    check_param("order", order, int)
+    check_param("btype", btype, str)
+    check_param("filtfilt", filtfilt, bool)
     _validate_input(ts)
 
     ts = ts.copy()
@@ -264,7 +275,6 @@ def butter(
     return ts
 
 
-@typecheck
 def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     """
     Calculate the nth numerical derivative.
@@ -320,6 +330,8 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     array([ 100., -100., -100.])
 
     """
+    check_param("ts", ts, TimeSeries)
+    check_param("n", n, int)
     _validate_input(ts)
 
     out_ts = ts.copy()
@@ -335,7 +347,6 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     return out_ts
 
 
-@typecheck
 def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     """
     Calculate a moving median.
@@ -359,6 +370,9 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     array([10., 11., 11., 14., 15., 15.])
 
     """
+    check_param("ts", ts, TimeSeries)
+    check_param("window_length", window_length, int)
+
     out_ts = ts.copy()
     for key in ts.data:
         window_shape = [1 for i in range(len(ts.data[key].shape))]

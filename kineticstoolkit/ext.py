@@ -18,8 +18,6 @@
 """
 Provide extension support for Kinetics Toolkit.
 """
-from __future__ import annotations
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -29,10 +27,8 @@ __license__ = "Apache 2.0"
 import warnings
 import importlib
 import pkgutil
-from kineticstoolkit.typing_ import typecheck
 
 
-@typecheck
 def _import_extensions() -> list[str]:
     """
     Import all installed kineticstoolkit extensions.

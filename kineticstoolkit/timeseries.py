@@ -46,9 +46,10 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from kineticstoolkit.typing_ import typecheck, ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, check_param, cast_param
 from typing import Any
 from collections.abc import Sequence
+from numbers import Real
 
 import warnings
 from ast import literal_eval
@@ -60,19 +61,18 @@ import kineticstoolkit as ktk  # For doctests
 WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
 
-@typecheck
 class TimeSeriesEventList(list):
     """Event list that ensures every element is a TimeSeriesEvent."""
 
-    def __init__(
-        self, source: list = [], *, time: float = 0.0, name: str = "event"
-    ):
+    def __init__(self, source: list = []):
         """Initialize the class instance using a source list."""
+        check_param("source", source, list)
         for element in source:
             self.append(element)
 
     def __setitem__(self, index, value):
         """Cast the value to a TimeSeriesEvent."""
+        check_param("index", index, int)
         try:
             event = TimeSeriesEvent(time=value.time, name=value.name)
         except AttributeError:
@@ -95,17 +95,18 @@ class TimeSeriesEventList(list):
             # does the check.
 
 
-@typecheck
 class TimeSeriesDataDict(dict):
     """Data dictionary that checks sizes and converts to NumPy arrays."""
 
     def __init__(self, source: dict = {}):
         """Initialize the class instance using a source dictionary."""
+        check_param("source", source, dict, key_type=str)
         for key in source:
             self[key] = source[key]
 
     def __setitem__(self, key, value):
         """Cast the added data as a NumPy array."""
+        check_param("key", key, str)
         to_set = np.array(value, copy=True)
 
         if len(to_set.shape) == 0:
@@ -117,7 +118,6 @@ class TimeSeriesDataDict(dict):
         super(TimeSeriesDataDict, self).__setitem__(key, to_set)
 
 
-@typecheck
 @dataclass
 class TimeSeriesEvent:
     """
@@ -201,7 +201,6 @@ class TimeSeriesEvent:
         return {"Time": self.time, "Name": self.name}
 
 
-@typecheck
 class TimeSeries:
     """
     A class that holds time, data series, events and metadata.
@@ -438,7 +437,7 @@ class TimeSeries:
             )
             return
 
-        # Else, it's an array (thanks to runtime static tests)
+        # Else, try as an array
         _assign_self(
             TimeSeries.from_array(
                 np.array(src),
@@ -966,6 +965,11 @@ class TimeSeries:
             A deep copy of the TimeSeries.
 
         """
+        check_param("copy_time", copy_time, bool)
+        check_param("copy_data", copy_data, bool)
+        check_param("copy_time_info", copy_time_info, bool)
+        check_param("copy_data_info", copy_data_info, bool)
+        check_param("copy_events", copy_events, bool)
         self._check_well_typed()
 
         if copy_data and copy_time_info and copy_data_info and copy_events:
@@ -1035,6 +1039,10 @@ class TimeSeries:
         {'Color': [43, 2, 255]}
 
         """
+        check_param("data_key", data_key, str)
+        check_param("info_key", info_key, str)
+        check_param("overwrite", overwrite, bool)
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1102,6 +1110,9 @@ class TimeSeries:
         {}
 
         """
+        check_param("data_key", data_key, str)
+        check_param("info_key", info_key, str)
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1179,6 +1190,10 @@ class TimeSeries:
                events: []
 
         """
+        check_param("data_key", data_key, str)
+        data_to_add = cast_param("data_value", data_value, np.ndarray)
+        check_param("overwrite", overwrite, bool)
+        check_param("in_place", in_place, bool)
         ts = self if in_place else self.copy()
 
         # Cast data
@@ -1283,6 +1298,9 @@ class TimeSeries:
         {'signal': {'Unit': 'm'}}
 
         """
+        check_param("old_data_key", old_data_key, str)
+        check_param("new_data_key", new_data_key, str)
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1351,6 +1369,8 @@ class TimeSeries:
         {}
 
         """
+        check_param("data_key", data_key, str)
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1549,6 +1569,10 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event2')]
 
         """
+        check_param("time", time, float)
+        check_param("name", name, str)
+        check_param("in_place", in_place, bool)
+        check_param("unique", unique, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1626,6 +1650,10 @@ class TimeSeries:
          TimeSeriesEvent(time=2.3, name='event4')]
 
         """
+        check_param("old_name", old_name, str)
+        check_param("new_name", new_name, str)
+        check_param("occurrence", occurrence, (int, None))
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1701,6 +1729,9 @@ class TimeSeries:
         [TimeSeriesEvent(time=2.3, name='event2')]
 
         """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, (int, None))
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1751,6 +1782,7 @@ class TimeSeries:
         2
 
         """
+        check_param("name", name, str)
         self._check_well_typed()
 
         indexes = self._get_event_indexes(name)
@@ -1806,6 +1838,7 @@ class TimeSeries:
          TimeSeriesEvent(time=2.0, name='event3')]
 
         """
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1871,6 +1904,8 @@ class TimeSeries:
          TimeSeriesEvent(time=3, name='three')]
 
         """
+        check_param("unique", unique, bool)
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1928,6 +1963,7 @@ class TimeSeries:
          TimeSeriesEvent(time=9, name='event')]
 
         """
+        check_param("in_place", in_place, bool)
         self._check_well_typed()
 
         ts = self if in_place else self.copy()
@@ -1981,6 +2017,7 @@ class TimeSeries:
         4
 
         """
+        check_param("time", time, float)
         self._check_well_shaped()
 
         self._check_not_empty_time()
@@ -2034,6 +2071,8 @@ class TimeSeries:
         2
 
         """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
 
         def _raise():
@@ -2102,6 +2141,8 @@ class TimeSeries:
         2
 
         """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
 
         def _raise():
@@ -2161,6 +2202,8 @@ class TimeSeries:
         4
 
         """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
         self._check_well_shaped()
 
         return self.get_index_at_time(
@@ -2221,6 +2264,9 @@ class TimeSeries:
         2
 
         """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
 
         if inclusive is False:
@@ -2288,6 +2334,9 @@ class TimeSeries:
         2
 
         """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
 
         if inclusive is False:
@@ -2346,6 +2395,8 @@ class TimeSeries:
         array([0. , 0.1, 0.2])
 
         """
+        check_param("index", index, int)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2355,7 +2406,7 @@ class TimeSeries:
             )
 
         return self.get_ts_between_indexes(
-            0, index, inclusive=[True, inclusive]
+            0, index, inclusive=(True, inclusive)
         )
 
     def get_ts_after_index(
@@ -2401,6 +2452,8 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
+        check_param("index", index, int)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2414,7 +2467,7 @@ class TimeSeries:
             )
 
         return self.get_ts_between_indexes(
-            index, self.time.shape[0] - 1, inclusive=[inclusive, True]
+            index, self.time.shape[0] - 1, inclusive=(inclusive, True)
         )
 
     def get_ts_between_indexes(
@@ -2422,7 +2475,7 @@ class TimeSeries:
         index1: int,
         index2: int,
         *,
-        inclusive: bool | Sequence[bool] = False,
+        inclusive: bool | tuple[bool, bool] = False,
     ) -> TimeSeries:
         """
         Get a TimeSeries between two specified time indexes.
@@ -2432,13 +2485,13 @@ class TimeSeries:
         index1, index2
             Time indexes
         inclusive
-            Optional. Either a bool or a sequence of two bools. Used to
+            Optional. Either a bool or a tuple of two bools. Used to
             specify which indexes are returned:
 
-            - False or [False, False] (default): index1 < index < index2
-            - True or [True, True]: index1 <= index <= index2
-            - [True, False]: index1 <= index < index2
-            - [False, True]: index1 < index <= index2
+            - False or (False, False) (default): index1 < index < index2
+            - True or (True, True): index1 <= index <= index2
+            - (True, False): index1 <= index < index2
+            - (False, True): index1 < index <= index2
 
         Returns
         -------
@@ -2473,6 +2526,20 @@ class TimeSeries:
         >>> ts.get_ts_between_indexes(2, 5, inclusive=[True, False]).time
         array([0.2, 0.3, 0.4])
         """
+        check_param("index1", index1, int)
+        check_param("index2", index2, int)
+        try:
+            check_param("inclusive", inclusive, bool)
+        except ValueError:
+            try:
+                inclusive = cast_param(
+                    "inclusive", inclusive, tuple, length=2, contents_type=bool
+                )
+            except ValueError:
+                raise ValueError(
+                    "inclusive must be either a bool or a tuple of two bools."
+                )
+
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2553,6 +2620,8 @@ class TimeSeries:
         array([0. , 0.1, 0.2, 0.3])
 
         """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2566,7 +2635,7 @@ class TimeSeries:
             )
 
         return self.get_ts_between_times(
-            self.time[0], time, inclusive=[True, inclusive]
+            self.time[0], time, inclusive=(True, inclusive)
         )
 
     def get_ts_after_time(
@@ -2612,6 +2681,8 @@ class TimeSeries:
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2625,7 +2696,7 @@ class TimeSeries:
             )
 
         return self.get_ts_between_times(
-            time, self.time[-1], inclusive=[inclusive, True]
+            time, self.time[-1], inclusive=(inclusive, True)
         )
 
     def get_ts_between_times(
@@ -2633,7 +2704,7 @@ class TimeSeries:
         time1: float,
         time2: float,
         *,
-        inclusive: bool | Sequence[bool] = False,
+        inclusive: bool | tuple[bool, bool] = False,
     ) -> TimeSeries:
         """
         Get a TimeSeries between two specified times.
@@ -2643,13 +2714,13 @@ class TimeSeries:
         time1, time2
             Times to look for in the TimeSeries' time vector.
         inclusive
-            Optional. Either a bool or a sequence of two bools. Used to
+            Optional. Either a bool or a tuple of two bools. Used to
             specify which times are returned:
 
-            - False or [False, False] (default): time1 < time < time2
-            - True or [True, True]: time1 <= time <= time2
-            - [True, False]: time1 <= time < time2
-            - [False, True]: time1 < time <= time2
+            - False or (False, False) (default): time1 < time < time2
+            - True or (True, True): time1 <= time <= time2
+            - (True, False): time1 <= time < time2
+            - (False, True): time1 < time <= time2
 
         Returns
         -------
@@ -2683,6 +2754,20 @@ class TimeSeries:
         >>> ts.get_ts_between_times(0.2, 0.5, inclusive=[True, False]).time
         array([0.2, 0.3, 0.4])
         """
+        check_param("time1", time1, float)
+        check_param("teim2", time2, float)
+        try:
+            check_param("inclusive", inclusive, bool)
+        except ValueError:
+            try:
+                inclusive = cast_param(
+                    "inclusive", inclusive, tuple, length=2, contents_type=bool
+                )
+            except ValueError:
+                raise ValueError(
+                    "inclusive must be either a bool or a tuple of two bools."
+                )
+
         self._check_well_shaped()
         self._check_increasing_time()
 
@@ -2756,6 +2841,9 @@ class TimeSeries:
         array([0. , 0.1, 0.2, 0.3, 0.4])
 
         """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
 
         try:
@@ -2829,6 +2917,9 @@ class TimeSeries:
         array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
         """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
         self._check_well_shaped()
 
         try:
@@ -2855,7 +2946,7 @@ class TimeSeries:
         occurrence1: int = 0,
         occurrence2: int = 0,
         *,
-        inclusive: bool | Sequence[bool] = False,
+        inclusive: bool | tuple[bool, bool] = False,
     ) -> TimeSeries:
         """
         Get a TimeSeries between two specified events.
@@ -2868,13 +2959,13 @@ class TimeSeries:
             Optional. i_th occurence of the event to look for in the events
             list, starting at 0.
         inclusive
-            Optional. Either a bool or a sequence of two bools. Used to
+            Optional. Either a bool or a tuple of two bools. Used to
             specify which times are returned:
                 
-            - False or [False, False] (default): event1.time < time < event2.time
-            - True or [True, True]: event1.time <= time <= event2.time
-            - [True, False]: event1.time <= time < event2.time
-            - [False, True]: event1.time < time <= event2.time
+            - False or (False, False) (default): event1.time < time < event2.time
+            - True or (True, True): event1.time <= time <= event2.time
+            - (True, False): event1.time <= time < event2.time
+            - (False, True): event1.time < time <= event2.time
 
         Returns
         -------
@@ -2909,6 +3000,22 @@ class TimeSeries:
         array([0.2, 0.3, 0.4, 0.5, 0.6])
 
         """
+        check_param("name1", name1, str)
+        check_param("name2", name2, str)
+        check_param("occurrence1", occurrence2, int)
+        check_param("occurrence1", occurrence2, int)
+        try:
+            check_param("inclusive", inclusive, bool)
+        except ValueError:
+            try:
+                inclusive = cast_param(
+                    "inclusive", inclusive, tuple, length=2, contents_type=bool
+                )
+            except ValueError:
+                raise ValueError(
+                    "inclusive must be either a bool or a tuple of two bools."
+                )
+
         self._check_well_shaped()
 
         # Ensure to work with a sequence of `inclusive`
@@ -2979,6 +3086,8 @@ class TimeSeries:
         [TimeSeriesEvent(time=0.55, name='start')]
 
         """
+        check_param("time", time, float)
+        check_param("in_place", in_place, bool)
         self._check_well_shaped()
 
         ts = self if in_place else self.copy()
@@ -3129,6 +3238,9 @@ class TimeSeries:
         array([ nan,  nan,  nan,  nan,  4. ,  6.5,  9. , 12.5, 16. ,  nan,  nan, nan, 36. , 42.5, 49. ,  nan,  nan,  nan,  nan])
 
         """
+        check_param("kind", kind, str)
+        check_param("in_place", in_place, bool)
+
         if "fill_value" in kwargs:
             warnings.warn(
                 "fill_value parameter has been removed in version 0.12 "
@@ -3143,7 +3255,7 @@ class TimeSeries:
 
         # --------------------------------------------------------------
         # Create the new time if a frequency was provided instead
-        if isinstance(target, float) or isinstance(target, int):
+        if isinstance(target, Real):
             # We specifically use arange instead of linspace, because what
             # is defined is a frequency, not a number of points.
             new_time = np.arange(
@@ -3262,6 +3374,15 @@ class TimeSeries:
             dict_keys(['signal1', 'signal3'])
 
         """
+        try:
+            check_param("data_keys", data_keys, str)
+        except ValueError:
+            try:
+                check_param("data_keys", data_keys, list, contents_type=str)
+            except ValueError:
+                raise ValueError(
+                    "data_keys must be a string or a list of strings."
+                )
         self._check_well_shaped()
 
         if isinstance(data_keys, str):
@@ -3338,8 +3459,21 @@ class TimeSeries:
         - All events are also merged from both TimeSeries.
 
         """
+        try:
+            check_param("data_keys", data_keys, str)
+        except ValueError:
+            try:
+                check_param("data_keys", data_keys, list, contents_type=str)
+            except ValueError:
+                raise ValueError(
+                    "data_keys must be a string or a list of strings."
+                )
+        check_param("resample", resample, bool)
+        check_param("overwrite", overwrite, bool)
+        check_param("in_place", in_place, bool)
         self._check_well_shaped()
         ts._check_well_shaped()
+        # --
 
         ts_out = self if in_place else self.copy()
         ts = ts.copy()
@@ -3435,6 +3569,7 @@ class TimeSeries:
         array([False, False,  True, False])
 
         """
+        check_param("data_key", data_key, str)
         self._check_well_shaped()
 
         values = self.data[data_key].copy()
@@ -3483,6 +3618,9 @@ class TimeSeries:
         ktk.TimeSeries.isnan
 
         """
+        check_param("max_missing_samples", max_missing_samples, int)
+        check_param("method", method, str)
+        check_param("in_place", in_place, bool)
         self._check_well_shaped()
 
         if np.isnan(self.get_sample_rate()):
@@ -3564,6 +3702,22 @@ class TimeSeries:
         """
         check_interactive_backend()
 
+        try:
+            check_param("name", name, str)
+        except ValueError:
+            try:
+                check_param("name", name, list, contents_type=str)
+            except ValueError:
+                raise ValueError("name must be a string or a list of strings.")
+        try:
+            check_param("data_keys", data_keys, str)
+        except ValueError:
+            try:
+                check_param("data_keys", data_keys, list, contents_type=str)
+            except ValueError:
+                raise ValueError(
+                    "data_keys must be a string or a list of strings."
+                )
         self._check_well_shaped()
         self._check_not_empty_time()
         self._check_not_empty_data()
@@ -3723,7 +3877,7 @@ class TimeSeries:
     def ui_sync(
         self,
         data_keys: str | list[str] = [],
-        ts2=None,
+        ts2: TimeSeries | None = None,
         data_keys2: str | list[str] = [],
     ) -> TimeSeries:  # pragma: no cover
         """
@@ -3766,6 +3920,25 @@ class TimeSeries:
 
         """
         check_interactive_backend()
+
+        try:
+            check_param("data_keys", data_keys, str)
+        except ValueError:
+            try:
+                check_param("data_keys", data_keys, list, contents_type=str)
+            except ValueError:
+                raise ValueError(
+                    "data_keys must be a string or a list of strings."
+                )
+        try:
+            check_param("data_keys2", data_keys2, str)
+        except ValueError:
+            try:
+                check_param("data_keys2", data_keys2, list, contents_type=str)
+            except ValueError:
+                raise ValueError(
+                    "data_keys2 must be a string or a list of strings."
+                )
 
         self._check_well_shaped()
         self._check_not_empty_time()
@@ -3938,6 +4111,17 @@ class TimeSeries:
         plots only the forces and moments, without plotting the angle.
 
         """
+        try:
+            check_param("data_keys", data_keys, str)
+        except ValueError:
+            try:
+                check_param("data_keys", data_keys, list, contents_type=str)
+            except ValueError:
+                raise ValueError(
+                    "data_keys must be a string or a list of strings."
+                )
+        check_param("event_names", event_names, bool)
+        check_param("legend", legend, bool)
         self._check_well_shaped()
 
         # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
@@ -4333,6 +4517,12 @@ class TimeSeries:
                [0.4, 9. ]])}
 
         """
+        check_param("dataframe", dataframe, pd.DataFrame)
+        check_param("time_info", time_info, dict, key_type=str)
+        check_param(
+            "data_info", data_info, dict, key_type=str, contents_type=dict
+        )
+        check_param("events", events, list)
 
         ts = TimeSeries(
             time=dataframe.index.to_numpy(),
@@ -4454,6 +4644,12 @@ class TimeSeries:
                events: []
 
         """
+        check_param("data_key", data_key, str)
+        check_param("time_info", time_info, dict, key_type=str)
+        check_param(
+            "data_info", data_info, dict, key_type=str, contents_type=dict
+        )
+        check_param("events", events, list)
 
         time = np.array(time)
         ts = TimeSeries(

@@ -27,6 +27,7 @@ __license__ = "Apache 2.0"
 
 from typing import NewType, TYPE_CHECKING
 from numpy.typing import ArrayLike as npt_ArrayLike
+import numpy as np
 from numbers import Integral, Real, Complex
 from beartype import (
     beartype,
@@ -55,21 +56,62 @@ else:  # runtime
 
 
 # Custom check function
-def check_type(
+def cast_param(
     name: str,
     value,
     expected_type,
     *,
-    cast : bool = False,
-    seq_value_type = None,
-    seq_length : int | None = None,
-    array_shape : tuple | None = None,
-    dict_key_type = None,
-    dict_value_type = None,
+    contents_type=None,
+    key_type=None,
+    length: int | None = None,
+    ndims: int | None = None,
+    shape: tuple | None = None,
+):
+    """
+    Cast a parameter to a given type and check against optional specs.
+
+    See check_types for the list of parameters.
+
+    """
+    if expected_type == np.ndarray:  # We do not cast arrays using their type
+        value = np.array(value)
+    else:
+        value = expected_type(value)
+
+    check_param(
+        name=name,
+        value=value,
+        expected_type=expected_type,
+        contents_type=contents_type,
+        key_type=key_type,
+        length=length,
+        shape=shape,
+    )
+    return value
+
+
+PARAM_MAPPING = {
+    int: Integral,
+    float: Real,
+    complex: Complex,
+    None: type(None),
+}
+
+
+def check_param(
+    name: str,
+    value,
+    expected_type,
+    *,
+    contents_type=None,
+    key_type=None,
+    length: int | None = None,
+    ndims: int | None = None,
+    shape: tuple | None = None,
 ):
     """
     Check that a given parameter has the expected type and optional specs.
-    
+
     Parameters
     ----------
     name
@@ -78,21 +120,21 @@ def check_type(
         Value of the parameter.
     expected_type
         Expected type of the parameter.
-    cast
-        Optional. True to cast the value to the given type before performing
-        the checks. In this case, the casted value is returned.
-    seq_value_type
+    contents_type
         Optional. For a tuple or list, ensures that every element is of the
-        given type. Does not recurse into nested variables.
-    seq_length
+        given type. For a dictionary, ensures that every value is of the
+        current type. Does not recurse into nested variables.
+    key_type
+        Optional. Check that every key of a dict is of a given type. Does not
+        recurse into nested variables.
+    length
         Optional. Check that a tuple or list has a fixed length.
+    ndims
+        Optional. Check that an array has a given number of dimensions.
     array_shape
         Optional. Check that an array has a given shape. Use -1 for
         dimensions that do not matter. For instance, to check if an array
         as a shape of Nx4x4, we would use `array_shape = (-1, 4, 4)`.
-    dict_key_type
-        Optional. Check that every key of a dict is of a given type. Does not
-        recurse into nested variables.
     dict_value_type
         Optional. Check that every value of a dict is of a given type. Does not
         recurse into nested variables.
@@ -100,51 +142,72 @@ def check_type(
     Returns
     -------
     Any
-        The value (if cast=False), or the casted value (if cast=True)
-        
+        The value
+
 
     Raises
     ------
     ValueError
         If the value does not meet the given criteria.
-        
+
     """
-    # Accept ints as floats
-    numerical_tower = lambda x: float(x) if isinstance(x, int) else x
-    value = numerical_tower(value)
-    # Cast if asked, otherwise check type.
-    if cast:
-        value = expected_type(value)
-    elif not isinstance(value, expected_type):
+    if isinstance(expected_type, tuple):
+        expected_type = tuple([PARAM_MAPPING.get(_, _) for _ in expected_type])
+    else:
+        expected_type = PARAM_MAPPING.get(expected_type, expected_type)
+
+    # Check type
+    if not isinstance(value, expected_type):
         raise ValueError(
             f"{name} must be of type {expected_type}, however it is of type "
             f"{type(value)}, with a value of {value}."
         )
     # Other specs
-    if seq_value_type is not None:
-        for element in value:            
-            if not isinstance(numerical_tower(element), seq_value_type):
+    if contents_type is not None:
+
+        if isinstance(contents_type, tuple):
+            contents_type = tuple(
+                [PARAM_MAPPING.get(_, _) for _ in contents_type]
+            )
+        else:
+            contents_type = PARAM_MAPPING.get(contents_type, contents_type)
+
+        if isinstance(value, dict):
+            value_list = value.values()
+        else:
+            value_list = value
+        for element in value_list:
+            if not isinstance(element, contents_type):
                 raise ValueError(
                     f"{name} must contain only elements of type "
-                    f"{seq_value_type}, however it contains a value of type "
+                    f"{contents_type}, however it contains a value of type "
                     f"{type(element)}, with a value of {element}."
                 )
-                
-    if seq_length is not None and len(value) != seq_length:
+
+    if length is not None and len(value) != length:
         raise ValueError(
-            f"{name} must have a length of {seq_length}, however it has "
+            f"{name} must have a length of {length}, however it has "
             f"a length of {len(value)}."
         )
-        
-    if array_shape is not None:
+
+    if ndims is not None:
         value_shape = value.shape
-        if len(value_shape) != len(array_shape):
+        if len(value_shape) != ndims:
             raise ValueError(
-                f"{name} must have {len(array_shape)} dimensions, however it "
+                f"{name} must have {ndims} dimensions, however it "
                 f"has {len(value_shape)} dimensions with a shape of "
                 f"{value_shape}."
             )
-        for i_dim, dim in enumerate(array_shape):
+
+    if shape is not None:
+        value_shape = value.shape
+        if len(value_shape) != len(shape):
+            raise ValueError(
+                f"{name} must have {len(shape)} dimensions, however it "
+                f"has {len(value_shape)} dimensions with a shape of "
+                f"{value_shape}."
+            )
+        for i_dim, dim in enumerate(shape):
             if dim != -1 and dim != value_shape[i_dim]:
                 raise ValueError(
                     f"Dimension {i_dim} of {value} must be {dim}, however it "
@@ -152,22 +215,19 @@ def check_type(
                     f"{value_shape}."
                 )
 
-    if dict_key_type is not None:
+    if key_type is not None:
+
+        if isinstance(key_type, tuple):
+            key_type = tuple([PARAM_MAPPING.get(_, _) for _ in key_type])
+        else:
+            key_type = PARAM_MAPPING.get(key_type, key_type)
+
         for key in value:
-            if not isinstance(key, dict_key_type):
+            if not isinstance(key, key_type):
                 raise ValueError(
                     f"{name} must contain only keys of type "
-                    f"{dict_key_type}, however it contains a key of type "
+                    f"{key_type}, however it contains a key of type "
                     f"{type(key)}, with a value of {key}."
                 )
 
-    if dict_value_type is not None:
-        for key in value:
-            if not isinstance(value[key], dict_value_type):
-                raise ValueError(
-                    f"{name} must contain only values of type "
-                    f"{dict_value_type}, however it contains a value of type "
-                    f"{type(value)}, with a value of {value}."
-                )
-
-    return value                
+    return value

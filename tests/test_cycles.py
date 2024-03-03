@@ -69,7 +69,7 @@ def test_detect_cycles():
         "data",
         event_names=["start", "stop"],
         thresholds=[0.5, 0.5],
-        directions=["falling"],
+        directions=["falling", "rising"],
     )
     assert ts2.events[0].name == "start"
     assert ts2.events[0].time == 6

@@ -24,8 +24,6 @@ Note
 This module is addressed to Kinetics Toolkit's developers only.
 
 """
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"

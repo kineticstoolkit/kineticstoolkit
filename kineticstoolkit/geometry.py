@@ -23,7 +23,6 @@ Note
 As a convention, the first dimension of every array is always N and corresponds
 to time.
 """
-from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -33,7 +32,7 @@ __license__ = "Apache 2.0"
 import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
-from kineticstoolkit.typing_ import typecheck, ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, check_param
 
 
 def __dir__():
@@ -52,7 +51,6 @@ def __dir__():
     ]
 
 
-@typecheck
 def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     """
     Matrix multiplication between series of matrices.
@@ -113,7 +111,6 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     return result
 
 
-@typecheck
 def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     """
     Calculate series of inverse transform.
@@ -163,7 +160,6 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     return out
 
 
-@typecheck
 def create_transforms(
     seq: str | None = None,
     angles: ArrayLike | None = None,
@@ -252,6 +248,9 @@ def create_transforms(
                 [0.   , 0.   , 0.   , 1.   ]]])
 
     """
+    check_param("seq", seq, (str, None))
+    check_param("degrees", degrees, bool)
+
     # Condition translations
     if translations is None:
         translations_array = np.zeros((1, 3))
@@ -308,7 +307,6 @@ def create_transforms(
     return T @ scales_array
 
 
-@typecheck
 def rotate(
     coordinates, /, seq: str, angles: ArrayLike, *, degrees: bool = False
 ) -> np.ndarray:
@@ -373,7 +371,6 @@ def rotate(
     return matmul(create_transforms(seq, angles, degrees=degrees), coordinates)
 
 
-@typecheck
 def translate(coordinates, /, translations):
     """
     Translate a series of coordinates.
@@ -413,7 +410,6 @@ def translate(coordinates, /, translations):
     return matmul(create_transforms(translations=translations), coordinates)
 
 
-@typecheck
 def scale(coordinates, /, scales):
     """
     Scale a series of coordinates.
@@ -453,7 +449,6 @@ def scale(coordinates, /, scales):
     return matmul(create_transforms(scales=scales), coordinates)
 
 
-@typecheck
 def get_angles(
     T: ArrayLike, seq: str, degrees: bool = False, flip: bool = False
 ) -> np.ndarray:
@@ -518,6 +513,9 @@ def get_angles(
 
     """
     T = np.array(T)
+    check_param("seq", seq, str)
+    check_param("degrees", degrees, bool)
+    check_param("flip", flip, bool)
 
     _check_no_skewed_rotation(T, "T")
 
@@ -540,7 +538,6 @@ def get_angles(
     return angles
 
 
-@typecheck
 def create_frames(
     origin: ArrayLike,
     x: ArrayLike | None = None,
@@ -641,7 +638,6 @@ def create_frames(
     return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
-@typecheck
 def get_local_coordinates(
     global_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
@@ -699,7 +695,6 @@ def get_local_coordinates(
     return local_coordinates
 
 
-@typecheck
 def get_global_coordinates(
     local_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
@@ -747,7 +742,6 @@ def get_global_coordinates(
     return global_coordinates
 
 
-@typecheck
 def isnan(array: ArrayLike, /) -> np.ndarray:
     """
     Check which samples contain at least one NaN.
@@ -770,7 +764,6 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
     return temp
 
 
-@typecheck
 def _match_size(
     op1: np.ndarray, op2: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -800,7 +793,6 @@ def _match_size(
     return op1, op2
 
 
-@typecheck
 def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
     """
     Check if all rotation matrices are orthogonal (det=1).
@@ -838,7 +830,6 @@ def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
             )
 
 
-@typecheck
 def register_points(
     global_points: ArrayLike, local_points: ArrayLike
 ) -> np.ndarray:

@@ -32,8 +32,6 @@ The following decorator can be used on each Kinetics Toolkit's's function:
     for example.
 
 """
-from __future__ import annotations
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -43,7 +41,6 @@ __license__ = "Apache 2.0"
 from functools import wraps
 import warnings
 import textwrap
-from kineticstoolkit.typing_ import typecheck
 
 
 def _inject_in_docstring(docstring, text) -> str:
@@ -67,7 +64,6 @@ def _inject_in_docstring(docstring, text) -> str:
     return "\n".join(result)
 
 
-@typecheck
 def deprecated(since: str, until: str, details: str):
     """
     Decorate deprecated Kinetics Toolkit's functions.

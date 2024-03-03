@@ -21,7 +21,6 @@ Provides the Player class to visualize points and frames in 3d.
 The Player class is accessible directly from the toplevel Kinetics Toolkit
 namespace (i.e., ktk.Player).
 """
-from __future__ import annotations
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -41,7 +40,7 @@ from numpy import sin, cos
 import time
 from copy import deepcopy
 from typing import Any
-from kineticstoolkit.typing_ import typecheck, ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, check_param, cast_param
 import warnings
 
 # To fit the new viewpoint on selecting a new point
@@ -87,7 +86,7 @@ HELP_TEXT = """
 
 
 def _parse_color(
-    value: str | tuple[float, float, float] | ArrayLike
+    value: str | tuple[float, float, float]
 ) -> tuple[float, float, float]:
     """Convert a color specification into a tuple[float, float, float]."""
     if isinstance(value, str):
@@ -97,14 +96,9 @@ def _parse_color(
             raise ValueError(
                 f"The specified color '{value}' is not recognized."
             )
-    array_value = np.array(value)
-    if len(array_value) != 3:
-        raise ValueError("Color must be a character or an (R, G, B) tuple.")
-    return (
-        float(array_value[0]),
-        float(array_value[1]),
-        float(array_value[2]),
-    )
+
+    # Here, it's a sequence. Cast to tuple, check and return.
+    return cast_param("value", value, tuple, length=3, contents_type=float)
 
 
 class Player:
@@ -246,11 +240,11 @@ class Player:
         azimuth: float = 0.0,
         elevation: float = 0.2,
         view: str = "",
-        translation: tuple[float, float] | ArrayLike = (0.0, 0.0),
-        target: tuple[float, float, float] | ArrayLike = (0.0, 0.0, 0.0),
+        translation: tuple[float, float] = (0.0, 0.0),
+        target: tuple[float, float, float] = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
-        default_point_color: str | tuple[float, float, float] | ArrayLike = (
+        default_point_color: str | tuple[float, float, float] = (
             0.8,
             0.8,
             0.8,
@@ -262,13 +256,13 @@ class Player:
         grid_size: float = 10.0,
         grid_width: float = 1.0,
         grid_subdivision_size: float = 1.0,
-        grid_origin: tuple[float, float, float] | ArrayLike = (0.0, 0.0, 0.0),
-        grid_color: str | tuple[float, float, float] | ArrayLike = (
+        grid_origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
+        grid_color: str | tuple[float, float, float] = (
             0.3,
             0.3,
             0.3,
         ),
-        background_color: str | tuple[float, float, float] | ArrayLike = (
+        background_color: str | tuple[float, float, float] = (
             0.0,
             0.0,
             0.0,
@@ -282,6 +276,9 @@ class Player:
             interconnection_width = kwargs["segment_width"]
         if "current_frame" in kwargs:
             current_index = kwargs["current_frame"]
+
+        check_param("ts", ts, tuple, contents_type=TimeSeries)
+        # The other parameters are checked by the property setters.
 
         # Warn if Matplotlib is not interactive
         check_interactive_backend()
@@ -406,6 +403,7 @@ class Player:
     @current_time.setter
     def current_time(self, value: float):
         """Set current_time value."""
+        check_param("current_time", value, float)
         index = int(np.argmin(np.abs(self._contents.time - value)))
         self.current_index = index
 
@@ -418,6 +416,7 @@ class Player:
     @playback_speed.setter
     def playback_speed(self, value: float):
         """Set playback_speed value."""
+        check_param("playback_speed", value, float)
         self._playback_speed = value
 
     @property
@@ -428,6 +427,7 @@ class Player:
     @up.setter
     def up(self, value: str):
         """Set up value."""
+        check_param("up", value, str)
         if value in {"x", "y", "z", "-x", "-y", "-z"}:
             self._up = value
         else:
@@ -454,6 +454,7 @@ class Player:
     @anterior.setter
     def anterior(self, value: str):
         """Set anterior value."""
+        check_param("anterior", value, str)
         if value in {"x", "y", "z", "-x", "-y", "-z"}:
             self._anterior = value
         else:
@@ -480,6 +481,7 @@ class Player:
     @zoom.setter
     def zoom(self, value: float):
         """Set zoom value."""
+        check_param("zoom", value, float)
         self._zoom = value
         if not self._being_constructed:
             self._fast_refresh()
@@ -492,6 +494,7 @@ class Player:
     @azimuth.setter
     def azimuth(self, value: float):
         """Set azimuth value."""
+        check_param("azimuth", value, float)
         self._azimuth = value
         if not self._being_constructed:
             self._fast_refresh()
@@ -504,6 +507,7 @@ class Player:
     @elevation.setter
     def elevation(self, value: float):
         """Set elevation value."""
+        check_param("elevation", value, float)
         self._elevation = value
         if not self._being_constructed:
             self._fast_refresh()
@@ -516,10 +520,7 @@ class Player:
     @translation.setter
     def translation(self, value):
         """Set translation value using (x, y) or (x, y, ...)."""
-        self._set_translation(value)
-
-    def _set_translation(self, value: tuple[float, float] | ArrayLike):
-        """Workaround for having runtime static type checking."""
+        value = cast_param("translation", value, tuple, contents_type=float)
         self._translation = np.array(value)[0:2]
         if not self._being_constructed:
             self._fast_refresh()
@@ -532,10 +533,7 @@ class Player:
     @target.setter
     def target(self, value):
         """Set target value using (x, y, z) or (x, y, z, 1.0)."""
-        self._set_target(value)
-
-    def _set_target(self, value: tuple[float, float, float] | ArrayLike):
-        """Workaround for having runtime static type checking."""
+        value = cast_param("target", value, tuple, contents_type=float)
         self._target = np.array(value)[0:3]
         if not self._being_constructed:
             self._fast_refresh()
@@ -548,6 +546,7 @@ class Player:
     @perspective.setter
     def perspective(self, value: bool):
         """Set perspective value."""
+        check_param("perspective", value, bool)
         self._perspective = value
         if not self._being_constructed:
             self._fast_refresh()
@@ -560,6 +559,7 @@ class Player:
     @track.setter
     def track(self, value: bool):
         """Set perspective value."""
+        check_param("track", value, bool)
         self._track = value
         if not self._being_constructed:
             self._fast_refresh()
@@ -584,6 +584,7 @@ class Player:
     @point_size.setter
     def point_size(self, value: float):
         """Set point_size value."""
+        check_param("point_size", value, float)
         self._point_size = value
         if not self._being_constructed:
             self._refresh()
@@ -596,6 +597,7 @@ class Player:
     @interconnection_width.setter
     def interconnection_width(self, value: float):
         """Set interconnection_width value."""
+        check_param("interconnection_width", value, float)
         self._interconnection_width = value
         if not self._being_constructed:
             self._refresh()
@@ -608,6 +610,7 @@ class Player:
     @frame_size.setter
     def frame_size(self, value: float):
         """Set frame_size value."""
+        check_param("frame_size", value, float)
         self._frame_size = value
         if not self._being_constructed:
             self._fast_refresh()
@@ -620,6 +623,7 @@ class Player:
     @frame_width.setter
     def frame_width(self, value: float):
         """Set frame_width value."""
+        check_param("frame_width", value, float)
         self._frame_width = value
         if not self._being_constructed:
             self._refresh()
@@ -632,6 +636,7 @@ class Player:
     @grid_size.setter
     def grid_size(self, value: float):
         """Set grid_size value."""
+        check_param("grid_size", value, float)
         self._grid_size = value
         if not self._being_constructed:
             self._update_grid()
@@ -645,6 +650,7 @@ class Player:
     @grid_width.setter
     def grid_width(self, value: float):
         """Set grid_width value."""
+        check_param("grid_width", value, float)
         self._grid_width = value
         if not self._being_constructed:
             self._update_grid()
@@ -658,6 +664,7 @@ class Player:
     @grid_subdivision_size.setter
     def grid_subdivision_size(self, value: float):
         """Set grid_subdivision_size value."""
+        check_param("grid_subdivision_size", value, float)
         self._grid_subdivision_size = value
         if not self._being_constructed:
             self._update_grid()
@@ -671,10 +678,9 @@ class Player:
     @grid_origin.setter
     def grid_origin(self, value):
         """Set grid_origin value."""
-        self._set_grid_origin(value)
-
-    def _set_grid_origin(self, value: tuple[float, float, float] | ArrayLike):
-        """Workaround for having runtime static type checking."""
+        value = cast_param(
+            "grid_subdivision_size", value, tuple, contents_type=float
+        )
         self._grid_origin = np.array(value)[0:3]
         if not self._being_constructed:
             self._update_grid()
@@ -713,6 +719,7 @@ class Player:
     @text_info.setter
     def text_info(self, value: str):
         """Set text_info."""
+        check_param("text_info", value, str)
         self._text_info = value
         if not self._being_constructed:
             self._mpl_objects["Axes"].set_title(value, pad=-20)
@@ -789,6 +796,7 @@ class Player:
 
     def set_contents(self, value: TimeSeries) -> None:
         """Set contents value."""
+        check_param("value", value, TimeSeries)
         # First reset index to 0 to be sure that we won't end up out of bounds
         self._current_index = 0
 
@@ -809,6 +817,7 @@ class Player:
 
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
         """Set interconnections value."""
+        check_param("value", value, dict, key_type=str, contents_type=dict)
         self._interconnections = deepcopy(value)
         self._extend_interconnections()
         self._refresh()
@@ -1693,6 +1702,8 @@ class Player:
             view at Player creation.
 
         """
+        check_param("plane", plane, str)
+
         if plane.lower() == "initial":
             self.elevation = self._initial_elevation
             self.azimuth = self._initial_azimuth
@@ -1767,6 +1778,8 @@ class Player:
         None
 
         """
+        check_param("filename", filename, str)
+
         self._mpl_objects["Figure"].savefig(filename)
 
     def to_video(
@@ -1807,6 +1820,11 @@ class Player:
         None
 
         """
+        check_param("filename", filename, str)
+        check_param("fps", fps, (int, None))
+        check_param("downsample", downsample, int)
+        check_param("show_progress_bar", show_progress_bar, bool)
+
         if downsample < 1:
             raise ValueError(
                 "Parameter downsample must be stricly higher than 0."

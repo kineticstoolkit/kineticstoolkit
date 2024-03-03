@@ -18,8 +18,6 @@
 """
 Provide functions related to kinematics analysis.
 """
-from __future__ import annotations
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -29,7 +27,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.typing_ import typecheck
+from kineticstoolkit.typing_ import check_param, cast_param
 
 import numpy as np
 import warnings
@@ -44,7 +42,6 @@ def __dir__():
     ]
 
 
-@typecheck
 def create_cluster(
     markers: TimeSeries, /, names: list[str]
 ) -> dict[str, np.ndarray]:
@@ -74,6 +71,8 @@ def create_cluster(
     ktk.kinematics.track_cluster
 
     """
+    check_param("markers", markers, TimeSeries)
+    names = cast_param("names", names, list, contents_type=str)
 
     n_samples = len(markers.time)
     n_markers = len(names)
@@ -106,7 +105,6 @@ def create_cluster(
     return output
 
 
-@typecheck
 def extend_cluster(
     markers: TimeSeries, /, cluster: dict[str, np.ndarray], name: str
 ) -> dict[str, np.ndarray]:
@@ -138,11 +136,11 @@ def extend_cluster(
     ktk.kinematics.track_cluster
 
     """
-    # Ensure to convert every cluster element to a numpy array
-    new_cluster = {}
+    check_param("markers", markers, TimeSeries)
+    check_param("cluster", cluster, dict, key_type=str)
     for key in cluster:
-        new_cluster[key] = np.array(cluster[key])
-    cluster = new_cluster
+        cluster[key] = np.array(cluster[key])
+    check_param("name", name, str)
 
     frames = _track_cluster_frames(markers, cluster)
     local_coordinates = geometry.get_local_coordinates(
@@ -159,7 +157,6 @@ def extend_cluster(
     return cluster
 
 
-@typecheck
 def track_cluster(
     markers: TimeSeries,
     /,
@@ -199,6 +196,13 @@ def track_cluster(
     ktk.kinematics.track_cluster
 
     """
+    check_param("markers", markers, TimeSeries)
+    check_param("cluster", cluster, dict, key_type=str)
+    for key in cluster:
+        cluster[key] = np.array(cluster[key])
+    check_param("include_lcs", include_lcs, bool)
+    check_param("lcs_name", lcs_name, str)
+
     out = markers.copy(copy_data=False, copy_data_info=False)
     unit = _get_marker_unit(markers)
 
@@ -218,7 +222,6 @@ def track_cluster(
     return out
 
 
-@typecheck
 def _track_cluster_frames(
     markers: TimeSeries, cluster: dict[str, np.ndarray]
 ) -> np.ndarray:
@@ -248,7 +251,6 @@ def _track_cluster_frames(
     return frames
 
 
-@typecheck
 def _get_marker_unit(markers: TimeSeries) -> None | str:
     """Get markers unit, raise ValueError if not all have the same unit."""
     unit = None
@@ -270,7 +272,6 @@ def _get_marker_unit(markers: TimeSeries) -> None | str:
     return unit
 
 
-@typecheck
 def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     """
     Export a markers TimeSeries to OpenSim's TRC file format.
@@ -290,6 +291,9 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     developed.
 
     """
+    check_param("markers", markers, TimeSeries)
+    check_param("filename", filename, str)
+
     markers = markers.copy()
     markers.fill_missing_samples(0)
 

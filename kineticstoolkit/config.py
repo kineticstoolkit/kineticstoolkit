@@ -18,8 +18,6 @@
 """
 Provide configuration values for Kinetics Toolkit's inner working.
 """
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"

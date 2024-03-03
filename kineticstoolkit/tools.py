@@ -16,8 +16,6 @@
 # limitations under the License.
 
 """Provide miscelleanous helper functions."""
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -30,10 +28,9 @@ import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
 import kineticstoolkit.ext
-from kineticstoolkit.typing_ import typecheck
+from kineticstoolkit.typing_ import check_param
 
 
-@typecheck
 def check_interactive_backend() -> None:
     """
     Warns if Matplotlib is not using an interactive backend.
@@ -68,7 +65,6 @@ def check_interactive_backend() -> None:
         return
 
 
-@typecheck
 def change_defaults(
     change_ipython_dict_repr: bool = True,
     change_matplotlib_defaults: bool = True,
@@ -131,6 +127,11 @@ def change_defaults(
         import kineticstoolkit.lab as ktk
 
     """
+    check_param("change_ipython_dict_repr", change_ipython_dict_repr, bool)
+    check_param("change_matplotlib_defaults", change_matplotlib_defaults, bool)
+    check_param("change_numpy_print_options", change_numpy_print_options, bool)
+    check_param("change_warnings_format", change_warnings_format, bool)
+
     if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython
         try:
