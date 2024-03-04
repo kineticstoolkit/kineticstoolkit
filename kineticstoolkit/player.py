@@ -31,6 +31,7 @@ __license__ = "Apache 2.0"
 from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
+from kineticstoolkit._repr import _format_dict_entries
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
@@ -240,7 +241,7 @@ class Player:
     _grid_origin: np.ndarray
     _grid_color: tuple[float, float, float]
     _background_color: tuple[float, float, float]
-    _text_info: str
+    _title_text: str
 
     def __init__(
         self,
@@ -343,7 +344,7 @@ class Player:
         self.grid_origin = grid_origin
         self.grid_color = grid_color
         self.background_color = background_color
-        self.text_info = ""
+        self.title_text = ""
 
         self._running = False
 
@@ -728,15 +729,15 @@ class Player:
             self._refresh()
 
     @property
-    def text_info(self) -> str:
+    def title_text(self) -> str:
         """Read/write the text info on top of the figure."""
-        return self._text_info
+        return self._title_text
 
-    @text_info.setter
-    def text_info(self, value: str):
-        """Set text_info."""
-        check_param("text_info", value, str)
-        self._text_info = value
+    @title_text.setter
+    def title_text(self, value: str):
+        """Set title_text."""
+        check_param("title_text", value, str)
+        self._title_text = value
         if not self._being_constructed:
             self._mpl_objects["Axes"].set_title(value, pad=-20)
 
@@ -746,21 +747,35 @@ class Player:
 
     def __str__(self) -> str:
         """Print a textual description of the Player properties."""
-        return (
-            "ktk.Player with current properties:\n"
-            "---\n"
-            f"current_index : {self.current_index}\n"
-            f"playback_speed : {self.playback_speed:.3f}\n"
-            "---\n"
-            f"up : '{self.up}'\n"
-            f"zoom : {self.zoom:.3f}\n"
-            f"azimuth : {self.azimuth:.3f}\n"
-            f"elevation : {self.elevation:.3f}\n"
-            f"translation : ({self.translation[0]:.3f}, {self.translation[1]:.3f})\n"
-            f"target : ({self.target[0]:.3f}, {self.target[1]:.3f}, {self.target[2]:.3f})\n"
-            f"perspective : {self.perspective}\n"
-            "---\n"
-            f"track : {self.track}\n"
+        return "ktk.Player with properties:\n" + _format_dict_entries(
+            {
+                "contents": self.get_contents(),
+                "interconnections": self.get_interconnections(),
+                "current_index": self.current_index,
+                "current_time": self.current_time,
+                "playback_speed": self.playback_speed,
+                "up": self.up,
+                "anterior": self.anterior,
+                "zoom": self.zoom,
+                "azimuth": self.azimuth,
+                "elevation": self.elevation,
+                "perspective": self.perspective,
+                "translation": self.translation,
+                "target": self.target,
+                "track": self.track,
+                "default_point_color": self.default_point_color,
+                "point_size": self.point_size,
+                "interconnection_width": self.interconnection_width,
+                "frame_size": self.frame_size,
+                "frame_width": self.frame_width,
+                "grid_size": self.grid_size,
+                "grid_width": self.grid_width,
+                "grid_subdivision_size": self.grid_subdivision_size,
+                "grid_origin": self.grid_origin,
+                "grid_color": self.grid_color,
+                "background_color": self.background_color,
+                "title_text": self.title_text,
+            }
         )
 
     def __repr__(self) -> str:
@@ -1488,7 +1503,7 @@ class Player:
         if event.mouseevent.button == 1:
             index = event.ind
             selected_point = list(self._oriented_points.data.keys())[index[0]]
-            self.text_info = selected_point
+            self.title_text = selected_point
 
             # Mark selected
             self._selected_points = [selected_point]
@@ -1523,11 +1538,11 @@ class Player:
 
         elif event.key == "-":
             self.playback_speed /= 2
-            self.text_info = f"Playback set to {self.playback_speed}x"
+            self.title_text = f"Playback set to {self.playback_speed}x"
 
         elif event.key == "+":
             self.playback_speed *= 2
-            self.text_info = f"Playback set to {self.playback_speed}x"
+            self.title_text = f"Playback set to {self.playback_speed}x"
 
         elif event.key == "h":
             if self._mpl_objects["HelpText"] is None:
@@ -1545,38 +1560,38 @@ class Player:
         elif event.key == "d":
             self.perspective = not self.perspective
             if self.perspective is True:
-                self.text_info = "Camera set to perspective"
+                self.title_text = "Camera set to perspective"
             else:
-                self.text_info = "Camera set to orthogonal"
+                self.title_text = "Camera set to orthogonal"
 
         elif event.key == "t":
             self.track = not self.track
             if self.track is True:
-                self.text_info = "Point tracking activated"
+                self.title_text = "Point tracking activated"
             else:
-                self.text_info = "Point tracking deactivated"
+                self.title_text = "Point tracking deactivated"
 
         elif event.key == "1":
             self.set_view("back")
-            self.text_info = "Back view, orthogonal"
+            self.title_text = "Back view, orthogonal"
         elif event.key == "2":
             self.set_view("front")
-            self.text_info = "Front view, orthogonal"
+            self.title_text = "Front view, orthogonal"
         elif event.key == "3":
             self.set_view("left")
-            self.text_info = "Left view, orthogonal"
+            self.title_text = "Left view, orthogonal"
         elif event.key == "4":
             self.set_view("right")
-            self.text_info = "Right view, orthogonal"
+            self.title_text = "Right view, orthogonal"
         elif event.key == "5":
             self.set_view("top")
-            self.text_info = "Top view, orthogonal"
+            self.title_text = "Top view, orthogonal"
         elif event.key == "6":
             self.set_view("bottom")
-            self.text_info = "Bottom view, orthogonal"
+            self.title_text = "Bottom view, orthogonal"
         elif event.key == "0":
             self.set_view("initial")
-            self.text_info = "Initial view"
+            self.title_text = "Initial view"
 
         elif event.key == "shift":
             self._state["ShiftPressed"] = True
@@ -1855,7 +1870,7 @@ class Player:
         # time recording has started.
         def advance(args):
             self.current_index = args * downsample
-            self.text_info = (
+            self.title_text = (
                 f"{self.current_index}/{(n_samples - 1) * downsample}: "
                 f"{self.current_time:.3f} s."
             )
@@ -1894,5 +1909,5 @@ class Player:
         if show_progress_bar:
             progress_bar.close()
 
-        self.text_info = ""
+        self.title_text = ""
         self.current_index = 0
