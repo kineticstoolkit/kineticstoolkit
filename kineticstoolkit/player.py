@@ -100,7 +100,7 @@ def _parse_color(
             )
 
     # Here, it's a sequence. Cast to tuple, check and return.
-    value = tuple(value)
+    value = tuple(value)  # type: ignore
     check_param("value", value, tuple, length=3, contents_type=float)
     if (
         (value[0] < 0.0)
@@ -118,13 +118,17 @@ def _parse_color(
 
 
 class Player:
-    # FIXME! Update this docstring.
     """
     A class that allows visualizing points and frames in 3D.
 
     `player = ktk.Player(parameters)` creates and launches an interactive
     Player instance. Once the window is open, press `h` to show a help
     overlay.
+
+    All of the following parameters are also accessible as read/write
+    properties, except the contents and the interconnections that are
+    accessible using `get_contents`, `set_contents`, `get_interconnections`
+    and `set_interconnections`.
 
     Parameters
     ----------
@@ -135,7 +139,7 @@ class Player:
 
     interconnections
         Optional. Each key corresponds to an interconnection between points,
-        where one interconnection is another dict with the following keys:
+        where each interconnection is a nested dict with the following keys:
 
         - "Links": list of lists strings, where each string is a point
           name. For example, to create a link that connects Point1 to Point2,
@@ -158,44 +162,96 @@ class Player:
               ]
 
         - "Color": character or tuple (RGB) that represents the color of the
-          link. Color must be a valid value for matplotlib's
-          plots.
+          link. These two examples are equivalent::
+
+              interconnections["Pelvis"]["Color"] = 'r'
+              interconnections["Pelvis"]["Color"] = (1.0, 0.0, 0.0)
 
     current_index
-        Optional. Sets the inital index number to show.
+        Optional. The current index being shown.
 
-    point_size
-        Optional. Sets the point radius as defined by matplotlib.
+    current_time
+        Optional. The current time being shown.
 
-    frame_size
-        Optional. Sets the frame size in meters.
-
+    playback_speed
+        Optional. Speed multiplier. Set to 1.0 for normal speed, 1.5 to
+        increase playback speed by 50%, etc.
     up
         Optional. Defines the ground plane by setting which axis is up. May be
         {"x", "y", "z", "-x", "-y", "-z"}. Default is "y".
 
+    anterior
+        Optional. Defines the anterior direction. May be
+        {"x", "y", "z", "-x", "-y", "-z"}. Default is "x".
+
     zoom
-        Optional. Sets the initial camera zoom.
+        Optional. Camera zoom multipler.
 
     azimuth
-        Optional. Sets the initial camera azimuth in radians.
+        Optional. Camera azimuth in radians. If `anterior` is set, then an
+        azimuth of 0 corresponds to the right sagittal plane, pi/2 to the
+        front frontal plane, -pi/2 to the back frontal plane, etc.
 
     elevation
-        Optional. Sets the initial camera elevation in radians.
-
-    translation
-        Optional. Sets the initial camera translation (panning).
-
-    target
-        Optional. Sets the camera target in meters.
-
-    track
-        Optional. False to keep the scene static, True to track the last
-        selected point when changing index.
+        Optional. Camera elevation in radians. Default is 0.2. If `up` is set,
+        then a value of 0 corresponds to a purely horizontal view, pi/2 to the
+        top transverse plane, -pi/2 to the bottom transverse plane, etc.
 
     perspective
         Optional. True to draw the scene using perspective, False to draw the
         scene orthogonally.
+
+    translation
+        Optional. Camera translation (panning). Default is (0.0, 0.0).
+
+    target
+        Optional. Camera target in meters. Default is (0.0, 0.0, 0.0).
+
+    track
+        Optional. False to keep the camera static, True to follow the last
+        selected point when changing index. Default is False.
+
+    default_point_color
+        Optional. Default color for points that do not have a "Color"
+        property. Can be a character or tuple (RGB) where each RGB color is
+        between 0.0 and 1.0. Default is (0.8, 0.8, 0.8).
+
+    point_size
+        Optional. Point size as defined by Matplotlib marker size. Default is
+        4.0.
+
+    interconnection_width
+        Optional. Width of the interconnections as defined by Matplotlib line
+        width. Default is 1.5.
+
+    frame_size
+        Optional. Length of the frame axes in meters. Default is 0.1.
+
+    frame_width
+        Optional. Width of the frame axes as defined by Matplotlib line width.
+        Default is 3.0.
+
+    grid_size
+        Optional. Length of one side of the grid in meters. Default is 10.0.
+
+    grid_subdivision_size
+        Optional. Length of one subdivision of the grid in meters. Default is
+        1.0.
+
+    grid_width
+        Optional. Width of the grid lines as defined by Matplotlib line width.
+        Default is 1.0.
+
+    grid_origin
+        Optional. Origin of the grid in meters. Default is (0.0, 0.0, 0.0).
+
+    grid_color
+        Optional. Color of the grid. Can be a character or tuple (RGB) where
+        each RGB color is between 0.0 and 1.0. Default is (0.3, 0.3, 0.3).
+
+    background_color
+        Optional. Background color. Can be a character or tuple (RGB) where
+        each RGB color is between 0.0 and 1.0. Default is (0.0, 0.0, 0.0).
 
     Note
     ----
@@ -236,8 +292,8 @@ class Player:
     _frame_size: float
     _frame_width: float
     _grid_size: float
-    _grid_width: float
     _grid_subdivision_size: float
+    _grid_width: float
     _grid_origin: np.ndarray
     _grid_color: tuple[float, float, float]
     _background_color: tuple[float, float, float]
@@ -270,8 +326,8 @@ class Player:
         frame_size: float = 0.1,
         frame_width: float = 3.0,
         grid_size: float = 10.0,
-        grid_width: float = 1.0,
         grid_subdivision_size: float = 1.0,
+        grid_width: float = 1.0,
         grid_origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
         grid_color: str | tuple[float, float, float] = (
             0.3,

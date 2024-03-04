@@ -123,7 +123,7 @@ def _format_dict_entries(
     return out
 
 
-def _format_class_attributes(obj, overrides, hide_private=False):
+def _format_class_attributes(obj, overrides, hide_private=False) -> str:
     """
     Format a class that has attributes nicely on screen.
 
