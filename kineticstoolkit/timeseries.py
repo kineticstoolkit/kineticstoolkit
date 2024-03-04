@@ -46,8 +46,7 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from kineticstoolkit.typing_ import check_param
-from numpy.typing import ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, check_param
 from typing import Any, cast
 from numbers import Real
 
@@ -234,7 +233,7 @@ class TimeSeries:
     A TimeSeries can be constructed from another TimeSeries, a Pandas DataFrame
     or any array with at least one dimension.
 
-    1. Creating an empty TimeSeries::
+    1. Creating an empty TimeSeries:
 
     >>> ktk.TimeSeries()
     TimeSeries with attributes:
@@ -244,7 +243,7 @@ class TimeSeries:
         data_info: {}
            events: []
 
-    2. Creating a TimeSeries an allocating time and data::
+    2. Creating a TimeSeries and setting time and data:
 
     >>> ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
     TimeSeries with attributes:
@@ -254,7 +253,7 @@ class TimeSeries:
         data_info: {}
            events: []
 
-    3. Creating a TimeSeries as a copy of another TimeSeries::
+    3. Creating a TimeSeries as a copy of another TimeSeries:
 
     >>> ts1 = ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
     >>> ts2 = ktk.TimeSeries(ts1)
@@ -268,7 +267,7 @@ class TimeSeries:
 
     See Also: TimeSeries.copy
 
-    4. Creating a TimeSeries from a Pandas DataFrame::
+    4. Creating a TimeSeries from a Pandas DataFrame:
 
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
@@ -298,7 +297,7 @@ class TimeSeries:
     See Also: TimeSeries.from_dataframe
 
     5. Creating a multidimensional TimeSeries from a Pandas DataFrame (using
-    brackets in column names)::
+    brackets in column names):
 
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
@@ -324,7 +323,7 @@ class TimeSeries:
     See Also: TimeSeries.from_dataframe
 
     6. Creating a multidimensional TimeSeries of higher order from a Pandas
-    DataFrame (using brackets and commas in column names)::
+    DataFrame (using brackets and commas in column names):
 
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
@@ -367,7 +366,7 @@ class TimeSeries:
 
     7. Creating a TimeSeries from any array (results in a TimeSeries with a
     single data key named "data" and with a matching time property with a
-    period of 1 second - unless time attribute is also defined)::
+    period of 1 second - unless time attribute is also defined):
 
     >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
     TimeSeries with attributes:
@@ -946,6 +945,9 @@ class TimeSeries:
 
         Parameters
         ----------
+        copy_time
+            Optional. True to copy time to the new TimeSeries,
+            False to keep the time attribute empty. Default is True.
         copy_data
             Optional. True to copy data to the new TimeSeries,
             False to keep the data attribute empty. Default is True.
@@ -1012,10 +1014,13 @@ class TimeSeries:
             The key of the info dict.
         value
             The info.
+        overwrite
+            Optional. True to overwrite the data info if it is already present
+            in the TimeSeries. Default is False.
         in_place
             Optional. True to modify the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1152,7 +1157,7 @@ class TimeSeries:
         ----------
         data_key
             Name of the data key.
-        data
+        data_value
             Any data that can be converted to a NumPy array
         overwrite
             Optional. True to overwrite if there is already a data key of this
@@ -1160,7 +1165,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1170,11 +1175,17 @@ class TimeSeries:
         Raises
         ------
         ValueError
-            - If data with this key already exists and overwrite is False.
-            - If the size of the data (first dimension) does not match the size
-              of existing data or the existing time.
-            - If data is a pandas DataFrame and its index does not match the
-              existing time.
+            In any of these conditions:
+            1. If data with this key already exists and overwrite is False.
+            2. If the size of the data (first dimension) does not match the size
+               of existing data or the existing time.
+            3. If data is a pandas DataFrame and its index does not match the
+               existing time.
+
+        See Also
+        --------
+        ktk.TimeSeries.rename_data
+        ktk.TimeSeries.remove_data
 
         Example
         -------
@@ -1259,7 +1270,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1274,6 +1285,7 @@ class TimeSeries:
 
         See Also
         --------
+        ktk.TimeSeries.add_data
         ktk.TimeSeries.remove_data
 
         Example
@@ -1328,7 +1340,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1343,6 +1355,7 @@ class TimeSeries:
 
         See Also
         --------
+        ktk.TimeSeries.add_data
         ktk.TimeSeries.rename_data
 
         Example
@@ -1532,15 +1545,15 @@ class TimeSeries:
         time
             The time of the event, in the same unit as `time_info["Unit"]`.
         name
-            Optional. The name of the event. The default is "event".
+            Optional. The name of the event. Default is "event".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
         unique
             Optional. True to prevent duplicating an already existing event. In
             this case, if an event with the same time and name already exists,
-            no event is added.
+            no event is added. Default is False.
 
         Returns
         -------
@@ -1609,7 +1622,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1690,7 +1703,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1796,7 +1809,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1860,7 +1873,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -1922,7 +1935,7 @@ class TimeSeries:
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -3042,12 +3055,12 @@ class TimeSeries:
 
         Parameters
         ----------
-        time_shift
+        time
             Time to be added to time and events.time.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -3161,11 +3174,11 @@ class TimeSeries:
             Optional. The interpolation method. This input may take any value
             supported by scipy.interpolate.interp1d, such as "linear",
             "nearest", "zero", "slinear", "quadratic", "cubic", "previous",
-            "next". Additionally, kind can be "pchip".
+            "next". Additionally, kind can be "pchip". Default is "linear".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -3174,8 +3187,7 @@ class TimeSeries:
 
         Caution
         -------
-        While it is possible to resample series of points or vectors,
-        attempting to resample a series of homogeneous matrices would likely
+        Attempting to resample a series of homogeneous matrices would likely
         produce non-homogeneous matrices, and as a result, transforms would not
         be rigid anymore. This function can't detect if you attempt to resample
         series of homogeneous matrices, and therefore won't generate an
@@ -3186,7 +3198,7 @@ class TimeSeries:
         ktk.TimeSeries.get_sample_rate
         ktk.TimeSeries.fill_missing_samples
 
-        Example
+        Examples
         --------
         >>> ts = ktk.TimeSeries(time=np.arange(10.))
         >>> ts = ts.add_data("data", ts.time ** 2)
@@ -3195,7 +3207,7 @@ class TimeSeries:
         >>> ts.data["data"]
         array([ 0.,  1.,  4.,  9., 16., 25., 36., 49., 64., 81.])
 
-        # Example 1: Resampling at 2 Hz
+        Example 1: Resampling at 2 Hz
 
         >>> ts1 = ts.resample(2.0)
 
@@ -3205,7 +3217,8 @@ class TimeSeries:
         >>> ts1.data["data"]
         array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5, 25. , 30.5, 36. , 42.5, 49. , 56.5, 64. , 72.5, 81. ])
 
-        # Example 2: Resampling on new times
+        Example 2: Resampling on new times
+
         >>> ts2 = ts.resample([0.0, 0.5, 1.0, 1.5, 2.0])
 
         >>> ts2.time
@@ -3214,7 +3227,8 @@ class TimeSeries:
         >>> ts2.data["data"]
         array([0. , 0.5, 1. , 2.5, 4. ])
 
-        # Example 3: Resampling at 2 Hz with missing data in the original ts
+        Example 3: Resampling at 2 Hz with missing data in the original ts
+
         >>> ts.data["data"][[0, 1, 5, 8, 9]] = np.nan
         >>> ts.data["data"]
         array([nan, nan,  4.,  9., 16., nan, 36., 49., nan, nan])
@@ -3424,15 +3438,16 @@ class TimeSeries:
             not equivalent and resample is False, an exception is raised. To
             resample using other methods than linear interpolation, please
             resample the source TimeSeries manually before, using
-            TimeSeries.resample.
+            TimeSeries.resample. Default is False.
         overwrite
             Optional. If duplicates data keys are found and overwrite is True,
             then the source (ts) overwrites the destination. Otherwise
             (overwrite is False), the duplicate data in ts is ignored.
+            Default is False.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -3581,11 +3596,11 @@ class TimeSeries:
             Optional. The interpolation method. This input may take any value
             supported by scipy.interpolate.interp1d, such as "linear",
             "nearest", "zero", "slinear", "quadratic", "cubic", "previous" or
-            "next".
+            "next". Default is "linear".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact.
+            original TimeSeries intact. Default is False.
 
         Returns
         -------
@@ -4341,6 +4356,8 @@ class TimeSeries:
         See Also
         --------
         ktk.TimeSeries.from_dataframe
+        ktk.TimeSeries.from_array
+        ktk.TimeSeries.to_array
 
         Examples
         --------
@@ -4416,6 +4433,8 @@ class TimeSeries:
         See Also
         --------
         ktk.TimeSeries.to_dataframe
+        ktk.TimeSeries.from_array
+        ktk.TimeSeries.to_array
 
         Examples
         --------
@@ -4586,8 +4605,8 @@ class TimeSeries:
         array
             An array or list where the first dimension corresponds to time.
         data_key
-            The name of the data (used as the key in the TimeSeries' data
-            attribute).
+            Optional. The name of the data (used as the key in the TimeSeries'
+            data attribute). Default is "data".
         time
             Optional. An array that indicates the time for each sample. Its
             length must match the first dimension of the data array. If None
@@ -4604,6 +4623,12 @@ class TimeSeries:
         -------
         TimeSeries
             The new TimeSeries.
+
+        See Also
+        --------
+        ktk.TimeSeries.to_array
+        ktk.TimeSeries.from_dataframe
+        ktk.TimeSeries.to_dataframe
 
         Examples
         --------

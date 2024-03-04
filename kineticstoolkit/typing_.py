@@ -25,6 +25,15 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from numbers import Integral, Real, Complex
+from typing import NewType, TYPE_CHECKING
+from numpy.typing import ArrayLike as npt_ArrayLike
+
+# Define custom types so that sphinx and mypy and the users are all happy
+if TYPE_CHECKING:  # mypy is running
+    ArrayLike = npt_ArrayLike
+else:  # runtime
+    # mypy cries but sphinx is fine and doesn't expand ArrayLike
+    ArrayLike = NewType("ArrayLike", npt_ArrayLike)
 
 
 PARAM_MAPPING = {

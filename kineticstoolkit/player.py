@@ -41,8 +41,7 @@ from numpy import sin, cos
 import time
 from copy import deepcopy
 from typing import Any
-from kineticstoolkit.typing_ import check_param
-from numpy.typing import ArrayLike
+from kineticstoolkit.typing_ import ArrayLike, check_param
 import warnings
 
 # To fit the new viewpoint on selecting a new point
@@ -213,7 +212,7 @@ class Player:
 
     default_point_color
         Optional. Default color for points that do not have a "Color"
-        property. Can be a character or tuple (RGB) where each RGB color is
+        data_info. Can be a character or tuple (RGB) where each RGB color is
         between 0.0 and 1.0. Default is (0.8, 0.8, 0.8).
 
     point_size
@@ -311,7 +310,6 @@ class Player:
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
-        view: str = "",
         translation: tuple[float, float] = (0.0, 0.0),
         target: tuple[float, float, float] = (0.0, 0.0, 0.0),
         perspective: bool = True,
@@ -1779,8 +1777,7 @@ class Player:
         Set the current view to an orthogonal view in a given plane.
 
         Ensure that the player's `up` and `anterior` properties are set to the
-        correct axes beforehand. By default, the `up` is "y" and `anterior`
-        is "x".
+        correct axes beforehand. By default, `up` is "y" and `anterior` is "x".
 
         Parameters
         ----------
@@ -1888,17 +1885,16 @@ class Player:
         fps
             Optional. Frames per second of the output video. Default is None,
             which means that fps matches the current playback speed of the
-            Player (the content's sample rate multiplied by the playback_speed
-            property). This attribute does not affect the number of images in
-            the output video: it only affects the playback speed of the output
+            Player. This attribute does not affect the number of images in
+            the output video; it only affects the playback speed of the output
             video.
         downsample
             Optional. Use it to reduce the file size on acquisitions at high
             sample rates. Default is 1, which means that the video is not
-            downsampled: each index is exported as one frame of the output
-            video. A value of 2 divides the number of frames by 2, which means
-            that every other index is skipped. A value of 3 divides the number
-            of frames by 3, etc.
+            downsampled. In this case, each index is exported as one frame of
+            the output video. A value of 2 divides the number of frames by 2,
+            which means that every other index is skipped. A value of 3 divides
+            the number of frames by 3, etc.
         show_progress_bar
             Optional. True to show a progress bar while creating the video
             file.

@@ -85,14 +85,11 @@ def save(filename: str, variable: Any) -> None:
 
     Caution
     -------
-    - Tuples are also supported but will be loaded back as lists, without
-    warning.
-    - Complex Pandas Series (e.g., series or different types) may not be
-    supported. Only the following attributes of the Series are saved:
-    name, index, and the data itself.
-    - Complex Pandas DataFrames (e.g., multiindex, columns of different types)
-    may not be supported. Only the following attributes of the DataFrame are
-    saved: columns, index, and the data itself.
+    Tuples are also supported but will be loaded back as lists, without
+    warning. Complex Pandas Series (e.g., series or different types) may not be
+    supported: only name, index and data are saved. Complex Pandas DataFrames
+    (e.g., multiindex, columns of different types) may not be supported:
+    only columns, index, and data are saved.
 
     See Also
     --------

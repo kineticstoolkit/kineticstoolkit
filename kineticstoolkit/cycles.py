@@ -25,12 +25,11 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-from numpy.typing import ArrayLike
 from typing import cast
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
 from tqdm import tqdm
-from kineticstoolkit.typing_ import check_param
+from kineticstoolkit.typing_ import ArrayLike, check_param
 
 
 def __dir__():
