@@ -24,7 +24,7 @@ __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit.typing_ import check_param, cast_param
+from kineticstoolkit.typing_ import check_param
 from kineticstoolkit import TimeSeries, TimeSeriesEvent
 import numpy as np
 import pandas as pd
@@ -65,21 +65,28 @@ def test_check_param():
     # Now do similar tests but with errors
     try:
         check_param("test", [1, 2, 3], list, length=3, contents_type=str)
-    except ValueError:
+        raise Exception("This should fail.")
+    except TypeError:
         pass
     try:
         check_param("test", [1, 2, "a"], list, length=3, contents_type=str)
-    except ValueError:
+        raise Exception("This should fail.")
+    except TypeError:
         pass
 
     try:
-        check_param(
-            "test", ("a", "b", "c"), tuple, length=3, contents_type=int
-        )
-    except ValueError:
+        check_param("test", ("a", "b", "c"), tuple, contents_type=int)
+        raise Exception("This should fail.")
+    except TypeError:
         pass
     try:
-        check_param("test", ("a", "b", 3), tuple, length=3, contents_type=int)
+        check_param("test", ("a", "b", 3), tuple, contents_type=int)
+        raise Exception("This should fail.")
+    except TypeError:
+        pass
+    try:
+        check_param("test", ("a", "b"), tuple, length=3)
+        raise Exception("This should fail.")
     except ValueError:
         pass
 
@@ -90,17 +97,24 @@ def test_check_param():
             dict,
             length=2,
             key_type=str,
-            contents_type=str,
         )
-    except ValueError:
+        raise Exception("This should fail.")
+    except TypeError:
         pass
 
     try:
         check_param("test", np.eye(4), np.ndarray, shape=(3, 3))
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+    try:
+        check_param("test", np.eye(4), np.ndarray, shape=(3, 3, 3))
+        raise Exception("This should fail.")
     except ValueError:
         pass
     try:
         check_param("test", np.eye(3), np.ndarray, ndims=1)
+        raise Exception("This should fail.")
     except ValueError:
         pass
 
@@ -109,15 +123,17 @@ def test_check_param():
     # but that floats don't work as int
     try:
         check_param("test", 1.0, int)
-    except ValueError:
+        raise Exception("This should fail.")
+    except TypeError:
         pass
 
     # Check that tuples of types work
-    check_param("test", 1, (int, str))
-    check_param("test", "a", (int, str))
+    check_param("test", 1, (int, str, None))
+    check_param("test", "a", (int, str, None))
     try:
         check_param("test", [1, 2, 3], (int, str))
-    except ValueError:
+        raise Exception("This should fail.")
+    except TypeError:
         pass
 
 

@@ -16,20 +16,9 @@
 # limitations under the License.
 
 """
-Provide decorators for Kinetics Toolkit's functions.
+Provide the deprecated decorator for Kinetics Toolkit's functions.
 
-The following decorator can be used on each Kinetics Toolkit's's function:
-
-    - @deprecated(since: str, until: str, details: str):
-        Documented but deprecated function in a release.
-
-    - @dead:
-        Undocumented, deprecated function in the development version.
-
-    Each of these decorators add the _include_in_dir property to the decorated
-    function. The provided function ``directory`` looks at these properties
-    to return a custom __dir__ to Kinematics Toolkit's classes. See such class
-    for example.
+This module is for internal use only.
 
 """
 __author__ = "Félix Chénier"

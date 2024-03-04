@@ -27,7 +27,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.typing_ import check_param, cast_param
+from kineticstoolkit.typing_ import check_param
 
 import numpy as np
 import warnings
@@ -72,7 +72,8 @@ def create_cluster(
 
     """
     check_param("markers", markers, TimeSeries)
-    names = cast_param("names", names, list, contents_type=str)
+    names = list(names)
+    check_param("names", names, list, contents_type=str)
 
     n_samples = len(markers.time)
     n_markers = len(names)

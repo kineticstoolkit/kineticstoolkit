@@ -46,7 +46,7 @@ import scipy as sp
 import pandas as pd
 import limitedinteraction as li
 from dataclasses import dataclass
-from kineticstoolkit.typing_ import check_param, cast_param
+from kineticstoolkit.typing_ import check_param
 from numpy.typing import ArrayLike
 from typing import Any
 from numbers import Real
@@ -2529,13 +2529,14 @@ class TimeSeries:
         check_param("index2", index2, int)
         try:
             check_param("inclusive", inclusive, bool)
-        except ValueError:
+        except TypeError:
             try:
-                inclusive = cast_param(
+                inclusive = tuple(inclusive)
+                check_param(
                     "inclusive", inclusive, tuple, length=2, contents_type=bool
                 )
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "inclusive must be either a bool or a tuple of two bools."
                 )
 
@@ -2757,13 +2758,14 @@ class TimeSeries:
         check_param("teim2", time2, float)
         try:
             check_param("inclusive", inclusive, bool)
-        except ValueError:
+        except TypeError:
             try:
-                inclusive = cast_param(
+                inclusive = tuple(inclusive)
+                check_param(
                     "inclusive", inclusive, tuple, length=2, contents_type=bool
                 )
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "inclusive must be either a bool or a tuple of two bools."
                 )
 
@@ -3005,13 +3007,14 @@ class TimeSeries:
         check_param("occurrence1", occurrence2, int)
         try:
             check_param("inclusive", inclusive, bool)
-        except ValueError:
+        except TypeError:
             try:
-                inclusive = cast_param(
+                inclusive = tuple(inclusive)
+                check_param(
                     "inclusive", inclusive, tuple, length=2, contents_type=bool
                 )
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "inclusive must be either a bool or a tuple of two bools."
                 )
 
@@ -3375,11 +3378,11 @@ class TimeSeries:
         """
         try:
             check_param("data_keys", data_keys, str)
-        except ValueError:
+        except TypeError:
             try:
                 check_param("data_keys", data_keys, list, contents_type=str)
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "data_keys must be a string or a list of strings."
                 )
         self._check_well_shaped()
@@ -3460,11 +3463,12 @@ class TimeSeries:
         """
         try:
             check_param("data_keys", data_keys, str)
-        except ValueError:
+        except TypeError:
             try:
+                data_keys = list(data_keys)
                 check_param("data_keys", data_keys, list, contents_type=str)
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "data_keys must be a string or a list of strings."
                 )
         check_param("resample", resample, bool)
@@ -3478,15 +3482,8 @@ class TimeSeries:
         ts = ts.copy()
         if len(data_keys) == 0:
             data_keys = list(ts.data.keys())
-        else:
-            if isinstance(data_keys, list) or isinstance(data_keys, tuple):
-                pass
-            elif isinstance(data_keys, str):
-                data_keys = [data_keys]
-            else:
-                raise TypeError(
-                    "data_keys must be a string or list of strings"
-                )
+        elif isinstance(data_keys, str):
+            data_keys = [data_keys]
 
         # Check if resampling is needed
         if len(ts_out.time) == 0:
@@ -3703,18 +3700,18 @@ class TimeSeries:
 
         try:
             check_param("name", name, str)
-        except ValueError:
+        except TypeError:
             try:
                 check_param("name", name, list, contents_type=str)
-            except ValueError:
-                raise ValueError("name must be a string or a list of strings.")
+            except TypeError:
+                raise TypeError("name must be a string or a list of strings.")
         try:
             check_param("data_keys", data_keys, str)
-        except ValueError:
+        except TypeError:
             try:
                 check_param("data_keys", data_keys, list, contents_type=str)
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "data_keys must be a string or a list of strings."
                 )
         self._check_well_shaped()
@@ -3922,20 +3919,20 @@ class TimeSeries:
 
         try:
             check_param("data_keys", data_keys, str)
-        except ValueError:
+        except TypeError:
             try:
                 check_param("data_keys", data_keys, list, contents_type=str)
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "data_keys must be a string or a list of strings."
                 )
         try:
             check_param("data_keys2", data_keys2, str)
-        except ValueError:
+        except TypeError:
             try:
                 check_param("data_keys2", data_keys2, list, contents_type=str)
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "data_keys2 must be a string or a list of strings."
                 )
 
@@ -4112,11 +4109,11 @@ class TimeSeries:
         """
         try:
             check_param("data_keys", data_keys, str)
-        except ValueError:
+        except TypeError:
             try:
                 check_param("data_keys", data_keys, list, contents_type=str)
-            except ValueError:
-                raise ValueError(
+            except TypeError:
+                raise TypeError(
                     "data_keys must be a string or a list of strings."
                 )
         check_param("event_names", event_names, bool)

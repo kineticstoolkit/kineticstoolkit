@@ -25,7 +25,7 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit as ktk
+import kineticstoolkit.lab as ktk
 import sys
 
 

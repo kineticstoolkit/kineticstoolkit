@@ -29,7 +29,7 @@ from numpy.typing import ArrayLike
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
 from tqdm import tqdm
-from kineticstoolkit.typing_ import check_param, cast_param
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():
@@ -104,49 +104,56 @@ def detect_cycles(
     """
     check_param("ts", ts, TimeSeries)
     check_param("data_key", data_key, str)
-    event_names = cast_param(
+    event_names = tuple(event_names)
+    check_param(
         "event_names",
         event_names,
         tuple,
         length=2,
         contents_type=str,
     )
-    thresholds = cast_param(
+    thresholds = tuple(thresholds)
+    check_param(
         "thresholds",
         thresholds,
         tuple,
         length=2,
         contents_type=float,
     )
-    directions = cast_param(
+    directions = tuple(directions)
+    check_param(
         "directions",
         directions,
         tuple,
         length=2,
         contents_type=str,
     )
-    min_durations = cast_param(
+    min_durations = tuple(min_durations)
+    check_param(
         "min_durations",
         min_durations,
         tuple,
         length=2,
         contents_type=float,
     )
-    max_durations = cast_param(
+    max_durations = tuple(max_durations)
+    check_param(
         "max_durations",
         max_durations,
         tuple,
         length=2,
         contents_type=float,
     )
-    min_peak_heights = cast_param(
+    min_peak_heights = tuple(min_peak_heights)
+    check_param(
         "min_peak_heights",
         min_peak_heights,
         tuple,
         length=2,
         contents_type=float,
     )
-    max_peak_heights = cast_param(
+    max_peak_heights = tuple(max_peak_heights)
+    check_param(
         "max_peak_heights",
         max_peak_heights,
         tuple,

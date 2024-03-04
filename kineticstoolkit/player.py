@@ -40,7 +40,7 @@ from numpy import sin, cos
 import time
 from copy import deepcopy
 from typing import Any
-from kineticstoolkit.typing_ import check_param, cast_param
+from kineticstoolkit.typing_ import check_param
 from numpy.typing import ArrayLike
 import warnings
 
@@ -99,7 +99,9 @@ def _parse_color(
             )
 
     # Here, it's a sequence. Cast to tuple, check and return.
-    return cast_param("value", value, tuple, length=3, contents_type=float)
+    value = tuple(value)
+    check_param("value", value, tuple, length=3, contents_type=float)
+    return value
 
 
 class Player:
@@ -521,7 +523,8 @@ class Player:
     @translation.setter
     def translation(self, value):
         """Set translation value using (x, y) or (x, y, ...)."""
-        value = cast_param("translation", value, tuple, contents_type=float)
+        value = tuple(value)
+        check_param("translation", value, tuple, contents_type=float)
         self._translation = np.array(value)[0:2]
         if not self._being_constructed:
             self._fast_refresh()
@@ -534,7 +537,8 @@ class Player:
     @target.setter
     def target(self, value):
         """Set target value using (x, y, z) or (x, y, z, 1.0)."""
-        value = cast_param("target", value, tuple, contents_type=float)
+        value = tuple(value)
+        check_param("target", value, tuple, contents_type=float)
         self._target = np.array(value)[0:3]
         if not self._being_constructed:
             self._fast_refresh()
@@ -679,9 +683,8 @@ class Player:
     @grid_origin.setter
     def grid_origin(self, value):
         """Set grid_origin value."""
-        value = cast_param(
-            "grid_subdivision_size", value, tuple, contents_type=float
-        )
+        value = tuple(value)
+        check_param("grid_subdivision_size", value, tuple, contents_type=float)
         self._grid_origin = np.array(value)[0:3]
         if not self._being_constructed:
             self._update_grid()

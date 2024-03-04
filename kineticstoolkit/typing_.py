@@ -16,7 +16,7 @@
 # limitations under the License.
 
 """
-Typing module to typecheck everything in realtime using beartype.
+Typing module to typecheck everything in realtime.
 """
 
 __author__ = "Félix Chénier"
@@ -25,38 +25,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from numbers import Integral, Real, Complex
-
-
-# Custom check function
-def cast_param(
-    name: str,
-    value,
-    expected_type,
-    *,
-    contents_type=None,
-    key_type=None,
-    length: int | None = None,
-    ndims: int | None = None,
-    shape: tuple | None = None,
-):
-    """
-    Cast a parameter to a given type and check against optional specs.
-
-    See check_types for the list of parameters.
-
-    """
-    value = expected_type(value)
-
-    check_param(
-        name=name,
-        value=value,
-        expected_type=expected_type,
-        contents_type=contents_type,
-        key_type=key_type,
-        length=length,
-        shape=shape,
-    )
-    return value
 
 
 PARAM_MAPPING = {
@@ -116,6 +84,9 @@ def check_param(
 
     Raises
     ------
+    TypeError
+        If the value or its contents is of the wrong type.
+
     ValueError
         If the value does not meet the given criteria.
 
@@ -129,7 +100,7 @@ def check_param(
 
     # Check type
     if not isinstance(value, mapped_expected_type):  # type: ignore
-        raise ValueError(
+        raise TypeError(
             f"{name} must be of type {expected_type}, however it is of type "
             f"{type(value)}, with a value of {value}."
         )
@@ -151,7 +122,7 @@ def check_param(
             value_list = value
         for element in value_list:
             if not isinstance(element, mapped_contents_type):  # type: ignore
-                raise ValueError(
+                raise TypeError(
                     f"{name} must contain only elements of type "
                     f"{contents_type}, however it contains a value of type "
                     f"{type(element)}, with a value of {element}."
@@ -199,7 +170,7 @@ def check_param(
 
         for key in value:
             if not isinstance(key, mapped_key_type):  # type: ignore
-                raise ValueError(
+                raise TypeError(
                     f"{name} must contain only keys of type "
                     f"{key_type}, however it contains a key of type "
                     f"{type(key)}, with a value of {key}."
