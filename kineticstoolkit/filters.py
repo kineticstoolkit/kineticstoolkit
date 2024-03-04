@@ -31,6 +31,7 @@ import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.typing_ import check_param
+from typing import cast
 
 import kineticstoolkit as ktk  # For doctests
 
@@ -240,7 +241,8 @@ def butter(
         check_param("fc", fc, float)
     except TypeError:
         try:
-            fc = tuple(fc)
+            fc = cast(tuple[float, float], fc)
+            fc = cast(tuple[float, float], tuple(fc))
             check_param("fc", fc, tuple, length=2, contents_type=float)
         except TypeError:
             raise TypeError("fc must be an integer or a tuple or 2 floats.")

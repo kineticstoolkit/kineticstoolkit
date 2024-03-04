@@ -48,7 +48,7 @@ import limitedinteraction as li
 from dataclasses import dataclass
 from kineticstoolkit.typing_ import check_param
 from numpy.typing import ArrayLike
-from typing import Any
+from typing import Any, cast
 from numbers import Real
 
 import warnings
@@ -2527,27 +2527,24 @@ class TimeSeries:
         """
         check_param("index1", index1, int)
         check_param("index2", index2, int)
+        if isinstance(inclusive, bool):
+            inclusive = (inclusive, inclusive)
         try:
-            check_param("inclusive", inclusive, bool)
+            inclusive = cast(tuple[bool, bool], tuple(inclusive))
+            check_param(
+                "inclusive",
+                inclusive,
+                tuple,
+                length=2,
+                contents_type=bool,
+            )
         except TypeError:
-            try:
-                inclusive = tuple(inclusive)
-                check_param(
-                    "inclusive", inclusive, tuple, length=2, contents_type=bool
-                )
-            except TypeError:
-                raise TypeError(
-                    "inclusive must be either a bool or a tuple of two bools."
-                )
+            raise TypeError(
+                "inclusive must be either a bool or a tuple of two bools."
+            )
 
         self._check_well_shaped()
         self._check_increasing_time()
-
-        # Ensure to work with a sequence of `inclusive`
-        try:
-            seq_inclusive = [inclusive[0], inclusive[1]]  # type: ignore
-        except TypeError:
-            seq_inclusive = [inclusive, inclusive]  # type: ignore
 
         if index2 < index1:
             raise ValueError(
@@ -2560,14 +2557,14 @@ class TimeSeries:
                 f"The specified index1 of {index1} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
-        index1 -= int(seq_inclusive[0])
+        index1 -= int(inclusive[0])
 
         if index2 < 0 or index2 >= len(self.time):
             raise TimeSeriesRangeError(
                 f"The specified index2 of {index2} is out of "
                 f"range. The TimeSeries has {len(self.time)} samples."
             )
-        index2 += int(seq_inclusive[1])
+        index2 += int(inclusive[1])
 
         index_range = range(index1 + 1, index2)
 
@@ -2756,27 +2753,21 @@ class TimeSeries:
         """
         check_param("time1", time1, float)
         check_param("teim2", time2, float)
+        if isinstance(inclusive, bool):
+            inclusive = (inclusive, inclusive)
         try:
-            check_param("inclusive", inclusive, bool)
+            inclusive = cast(tuple[bool, bool], tuple(inclusive))
+            check_param(
+                "inclusive",
+                inclusive,
+                tuple,
+                length=2,
+                contents_type=bool,
+            )
         except TypeError:
-            try:
-                inclusive = tuple(inclusive)
-                check_param(
-                    "inclusive", inclusive, tuple, length=2, contents_type=bool
-                )
-            except TypeError:
-                raise TypeError(
-                    "inclusive must be either a bool or a tuple of two bools."
-                )
-
-        self._check_well_shaped()
-        self._check_increasing_time()
-
-        # Ensure to work with a sequence of `inclusive`
-        try:
-            seq_inclusive = [inclusive[0], inclusive[1]]  # type: ignore
-        except TypeError:
-            seq_inclusive = [inclusive, inclusive]  # type: ignore
+            raise TypeError(
+                "inclusive must be either a bool or a tuple of two bools."
+            )
 
         if time2 < time1:
             raise ValueError(
@@ -2784,8 +2775,8 @@ class TimeSeries:
                 f"However, time2 is {time2} while time1 is {time1}."
             )
 
-        index1 = self.get_index_after_time(time1, inclusive=seq_inclusive[0])
-        index2 = self.get_index_before_time(time2, inclusive=seq_inclusive[1])
+        index1 = self.get_index_after_time(time1, inclusive=inclusive[0])
+        index2 = self.get_index_before_time(time2, inclusive=inclusive[1])
         return self.get_ts_between_indexes(index1, index2, inclusive=True)
 
     def get_ts_before_event(
@@ -3005,26 +2996,23 @@ class TimeSeries:
         check_param("name2", name2, str)
         check_param("occurrence1", occurrence2, int)
         check_param("occurrence1", occurrence2, int)
+        if isinstance(inclusive, bool):
+            inclusive = (inclusive, inclusive)
         try:
-            check_param("inclusive", inclusive, bool)
+            inclusive = cast(tuple[bool, bool], tuple(inclusive))
+            check_param(
+                "inclusive",
+                inclusive,
+                tuple,
+                length=2,
+                contents_type=bool,
+            )
         except TypeError:
-            try:
-                inclusive = tuple(inclusive)
-                check_param(
-                    "inclusive", inclusive, tuple, length=2, contents_type=bool
-                )
-            except TypeError:
-                raise TypeError(
-                    "inclusive must be either a bool or a tuple of two bools."
-                )
+            raise TypeError(
+                "inclusive must be either a bool or a tuple of two bools."
+            )
 
         self._check_well_shaped()
-
-        # Ensure to work with a sequence of `inclusive`
-        try:
-            seq_inclusive = [inclusive[0], inclusive[1]]  # type: ignore
-        except TypeError:
-            seq_inclusive = [inclusive, inclusive]  # type: ignore
 
         time1 = self.events[self._get_event_index(name1, occurrence1)].time
         time2 = self.events[self._get_event_index(name2, occurrence2)].time
@@ -3039,10 +3027,10 @@ class TimeSeries:
             )
 
         index1 = self.get_index_after_event(
-            name1, occurrence1, inclusive=seq_inclusive[0]
+            name1, occurrence1, inclusive=inclusive[0]
         )
         index2 = self.get_index_before_event(
-            name2, occurrence2, inclusive=seq_inclusive[1]
+            name2, occurrence2, inclusive=inclusive[1]
         )
         return self.get_ts_between_indexes(index1, index2, inclusive=True)
 

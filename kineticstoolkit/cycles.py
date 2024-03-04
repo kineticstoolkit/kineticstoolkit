@@ -26,6 +26,7 @@ __license__ = "Apache 2.0"
 
 import numpy as np
 from numpy.typing import ArrayLike
+from typing import cast
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
 from tqdm import tqdm
@@ -104,7 +105,7 @@ def detect_cycles(
     """
     check_param("ts", ts, TimeSeries)
     check_param("data_key", data_key, str)
-    event_names = tuple(event_names)
+    event_names = cast(tuple[str, str], tuple(event_names))
     check_param(
         "event_names",
         event_names,
@@ -112,7 +113,7 @@ def detect_cycles(
         length=2,
         contents_type=str,
     )
-    thresholds = tuple(thresholds)
+    thresholds = cast(tuple[float, float], tuple(thresholds))
     check_param(
         "thresholds",
         thresholds,
@@ -120,7 +121,7 @@ def detect_cycles(
         length=2,
         contents_type=float,
     )
-    directions = tuple(directions)
+    directions = cast(tuple[str, str], tuple(directions))
     check_param(
         "directions",
         directions,
@@ -128,7 +129,7 @@ def detect_cycles(
         length=2,
         contents_type=str,
     )
-    min_durations = tuple(min_durations)
+    min_durations = cast(tuple[float, float], tuple(min_durations))
     check_param(
         "min_durations",
         min_durations,
@@ -136,7 +137,7 @@ def detect_cycles(
         length=2,
         contents_type=float,
     )
-    max_durations = tuple(max_durations)
+    max_durations = cast(tuple[float, float], tuple(max_durations))
     check_param(
         "max_durations",
         max_durations,
@@ -144,7 +145,7 @@ def detect_cycles(
         length=2,
         contents_type=float,
     )
-    min_peak_heights = tuple(min_peak_heights)
+    min_peak_heights = cast(tuple[float, float], tuple(min_peak_heights))
     check_param(
         "min_peak_heights",
         min_peak_heights,
@@ -152,7 +153,7 @@ def detect_cycles(
         length=2,
         contents_type=float,
     )
-    max_peak_heights = tuple(max_peak_heights)
+    max_peak_heights = cast(tuple[float, float], tuple(max_peak_heights))
     check_param(
         "max_peak_heights",
         max_peak_heights,
