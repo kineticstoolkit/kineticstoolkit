@@ -101,6 +101,18 @@ def _parse_color(
     # Here, it's a sequence. Cast to tuple, check and return.
     value = tuple(value)
     check_param("value", value, tuple, length=3, contents_type=float)
+    if (
+        (value[0] < 0.0)
+        or (value[1] < 0.0)
+        or (value[2] < 0.0)
+        or (value[0] > 1.0)
+        or (value[1] > 1.0)
+        or (value[2] > 1.0)
+    ):
+        raise ValueError(
+            f"The specified color '{value}' is invalid because each R, G, B "
+            "value must be between 0.0 and 1.0."
+        )
     return value
 
 
@@ -1154,7 +1166,7 @@ class Player:
                     point in points.data_info
                     and "Color" in points.data_info[point]
                 ):
-                    color = points.data_info[point]["Color"]
+                    color = _parse_color(points.data_info[point]["Color"])
                 else:
                     color = self.default_point_color
 
@@ -1354,7 +1366,7 @@ class Player:
                 color = self._contents.data_info[key]["Color"]
             except KeyError:  # Default color
                 color = self._default_point_color
-            self._colors.add(color)
+            self._colors.add(_parse_color(color))
 
         # Create all required point plots
         for color in self._colors:
@@ -1601,6 +1613,7 @@ class Player:
             self._state["MouseMiddlePressed"] = True
         elif event.button == 3:
             self._state["MouseRightPressed"] = True
+        self._fast_refresh()
 
     def _on_mouse_release(self, event):  # pragma: no cover
         if event.button == 1:
