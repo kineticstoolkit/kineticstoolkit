@@ -37,7 +37,6 @@ setuptools.setup(
         "tqdm",  # For progress bars
         "requests",  # To download documentation examples
         "requests-cache",  # To check for warning messages on import
-        "ffmpeg",  # For Player.to_mp4()
     ],
     classifiers=[
         "Development Status :: 4 - Beta",
