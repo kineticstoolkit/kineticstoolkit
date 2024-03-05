@@ -356,7 +356,6 @@ class Player:
             frame_size = kwargs["axis_length"]
         if "axis_width" in kwargs:
             frame_width = kwargs["axis_width"]
-            
 
         check_param("ts", ts, tuple, contents_type=TimeSeries)
         # The other parameters are checked by the property setters.
@@ -1569,14 +1568,12 @@ class Player:
         self._orient_contents()
 
         # Try to find a camera pan/zoom so that the view is similar
-        res = optim.minimize(
-            error_function, np.hstack((self.pan, self.zoom))
-        )
+        res = optim.minimize(error_function, np.hstack((self.pan, self.zoom)))
         if res.success is False:
             self.pan = initial_pan
             self.zoom = initial_zoom
             self.target = initial_target
-            
+
         self._fast_refresh()
 
     # ------------------------------------
