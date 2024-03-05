@@ -450,7 +450,7 @@ class TimeSeries:
     # Properties
     @property
     def time(self):
-        """Time Property."""
+        """Hold the TimeSeries time."""
         return self._time
 
     @time.setter
@@ -469,7 +469,7 @@ class TimeSeries:
 
     @property
     def data(self):
-        """Data Property."""
+        """Hold the TimeSeries data."""
         return self._data
 
     @data.setter
@@ -482,7 +482,7 @@ class TimeSeries:
 
     @property
     def events(self):
-        """Data Property."""
+        """Hold the TimeSeries events."""
         return self._events
 
     @events.setter
