@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,9 @@
 """
 Provide standard filters for TimeSeries.
 """
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -32,10 +30,10 @@ import scipy.signal as sgl
 import scipy.ndimage as ndi
 import warnings
 from kineticstoolkit import TimeSeries
-from kineticstoolkit.exceptions import check_types
+from kineticstoolkit.typing_ import check_param
+from typing import cast
 
-
-import kineticstoolkit as ktk  # for doctests
+import kineticstoolkit as ktk  # For doctests
 
 
 def __dir__():
@@ -111,12 +109,15 @@ def savgol(
         If sample rate is not constant, or if there is no data to
         filter.
 
-    See also
+    See Also
     --------
     ktk.filters.smooth
 
     """
-    check_types(savgol, locals())
+    check_param("ts", ts, TimeSeries)
+    check_param("window_length", window_length, int)
+    check_param("poly_order", poly_order, int)
+    check_param("deriv", deriv, int)
     _validate_input(ts)
 
     tsout = ts.copy()
@@ -175,12 +176,13 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
         If sample rate is not constant, or if there is no data to
         filter.
 
-    See also
+    See Also
     --------
     ktk.filters.savgol
 
     """
-    check_types(smooth, locals())
+    check_param("ts", ts, TimeSeries)
+    check_param("window_length", window_length, int)
     _validate_input(ts)
 
     tsout = savgol(ts, window_length=window_length, poly_order=0)
@@ -190,7 +192,7 @@ def smooth(ts: TimeSeries, /, window_length: int) -> TimeSeries:
 def butter(
     ts: TimeSeries,
     /,
-    fc: float | list[float],
+    fc: float | tuple[float, float],
     *,
     order: int = 2,
     btype: str = "lowpass",
@@ -210,13 +212,13 @@ def butter(
         Input TimeSeries.
     fc
         Cut-off frequency in Hz. This is a float for single-frequency filters
-        (lowpass, highpass), or a sequence of two floats (e.g., [10., 13.])
-        for two-frequency filters (bandpass, bandstop).
+        (lowpass, highpass), or a tuple of two floats (e.g., (10., 13.)
+        for two-frequency filters (bandpass, bandstop)).
     order
         Optional. Order of the filter. Default is 2.
     btype
-        Optional. Can be either 'lowpass', 'highpass', 'bandpass' or
-        'bandstop'. Default is 'lowpass'.
+        Optional. Can be either "lowpass", "highpass", "bandpass" or
+        "bandstop". Default is "lowpass".
     filtfilt
         Optional. If True, the filter is applied two times in reverse direction
         to eliminate time lag. If False, the filter is applied only in forward
@@ -234,7 +236,19 @@ def butter(
         filter.
 
     """
-    check_types(butter, locals())
+    check_param("ts", ts, TimeSeries)
+    try:
+        check_param("fc", fc, float)
+    except TypeError:
+        try:
+            fc = cast(tuple[float, float], fc)
+            fc = cast(tuple[float, float], tuple(fc))
+            check_param("fc", fc, tuple, length=2, contents_type=float)
+        except TypeError:
+            raise TypeError("fc must be an integer or a tuple or 2 floats.")
+    check_param("order", order, int)
+    check_param("btype", btype, str)
+    check_param("filtfilt", filtfilt, bool)
     _validate_input(ts)
 
     ts = ts.copy()
@@ -294,12 +308,12 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
-    >>> ts.data['data'] = np.array([0.0, 0.0, 1.0, 1.0, 0.0])
+    >>> ts = ts.add_data("test", np.array([0.0, 0.0, 1.0, 1.0, 0.0]))
 
     >>> # Source data
     >>> ts.time
     array([0. , 0.1, 0.2, 0.3, 0.4])
-    >>> ts.data['data']
+    >>> ts.data["test"]
     array([0., 0., 1., 1., 0.])
 
     >>> # First derivative
@@ -307,7 +321,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
 
     >>> ts1.time
     array([0.05, 0.15, 0.25, 0.35])
-    >>> ts1.data['data']
+    >>> ts1.data["test"]
     array([  0.,  10.,   0., -10.])
 
     >>> # Second derivative
@@ -315,11 +329,12 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
 
     >>> ts2.time
     array([0.1, 0.2, 0.3])
-    >>> ts2.data['data']
+    >>> ts2.data["test"]
     array([ 100., -100., -100.])
 
     """
-    check_types(deriv, locals())
+    check_param("ts", ts, TimeSeries)
+    check_param("n", n, int)
     _validate_input(ts)
 
     out_ts = ts.copy()
@@ -351,14 +366,16 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 
     Example
     -------
-    >>> ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))
-    >>> ts.data['data1'] = np.array([10., 11., 11., 20., 14., 15.])
-    >>> ts = ktk.filters.median(ts)
-    >>> ts.data['data1']
+    >>> ts = ktk.TimeSeries(time=np.arange(0, 6))
+    >>> ts = ts.add_data("test", [10., 11., 11., 20., 14., 15.])
+    >>> ts2 = ktk.filters.median(ts)
+    >>> ts2.data["test"]
     array([10., 11., 11., 14., 15., 15.])
 
     """
-    check_types(median, locals())
+    check_param("ts", ts, TimeSeries)
+    check_param("window_length", window_length, int)
+
     out_ts = ts.copy()
     for key in ts.data:
         window_shape = [1 for i in range(len(ts.data[key].shape))]

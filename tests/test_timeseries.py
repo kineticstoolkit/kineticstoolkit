@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 # limitations under the License.
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -71,8 +71,43 @@ def test_TimeSeriesEvent():
     assert the_dict["Time"] == 1.5
     assert the_dict["Name"] == "event_name"
 
+    # Test append with a compatible class
+    class O(object):
+        pass
 
-# %% TimeSeries constructo, copy and checks
+    o = O()
+    o.time = 1.0
+    o.name = "test"
+    ts = ktk.TimeSeries()
+    ts.events.append(o)
+    assert ts.events[0].time == 1.0
+    assert ts.events[0].name == "test"
+
+    try:
+        ts.events.append(0)  # It's not an event
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
+    # Test extend with a list of compatible classes
+    event = ktk.TimeSeriesEvent(time=1.5, name="event_name")
+
+    ts = ktk.TimeSeries()
+    ts.events.extend([o, event])
+
+    assert ts.events[0].time == 1.0
+    assert ts.events[0].name == "test"
+    assert ts.events[1].time == 1.5
+    assert ts.events[1].name == "event_name"
+
+    try:
+        ts.events.extend([1, 2, 3])  # It's not an event
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
+
+# %% TimeSeries constructor, copy and checks
 
 
 def test_TimeSeries():
@@ -167,30 +202,67 @@ def test_copy():
     assert ts2.events[2].time == 100
 
 
+def test_time_property():
+    # Set time on constructor
+    ts = ktk.TimeSeries(time=[1, 2, 3])
+    assert isinstance(ts.time, np.ndarray)
+    assert np.array_equal(ts.time, [1, 2, 3])
+
+    # Set time on assignment
+    ts = ktk.TimeSeries()
+    ts.time = [1, 2, 3]
+    assert isinstance(ts.time, np.ndarray)
+    assert np.array_equal(ts.time, [1, 2, 3])
+
+    # Set a non-array
+    try:
+        ts.time = 0
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
+
+def test_data_property():
+    # Set data on contstructor
+    ts = ktk.TimeSeries(data={"data1": [1, 2, 3], "data2": [4, 5, 6]})
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.data["data1"], np.ndarray)
+    assert isinstance(ts.data["data2"], np.ndarray)
+    assert np.array_equal(ts.data["data1"], [1, 2, 3])
+    assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+    # Set data on whole assignment
+    ts = ktk.TimeSeries()
+    ts.data = {"data1": [1, 2, 3], "data2": [4, 5, 6]}
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.data["data1"], np.ndarray)
+    assert isinstance(ts.data["data2"], np.ndarray)
+    assert np.array_equal(ts.data["data1"], [1, 2, 3])
+    assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+    # Set data on dict setter
+    ts = ktk.TimeSeries()
+    ts.data["data1"] = [1, 2, 3]
+    ts.data["data2"] = [4, 5, 6]
+    assert isinstance(ts.data, dict)
+    assert isinstance(ts.data["data1"], np.ndarray)
+    assert isinstance(ts.data["data2"], np.ndarray)
+    assert np.array_equal(ts.data["data1"], [1, 2, 3])
+    assert np.array_equal(ts.data["data2"], [4, 5, 6])
+
+    # Set a non-array
+    try:
+        ts.data["data1"] = 0
+        raise Exception("This should fail.")
+    except AttributeError:
+        pass
+
+
 def test_check_well_typed():
-    ts = ktk.TimeSeries()  # Should pass
-    ts._check_well_typed()
-
-    ts.time = [1, 2, 3]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
-    ts._check_well_typed()
-
+    ts = ktk.TimeSeries()
+    ts.time = [1.0, 2.0, 3.0]
     ts.data["test1"] = np.array([1, 2, 3])
-    ts.data["test2"] = [1, 2, 3]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
-    ts._check_well_typed()
+    ts.data["test2"] = [1, 2, 3]
 
     ts.time[1] = np.nan  # Should fail
     try:
@@ -199,14 +271,14 @@ def test_check_well_typed():
     except TypeError:
         pass
 
-    ts.time = np.array([1.0, 2.0, 2.0])  # Should fail
+    ts.time = [1.0, 2.0, 2.0]  # Should fail
     try:
         ts._check_well_typed()
         raise Exception("This should fail.")
     except TypeError:
         pass
 
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts.add_data_info("test1", "Unit", "N", in_place=True)
     ts.add_data_info("test2", "Unit", "N", in_place=True)
     ts._check_well_typed()
@@ -237,26 +309,12 @@ def test_check_well_typed():
     ts.add_event(0, in_place=True)  # Should pass
     ts._check_well_typed()
 
-    ts.events = "test"  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts.events = [ktk.TimeSeriesEvent(0), "test"]  # Should fail
-    try:
-        ts._check_well_typed()
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
 
 def test_check_well_shaped():
     ts = ktk.TimeSeries()  # Should pass
     ts._check_well_shaped()
 
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_well_shaped()
 
     ts.data["test1"] = np.array([1, 2, 3])
@@ -281,35 +339,35 @@ def test_check_not_empty_time():
         raise Exception("This should fail.")
     except ValueError:
         pass
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_not_empty_time()
 
 
 def test_check_increasing_time():
-    ts = ktk.TimeSeries(time=np.array([0.0, 2.0, 1.0]))  # Should fail
+    ts = ktk.TimeSeries(time=[0.0, 2.0, 1.0])  # Should fail
     try:
         ts._check_increasing_time()
         raise Exception("This should fail.")
     except ValueError:
         pass
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_increasing_time
 
 
 def test_check_constant_sample_rate():
-    ts = ktk.TimeSeries(time=np.array([0.0, 1.0, 3.0]))  # Should fail
+    ts = ktk.TimeSeries(time=[0.0, 1.0, 3.0])  # Should fail
     try:
         ts._check_constant_sample_rate()
         raise Exception("This should fail.")
     except ValueError:
         pass
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should pass
+    ts.time = [1.0, 2.0, 3.0]  # Should pass
     ts._check_constant_sample_rate()
 
 
 def test_check_not_empty_data():
     ts = ktk.TimeSeries()
-    ts.time = np.array([1.0, 2.0, 3.0])  # Should fail
+    ts.time = [1.0, 2.0, 3.0]  # Should fail
     try:
         ts._check_not_empty_data()
         raise Exception("This should fail.")
@@ -319,7 +377,7 @@ def test_check_not_empty_data():
     ts._check_not_empty_data()
 
 
-# %% From and to dataframe
+# %% From array, from and to dataframe
 
 
 def test_from_to_dataframe():
@@ -402,6 +460,85 @@ def test_from_to_dataframe():
 #     assert np.all(df == df2)
 
 
+def test_from_array():
+    # From array
+    ts = ktk.TimeSeries.from_array(
+        [1, 2, 3],
+        time=[5, 6, 7],
+        data_key="oh",
+        time_info={"oh": "ah"},
+        data_info={"oh": {"ah": "eh"}},
+        events=[ktk.TimeSeriesEvent(1, "a")],
+    )
+    assert np.array_equal(ts.time, [5, 6, 7])
+    assert np.array_equal(ts.data["oh"], [1, 2, 3])
+    assert ts.time_info == {"oh": "ah"}
+    assert ts.data_info == {"oh": {"ah": "eh"}}
+    assert ts.events == [ktk.TimeSeriesEvent(1, "a")]
+
+
+# %% Different constructors (using original doctests)
+def test_constructor_variants():
+    # From TimeSeries
+    ts1 = ktk.TimeSeries(
+        time=np.arange(0, 10), data={"test": np.arange(0, 10)}
+    )
+    ts2 = ktk.TimeSeries(ts1)
+    assert ts1 == ts2
+
+    # From DataFrame
+    df = pd.DataFrame()
+    df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    df["x"] = [0.0, 1.0, 2.0, 3.0, 4.0]
+    df["y"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    df["z"] = [0.0, 0.0, 0.0, 0.0, 0.0]
+    ts = ktk.TimeSeries(df)
+    assert np.array_equal(ts.time, df.index)
+    assert np.array_equal(ts.data["x"], df["x"])
+    assert np.array_equal(ts.data["y"], df["y"])
+    assert np.array_equal(ts.data["z"], df["z"])
+
+    df = pd.DataFrame()
+    df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    df["point[0]"] = [0.0, 1.0, 2.0, 3.0, 4.0]
+    df["point[1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    df["point[2]"] = [0.0, 0.0, 0.0, 0.0, 0.0]
+    ts = ktk.TimeSeries(df)
+    assert np.array_equal(ts.time, df.index)
+    assert np.array_equal(ts.data["point"][:, 0], df["point[0]"])
+    assert np.array_equal(ts.data["point"][:, 1], df["point[1]"])
+    assert np.array_equal(ts.data["point"][:, 2], df["point[2]"])
+
+    df = pd.DataFrame()
+    df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    df["rot[0,0]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["rot[0,1]"] = -np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["rot[1,0]"] = np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["rot[1,1]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+    df["trans[0]"] = [0.0, 0.1, 0.2, 0.3, 0.4]
+    df["trans[1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    ts = ktk.TimeSeries(df)
+    assert np.array_equal(ts.time, df.index)
+    assert np.array_equal(ts.data["rot"][:, 0, 0], df["rot[0,0]"])
+    assert np.array_equal(ts.data["rot"][:, 0, 1], df["rot[0,1]"])
+    assert np.array_equal(ts.data["rot"][:, 1, 0], df["rot[1,0]"])
+    assert np.array_equal(ts.data["rot"][:, 1, 1], df["rot[1,1]"])
+    assert np.array_equal(ts.data["trans"][:, 0], df["trans[0]"])
+    assert np.array_equal(ts.data["trans"][:, 1], df["trans[1]"])
+
+    # From array
+    ts = ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
+    assert np.array_equal(ts.time, np.arange(5) * 1.0)
+    assert np.array_equal(ts.data["data"], [0.1, 0.2, 0.3, 0.4, 0.5])
+
+    ts = ktk.TimeSeries(
+        [0.1, 0.2, 0.3, 0.4, 0.5],
+        time=[0.1, 0.2, 0.3, 0.4, 0.5],
+    )
+    assert np.array_equal(ts.time, [0.1, 0.2, 0.3, 0.4, 0.5])
+    assert np.array_equal(ts.data["data"], [0.1, 0.2, 0.3, 0.4, 0.5])
+
+
 # %% Metadata
 
 
@@ -414,6 +551,12 @@ def test_add_remove_data_info():
     assert ts.data_info["Force"]["Unit"] == "N"
     assert ts.data_info["Force"]["Other"] == "hello"
 
+    # Check if overwrite works (change to try/except in version 1.0)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ts.add_data_info("Force", "Other", 111, in_place=True)
+    ts.add_data_info("Force", "Other", 111, in_place=True, overwrite=True)
+
     # Test removing non-existing data_info (should not work)
     try:
         ts = ts.remove_data_info("Nonexisting", "Other")
@@ -425,6 +568,68 @@ def test_add_remove_data_info():
     ts.remove_data_info("Force", "Other", in_place=True)
     assert ts.data_info["Force"]["Unit"] == "N"
     assert len(ts.data_info["Force"]) == 1
+
+
+# %% Data
+
+
+def test_add_data():
+    ts = ktk.TimeSeries()
+
+    # Adding data and populating a corresponding time value
+    ts.add_data("data1", np.eye(3), in_place=True)
+    assert np.allclose(ts.data["data1"], np.eye(3))
+
+    # Adding data that already exists
+    try:
+        ts.add_data("data1", 2 * np.eye(3), in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Adding data that already exists but with overwrite = True
+    ts.add_data("data1", 3 * np.eye(3), overwrite=True, in_place=True)
+    assert np.allclose(ts.data["data1"], 3 * np.eye(3))
+
+    # Adding matching data
+    ts.add_data("data2", 2 * np.eye(3), in_place=True)
+    assert np.allclose(ts.data["data2"], 2 * np.eye(3))
+
+    # Adding non-matching data
+    try:
+        ts.add_data("data3", 3 * np.eye(4), in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Adding a DataFrame with matching indexes
+    df = pd.DataFrame(5 * np.eye(3))
+    ts.time = [0, 1, 2]
+    ts.add_data("data3", df, in_place=True)
+    assert np.allclose(ts.data["data3"], 5 * np.eye(3))
+
+    # Adding a DataFrame with matching size but mismatching indexes
+    df.index = np.arange(3) / 10
+    try:
+        ts.add_data("data4", df, in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Doing the suggested action in the error message to make it pass
+    df.index = ts.time
+    ts.add_data("data4", df, in_place=True)
+    assert np.allclose(ts.time, [0, 1, 2])
+    assert np.allclose(ts.data["data4"], 5 * np.eye(3))
+
+    # Adding a DataFrame with mismatching size
+    ts = ktk.TimeSeries(data={"data1": [0, 1, 2]})
+    df = pd.DataFrame(6 * np.eye(4))
+    try:
+        ts.add_data("data5", df, in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
 
 
 def test_rename_remove_data():
@@ -643,19 +848,19 @@ def test_get_sample_rate():
     ts = ktk.TimeSeries()
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0.0, 0.1, 0.2, 0.3])
+    ts.time = [0.0, 0.1, 0.2, 0.3]
     assert ts.get_sample_rate() == 10.0
 
-    ts.time = np.array([0, 0.1, 0.3, 0.4])
+    ts.time = [0.0, 0.1, 0.3, 0.4]
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0])
+    ts.time = [0]
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0.0, 0.2, 0.1])
+    ts.time = [0.0, 0.2, 0.1]
     assert np.isnan(ts.get_sample_rate())
 
-    ts.time = np.array([0.0, 0.1])
+    ts.time = [0.0, 0.1]
     assert ts.get_sample_rate() == 10.0
 
 
@@ -873,7 +1078,7 @@ def test_fill_missing_samples():
 
 
 def test_get_index_at_time():
-    ts = ktk.TimeSeries(time=np.array([0.2, 0.5, 1, 1.5, 2]))
+    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     assert ts.get_index_at_time(0) == 0
     assert ts.get_index_at_time(0.2) == 0
     assert ts.get_index_at_time(0.9) == 2
@@ -883,7 +1088,7 @@ def test_get_index_at_time():
 
 
 def test_get_index_before_time():
-    ts = ktk.TimeSeries(time=np.array([0.2, 0.5, 1, 1.5, 2]))
+    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     try:
         ts.get_index_before_time(0)
         raise AssertionError("This should fail.")
@@ -899,7 +1104,7 @@ def test_get_index_before_time():
 
 def test_get_index_after_time():
     # doctests
-    ts = ktk.TimeSeries(time=np.array([0.2, 0.5, 1, 1.5, 2]))
+    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     assert ts.get_index_after_time(-10) == 0
     assert ts.get_index_after_time(0.9) == 2
     assert ts.get_index_after_time(1) == 3

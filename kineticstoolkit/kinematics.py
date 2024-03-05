@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@
 """
 Provide functions related to kinematics analysis.
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -30,7 +27,7 @@ __license__ = "Apache 2.0"
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit import TimeSeries, read_c3d, write_c3d
 from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.exceptions import check_types
+from kineticstoolkit.typing_ import check_param
 
 import numpy as np
 import warnings
@@ -68,13 +65,15 @@ def create_cluster(
     -----
     0.10.0: Parameters `marker_names` was changed to `names`
 
-    See also
+    See Also
     --------
     ktk.kinematics.extend_cluster
     ktk.kinematics.track_cluster
 
     """
-    check_types(create_cluster, locals())
+    check_param("markers", markers, TimeSeries)
+    names = list(names)
+    check_param("names", names, list, contents_type=str)
 
     n_samples = len(markers.time)
     n_markers = len(names)
@@ -132,19 +131,17 @@ def extend_cluster(
     ----
     0.10.0: Parameter `new_point` was changed to `name`
 
-    See also
+    See Also
     --------
     ktk.kinematics.create_cluster
     ktk.kinematics.track_cluster
 
     """
-    check_types(extend_cluster, locals())
-
-    # Ensure to convert every cluster element to a numpy array
-    new_cluster = {}
+    check_param("markers", markers, TimeSeries)
+    check_param("cluster", cluster, dict, key_type=str)
     for key in cluster:
-        new_cluster[key] = np.array(cluster[key])
-    cluster = new_cluster
+        cluster[key] = np.array(cluster[key])
+    check_param("name", name, str)
 
     frames = _track_cluster_frames(markers, cluster)
     local_coordinates = geometry.get_local_coordinates(
@@ -187,20 +184,25 @@ def track_cluster(
         tracked cluster's local coordinate system. The default is False.
     lcs_name
         Optional. Name of the TimeSeries data entry for the tracked local
-        coordinate system. The default is 'LCS'.
+        coordinate system. The default is "LCS".
 
     Returns
     -------
     TimeSeries
         A TimeSeries with the trajectories of all cluster points.
 
-    See also
+    See Also
     --------
     ktk.kinematics.create_cluster
     ktk.kinematics.track_cluster
 
     """
-    check_types(track_cluster, locals())
+    check_param("markers", markers, TimeSeries)
+    check_param("cluster", cluster, dict, key_type=str)
+    for key in cluster:
+        cluster[key] = np.array(cluster[key])
+    check_param("include_lcs", include_lcs, bool)
+    check_param("lcs_name", lcs_name, str)
 
     out = markers.copy(copy_data=False, copy_data_info=False)
     unit = _get_marker_unit(markers)
@@ -290,7 +292,8 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     developed.
 
     """
-    check_types(write_trc_file, locals())
+    check_param("markers", markers, TimeSeries)
+    check_param("filename", filename, str)
 
     markers = markers.copy()
     markers.fill_missing_samples(0)

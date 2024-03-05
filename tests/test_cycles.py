@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,7 +16,7 @@
 # limitations under the License.
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -69,7 +69,7 @@ def test_detect_cycles():
         "data",
         event_names=["start", "stop"],
         thresholds=[0.5, 0.5],
-        directions=["falling"],
+        directions=["falling", "rising"],
     )
     assert ts2.events[0].name == "start"
     assert ts2.events[0].time == 6

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,15 +23,14 @@ Warning
 This module is private and should be considered only as helper functions
 for Kinetics Toolkit's own use.
 """
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 import kineticstoolkit.config as config
+from kineticstoolkit.typing_ import check_param
 import limitedinteraction as li
 import matplotlib as mpl
 from typing import Any
@@ -46,6 +45,7 @@ def message(message: str = "", **kwargs) -> None:
     message
         The message to show. Use '' to close every message window.
     """
+    check_param("message", message, str)
     li.message(
         message,
         icon=[
@@ -78,6 +78,8 @@ def button_dialog(
         user closes the window instead of clicking a button, a value of -1 is
         returned.
     """
+    check_param("message", message, str)
+    check_param("choices", choices, list, contents_type=str)
     return li.button_dialog(
         message,
         choices,
@@ -134,7 +136,8 @@ def set_color_order(setting: str | list[Any]) -> None:
     else:
         raise (ValueError("This setting is not recognized."))
 
-    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)
+    # Don't know why I need to disable mypy on this line.
+    mpl.rcParams["axes.prop_cycle"] = mpl.cycler(color=thelist)  # type: ignore
 
 
 def get_credentials() -> tuple[str, str]:
@@ -172,6 +175,7 @@ def get_folder(initial_folder: str = ".") -> str:
         the user cancelled.
 
     """
+    check_param("initial_folder", initial_folder, str)
     return li.get_folder(
         initial_folder,
         icon=[
@@ -196,6 +200,7 @@ def get_filename(initial_folder: str = ".") -> str:
         The full path of the selected file. An empty string is returned if the
         user cancelled.
     """
+    check_param("initial_folder", initial_folder, str)
     return li.get_filename(
         initial_folder,
         icon=[

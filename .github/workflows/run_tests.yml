@@ -1,0 +1,53 @@
+# This workflow will install Python dependencies, run tests and lint with a variety of Python versions
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-python
+
+name: run_tests
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+  workflow_dispatch:
+  
+jobs:
+  unittests:
+    defaults:
+      run:
+        shell: bash -l {0}
+
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup conda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        activate-environment: anaconda-client-env
+    - name: Install dependencies
+      run: |
+        conda install -c conda-forge python=${{ matrix.python-version }} mamba pytest -y
+        mamba install -c conda-forge kineticstoolkit --only-deps -y
+    - name: Test with pytest and crash on warnings (macos)
+      if: matrix.os == 'macos-latest'
+      run: |
+        export PYTHONPATH=":kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Test with pytest and crash on warnings (linux)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        export PYTHONPATH=":kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Test with pytest and crash on warnings (windows)
+      if: matrix.os == 'windows-latest'
+      run: |
+        export PYTHONPATH=";kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning

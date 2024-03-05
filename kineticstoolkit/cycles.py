@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,25 +17,19 @@
 
 """
 Identify cycles and time-normalize data.
-
 """
-from __future__ import annotations
-
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
 import numpy as np
+from typing import cast
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.exceptions import (
-    check_types,
-    TimeSeriesEventNotFoundError,
-)
-from kineticstoolkit.tools import tqdm
-import warnings
-from numpy.typing import ArrayLike
+from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
+from tqdm import tqdm
+from kineticstoolkit.typing_ import ArrayLike, check_param
 
 
 def __dir__():
@@ -52,13 +46,13 @@ def detect_cycles(
     ts: TimeSeries,
     data_key: str,
     *,
-    event_names: list[str] = ["phase1", "phase2"],
-    thresholds: list[float] = [0.0, 1.0],
-    directions: list[str] = ["rising", "falling"],
-    min_durations: list[float] = [0.0, 0.0],
-    max_durations: list[float] = [np.Inf, np.Inf],
-    min_peak_heights: list[float] = [-np.Inf, -np.Inf],
-    max_peak_heights: list[float] = [np.Inf, np.Inf],
+    event_names: tuple[str, str] = ("phase1", "phase2"),
+    thresholds: tuple[float, float] = (0.0, 1.0),
+    directions: tuple[str, str] = ("rising", "falling"),
+    min_durations: tuple[float, float] = (0.0, 0.0),
+    max_durations: tuple[float, float] = (np.Inf, np.Inf),
+    min_peak_heights: tuple[float, float] = (-np.Inf, -np.Inf),
+    max_peak_heights: tuple[float, float] = (np.Inf, np.Inf),
 ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -70,7 +64,7 @@ def detect_cycles(
       corresponds to the start of phase 1
     - event_names[1]:
       corresponds to the start of phase 2
-    - '_':
+    - "_":
       corresponds to the end of the cycle.
 
     Parameters
@@ -82,25 +76,25 @@ def detect_cycles(
         unidimensional.
     event_names
         Optional. Event names to add in the output TimeSeries. Default is
-        ['phase1', 'phase2'].
+        ("phase1", "phase2").
     thresholds
         Optional. Values to cross to register phase changes. Default is
         [0., 1.].
     directions
         Optional. Directions to cross thresholds to register phase changes.
-        Either ['rising', 'falling'] or ['falling', 'rising']. Default is
-        ['rising', 'falling'].
+        Either ("rising", "falling") or ("falling", "rising"). Default is
+        ("rising", "falling").
     min_durations
-        Optional. Minimal phase durations in seconds. Default is [0., 0.].
+        Optional. Minimal phase durations in seconds. Default is (0.0, 0.0).
     max_durations
         Optional. Maximal phase durations in seconds. Default is
-        [np.Inf, np.Inf]
+        (np.Inf, np.Inf)
     min_peak_heights
         Optional. Minimal peak values to be reached in both phases. Default is
-        [-np.Inf, -np.Inf].
+        (-np.Inf, -np.Inf).
     max_peak_heights
         Optional. Maximal peak values to be reached in both phases. Default is
-        [np.Inf, np.Inf].
+        (np.Inf, np.Inf).
 
     Returns
     -------
@@ -108,10 +102,67 @@ def detect_cycles(
         A copy of `ts` with the events added.
 
     """
-    check_types(detect_cycles, locals())
+    check_param("ts", ts, TimeSeries)
+    check_param("data_key", data_key, str)
+    event_names = cast(tuple[str, str], tuple(event_names))
+    check_param(
+        "event_names",
+        event_names,
+        tuple,
+        length=2,
+        contents_type=str,
+    )
+    thresholds = cast(tuple[float, float], tuple(thresholds))
+    check_param(
+        "thresholds",
+        thresholds,
+        tuple,
+        length=2,
+        contents_type=float,
+    )
+    directions = cast(tuple[str, str], tuple(directions))
+    check_param(
+        "directions",
+        directions,
+        tuple,
+        length=2,
+        contents_type=str,
+    )
+    min_durations = cast(tuple[float, float], tuple(min_durations))
+    check_param(
+        "min_durations",
+        min_durations,
+        tuple,
+        length=2,
+        contents_type=float,
+    )
+    max_durations = cast(tuple[float, float], tuple(max_durations))
+    check_param(
+        "max_durations",
+        max_durations,
+        tuple,
+        length=2,
+        contents_type=float,
+    )
+    min_peak_heights = cast(tuple[float, float], tuple(min_peak_heights))
+    check_param(
+        "min_peak_heights",
+        min_peak_heights,
+        tuple,
+        length=2,
+        contents_type=float,
+    )
+    max_peak_heights = cast(tuple[float, float], tuple(max_peak_heights))
+    check_param(
+        "max_peak_heights",
+        max_peak_heights,
+        tuple,
+        length=2,
+        contents_type=float,
+    )
 
-    # lowercase directions[0] once
-    directions[0] = directions[0].lower()  # type: ignore
+    # lowercase directions
+    directions = (directions[0].lower(), directions[1].lower())
     if directions[0] != "rising" and directions[0] != "falling":
         raise ValueError("directions[0] must be 'rising' or 'falling'")
 
@@ -209,7 +260,7 @@ def time_normalize(
     put end to end. For example, for a TimeSeries that contains three
     cycles, a time normalization with 100 points will give a TimeSeries
     of length 300. The TimeSeries' events are also time-normalized, including
-    event_name1 but with event_name2 renamed as '_'.
+    event_name1 but with event_name2 renamed as "_".
 
     Parameters
     ----------
@@ -246,19 +297,25 @@ def time_normalize(
     119, 254, etc. For each cycle, events outside the 0-100% spans are ignored.
 
     """
-    check_types(time_normalize, locals())
-
-    # Optional span
+    check_param("ts", ts, TimeSeries)
+    check_param("event_name1", event_name1, str)
+    check_param("event_name2", event_name2, str)
+    check_param("n_points", n_points, int)
     if span is None:
         span = [0, n_points]
+    else:
+        span = list(span)
+        check_param("span", span, list, length=2, contents_type=int)
 
     if len(ts.events) < 2:
         raise ValueError("This TimeSeries does not have events.")
+
     if ts.count_events(event_name1) == 0:
         raise ValueError(
             f"No occurrence of event `{event_name1}` was found in this "
             "TimeSeries."
         )
+
     if ts.count_events(event_name2) == 0:
         raise ValueError(
             f"No occurrence of event `{event_name2}` was found in this "
@@ -427,7 +484,8 @@ def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     ktk.cycles.unstack
 
     """
-    check_types(stack, locals())
+    check_param("ts", ts, TimeSeries)
+    check_param("n_points", n_points, int)
 
     if np.mod(len(ts.time), n_points) != 0:
         raise (
@@ -467,7 +525,7 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     ktk.cycles.stack
 
     """
-    check_types(unstack, locals())
+    check_param("data", data, dict, key_type=str, contents_type=np.ndarray)
 
     ts = TimeSeries()
     for key in data.keys():
@@ -519,14 +577,14 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 #     >>> import kineticstoolkit.lab as ktk
 #     >>> # Create a TimeSeries with different time-normalized events
 #     >>> ts = ktk.TimeSeries(time=np.arange(400))  # 4 cycles of 100%
-#     >>> ts = ts.add_event(9, 'event1')    # event1 at 9% of cycle 0
-#     >>> ts = ts.add_event(110, 'event1')  # event1 at 10% of cycle 1
-#     >>> ts = ts.add_event(312, 'event1')  # event1 at 12% of cycle 3
-#     >>> ts = ts.add_event(382, 'event1')  # 2nd occ. event1 at 82% of cycle 3
+#     >>> ts = ts.add_event(9, "event1")    # event1 at 9% of cycle 0
+#     >>> ts = ts.add_event(110, "event1")  # event1 at 10% of cycle 1
+#     >>> ts = ts.add_event(312, "event1")  # event1 at 12% of cycle 3
+#     >>> ts = ts.add_event(382, "event1")  # 2nd occ. event1 at 82% of cycle 3
 
 #     >>> # Stack these events
 #     >>> events = ktk.cycles.stack_events(ts)
-#     >>> events['event1']
+#     >>> events["event1"]
 #     [[9.0], [10.0], [], [12.0, 82.0]]
 
 #     """
@@ -582,20 +640,20 @@ def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     >>> import kineticstoolkit.lab as ktk
     >>> import numpy as np
     >>> # Create a data sample with four different cycles, the most different
-    >>> # begin cycle 2 (cos instead of sin), then cycle 0.
+    >>> # being cycle 2 (cos instead of sin), then cycle 0.
     >>> x = np.arange(0, 10, 0.1)
-    >>> data = np.array([[np.sin(x)], \
-        [np.sin(x) + 0.14], \
-        [np.cos(x) + 0.14], \
-        [np.sin(x) + 0.15]])
+    >>> data = np.array([np.sin(x), \
+        np.sin(x) + 0.14, \
+        np.cos(x) + 0.14, \
+        np.sin(x) + 0.15])
 
     >>> ktk.cycles.most_repeatable_cycles(data)
     [1, 3, 0, 2]
 
     """
-    check_types(most_repeatable_cycles, locals())
-
     data = np.array(data)
+    check_param("data", data, np.ndarray, ndims=2)
+
     n_cycles = data.shape[0]
     out_cycles = []  # type: list[int]
     done_cycles = []  # type: list[int]  # Like out_cycles but includes NaNs

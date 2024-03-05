@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,19 +20,16 @@ Provide functions to load and save data.
 
 The classes defined in this module are accessible directly from the toplevel
 Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
-
 """
-from __future__ import annotations
-
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.exceptions import check_types
 import kineticstoolkit.config
+from kineticstoolkit.typing_ import check_param
 
 import os
 import numpy as np
@@ -88,31 +85,25 @@ def save(filename: str, variable: Any) -> None:
 
     Caution
     -------
-    - Tuples are also supported but will be loaded back as lists, without
-    warning.
-    - Complex Pandas Series (e.g., series or different types) may not be
-    supported. Only the following attributes of the Series are saved:
-    name, index, and the data itself.
-    - Complex Pandas DataFrames (e.g., multiindex, columns of different types)
-    may not be supported. Only the following attributes of the DataFrame are
-    saved: columns, index, and the data itself.
+    Tuples are also supported but will be loaded back as lists, without
+    warning. Complex Pandas Series (e.g., series or different types) may not be
+    supported: only name, index and data are saved. Complex Pandas DataFrames
+    (e.g., multiindex, columns of different types) may not be supported:
+    only columns, index, and data are saved.
 
-    See also
+    See Also
     --------
     ktk.load
 
     """
-    check_types(save, locals())
+    check_param("filename", filename, str)
 
     class CustomEncoder(json.JSONEncoder):
         def default(self, obj):
             if isinstance(obj, np.ndarray):
                 return {"class__": "numpy.array", "value": obj.tolist()}
 
-            elif (
-                str(type(obj))
-                == "<class 'kineticstoolkit.timeseries.TimeSeries'>"
-            ):
+            elif isinstance(obj, TimeSeries):
                 out = {}
                 out["class__"] = "ktk.TimeSeries"
                 out["time"] = obj.time.tolist()
@@ -269,12 +260,13 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     Any
         The loaded variable.
 
-    See also
+    See Also
     --------
     ktk.save
 
     """
-    check_types(load, locals())
+    check_param("filename", filename, str)
+    check_param("include_metadata", include_metadata, bool)
 
     archive = zipfile.ZipFile(filename, "r")
 
@@ -370,7 +362,7 @@ def read_c3d(
     This function, which has been introduced in version 0.9, is still
     experimental and its behaviour or API may change slightly in the future.
 
-    See also
+    See Also
     --------
     ktk.write_c3d, ktk.geometry.scale
 
@@ -401,17 +393,20 @@ def read_c3d(
     these data are returned in output["ForcePlates"] as a TimeSeries following
     this structure:
 
-      - 'Forces0': Nx4 series of force vectors on platform 0.
-      - 'Forces1': Nx4 series of force vectors on platform 1.
-      - 'Forces2': Nx4 series of force vectors on platform 2.
+      - "Forces0": Nx4 series of force vectors on platform 0.
+      - "Forces1": Nx4 series of force vectors on platform 1.
+      - "Forces2": Nx4 series of force vectors on platform 2.
       - ...
-      - 'Moments0': Nx4 series of moment vectors on platform 0.
-      - 'Moments1': Nx4 series of moment vectors on platform 2.
-      - 'Moments2': Nx4 series of moment vectors on platform 3.
+      - "Moments0": Nx4 series of moment vectors on platform 0.
+      - "Moments1": Nx4 series of moment vectors on platform 2.
+      - "Moments2": Nx4 series of moment vectors on platform 3.
       - ...
         
     """
-    check_types(read_c3d, locals())
+    check_param("filename", filename, str)
+    if convert_point_unit is not None:
+        check_param("convert_point_unit", convert_point_unit, bool)
+    check_param("include_event_context", include_event_context, bool)
 
     try:
         import ezc3d
@@ -432,6 +427,11 @@ def read_c3d(
         convert_moment_unit = kwargs["convert_moment_unit"]
     else:
         convert_moment_unit = True
+
+    if "return_ezc3d" in kwargs:
+        return_ezc3d = kwargs["return_ezc3d"]
+    else:
+        return_ezc3d = False
 
     # Create the output
     output = {}
@@ -455,6 +455,9 @@ def read_c3d(
 
     else:
         raise FileNotFoundError(f"File {filename} was not found.")
+
+    if return_ezc3d:
+        output["C3D"] = reader
 
     # ---------------------------------
     # List the events
@@ -712,7 +715,7 @@ def write_c3d(
     analogs
         Optional. Analog signals, where each data key is one series. Series
         that are not unidimensional are converted to multiple unidimensional
-        series. For instance, if the shape of analogs.data['Forces'] is
+        series. For instance, if the shape of analogs.data["Forces"] is
         1000x3, then three unidimensional series of length 1000 are created in
         the C3D: Forces[0], Forces[1] and Forces[2].
 
@@ -720,7 +723,7 @@ def write_c3d(
         `points`'s sample rate. Also, `analogs.time[0]` must be the same as
         `points.time[0]`.
 
-    See also
+    See Also
     --------
     ktk.read_c3d
 
@@ -751,6 +754,10 @@ def write_c3d(
         ktk.write_c3d("testfile.c3d", points=points, analogs=analogs)
 
     """
+    check_param("filename", filename, str)
+    check_param("points", points, TimeSeries)
+    check_param("analogs", analogs, (TimeSeries, type(None)))
+
     try:
         import ezc3d
     except ModuleNotFoundError:
@@ -759,10 +766,6 @@ def write_c3d(
             "to use this function. Please install it using: "
             "conda install -c conda-forge ezc3d"
         )
-
-    # Basic type check
-    check_types(write_c3d, locals())
-
     # Create an empty c3d structure
     c3d = ezc3d.c3d()
 

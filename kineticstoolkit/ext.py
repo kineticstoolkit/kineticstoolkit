@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2022 Félix Chénier
+# Copyright 2022-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,11 +18,8 @@
 """
 Provide extension support for Kinetics Toolkit.
 """
-from __future__ import annotations
-
-
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2022 Félix Chénier"
+__copyright__ = "Copyright (C) 2022-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -53,7 +50,7 @@ def _import_extensions() -> list[str]:
     may change signature or behaviour in the future.
 
     Notes
-    ----
+    -----
     This function is called automatically if Kinetics Toolkit is imported in
     lab mode::
 

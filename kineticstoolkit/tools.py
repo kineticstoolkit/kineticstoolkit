@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,43 +14,55 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-from __future__ import annotations
 
 """Provide miscelleanous helper functions."""
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-
+import matplotlib as mpl
+import warnings
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
 import kineticstoolkit.ext
-from kineticstoolkit.exceptions import check_types
-
-import warnings
+from kineticstoolkit.typing_ import check_param
 
 
-def tqdm(the_range, *args, **kwargs):
+def check_interactive_backend() -> None:
     """
-    Return a range or a tqdm's progress bar range if tqdm is installed.
+    Warns if Matplotlib is not using an interactive backend.
 
-    Parameters
-    ----------
-    The same as tqdm.tqdm, with the first begin the range.
-
-    Returns
-    -------
-    the_range if tqdm is not installed. tqdm.tqdm if tqdm is installed.
+    To disable these warnings, for instance if we are generating documentation
+    and we need the Player to show a figure, set
+    ktk.config.interactive_backend_warning to False
     """
+    if kineticstoolkit.config.interactive_backend_warning is False:
+        return
+
+    warn = lambda: warnings.warn(
+        "This function requires that Matplotlib uses an interactive "
+        "backend. Try typing `%matplotlib qt5` before running this "
+        "function."
+    )
+
     try:
-        import tqdm  # noqa
+        mpl.backends
+    except AttributeError:  # No backend has been initialized
+        warn()
+        return
 
-        return tqdm.tqdm(the_range, *args, **kwargs)
-    except ModuleNotFoundError:
-        return the_range
+    try:
+        mpl.backends.backend  # type:ignore
+    except AttributeError:  # No backend has been initialized
+        warn()
+        return
+
+    if "inline" in mpl.backends.backend:  # type:ignore
+        warn()
+        return
 
 
 def change_defaults(
@@ -115,7 +127,10 @@ def change_defaults(
         import kineticstoolkit.lab as ktk
 
     """
-    check_types(change_defaults, locals())
+    check_param("change_ipython_dict_repr", change_ipython_dict_repr, bool)
+    check_param("change_matplotlib_defaults", change_matplotlib_defaults, bool)
+    check_param("change_numpy_print_options", change_numpy_print_options, bool)
+    check_param("change_warnings_format", change_warnings_format, bool)
 
     if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython

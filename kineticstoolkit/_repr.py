@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020 Félix Chénier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 kineticstoolkit._repr.py
 ------------------------
@@ -30,9 +29,8 @@ and becomes unmanagable when the dict becomes larger.
 It also provides helper functions to nicely format the repr() of data classes.
 
 """
-
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -41,7 +39,9 @@ import numpy as np
 from typing import Any
 
 
-def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
+def _format_dict_entries(
+    the_dict: Any, quotes: bool = True, overrides={}, hide_private=False
+) -> str:
     """
     Format a dict nicely on screen.
 
@@ -60,6 +60,13 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
     quotes:
         False to remove quotes from keys when they are strings. Default is
         True.
+    overrides:
+        Optional. Dictionary of entry names to override. For example, if a
+        class has private attributes that should be accessed using properties,
+        e.g.: {"_data": "data", "_time": "time"}.
+    hide_private:
+        Optional. True to hide any attribute that begins with '_'. This is
+        checked after applying overrides.
 
     Returns
     -------
@@ -72,14 +79,16 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
     widest = 0
     # Find the widest key name
     for key in the_dict:
-        key_label = repr(key)
+        key_label = repr(overrides.get(key, key))
         if quotes is False and isinstance(key_label, str):
             key_label = key_label[1:-1]
         widest = max(widest, len(key_label))
 
     # Print each key value
     for key in the_dict:
-        key_label = repr(key)
+        if hide_private and overrides.get(key, key).startswith("_"):
+            continue
+        key_label = repr(overrides.get(key, key))
         if quotes is False and isinstance(key_label, str):
             key_label = key_label[1:-1]
         key_label = " " * (widest - len(key_label)) + key_label
@@ -114,7 +123,7 @@ def _format_dict_entries(the_dict: Any, quotes: bool = True) -> str:
     return out
 
 
-def _format_class_attributes(obj):
+def _format_class_attributes(obj, overrides, hide_private=False) -> str:
     """
     Format a class that has attributes nicely on screen.
 
@@ -130,6 +139,10 @@ def _format_class_attributes(obj):
     ----------
     obj: Any
         The class instance.
+    overrides:
+        Optional. Dictionary of entry names to override. For example, if a
+        class has private attributes that should be accessed using properties,
+        e.g.: {"_data": "data", "_time": "time"}.
 
     Returns
     -------
@@ -141,7 +154,12 @@ def _format_class_attributes(obj):
     out = class_name + " with attributes:\n"
 
     # Return the list of attributes
-    out += _format_dict_entries(obj.__dict__, quotes=False)
+    out += _format_dict_entries(
+        obj.__dict__,
+        quotes=False,
+        overrides=overrides,
+        hide_private=hide_private,
+    )
     return out
 
 
