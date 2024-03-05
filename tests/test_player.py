@@ -27,7 +27,6 @@ __license__ = "Apache 2.0"
 import kineticstoolkit as ktk
 import matplotlib.pyplot as plt
 import matplotlib as mpl
-import warnings
 import numpy as np
 import os
 

@@ -49,6 +49,7 @@ import scipy.optimize as optim
 
 REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 PALETTE = {
+    "k": (0.0, 0.0, 0.0),
     "r": (1.0, 0.0, 0.0),
     "g": (0.0, 1.0, 0.0),
     "b": (0.3, 0.3, 1.0),
@@ -200,7 +201,7 @@ class Player:
         Optional. True to draw the scene using perspective, False to draw the
         scene orthogonally.
 
-    translation
+    pan
         Optional. Camera translation (panning). Default is (0.0, 0.0).
 
     target
@@ -265,6 +266,7 @@ class Player:
     _contents: TimeSeries
     _oriented_points: TimeSeries
     _oriented_frames: TimeSeries
+    _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
     _extended_interconnections: dict[str, dict[str, Any]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
@@ -282,7 +284,7 @@ class Player:
     _initial_elevation: float
     _initial_azimuth: float
     _initial_perspective: bool
-    _translation: np.ndarray
+    _pan: np.ndarray
     _target: np.ndarray
     _track: bool
     _default_point_color: tuple[float, float, float]
@@ -310,7 +312,7 @@ class Player:
         zoom: float = 1.0,
         azimuth: float = 0.0,
         elevation: float = 0.2,
-        translation: tuple[float, float] = (0.0, 0.0),
+        pan: tuple[float, float] = (0.0, 0.0),
         target: tuple[float, float, float] = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
@@ -346,6 +348,15 @@ class Player:
             interconnection_width = kwargs["segment_width"]
         if "current_frame" in kwargs:
             current_index = kwargs["current_frame"]
+        if "translation" in kwargs:
+            pan = kwargs["translation"]
+        if "marker_radius" in kwargs:
+            point_size = kwargs["marker_radius"]
+        if "axis_length" in kwargs:
+            frame_size = kwargs["axis_length"]
+        if "axis_width" in kwargs:
+            frame_width = kwargs["axis_width"]
+            
 
         check_param("ts", ts, tuple, contents_type=TimeSeries)
         # The other parameters are checked by the property setters.
@@ -363,6 +374,7 @@ class Player:
         self._grid = np.array([])
         self._oriented_points = TimeSeries(time=self._contents.time)
         self._oriented_frames = TimeSeries(time=self._contents.time)
+        self._oriented_target = (0.0, 0.0, 0.0)
 
         self._interconnections = interconnections  # Just to put stuff for now
         self._extended_interconnections = interconnections  # idem
@@ -384,7 +396,7 @@ class Player:
         self._initial_elevation = elevation
         self._initial_azimuth = azimuth
         self._initial_perspective = perspective
-        self.translation = translation
+        self.pan = pan
         self.target = target
         self.track = track
         self.default_point_color = default_point_color
@@ -411,7 +423,7 @@ class Player:
             "MousePositionOnPress": (0.0, 0.0),
             "MousePositionOnMiddlePress": (0.0, 0.0),
             "MousePositionOnRightPress": (0.0, 0.0),
-            "TranslationOnMousePress": (0.0, 0.0),
+            "PanOnMousePress": (0.0, 0.0),
             "AzimutOnMousePress": 0.0,
             "ElevationOnMousePress": 0.0,
             "SystemTimeOnLastUpdate": time.time(),
@@ -441,6 +453,38 @@ class Player:
         # needed.
         if current_time is not None:
             self.current_time = current_time
+
+    @property
+    def contents(self):
+        """Use get_contents or set_contents instead."""
+        raise AttributeError(
+            "Please use Player.get_contents() and Player.set_contents() to "
+            "read and write contents."
+        )
+
+    @contents.setter
+    def contents(self, value):
+        """Use get_contents or set_contents instead."""
+        raise AttributeError(
+            "Please use Player.get_contents() and Player.set_contents() to "
+            "read and write contents."
+        )
+
+    @property
+    def interconnections(self):
+        """Use get_interconnections or set_interconnections instead."""
+        raise AttributeError(
+            "Please use Player.get_interconnections() and "
+            "Player.set_interconnections() to read and write interconnections."
+        )
+
+    @interconnections.setter
+    def interconnections(self, value):
+        """Use get_interconnections or set_interconnections instead."""
+        raise AttributeError(
+            "Please use Player.get_interconnections() and "
+            "Player.set_interconnections() to read and write interconnections."
+        )
 
     @property
     def current_index(self) -> int:
@@ -583,16 +627,16 @@ class Player:
             self._fast_refresh()
 
     @property
-    def translation(self):
-        """Read/write translation as (x, y)."""
-        return (self._translation[0], self._translation[1])
+    def pan(self):
+        """Read/write pan as (x, y)."""
+        return (self._pan[0], self._pan[1])
 
-    @translation.setter
-    def translation(self, value):
-        """Set translation value using (x, y) or (x, y, ...)."""
+    @pan.setter
+    def pan(self, value):
+        """Set pan value using (x, y) or (x, y, ...)."""
         value = tuple(value)
-        check_param("translation", value, tuple, contents_type=float)
-        self._translation = np.array(value)[0:2]
+        check_param("pan", value, tuple, contents_type=float)
+        self._pan = np.array(value)[0:2]
         if not self._being_constructed:
             self._fast_refresh()
 
@@ -607,7 +651,9 @@ class Player:
         value = tuple(value)
         check_param("target", value, tuple, contents_type=float)
         self._target = np.array(value)[0:3]
+
         if not self._being_constructed:
+            self._orient_contents()
             self._fast_refresh()
 
     @property
@@ -803,8 +849,6 @@ class Player:
         """Print a textual description of the Player properties."""
         return "ktk.Player with properties:\n" + _format_dict_entries(
             {
-                "contents": self.get_contents(),
-                "interconnections": self.get_interconnections(),
                 "current_index": self.current_index,
                 "current_time": self.current_time,
                 "playback_speed": self.playback_speed,
@@ -814,7 +858,7 @@ class Player:
                 "azimuth": self.azimuth,
                 "elevation": self.elevation,
                 "perspective": self.perspective,
-                "translation": self.translation,
+                "pan": self.pan,
                 "target": self.target,
                 "track": self.track,
                 "default_point_color": self.default_point_color,
@@ -1002,7 +1046,7 @@ class Player:
 
     def _orient_contents(self) -> None:
         """
-        Update self._oriented_points and _oriented_frames.
+        Update, self._oriented_points, _oriented_frames and _oriented_target
 
         Rotate everything according to the up input, so that the end result
         is y up:
@@ -1045,6 +1089,13 @@ class Player:
                     )
                 )
 
+        self._oriented_target = geometry.get_global_coordinates(
+            np.array(
+                [[self._target[0], self._target[1], self._target[2], 1.0]]
+            ),
+            rotation,
+        )[0, 0:3]
+
     # %% Projection and update
 
     def _project_to_camera(self, points_3d: np.ndarray) -> np.ndarray:
@@ -1082,8 +1133,8 @@ class Player:
             )
             @ np.array(
                 [
-                    [1, 0, 0, self.translation[0]],  # Pan
-                    [0, 1, 0, self.translation[1]],
+                    [1, 0, 0, self.pan[0]],  # Pan
+                    [0, 1, 0, self.pan[1]],
                     [0, 0, 1, 0],
                     [0, 0, 0, 1],
                 ]
@@ -1106,9 +1157,9 @@ class Player:
             )
             @ np.array(
                 [
-                    [1, 0, 0, -self.target[0]],  # Rotate around target
-                    [0, 1, 0, -self.target[1]],
-                    [0, 0, -1, self.target[2]],
+                    [1, 0, 0, -self._oriented_target[0]],
+                    [0, 1, 0, -self._oriented_target[1]],
+                    [0, 0, -1, self._oriented_target[2]],
                     [0, 0, 0, 1],
                 ]
             )
@@ -1478,11 +1529,11 @@ class Player:
         self._mpl_objects["Axes"].set_ylim([-1.0, 1.0])
 
     def _set_new_target(self, target: ArrayLike) -> None:
-        """Set new target and adapts translation and zoom consequently."""
-        target = np.array(target)
+        """Set new target and adapts pan and zoom consequently."""
+        # Save the current view
         if np.sum(np.isnan(target)) > 0:
             return
-        initial_translation = deepcopy(self.translation)
+        initial_pan = deepcopy(self.pan)
         initial_zoom = deepcopy(self.zoom)
         initial_target = deepcopy(self.target)
 
@@ -1503,10 +1554,9 @@ class Player:
             np.nan
         )
         initial_projected_points[initial_projected_points[:, 1] > 1.0] = np.nan
-        self.target = target
 
         def error_function(input):
-            self._translation = input[0:2]
+            self._pan = input[0:2]
             self._zoom = input[2]
             new_projected_points = self._project_to_camera(points)
             error = np.nanmean(
@@ -1514,13 +1564,20 @@ class Player:
             )
             return error
 
+        # Set the new target
+        self._target = target
+        self._orient_contents()
+
+        # Try to find a camera pan/zoom so that the view is similar
         res = optim.minimize(
-            error_function, np.hstack((self.translation, self.zoom))
+            error_function, np.hstack((self.pan, self.zoom))
         )
         if res.success is False:
-            self._translation = initial_translation
-            self._zoom = initial_zoom
-            self._target = initial_target
+            self.pan = initial_pan
+            self.zoom = initial_zoom
+            self.target = initial_target
+            
+        self._fast_refresh()
 
     # ------------------------------------
     # Callbacks
@@ -1565,7 +1622,7 @@ class Player:
             # Set as new target
             self._last_selected_point = selected_point
             self._set_new_target(
-                self._oriented_points.data[selected_point][self.current_index]
+                self._contents.data[selected_point][self.current_index]
             )
 
             self._fast_refresh()
@@ -1664,14 +1721,7 @@ class Player:
         self._fast_refresh()
 
     def _on_mouse_press(self, event):  # pragma: no cover
-        if len(self._last_selected_point) > 0:
-            self._set_new_target(
-                self._oriented_points.data[self._last_selected_point][
-                    self.current_index
-                ]
-            )
-
-        self._state["TranslationOnMousePress"] = self.translation
+        self._state["PanOnMousePress"] = self.pan
         self._state["AzimutOnMousePress"] = self.azimuth
         self._state["ElevationOnMousePress"] = self.elevation
         self._state["ZoomOnMousePress"] = self.zoom
@@ -1697,11 +1747,11 @@ class Player:
         if (
             self._state["MouseLeftPressed"] and self._state["ShiftPressed"]
         ) or self._state["MouseMiddlePressed"]:
-            self.translation = (
-                self._state["TranslationOnMousePress"][0]
+            self.pan = (
+                self._state["PanOnMousePress"][0]
                 + (event.x - self._state["MousePositionOnPress"][0])
                 / (100 * self.zoom),
-                self._state["TranslationOnMousePress"][1]
+                self._state["PanOnMousePress"][1]
                 + (event.y - self._state["MousePositionOnPress"][1])
                 / (100 * self.zoom),
             )
@@ -1754,8 +1804,7 @@ class Player:
 
         self._mpl_objects["Figure"].set_size_inches(6, 4.5)  # Half size
         self._mpl_objects["Figure"].tight_layout()
-        self.to_mp4("temp.mp4", show_progress_bar=False)
-        plt.close(self._mpl_objects["Figure"])
+        self.to_video("temp.mp4", show_progress_bar=False)
         return Video(
             "temp.mp4", embed=True, html_attributes="controls loop autoplay"
         )
