@@ -308,7 +308,9 @@ def read_c3d(
 
     If available, analog data is returned in `output["Analogs"]` as a
     TimeSeries, where each analog signal is expressed as a unidimensional
-    array of length N.
+    array of length N. Similarly, if available, transition matrices are
+    returned in `output["Rotations"]` as a TimeSeries, where each rotation
+    matrix is expressed as a 4x4 array.
 
     Some applications store calculated values such as angles, forces, moments,
     powers, etc. into the C3D file. Storing these data is application-specific
@@ -338,7 +340,7 @@ def read_c3d(
     -------
     dict[ktk.TimeSeries]
         A dict of TimeSeries, with keys being "Points" and if available,
-        "Analogs".
+        "Analogs" and/or "Rotations".
 
     Caution
     -------
@@ -637,6 +639,60 @@ def read_c3d(
         output["Analogs"] = analogs
 
     # ---------------------------------
+    # Create the rotations TimeSeries
+
+    # at least test files do not have the ROTATION parameter, not sure if this
+    # is also true for more/older c3d files, quick solve for now.
+    if "ROTATION" in reader["parameters"]:
+        rotations = TimeSeries()
+
+        # Get the marker label names and create a timeseries data entry for each
+        # Get the labels
+        rotation_rate = reader["parameters"]["ROTATION"]["RATE"]["value"][0]
+        rotation_start = reader["header"]["rotations"]["first_frame"]
+        start_time = rotation_start / rotation_rate
+        n_rotations = reader["parameters"]["ROTATION"]["USED"]["value"][0]
+
+        labels = reader["parameters"]["ROTATION"]["LABELS"]["value"]
+
+        if len(labels) > 0:  # There are rotations
+            # no additional labels and scale converstion for rotation matrices
+            # move to adding data to the TimeSeries
+            for rotation_id in range(n_rotations):
+                # Make sure it's UTF8, and strip leading and ending spaces
+                label = labels[rotation_id]
+                key = label.encode("utf-8", "ignore").decode("utf-8").strip()
+                if label != "":
+                    rotations.data[key] = np.array(
+                        reader["data"]["rotations"][:, :, rotation_id, :].T
+                    )
+
+            if n_rotations > 0:
+                rotations.time = (
+                    np.arange(rotations.data[key].shape[0]) / rotation_rate
+                    + start_time
+                )
+
+            # Add events
+            for i_event in range(len(event_names)):
+                event_time = event_times[i_event]
+                if include_event_context:
+                    event_name = (
+                        event_contexts[i_event] + ":" + event_names[i_event]
+                    )
+                else:
+                    event_name = event_names[i_event]
+                rotations.add_event(
+                    event_time,
+                    event_name,
+                    in_place=True,
+                )
+            rotations.sort_events(in_place=True)
+
+            # Add to output
+            output["Rotations"] = rotations
+
+    # ---------------------------------
     # Create the platforms TimeSeries
     if extract_force_plates and reader["data"]["platform"] != []:
         platforms = TimeSeries(time=analogs.time)  # type: ignore
@@ -689,10 +745,13 @@ def read_c3d(
 
 
 def write_c3d(
-    filename: str, points: TimeSeries, analogs: TimeSeries | None = None
+    filename: str,
+    points: TimeSeries | None = None,
+    analogs: TimeSeries | None = None,
+    rotations: TimeSeries | None = None,
 ) -> None:
     """
-    Write points and analog data to a C3D file.
+    Write points, analog, and rotations data to a C3D file.
 
     Parameters
     ----------
@@ -700,8 +759,8 @@ def write_c3d(
         Path of the C3D file
 
     points
-        Points trajectories, where data key corresponds to a point, expressed
-        as an Nx4 point series::
+        Optional. Points trajectories, where data key corresponds to a point,
+        expressed as an Nx4 point series::
 
             [
                 [x0, y0, z0, 1.0],
@@ -719,9 +778,17 @@ def write_c3d(
         1000x3, then three unidimensional series of length 1000 are created in
         the C3D: Forces[0], Forces[1] and Forces[2].
 
-        The sample rate of `analogs` must be an integer multiple of the
-        `points`'s sample rate. Also, `analogs.time[0]` must be the same as
-        `points.time[0]`.
+        If both `analogs` and `points` are specified, the sample rate of
+        `analogs` must be an integer multiple of the `points`'s sample rate.
+        Also, `analogs.time[0]` must be the same as `points.time[0]`.
+
+    rotations
+        Optional. Rotation matrices, where each data key corresponds to a
+        rotation matrix, expressed as a Nx4x4 array.
+
+        If both `rotations` and `points` are specified, the sample rate of
+        `rotations` must be an integer multiple of the `points`'s sample rate.
+        Also, `rotations.time[0]` must be the same as `rotations.time[0]`.
 
     See Also
     --------
@@ -755,8 +822,15 @@ def write_c3d(
 
     """
     check_param("filename", filename, str)
-    check_param("points", points, TimeSeries)
+    check_param("points", points, (TimeSeries, type(None)))
     check_param("analogs", analogs, (TimeSeries, type(None)))
+    check_param("rotations", rotations, (TimeSeries, type(None)))
+
+    if points is None and analogs is None and rotations is None:
+        raise ValueError(
+            "At least one of points, analogs, or rotations must be provided. "
+            "Writing empty C3D files is not supported."
+        )
 
     try:
         import ezc3d
@@ -769,65 +843,89 @@ def write_c3d(
     # Create an empty c3d structure
     c3d = ezc3d.c3d()
 
-    # Add the points, but first make some checks
-    points._check_not_empty_data()
-    points._check_constant_sample_rate()
+    if points is not None:
+        # Add the points, but first make some checks
+        points._check_not_empty_data()
+        points._check_constant_sample_rate()
 
-    point_rate = points.get_sample_rate()
+        point_rate = points.get_sample_rate()
 
-    point_unit = None
-    for key in points.data:
-        # Check that this is a series of points
-        if points.data[key].shape[1] != 4:
-            raise ValueError(f"Point {key} is not a Nx4 series of points.")
-        if not np.all(
-            np.isclose(points.data[key][:, 3], 1.0), where=~points.isnan(key)
-        ):
-            raise ValueError(f"Point {key} is not a series of [x, y, z, 1.0]")
+        point_unit = None
+        for key in points.data:
+            # Check that this is a series of points
+            if points.data[key].shape[1] != 4:
+                raise ValueError(f"Point {key} is not a Nx4 series of points.")
+            if not np.all(
+                np.isclose(points.data[key][:, 3], 1.0),
+                where=~points.isnan(key),
+            ):
+                raise ValueError(
+                    f"Point {key} is not a series of [x, y, z, 1.0]"
+                )
 
-        # Check that units are all the same (or None)
-        if key not in points.data_info:
-            continue
+            # Check that units are all the same (or None)
+            if key not in points.data_info:
+                continue
 
-        if "Unit" not in points.data_info[key]:
-            continue
+            if "Unit" not in points.data_info[key]:
+                continue
 
-        this_unit = points.data_info[key]["Unit"]
+            this_unit = points.data_info[key]["Unit"]
 
-        if this_unit is None:
-            continue
+            if this_unit is None:
+                continue
+
+            if point_unit is None:
+                point_unit = this_unit
+                continue
+
+            if point_unit != this_unit:
+                raise ValueError(
+                    "Found different point units in the TimeSeries: "
+                    f"{point_unit} and {this_unit}."
+                )
 
         if point_unit is None:
-            point_unit = this_unit
-            continue
+            point_unit = "m"  # Default
 
-        if point_unit != this_unit:
-            raise ValueError(
-                "Found different point units in the TimeSeries: "
-                f"{point_unit} and {this_unit}."
-            )
+        # Now format and add the points
+        point_list = []
+        point_data = np.zeros((4, len(points.data), len(points.time)))
 
-    if point_unit is None:
-        point_unit = "m"  # Default
+        for i_point, point in enumerate(points.data):
+            point_list.append(point)
+            point_data[0, i_point, :] = points.data[point][:, 0]
+            point_data[1, i_point, :] = points.data[point][:, 1]
+            point_data[2, i_point, :] = points.data[point][:, 2]
+            point_data[3, i_point, :] = points.data[point][:, 3]
 
-    # Now format and add the points
-    point_list = []
-    point_data = np.zeros((4, len(points.data), len(points.time)))
+        # Fill point data
+        c3d["header"]["points"]["first_frame"] = round(
+            points.time[0] * point_rate
+        )
+        c3d.add_parameter("POINT", "RATE", [point_rate])
+        c3d.add_parameter("POINT", "LABELS", [tuple(point_list)])
+        c3d.add_parameter("POINT", "UNITS", point_unit)
 
-    for i_point, point in enumerate(points.data):
-        point_list.append(point)
-        point_data[0, i_point, :] = points.data[point][:, 0]
-        point_data[1, i_point, :] = points.data[point][:, 1]
-        point_data[2, i_point, :] = points.data[point][:, 2]
-        point_data[3, i_point, :] = points.data[point][:, 3]
+        c3d["data"]["points"] = point_data
 
-    # Fill point data
-    c3d["header"]["points"]["first_frame"] = round(points.time[0] * point_rate)
-    c3d.add_parameter("POINT", "RATE", [point_rate])
-    c3d.add_parameter("POINT", "LABELS", [tuple(point_list)])
-    c3d.add_parameter("POINT", "UNITS", point_unit)
+    # Dummy point data must be created since analogs and rotation ratio is based on
+    # point rate. See discussion in issue #229
+    else:
+        points = TimeSeries()
+        points.time = analogs.time if analogs is not None else rotations.time
+        points.time_info = (
+            analogs.time_info if analogs is not None else rotations.time_info
+        )
+        point_rate = (
+            analogs.get_sample_rate()
+            if analogs is not None
+            else rotations.get_sample_rate()
+        )
 
-    c3d["data"]["points"] = point_data
+        # add point rate to the c3d, since it is required for analogs and rotations
+        c3d.add_parameter("POINT", "RATE", [point_rate])
+        c3d["data"]["points"] = np.empty((4, 0, len(points.time)))
 
     # Fill analog data
     if analogs is not None:
@@ -863,6 +961,42 @@ def write_c3d(
         )
         c3d.add_parameter("ANALOG", "USED", [len(analogs_data_info)])
         c3d["data"]["analogs"] = (df_analogs.to_numpy().T)[np.newaxis]
+
+    # fill rotation data
+    if rotations is not None:
+        rotations._check_not_empty_data()
+        rotations._check_constant_sample_rate()
+        rotation_rate = rotations.get_sample_rate()
+
+        rate_ratio = rotation_rate / point_rate
+        if ~np.isclose(rate_ratio, int(rate_ratio)):
+            raise ValueError(
+                "The sample rate of rotations must be an integer "
+                "multiple of the points sample rate."
+            )
+
+        if ~np.isclose(rotations.time[0], points.time[0]):
+            raise ValueError(
+                "Points and rotations must share the same starting time. "
+                f"However, points.time[0] = {points.time[0]} whereas "
+                f"rotations.time[0] = {rotations.time[0]}."
+            )
+
+        # Final data should be a 4x4xlen(rotations.data.keys())xlen(rotations.time)
+        # np.ndarray
+        c3d_rotations = np.zeros(
+            (4, 4, len(rotations.data.keys()), len(rotations.time))
+        )
+        for i_rot, key in enumerate(rotations.data):
+            # change from shape (len(rotations.time), 4, 4) to (4, 4, len(rotations.time))
+            c3d_rotations[:, :, i_rot, :] = np.transpose(
+                rotations.data[key], (1, 2, 0)
+            )
+
+        c3d.add_parameter("ROTATION", "LABELS", [*rotations.data.keys()])
+        c3d.add_parameter("ROTATION", "RATE", [rotation_rate])
+        c3d.add_parameter("ROTATION", "USED", [len(rotations.data.keys())])
+        c3d["data"]["rotations"] = c3d_rotations
 
     # Write the data
     c3d.write(filename)
