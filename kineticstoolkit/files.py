@@ -585,8 +585,15 @@ def read_c3d(
     # Analogs
     labels = reader["parameters"]["ANALOG"]["LABELS"]["value"]
     analog_rate = reader["parameters"]["ANALOG"]["RATE"]["value"][0]
-    units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
     n_analogs = reader["parameters"]["ANALOG"]["USED"]["value"][0]
+    
+    try:
+        units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
+        if len(units) == 0:
+            raise KeyError("No unit")
+    except KeyError:
+        # No units in the file, create an empty unit for each label
+        units = ["" for _ in labels]
 
     # Check if labels2, labels3, labels4,.... exist.
     # https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm
@@ -599,9 +606,14 @@ def read_c3d(
             additional_labels = reader["parameters"]["ANALOG"][str_labels][
                 "value"
             ]
-            additional_units = reader["parameters"]["ANALOG"][str_units][
-                "value"
-            ]
+            try:
+                additional_units = reader["parameters"]["ANALOG"][str_units][
+                    "value"
+                ]
+            except KeyError:
+                # If there are no additional units, just fill with blank spaces
+                additional_units = ["" for _ in additional_labels]
+                
         except KeyError:
             break
         labels.extend(additional_labels)
