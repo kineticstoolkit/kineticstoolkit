@@ -43,7 +43,6 @@ from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
 # Import modules
 from kineticstoolkit import filters  # noqa
 from kineticstoolkit import kinematics  # noqa
-from kineticstoolkit import pushrimkinetics  # noqa
 from kineticstoolkit import cycles  # noqa
 from kineticstoolkit import doc  # noqa
 from kineticstoolkit import gui  # noqa

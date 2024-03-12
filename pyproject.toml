@@ -4,18 +4,6 @@ line-length = 79
 [tool.pytest.ini_options]
 filterwarnings = [
     # TO REMOVE IN 2024
-    # pushrimkinetics
-    'ignore:The function read_file is deprecated since 0.8 and is scheduled to be removed in 2024:FutureWarning',
-    'ignore:The function remove_offsets is deprecated since 0.8 and is scheduled to be removed in 2024:FutureWarning',
-    'ignore:These sample calibration matrices will be removed in 2024:FutureWarning',
-    'ignore:The function calculate_forces_and_moments is deprecated since 0.8 and is scheduled to be removed in 2024:FutureWarning',
-    'ignore:The function calculate_velocity is deprecated since 0.8 and is scheduled to be removed in 2024:FutureWarning',
-    'ignore:The function calculate_power is deprecated since 0.8 and is scheduled to be removed in 2024:FutureWarning',    
-
-    # kinematics
-    'ignore:The function read_c3d_file is deprecated since 0.9 and is scheduled to be removed in 2024:FutureWarning',    
-    'ignore:The function read_n3d_file is deprecated since 0.9 and is scheduled to be removed in 2024:FutureWarning',    
-
     # TimeSeries
     'ignore:The function get_ts_at_event is deprecated since 0.10.0 and is scheduled to be removed in 2024:FutureWarning',
     'ignore:The function get_event_time is deprecated since 0.10.0 and is scheduled to be removed in 2024:FutureWarning',
