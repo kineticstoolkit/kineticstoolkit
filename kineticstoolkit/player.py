@@ -316,7 +316,8 @@ class Player:
         target: tuple[float, float, float] = (0.0, 0.0, 0.0),
         perspective: bool = True,
         track: bool = False,
-        default_point_color: str | tuple[float, float, float] = (
+        default_point_color: str
+        | tuple[float, float, float] = (
             0.8,
             0.8,
             0.8,
@@ -329,12 +330,14 @@ class Player:
         grid_subdivision_size: float = 1.0,
         grid_width: float = 1.0,
         grid_origin: tuple[float, float, float] = (0.0, 0.0, 0.0),
-        grid_color: str | tuple[float, float, float] = (
+        grid_color: str
+        | tuple[float, float, float] = (
             0.3,
             0.3,
             0.3,
         ),
-        background_color: str | tuple[float, float, float] = (
+        background_color: str
+        | tuple[float, float, float] = (
             0.0,
             0.0,
             0.0,
@@ -983,9 +986,9 @@ class Player:
             for body_name in self._interconnections:
                 body_key = f"{pattern}{body_name}"
                 self._extended_interconnections[body_key] = dict()
-                self._extended_interconnections[body_key]["Color"] = (
-                    self._interconnections[body_name]["Color"]
-                )
+                self._extended_interconnections[body_key][
+                    "Color"
+                ] = self._interconnections[body_name]["Color"]
 
                 # Go through every link of this segment
                 self._extended_interconnections[body_key]["Links"] = []
@@ -1076,16 +1079,16 @@ class Player:
         # Orient points and frames
         for key in contents.data:
             if contents.data[key].shape[1:] == (4,):
-                self._oriented_points.data[key] = (
-                    geometry.get_global_coordinates(
-                        contents.data[key], rotation
-                    )
+                self._oriented_points.data[
+                    key
+                ] = geometry.get_global_coordinates(
+                    contents.data[key], rotation
                 )
             elif contents.data[key].shape[1:] == (4, 4):
-                self._oriented_frames.data[key] = (
-                    geometry.get_global_coordinates(
-                        contents.data[key], rotation
-                    )
+                self._oriented_frames.data[
+                    key
+                ] = geometry.get_global_coordinates(
+                    contents.data[key], rotation
                 )
 
         self._oriented_target = geometry.get_global_coordinates(
@@ -1543,13 +1546,13 @@ class Player:
 
         initial_projected_points = self._project_to_camera(points)
         # Do not consider points that are not in the screen
-        initial_projected_points[initial_projected_points[:, 0] < -1.5] = (
-            np.nan
-        )
+        initial_projected_points[
+            initial_projected_points[:, 0] < -1.5
+        ] = np.nan
         initial_projected_points[initial_projected_points[:, 0] > 1.5] = np.nan
-        initial_projected_points[initial_projected_points[:, 1] < -1.0] = (
-            np.nan
-        )
+        initial_projected_points[
+            initial_projected_points[:, 1] < -1.0
+        ] = np.nan
         initial_projected_points[initial_projected_points[:, 1] > 1.0] = np.nan
 
         def error_function(input):
