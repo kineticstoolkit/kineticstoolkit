@@ -586,7 +586,7 @@ def read_c3d(
     labels = reader["parameters"]["ANALOG"]["LABELS"]["value"]
     analog_rate = reader["parameters"]["ANALOG"]["RATE"]["value"][0]
     n_analogs = reader["parameters"]["ANALOG"]["USED"]["value"][0]
-    
+
     try:
         units = reader["parameters"]["ANALOG"]["UNITS"]["value"]
         if len(units) == 0:
@@ -613,7 +613,7 @@ def read_c3d(
             except KeyError:
                 # If there are no additional units, just fill with blank spaces
                 additional_units = ["" for _ in additional_labels]
-                
+
         except KeyError:
             break
         labels.extend(additional_labels)
