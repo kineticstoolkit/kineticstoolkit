@@ -155,6 +155,15 @@ def test_read_c3d():
     )
 
 
+def test_read_c3d_many_analogs():
+    """Test fix https://github.com/kineticstoolkit/kineticstoolkit/issues/231"""
+    contents = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/others/many_analogs.c3d"),
+        convert_point_unit=False,
+    )
+    assert len(contents["Analogs"].data) == 922
+
+
 def test_read_c3d_testsuite1():
     """Run the c3d.org test suite 1 and check if every file is equivalent."""
     # We do not test for mips files because it's not supported by ezc3d
