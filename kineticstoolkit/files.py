@@ -483,7 +483,10 @@ def read_c3d(
     # Get the marker label names and create a timeseries data entry for each
     # Get the labels
     point_rate = reader["parameters"]["POINT"]["RATE"]["value"][0]
-    point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
+    if reader["parameters"]["POINT"]["USED"]["value"][0] > 0:
+        point_unit = reader["parameters"]["POINT"]["UNITS"]["value"][0]
+    else:
+        point_unit = "m"
     point_start = reader["header"]["points"]["first_frame"]
     start_time = point_start / point_rate
     n_points = reader["parameters"]["POINT"]["USED"]["value"][0]
@@ -664,7 +667,10 @@ def read_c3d(
                 key = label.encode("utf-8", "ignore").decode("utf-8").strip()
                 if label != "":
                     rotations.data[key] = np.array(
-                        reader["data"]["rotations"][:, :, rotation_id, :].T
+                        np.transpose(
+                            reader["data"]["rotations"][:, :, rotation_id, :],
+                            (2, 0, 1),
+                        )
                     )
 
             if n_rotations > 0:
@@ -674,18 +680,9 @@ def read_c3d(
                 )
 
             # Add events
-            for i_event in range(len(event_names)):
-                event_time = event_times[i_event]
-                if include_event_context:
-                    event_name = (
-                        event_contexts[i_event] + ":" + event_names[i_event]
-                    )
-                else:
-                    event_name = event_names[i_event]
+            for i_event, event_name in enumerate(event_names):
                 rotations.add_event(
-                    event_time,
-                    event_name,
-                    in_place=True,
+                    event_times[i_event], event_name, in_place=True
                 )
             rotations.sort_events(in_place=True)
 
@@ -831,6 +828,8 @@ def write_c3d(
             "At least one of points, analogs, or rotations must be provided. "
             "Writing empty C3D files is not supported."
         )
+    if not filename.endswith(".c3d"):
+        raise ValueError("The filename must end with '.c3d'.")
 
     try:
         import ezc3d
@@ -913,9 +912,9 @@ def write_c3d(
     # point rate. See discussion in issue #229
     else:
         points = TimeSeries()
-        points.time = analogs.time if analogs is not None else rotations.time
+        points.time = rotations.time if rotations is not None else analogs.time
         points.time_info = (
-            analogs.time_info if analogs is not None else rotations.time_info
+            rotations.time_info if rotations is not None else analogs.time_info
         )
         point_rate = (
             analogs.get_sample_rate()
@@ -925,6 +924,9 @@ def write_c3d(
 
         # add point rate to the c3d, since it is required for analogs and rotations
         c3d.add_parameter("POINT", "RATE", [point_rate])
+        c3d["header"]["points"]["first_frame"] = round(
+            points.time[0] * point_rate
+        )
         c3d["data"]["points"] = np.empty((4, 0, len(points.time)))
 
     # Fill analog data
@@ -960,6 +962,9 @@ def write_c3d(
             [_["Unit"] if "Unit" in _ else "" for _ in analogs_data_info],
         )
         c3d.add_parameter("ANALOG", "USED", [len(analogs_data_info)])
+        c3d["header"]["analogs"]["first_frame"] = round(
+            analogs.time[0] * analog_rate
+        )
         c3d["data"]["analogs"] = (df_analogs.to_numpy().T)[np.newaxis]
 
     # fill rotation data
@@ -996,6 +1001,9 @@ def write_c3d(
         c3d.add_parameter("ROTATION", "LABELS", [*rotations.data.keys()])
         c3d.add_parameter("ROTATION", "RATE", [rotation_rate])
         c3d.add_parameter("ROTATION", "USED", [len(rotations.data.keys())])
+        c3d["header"]["rotations"]["first_frame"] = round(
+            rotations.time[0] * rotation_rate
+        )
         c3d["data"]["rotations"] = c3d_rotations
 
     # Write the data
@@ -1004,6 +1012,14 @@ def write_c3d(
     # ---------------------------------
     # Add the events
     c3d = ezc3d.c3d(filename)
+
+    points = points.copy()
+    if analogs is not None:
+        points.events.extend(analogs.events)
+    if rotations is not None:
+        points.events.extend(rotations.events)
+    points.remove_duplicate_events(in_place=True)
+
     for event in points.events:
         c3d.add_event(
             time=[event.time // 60, np.mod(event.time, 60)], label=event.name

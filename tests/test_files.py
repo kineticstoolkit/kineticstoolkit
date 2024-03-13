@@ -312,6 +312,46 @@ def test_read_write_c3d():
 
     os.remove("test.c3d")
 
+    # rotations data
+    c3d = ktk.read_c3d(ktk.doc.download("C3DRotationExample.c3d"))
+    event_time = c3d["Rotations"].time[5]
+    c3d["Rotations"].add_event(event_time, "TestEvent", in_place=True)
+    ktk.write_c3d("test.c3d", rotations=c3d["Rotations"])
+    c3d2 = ktk.read_c3d("test.c3d")
+    np.testing.assert_allclose(
+        c3d["Rotations"].data["pelvis_4X4"][:, :3, :],
+        c3d2["Rotations"].data["pelvis_4X4"][:, :3, :],
+    )
+    assert c3d["Rotations"].events[0].name == c3d2["Rotations"].events[0].name
+    np.testing.assert_almost_equal(
+        c3d["Rotations"].events[0].time, c3d2["Rotations"].events[0].time
+    )
+
+    os.remove("test.c3d")
+
+
+def write_rotations_c3d():
+    rotations = ktk.TimeSeries()
+    rotations.time = np.linspace(0, 1, 240, endpoint=False)
+    rotations.data["pelvis_4X4"] = np.random.rand(240, 4, 4)
+    rotations.data["pelvis_4X4"][:, 3, :] = [0, 0, 0, 1]
+    rotations.add_event(0.5, "TestEvent")
+
+    # add some point data
+    points = ktk.TimeSeries()
+    points.time = np.linspace(0, 1, 120, endpoint=False)
+    points.data["point1"] = np.random.rand(120, 4)
+    points.data["point1"][:, 3] = 1
+
+    ktk.write_c3d("test.c3d", rotations=rotations, points=points)
+    c3d = ktk.read_c3d("test.c3d")
+    assert np.allclose(
+        c3d["Rotations"].data["pelvis_4X4"], rotations.data["pelvis_4X4"]
+    )
+    assert c3d["Points"].events[0].name == "TestEvent"
+    assert np.allclose(c3d["Points"].data["point1"], points.data["point1"])
+    os.remove("test.c3d")
+
 
 def test_write_c3d_testsuite8():
     """
