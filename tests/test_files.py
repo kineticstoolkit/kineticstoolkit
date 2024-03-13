@@ -155,18 +155,6 @@ def test_read_c3d():
     )
 
 
-def test_read_c3d_rotations():
-    """Test read_c3d with a file containing only rotation matrices."""
-    c3d = ktk.read_c3d(ktk.doc.download("C3DRotationExample.c3d"))
-
-    assert len(c3d["Points"].data) == 0
-    assert "Analogs" not in c3d.keys()
-    for key in c3d["Rotations"].data.keys():
-        assert c3d["Rotations"].data[key].shape == (340, 4, 4)
-    assert c3d["Rotations"].time_info["Unit"] == "s"
-    np.testing.assert_allclose(c3d["Rotations"].time, np.arange(0, 340) / 85)
-
-
 def test_read_c3d_testsuite1():
     """Run the c3d.org test suite 1 and check if every file is equivalent."""
     # We do not test for mips files because it's not supported by ezc3d
@@ -312,25 +300,67 @@ def test_read_write_c3d():
 
     os.remove("test.c3d")
 
-    # rotations data
-    c3d = ktk.read_c3d(ktk.doc.download("C3DRotationExample.c3d"))
-    event_time = c3d["Rotations"].time[5]
-    c3d["Rotations"].add_event(event_time, "TestEvent", in_place=True)
-    ktk.write_c3d("test.c3d", rotations=c3d["Rotations"])
+
+def test_read_write_c3d_with_rotations():
+    c3d = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/others/C3DRotationExample.c3d")
+    )
+    assert "Points" not in c3d
+    assert "Analogs" not in c3d
+    assert "Rotations" in c3d
+
+    rotations = c3d["Rotations"]
+
+    # No-regression test
+    assert len(rotations.data) == 21
+    for key in rotations.data:
+        assert key in [
+            "worldbody_4X4",
+            "pelvis_4X4",
+            "l_thigh_4X4",
+            "l_shank_4X4",
+            "l_foot_4X4",
+            "l_toes_4X4",
+            "r_thigh_4X4",
+            "r_shank_4X4",
+            "r_foot_4X4",
+            "r_toes_4X4",
+            "torso_4X4",
+            "l_clavicle_4X4",
+            "l_uarm_4X4",
+            "l_larm_4X4",
+            "l_hand_4X4",
+            "r_clavicle_4X4",
+            "r_uarm_4X4",
+            "r_larm_4X4",
+            "r_hand_4X4",
+            "neck_4X4",
+            "head_4X4",
+        ]
+    assert len(rotations.time) == 340
+    assert np.isclose(rotations.get_sample_rate(), 85.0)
+
+    # Add an event and save back to c3d (to test write_c3d)
+    event_time = rotations.time[5]
+    rotations.add_event(event_time, "TestEvent", in_place=True)
+    ktk.write_c3d("test.c3d", rotations=rotations)
+
+    # Read back to test for equality
     c3d2 = ktk.read_c3d("test.c3d")
-    np.testing.assert_allclose(
-        c3d["Rotations"].data["pelvis_4X4"][:, :3, :],
+    assert np.allclose(
+        rotations.data["pelvis_4X4"][:, :3, :],
         c3d2["Rotations"].data["pelvis_4X4"][:, :3, :],
     )
     assert c3d["Rotations"].events[0].name == c3d2["Rotations"].events[0].name
-    np.testing.assert_almost_equal(
+    assert np.allclose(
         c3d["Rotations"].events[0].time, c3d2["Rotations"].events[0].time
     )
 
     os.remove("test.c3d")
 
 
-def write_rotations_c3d():
+def test_write_rotations_c3d():
+    """Test writing fabricated rotation data to c3d."""
     rotations = ktk.TimeSeries()
     rotations.time = np.linspace(0, 1, 240, endpoint=False)
     rotations.data["pelvis_4X4"] = np.random.rand(240, 4, 4)
