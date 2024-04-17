@@ -266,7 +266,7 @@ class Player:
     _contents: TimeSeries
     _oriented_points: TimeSeries
     _oriented_frames: TimeSeries
-    _oriented_target: np.ndarray
+    _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
     _extended_interconnections: dict[str, dict[str, Any]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
@@ -373,7 +373,7 @@ class Player:
         self._grid = np.array([])
         self._oriented_points = TimeSeries(time=self._contents.time)
         self._oriented_frames = TimeSeries(time=self._contents.time)
-        self._oriented_target = np.array([0.0, 0.0, 0.0])
+        self._oriented_target = (0.0, 0.0, 0.0)
 
         self._interconnections = interconnections  # Just to put stuff for now
         self._extended_interconnections = interconnections  # idem
@@ -990,7 +990,7 @@ class Player:
                 # Go through every link of this segment
                 self._extended_interconnections[body_key]["Links"] = []
                 for i_link, link in enumerate(
-                    self._interconnections[body_name]
+                    self._interconnections[body_name]["Links"]
                 ):
                     self._extended_interconnections[body_key]["Links"].append(
                         [
@@ -1088,10 +1088,17 @@ class Player:
                     )
                 )
 
-        self._oriented_target = geometry.get_global_coordinates(
-            [[self._target[0], self._target[1], self._target[2], 1.0]],
+        oriented_target = geometry.get_global_coordinates(
+            np.array(
+                [[self._target[0], self._target[1], self._target[2], 1.0]]
+            ),
             rotation,
         )[0, 0:3]
+        self._oriented_target = (
+            oriented_target[0],
+            oriented_target[1],
+            oriented_target[2],
+        )
 
     # %% Projection and update
 
