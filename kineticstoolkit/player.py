@@ -990,7 +990,7 @@ class Player:
                 # Go through every link of this segment
                 self._extended_interconnections[body_key]["Links"] = []
                 for i_link, link in enumerate(
-                    self._interconnections[body_name]
+                    self._interconnections[body_name]["Links"]
                 ):
                     self._extended_interconnections[body_key]["Links"].append(
                         [
