@@ -990,7 +990,7 @@ class Player:
                 # Go through every link of this segment
                 self._extended_interconnections[body_key]["Links"] = []
                 for i_link, link in enumerate(
-                    self._interconnections[body_name]
+                    self._interconnections[body_name]["Links"]
                 ):
                     self._extended_interconnections[body_key]["Links"].append(
                         [
@@ -1088,12 +1088,17 @@ class Player:
                     )
                 )
 
-        self._oriented_target = geometry.get_global_coordinates(
+        oriented_target = geometry.get_global_coordinates(
             np.array(
                 [[self._target[0], self._target[1], self._target[2], 1.0]]
             ),
             rotation,
         )[0, 0:3]
+        self._oriented_target = (
+            oriented_target[0],
+            oriented_target[1],
+            oriented_target[2],
+        )
 
     # %% Projection and update
 
@@ -1564,7 +1569,7 @@ class Player:
             return error
 
         # Set the new target
-        self._target = target
+        self._target = np.array(target)
         self._orient_contents()
 
         # Try to find a camera pan/zoom so that the view is similar
