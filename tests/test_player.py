@@ -218,53 +218,100 @@ def test_scripting():
         assert p._extended_interconnections["Derrick:LLowerLimb"]["Links"] == [
             ["Derrick:LTOE", "Derrick:LHEE", "Derrick:LANK", "Derrick:LTOE"],
             ["Derrick:LANK", "Derrick:LKNE", "Derrick:LASI"],
+            ["Derrick:LKNE", "Derrick:LPSI"],
         ]
         assert p._extended_interconnections["Derrick:RLowerLimb"]["Links"] == [
             ["Derrick:RTOE", "Derrick:RHEE", "Derrick:RANK", "Derrick:RTOE"],
             ["Derrick:RANK", "Derrick:RKNE", "Derrick:RASI"],
+            ["Derrick:RKNE", "Derrick:RPSI"],
         ]
         assert p._extended_interconnections["Derrick:LUpperLimb"]["Links"] == [
             ["Derrick:LSHO", "Derrick:LELB", "Derrick:LWRA", "Derrick:LFIN"],
             ["Derrick:LELB", "Derrick:LWRB", "Derrick:LFIN"],
+            ["Derrick:LWRA", "Derrick:LWRB"],
         ]
         assert p._extended_interconnections["Derrick:RUpperLimb"]["Links"] == [
             ["Derrick:RSHO", "Derrick:RELB", "Derrick:RWRA", "Derrick:RFIN"],
             ["Derrick:RELB", "Derrick:RWRB", "Derrick:RFIN"],
+            ["Derrick:RWRA", "Derrick:RWRB"],
         ]
         assert p._extended_interconnections["Derrick:Head"]["Links"] == [
             ["Derrick:C7", "Derrick:LFHD", "Derrick:RFHD", "Derrick:C7"],
             ["Derrick:C7", "Derrick:LBHD", "Derrick:RBHD", "Derrick:C7"],
+            ["Derrick:LBHD", "Derrick:LFHD"],
+            ["Derrick:RBHD", "Derrick:RFHD"],
         ]
         assert p._extended_interconnections["Derrick:TrunkPelvis"][
             "Links"
         ] == [
             ["Derrick:LASI", "Derrick:STRN", "Derrick:RASI"],
             ["Derrick:STRN", "Derrick:CLAV"],
+            ["Derrick:LPSI", "Derrick:T10", "Derrick:RPSI"],
+            ["Derrick:T10", "Derrick:C7"],
+            ["Derrick:LASI", "Derrick:LSHO", "Derrick:LPSI"],
+            ["Derrick:RASI", "Derrick:RSHO", "Derrick:RPSI"],
+            [
+                "Derrick:LPSI",
+                "Derrick:LASI",
+                "Derrick:RASI",
+                "Derrick:RPSI",
+                "Derrick:LPSI",
+            ],
+            [
+                "Derrick:LSHO",
+                "Derrick:CLAV",
+                "Derrick:RSHO",
+                "Derrick:C7",
+                "Derrick:LSHO",
+            ],
         ]
-
         assert p._extended_interconnections["Viktor:LLowerLimb"]["Links"] == [
             ["Viktor:LTOE", "Viktor:LHEE", "Viktor:LANK", "Viktor:LTOE"],
             ["Viktor:LANK", "Viktor:LKNE", "Viktor:LASI"],
+            ["Viktor:LKNE", "Viktor:LPSI"],
         ]
         assert p._extended_interconnections["Viktor:RLowerLimb"]["Links"] == [
             ["Viktor:RTOE", "Viktor:RHEE", "Viktor:RANK", "Viktor:RTOE"],
             ["Viktor:RANK", "Viktor:RKNE", "Viktor:RASI"],
+            ["Viktor:RKNE", "Viktor:RPSI"],
         ]
         assert p._extended_interconnections["Viktor:LUpperLimb"]["Links"] == [
             ["Viktor:LSHO", "Viktor:LELB", "Viktor:LWRA", "Viktor:LFIN"],
             ["Viktor:LELB", "Viktor:LWRB", "Viktor:LFIN"],
+            ["Viktor:LWRA", "Viktor:LWRB"],
         ]
         assert p._extended_interconnections["Viktor:RUpperLimb"]["Links"] == [
             ["Viktor:RSHO", "Viktor:RELB", "Viktor:RWRA", "Viktor:RFIN"],
             ["Viktor:RELB", "Viktor:RWRB", "Viktor:RFIN"],
+            ["Viktor:RWRA", "Viktor:RWRB"],
         ]
         assert p._extended_interconnections["Viktor:Head"]["Links"] == [
             ["Viktor:C7", "Viktor:LFHD", "Viktor:RFHD", "Viktor:C7"],
             ["Viktor:C7", "Viktor:LBHD", "Viktor:RBHD", "Viktor:C7"],
+            ["Viktor:LBHD", "Viktor:LFHD"],
+            ["Viktor:RBHD", "Viktor:RFHD"],
         ]
         assert p._extended_interconnections["Viktor:TrunkPelvis"]["Links"] == [
             ["Viktor:LASI", "Viktor:STRN", "Viktor:RASI"],
             ["Viktor:STRN", "Viktor:CLAV"],
+            ["Viktor:LPSI", "Viktor:T10", "Viktor:RPSI"],
+            ["Viktor:T10", "Viktor:C7"],
+            ["Viktor:LASI", "Viktor:LSHO", "Viktor:LPSI"],
+            ["Viktor:RASI", "Viktor:RSHO", "Viktor:RPSI"],
+            [
+                "Viktor:LPSI",
+                "Viktor:LASI",
+                "Viktor:RASI",
+                "Viktor:RPSI",
+                "Viktor:LPSI",
+            ],
+            [
+                "Viktor:LSHO",
+                "Viktor:CLAV",
+                "Viktor:RSHO",
+                "Viktor:C7",
+                "Viktor:LSHO",
+            ],
         ]
 
     except:
@@ -481,53 +528,100 @@ def test_interconnection_wildcards_as_suffix():
         assert p._extended_interconnections["_ViktorLLowerLimb"]["Links"] == [
             ["LTOE_Viktor", "LHEE_Viktor", "LANK_Viktor", "LTOE_Viktor"],
             ["LANK_Viktor", "LKNE_Viktor", "LASI_Viktor"],
+            ["LKNE_Viktor", "LPSI_Viktor"],
         ]
         assert p._extended_interconnections["_ViktorRLowerLimb"]["Links"] == [
             ["RTOE_Viktor", "RHEE_Viktor", "RANK_Viktor", "RTOE_Viktor"],
             ["RANK_Viktor", "RKNE_Viktor", "RASI_Viktor"],
+            ["RKNE_Viktor", "RPSI_Viktor"],
         ]
         assert p._extended_interconnections["_ViktorLUpperLimb"]["Links"] == [
             ["LSHO_Viktor", "LELB_Viktor", "LWRA_Viktor", "LFIN_Viktor"],
             ["LELB_Viktor", "LWRB_Viktor", "LFIN_Viktor"],
+            ["LWRA_Viktor", "LWRB_Viktor"],
         ]
         assert p._extended_interconnections["_ViktorRUpperLimb"]["Links"] == [
             ["RSHO_Viktor", "RELB_Viktor", "RWRA_Viktor", "RFIN_Viktor"],
             ["RELB_Viktor", "RWRB_Viktor", "RFIN_Viktor"],
+            ["RWRA_Viktor", "RWRB_Viktor"],
         ]
         assert p._extended_interconnections["_ViktorHead"]["Links"] == [
             ["C7_Viktor", "LFHD_Viktor", "RFHD_Viktor", "C7_Viktor"],
             ["C7_Viktor", "LBHD_Viktor", "RBHD_Viktor", "C7_Viktor"],
+            ["LBHD_Viktor", "LFHD_Viktor"],
+            ["RBHD_Viktor", "RFHD_Viktor"],
         ]
         assert p._extended_interconnections["_ViktorTrunkPelvis"]["Links"] == [
             ["LASI_Viktor", "STRN_Viktor", "RASI_Viktor"],
             ["STRN_Viktor", "CLAV_Viktor"],
+            ["LPSI_Viktor", "T10_Viktor", "RPSI_Viktor"],
+            ["T10_Viktor", "C7_Viktor"],
+            ["LASI_Viktor", "LSHO_Viktor", "LPSI_Viktor"],
+            ["RASI_Viktor", "RSHO_Viktor", "RPSI_Viktor"],
+            [
+                "LPSI_Viktor",
+                "LASI_Viktor",
+                "RASI_Viktor",
+                "RPSI_Viktor",
+                "LPSI_Viktor",
+            ],
+            [
+                "LSHO_Viktor",
+                "CLAV_Viktor",
+                "RSHO_Viktor",
+                "C7_Viktor",
+                "LSHO_Viktor",
+            ],
         ]
-
         assert p._extended_interconnections["_DerrickLLowerLimb"]["Links"] == [
             ["LTOE_Derrick", "LHEE_Derrick", "LANK_Derrick", "LTOE_Derrick"],
             ["LANK_Derrick", "LKNE_Derrick", "LASI_Derrick"],
+            ["LKNE_Derrick", "LPSI_Derrick"],
         ]
         assert p._extended_interconnections["_DerrickRLowerLimb"]["Links"] == [
             ["RTOE_Derrick", "RHEE_Derrick", "RANK_Derrick", "RTOE_Derrick"],
             ["RANK_Derrick", "RKNE_Derrick", "RASI_Derrick"],
+            ["RKNE_Derrick", "RPSI_Derrick"],
         ]
         assert p._extended_interconnections["_DerrickLUpperLimb"]["Links"] == [
             ["LSHO_Derrick", "LELB_Derrick", "LWRA_Derrick", "LFIN_Derrick"],
             ["LELB_Derrick", "LWRB_Derrick", "LFIN_Derrick"],
+            ["LWRA_Derrick", "LWRB_Derrick"],
         ]
         assert p._extended_interconnections["_DerrickRUpperLimb"]["Links"] == [
             ["RSHO_Derrick", "RELB_Derrick", "RWRA_Derrick", "RFIN_Derrick"],
             ["RELB_Derrick", "RWRB_Derrick", "RFIN_Derrick"],
+            ["RWRA_Derrick", "RWRB_Derrick"],
         ]
         assert p._extended_interconnections["_DerrickHead"]["Links"] == [
             ["C7_Derrick", "LFHD_Derrick", "RFHD_Derrick", "C7_Derrick"],
             ["C7_Derrick", "LBHD_Derrick", "RBHD_Derrick", "C7_Derrick"],
+            ["LBHD_Derrick", "LFHD_Derrick"],
+            ["RBHD_Derrick", "RFHD_Derrick"],
         ]
         assert p._extended_interconnections["_DerrickTrunkPelvis"][
             "Links"
         ] == [
             ["LASI_Derrick", "STRN_Derrick", "RASI_Derrick"],
             ["STRN_Derrick", "CLAV_Derrick"],
+            ["LPSI_Derrick", "T10_Derrick", "RPSI_Derrick"],
+            ["T10_Derrick", "C7_Derrick"],
+            ["LASI_Derrick", "LSHO_Derrick", "LPSI_Derrick"],
+            ["RASI_Derrick", "RSHO_Derrick", "RPSI_Derrick"],
+            [
+                "LPSI_Derrick",
+                "LASI_Derrick",
+                "RASI_Derrick",
+                "RPSI_Derrick",
+                "LPSI_Derrick",
+            ],
+            [
+                "LSHO_Derrick",
+                "CLAV_Derrick",
+                "RSHO_Derrick",
+                "C7_Derrick",
+                "LSHO_Derrick",
+            ],
         ]
 
     except:
