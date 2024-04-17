@@ -1088,7 +1088,7 @@ class Player:
                     )
                 )
 
-        self._oriented_target = geometry.get_global_coordinates(
+        oriented_target = geometry.get_global_coordinates(
             np.array(
                 [[self._target[0], self._target[1], self._target[2], 1.0]]
             ),
