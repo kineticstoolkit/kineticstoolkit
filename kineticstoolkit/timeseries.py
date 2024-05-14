@@ -3646,7 +3646,8 @@ class TimeSeries:
                     elif (
                         current_index - hole_start_index > max_missing_samples
                     ):
-                        to_keep[hole_start_index + 1 : current_index + 1] = 0
+                        hole_start_index += 1 if hole_start_index > 0 else 0
+                        to_keep[hole_start_index : current_index + 1] = 0
 
                 ts.data[data][to_keep == 0] = np.nan
 
