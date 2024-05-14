@@ -936,7 +936,7 @@ def write_c3d(
         analog_rate = analogs.get_sample_rate()
 
         rate_ratio = analog_rate / point_rate
-        if ~np.isclose(rate_ratio, int(rate_ratio)):
+        if ~np.isclose(rate_ratio, round(rate_ratio)):
             raise ValueError(
                 "The sample rate of analogs must be an integer "
                 "multiple of the points sample rate."

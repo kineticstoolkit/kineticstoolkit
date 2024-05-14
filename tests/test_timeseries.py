@@ -984,24 +984,15 @@ def test_resample_with_nans():
 
 
 def test_fill_missing_samples():
-    ts = ktk.TimeSeries(time=np.arange(10))
-    ts.data["data"] = np.sin(ts.time / 5)
+    ts = ktk.TimeSeries(np.arange(10))
 
     # Test nothing to do
-    ts2 = ts.fill_missing_samples(0)
-    assert ts2._is_equivalent(ts)
+    assert ts.fill_missing_samples(0)._is_equivalent(ts)
 
     # Test fill everything
-    ts2 = ts.copy()
-    ts2.data["data"][3:6] = np.nan
-    ts2.data["data"][-1] = np.nan
-    ts3 = ts2.fill_missing_samples(0)
+    ts = ktk.TimeSeries([0, 1, 2, np.nan, np.nan, np.nan, 6, 7, np.nan, 9])
     assert np.all(
-        np.isclose(ts2.data["data"], ts3.data["data"])
-        == [True, True, True, False, False, False, True, True, True, False]
-    )
-    assert np.all(
-        ts3.isnan("data")
+        ts.fill_missing_samples(0).isnan("data")
         == [
             False,
             False,
@@ -1017,25 +1008,27 @@ def test_fill_missing_samples():
     )
 
     # Test fill only small holes
-    ts3 = ts2.fill_missing_samples(1)
+    ts = ktk.TimeSeries([0, 1, 2, np.nan, np.nan, np.nan, 6, 7, np.nan, 9])
     assert np.all(
-        np.isclose(ts2.data["data"], ts3.data["data"])
-        == [True, True, True, False, False, False, True, True, True, False]
-    )
-
-    assert np.all(
-        ts3.isnan("data")
-        == [False, False, False, True, True, True, False, False, False, False]
+        ts.fill_missing_samples(1).isnan("data")
+        == [
+            False,
+            False,
+            False,
+            True,
+            True,
+            True,
+            False,
+            False,
+            False,
+            False,
+        ]
     )
 
     # Test fill up to exactly the largest hole
-    ts3 = ts2.fill_missing_samples(3)
+    ts = ktk.TimeSeries([0, 1, 2, np.nan, np.nan, np.nan, 6, 7, np.nan, 9])
     assert np.all(
-        np.isclose(ts2.data["data"], ts3.data["data"])
-        == [True, True, True, False, False, False, True, True, True, False]
-    )
-    assert np.all(
-        ts3.isnan("data")
+        ts.fill_missing_samples(3).isnan("data")
         == [
             False,
             False,
@@ -1051,25 +1044,74 @@ def test_fill_missing_samples():
     )
 
     # Test fill with the first one missing
-    ts2.data["data"][0:2] = np.nan
-    ts3 = ts2.fill_missing_samples(1)
+    ts = ktk.TimeSeries([np.nan, np.nan, 2, 3, 4, 5, 6, 7, 8, 9])
     assert np.all(
-        np.isclose(ts2.data["data"], ts3.data["data"])
-        == [False, False, True, False, False, False, True, True, True, False]
-    )
-    assert np.all(
-        ts3.isnan("data")
+        ts.fill_missing_samples(2).isnan("data")
         == [
             False,
             False,
             False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ]
+    )
+
+    # Test no-fill with the first one missing
+    ts = ktk.TimeSeries([np.nan, np.nan, 2, 3, 4, 5, 6, 7, 8, 9])
+    assert np.all(
+        ts.fill_missing_samples(1).isnan("data")
+        == [
             True,
             True,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ]
+    )
+
+    # Test fill with the last one missing
+    ts = ktk.TimeSeries([0, 1, 2, 3, 4, 5, 6, 7, np.nan, np.nan])
+    assert np.all(
+        ts.fill_missing_samples(2).isnan("data")
+        == [
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+        ]
+    )
+
+    # Test no-fill with the last one missing
+    ts = ktk.TimeSeries([0, 1, 2, 3, 4, 5, 6, 7, np.nan, np.nan])
+    assert np.all(
+        ts.fill_missing_samples(1).isnan("data")
+        == [
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
+            False,
             True,
-            False,
-            False,
-            False,
-            False,
+            True,
         ]
     )
 

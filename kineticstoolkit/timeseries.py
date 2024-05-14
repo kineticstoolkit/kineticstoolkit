@@ -450,7 +450,7 @@ class TimeSeries:
     # Properties
     @property
     def time(self):
-        """Hold the TimeSeries time."""
+        """Time Property."""
         return self._time
 
     @time.setter
@@ -469,7 +469,7 @@ class TimeSeries:
 
     @property
     def data(self):
-        """Hold the TimeSeries data."""
+        """Data Property."""
         return self._data
 
     @data.setter
@@ -482,7 +482,7 @@ class TimeSeries:
 
     @property
     def events(self):
-        """Hold the TimeSeries events."""
+        """Data Property."""
         return self._events
 
     @events.setter
@@ -3626,7 +3626,6 @@ class TimeSeries:
             raise ValueError("The sample rate must be constant.")
 
         ts_out = self if in_place else self.copy()
-        max_missing_samples = int(max_missing_samples)
 
         for data in ts_out.data:
             # Fill missing samples
@@ -3638,15 +3637,18 @@ class TimeSeries:
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:
-                hole_start_index = 0
+                still_visible_index = -1
                 to_keep = np.ones(self.time.shape)
                 for current_index in range(ts.time.shape[0]):
                     if is_visible[current_index]:
-                        hole_start_index = current_index
+                        still_visible_index = current_index
                     elif (
-                        current_index - hole_start_index > max_missing_samples
+                        current_index - still_visible_index
+                        > max_missing_samples
                     ):
-                        to_keep[hole_start_index + 1 : current_index + 1] = 0
+                        to_keep[
+                            still_visible_index + 1 : current_index + 1
+                        ] = 0
 
                 ts.data[data][to_keep == 0] = np.nan
 
