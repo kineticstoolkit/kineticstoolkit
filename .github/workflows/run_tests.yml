@@ -26,7 +26,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Setup conda
-      uses: conda-incubator/setup-miniconda@v2
+      uses: conda-incubator/setup-miniconda@v3
       with:
         activate-environment: anaconda-client-env
     - name: Install dependencies
