@@ -3145,6 +3145,7 @@ class TimeSeries:
         target: ArrayLike | float,
         kind: str = "linear",
         *,
+        extrapolate: bool = False,
         in_place: bool = False,
         **kwargs,
     ) -> TimeSeries:
@@ -3153,15 +3154,9 @@ class TimeSeries:
 
         Resample every data of the TimeSeries over a new frequency or new
         series of times, using the interpolation method provided by parameter
-        `kind`. This method does not fill missing data and does not
-        extrapolate. When some data could not be interpolated, for example:
-
-        - The TimeSeries data contains missing values (nan)
-        - The target time range exceeds the original time range, which
-          would results in extrapolation.
-
-        Then the parts of the data that cannot be interpolated are replaced
-        with missing values (nan).
+        `kind`. This method does not fill missing data. Consequently, time
+        ranges with nans in the original TimeSeries will also contain nans in
+        the resampled TimeSeries.
 
         Parameters
         ----------
@@ -3175,6 +3170,9 @@ class TimeSeries:
             supported by scipy.interpolate.interp1d, such as "linear",
             "nearest", "zero", "slinear", "quadratic", "cubic", "previous",
             "next". Additionally, kind can be "pchip". Default is "linear".
+        extrapolate
+            Optional. True to extrapolate outside the original time range.
+            Default is False.
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -3299,10 +3297,11 @@ class TimeSeries:
             nan_indexes = np.argwhere(~index)
 
             # initialize with times outside of the original time range
-            time_ranges_to_remove: list[tuple[float, float]] = [
-                (-np.inf, ts.time[0]),
-                (ts.time[-1], np.inf),
-            ]
+            time_ranges_to_remove: list[tuple[float, float]] = []
+            if not extrapolate:
+                time_ranges_to_remove.append((-np.inf, ts.time[0]))
+                time_ranges_to_remove.append((ts.time[-1], np.inf))
+
             length = ts.time.shape[0]
             for i in nan_indexes:
                 if i > 0 and i < length - 1:
@@ -3638,7 +3637,7 @@ class TimeSeries:
             ts = ts_out.get_subset(data)
             ts.data[data] = ts.data[data][is_visible]
             ts.time = ts.time[is_visible]
-            ts = ts.resample(ts_out.time, method)
+            ts = ts.resample(ts_out.time, method, extrapolate=True)
 
             # Put back missing samples in holes longer than max_missing_samples
             if max_missing_samples > 0:

@@ -376,19 +376,19 @@ def time_normalize(
         subts = ts.get_ts_between_times(
             extended_begin_time, extended_end_time, inclusive=True
         )
-        subts_backup = subts.copy()
 
         if subts.time.shape[0] == 0:
             raise ValueError("")
 
-        # Resample this cycle on span + 1
-        # (and get the first points after)
+        # Resample this cycle on span + 1 point
+        # (and remove the last point after)
         subts = subts.resample(
             np.linspace(
                 extended_begin_time,
                 extended_end_time,
                 span[1] - span[0] + 1,
-            )
+            ),
+            extrapolate=True,
         )
 
         # Keep only the first points (the last one belongs to the next cycle)
