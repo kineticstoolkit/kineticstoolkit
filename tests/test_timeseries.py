@@ -983,6 +983,16 @@ def test_resample_with_nans():
     )
 
 
+def test_resample_no_extrapolation():
+    ts = ktk.TimeSeries(time=np.arange(2, 12))
+    ts.data["data"] = ts.time**2
+    ts1 = ts.resample(np.arange(15))
+    assert np.allclose(ts1.time, np.arange(15))
+    assert np.all(np.isnan(ts1.data["data"][12:]))
+    assert np.all(np.isnan(ts1.data["data"][:2]))
+    assert np.allclose(ts1.data["data"][2:12], np.arange(2, 12) ** 2)
+
+
 def test_fill_missing_samples():
     ts = ktk.TimeSeries(np.arange(10))
 
