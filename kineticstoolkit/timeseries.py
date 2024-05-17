@@ -3297,7 +3297,12 @@ class TimeSeries:
             # Express nans as a range of times to
             # remove from the final, interpolated timeseries
             nan_indexes = np.argwhere(~index)
-            time_ranges_to_remove = []  # type: list[tuple[int, int]]
+
+            # initialize with times outside of the original time range
+            time_ranges_to_remove: list[tuple[float, float]] = [
+                (-np.inf, ts.time[0]),
+                (ts.time[-1], np.inf),
+            ]
             length = ts.time.shape[0]
             for i in nan_indexes:
                 if i > 0 and i < length - 1:
