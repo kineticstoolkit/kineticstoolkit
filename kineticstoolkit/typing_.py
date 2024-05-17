@@ -115,6 +115,7 @@ def check_param(
         )
     # Other specs
     if contents_type is not None:
+
         if isinstance(contents_type, tuple):
             mapped_contents_type = tuple(
                 [PARAM_MAPPING.get(_, _) for _ in contents_type]
@@ -168,6 +169,7 @@ def check_param(
                 )
 
     if key_type is not None:
+
         if isinstance(key_type, tuple):
             mapped_key_type = tuple(
                 [PARAM_MAPPING.get(_, _) for _ in key_type]
