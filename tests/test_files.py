@@ -359,6 +359,7 @@ def test_read_write_c3d_with_rotations():
     assert np.allclose(
         rotations.data["pelvis_4X4"][:, :3, :],
         c3d2["Rotations"].data["pelvis_4X4"][:, :3, :],
+        equal_nan=True,
     )
     assert c3d["Rotations"].events[0].name == c3d2["Rotations"].events[0].name
     assert np.allclose(
@@ -372,8 +373,9 @@ def test_write_rotations_c3d():
     """Test writing fabricated rotation data to c3d."""
     rotations = ktk.TimeSeries()
     rotations.time = np.linspace(0, 1, 240, endpoint=False)
-    rotations.data["pelvis_4X4"] = np.random.rand(240, 4, 4)
-    rotations.data["pelvis_4X4"][:, 3, :] = [0, 0, 0, 1]
+    rotations.data["pelvis_4X4"] = ktk.geometry.create_transforms(
+        "x", np.linspace(0, 2*np.pi, 240, endpoint=False)
+    )
     rotations.add_event(0.5, "TestEvent")
 
     # add some point data

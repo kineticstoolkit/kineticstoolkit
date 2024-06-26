@@ -662,7 +662,7 @@ def read_c3d(
         output["Analogs"] = analogs
 
     # -----------------
-    # Analogs
+    # Rotations
     # -----------------
     # Some files do not have a ROTATION parameter, do nothing for those.
     if "ROTATION" in reader["parameters"]:
@@ -678,7 +678,7 @@ def read_c3d(
         labels = reader["parameters"]["ROTATION"]["LABELS"]["value"]
 
         if len(labels) > 0:  # There are rotations
-            # no additional labels and scale converstion for rotation matrices
+            # no additional labels and scale conversion for rotation matrices
             # move to adding data to the TimeSeries
             for rotation_id in range(n_rotations):
                 # Make sure it's UTF8, and strip leading and ending spaces
@@ -697,6 +697,11 @@ def read_c3d(
                     np.arange(rotations.data[key].shape[0]) / rotation_rate
                     + start_time
                 )
+                
+            # Matrices with nans should be complete nans. Some c3d may contain
+            # nans in the data but [0, 0, 0, 1] on the 4th line.
+            for data in rotations.data:
+                rotations.data[data][rotations.isnan(data), :, :] = np.nan
 
             # Add events
             for i_event, event_name in enumerate(event_names):
@@ -925,7 +930,8 @@ def write_c3d(
     # Fill point data
     c3d["header"]["points"]["first_frame"] = round(points.time[0] * point_rate)
     c3d.add_parameter("POINT", "RATE", [point_rate])
-    c3d.add_parameter("POINT", "LABELS", [tuple(point_list)])
+    if len(point_list) > 0:
+        c3d.add_parameter("POINT", "LABELS", [tuple(point_list)])
     c3d.add_parameter("POINT", "UNITS", point_unit)
 
     c3d["data"]["points"] = point_data
@@ -973,7 +979,7 @@ def write_c3d(
         rotation_rate = rotations.get_sample_rate()
 
         rate_ratio = rotation_rate / point_rate
-        if ~np.isclose(rate_ratio, int(rate_ratio)):
+        if ~np.isclose(rate_ratio, round(rate_ratio)):
             raise ValueError(
                 "The sample rate of rotations must be an integer "
                 "multiple of the points sample rate."
