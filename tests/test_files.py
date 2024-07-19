@@ -285,6 +285,7 @@ def test_read_c3d_event_name_format():
         convert_point_unit=True,
     )
     assert test["Points"].events[0].name == "Foot Strike"
+    assert test["Analogs"].events[0].name == "Foot Strike"
 
 
 def test_read_write_c3d():
