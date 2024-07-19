@@ -641,8 +641,7 @@ def read_c3d(
             )
 
         # Add events
-        for i_event, event_name in enumerate(event_names):
-            analogs.add_event(event_times[i_event], event_name, in_place=True)
+        analogs.events = points.events.copy()
 
         output["Analogs"] = analogs
 
@@ -687,10 +686,7 @@ def read_c3d(
             platforms.add_data_info(key, "Unit", moment_unit, in_place=True)
 
         # Add events
-        for i_event, event_name in enumerate(event_names):
-            platforms.add_event(
-                event_times[i_event], event_name, in_place=True
-            )
+        platforms.events = points.events.copy()
 
         output["ForcePlates"] = platforms
 
