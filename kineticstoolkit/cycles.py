@@ -50,9 +50,9 @@ def detect_cycles(
     thresholds: tuple[float, float] = (0.0, 1.0),
     directions: tuple[str, str] = ("rising", "falling"),
     min_durations: tuple[float, float] = (0.0, 0.0),
-    max_durations: tuple[float, float] = (np.Inf, np.Inf),
-    min_peak_heights: tuple[float, float] = (-np.Inf, -np.Inf),
-    max_peak_heights: tuple[float, float] = (np.Inf, np.Inf),
+    max_durations: tuple[float, float] = (np.inf, np.inf),
+    min_peak_heights: tuple[float, float] = (-np.inf, -np.inf),
+    max_peak_heights: tuple[float, float] = (np.inf, np.inf),
 ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -88,13 +88,13 @@ def detect_cycles(
         Optional. Minimal phase durations in seconds. Default is (0.0, 0.0).
     max_durations
         Optional. Maximal phase durations in seconds. Default is
-        (np.Inf, np.Inf)
+        (np.inf, np.inf)
     min_peak_heights
         Optional. Minimal peak values to be reached in both phases. Default is
-        (-np.Inf, -np.Inf).
+        (-np.inf, -np.inf).
     max_peak_heights
         Optional. Maximal peak values to be reached in both phases. Default is
-        (np.Inf, np.Inf).
+        (np.inf, np.inf).
 
     Returns
     -------
@@ -207,7 +207,7 @@ def detect_cycles(
         try:
             time3 = events[i_event + 2].time
         except IndexError:
-            time3 = np.Inf
+            time3 = np.inf
 
         sub_ts1 = ts.get_ts_between_times(time1, time2, inclusive=True)
         sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
