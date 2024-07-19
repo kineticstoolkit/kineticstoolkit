@@ -150,8 +150,8 @@ def test_detect_cycles():
         "data",
         event_names=["start", "stop"],
         thresholds=[0.5, 0.5],
-        min_peak_heights=[2, -np.Inf],
-        max_peak_heights=[np.Inf, -1],
+        min_peak_heights=[2, -np.inf],
+        max_peak_heights=[np.inf, -1],
     )
     assert ts5.events[0].name == "start"
     assert ts5.events[0].time == 2

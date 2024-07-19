@@ -1309,7 +1309,7 @@ def test_get_ts_after_time():
     assert np.allclose(newts.time, [6.0, 7.0, 8.0, 9.0])
     assert np.allclose(newts.data["data"], [0.6, 0.7, 0.8, 0.9])
 
-    newts = ts.get_ts_after_time(-np.Inf)
+    newts = ts.get_ts_after_time(-np.inf)
     assert newts == ts
 
 
