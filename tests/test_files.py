@@ -279,7 +279,7 @@ def test_read_c3d_event_name_format():
         include_event_context=True,
     )
     assert test["Points"].events[0].name == "Right:Foot Strike"
-    assert test["Analogs"].events[0].name == "Right:Foot Strike"    
+    assert test["Analogs"].events[0].name == "Right:Foot Strike"
 
     # Load a file without contexts, ensure that it reads ok.
     test = ktk.read_c3d(

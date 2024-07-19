@@ -31,6 +31,7 @@ import warnings
 from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
+    TimeSeriesMergeConflictError,
 )
 
 # %% TimeSeriesEvent
@@ -866,6 +867,38 @@ def test_get_sample_rate():
 
     ts.time = [0.0, 0.1]
     assert ts.get_sample_rate() == 10.0
+
+
+def test_merge():
+    # Test the different combination of overwrite and on_conflict
+    ts1 = ktk.TimeSeries(
+        time=[0, 1, 2], data={"data1": [0, 1, 2], "data2": [0, 1, 2]}
+    )
+    ts2 = ktk.TimeSeries(time=[0, 1, 2], data={"data1": [3, 4, 5]})
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        assert np.all(
+            ts1.merge(ts2, overwrite=False).data["data1"] == [0, 1, 2]
+        )
+        assert np.all(
+            ts1.merge(ts2, overwrite=True).data["data1"] == [3, 4, 5]
+        )
+
+    assert np.all(
+        ts1.merge(ts2, overwrite=False, on_conflict="mute").data["data1"]
+        == [0, 1, 2]
+    )
+    assert np.all(
+        ts1.merge(ts2, overwrite=True, on_conflict="mute").data["data1"]
+        == [3, 4, 5]
+    )
+
+    try:
+        assert ts1.merge(ts2, on_conflict="error")
+        raise Exception("This should not happen.")
+    except TimeSeriesMergeConflictError:
+        pass
 
 
 def test_merge_and_resample():

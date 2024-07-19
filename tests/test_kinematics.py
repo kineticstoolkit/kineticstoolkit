@@ -69,7 +69,9 @@ def test_reconstruction():
 
         # Find the probe tip
         markers_probing.merge(
-            ktk.kinematics.track_cluster(markers_probing, clusters["Probe"]),
+            ktk.kinematics.track_cluster(
+                markers_probing, clusters["Probe"]
+            ).get_subset("ProbeTip"),
             in_place=True,
         )
 
@@ -111,7 +113,9 @@ def test_reconstruction():
 
     for cluster in clusters:
         markers = markers.merge(
-            ktk.kinematics.track_cluster(markers, clusters[cluster])
+            ktk.kinematics.track_cluster(markers, clusters[cluster]),
+            overwrite=False,
+            on_conflict="mute",
         )
 
 

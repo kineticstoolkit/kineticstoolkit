@@ -36,6 +36,7 @@ from kineticstoolkit.decorators import deprecated
 from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
+    TimeSeriesMergeConflictError,
 )
 from kineticstoolkit.tools import check_interactive_backend
 
@@ -3354,6 +3355,7 @@ class TimeSeries:
         *,
         resample: bool = False,
         overwrite: bool = False,
+        on_conflict: str = "warning",
         in_place: bool = False,
     ) -> TimeSeries:
         """
@@ -3374,10 +3376,20 @@ class TimeSeries:
             resample the source TimeSeries manually before, using
             TimeSeries.resample. Default is False.
         overwrite
-            Optional. If duplicates data keys are found and overwrite is True,
-            then the source (ts) overwrites the destination. Otherwise
-            (overwrite is False), the duplicate data in ts is ignored.
+            Optional. Select what to do if a key from the source TimeSeries
+            already exists in the destination TimeSeries. True to overwrite
+            the already existing value, False to ignore the new value.
             Default is False.
+        on_conflict
+            Optional. Select what the warning level when a key from the source
+            TimeSeries already exists in the destination TimeSeries. May take
+            the following values:
+                - "mute": No warning;
+                - "warning": Warns that duplicate keys were found and how the
+                  conflict has been resolved following the `overwrite``
+                  parameter.
+                - "error": Raises a TimeSeriesMergeConflictError.
+            Default is "warning".
         in_place
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
@@ -3387,6 +3399,12 @@ class TimeSeries:
         -------
         TimeSeries
             The merged TimeSeries.
+
+        Raises
+        ------
+        TimeSeriesMergeConflictError
+            If a key from the source TimeSeries already exists in the
+            destination TimeSeries and on_conflict is set to "error".
 
         See Also
         --------
@@ -3410,6 +3428,12 @@ class TimeSeries:
                 )
         check_param("resample", resample, bool)
         check_param("overwrite", overwrite, bool)
+        check_param("on_conflict", on_conflict, str)
+        if on_conflict not in ["mute", "warning", "error"]:
+            raise ValueError(
+                "Parameter on_conflict must be either 'mute', 'warning' or "
+                "'error'."
+            )
         check_param("in_place", in_place, bool)
         self._check_well_shaped()
         ts._check_well_shaped()
@@ -3444,8 +3468,34 @@ class TimeSeries:
         for key in data_keys:
             # Check if this key is a duplicate, then continue to next key if
             # required.
-            if (key in ts_out.data) and (overwrite is False):
-                pass
+            if key in ts_out.data:
+                if overwrite is True:
+                    if on_conflict.lower() == "warning":
+                        warnings.warn(
+                            f"The key '{key}' exists in both TimeSeries. "
+                            f"According to the overwrite={overwrite} "
+                            "parameter, its prior value has been overwritten "
+                            "by the new value. Use on_conflict='mute' to mute "
+                            "this warning."
+                        )
+                    elif on_conflict.lower() == "error":
+                        raise TimeSeriesMergeConflictError(
+                            f"The key '{key}' exists in both TimeSeries. "
+                        )
+                    ts_out.data[key] = ts.data[key]
+
+                else:  # overwrite is False
+                    if on_conflict.lower() == "warning":
+                        warnings.warn(
+                            f"The key '{key}' exists in both TimeSeries. "
+                            f"According to the overwrite={overwrite} "
+                            "parameter, the new value has been ignored. Use "
+                            "on_conflict='mute' to mute this warning."
+                        )
+                    elif on_conflict.lower() == "error":
+                        raise TimeSeriesMergeConflictError(
+                            f"The key {key} exist in both TimeSeries. "
+                        )
 
             else:
                 # Add this data
