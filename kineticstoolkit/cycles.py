@@ -50,9 +50,9 @@ def detect_cycles(
     thresholds: tuple[float, float] = (0.0, 1.0),
     directions: tuple[str, str] = ("rising", "falling"),
     min_durations: tuple[float, float] = (0.0, 0.0),
-    max_durations: tuple[float, float] = (np.Inf, np.Inf),
-    min_peak_heights: tuple[float, float] = (-np.Inf, -np.Inf),
-    max_peak_heights: tuple[float, float] = (np.Inf, np.Inf),
+    max_durations: tuple[float, float] = (np.inf, np.inf),
+    min_peak_heights: tuple[float, float] = (-np.inf, -np.inf),
+    max_peak_heights: tuple[float, float] = (np.inf, np.inf),
 ) -> TimeSeries:
     """
     Detect cycles in a TimeSeries based on a dual threshold approach.
@@ -88,13 +88,13 @@ def detect_cycles(
         Optional. Minimal phase durations in seconds. Default is (0.0, 0.0).
     max_durations
         Optional. Maximal phase durations in seconds. Default is
-        (np.Inf, np.Inf)
+        (np.inf, np.inf)
     min_peak_heights
         Optional. Minimal peak values to be reached in both phases. Default is
-        (-np.Inf, -np.Inf).
+        (-np.inf, -np.inf).
     max_peak_heights
         Optional. Maximal peak values to be reached in both phases. Default is
-        (np.Inf, np.Inf).
+        (np.inf, np.inf).
 
     Returns
     -------
@@ -207,7 +207,7 @@ def detect_cycles(
         try:
             time3 = events[i_event + 2].time
         except IndexError:
-            time3 = np.Inf
+            time3 = np.inf
 
         sub_ts1 = ts.get_ts_between_times(time1, time2, inclusive=True)
         sub_ts2 = ts.get_ts_between_times(time1, time3, inclusive=True)
@@ -239,7 +239,6 @@ def detect_cycles(
     tsout = ts.copy()
     for event in valid_events:
         tsout = tsout.add_event(event.time, event.name)
-    tsout.sort_events()
 
     return tsout
 
@@ -402,7 +401,6 @@ def time_normalize(
             if event.time >= begin_time and event.time < end_time:
                 events.append(event)
         subts.events = events
-        subts = subts.sort_events()
 
         # Separate start/end events from the other
         start_end_events = []
@@ -454,7 +452,6 @@ def time_normalize(
         new_shape[0] = n_cycles * (span[1] - span[0])
         dest_ts.data[key] = np.reshape(temp, new_shape)
 
-    dest_ts = dest_ts.sort_events()
     return dest_ts
 
 
@@ -589,7 +586,6 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 
 #     """
 #     ts = ts.copy()
-#     ts.sort_events()
 
 #     n_cycles = int(ts.time.shape[0] / n_points)
 #     out = {}  # type: dict[str, np.ndarray]

@@ -688,12 +688,12 @@ def test_rename_event():
     ts = ktk.TimeSeries()
     ts = ts.add_event(5.5, "event1")
     ts.add_event(10.8, "event2", in_place=True)
-    ts.add_event(2.3, "event2", in_place=True)
+    ts.add_event(20.3, "event2", in_place=True)
 
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
         "TimeSeriesEvent(time=10.8, name='event2'), "
-        "TimeSeriesEvent(time=2.3, name='event2')]"
+        "TimeSeriesEvent(time=20.3, name='event2')]"
     )
 
     ts = ts.rename_event("event2", "event3")
@@ -701,15 +701,15 @@ def test_rename_event():
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
         "TimeSeriesEvent(time=10.8, name='event3'), "
-        "TimeSeriesEvent(time=2.3, name='event3')]"
+        "TimeSeriesEvent(time=20.3, name='event3')]"
     )
 
     ts.rename_event("event3", "event4", 0, in_place=True)
 
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
-        "TimeSeriesEvent(time=10.8, name='event3'), "
-        "TimeSeriesEvent(time=2.3, name='event4')]"
+        "TimeSeriesEvent(time=10.8, name='event4'), "
+        "TimeSeriesEvent(time=20.3, name='event3')]"
     )
 
     # Test renaming an event to a same name (should pass)
@@ -717,8 +717,8 @@ def test_rename_event():
 
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
-        "TimeSeriesEvent(time=10.8, name='event3'), "
-        "TimeSeriesEvent(time=2.3, name='event4')]"
+        "TimeSeriesEvent(time=10.8, name='event4'), "
+        "TimeSeriesEvent(time=20.3, name='event3')]"
     )
 
     # Test renaming invalid occurrence (should fail)
@@ -730,8 +730,8 @@ def test_rename_event():
 
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
-        "TimeSeriesEvent(time=10.8, name='event3'), "
-        "TimeSeriesEvent(time=2.3, name='event4')]"
+        "TimeSeriesEvent(time=10.8, name='event4'), "
+        "TimeSeriesEvent(time=20.3, name='event3')]"
     )
 
 
@@ -740,21 +740,21 @@ def test_remove_event():
     ts = ktk.TimeSeries()
     ts = ts.add_event(5.5, "event1")
     ts = ts.add_event(10.8, "event2")
-    ts = ts.add_event(2.3, "event2")
+    ts = ts.add_event(20.3, "event2")
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=5.5, name='event1'), "
         "TimeSeriesEvent(time=10.8, name='event2'), "
-        "TimeSeriesEvent(time=2.3, name='event2')]"
+        "TimeSeriesEvent(time=20.3, name='event2')]"
     )
 
     ts = ts.remove_event("event1")
     assert str(ts.events) == (
         "[TimeSeriesEvent(time=10.8, name='event2'), "
-        "TimeSeriesEvent(time=2.3, name='event2')]"
+        "TimeSeriesEvent(time=20.3, name='event2')]"
     )
 
     ts.remove_event("event2", 1, in_place=True)
-    assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
+    assert str(ts.events) == "[TimeSeriesEvent(time=10.8, name='event2')]"
 
     # Test remove bad occurrence (should fail)
     try:
@@ -763,7 +763,7 @@ def test_remove_event():
     except TimeSeriesEventNotFoundError:
         pass
 
-    assert str(ts.events) == "[TimeSeriesEvent(time=2.3, name='event2')]"
+    assert str(ts.events) == "[TimeSeriesEvent(time=10.8, name='event2')]"
 
 
 def test_remove_duplicate_events():
@@ -780,7 +780,7 @@ def test_remove_duplicate_events():
     ts = ts.add_event(2.0, "event3")
     ts = ts.add_event(0.0, "event1")
 
-    assert str(ts._get_duplicate_event_indexes()) == "[1, 4, 5]"
+    assert str(ts._get_duplicate_event_indexes()) == "[2, 3, 5]"
 
     ts2 = ts.remove_duplicate_events()
     assert ts2.events[0].time == 0.0
@@ -792,38 +792,47 @@ def test_remove_duplicate_events():
 
 
 def test_sort_events():
-    # Original doctest
+    # As of version 0.15, events should be always sorted.
     ts = ktk.TimeSeries(time=np.arange(100) / 10)
     ts = ts.add_event(2, "two")
     ts = ts.add_event(1, "one")
     ts = ts.add_event(3, "three")
     ts = ts.add_event(3, "three")
-    ts = ts.sort_events()
-    assert str(ts.events) == (
-        "[TimeSeriesEvent(time=1, name='one'), "
-        "TimeSeriesEvent(time=2, name='two'), "
-        "TimeSeriesEvent(time=3, name='three'), "
-        "TimeSeriesEvent(time=3, name='three')]"
-    )
-    ts.sort_events(in_place=True, unique=True)
-    assert str(ts.events) == (
-        "[TimeSeriesEvent(time=1, name='one'), "
-        "TimeSeriesEvent(time=2, name='two'), "
-        "TimeSeriesEvent(time=3, name='three')]"
-    )
+    assert ts.events[0].time == 1
+    assert ts.events[1].time == 2
+    assert ts.events[2].time == 3
+    assert ts.events[3].time == 3
+    assert ts.events[0].name == "one"
+    assert ts.events[1].name == "two"
+    assert ts.events[2].name == "three"
+    assert ts.events[3].name == "three"
+
+    # See if it works event by manually playing with the events
+    ts.events.append(ktk.TimeSeriesEvent(time=-1000, name="manual_event"))
+
+    assert ts.events[0].time == -1000
+    assert ts.events[1].time == 1
+    assert ts.events[2].time == 2
+    assert ts.events[3].time == 3
+    assert ts.events[4].time == 3
+    assert ts.events[0].name == "manual_event"
+    assert ts.events[1].name == "one"
+    assert ts.events[2].name == "two"
+    assert ts.events[3].name == "three"
+    assert ts.events[4].name == "three"
 
 
 def test_get_event_indexes_count_index_time():
     ts = ktk.TimeSeries()
     ts = ts.add_event(5.5, "event1")
     ts = ts.add_event(10.8, "event2")
-    ts = ts.add_event(2.3, "event2")
+    ts = ts.add_event(20.3, "event2")
     assert ts.count_events("event1") == 1
     assert ts.count_events("event2") == 2
     assert ts._get_event_indexes("event0") == []
     assert ts._get_event_indexes("event1") == [0]
-    assert ts._get_event_indexes("event2") == [2, 1]
-    assert ts._get_event_index("event2", 1) == 1
+    assert ts._get_event_indexes("event2") == [1, 2]
+    assert ts._get_event_index("event2", 1) == 2
     try:
         ts._get_event_index("event0", 0)
         raise Exception("This should fail.")
@@ -834,11 +843,6 @@ def test_get_event_indexes_count_index_time():
         raise Exception("This should fail.")
     except TimeSeriesEventNotFoundError:
         pass
-
-    # Deprecated
-    assert ts.get_event_time("event1") == 5.5
-    assert ts.get_event_time("event2", 0) == 2.3
-    assert ts.get_event_time("event2", 1) == 10.8
 
 
 # %% Sample rate, merge, resample
@@ -1129,16 +1133,6 @@ def test_fill_missing_samples():
 # %% get_index
 
 
-def test_get_index_at_time():
-    ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
-    assert ts.get_index_at_time(0) == 0
-    assert ts.get_index_at_time(0.2) == 0
-    assert ts.get_index_at_time(0.9) == 2
-    assert ts.get_index_at_time(1) == 2
-    assert ts.get_index_at_time(1.1) == 2
-    assert ts.get_index_at_time(2.1) == 4
-
-
 def test_get_index_before_time():
     ts = ktk.TimeSeries(time=[0.2, 0.5, 1, 1.5, 2])
     try:
@@ -1167,14 +1161,6 @@ def test_get_index_after_time():
     except TimeSeriesRangeError:
         pass
     assert ts.get_index_after_time(2, inclusive=True) == 4
-
-
-def test_get_index_at_event():
-    ts = ktk.TimeSeries(time=np.arange(10) / 10)
-    ts.add_event(0.2, "event", in_place=True)
-    ts.add_event(0.36, "event", in_place=True)
-    assert ts.get_index_at_event("event") == 2
-    assert ts.get_index_at_event("event", occurrence=1) == 4
 
 
 def test_get_index_before_event():
@@ -1553,28 +1539,6 @@ def test_plot():
     fig = plt.figure()
     ts.plot(["data1"], event_names=False, legend=False)
     plt.close(fig)
-
-
-# %% Deprecated
-def test_get_ts_at_event___get_ts_at_time():
-    ts = ktk.TimeSeries()
-    ts.time = np.linspace(0, 99, 100)
-    time_as_column = np.reshape(ts.time, (-1, 1))
-    ts.data["Forces"] = np.block(
-        [time_as_column, time_as_column**2, time_as_column**3]
-    )
-    ts.data["Moments"] = np.block(
-        [time_as_column**2, time_as_column**3, time_as_column**4]
-    )
-    ts = ts.add_event(5.5, "event1")
-    ts = ts.add_event(10.8, "event2")
-    ts = ts.add_event(2.3, "event2")
-    new_ts = ts.get_ts_at_event("event1")
-    assert np.array_equal(new_ts.time, np.array([5]))
-    new_ts = ts.get_ts_at_event("event2")
-    assert np.array_equal(new_ts.time, np.array([2]))
-    new_ts = ts.get_ts_at_event("event2", 1)
-    assert np.array_equal(new_ts.time, np.array([11]))
 
 
 # %% Main

@@ -169,10 +169,10 @@ def create_transforms(
     degrees=False,
 ) -> np.ndarray:
     """
-    Create series of transforms based on angles, translatations and scales.
+    Create series of transforms based on angles, translations and scales.
 
     Create an Nx4x4 series of homogeneous transform matrices based on series of
-    angles, translatations and scales.
+    angles, translations and scales.
 
     Parameters
     ----------

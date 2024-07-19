@@ -575,21 +575,18 @@ def read_c3d(
                 np.arange(points.data[key].shape[0]) / point_rate + start_time
             )
 
-        # Add events
-        for i_event in range(len(event_names)):
-            event_time = event_times[i_event]
-            if include_event_context:
-                event_name = (
-                    event_contexts[i_event] + ":" + event_names[i_event]
-                )
-            else:
-                event_name = event_names[i_event]
-            points.add_event(
-                event_time,
-                event_name,
-                in_place=True,
-            )
-        points.sort_events(in_place=True)
+    # Add events
+    for i_event in range(len(event_names)):
+        event_time = event_times[i_event]
+        if include_event_context:
+            event_name = event_contexts[i_event] + ":" + event_names[i_event]
+        else:
+            event_name = event_names[i_event]
+        points.add_event(
+            event_time,
+            event_name,
+            in_place=True,
+        )
 
         output["Points"] = points
 
@@ -657,7 +654,6 @@ def read_c3d(
         # Add events
         for i_event, event_name in enumerate(event_names):
             analogs.add_event(event_times[i_event], event_name, in_place=True)
-        analogs.sort_events(in_place=True)
 
         output["Analogs"] = analogs
 
@@ -758,7 +754,6 @@ def read_c3d(
             platforms.add_event(
                 event_times[i_event], event_name, in_place=True
             )
-        platforms.sort_events(in_place=True)
 
         output["ForcePlates"] = platforms
 
