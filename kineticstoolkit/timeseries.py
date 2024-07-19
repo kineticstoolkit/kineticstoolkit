@@ -207,7 +207,7 @@ class TimeSeries:
     Attributes
     ----------
     time : np.ndarray
-        Time vector as 1-dimension np.array.
+        Time attribute as 1-dimension np.array.
 
     data : dict[str, np.ndarray]
         Contains the data, where each element contains a np.array
@@ -849,7 +849,7 @@ class TimeSeries:
 
     def _check_not_empty_time(self) -> None:
         """
-        Check that the TimeSeries' time vector is not empty.
+        Check that the TimeSeries' time attribute is not empty.
 
         Raises
         ------
@@ -865,7 +865,7 @@ class TimeSeries:
 
     def _check_increasing_time(self) -> None:
         """
-        Check that the TimeSeries' time vector is always increasing.
+        Check that the TimeSeries' time attribute is always increasing.
 
         Raises
         ------
@@ -877,7 +877,7 @@ class TimeSeries:
             raise ValueError(
                 "The TimeSeries' time attribute is not always increasing, "
                 "which is required by the requested function. You can "
-                "resample the TimeSeries on an always increasing time vector "
+                "resample the TimeSeries on an always increasing time attribute "
                 "using ts = ts.resample(np.sort(ts.time))."
             )
 
@@ -1558,7 +1558,7 @@ class TimeSeries:
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries with the added event.
+            The TimeSeries with the added event.
 
         See Also
         --------
@@ -1814,7 +1814,7 @@ class TimeSeries:
         Returns
         -------
         TimeSeries
-            A new TimeSeries with only unique events.
+            The TimeSeries with only unique events.
 
         Example
         -------
@@ -1928,7 +1928,7 @@ class TimeSeries:
 
     def trim_events(self, *, in_place: bool = False) -> TimeSeries:
         """
-        Delete the events that are outside the TimeSeries' time vector.
+        Delete the events that are outside the TimeSeries' time attribute.
 
         Parameters
         ----------
@@ -1996,12 +1996,12 @@ class TimeSeries:
         Parameters
         ----------
         time
-            Time to look for in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time attribute.
 
         Returns
         -------
         int
-            The index in the time vector.
+            The index in the time attribute.
 
         See Also
         --------
@@ -2044,14 +2044,14 @@ class TimeSeries:
         Parameters
         ----------
         time
-            Time to look for in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time attribute.
         inclusive
             Optional. True to include the given time in the comparison.
 
         Returns
         -------
         int
-            The index in the time vector.
+            The index in the time attribute.
 
         Raises
         ------
@@ -2114,14 +2114,14 @@ class TimeSeries:
         Parameters
         ----------
         time
-            Time to look for in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time attribute.
         inclusive
             Optional. True to include the given time in the comparison.
 
         Returns
         -------
         int
-            The index in the time vector.
+            The index in the time attribute.
 
         Raises
         ------
@@ -2189,7 +2189,7 @@ class TimeSeries:
         Returns
         -------
         int
-            The index in the time vector.
+            The index in the time attribute.
 
         See Also
         --------
@@ -2243,7 +2243,7 @@ class TimeSeries:
         Returns
         -------
         int
-            The index in the time vector.
+            The index in the time attribute.
 
         Raises
         ------
@@ -2313,7 +2313,7 @@ class TimeSeries:
         Returns
         -------
         int
-            The index in the time vector.
+            The index in the time attribute.
 
         Raises
         ------
@@ -2596,7 +2596,7 @@ class TimeSeries:
         Parameters
         ----------
         time
-            Time to look for in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time attribute.
         inclusive
             Optional. True to include the given time in the comparison.
 
@@ -2657,7 +2657,7 @@ class TimeSeries:
         Parameters
         ----------
         time
-            Time to look for in the TimeSeries' time vector.
+            Time to look for in the TimeSeries' time attribute.
         inclusive
             Optional. True to include the given time in the comparison.
 
@@ -2722,7 +2722,7 @@ class TimeSeries:
         Parameters
         ----------
         time1, time2
-            Times to look for in the TimeSeries' time vector.
+            Times to look for in the TimeSeries' time attribute.
         inclusive
             Optional. Either a bool or a tuple of two bools. Used to
             specify which times are returned:
@@ -3356,7 +3356,7 @@ class TimeSeries:
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries, minus the unspecified data keys.
+            The TimeSeries, minus the unspecified data keys.
 
         Raises
         ------
@@ -3438,7 +3438,7 @@ class TimeSeries:
             data keys are merged.
         resample
             Optional. Set to True to resample the source TimeSeries to the
-            target one using a linear interpolation. If the time vectors are
+            target one using a linear interpolation. If the time attributes are
             not equivalent and resample is False, an exception is raised. To
             resample using other methods than linear interpolation, please
             resample the source TimeSeries manually before, using
@@ -3505,7 +3505,7 @@ class TimeSeries:
 
         if must_resample is True and resample is False:
             raise ValueError(
-                "Time vectors do not match, resampling is required."
+                "Time attributes do not match, resampling is required."
             )
 
         if must_resample is True:
@@ -3552,7 +3552,7 @@ class TimeSeries:
         Returns
         -------
         np.ndarray
-            A boolean array of the same size as the time vector, where True
+            A boolean array of the same size as the time attribute, where True
             values represent missing samples (samples that contain at least
             one nan value).
 
@@ -3683,9 +3683,8 @@ class TimeSeries:
         Returns
         -------
         TimeSeries
-            The original TimeSeries with the modified events. If
-            the operation was cancelled by the user, this is a pure copy of
-            the original TimeSeries.
+            The TimeSeries with the modified events. If the operation was
+            cancelled by the user, this is the original TimeSeries.
 
         Warning
         -------
@@ -3908,7 +3907,7 @@ class TimeSeries:
         Returns
         -------
         TimeSeries
-            A copy of the TimeSeries after synchronization.
+            The TimeSeries after synchronization.
 
         Warning
         -------
@@ -4680,165 +4679,6 @@ class TimeSeries:
             ts.time = time
 
         return ts
-
-    # %% Deprecated methods
-    @deprecated(
-        since="0.10.0",
-        until="2024",
-        details=(
-            """
-        This function was deprecated in an attempt to simplify the TimeSeries
-        API. A similar way to achieve the same result would be to do::
-
-            temp = ts.sort_events()
-            indexes = [i for i, e in enumerate(temp.events) if e.name == name]
-            index = indexes[occurrence]
-            """
-        ),
-    )
-    def get_event_index(self, name: str, occurrence: int = 0) -> int:
-        """Get the events index of a given occurrence of an event name."""
-        return self._get_event_index(name=name, occurrence=occurrence)
-
-    @deprecated(
-        since="0.10.0",
-        until="2024",
-        details=(
-            """
-        This function was deprecated in an attempt to simplify the TimeSeries
-        API. A similar way to achieve the same result would be to do::
-
-            temp = ts.sort_events()
-            times = [e.time for e in temp.events if e.name == name]
-            time = times[occurrence]
-            """
-        ),
-    )
-    def get_event_time(self, name: str, occurrence: int = 0) -> float:
-        """Get the time of the specified event."""
-        try:
-            event_index = self._get_event_index(name, occurrence)
-            return self.events[event_index].time
-
-        except Exception as e:
-            self._check_well_typed()
-            raise e
-
-    @deprecated(
-        since="0.10.0",
-        until="2024",
-        details=(
-            "Please use ts.get_ts_after_time() and address the first sample "
-            "of the resulting TimeSeries."
-        ),
-    )
-    def get_ts_at_time(self, time: float) -> TimeSeries:
-        """Get a one-data TimeSeries at the nearest time."""
-        try:
-            out_ts = self.copy()
-            index = self.get_index_at_time(time)
-            out_ts.time = np.array([out_ts.time[index]])
-            for the_data in out_ts.data.keys():
-                out_ts.data[the_data] = out_ts.data[the_data][index]
-            return out_ts
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    @deprecated(
-        since="0.10.0",
-        until="2024",
-        details=(
-            "Please use ts.get_ts_after_event() and address the first sample "
-            "of the resulting TimeSeries."
-        ),
-    )
-    def get_ts_at_event(self, name: str, occurrence: int = 0) -> TimeSeries:
-        """Get a one-data TimeSeries at the event's nearest time."""
-        try:
-            time = self.events[self._get_event_index(name, occurrence)].time
-            return self.get_ts_at_time(time)
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    @deprecated(
-        since="0.10.0",
-        until="2024",
-        details=("Please use ts.shift() instead."),
-    )
-    def sync_event(
-        self, name: str, occurrence: int = 0, *, in_place: bool = False
-    ) -> TimeSeries:
-        """Shift time and events so that this event is at the new time zero."""
-        try:
-            ts = self if in_place else self.copy()
-            time_shift = -self.events[
-                self._get_event_index(name, occurrence)
-            ].time
-            ts.shift(time_shift, in_place=True)
-            return ts
-
-        except Exception as e:
-            self._check_not_empty_time()
-            raise e
-
-    @deprecated(
-        since="0.10.0",
-        until="2024",
-        details=(
-            "Please use ts.ui_edit_events() and add 'begin' and 'end' events "
-            "interactively instead. Then, you can use "
-            "ts.get_ts_between_events() programmatically to keep only the "
-            "interesting portion of the TimeSeries."
-        ),
-    )
-    def ui_get_ts_between_clicks(
-        self, data_keys: str | list[str] = [], *, inclusive: bool = False
-    ) -> TimeSeries:  # pragma: no cover
-        """
-        Get a TimeSeries between two mouse clicks.
-
-        Parameters
-        ----------
-        data_keys
-            Optional. String or list of strings corresponding to the signals
-            to plot. See TimeSeries.plot() for more information.
-        inclusive
-            Optional. True to include the given time in the comparison.
-
-        Returns
-        -------
-        TimeSeries
-            A new TimeSeries that fulfils the specified conditions.
-
-        See Also
-        --------
-        ktk.TimeSeries.get_ts_between_indexes
-        ktk.TimeSeries.get_ts_between_times
-        ktk.TimeSeries.get_ts_between_events
-
-        Note
-        ----
-        Matplotlib must be in interactive mode for this method to work.
-
-        """
-        self._check_not_empty_time()
-        self._check_not_empty_data()
-
-        fig = plt.figure()
-        self.plot(data_keys)
-        kineticstoolkit.gui.message(
-            "Click on both sides of the portion to keep.", **WINDOW_PLACEMENT
-        )
-        plt.pause(0.001)  # Redraw
-        points = plt.ginput(2)
-        kineticstoolkit.gui.message("")
-        times = [points[0][0], points[1][0]]
-        plt.close(fig)
-        return self.get_ts_between_times(
-            min(times), max(times), inclusive=inclusive
-        )
 
 
 # %% Main
