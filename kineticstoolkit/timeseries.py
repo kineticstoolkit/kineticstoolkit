@@ -81,6 +81,8 @@ class TimeSeriesEventList(list):
                 "attributes."
             )
         super(TimeSeriesEventList, self).__setitem__(index, event)
+        # Sort the events
+        self.sort()
 
     def append(self, value):
         """Ensure the appended value is a TimeSeriesEvent."""
@@ -519,7 +521,6 @@ class TimeSeries:
             "remove_event",
             "count_events",
             "remove_duplicate_events",
-            "sort_events",
             "trim_events",
             # Get index from time
             "get_index_at_time",
@@ -1564,7 +1565,6 @@ class TimeSeries:
         --------
         ktk.TimeSeries.rename_event
         ktk.TimeSeries.remove_event
-        ktk.TimeSeries.sort_events
         ktk.TimeSeries.trim_events
         ktk.TimeSeries.ui_edit_events
 
@@ -1573,12 +1573,12 @@ class TimeSeries:
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_event(5.5, "event1")
         >>> ts = ts.add_event(10.8, "event2")
-        >>> ts = ts.add_event(2.3, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
-         TimeSeriesEvent(time=2.3, name='event2')]
+         TimeSeriesEvent(time=20.3, name='event2')]
 
         """
         check_param("time", time, float)
@@ -1633,7 +1633,6 @@ class TimeSeries:
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.remove_event
-        ktk.TimeSeries.sort_events
         ktk.TimeSeries.trim_events
         ktk.TimeSeries.ui_edit_events
 
@@ -1642,24 +1641,24 @@ class TimeSeries:
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_event(5.5, "event1")
         >>> ts = ts.add_event(10.8, "event2")
-        >>> ts = ts.add_event(2.3, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
-         TimeSeriesEvent(time=2.3, name='event2')]
+         TimeSeriesEvent(time=20.3, name='event2')]
 
         >>> ts = ts.rename_event("event2", "event3")
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event3'),
-         TimeSeriesEvent(time=2.3, name='event3')]
+         TimeSeriesEvent(time=20.3, name='event3')]
 
         >>> ts = ts.rename_event("event3", "event4", occurrence=0)
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
-         TimeSeriesEvent(time=10.8, name='event3'),
-         TimeSeriesEvent(time=2.3, name='event4')]
+         TimeSeriesEvent(time=10.8, name='event4'),
+         TimeSeriesEvent(time=20.3, name='event3')]
 
         """
         check_param("old_name", old_name, str)
@@ -1714,7 +1713,6 @@ class TimeSeries:
         --------
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
-        ktk.TimeSeries.sort_events
         ktk.TimeSeries.trim_events
         ktk.TimeSeries.ui_edit_events
 
@@ -1724,21 +1722,21 @@ class TimeSeries:
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_event(5.5, "event1")
         >>> ts = ts.add_event(10.8, "event2")
-        >>> ts = ts.add_event(2.3, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
 
         >>> ts.events
         [TimeSeriesEvent(time=5.5, name='event1'),
          TimeSeriesEvent(time=10.8, name='event2'),
-         TimeSeriesEvent(time=2.3, name='event2')]
+         TimeSeriesEvent(time=20.3, name='event2')]
 
         >>> ts = ts.remove_event("event1")
         >>> ts.events
         [TimeSeriesEvent(time=10.8, name='event2'),
-         TimeSeriesEvent(time=2.3, name='event2')]
+         TimeSeriesEvent(time=20.3, name='event2')]
 
         >>> ts = ts.remove_event("event2", 1)
         >>> ts.events
-        [TimeSeriesEvent(time=2.3, name='event2')]
+        [TimeSeriesEvent(time=10.8, name='event2')]
 
         """
         check_param("name", name, str)
@@ -1788,7 +1786,7 @@ class TimeSeries:
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_event(5.5, "event1")
         >>> ts = ts.add_event(10.8, "event2")
-        >>> ts = ts.add_event(2.3, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
 
         >>> ts.count_events("event2")
         2
@@ -1837,9 +1835,9 @@ class TimeSeries:
 
         >>> ts.events
         [TimeSeriesEvent(time=0.0, name='event1'),
-         TimeSeriesEvent(time=1e-12, name='event1'),
          TimeSeriesEvent(time=0.0, name='event1'),
          TimeSeriesEvent(time=0.0, name='event2'),
+         TimeSeriesEvent(time=1e-12, name='event1'),
          TimeSeriesEvent(time=2.0, name='event3'),
          TimeSeriesEvent(time=2.0, name='event3')]
 
@@ -1857,73 +1855,6 @@ class TimeSeries:
         duplicates = ts._get_duplicate_event_indexes()
         for event_index in duplicates[-1::-1]:
             ts.events.pop(event_index)
-        return ts
-
-    def sort_events(
-        self, *, unique: bool = False, in_place: bool = False
-    ) -> TimeSeries:
-        """
-        Sorts the TimeSeries' events from the earliest to the latest.
-
-        Parameters
-        ----------
-        unique
-            Optional. True to make events unique so that no two events can
-            have both the same name and the same time.
-        in_place
-            Optional. True to modify and return the original TimeSeries. False
-            to return a modified copy of the TimeSeries while leaving the
-            original TimeSeries intact. Default is False.
-
-        Returns
-        -------
-        TimeSeries
-            The TimeSeries with the sorted events.
-
-        See Also
-        --------
-        ktk.TimeSeries.add_event
-        ktk.TimeSeries.rename_event
-        ktk.TimeSeries.remove_event
-        ktk.TimeSeries.trim_events
-        ktk.TimeSeries.ui_edit_events
-
-        Example
-        -------
-        >>> ts = ktk.TimeSeries(time=np.arange(100)/10)
-        >>> ts = ts.add_event(2, "two")
-        >>> ts = ts.add_event(1, "one")
-        >>> ts = ts.add_event(3, "three")
-        >>> ts = ts.add_event(3, "three")
-
-        >>> ts.events
-        [TimeSeriesEvent(time=2, name='two'),
-         TimeSeriesEvent(time=1, name='one'),
-         TimeSeriesEvent(time=3, name='three'),
-         TimeSeriesEvent(time=3, name='three')]
-
-        >>> ts = ts.sort_events()
-        >>> ts.events
-        [TimeSeriesEvent(time=1, name='one'),
-         TimeSeriesEvent(time=2, name='two'),
-         TimeSeriesEvent(time=3, name='three'),
-         TimeSeriesEvent(time=3, name='three')]
-
-        >>> ts = ts.sort_events(unique=True)
-        >>> ts.events
-        [TimeSeriesEvent(time=1, name='one'),
-         TimeSeriesEvent(time=2, name='two'),
-         TimeSeriesEvent(time=3, name='three')]
-
-        """
-        check_param("unique", unique, bool)
-        check_param("in_place", in_place, bool)
-        self._check_well_typed()
-
-        ts = self if in_place else self.copy()
-        if unique:
-            ts.remove_duplicate_events(in_place=True)
-        ts.events = sorted(ts.events)
         return ts
 
     def trim_events(self, *, in_place: bool = False) -> TimeSeries:
@@ -1947,7 +1878,6 @@ class TimeSeries:
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
         ktk.TimeSeries.remove_event
-        ktk.TimeSeries.sort_events
         ktk.TimeSeries.ui_edit_events
 
         Example
@@ -3535,7 +3465,6 @@ class TimeSeries:
             ts_out.add_event(
                 event.time, event.name, in_place=True, unique=True
             )
-        ts_out.sort_events(in_place=True)
         return ts_out
 
     # %% Missing sample management
@@ -3696,7 +3625,6 @@ class TimeSeries:
         ktk.TimeSeries.add_event
         ktk.TimeSeries.rename_event
         ktk.TimeSeries.remove_event
-        ktk.TimeSeries.sort_events
         ktk.TimeSeries.trim_events
 
         Note
@@ -3872,7 +3800,7 @@ class TimeSeries:
                 return self.copy()
 
             # Refresh
-            ts.sort_events(unique=False, in_place=True)
+            ts.remove_duplicate_events(in_place=True)
             axes = plt.axis()
             plt.cla()
             ts.plot(data_keys, _raise_on_no_data=True)
@@ -4150,9 +4078,6 @@ class TimeSeries:
             else:
                 warnings.warn("No data available to plot.")
             return
-
-        # Sort events to help finding each event's occurrence
-        ts.sort_events(unique=False)
 
         df = ts.to_dataframe()
         labels = df.columns.to_list()
@@ -4678,6 +4603,47 @@ class TimeSeries:
         else:
             ts.time = time
 
+        return ts
+
+    # %% Deprecrated methods
+    @deprecated(
+        since="0.15",
+        until="2027",
+        details=(
+            "Events are now always sorted in the events attribute. "
+            "There is no need to run the sort_events method anymore."
+        ),
+    )
+    def sort_events(
+        self, *, unique: bool = False, in_place: bool = False
+    ) -> TimeSeries:
+        """
+        Deprecated. Sorts the TimeSeries' events from the earliest to the latest.
+
+        Parameters
+        ----------
+        unique
+            Optional. True to make events unique so that no two events can
+            have both the same name and the same time.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the sorted events.
+
+        """
+        check_param("unique", unique, bool)
+        check_param("in_place", in_place, bool)
+        self._check_well_typed()
+
+        ts = self if in_place else self.copy()
+        if unique:
+            ts.remove_duplicate_events(in_place=True)
+        ts.events = sorted(ts.events)
         return ts
 
 

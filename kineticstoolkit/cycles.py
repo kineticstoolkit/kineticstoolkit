@@ -239,7 +239,6 @@ def detect_cycles(
     tsout = ts.copy()
     for event in valid_events:
         tsout = tsout.add_event(event.time, event.name)
-    tsout.sort_events()
 
     return tsout
 
@@ -402,7 +401,6 @@ def time_normalize(
             if event.time >= begin_time and event.time < end_time:
                 events.append(event)
         subts.events = events
-        subts = subts.sort_events()
 
         # Separate start/end events from the other
         start_end_events = []
@@ -454,7 +452,6 @@ def time_normalize(
         new_shape[0] = n_cycles * (span[1] - span[0])
         dest_ts.data[key] = np.reshape(temp, new_shape)
 
-    dest_ts = dest_ts.sort_events()
     return dest_ts
 
 
@@ -589,7 +586,6 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 
 #     """
 #     ts = ts.copy()
-#     ts.sort_events()
 
 #     n_cycles = int(ts.time.shape[0] / n_points)
 #     out = {}  # type: dict[str, np.ndarray]

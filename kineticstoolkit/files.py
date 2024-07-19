@@ -577,7 +577,6 @@ def read_c3d(
             event_name,
             in_place=True,
         )
-    points.sort_events(in_place=True)
 
     # Add to output
     output["Points"] = points
@@ -644,7 +643,6 @@ def read_c3d(
         # Add events
         for i_event, event_name in enumerate(event_names):
             analogs.add_event(event_times[i_event], event_name, in_place=True)
-        analogs.sort_events(in_place=True)
 
         output["Analogs"] = analogs
 
@@ -693,7 +691,6 @@ def read_c3d(
             platforms.add_event(
                 event_times[i_event], event_name, in_place=True
             )
-        platforms.sort_events(in_place=True)
 
         output["ForcePlates"] = platforms
 
