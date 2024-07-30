@@ -270,6 +270,7 @@ def test_read_c3d_event_name_format():
         convert_point_unit=True,
     )
     assert test["Points"].events[0].name == "Foot Strike"
+    assert test["Analogs"].events[0].name == "Foot Strike"
 
     # Load a file with contexts, reading contexts
     test = ktk.read_c3d(
@@ -278,6 +279,7 @@ def test_read_c3d_event_name_format():
         include_event_context=True,
     )
     assert test["Points"].events[0].name == "Right:Foot Strike"
+    assert test["Analogs"].events[0].name == "Right:Foot Strike"
 
     # Load a file without contexts, ensure that it reads ok.
     test = ktk.read_c3d(
@@ -285,6 +287,20 @@ def test_read_c3d_event_name_format():
         convert_point_unit=True,
     )
     assert test["Points"].events[0].name == "Foot Strike"
+    assert test["Analogs"].events[0].name == "Foot Strike"
+
+
+def test_read_c3d_duplicate_labels():
+    # Non-regression test based on a sample problematic file
+    contents = ktk.read_c3d(
+        ktk.doc.download(f"c3d_test_suite/others/duplicate_labels.c3d"),
+        convert_point_unit=True,
+        extract_force_plates=True,
+    )
+    assert np.sum(contents["Points"].isnan("T8")) == 300
+    assert np.sum(contents["Points"].isnan("T8_1")) == 1047
+    assert np.sum(contents["Points"].isnan("T8_2")) == 1043
+    assert "T8_3" not in contents["Points"].data
 
 
 def test_read_write_c3d():

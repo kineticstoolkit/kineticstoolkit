@@ -31,6 +31,10 @@ class TimeSeriesEventNotFoundError(Exception):
     """The requested event occurrence was not found."""
 
 
+class TimeSeriesMergeConflictError(Exception):
+    """Both TimeSeries have a same data key."""
+
+
 if __name__ == "__main__":  # pragma: no cover
     import doctest
 

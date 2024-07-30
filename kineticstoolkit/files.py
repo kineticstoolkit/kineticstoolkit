@@ -556,6 +556,7 @@ def read_c3d(
         point_factor = 1
         # point_unit = Do not update
 
+<<<<<<< HEAD
     if n_points > 0:  # There are points
         points = TimeSeries()
 
@@ -574,6 +575,26 @@ def read_c3d(
             points.time = (
                 np.arange(points.data[key].shape[0]) / point_rate + start_time
             )
+=======
+    for i_label in range(n_points):
+        # Make sure it's UTF8, and strip leading and ending spaces
+        label = labels[i_label]
+        key = label.encode("utf-8", "ignore").decode("utf-8").strip()
+
+        # Ensure key is unique, in case of multiple series labelled
+        # with the same name
+        if (key == "") or (key in points.data):
+            suffix_integer = 1
+            while f"{key}_{suffix_integer}" in points.data:
+                suffix_integer += 1
+            key = f"{key}_{suffix_integer}"
+
+        points.data[key] = np.array(
+            [point_factor, point_factor, point_factor, 1]
+            * reader["data"]["points"][:, i_label, :].T
+        )
+        points = points.add_data_info(key, "Unit", point_unit)
+>>>>>>> master
 
         # Add events
         for i_event in range(len(event_names)):
@@ -637,6 +658,15 @@ def read_c3d(
             # Strip leading and ending spaces
             label = labels[i_label]
             key = label.encode("utf-8", "ignore").decode("utf-8").strip()
+
+            # Ensure key is unique, in case of multiple series labelled
+            # with the same name
+            if (key == "") or (key in analogs.data):
+                suffix_integer = 1
+                while f"{key}_{suffix_integer}" in analogs.data:
+                    suffix_integer += 1
+                key = f"{key}_{suffix_integer}"
+
             analogs.data[key] = reader["data"]["analogs"][0, i_label].T
             if units[i_label] != "":
                 analogs.add_data_info(
@@ -652,8 +682,7 @@ def read_c3d(
             )
 
         # Add events
-        for i_event, event_name in enumerate(event_names):
-            analogs.add_event(event_times[i_event], event_name, in_place=True)
+        analogs.events = points.events.copy()
 
         output["Analogs"] = analogs
 
@@ -749,10 +778,7 @@ def read_c3d(
             platforms.add_data_info(key, "Unit", moment_unit, in_place=True)
 
         # Add events
-        for i_event, event_name in enumerate(event_names):
-            platforms.add_event(
-                event_times[i_event], event_name, in_place=True
-            )
+        platforms.events = points.events.copy()
 
         output["ForcePlates"] = platforms
 

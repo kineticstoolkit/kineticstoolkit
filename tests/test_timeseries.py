@@ -31,6 +31,7 @@ import warnings
 from kineticstoolkit.exceptions import (
     TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
+    TimeSeriesMergeConflictError,
 )
 
 # %% TimeSeriesEvent
@@ -868,6 +869,38 @@ def test_get_sample_rate():
     assert ts.get_sample_rate() == 10.0
 
 
+def test_merge():
+    # Test the different combination of overwrite and on_conflict
+    ts1 = ktk.TimeSeries(
+        time=[0, 1, 2], data={"data1": [0, 1, 2], "data2": [0, 1, 2]}
+    )
+    ts2 = ktk.TimeSeries(time=[0, 1, 2], data={"data1": [3, 4, 5]})
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        assert np.all(
+            ts1.merge(ts2, overwrite=False).data["data1"] == [0, 1, 2]
+        )
+        assert np.all(
+            ts1.merge(ts2, overwrite=True).data["data1"] == [3, 4, 5]
+        )
+
+    assert np.all(
+        ts1.merge(ts2, overwrite=False, on_conflict="mute").data["data1"]
+        == [0, 1, 2]
+    )
+    assert np.all(
+        ts1.merge(ts2, overwrite=True, on_conflict="mute").data["data1"]
+        == [3, 4, 5]
+    )
+
+    try:
+        assert ts1.merge(ts2, on_conflict="error")
+        raise Exception("This should not happen.")
+    except TimeSeriesMergeConflictError:
+        pass
+
+
 def test_merge_and_resample():
     # Begin with two timeseries with identical times
     ts1 = ktk.TimeSeries()
@@ -1309,7 +1342,7 @@ def test_get_ts_after_time():
     assert np.allclose(newts.time, [6.0, 7.0, 8.0, 9.0])
     assert np.allclose(newts.data["data"], [0.6, 0.7, 0.8, 0.9])
 
-    newts = ts.get_ts_after_time(-np.Inf)
+    newts = ts.get_ts_after_time(-np.inf)
     assert newts == ts
 
 
