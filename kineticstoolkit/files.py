@@ -556,7 +556,6 @@ def read_c3d(
         point_factor = 1
         # point_unit = Do not update
 
-<<<<<<< HEAD
     if n_points > 0:  # There are points
         points = TimeSeries()
 
@@ -564,37 +563,25 @@ def read_c3d(
             # Make sure it's UTF8, and strip leading and ending spaces
             label = labels[i_label]
             key = label.encode("utf-8", "ignore").decode("utf-8").strip()
-            if label != "":
-                points.data[key] = np.array(
-                    [point_factor, point_factor, point_factor, 1]
-                    * reader["data"]["points"][:, i_label, :].T
-                )
-                points = points.add_data_info(key, "Unit", point_unit)
+    
+            # Ensure key is unique, in case of multiple series labelled
+            # with the same name
+            if (key == "") or (key in points.data):
+                suffix_integer = 1
+                while f"{key}_{suffix_integer}" in points.data:
+                    suffix_integer += 1
+                key = f"{key}_{suffix_integer}"
+    
+            points.data[key] = np.array(
+                [point_factor, point_factor, point_factor, 1]
+                * reader["data"]["points"][:, i_label, :].T
+            )
+            points.add_data_info(key, "Unit", point_unit, in_place=True)
 
         if n_points > 0:
             points.time = (
                 np.arange(points.data[key].shape[0]) / point_rate + start_time
             )
-=======
-    for i_label in range(n_points):
-        # Make sure it's UTF8, and strip leading and ending spaces
-        label = labels[i_label]
-        key = label.encode("utf-8", "ignore").decode("utf-8").strip()
-
-        # Ensure key is unique, in case of multiple series labelled
-        # with the same name
-        if (key == "") or (key in points.data):
-            suffix_integer = 1
-            while f"{key}_{suffix_integer}" in points.data:
-                suffix_integer += 1
-            key = f"{key}_{suffix_integer}"
-
-        points.data[key] = np.array(
-            [point_factor, point_factor, point_factor, 1]
-            * reader["data"]["points"][:, i_label, :].T
-        )
-        points = points.add_data_info(key, "Unit", point_unit)
->>>>>>> master
 
         # Add events
         for i_event in range(len(event_names)):
@@ -709,13 +696,21 @@ def read_c3d(
                 # Make sure it's UTF8, and strip leading and ending spaces
                 label = labels[rotation_id]
                 key = label.encode("utf-8", "ignore").decode("utf-8").strip()
-                if label != "":
-                    rotations.data[key] = np.array(
-                        np.transpose(
-                            reader["data"]["rotations"][:, :, rotation_id, :],
-                            (2, 0, 1),
-                        )
+
+                # Ensure key is unique, in case of multiple series labelled
+                # with the same name
+                if (key == "") or (key in rotations.data):
+                    suffix_integer = 1
+                    while f"{key}_{suffix_integer}" in rotations.data:
+                        suffix_integer += 1
+                    key = f"{key}_{suffix_integer}"
+        
+                rotations.data[key] = np.array(
+                    np.transpose(
+                        reader["data"]["rotations"][:, :, rotation_id, :],
+                        (2, 0, 1),
                     )
+                )
 
             if n_rotations > 0:
                 rotations.time = (
