@@ -553,12 +553,20 @@ def read_c3d(
         # Make sure it's UTF8, and strip leading and ending spaces
         label = labels[i_label]
         key = label.encode("utf-8", "ignore").decode("utf-8").strip()
-        if label != "":
-            points.data[key] = np.array(
-                [point_factor, point_factor, point_factor, 1]
-                * reader["data"]["points"][:, i_label, :].T
-            )
-            points = points.add_data_info(key, "Unit", point_unit)
+
+        # Ensure key is unique, in case of multiple series labelled
+        # with the same name
+        if (key == "") or (key in points.data):
+            suffix_integer = 1
+            while f"{key}_{suffix_integer}" in points.data:
+                suffix_integer += 1
+            key = f"{key}_{suffix_integer}"
+
+        points.data[key] = np.array(
+            [point_factor, point_factor, point_factor, 1]
+            * reader["data"]["points"][:, i_label, :].T
+        )
+        points = points.add_data_info(key, "Unit", point_unit)
 
     if n_points > 0:
         points.time = (
@@ -626,6 +634,15 @@ def read_c3d(
             # Strip leading and ending spaces
             label = labels[i_label]
             key = label.encode("utf-8", "ignore").decode("utf-8").strip()
+
+            # Ensure key is unique, in case of multiple series labelled
+            # with the same name
+            if (key == "") or (key in analogs.data):
+                suffix_integer = 1
+                while f"{key}_{suffix_integer}" in analogs.data:
+                    suffix_integer += 1
+                key = f"{key}_{suffix_integer}"
+
             analogs.data[key] = reader["data"]["analogs"][0, i_label].T
             if units[i_label] != "":
                 analogs.add_data_info(
