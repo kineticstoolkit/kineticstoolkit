@@ -390,9 +390,9 @@ def test_write_rotations_c3d():
     rotations = ktk.TimeSeries()
     rotations.time = np.linspace(0, 1, 240, endpoint=False)
     rotations.data["pelvis_4X4"] = ktk.geometry.create_transforms(
-        "x", np.linspace(0, 2*np.pi, 240, endpoint=False)
+        "x", np.linspace(0, 2 * np.pi, 240, endpoint=False)
     )
-    rotations.add_event(0.5, "TestEvent")
+    rotations.add_event(0.5, "TestEvent", in_place=True)
 
     # add some point data
     points = ktk.TimeSeries()

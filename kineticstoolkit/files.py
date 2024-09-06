@@ -563,7 +563,7 @@ def read_c3d(
             # Make sure it's UTF8, and strip leading and ending spaces
             label = labels[i_label]
             key = label.encode("utf-8", "ignore").decode("utf-8").strip()
-    
+
             # Ensure key is unique, in case of multiple series labelled
             # with the same name
             if (key == "") or (key in points.data):
@@ -571,7 +571,7 @@ def read_c3d(
                 while f"{key}_{suffix_integer}" in points.data:
                     suffix_integer += 1
                 key = f"{key}_{suffix_integer}"
-    
+
             points.data[key] = np.array(
                 [point_factor, point_factor, point_factor, 1]
                 * reader["data"]["points"][:, i_label, :].T
@@ -587,7 +587,9 @@ def read_c3d(
         for i_event in range(len(event_names)):
             event_time = event_times[i_event]
             if include_event_context:
-                event_name = event_contexts[i_event] + ":" + event_names[i_event]
+                event_name = (
+                    event_contexts[i_event] + ":" + event_names[i_event]
+                )
             else:
                 event_name = event_names[i_event]
             points.add_event(
@@ -704,7 +706,7 @@ def read_c3d(
                     while f"{key}_{suffix_integer}" in rotations.data:
                         suffix_integer += 1
                     key = f"{key}_{suffix_integer}"
-        
+
                 rotations.data[key] = np.array(
                     np.transpose(
                         reader["data"]["rotations"][:, :, rotation_id, :],
@@ -717,7 +719,7 @@ def read_c3d(
                     np.arange(rotations.data[key].shape[0]) / rotation_rate
                     + start_time
                 )
-                
+
             # Matrices with nans should be complete nans. Some c3d may contain
             # nans in the data but [0, 0, 0, 1] on the 4th line.
             for data in rotations.data:
