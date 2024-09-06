@@ -32,6 +32,7 @@ from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit._repr import _format_dict_entries
+from kineticstoolkit.exceptions import TimeSeriesMergeConflictError
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
@@ -41,7 +42,7 @@ from numpy import sin, cos
 import time
 from copy import deepcopy
 from typing import Any
-from kineticstoolkit.typing_ import ArrayLike, check_param
+from kineticstoolkit.typing_ import check_param
 import warnings
 
 # To fit the new viewpoint on selecting a new point
@@ -360,6 +361,20 @@ class Player:
         check_param("ts", ts, tuple, contents_type=TimeSeries)
         # The other parameters are checked by the property setters.
 
+        # Merge all input TimeSeries
+        merged_ts = TimeSeries()
+        for one_ts in ts:
+            try:
+                merged_ts.merge(one_ts, in_place=True, on_conflict="error")
+            except TimeSeriesMergeConflictError as e:
+                warnings.warn(
+                    "Duplicate keys were found in at least two of the "
+                    "Player's input TimeSeries. When merging the inputs, we "
+                    f"got this error: {e} "
+                    "Please merge your input TimeSeries manually to avoid "
+                    "this situation. This will become an error in the future."
+                )
+
         # Warn if Matplotlib is not interactive
         check_interactive_backend()
 
@@ -440,11 +455,7 @@ class Player:
         # is refreshed automatically
         self._being_constructed = False
 
-        temp_ts = TimeSeries()
-        for one_ts in ts:
-            temp_ts.merge(one_ts, in_place=True)
-
-        self.set_contents(temp_ts)
+        self.set_contents(merged_ts)
         self.set_interconnections(interconnections)
         self.grid_origin = grid_origin  # Refresh grid
 
