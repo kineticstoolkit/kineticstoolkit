@@ -227,7 +227,7 @@ class TimeSeries:
 
         To facilitate the management of data_info, please use
         `ktk.TimeSeries.add_data_info` and `ktk.TimeSeries.remove_data_info`.
-        
+
     events : list[TimeSeriesEvent]
         list of events.
 

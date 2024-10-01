@@ -48,6 +48,7 @@ def __dir__():
         "rotate",
         "translate",
         "scale",
+        "mirror",
     ]
 
 
@@ -350,8 +351,7 @@ def rotate(
 
     See Also
     --------
-    ktk.geometry.translate, ktk.geometry.scale, ktk.geometry.create_transforms,
-    ktk.geometry.matmul
+    ktk.geometry.translate, ktk.geometry.scale, ktk.geometry.mirror
 
     Examples
     --------
@@ -391,8 +391,7 @@ def translate(coordinates, /, translations):
 
     See Also
     --------
-    ktk.geometry.rotate, ktk.geometry.scale, ktk.geometry.create_transforms,
-    ktk.geometry.matmul
+    ktk.geometry.rotate, ktk.geometry.scale, ktk.geometry.mirror
 
     Examples
     --------
@@ -426,12 +425,11 @@ def scale(coordinates, /, scales):
     Returns
     -------
     np.ndarray
-        Array_like of shape (N, ...): the translated coordinates.
+        Array_like of shape (N, ...): the scaled coordinates.
 
     See Also
     --------
-    ktk.geometry.rotate, ktk.geometry.translate,
-    ktk.geometry.create_transforms, ktk.geometry.matmul
+    ktk.geometry.rotate, ktk.geometry.translate, ktk.geometry.mirror
 
     Examples
     --------
@@ -447,6 +445,60 @@ def scale(coordinates, /, scales):
                [4., 0., 0., 1.]])
     """
     return matmul(create_transforms(scales=scales), coordinates)
+
+
+def mirror(coordinates, /, axis: str = "x"):
+    """
+    Mirror a series of coordinates.
+
+    Parameters
+    ----------
+    coordinates
+        Array_like of shape (N, ...): the coordinates to mirror.
+
+    axis
+        Can be either "x", "y" or "z". The axis to mirror through. The default
+        is "x".
+
+    Returns
+    -------
+    np.ndarray
+        Array_like of shape (N, ...): the mirrored coordinates.
+
+    See Also
+    --------
+    ktk.geometry.rotate, ktk.geometry.translate, ktk.geometry.scale
+
+    Examples
+    --------
+    Mirror the point (1, 2, 3) along the x, y and z axes respectively:
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> import numpy as np
+        >>> p = np.array([[1.0, 2.0, 3.0, 1.0]])
+
+        >>> ktk.geometry.mirror(p, "x")
+        array([[-1., 2., 3., 1.]])
+
+        >>> ktk.geometry.mirror(p, "y")
+        array([[ 1., -2., 3., 1.]])
+
+        >>> ktk.geometry.mirror(p, "z")
+        array([[ 1., 2., -3., 1.]])
+    """
+    check_param("axis", axis, str)
+
+    retval = np.array(coordinates)
+    if axis == "x":
+        retval[:, 0] *= -1
+    elif axis == "y":
+        retval[:, 1] *= -1
+    elif axis == "z":
+        retval[:, 2] *= -1
+    else:
+        raise ValueError("axis must be either 'x', 'y' or 'z'")
+
+    return retval
 
 
 def get_angles(

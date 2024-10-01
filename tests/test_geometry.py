@@ -150,7 +150,7 @@ def test_create_transforms():
     assert T.shape[0] == 100
 
 
-def rotate_translate_scale():
+def test_rotate_translate_scale():
     """
     Test rotate, translate and scale.
     The real test is in create_transforms, these tests are only to be sure
@@ -198,6 +198,17 @@ def rotate_translate_scale():
             ]
         ),
     )
+
+
+def test_mirror():
+    """Run the doctest."""
+    p = np.array([[1.0, 2.0, 3.0, 1.0]])
+
+    assert np.allclose(ktk.geometry.mirror(p, "x"), [[-1.0, 2.0, 3.0, 1.0]])
+
+    assert np.allclose(ktk.geometry.mirror(p, "y"), [[1.0, -2.0, 3.0, 1.0]])
+
+    assert np.allclose(ktk.geometry.mirror(p, "z"), [[1.0, 2.0, -3.0, 1.0]])
 
 
 def test_create_frames_get_local_global_coordinates():
