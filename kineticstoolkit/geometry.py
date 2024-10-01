@@ -447,7 +447,7 @@ def scale(coordinates, /, scales):
     return matmul(create_transforms(scales=scales), coordinates)
 
 
-def mirror(coordinates, /, axis: str = "x"):
+def mirror(coordinates, /, axis: str = "z"):
     """
     Mirror a series of coordinates.
 
@@ -458,7 +458,7 @@ def mirror(coordinates, /, axis: str = "x"):
 
     axis
         Can be either "x", "y" or "z". The axis to mirror through. The default
-        is "x".
+        is "z".
 
     Returns
     -------
