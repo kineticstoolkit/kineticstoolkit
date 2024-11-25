@@ -590,7 +590,13 @@ class TimeSeries:
     # %% Private check functions
 
     def _is_equivalent(
-        self, ts, *, equal: bool = True, atol: float = 1e-8, rtol: float = 1e-5
+        self,
+        ts,
+        *,
+        equal: bool = True,
+        atol: float = 1e-8,
+        rtol: float = 1e-5,
+        debug: bool = False,
     ):
         """
         Test is two TimeSeries are equal or equivalent.
@@ -606,6 +612,8 @@ class TimeSeries:
             Optional. Absolute tolerance if using equal=False.
         rtol
             Optional. Relative tolerance if using equal=False.
+        debug
+            Optional. Prints what parameter is not equal. Default is False.
 
         Returns
         -------
@@ -632,10 +640,12 @@ class TimeSeries:
         try:
             ts._check_well_typed()
         except AttributeError:
-            print("The variable begin compared is not a TimeSeries.")
+            if debug:
+                print("The variable begin compared is not a TimeSeries.")
 
         if not compare(self.time, ts.time, atol=atol, rtol=rtol):
-            print("Time is not equal")
+            if debug:
+                print("Time is not equal")
             return False
 
         for data in [self.data, ts.data]:
@@ -647,28 +657,36 @@ class TimeSeries:
                         atol=atol,
                         rtol=rtol,
                     ):
-                        print(f"{one_data} is not equal")
+                        if debug:
+                            print(f"{one_data} is not equal")
                         return False
                 except KeyError:
-                    print(f"{one_data} is missing in one of the TimeSeries")
+                    if debug:
+                        print(
+                            f"{one_data} is missing in one of the TimeSeries"
+                        )
                     return False
                 except ValueError:
-                    print(
-                        f"{one_data} does not have the same size in both "
-                        "TimeSeries"
-                    )
+                    if debug:
+                        print(
+                            f"{one_data} does not have the same size in both "
+                            "TimeSeries"
+                        )
                     return False
 
         if self.time_info != ts.time_info:
-            print("time_info is not equal")
+            if debug:
+                print("time_info is not equal")
             return False
 
         if self.data_info != ts.data_info:
-            print("data_info is not equal")
+            if debug:
+                print("data_info is not equal")
             return False
 
         if self.events != ts.events:
-            print("events is not equal")
+            if debug:
+                print("events is not equal")
             return False
 
         return True
