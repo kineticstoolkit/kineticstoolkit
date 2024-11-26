@@ -169,13 +169,12 @@ class Player:
               interconnections["Pelvis"]["Color"] = (1.0, 0.0, 0.0)
 
     force_points
-        Optional. A list of (Force, Point of application) tuples. This allows
-        setting an origin for a force and is required to draw the force. For
-        example::
+        Optional. A dict where each key is the name of a force and each value
+        is the corresponding name of a point. For example::
 
-            force_points = [
-                ("WristForce", "WristCenter"),
-                ("ElbowForce", "ElbowCenter"),
+            force_points = {
+                "WristForce": "WristCenter",
+                "ElbowForce": "ElbowCenter",
             ]
 
         will draw lines for the forces WristForce and ElbowForce, with their
@@ -184,9 +183,9 @@ class Player:
         instance, to draw forces recorded by multiple force plates, we could
         use::
 
-            force_points = [
-                ("*Force", "*COP")
-            ]
+            force_points = {
+                "*Force": "*COP"
+            }
 
         which would assign any point ending by "COP" to its counterpart force.
         This is the default, so that force plate data read by read_c3d_file
@@ -308,8 +307,8 @@ class Player:
     _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
     _extended_interconnections: dict[str, dict[str, Any]]
-    _force_points: list[tuple[str, str]]
-    _extended_force_points: list[tuple[str, str]]
+    _force_points: dict[str, str]
+    _extended_force_points: dict[str, str]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
     _selected_points: list[str]  # List of point names
     _last_selected_point: str
@@ -348,7 +347,7 @@ class Player:
         self,
         *ts: TimeSeries,
         interconnections: dict[str, dict[str, Any]] = {},
-        force_points: list[tuple[str, str]] = [("*Force", "*COP")],
+        force_points: dict[str, str] = {"*Force": "*COP"},
         current_index: int = 0,
         current_time: float | None = None,
         playback_speed: float = 1.0,
@@ -440,7 +439,7 @@ class Player:
         self._interconnections = interconnections  # Just to put stuff for now
         self._extended_interconnections = interconnections  # idem
         self._force_points = force_points  # idem
-        self._extended_force_points = force_points  # idem        
+        self._extended_force_points = force_points  # idem
         self._colors = set()  # idem
         self._selected_points = []
         self._last_selected_point = ""
@@ -1067,15 +1066,15 @@ class Player:
         self._interconnections = deepcopy(value)
         self._extend_interconnections()
         self._refresh()
-        
-    def get_force_points(self) -> list[tuple[str, str]]:
+
+    def get_force_points(self) -> dict[str, str]:
         """Get force_points value."""
         return self._force_points
 
-    def set_force_points(self, value: list[tuple[str, str]]) -> None:
+    def set_force_points(self, value: dict[str, str]) -> None:
         """Set force_points value."""
-        check_param("value", value, list)
-        self._force_points = [(item[0], item[1]) for item in value]
+        check_param("value", value, dict, key_type=str, contents_type=str)
+        self._force_points = deepcopy(value)
         self._extend_force_points()
         self._refresh()
 
@@ -1135,9 +1134,8 @@ class Player:
         # Make a set of all patterns matched by the * in force_points
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
         keys = list(self._contents.data.keys())
-        for force_point in self._force_points:
-            force = force_point[0]
-            point = force_point[1]
+        for force in self._force_points:
+            point = self._force_points[force]
             if "*" not in force and "*" not in point:
                 continue
             if force.startswith("*") and force.endswith("*"):
@@ -1174,14 +1172,12 @@ class Player:
                         patterns.add(key[(len(point) - 1) :])
 
         # Extend every * to every pattern
-        self._extended_force_points = list()
+        self._extended_force_points = dict()
         for pattern in patterns:
-            for force_point in self._force_points:
-                self._extended_force_points.append(
-                    (
-                        force_point[0].replace("*", pattern),
-                        force_point[1].replace("*", pattern),
-                    )
+            for force in self._force_points:
+                point = self._force_points[force]
+                self._extended_force_points[force.replace("*", pattern)] = (
+                    point.replace("*", pattern)
                 )
 
     def _general_rotation(self) -> np.ndarray:
