@@ -28,6 +28,7 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
+import kineticstoolkit.geometry as geometry
 import kineticstoolkit.config
 from kineticstoolkit.typing_ import check_param
 
@@ -388,10 +389,6 @@ def read_c3d(
     read_force_plates
         True to read force plates.
 
-    convert_moment_unit
-        Optional. True to convert the moment units to Nm, even if they are
-        expressed in Nmm in the C3D file.
-
     If the C3D file contains force plate data and read_force_plates is True,
     these data are returned in output["ForcePlates"] as a TimeSeries following
     this structure:
@@ -406,6 +403,17 @@ def read_c3d(
       - ...
         
     """
+    """
+    convert_forceplate_moment_unit
+        Optional. True to convert the moment units to Nm, even if they are
+        expressed in Nmm in the ezc3d structure. Default is True.
+    convert_cop_unit
+        Optional. True to convert COP units to meters, event if they are
+        expressed otherwise in the ezc3d structure. Default is True.
+    """
+    convert_forceplate_moment_unit = True
+    convert_forceplate_position_unit = True
+
     check_param("filename", filename, str)
     if convert_point_unit is not None:
         check_param("convert_point_unit", convert_point_unit, bool)
@@ -428,10 +436,12 @@ def read_c3d(
     else:
         extract_force_plates = False
 
-    if "convert_moment_unit" in kwargs:
-        convert_moment_unit = kwargs["convert_moment_unit"]
+    if "convert_forceplate_moment_unit" in kwargs:
+        convert_forceplate_moment_unit = kwargs[
+            "convert_forceplate_moment_unit"
+        ]
     else:
-        convert_moment_unit = True
+        convert_forceplate_moment_unit = True
 
     if "return_ezc3d" in kwargs:
         return_ezc3d = kwargs["return_ezc3d"]
@@ -518,10 +528,10 @@ def read_c3d(
         elif point_unit in scales:
             warnings.warn(
                 "In the specified file, points are expressed in "
-                f"{point_unit}. They were automatically converted to meters "
-                f"by scaling them by {scales[point_unit]}. Please note that "
+                f"{point_unit}. They have been automatically converted to meters "
+                f"(scaled by {scales[point_unit]}). Please note that "
                 "if this file also contains calculated values such as "
-                "angles, powers, etc., they were also (wrongly) scaled by "
+                "angles, powers, etc., they have been also (wrongly) scaled by "
                 f"{scales[point_unit]}. Consult "
                 "https://kineticstoolkit.uqam.ca/doc/api/ktk.read_c3d.html "
                 "for more information. You can mute this warning "
@@ -534,7 +544,7 @@ def read_c3d(
             warnings.warn(
                 "In the specified file, points are expressed in "
                 f"`{point_unit}`, which is not recognized by ktk.read_c3d. They "
-                "were left as is, without attempting to convert to meters. "
+                "have been left as is, without attempting to convert to meters. "
                 "You can mute this warning by setting `convert_point_unit` to "
                 "False."
             )
@@ -734,50 +744,165 @@ def read_c3d(
             # Add to output
             output["Rotations"] = rotations
 
-    # ---------------------------------
-    # Create the platforms TimeSeries
+    # -----------------
+    # Platforms
+    # -----------------
     if extract_force_plates and reader["data"]["platform"] != []:
+
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
         n_platforms = len(reader["data"]["platform"])
         for i_platform in range(n_platforms):
-            force_unit = reader["data"]["platform"][0]["unit_force"]
 
+            # Define unit conversion factors
+            forceplate_position_unit = reader["data"]["platform"][i_platform][
+                "unit_position"
+            ]
+            if convert_forceplate_position_unit and (
+                forceplate_position_unit == "mm"
+            ):
+                forceplate_position_factor = 0.001
+                forceplate_position_unit = "m"
+            elif convert_forceplate_position_unit and (
+                forceplate_position_unit == "cm"
+            ):
+                forceplate_position_factor = 0.01
+                forceplate_position_unit = "m"
+            elif convert_forceplate_position_unit and (
+                forceplate_position_unit == "dm"
+            ):
+                forceplate_position_factor = 0.1
+                forceplate_position_unit = "m"
+            else:
+                forceplate_position_factor = 1
+
+            forceplate_moment_unit = reader["data"]["platform"][i_platform][
+                "unit_moment"
+            ]
+            if convert_forceplate_moment_unit and (
+                forceplate_moment_unit == "Nmm"
+            ):
+                moment_factor = 0.001
+                forceplate_moment_unit = "Nm"
+            elif forceplate_moment_unit == "Nm":
+                moment_factor = 1
+            else:
+                moment_factor = 1
+                warnings.warn(
+                    f"Moment unit is {forceplate_moment_unit} instead of Nm or Nmm."
+                )
+
+            # Add corners
+            for i_corner in range(4):
+                key = f"FP{i_platform}_Corner{i_corner+1}"
+                platforms.data[key] = np.ones((len(platforms.time), 4))
+                platforms.data[key][:, 0:3] = (
+                    forceplate_position_factor
+                    * reader["data"]["platform"][i_platform]["corners"][
+                        0:3, i_corner
+                    ]
+                )
+                platforms.add_data_info(
+                    key, "Unit", forceplate_position_unit, in_place=True
+                )
+
+            # Add origin and the whole local coordinate system
+
+            # Temporary origin at center of corners
+            lcs = geometry.create_frames(
+                origin=
+                0.25
+                * (
+                    platforms.data[f"FP{i_platform}_Corner1"]
+                    + platforms.data[f"FP{i_platform}_Corner2"]
+                    + platforms.data[f"FP{i_platform}_Corner3"]
+                    + platforms.data[f"FP{i_platform}_Corner4"]
+                ),
+                x=0.5
+                * (
+                    platforms.data[f"FP{i_platform}_Corner1"]
+                    + platforms.data[f"FP{i_platform}_Corner4"]
+                )
+                - 0.5
+                * (
+                    platforms.data[f"FP{i_platform}_Corner2"]
+                    + platforms.data[f"FP{i_platform}_Corner3"]
+                ),
+                xy=0.5
+                * (
+                    platforms.data[f"FP{i_platform}_Corner1"]
+                    + platforms.data[f"FP{i_platform}_Corner2"]
+                )
+                - 0.5
+                * (
+                    platforms.data[f"FP{i_platform}_Corner3"]
+                    + platforms.data[f"FP{i_platform}_Corner4"]
+                ),
+            )
+            
+            # Compute real origin
+            local_origin = np.array([[0.0, 0.0, 0.0, 1.0]])
+            local_origin[0, 0:3] = (
+                -forceplate_position_factor
+                * reader["data"]["platform"][i_platform]["origin"]
+            )
+            lcs[:, 0:4, 3] = geometry.get_global_coordinates(local_origin, lcs)
+
+            key = f"FP{i_platform}_LCS"
+            platforms.data[key] = lcs
+
+            # Add force
+            force_unit = reader["data"]["platform"][i_platform]["unit_force"]
             if force_unit != "N":
                 warnings.warn(
                     f"Force unit is {force_unit} instead of newtons."
                 )
 
-            key = f"Forces{i_platform}"
+            key = f"FP{i_platform}_Force"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = reader["data"]["platform"][
                 i_platform
             ]["force"].T
             platforms.add_data_info(key, "Unit", force_unit, in_place=True)
 
-            moment_unit = reader["data"]["platform"][0]["unit_moment"]
-
-            if convert_moment_unit and (moment_unit == "Nmm"):
-                moment_factor = 0.001
-                moment_unit = "Nm"
-            elif moment_unit == "Nm":
-                moment_factor = 1
-            else:
-                moment_factor = 1
-                warnings.warn(f"Moment unit is {moment_unit} instead of Nm.")
-
-            key = f"Moments{i_platform}"
+            # Add moment around origin
+            key = f"FP{i_platform}_Moment"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = (
                 moment_factor
                 * reader["data"]["platform"][i_platform]["moment"].T
             )
-            platforms.add_data_info(key, "Unit", moment_unit, in_place=True)
+            platforms.add_data_info(
+                key, "Unit", forceplate_moment_unit, in_place=True
+            )
+
+            # Add moment at COP
+            key = f"FP{i_platform}_MomentAtCOP"
+            platforms.data[key] = np.zeros((len(platforms.time), 4))
+            platforms.data[key][:, 0:3] = (
+                moment_factor * reader["data"]["platform"][i_platform]["Tz"].T
+            )
+            platforms.add_data_info(
+                key, "Unit", forceplate_moment_unit, in_place=True
+            )
+
+            # Add COP
+            key = f"FP{i_platform}_COP"
+            platforms.data[key] = np.zeros((len(platforms.time), 4))
+            platforms.data[key][:, 0:3] = (
+                forceplate_position_factor
+                * reader["data"]["platform"][i_platform][
+                    "center_of_pressure"
+                ].T
+            )
+            platforms.add_data_info(
+                key, "Unit", forceplate_position_unit, in_place=True
+            )
 
         # Add events
         platforms.events = points.events.copy()
 
-        output["ForcePlates"] = platforms
+        output["ForcePlatforms"] = platforms
 
     return output
 
