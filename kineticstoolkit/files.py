@@ -888,7 +888,7 @@ def read_c3d(
 
             # Add COP
             key = f"FP{i_platform}_COP"
-            platforms.data[key] = np.zeros((len(platforms.time), 4))
+            platforms.data[key] = np.ones((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = (
                 forceplate_position_factor
                 * reader["data"]["platform"][i_platform][

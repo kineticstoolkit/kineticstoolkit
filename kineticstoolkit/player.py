@@ -168,6 +168,30 @@ class Player:
               interconnections["Pelvis"]["Color"] = 'r'
               interconnections["Pelvis"]["Color"] = (1.0, 0.0, 0.0)
 
+    force_points
+        Optional. A list of (Force, Point of application) tuples. This allows
+        setting an origin for a force and is required to draw the force. For
+        example::
+
+            force_points = [
+                ("WristForce", "WristCenter"),
+                ("ElbowForce", "ElbowCenter"),
+            ]
+
+        will draw lines for the forces WristForce and ElbowForce, with their
+        origin being at WristCenter and ElbowCenter. Force and point names
+        can include wildcards (*) either as a prefix or as a suffix. For
+        instance, to draw forces recorded by multiple force plates, we could
+        use::
+
+            force_points = [
+                ("*Force", "*COP")
+            ]
+
+        which would assign any point ending by "COP" to its counterpart force.
+        This is the default, so that force plate data read by read_c3d_file
+        are shown by default in the Player.
+
     current_index
         Optional. The current index being shown.
 
@@ -232,6 +256,20 @@ class Player:
         Optional. Width of the frame axes as defined by Matplotlib line width.
         Default is 3.0.
 
+    force_factor
+        Optional. Sets the length of the force lines as a ratio of meters per
+        newton. Default is 0.001, which means that 1000 newton generates a
+        1-meter line.
+
+    force_color
+        Optional. Color of the force lines. Can be a character or tuple (RGB)
+        where weach RGB color is between 0.0 and 1.0. Default is
+        (1.0, 1.0, 0.0).
+
+    force_width
+        Optional. Width of the force lines as defined by Matplotlib line width.
+        Default is 2.0.
+
     grid_size
         Optional. Length of one side of the grid in meters. Default is 10.0.
 
@@ -270,6 +308,8 @@ class Player:
     _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
     _extended_interconnections: dict[str, dict[str, Any]]
+    _force_points: list[tuple[str, str]]
+    _extended_force_points: list[tuple[str, str]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
     _selected_points: list[str]  # List of point names
     _last_selected_point: str
@@ -293,6 +333,9 @@ class Player:
     _interconnection_width: float
     _frame_size: float
     _frame_width: float
+    _force_factor: float
+    _force_color: tuple[float, float, float]
+    _force_width: float
     _grid_size: float
     _grid_subdivision_size: float
     _grid_width: float
@@ -305,6 +348,7 @@ class Player:
         self,
         *ts: TimeSeries,
         interconnections: dict[str, dict[str, Any]] = {},
+        force_points: list[tuple[str, str]] = [("*Force", "*COP")],
         current_index: int = 0,
         current_time: float | None = None,
         playback_speed: float = 1.0,
@@ -326,6 +370,9 @@ class Player:
         interconnection_width: float = 1.5,
         frame_size: float = 0.1,
         frame_width: float = 3.0,
+        force_factor: float = 0.001,
+        force_color: tuple[float, float, float] = (1.0, 1.0, 0.0),
+        force_width: float = 2.0,
         grid_size: float = 10.0,
         grid_subdivision_size: float = 1.0,
         grid_width: float = 1.0,
@@ -392,6 +439,8 @@ class Player:
 
         self._interconnections = interconnections  # Just to put stuff for now
         self._extended_interconnections = interconnections  # idem
+        self._force_points = force_points  # idem
+        self._extended_force_points = force_points  # idem        
         self._colors = set()  # idem
         self._selected_points = []
         self._last_selected_point = ""
@@ -418,6 +467,9 @@ class Player:
         self.interconnection_width = interconnection_width
         self.frame_size = frame_size
         self.frame_width = frame_width
+        self.force_factor = force_factor
+        self.force_color = force_color
+        self.force_width = force_width
         self.grid_size = grid_size
         self.grid_width = grid_width
         self.grid_subdivision_size = grid_subdivision_size
@@ -457,6 +509,7 @@ class Player:
 
         self.set_contents(merged_ts)
         self.set_interconnections(interconnections)
+        self.set_force_points(force_points)
         self.grid_origin = grid_origin  # Refresh grid
 
         # Now that everything is loaded, we can set the current time if
@@ -494,6 +547,22 @@ class Player:
         raise AttributeError(
             "Please use Player.get_interconnections() and "
             "Player.set_interconnections() to read and write interconnections."
+        )
+
+    @property
+    def force_points(self):
+        """Use get_force_points or set_force_points instead."""
+        raise AttributeError(
+            "Please use Player.get_force_points() and "
+            "Player.set_force_points() to read and write force_points."
+        )
+
+    @force_points.setter
+    def force_points(self, value):
+        """Use get_force_points or set_force_points instead."""
+        raise AttributeError(
+            "Please use Player.get_force_points() and "
+            "Player.set_force_points() to read and write force_points."
         )
 
     @property
@@ -757,6 +826,44 @@ class Player:
             self._refresh()
 
     @property
+    def force_factor(self) -> float:
+        """Read/write force_factor."""
+        return self._force_factor
+
+    @force_factor.setter
+    def force_factor(self, value: float):
+        """Set force_factor value."""
+        check_param("force_factor", value, float)
+        self._force_factor = value
+        if not self._being_constructed:
+            self._refresh()
+
+    @property
+    def force_color(self) -> float:
+        """Read/write force_color."""
+        return self._force_color
+
+    @force_color.setter
+    def force_color(self, value: float):
+        """Set force_color value."""
+        self._force_color = _parse_color(value)
+        if not self._being_constructed:
+            self._refresh()
+
+    @property
+    def force_width(self) -> float:
+        """Read/write force_width."""
+        return self._force_width
+
+    @force_width.setter
+    def force_width(self, value: float):
+        """Set force_width value."""
+        check_param("force_width", value, float)
+        self._force_width = value
+        if not self._being_constructed:
+            self._refresh()
+
+    @property
     def grid_size(self) -> float:
         """Read/write grid_size."""
         return self._grid_size
@@ -960,6 +1067,17 @@ class Player:
         self._interconnections = deepcopy(value)
         self._extend_interconnections()
         self._refresh()
+        
+    def get_force_points(self) -> list[tuple[str, str]]:
+        """Get force_points value."""
+        return self._force_points
+
+    def set_force_points(self, value: list[tuple[str, str]]) -> None:
+        """Set force_points value."""
+        check_param("value", value, list)
+        self._force_points = [(item[0], item[1]) for item in value]
+        self._extend_force_points()
+        self._refresh()
 
     def _extend_interconnections(self) -> None:
         """Update self._extended_interconnections. Does not refresh."""
@@ -1011,6 +1129,60 @@ class Player:
                             ][i_link]
                         ]
                     )
+
+    def _extend_force_points(self) -> None:
+        """Update self._extended_force_points. Does not refresh."""
+        # Make a set of all patterns matched by the * in force_points
+        patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
+        keys = list(self._contents.data.keys())
+        for force_point in self._force_points:
+            force = force_point[0]
+            point = force_point[1]
+            if "*" not in force and "*" not in point:
+                continue
+            if force.startswith("*") and force.endswith("*"):
+                raise ValueError(
+                    f"Force {force} found in force_points. "
+                    "Only one wildcard can be used, either as a "
+                    "prefix or as a suffix."
+                )
+            if point.startswith("*") and point.endswith("*"):
+                raise ValueError(
+                    f"Point {point} found in force_points. "
+                    "Only one wildcard can be used, either as a "
+                    "prefix or as a suffix."
+                )
+            if (
+                (force.startswith("*") and not point.startswith("*"))
+                or (not force.startswith("*") and point.startsswith("*"))
+                or (force.endswith("*") and not point.endswith("*"))
+                or (not force.endswith("*") and point.endswith("*"))
+            ):
+                raise ValueError(
+                    f"Force {force} and Point {point} must have matching "
+                    "wildcards."
+                )
+            # Here, everything is correct. We have either starting or ending
+            # wildcards in both points and forces.
+            if point.startswith("*"):
+                for key in keys:
+                    if key.endswith(point[1:]):
+                        patterns.add(key[: (len(key) - len(point) + 1)])
+            elif point.endswith("*"):
+                for key in keys:
+                    if key.startswith(point[:-1]):
+                        patterns.add(key[(len(point) - 1) :])
+
+        # Extend every * to every pattern
+        self._extended_force_points = list()
+        for pattern in patterns:
+            for force_point in self._force_points:
+                self._extended_force_points.append(
+                    (
+                        force_point[0].replace("*", pattern),
+                        force_point[1].replace("*", pattern),
+                    )
+                )
 
     def _general_rotation(self) -> np.ndarray:
         """Return a 1x4x4 rotation matrix from up and anterior attributes."""
@@ -1086,13 +1258,17 @@ class Player:
 
         # Orient points and frames
         for key in contents.data:
-            if contents.data[key].shape[1:] == (4,):
+            if contents.data[key].shape[1:] == (4,) and np.allclose(
+                contents.data[key][~np.isnan(contents.data[key][:, 3]), 3], 1.0
+            ):
+                # This is a point
                 self._oriented_points.data[key] = (
                     geometry.get_global_coordinates(
                         contents.data[key], rotation
                     )
                 )
             elif contents.data[key].shape[1:] == (4, 4):
+                # This is a frame
                 self._oriented_frames.data[key] = (
                     geometry.get_global_coordinates(
                         contents.data[key], rotation
@@ -1434,13 +1610,13 @@ class Player:
 
         """
         # Clear and rebuild the mpl plots.
-        self._mpl_objects["InterconnectionPlots"] = dict()
-        self._mpl_objects["PointPlots"] = dict()
         self._mpl_objects["GridPlot"] = None
+        self._mpl_objects["InterconnectionPlots"] = dict()
         self._mpl_objects["FrameXPlot"] = None
         self._mpl_objects["FrameYPlot"] = None
         self._mpl_objects["FrameZPlot"] = None
-        self._mpl_objects["GridPlot"] = None
+        self._mpl_objects["PointPlots"] = dict()
+        self._mpl_objects["ForcePlot"] = None
         self._mpl_objects["HelpText"] = None
 
         self._mpl_objects["Axes"].clear()
@@ -1489,6 +1665,14 @@ class Player:
             np.nan,
             c="b",
             linewidth=self.frame_width,
+        )[0]
+
+        # Create the force plot
+        self._mpl_objects["ForcePlot"] = self._mpl_objects["Axes"].plot(
+            np.nan,
+            np.nan,
+            c=self.force_color,
+            linewidth=self.force_width,
         )[0]
 
         # ----------------------
