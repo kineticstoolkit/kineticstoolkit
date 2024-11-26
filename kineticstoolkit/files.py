@@ -483,14 +483,30 @@ def read_c3d(
     except KeyError:
         event_names = []
         event_times = []
-
     try:
         event_contexts = reader["parameters"]["EVENT"]["CONTEXTS"]["value"]
     except KeyError:
         event_contexts = ["" for _ in event_names]
+    # Create a list of events to copy in the output TimeSeries
+    temp_ts = TimeSeries()
+    for i_event in range(len(event_names)):
+        event_time = event_times[i_event]
+        if include_event_context:
+            event_name = (
+                event_contexts[i_event] + ":" + event_names[i_event]
+            )
+        else:
+            event_name = event_names[i_event]
+        temp_ts.add_event(
+            event_time,
+            event_name,
+            in_place=True,
+        )
+    events = temp_ts.events
+
 
     # -----------------
-    # Analogs
+    # Points
     # -----------------
     # Get the marker label names and create a timeseries data entry for each
     # Get the labels
@@ -500,7 +516,10 @@ def read_c3d(
     else:
         point_unit = "m"
     point_start = reader["header"]["points"]["first_frame"]
-    start_time = point_start / point_rate
+    if point_rate > 0:
+        start_time = point_start / point_rate
+    else:
+        start_time = 0
     n_points = reader["parameters"]["POINT"]["USED"]["value"][0]
 
     labels = reader["parameters"]["POINT"]["LABELS"]["value"]
@@ -594,19 +613,7 @@ def read_c3d(
             )
 
         # Add events
-        for i_event in range(len(event_names)):
-            event_time = event_times[i_event]
-            if include_event_context:
-                event_name = (
-                    event_contexts[i_event] + ":" + event_names[i_event]
-                )
-            else:
-                event_name = event_names[i_event]
-            points.add_event(
-                event_time,
-                event_name,
-                in_place=True,
-            )
+        points.events = events.copy()
 
         output["Points"] = points
 
@@ -681,7 +688,7 @@ def read_c3d(
             )
 
         # Add events
-        analogs.events = points.events.copy()
+        analogs.events = events.copy()
 
         output["Analogs"] = analogs
 
@@ -736,10 +743,7 @@ def read_c3d(
                 rotations.data[data][rotations.isnan(data), :, :] = np.nan
 
             # Add events
-            for i_event, event_name in enumerate(event_names):
-                rotations.add_event(
-                    event_times[i_event], event_name, in_place=True
-                )
+            rotations.events = events.copy()
 
             # Add to output
             output["Rotations"] = rotations
@@ -900,7 +904,7 @@ def read_c3d(
             )
 
         # Add events
-        platforms.events = points.events.copy()
+        platforms.events = events.copy()
 
         output["ForcePlatforms"] = platforms
 
