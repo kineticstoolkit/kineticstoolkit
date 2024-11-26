@@ -168,6 +168,16 @@ class Player:
               interconnections["Pelvis"]["Color"] = 'r'
               interconnections["Pelvis"]["Color"] = (1.0, 0.0, 0.0)
 
+        Its default value connects the four corners of force platforms in
+        purple::
+
+            interconnections = {
+                "ForcePlatforms": {
+                    "Links": [["*_Corner1", "*_Corner2", "*_Corner3",
+                               "*_Corner4", "*_Corner1"]],
+                    "Color": (0.5, 0.0, 1.0)
+            }
+
     force_points
         Optional. A dict where each key is the name of a force and each value
         is the corresponding name of a point. For example::
@@ -346,7 +356,20 @@ class Player:
     def __init__(
         self,
         *ts: TimeSeries,
-        interconnections: dict[str, dict[str, Any]] = {},
+        interconnections: dict[str, dict[str, Any]] = {
+            "ForcePlatforms": {
+                "Links": [
+                    [
+                        "*_Corner1",
+                        "*_Corner2",
+                        "*_Corner3",
+                        "*_Corner4",
+                        "*_Corner1",
+                    ]
+                ],
+                "Color": (0.5, 0.0, 1.0),
+            }
+        },
         force_points: dict[str, str] = {"*Force": "*COP"},
         current_index: int = 0,
         current_time: float | None = None,
@@ -507,8 +530,8 @@ class Player:
         self._being_constructed = False
 
         self.set_contents(merged_ts)
-        self.set_interconnections(interconnections)
         self.set_force_points(force_points)
+        self.set_interconnections(interconnections)
         self.grid_origin = grid_origin  # Refresh grid
 
         # Now that everything is loaded, we can set the current time if
@@ -1052,8 +1075,9 @@ class Player:
         else:
             self._contents = TimeSeries(time=[0])
 
-        self._orient_contents()
+        self._extend_force_points()
         self._extend_interconnections()
+        self._orient_contents()
         self._refresh()
 
     def get_interconnections(self) -> dict[str, dict[str, Any]]:
@@ -1076,10 +1100,13 @@ class Player:
         check_param("value", value, dict, key_type=str, contents_type=str)
         self._force_points = deepcopy(value)
         self._extend_force_points()
+        self._extend_interconnections()
+        self._orient_contents()
         self._refresh()
 
     def _extend_interconnections(self) -> None:
         """Update self._extended_interconnections. Does not refresh."""
+        # Step 1:
         # Make a set of all patterns matched by the * in interconnection
         # point names.
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
@@ -1129,6 +1156,15 @@ class Player:
                         ]
                     )
 
+        # Step 2:
+        # Create interconnections for force_points
+        for force in self._extended_force_points:
+            key = f"__FORCE_POINT_{force}__"
+            self._extended_interconnections[key] = {
+                "Links": [[force, self._extended_force_points[force]]],
+                "Color": self._force_color,
+            }
+
     def _extend_force_points(self) -> None:
         """Update self._extended_force_points. Does not refresh."""
         # Make a set of all patterns matched by the * in force_points
@@ -1176,9 +1212,13 @@ class Player:
         for pattern in patterns:
             for force in self._force_points:
                 point = self._force_points[force]
-                self._extended_force_points[force.replace("*", pattern)] = (
-                    point.replace("*", pattern)
-                )
+                new_force = force.replace("*", pattern)
+                new_point = point.replace("*", pattern)
+                if (
+                    new_force in self._contents.data
+                    and new_point in self._contents.data
+                ):
+                    self._extended_force_points[new_force] = new_point
 
     def _general_rotation(self) -> np.ndarray:
         """Return a 1x4x4 rotation matrix from up and anterior attributes."""
@@ -1235,7 +1275,8 @@ class Player:
           /
         z/
 
-        Also add the global origin to _oriented_frames. Does not refresh.
+        Also adds forces according to _oriented_points, and the global origin
+        to _oriented_frames. Does not refresh.
 
         """
         self._oriented_points = self._contents.copy(copy_data=False)
@@ -1254,15 +1295,34 @@ class Player:
 
         # Orient points and frames
         for key in contents.data:
-            if contents.data[key].shape[1:] == (4,) and np.allclose(
-                contents.data[key][~np.isnan(contents.data[key][:, 3]), 3], 1.0
-            ):
-                # This is a point
-                self._oriented_points.data[key] = (
-                    geometry.get_global_coordinates(
-                        contents.data[key], rotation
+            if contents.data[key].shape[1:] == (4,):
+                # This is a point or a vector
+                if np.allclose(
+                    contents.data[key][~np.isnan(contents.data[key][:, 3]), 3],
+                    1.0,
+                ):
+                    # This is a point
+                    self._oriented_points.data[key] = (
+                        geometry.get_global_coordinates(
+                            contents.data[key], rotation
+                        )
                     )
-                )
+                else:
+                    # This is a vector
+                    if key in self._extended_force_points:
+                        self._oriented_points.data[key] = (
+                            geometry.get_global_coordinates(
+                                self._force_factor * contents.data[key]
+                                + contents.data[
+                                    self._extended_force_points[key]
+                                ],
+                                rotation,
+                            )
+                        )
+                        self._oriented_points.add_data_info(
+                            key, "Color", self._force_color, in_place=True
+                        )
+
             elif contents.data[key].shape[1:] == (4, 4):
                 # This is a frame
                 self._oriented_frames.data[key] = (
@@ -1612,7 +1672,6 @@ class Player:
         self._mpl_objects["FrameYPlot"] = None
         self._mpl_objects["FrameZPlot"] = None
         self._mpl_objects["PointPlots"] = dict()
-        self._mpl_objects["ForcePlot"] = None
         self._mpl_objects["HelpText"] = None
 
         self._mpl_objects["Axes"].clear()
@@ -1663,19 +1722,12 @@ class Player:
             linewidth=self.frame_width,
         )[0]
 
-        # Create the force plot
-        self._mpl_objects["ForcePlot"] = self._mpl_objects["Axes"].plot(
-            np.nan,
-            np.nan,
-            c=self.force_color,
-            linewidth=self.force_width,
-        )[0]
-
         # ----------------------
         # Create the point plots
         # ----------------------
         # List all colors in contents
         self._colors = set()
+        self._colors.add(self._force_color)
         for key in self._contents.data:
             try:
                 color = self._contents.data_info[key]["Color"]
