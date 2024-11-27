@@ -281,14 +281,78 @@ def test_read_c3d_event_name_format():
 def test_read_c3d_duplicate_labels():
     # Non-regression test based on a sample problematic file
     contents = ktk.read_c3d(
-        ktk.doc.download(f"c3d_test_suite/others/duplicate_labels.c3d"),
+        ktk.doc.download("c3d_test_suite/others/duplicate_labels.c3d"),
         convert_point_unit=True,
-        extract_force_plates=True,
     )
     assert np.sum(contents["Points"].isnan("T8")) == 300
     assert np.sum(contents["Points"].isnan("T8_1")) == 1047
     assert np.sum(contents["Points"].isnan("T8_2")) == 1043
     assert "T8_3" not in contents["Points"].data
+
+
+def test_read_c3d_force_platforms():
+    # Non-regression tests based on visually inspected force platform data
+    contents = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/ezc3d/BTS.c3d"),
+        convert_point_unit=True,
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP0_Corner1"],
+        [0.00361895, 0.00218622, 0.45745718, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP0_Corner2"],
+        [0.00475062, 0.00153797, 0.0574593, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP0_Corner3"],
+        [0.60474268, -0.0010519, 0.05916098, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP0_Corner4"],
+        [0.60361096, -0.00040365, 0.45915887, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP5_Corner1"],
+        [1.80758936, -0.00559742, 0.46457355, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP5_Corner2"],
+        [1.80645776, -0.00494917, 0.86457147, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP5_Corner3"],
+        [1.2064657, -0.0023593, 0.86286981, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP5_Corner4"],
+        [1.20759741, -0.00300755, 0.46287192, 1.0],
+    )
+    assert np.allclose(
+        contents["ForcePlatforms"].data["FP0_LCS"][0],
+        [
+            [-0.00282923, -0.99998666, -0.00432103, 0.30408358],
+            [0.00162063, 0.00431645, -0.99998937, -0.0219326],
+            [0.99999468, -0.0028362, 0.0016084, 0.25834527],
+            [0.0, 0.0, 0.0, 1.0],
+        ],
+    )
+    assert np.allclose(
+        np.nanmean(contents["ForcePlatforms"].data["FP0_Force"], axis=0),
+        [0.26887549, 41.77700117, 1.17952925, 0.0],
+    )
+    assert np.allclose(
+        np.nanmean(contents["ForcePlatforms"].data["FP0_Moment"], axis=0),
+        [-5.22727694, 0.24464729, -3.25622748, 0.0],
+    )
+    assert np.allclose(
+        np.nanmean(contents["ForcePlatforms"].data["FP0_MomentAtCOP"], axis=0),
+        [0.0071863, 1.66308334, -0.00267493, 0.0],
+    )
+    assert np.allclose(
+        np.nanmean(contents["ForcePlatforms"].data["FP0_COP"], axis=0),
+        [0.23364972, 0.00107284, 0.38322433, 1.0],
+    )
 
 
 def test_read_write_c3d():
@@ -416,25 +480,19 @@ def test_write_c3d_testsuite8():
         data = ktk.read_c3d(
             ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d"),
             convert_point_unit=True,
-            extract_force_plates=False,
         )
         ktk.write_c3d(
             "test.c3d",
             points=data["Points"],
             analogs=data["Analogs"],
         )
-        test.append(ktk.read_c3d("test.c3d", extract_force_plates=True))
+        test.append(ktk.read_c3d("test.c3d"))
     for i in range(1, 5):
         assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
         )
 
-        # Commented because ezc3d could not extract force_plates data
-        # because there are metadata lacking due to this round-trip.
-        # assert test[i]["ForcePlates"]._is_equivalent(
-        #     test[0]["ForcePlates"], equal=False
-        # )
     os.remove("test.c3d")
 
 

@@ -289,10 +289,10 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 def read_c3d(
     filename: str,
     *,
+    include_event_context: bool = False,
     convert_point_unit: bool | None = None,
     convert_forceplate_moment_unit: bool = True,
     convert_forceplate_position_unit: bool = True,
-    include_event_context: bool = False,
     **kwargs,
 ) -> dict[str, TimeSeries]:
     """
@@ -354,6 +354,14 @@ def read_c3d(
     filename
         Path of the C3D file
 
+    include_event_context
+        Optional. True to include the event context, for C3D files that use
+        this field. If False, the events in the output TimeSeries are named
+        after the events names in the C3D files, e.g.: "Start", "Heel Strike",
+        "Toe Off". If True, the events in the output TimeSeries are named using
+        this scheme "context:name", e.g.,: "General:Start",
+        "Right:Heel strike", "Left:Toe Off". Default is False.
+
     convert_point_unit
         Optional. True to convert the point units to meters, if they are
         expressed in other units such as mm in the C3D file. False to keep
@@ -368,13 +376,6 @@ def read_c3d(
         Optional. True to convert forceplate position units to meters. Default
         is True.
 
-    include_event_context
-        Optional. True to include the event context, for C3D files that use
-        this field. If False, the events in the output TimeSeries are named
-        after the events names in the C3D files, e.g.: "Start", "Heel Strike",
-        "Toe Off". If True, the events in the output TimeSeries are named using
-        this scheme "context:name", e.g.,: "General:Start",
-        "Right:Heel strike", "Left:Toe Off". Default is False.
 
     Returns
     -------
@@ -443,19 +444,6 @@ def read_c3d(
             "conda install -c conda-forge ezc3d"
         )
 
-    # Additional arguments (in development)
-    if "extract_force_plates" in kwargs:
-        extract_force_plates = kwargs["extract_force_plates"]
-    else:
-        extract_force_plates = False
-
-    if "convert_forceplate_moment_unit" in kwargs:
-        convert_forceplate_moment_unit = kwargs[
-            "convert_forceplate_moment_unit"
-        ]
-    else:
-        convert_forceplate_moment_unit = True
-
     if "return_ezc3d" in kwargs:
         return_ezc3d = kwargs["return_ezc3d"]
     else:
@@ -467,18 +455,14 @@ def read_c3d(
     # Create the reader
     if isinstance(filename, str) and os.path.exists(filename):
         try:
-            reader = ezc3d.c3d(
-                filename, extract_forceplat_data=extract_force_plates
-            )
+            reader = ezc3d.c3d(filename, extract_forceplat_data=True)
         except OSError:
             # Maybe there's an invalid character in filename.
             # Try to workaround
             # https://github.com/pyomeca/ezc3d/issues/252
             tempfile = kineticstoolkit.config.temp_folder + "/temp.c3d"
             shutil.copyfile(filename, tempfile)
-            reader = ezc3d.c3d(
-                tempfile, extract_forceplat_data=extract_force_plates
-            )
+            reader = ezc3d.c3d(tempfile, extract_forceplat_data=True)
             os.remove(tempfile)
 
     else:
@@ -761,7 +745,7 @@ def read_c3d(
     # -----------------
     # Platforms
     # -----------------
-    if extract_force_plates and reader["data"]["platform"] != []:
+    if reader["data"]["platform"] != []:
 
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
