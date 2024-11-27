@@ -290,6 +290,8 @@ def read_c3d(
     filename: str,
     *,
     convert_point_unit: bool | None = None,
+    convert_forceplate_moment_unit: bool = True,
+    convert_forceplate_position_unit: bool = True,
     include_event_context: bool = False,
     **kwargs,
 ) -> dict[str, TimeSeries]:
@@ -311,11 +313,39 @@ def read_c3d(
     TimeSeries, where each analog signal is expressed as a unidimensional
     array of length N.
 
-    If available, transform matrices are returned in `output["Rotations"]` as
-    a TimeSeries, where each matrix series is expressed as an Nx4x4 series.
+    If available, force platform data is returned in `output["ForcePlatforms"]`
+    as a TimeSeries containing the following keys where FPi means Force
+    Platform i, i being the index of the platform (e.g., FP0, FP1, etc.):
 
-    Some applications store calculated values such as angles, forces, moments,
-    powers, etc. into the C3D file. Storing these data is application-specific
+        - FPi_Force: Ground reaction force in global coordinates, as an Nx4
+          series (Fx, Fy, Fz, 0.0).
+        - FPi_Moment: Ground reaction moment in global coordinates, expressed
+          at the origin of the force platform, as an Nx4 series
+          (Mx, My, Mz, 0.0).
+        - FPi_MomentAtCOP: Ground reaction moment in global coordinates,
+          expressed at the center of pressure, as an Nx4 series
+          (Mx, My, Mz, 0.0).
+        - FPi_COP: Centre of pressure in global coordinates.
+        - FPi_LCS: Local coordinate system of the force platform, expressed in
+          global coordinates as an Nx4x4 series. The orientation is calculated
+          using the force platform corners, and the origin is located at the
+          manufacturer's specified origin (generally a few millimeters below
+          the platform).
+        - FPi_Corner1: Coordinates of the first corner (+x, +y) in global
+          coordinates, as an Nx4 series (x, y, z, 1.0).
+        - FPi_Corner2: Coordinates of the second corner (-x, +y) in global
+          coordinates, as an Nx4 series (x, y, z, 1.0).
+        - FPi_Corner3: Coordinates of the third corner (-x, -y) in global
+          coordinates, as an Nx4 series (x, y, z, 1.0).
+        - FPi_Corner4: Coordinates of the fourth corner (+x, -y) in global
+          coordinates, as an Nx4 series (x, y, z, 1.0).
+
+    If available, homogeneous transforms are returned in `output["Rotations"]`
+    as a TimeSeries, where each transform series is expressed as an Nx4x4
+    series.
+
+    Some software stores calculated values such as angles, forces, moments,
+    powers, etc. into the C3D file. Storing these data is software-specific
     and is not standardized in the C3D file format (https://www.c3d.org).
     This function reads these values as points regardless of their nature.
 
@@ -330,19 +360,27 @@ def read_c3d(
         points as is. When unset, if points are stored in a unit other than
         meters, then a warning is issued. See caution note below.
 
+    convert_forceplate_moment_unit
+        Optional. True to convert forceplate moment unit to Nm. Default is
+        True.
+
+    convert_forceplate_position_unit
+        Optional. True to convert forceplate position units to meters. Default
+        is True.
+
     include_event_context
         Optional. True to include the event context, for C3D files that use
         this field. If False, the events in the output TimeSeries are named
         after the events names in the C3D files, e.g.: "Start", "Heel Strike",
         "Toe Off". If True, the events in the output TimeSeries are named using
         this scheme "context:name", e.g.,: "General:Start",
-        "Right:Heel strike", "Left:Toe Off". The default is False.
+        "Right:Heel strike", "Left:Toe Off". Default is False.
 
     Returns
     -------
-    dict[ktk.TimeSeries]
+    dict[str, ktk.TimeSeries]
         A dict of TimeSeries, with keys being, if available: "Points",
-        "Analogs" and/or "Rotations".
+        "Analogs", "ForcePlates" and/or "Rotations".
 
     Caution
     -------
@@ -373,50 +411,25 @@ def read_c3d(
     Notes
     -----
     - This function relies on `ezc3d`, which is installed by default using
-      conda, but not using pip. Please install ezc3d before using
-      read_c3d. https://github.com/pyomeca/ezc3d
+      conda, but not using pip. If you installed kineticstoolkit using pip,
+      then please install ezc3d manually: `pip install ezc3d`.
 
     - As for any instrument, please check that your data loads correctly on
-      your first use (e.g., sampling frequency, position unit). It is
-      possible that read_c3d misses some corner cases.
+      your first use (e.g., sampling frequency, position unit, location and
+      orientation of the force platforms, etc.).
 
     """
-    """
-    Experimental, unstable features in development:
-        
-    Parameters
-    ----------
-    read_force_plates
-        True to read force plates.
-
-    If the C3D file contains force plate data and read_force_plates is True,
-    these data are returned in output["ForcePlates"] as a TimeSeries following
-    this structure:
-
-      - "Forces0": Nx4 series of force vectors on platform 0.
-      - "Forces1": Nx4 series of force vectors on platform 1.
-      - "Forces2": Nx4 series of force vectors on platform 2.
-      - ...
-      - "Moments0": Nx4 series of moment vectors on platform 0.
-      - "Moments1": Nx4 series of moment vectors on platform 2.
-      - "Moments2": Nx4 series of moment vectors on platform 3.
-      - ...
-        
-    """
-    """
-    convert_forceplate_moment_unit
-        Optional. True to convert the moment units to Nm, even if they are
-        expressed in Nmm in the ezc3d structure. Default is True.
-    convert_cop_unit
-        Optional. True to convert COP units to meters, event if they are
-        expressed otherwise in the ezc3d structure. Default is True.
-    """
-    convert_forceplate_moment_unit = True
-    convert_forceplate_position_unit = True
-
     check_param("filename", filename, str)
     if convert_point_unit is not None:
         check_param("convert_point_unit", convert_point_unit, bool)
+    check_param(
+        "convert_forceplate_moment_unit", convert_forceplate_moment_unit, bool
+    )
+    check_param(
+        "convert_forceplate_position_unit",
+        convert_forceplate_position_unit,
+        bool,
+    )
     check_param("include_event_context", include_event_context, bool)
     if not filename.endswith(".c3d"):
         raise ValueError("The file name must end with '.c3d'.")
@@ -492,9 +505,7 @@ def read_c3d(
     for i_event in range(len(event_names)):
         event_time = event_times[i_event]
         if include_event_context:
-            event_name = (
-                event_contexts[i_event] + ":" + event_names[i_event]
-            )
+            event_name = event_contexts[i_event] + ":" + event_names[i_event]
         else:
             event_name = event_names[i_event]
         temp_ts.add_event(
@@ -503,7 +514,6 @@ def read_c3d(
             in_place=True,
         )
     events = temp_ts.events
-
 
     # -----------------
     # Points
@@ -814,8 +824,7 @@ def read_c3d(
 
             # Temporary origin at center of corners
             lcs = geometry.create_frames(
-                origin=
-                0.25
+                origin=0.25
                 * (
                     platforms.data[f"FP{i_platform}_Corner1"]
                     + platforms.data[f"FP{i_platform}_Corner2"]
@@ -843,7 +852,7 @@ def read_c3d(
                     + platforms.data[f"FP{i_platform}_Corner4"]
                 ),
             )
-            
+
             # Compute real origin
             local_origin = np.array([[0.0, 0.0, 0.0, 1.0]])
             local_origin[0, 0:3] = (

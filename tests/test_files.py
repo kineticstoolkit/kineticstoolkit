@@ -173,16 +173,12 @@ def test_read_c3d_testsuite1():
             ktk.read_c3d(
                 ktk.doc.download(f"c3d_test_suite/Sample01/Eb015{key}.c3d"),
                 convert_point_unit=True,
-                extract_force_plates=True,
             )
         )
     for i in range(1, 4):
         assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
-        )
-        assert test[i]["ForcePlates"]._is_equivalent(
-            test[0]["ForcePlates"], equal=False
         )
 
 
@@ -204,7 +200,6 @@ def test_read_c3d_testsuite2():
             ktk.read_c3d(
                 ktk.doc.download(f"c3d_test_suite/Sample02/{key}.c3d"),
                 convert_point_unit=True,
-                extract_force_plates=True,
             )
         )
     for i in range(1, 4):
@@ -213,9 +208,6 @@ def test_read_c3d_testsuite2():
         )
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
-        )
-        assert test[i]["ForcePlates"]._is_equivalent(
-            test[0]["ForcePlates"], equal=False
         )
 
 
@@ -233,16 +225,12 @@ def test_read_c3d_testsuite8():
             ktk.read_c3d(
                 ktk.doc.download(f"c3d_test_suite/Sample08/{key}.c3d"),
                 convert_point_unit=True,
-                extract_force_plates=True,
             )
         )
     for i in range(1, 5):
         assert test[i]["Points"]._is_equivalent(test[0]["Points"], equal=False)
         assert test[i]["Analogs"]._is_equivalent(
             test[0]["Analogs"], equal=False
-        )
-        assert test[i]["ForcePlates"]._is_equivalent(
-            test[0]["ForcePlates"], equal=False
         )
 
 

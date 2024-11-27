@@ -861,12 +861,12 @@ class Player:
             self._refresh()
 
     @property
-    def force_color(self) -> float:
+    def force_color(self) -> tuple[float, float, float]:
         """Read/write force_color."""
         return self._force_color
 
     @force_color.setter
-    def force_color(self, value: float):
+    def force_color(self, value: tuple[float, float, float]):
         """Set force_color value."""
         self._force_color = _parse_color(value)
         if not self._being_constructed:
@@ -1188,7 +1188,7 @@ class Player:
                 )
             if (
                 (force.startswith("*") and not point.startswith("*"))
-                or (not force.startswith("*") and point.startsswith("*"))
+                or (not force.startswith("*") and point.startswith("*"))
                 or (force.endswith("*") and not point.endswith("*"))
                 or (not force.endswith("*") and point.endswith("*"))
             ):
