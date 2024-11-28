@@ -109,6 +109,77 @@ def test_issue137():
     pl.close()
 
 
+def test_link_unlink():
+    """Test link and unlink methods."""
+    filename = ktk.doc.download("kinematics_tennis_serve.c3d")
+    markers = ktk.read_c3d(filename)["Points"]
+    p = ktk.Player(markers, up="z")
+
+    # Check that the default links (ForcePlatforms) are present
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}}"
+    )
+
+    # Add both upper limbs in default color
+    p.link(["*SHO", "*ELB", "*WRA", "*WRB", "*ELB"])
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}, 'Color(0.800,0.800,0.800)': {'Links': [['*ELB', '*SHO'], ['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB']], 'Color': (0.8, 0.8, 0.8)}}"
+    )
+
+    # Change all for green
+    p.link(["*SHO", "*ELB", "*WRA", "*WRB", "*ELB"], color="g")
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}, 'Color(0.000,1.000,0.000)': {'Links': [['*ELB', '*SHO'], ['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB']], 'Color': (0.0, 1.0, 0.0)}}"
+    )
+
+    # Change group name
+    p.link(
+        ["*SHO", "*ELB", "*WRA", "*WRB", "*ELB"], group="UpperBody", color="g"
+    )
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}, 'UpperBody': {'Links': [['*ELB', '*SHO'], ['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB']], 'Color': (0.0, 1.0, 0.0)}}"
+    )
+
+    # Check that adding a new link in same group keeps current color
+    p.link(["Derrick:LSHO", "Derrick:RSHO"], group="UpperBody")
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}, 'UpperBody': {'Links': [['*ELB', '*SHO'], ['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB'], ['Derrick:LSHO', 'Derrick:RSHO']], 'Color': (0.0, 1.0, 0.0)}}"
+    )
+    p.unlink(["Derrick:LSHO", "Derrick:RSHO"])
+
+    # Change color in this group name
+    p.link(
+        ["*SHO", "*ELB", "*WRA", "*WRB", "*ELB"], group="UpperBody", color="r"
+    )
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}, 'UpperBody': {'Links': [['*ELB', '*SHO'], ['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB']], 'Color': (1.0, 0.0, 0.0)}}"
+    )
+
+    # Remove the arm section
+    p.unlink(["*SHO", "*ELB"])
+    assert (
+        str(p.get_interconnections())
+        == "{'ForcePlatforms': {'Links': [['*_Corner1', '*_Corner2'], ['*_Corner2', '*_Corner3'], ['*_Corner3', '*_Corner4'], ['*_Corner1', '*_Corner4']], 'Color': (0.5, 0.0, 1.0)}, 'UpperBody': {'Links': [['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB']], 'Color': (1.0, 0.0, 0.0)}}"
+    )
+
+    # Remove ForcePlatforms only
+    p.unlink(group="ForcePlatforms")
+    assert (
+        str(p.get_interconnections())
+        == "{'UpperBody': {'Links': [['*ELB', '*WRA'], ['*WRA', '*WRB'], ['*ELB', '*WRB']], 'Color': (1.0, 0.0, 0.0)}}"
+    )
+
+    # Remove everything
+    p.unlink()
+    assert str(p.get_interconnections()) == "{}"
+
+
 def test_scripting():
     """Test that every property assignation works or crashes as expected."""
     # %%
