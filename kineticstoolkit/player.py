@@ -118,6 +118,11 @@ def _parse_color(
     return value
 
 
+def _parse_group_name(color: tuple[float, float, float]) -> str:
+    """Create an interconnection group name based on a color."""
+    return f"Color({color[0]:1.3f},{color[1]:1.3f},{color[2]:1.3f})"
+
+
 class Player:
     """
     A class that allows visualizing points and frames in 3D.
@@ -139,16 +144,24 @@ class Player:
         expressed as a Nx4x4 array. Multiple TimeSeries can be provided.
 
     interconnections
-        Optional. Each key corresponds to an interconnection between points,
-        where each interconnection is a nested dict with the following keys:
+        Optional. Each key corresponds to a group of interconnections, which
+        is a dict with the following keys:
 
-        - "Links": list of lists strings, where each string is a point
+        - "Links": list of connections where each string is a point
           name. For example, to create a link that connects Point1 to Point2,
           and another link that spans Point3, Point4 and Point5::
 
               interconnections["Example"]["Links"] = [
-                  ["Point1", "Point2"],
-                  ["Point3", "Point4", "Point5"]
+                  ("Point1", "Point2"),
+                  ("Point3", "Point4", "Point5")
+              ]
+
+          which internally is converted to::
+
+              interconnections["Example"]["Links"] = [
+                  ("Point1", "Point2"),
+                  ("Point3", "Point4"),
+                  ("Point4", "Point5")
               ]
 
           Point names can include wildcards (*) either as a prefix or as a
@@ -159,7 +172,7 @@ class Player:
           using::
 
               interconnections["Pelvis"]["Links"] = [
-                  ["*_HipR", "*_HipL", "*_L5S1"]
+                  ("*_HipR", "*_HipL", "*_L5S1")
               ]
 
         - "Color": character or tuple (RGB) that represents the color of the
@@ -173,8 +186,10 @@ class Player:
 
             interconnections = {
                 "ForcePlatforms": {
-                    "Links": [["*_Corner1", "*_Corner2", "*_Corner3",
-                               "*_Corner4", "*_Corner1"]],
+                    "Links": [('*_Corner1', '*_Corner2'),
+                              ('*_Corner2', '*_Corner3'),
+                              ('*_Corner3', '*_Corner4'),
+                              ('*_Corner1', '*_Corner4')]
                     "Color": (0.5, 0.0, 1.0)
             }
 
@@ -359,13 +374,10 @@ class Player:
         interconnections: dict[str, dict[str, Any]] = {
             "ForcePlatforms": {
                 "Links": [
-                    [
-                        "*_Corner1",
-                        "*_Corner2",
-                        "*_Corner3",
-                        "*_Corner4",
-                        "*_Corner1",
-                    ]
+                    ("*_Corner1", "*_Corner2"),
+                    ("*_Corner2", "*_Corner3"),
+                    ("*_Corner3", "*_Corner4"),
+                    ("*_Corner1", "*_Corner4"),
                 ],
                 "Color": (0.5, 0.0, 1.0),
             }
@@ -1087,7 +1099,25 @@ class Player:
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
         """Set interconnections value."""
         check_param("value", value, dict, key_type=str, contents_type=dict)
-        self._interconnections = deepcopy(value)
+
+        # Split every chain in sets of two points - This facilitates
+        # eliminating duplicates, for example.
+        self._interconnections = {}
+        for group in value:
+            # Don't create the group if it doesn't have links
+            if len(value[group]["Links"]) == 0:
+                continue
+
+            if group not in self._interconnections:
+                self._interconnections[group] = {"Links": []}
+
+            self._interconnections[group]["Color"] = value[group]["Color"]
+            for link_line in value[group]["Links"]:
+                for i in range(len(link_line) - 1):
+                    new_link = tuple(sorted([link_line[i], link_line[i + 1]]))
+                    if new_link not in self._interconnections[group]["Links"]:
+                        self._interconnections[group]["Links"].append(new_link)
+
         self._extend_interconnections()
         self._refresh()
 
@@ -2065,6 +2095,131 @@ class Player:
         """Pause the animation."""
         self._running = False
         self._mpl_objects["Anim"].event_source.stop()
+
+    def link(
+        self,
+        links: list[str],
+        *,
+        color: str | tuple[float, float, float] | None = None,
+        group: str | None = None,
+    ) -> None:
+        """
+        Link two ore more points.
+
+        This is a shortcut function to easily add interconnections between
+        points, instead of accessing the whole interconnections dictionary
+        via get_interconnections and set_interconnections.
+
+        Parameters
+        ----------
+        links
+            A list of point names to link. For example::
+
+                ["Point1", "Point2", "Point3"]
+
+            creates a line from Point1 to Point2, and another line from Point2
+            to Point3. To close the loop, we would use::
+
+                ["Point1", "Point2", "Point3", "Point1"]
+
+        color
+            Optional. Can be a character as defined by Matplotlib, or a tuple
+            (RGB) where each RGB color is between 0.0 and 1.0.
+
+        group
+            Optional. Used to group interconnections, such as "ArmR",
+            "Pelvis", "ForcePlateforms", etc. All interconnections in a group
+            share a same color.
+
+        Returns
+        -------
+        None
+
+        """
+        check_param("links", links, list, contents_type=str)
+        if color is not None:
+            color = _parse_color(color)
+        else:
+            color = (0.8, 0.8, 0.8)
+        if group is not None:
+            check_param("group", group, str)
+        else:
+            group = _parse_group_name(color)
+
+        # Start by unlinking these links since we will create them again
+        self.unlink(links)
+
+        interconnections = self.get_interconnections()
+        try:
+            interconnections[group]["Links"].append(links)
+            interconnections[group]["Color"] = color
+        except KeyError:
+            interconnections[group] = {"Links": [links]}
+            interconnections[group]["Color"] = color
+
+        self.set_interconnections(interconnections)
+
+    def unlink(
+        self, links: list[str] | None = None, *, group: str | None = None
+    ) -> None:
+        """
+        Unlink two or more points.
+
+        This is a shortcut function to easily remove interconnections between
+        points, instead of accessing the whole interconnections dictionary
+        via get_interconnections and set_interconnections.
+
+        Parameters
+        ----------
+        links
+            Optional. A list of point names to unlink. For example::
+
+                ["Point1", "Point2", "Point3"]
+
+            removes the link between Point1 and Point2, and the link between
+            Point2 and Point3.
+
+        group
+            Optional. Removes every link in this group.
+
+        If neither links or group is provided, every link is removed.
+
+        Returns
+        -------
+        None.
+
+        """
+        if group is not None:
+            check_param("group", group, str)
+        if links is not None:
+            check_param("links", links, list, contents_type=str)
+
+        if group is None and links is None:
+            # Remove everything
+            self.set_interconnections({})
+            return
+
+        interconnections = self.get_interconnections()
+
+        if links is None:
+            # Remove the group
+            try:
+                interconnections.pop(group)
+            except KeyError:
+                pass
+
+        else:
+            # Remove the links from each group
+            for i in range(len(links) - 1):
+                link = tuple(sorted([links[i], links[i + 1]]))
+                # Remove this link from every group
+                for one_group in interconnections:
+                    try:
+                        interconnections[one_group]["Links"].remove(link)
+                    except ValueError:
+                        pass
+
+        self.set_interconnections(interconnections)
 
     def set_view(self, plane: str) -> None:
         """
