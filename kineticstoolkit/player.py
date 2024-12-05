@@ -191,25 +191,38 @@ class Player:
                               ['*_Corner3', '*_Corner4'],
                               ['*_Corner1', '*_Corner4']]
                     "Color": (0.5, 0.0, 1.0)
+                }
             }
 
-    force_points
-        Optional. A dict where each key is the name of a force and each value
-        is the corresponding name of a point. For example::
+    vectors
+        Optional. A dict where each key is the name of a vector and each value
+        contain its origin, scale and color. For example::
 
-            force_points = {
-                "WristForce": "WristCenter",
-                "ElbowForce": "ElbowCenter",
-            ]
+            vectors = {
+                "WristForce": {
+                    "Origin": "WristCenter",
+                    "Scale": 0.001,
+                    "Color": (1.0, 1.0, 0.0)
+                },
+                "ElbowForce": {
+                    "Origin": "ElbowCenter",
+                    "Scale": 0.001,
+                    "Color": (1.0, 1.0, 0.0)
+                },
+            }
 
         will draw lines for the forces WristForce and ElbowForce, with their
-        origin being at WristCenter and ElbowCenter. Force and point names
-        can include wildcards (*) either as a prefix or as a suffix. For
-        instance, to draw forces recorded by multiple force plates, we could
-        use::
+        origin being at WristCenter and ElbowCenter, and with a scale of 0.001
+        meter per newton. Force and point names can include wildcards (*)
+        either as a prefix or as a suffix. For instance, to draw forces
+        recorded by multiple force plates, we could use::
 
-            force_points = {
-                "*Force": "*COP"
+            vectors = {
+                "*Force": {
+                    "Origin": "*COP",
+                    "Scale": 0.001,
+                    "Color": (1.0, 1.0, 0.0)
+                }
             }
 
         which would assign any point ending by "COP" to its counterpart force.
@@ -265,6 +278,16 @@ class Player:
         data_info. Can be a character or tuple (RGB) where each RGB color is
         between 0.0 and 1.0. Default is (0.8, 0.8, 0.8).
 
+    default_interconnection_color
+        Optional. Default color for interconnections. Can be a character or
+        tuple (RGB) where each RGB color is between 0.0 and 1.0. Default is
+        (0.8, 0.8, 0.8).
+
+    default_vector_color
+        Optional. Default color for vectors. Can be a character or tuple (RGB)
+        where each RGB color is between 0.0 and 1.0. Default is
+        (1.0, 1.0, 0.0).
+
     point_size
         Optional. Point size as defined by Matplotlib marker size. Default is
         4.0.
@@ -273,26 +296,16 @@ class Player:
         Optional. Width of the interconnections as defined by Matplotlib line
         width. Default is 1.5.
 
+    vector_width
+        Optional. Width of the vectors as defined by Matplotlib line
+        width. Default is 2.0.
+
     frame_size
         Optional. Length of the frame axes in meters. Default is 0.1.
 
     frame_width
         Optional. Width of the frame axes as defined by Matplotlib line width.
         Default is 3.0.
-
-    force_factor
-        Optional. Sets the length of the force lines as a ratio of meters per
-        newton. Default is 0.001, which means that 1000 newton generates a
-        1-meter line.
-
-    force_color
-        Optional. Color of the force lines. Can be a character or tuple (RGB)
-        where weach RGB color is between 0.0 and 1.0. Default is
-        (1.0, 1.0, 0.0).
-
-    force_width
-        Optional. Width of the force lines as defined by Matplotlib line width.
-        Default is 2.0.
 
     grid_size
         Optional. Length of one side of the grid in meters. Default is 10.0.
@@ -332,8 +345,8 @@ class Player:
     _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
     _extended_interconnections: dict[str, dict[str, Any]]
-    _force_points: dict[str, str]
-    _extended_force_points: dict[str, str]
+    _vectors: dict[str, dict[str, Any]]
+    _extended_vectors: dict[str, dict[str, Any]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
     _selected_points: list[str]  # List of point names
     _last_selected_point: str
@@ -353,8 +366,11 @@ class Player:
     _target: np.ndarray
     _track: bool
     _default_point_color: tuple[float, float, float]
+    _default_interconnection_color: tuple[float, float, float]
+    _default_vector_color: tuple[float, float, float]
     _point_size: float
     _interconnection_width: float
+    _vector_width: float
     _frame_size: float
     _frame_width: float
     _force_factor: float
@@ -380,9 +396,15 @@ class Player:
                     ("*_Corner1", "*_Corner4"),
                 ],
                 "Color": (0.5, 0.0, 1.0),
+            },
+        },
+        vectors: dict[str, dict[str, Any]] = {
+            "*Force": {
+                "Origin": "*COP",
+                "Scale": 0.001,
+                "Color": (1.0, 1.0, 0.0),
             }
         },
-        force_points: dict[str, str] = {"*Force": "*COP"},
         current_index: int = 0,
         current_time: float | None = None,
         playback_speed: float = 1.0,
@@ -400,13 +422,21 @@ class Player:
             0.8,
             0.8,
         ),
+        default_interconnection_color: str | tuple[float, float, float] = (
+            0.8,
+            0.8,
+            0.8,
+        ),
+        default_vector_color: str | tuple[float, float, float] = (
+            1.0,
+            1.0,
+            0.0,
+        ),
         point_size: float = 4.0,
         interconnection_width: float = 1.5,
+        vector_width: float = 2.0,
         frame_size: float = 0.1,
         frame_width: float = 3.0,
-        force_factor: float = 0.001,
-        force_color: tuple[float, float, float] = (1.0, 1.0, 0.0),
-        force_width: float = 2.0,
         grid_size: float = 10.0,
         grid_subdivision_size: float = 1.0,
         grid_width: float = 1.0,
@@ -473,9 +503,8 @@ class Player:
 
         self._interconnections = interconnections  # Just to put stuff for now
         self._extended_interconnections = interconnections  # idem
-        self._force_points = force_points  # idem
-        self._extended_force_points = force_points  # idem
-        self._colors = set()  # idem
+        self._vectors = vectors  # idem
+        self._extended_vectors = vectors  # idem
         self._selected_points = []
         self._last_selected_point = ""
 
@@ -497,13 +526,13 @@ class Player:
         self.target = target
         self.track = track
         self.default_point_color = default_point_color
+        self.default_interconnection_color = default_interconnection_color
+        self.default_vector_color = default_vector_color
         self.point_size = point_size
         self.interconnection_width = interconnection_width
+        self.vector_width = vector_width
         self.frame_size = frame_size
         self.frame_width = frame_width
-        self.force_factor = force_factor
-        self.force_color = force_color
-        self.force_width = force_width
         self.grid_size = grid_size
         self.grid_width = grid_width
         self.grid_subdivision_size = grid_subdivision_size
@@ -513,6 +542,7 @@ class Player:
         self.title_text = ""
 
         self._running = False
+        self._colors = set()
 
         # Init mouse navigation state
         self._state = {
@@ -542,7 +572,7 @@ class Player:
         self._being_constructed = False
 
         self.set_contents(merged_ts)
-        self.set_force_points(force_points)
+        self.set_vectors(vectors)
         self.set_interconnections(interconnections)
         self.grid_origin = grid_origin  # Refresh grid
 
@@ -592,19 +622,19 @@ class Player:
         )
 
     @property
-    def force_points(self):
-        """Use get_force_points or set_force_points instead."""
+    def vectors(self):
+        """Use get_vectors or set_vectors instead."""
         raise AttributeError(
-            "Please use Player.get_force_points() and "
-            "Player.set_force_points() to read and write force_points."
+            "Please use Player.get_vectors() and "
+            "Player.set_vectors() to read and write vectors."
         )
 
-    @force_points.setter
-    def force_points(self, value):
-        """Use get_force_points or set_force_points instead."""
+    @vectors.setter
+    def vectors(self, value):
+        """Use get_vectors or set_vectors instead."""
         raise AttributeError(
-            "Please use Player.get_force_points() and "
-            "Player.set_force_points() to read and write force_points."
+            "Please use Player.get_vectors() and "
+            "Player.set_vectors() to read and write vectors."
         )
 
     @property
@@ -816,6 +846,30 @@ class Player:
             self._refresh()
 
     @property
+    def default_interconnection_color(self):
+        """Read/write default_interconnection_color."""
+        return self._default_interconnection_color
+
+    @default_interconnection_color.setter
+    def default_interconnection_color(self, value):
+        """Set default_interconnection_color value."""
+        self._default_interconnection_color = _parse_color(value)
+        if not self._being_constructed:
+            self._refresh()
+
+    @property
+    def default_vector_color(self):
+        """Read/write default_vector_color."""
+        return self._default_vector_color
+
+    @default_vector_color.setter
+    def default_vector_color(self, value):
+        """Set default_vector_color value."""
+        self._default_vector_color = _parse_color(value)
+        if not self._being_constructed:
+            self._refresh()
+
+    @property
     def point_size(self) -> float:
         """Read/write point_size."""
         return self._point_size
@@ -842,6 +896,19 @@ class Player:
             self._refresh()
 
     @property
+    def vector_width(self) -> float:
+        """Read/write vector_width."""
+        return self._vector_width
+
+    @vector_width.setter
+    def vector_width(self, value: float):
+        """Set vector_width value."""
+        check_param("vector_width", value, float)
+        self._vector_width = value
+        if not self._being_constructed:
+            self._refresh()
+
+    @property
     def frame_size(self) -> float:
         """Read/write frame_size."""
         return self._frame_size
@@ -864,44 +931,6 @@ class Player:
         """Set frame_width value."""
         check_param("frame_width", value, float)
         self._frame_width = value
-        if not self._being_constructed:
-            self._refresh()
-
-    @property
-    def force_factor(self) -> float:
-        """Read/write force_factor."""
-        return self._force_factor
-
-    @force_factor.setter
-    def force_factor(self, value: float):
-        """Set force_factor value."""
-        check_param("force_factor", value, float)
-        self._force_factor = value
-        if not self._being_constructed:
-            self._refresh()
-
-    @property
-    def force_color(self) -> tuple[float, float, float]:
-        """Read/write force_color."""
-        return self._force_color
-
-    @force_color.setter
-    def force_color(self, value: tuple[float, float, float]):
-        """Set force_color value."""
-        self._force_color = _parse_color(value)
-        if not self._being_constructed:
-            self._refresh()
-
-    @property
-    def force_width(self) -> float:
-        """Read/write force_width."""
-        return self._force_width
-
-    @force_width.setter
-    def force_width(self, value: float):
-        """Set force_width value."""
-        check_param("force_width", value, float)
-        self._force_width = value
         if not self._being_constructed:
             self._refresh()
 
@@ -1021,8 +1050,11 @@ class Player:
                 "target": self.target,
                 "track": self.track,
                 "default_point_color": self.default_point_color,
+                "default_interconnection_color": self.default_interconnection_color,
+                "default_vector_color": self.default_vector_color,
                 "point_size": self.point_size,
                 "interconnection_width": self.interconnection_width,
+                "vector_width": self.vector_width,
                 "frame_size": self.frame_size,
                 "frame_width": self.frame_width,
                 "grid_size": self.grid_size,
@@ -1095,7 +1127,7 @@ class Player:
         else:
             self._contents = TimeSeries(time=[0])
 
-        self._extend_force_points()
+        self._extend_vectors()
         self._extend_interconnections()
         self._orient_contents()
         self._refresh()
@@ -1125,6 +1157,7 @@ class Player:
                 self._interconnections[group] = {"Links": []}
 
             self._interconnections[group]["Color"] = value[group]["Color"]
+            # TODO! Raise error if malformed.
             for link_line in value[group]["Links"]:
                 for i in range(len(link_line) - 1):
                     new_link = tuple(sorted([link_line[i], link_line[i + 1]]))
@@ -1134,22 +1167,36 @@ class Player:
         self._extend_interconnections()
         self._refresh()
 
-    def get_force_points(self) -> dict[str, str]:
-        """Get force_points value."""
-        return self._force_points
+    def get_vectors(self) -> dict[str, dict[str, Any]]:
+        """Get vectors value."""
+        return self._vectors
 
-    def set_force_points(self, value: dict[str, str]) -> None:
-        """Set force_points value."""
-        check_param("value", value, dict, key_type=str, contents_type=str)
-        self._force_points = deepcopy(value)
-        self._extend_force_points()
+    def set_vectors(self, value: dict[str, dict[str, Any]]) -> None:
+        """Set vectors value."""
+        check_param("value", value, dict, key_type=str, contents_type=dict)
+        # Converts everything to the correct form
+        self._vectors = {}
+        for key in value:
+            if "Origin" in value[key]:
+                self._vectors[key] = {"Origin": value[key]["Origin"]}
+            else:
+                raise ValueError(f"No origin set for vector {key}.")
+            if "Color" in value[key]:
+                self._vectors[key]["Color"] = _parse_color(value[key]["Color"])
+            else:
+                self._vectors[key]["Color"] = self._default_vector_color
+            if "Scale" in value[key]:
+                self._vectors[key]["Scale"] = value[key]["Scale"]
+            else:
+                self._vectors[key]["Scale"] = 1.0
+
+        self._extend_vectors()
         self._extend_interconnections()
         self._orient_contents()
         self._refresh()
 
     def _extend_interconnections(self) -> None:
         """Update self._extended_interconnections. Does not refresh."""
-        # Step 1:
         # Make a set of all patterns matched by the * in interconnection
         # point names.
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
@@ -1199,48 +1246,39 @@ class Player:
                         ]
                     )
 
-        # Step 2:
-        # Create interconnections for force_points
-        for force in self._extended_force_points:
-            key = f"__FORCE_POINT_{force}__"
-            self._extended_interconnections[key] = {
-                "Links": [[force, self._extended_force_points[force]]],
-                "Color": self._force_color,
-            }
-
-    def _extend_force_points(self) -> None:
-        """Update self._extended_force_points. Does not refresh."""
-        # Make a set of all patterns matched by the * in force_points
+    def _extend_vectors(self) -> None:
+        """Update self._extended_vectors. Does not refresh."""
+        # Make a set of all patterns matched by the * in vectors
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
         keys = list(self._contents.data.keys())
-        for force in self._force_points:
-            point = self._force_points[force]
-            if "*" not in force and "*" not in point:
+        for vector in self._vectors:
+            point = self._vectors[vector]["Origin"]
+            if "*" not in vector and "*" not in point:
                 continue
-            if force.startswith("*") and force.endswith("*"):
+            if vector.startswith("*") and vector.endswith("*"):
                 raise ValueError(
-                    f"Force {force} found in force_points. "
+                    f"Vector {vector} found in vectors. "
                     "Only one wildcard can be used, either as a "
                     "prefix or as a suffix."
                 )
             if point.startswith("*") and point.endswith("*"):
                 raise ValueError(
-                    f"Point {point} found in force_points. "
+                    f"Point {point} found in vectors. "
                     "Only one wildcard can be used, either as a "
                     "prefix or as a suffix."
                 )
             if (
-                (force.startswith("*") and not point.startswith("*"))
-                or (not force.startswith("*") and point.startswith("*"))
-                or (force.endswith("*") and not point.endswith("*"))
-                or (not force.endswith("*") and point.endswith("*"))
+                (vector.startswith("*") and not point.startswith("*"))
+                or (not vector.startswith("*") and point.startswith("*"))
+                or (vector.endswith("*") and not point.endswith("*"))
+                or (not vector.endswith("*") and point.endswith("*"))
             ):
                 raise ValueError(
-                    f"Force {force} and Point {point} must have matching "
+                    f"Vector {vector} and Point {point} must have matching "
                     "wildcards."
                 )
             # Here, everything is correct. We have either starting or ending
-            # wildcards in both points and forces.
+            # wildcards in both points and vectors.
             if point.startswith("*"):
                 for key in keys:
                     if key.endswith(point[1:]):
@@ -1251,17 +1289,21 @@ class Player:
                         patterns.add(key[(len(point) - 1) :])
 
         # Extend every * to every pattern
-        self._extended_force_points = dict()
+        self._extended_vectors = dict()
         for pattern in patterns:
-            for force in self._force_points:
-                point = self._force_points[force]
-                new_force = force.replace("*", pattern)
+            for vector in self._vectors:
+                point = self._vectors[vector]["Origin"]
+                new_vector = vector.replace("*", pattern)
                 new_point = point.replace("*", pattern)
                 if (
-                    new_force in self._contents.data
+                    new_vector in self._contents.data
                     and new_point in self._contents.data
                 ):
-                    self._extended_force_points[new_force] = new_point
+                    self._extended_vectors[new_vector] = {
+                        "Origin": new_point,
+                        "Scale": self._vectors[vector]["Scale"],
+                        "Color": self._vectors[vector]["Color"],
+                    }
 
     def _general_rotation(self) -> np.ndarray:
         """Return a 1x4x4 rotation matrix from up and anterior attributes."""
@@ -1307,7 +1349,7 @@ class Player:
 
     def _orient_contents(self) -> None:
         """
-        Update, self._oriented_points, _oriented_frames and _oriented_target
+        Update, self._oriented_points, _oriented_frames and _oriented_target.
 
         Rotate everything according to the up input, so that the end result
         is y up:
@@ -1318,8 +1360,8 @@ class Player:
           /
         z/
 
-        Also adds forces according to _oriented_points, and the global origin
-        to _oriented_frames. Does not refresh.
+        Also adds vectors and the global origin to _oriented_frames.
+        Does not refresh.
 
         """
         self._oriented_points = self._contents.copy(copy_data=False)
@@ -1352,18 +1394,16 @@ class Player:
                     )
                 else:
                     # This is a vector
-                    if key in self._extended_force_points:
+                    if key in self._extended_vectors:
                         self._oriented_points.data[key] = (
                             geometry.get_global_coordinates(
-                                self._force_factor * contents.data[key]
+                                self._extended_vectors[key]["Scale"]
+                                * contents.data[key]
                                 + contents.data[
-                                    self._extended_force_points[key]
+                                    self._extended_vectors[key]["Origin"]
                                 ],
                                 rotation,
                             )
-                        )
-                        self._oriented_points.add_data_info(
-                            key, "Color", self._force_color, in_place=True
                         )
 
             elif contents.data[key].shape[1:] == (4, 4):
@@ -1399,7 +1439,7 @@ class Player:
         ----------
         points_3d
             Nx4 array, where the first dimension is the number of points
-            and  the second dimension is (x, y, z, 1).
+            and the second dimension is (x, y, z, 1).
 
         Returns
         -------
@@ -1550,7 +1590,7 @@ class Player:
         translation[3] = 0  # Not a position, but a vector
         self._grid += translation
 
-    def _update_points_and_interconnections(self) -> None:
+    def _update_points_interconnections_vectors(self) -> None:
         # Get a Nx4 matrices of every point at the current index
         points = self._oriented_points
         if points is None:
@@ -1569,25 +1609,24 @@ class Player:
             points_data[(color, True)] = np.empty([n_points, 4])
             points_data[(color, True)][:] = np.nan
 
-        if n_points > 0:
-            for i_point, point in enumerate(points.data):
-                # Get this point's color
-                if (
-                    point in points.data_info
-                    and "Color" in points.data_info[point]
-                ):
-                    color = _parse_color(points.data_info[point]["Color"])
-                else:
-                    color = self.default_point_color
+        for i_point, point in enumerate(points.data):
+            # Get this point's color
+            if (
+                point in points.data_info
+                and "Color" in points.data_info[point]
+            ):
+                color = _parse_color(points.data_info[point]["Color"])
+            else:
+                color = self.default_point_color
 
-                these_coordinates = points.data[point][self.current_index]
-                interconnection_points[point] = these_coordinates
+            these_coordinates = points.data[point][self.current_index]
+            interconnection_points[point] = these_coordinates
 
-                # Assign to unselected(False) or selected(True) points_data
-                if point in self._selected_points:
-                    points_data[(color, True)][i_point] = these_coordinates
-                else:
-                    points_data[(color, False)][i_point] = these_coordinates
+            # Assign to unselected(False) or selected(True) points_data
+            if point in self._selected_points:
+                points_data[(color, True)][i_point] = these_coordinates
+            else:
+                points_data[(color, False)][i_point] = these_coordinates
 
         # Update the points plot
         for color in self._colors:
@@ -1612,10 +1651,10 @@ class Player:
         # Draw the interconnections
         for interconnection in self._extended_interconnections:
             coordinates = []
-            chains = self._extended_interconnections[interconnection]["Links"]
+            links = self._extended_interconnections[interconnection]["Links"]
 
-            for chain in chains:
-                for point in chain:
+            for link in links:
+                for point in link:
                     try:
                         coordinates.append(interconnection_points[point])
                     except KeyError:
@@ -1630,9 +1669,22 @@ class Player:
                 interconnection
             ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
 
+        # Draw the vectors
+        for vector in self._extended_vectors:
+            np_coordinates = np.ones((2, 4))
+            np_coordinates[0] = points.data[vector][self.current_index]
+            np_coordinates[1] = points.data[
+                self._extended_vectors[vector]["Origin"]
+            ][self.current_index]
+            np_coordinates = self._project_to_camera(np_coordinates)
+
+            self._mpl_objects["VectorPlots"][vector].set_data(
+                np_coordinates[:, 0], np_coordinates[:, 1]
+            )
+
     def _fast_refresh(self) -> None:
         """Update plot data, assuming all plots have already been created."""
-        self._update_points_and_interconnections()
+        self._update_points_interconnections_vectors()
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
         # at the current index
@@ -1698,6 +1750,34 @@ class Player:
 
         self._mpl_objects["Figure"].canvas.draw()
 
+    def _update_colors(self) -> None:
+        """Update self._colors."""
+        self._colors = set()
+
+        # In contents (points and vectors)
+        for key in self._contents.data:
+            try:
+                color = self._contents.data_info[key]["Color"]
+            except KeyError:  # Default color
+                color = self._default_point_color
+            self._colors.add(_parse_color(color))
+
+        # # In interconnections
+        # for key in self._interconnections:
+        #     try:
+        #         color = self._interconnections[key]["Color"]
+        #     except KeyError:  # Default color
+        #         color = self._default_interconnection_color
+        #     colors.add(_parse_color(color))
+
+        # # In vectors
+        # for key in self._vectors:
+        #     try:
+        #         color = self._vectors[key]["Color"]
+        #     except KeyError:  # Default color
+        #         color = self._default_vector_color
+        #     colors.add(_parse_color(color))
+
     def _refresh(self):
         """
         Perform a full refresh of the Player.
@@ -1709,12 +1789,7 @@ class Player:
 
         """
         # Clear and rebuild the mpl plots.
-        self._mpl_objects["GridPlot"] = None
-        self._mpl_objects["InterconnectionPlots"] = dict()
-        self._mpl_objects["FrameXPlot"] = None
-        self._mpl_objects["FrameYPlot"] = None
-        self._mpl_objects["FrameZPlot"] = None
-        self._mpl_objects["PointPlots"] = dict()
+        self._mpl_objects["Plots"] = dict()
         self._mpl_objects["HelpText"] = None
 
         self._mpl_objects["Axes"].clear()
@@ -1730,20 +1805,6 @@ class Player:
             linewidth=self._grid_width,
             color=self._grid_color,
         )[0]
-
-        # Create the interconnection plots
-        for interconnection in self._extended_interconnections:
-            self._mpl_objects["InterconnectionPlots"][
-                interconnection
-            ] = self._mpl_objects["Axes"].plot(
-                np.nan,
-                np.nan,
-                "-",
-                c=self._extended_interconnections[interconnection]["Color"],
-                linewidth=self._interconnection_width,
-            )[
-                0
-            ]
 
         # Create the frame plots
         self._mpl_objects["FrameXPlot"] = self._mpl_objects["Axes"].plot(
@@ -1765,20 +1826,43 @@ class Player:
             linewidth=self.frame_width,
         )[0]
 
+        # Create the interconnection plots
+        self._mpl_objects["InterconnectionPlots"] = dict()
+        for interconnection in self._extended_interconnections:
+            self._mpl_objects["InterconnectionPlots"][
+                interconnection
+            ] = self._mpl_objects["Axes"].plot(
+                np.nan,
+                np.nan,
+                "-",
+                c=self._extended_interconnections[interconnection]["Color"],
+                linewidth=self._interconnection_width,
+            )[
+                0
+            ]
+
+        # Create the vector plots
+        self._mpl_objects["VectorPlots"] = dict()
+        for vector in self._extended_vectors:
+            self._mpl_objects["VectorPlots"][vector] = self._mpl_objects[
+                "Axes"
+            ].plot(
+                np.nan,
+                np.nan,
+                "-",
+                c=self._extended_vectors[vector]["Color"],
+                linewidth=self._vector_width,
+            )[
+                0
+            ]
+
         # ----------------------
         # Create the point plots
         # ----------------------
-        # List all colors in contents
-        self._colors = set()
-        self._colors.add(self._force_color)
-        for key in self._contents.data:
-            try:
-                color = self._contents.data_info[key]["Color"]
-            except KeyError:  # Default color
-                color = self._default_point_color
-            self._colors.add(_parse_color(color))
 
         # Create all required point plots
+        self._update_colors()
+        self._mpl_objects["PointPlots"] = dict()
         for color in self._colors:
             # Unselected points
             self._mpl_objects["PointPlots"][
@@ -2165,7 +2249,7 @@ class Player:
             try:
                 color = interconnections[group]["Color"]  # type: ignore
             except KeyError:  # Either group or "Color" doesn't exist
-                color = (0.8, 0.8, 0.8)
+                color = self._default_interconnection_color
 
         # Determine final group name
         if group is None:
