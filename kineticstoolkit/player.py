@@ -2193,15 +2193,15 @@ class Player:
         self._running = False
         self._mpl_objects["Anim"].event_source.stop()
 
-    def link(
+    def connect(
         self,
-        links: list[str],
+        points: list[str],
         *,
         color: str | tuple[float, float, float] | None = None,
         group: str | None = None,
     ) -> None:
         """
-        Link two ore more points.
+        Connect two ore more points with a line.
 
         This is a shortcut function to easily add interconnections between
         points, instead of accessing the whole interconnections dictionary
@@ -2209,8 +2209,8 @@ class Player:
 
         Parameters
         ----------
-        links
-            A list of point names to link. For example::
+        points
+            A list of point names to connect. For example::
 
                 ["Point1", "Point2", "Point3"]
 
@@ -2231,16 +2231,20 @@ class Player:
         Returns
         -------
         None
+        
+        See Also
+        --------
+        ktk.Player.disconnect
 
         """
-        check_param("links", links, list, contents_type=str)
+        check_param("points", points, list, contents_type=str)
         if group is not None:
             check_param("group", group, str)
         if color is not None:
             color = _parse_color(color)
 
         # Start by unlinking these links since we will create them again
-        self.unlink(links)
+        self.disconnect(points)
 
         interconnections = self.get_interconnections()
 
@@ -2257,20 +2261,20 @@ class Player:
 
         # Add these links to the group
         try:
-            interconnections[group]["Links"].append(links)
+            interconnections[group]["Links"].append(points)
         except KeyError:
-            interconnections[group] = {"Links": [links]}
+            interconnections[group] = {"Links": [points]}
 
         # Apply color
         interconnections[group]["Color"] = color
 
         self.set_interconnections(interconnections)
 
-    def unlink(
-        self, links: list[str] | None = None, *, group: str | None = None
+    def disconnect(
+        self, points: list[str] | None = None, *, group: str | None = None
     ) -> None:
         """
-        Unlink two or more points.
+        Disconnect two or more points.
 
         This is a shortcut function to easily remove interconnections between
         points, instead of accessing the whole interconnections dictionary
@@ -2278,35 +2282,39 @@ class Player:
 
         Parameters
         ----------
-        links
-            Optional. A list of point names to unlink. For example::
+        points
+            Optional. A list of point names to disconnect. For example::
 
                 ["Point1", "Point2", "Point3"]
 
-            removes the link between Point1 and Point2, and the link between
+            removes the line between Point1 and Point2, and the line between
             Point2 and Point3.
 
         group
-            Optional. Removes every link in this group.
+            Optional. Removes every interconnection in this group.
 
-        If neither links or group is provided, every link is removed.
-        If both links and group are provided, links are only removed if they
+        If neither points or group is provided, every connection is removed.
+        If both points and group are provided, links are only removed if they
         belong to this group.
 
         Returns
         -------
         None.
+        
+        See Also
+        --------
+        ktk.Player.connect
 
         """
         if group is not None:
             check_param("group", group, str)
-        if links is not None:
-            check_param("links", links, list, contents_type=str)
+        if points is not None:
+            check_param("points", points, list, contents_type=str)
 
         # We don't use get_interconnections to keep the tuples
         interconnections = deepcopy(self._interconnections)
 
-        if links is None:
+        if points is None:
             if group is None:  # Nothing provided
                 # Remove everything
                 interconnections = {}
@@ -2324,8 +2332,8 @@ class Player:
                 the_groups = [group]
 
             # Remove the links from each group
-            for i in range(len(links) - 1):
-                link = tuple(sorted([links[i], links[i + 1]]))
+            for i in range(len(points) - 1):
+                link = tuple(sorted([points[i], points[i + 1]]))
                 # Remove this link from the groups
                 for one_group in the_groups:
                     try:
