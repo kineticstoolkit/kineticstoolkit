@@ -31,49 +31,75 @@ def test_matmul():
     """Test matmul function."""
     # Matrix multiplication between a matrix and a series of points:
     result = ktk.geometry.matmul(
-        np.array([[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]]),
-        np.array([[0, 0, 0, 1], [2, 0, 0, 1], [3, 1, 0, 1]]),
+        [[[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]],
+        [[0, 0, 0, 1], [2, 0, 0, 1], [3, 1, 0, 1]],
     )
 
-    assert (
-        np.sum(
-            np.abs(
-                result - np.array([[0, 0, 0, 1], [2, 0, 0, 1], [3, 1, 0, 1]])
-            )
-        )
-        < 1e-15
-    )
+    assert np.allclose(result, [[0, 0, 0, 1], [2, 0, 0, 1], [3, 1, 0, 1]])
 
     # Multiplication between a series of floats and a series of vectors:
     result = ktk.geometry.matmul(
-        np.array([0.0, 0.5, 1.0, 1.5]),
-        np.array([[1, 0, 0, 0], [2, 0, 0, 0], [3, 0, 0, 0], [4, 0, 0, 0]]),
+        [0.0, 0.5, 1.0, 1.5],
+        [[1, 0, 0, 0], [2, 0, 0, 0], [3, 0, 0, 0], [4, 0, 0, 0]],
     )
 
-    assert (
-        np.sum(
-            np.abs(
-                result
-                - np.array(
-                    [
-                        [0.0, 0.0, 0.0, 0.0],
-                        [1.0, 0.0, 0.0, 0.0],
-                        [3.0, 0.0, 0.0, 0.0],
-                        [6.0, 0.0, 0.0, 0.0],
-                    ]
-                )
-            )
-        )
-        < 1e-15
+    assert np.allclose(
+        result,
+        [
+            [0.0, 0.0, 0.0, 0.0],
+            [1.0, 0.0, 0.0, 0.0],
+            [3.0, 0.0, 0.0, 0.0],
+            [6.0, 0.0, 0.0, 0.0],
+        ],
     )
 
     # Dot product between a series of points and a single point:
     result = ktk.geometry.matmul(
-        np.array([[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]]),
-        np.array([[2, 3, 4, 1]]),
+        [[1, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 1]],
+        [[2, 3, 4, 1]],
     )
 
-    assert np.sum(np.abs(result - np.array([3, 4, 5]))) < 1e-15
+    assert np.allclose(result, [3, 4, 5])
+
+
+def test_is_frame_point_vector_series():
+    """Test is_frame_series, is_point_series and is_vector_series."""
+    assert (
+        ktk.geometry.is_frame_series(
+            [
+                [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+                [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+            ]
+        )
+        == True
+    )
+    assert (
+        ktk.geometry.is_frame_series(
+            [
+                [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+                [[np.nan, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+            ]
+        )
+        == True
+    )
+    assert (
+        ktk.geometry.is_frame_series(
+            [
+                [[np.nan, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+                [[np.nan, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+            ]
+        )
+        == False
+    )
+    assert (
+        ktk.geometry.is_frame_series(
+            [
+                [[1, 0, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+                [[1, 1, 0, 0], [0, 1, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]],
+            ]
+        )
+        == False
+    )
 
 
 def test_inv():

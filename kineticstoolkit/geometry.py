@@ -44,6 +44,9 @@ def __dir__():
         "get_local_coordinates",
         "get_global_coordinates",
         "isnan",
+        "is_frame_series",
+        "is_point_series",
+        "is_vector_series",
         "register_points",
         "rotate",
         "translate",
@@ -800,7 +803,7 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
 
     Parameters
     ----------
-    in
+    array
         Array where the first dimension corresponds to time.
 
     Returns
@@ -814,6 +817,104 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
     while len(temp.shape) > 1:
         temp = temp.sum(axis=1) > 0
     return temp
+
+
+def is_frame_series(array: ArrayLike, /) -> bool:
+    """
+    Check that the input is a frame series.
+
+    Parameters
+    ----------
+    array
+        Array where the first dimension corresponds to time.
+
+    Returns
+    -------
+    bool
+        True if every sample (other than NaNs) of the input array is a frame
+        (a 4x4 homogeneous matrix).
+
+    """
+    value = np.array(array)
+
+    # Check the dimension
+    if value.shape[1:] != (4, 4):
+        return False
+
+    # Check that we don't only have NaNs
+    index = ~isnan(value)
+    if np.sum(index) == 0:
+        return False
+
+    # Check the last line
+    if not np.allclose(value[index, 3], [0.0, 0.0, 0.0, 1.0]):
+        return False
+
+    # Check that the derminant is 1 for every sample
+    try:
+        _check_no_skewed_rotation(value, "value")
+    except ValueError:
+        return False
+
+    return True
+
+
+def _is_point_vector_series(array: ArrayLike, last_element: float) -> bool:
+    """Check if the input is a `kind` series."""
+    value = np.array(array)
+
+    # Check the dimension
+    if value.shape[1:] != (4,):
+        return False
+
+    # Check that we don't only have NaNs
+    index = ~isnan(value)
+    if np.sum(index) == 0:
+        return False
+
+    # Check the last line
+    if not np.allclose(value[index, 3], last_element):
+        return False
+
+    return True
+
+
+def is_point_series(array: np.ndarray) -> bool:
+    """
+    Check that the input is a point series.
+
+    Parameters
+    ----------
+    array
+        Array where the first dimension corresponds to time.
+
+    Returns
+    -------
+    bool
+        True if every sample (other than NaNs) of the input array is a point
+        (an array of length 4 with the last component being 1.0)
+
+    """
+    return _is_point_vector_series(array, 1.0)
+
+
+def is_vector_series(array: np.ndarray) -> bool:
+    """
+    Check that the input is a vector series.
+
+    Parameters
+    ----------
+    array
+        Array where the first dimension corresponds to time.
+
+    Returns
+    -------
+    bool
+        True if every sample (other than NaNs) of the input array is a vector
+        (an array of length 4 with the last component being 0.0)
+
+    """
+    return _is_point_vector_series(array, 0.0)
 
 
 def _match_size(
@@ -847,7 +948,7 @@ def _match_size(
 
 def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
     """
-    Check if all rotation matrices are orthogonal (det=1).
+    Check if all rotation matrices are orthogonal.
 
     Parameters
     ----------
@@ -867,8 +968,11 @@ def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
         and series.shape[1] == 4
         and series.shape[2] == 4
     ):
-        index_is_nan = isnan(series)
-        if not np.allclose(np.linalg.det(series[~index_is_nan, 0:3, 0:3]), 1):
+        series33 = series[:, 0:3, 0:3]
+        if not np.allclose(
+            matmul(series33, series33.transpose([0, 2, 1]))[~isnan(series)],
+            np.eye(3),
+        ):
             raise ValueError(
                 f"Parameter {param_name} contains at least one rotation "
                 "component that is not orthogonal. This may happen, for "
@@ -876,8 +980,8 @@ def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
                 "homogeneous transform, which is usually forbidden. If this "
                 "is the case, then consider filtering quaternions or Euler "
                 "angles instead. If you created a homogeneous transform from "
-                "3D marker trajectories, then average/resample/filter the "
-                "marker trajectories before creating the transform, instead "
+                "3D points, then average/resample/filter the "
+                "point trajectories before creating the transform, instead "
                 "of averaging/resampling/filtering the transform."
             )
 
