@@ -49,6 +49,7 @@ def check_param(
     value,
     expected_type,
     *,
+    expected_values: list | None = None,
     contents_type=None,
     key_type=None,
     length: int | None = None,
@@ -66,6 +67,8 @@ def check_param(
         Value of the parameter.
     expected_type
         Expected type of the parameter.
+    expected_values
+        Optional. Check that value is one of these possible values.
     contents_type
         Optional. For a tuple or list, ensures that every element is of the
         given type. For a dictionary, ensures that every value is of the
@@ -113,7 +116,16 @@ def check_param(
             f"{name} must be of type {expected_type}, however it is of type "
             f"{type(value)}, with a value of {value}."
         )
+
     # Other specs
+
+    if expected_values is not None:
+        if value not in expected_values:
+            raise ValueError(
+                f"{name} must be one of these values: {expected_values}, "
+                f"however it has a value of {value}."
+            )
+
     if contents_type is not None:
         if isinstance(contents_type, tuple):
             mapped_contents_type = tuple(
@@ -132,7 +144,7 @@ def check_param(
             if not isinstance(element, mapped_contents_type):  # type: ignore
                 raise TypeError(
                     f"{name} must contain only elements of type "
-                    f"{contents_type}, however it contains a value of type "
+                    f"{contents_type}, however it contains an element of type "
                     f"{type(element)}, with a value of {element}."
                 )
 

@@ -32,7 +32,10 @@ from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit._repr import _format_dict_entries
-from kineticstoolkit.exceptions import TimeSeriesMergeConflictError
+from kineticstoolkit.exceptions import (
+    TimeSeriesMergeConflictError,
+    raise_ktk_error,
+)
 
 from tqdm import tqdm
 import matplotlib.pyplot as plt
@@ -340,8 +343,8 @@ class Player:
     # Internal variables - for mypy
     _being_constructed: bool
     _contents: TimeSeries
-    _oriented_points: TimeSeries
-    _oriented_frames: TimeSeries
+    _processed_points: TimeSeries
+    _processed_frames: TimeSeries
     _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
     _extended_interconnections: dict[str, dict[str, Any]]
@@ -390,10 +393,10 @@ class Player:
         interconnections: dict[str, dict[str, Any]] = {
             "ForcePlatforms": {
                 "Links": [
-                    ("*_Corner1", "*_Corner2"),
-                    ("*_Corner2", "*_Corner3"),
-                    ("*_Corner3", "*_Corner4"),
-                    ("*_Corner1", "*_Corner4"),
+                    ["*_Corner1", "*_Corner2"],
+                    ["*_Corner2", "*_Corner3"],
+                    ["*_Corner3", "*_Corner4"],
+                    ["*_Corner1", "*_Corner4"],
                 ],
                 "Color": (0.5, 0.0, 1.0),
             },
@@ -495,10 +498,11 @@ class Player:
         # initializations.
         self._being_constructed = True
 
+        # We ensure that _contents will ALWAYS have at least one sample.
         self._contents = TimeSeries(time=[0])
         self._grid = np.array([])
-        self._oriented_points = TimeSeries(time=self._contents.time)
-        self._oriented_frames = TimeSeries(time=self._contents.time)
+        self._processed_points = TimeSeries(time=self._contents.time)
+        self._processed_frames = TimeSeries(time=self._contents.time)
         self._oriented_target = (0.0, 0.0, 0.0)
 
         self._interconnections = interconnections  # Just to put stuff for now
@@ -513,7 +517,7 @@ class Player:
 
         self.playback_speed = playback_speed
 
-        self.up = up  # We set directly because setters need both being set
+        self.up = up
         self.anterior = anterior
         self.zoom = zoom
         self.azimuth = azimuth
@@ -645,19 +649,11 @@ class Player:
     @current_index.setter
     def current_index(self, value: int):
         """Set current_index value."""
-        try:
-            self._current_index = value % len(self._contents.time)
-        except AttributeError:  # No self._contents.time
-            self._current_index = 0
+        self._current_index = value % len(self._contents.time)
 
         if not self._being_constructed:
-            if self.track is True and self._oriented_points is not None:
-                new_target = self._oriented_points.data[
-                    self._last_selected_point
-                ][self.current_index]
-                if not np.isnan(np.sum(new_target)):
-                    self.target = new_target
-
+            if self.track:
+                self._recenter()
             self._fast_refresh()
 
     @property
@@ -672,7 +668,6 @@ class Player:
         index = int(np.argmin(np.abs(self._contents.time - value)))
         self.current_index = index
 
-    # Properties
     @property
     def playback_speed(self) -> float:
         """Read/write playback_speed."""
@@ -692,23 +687,16 @@ class Player:
     @up.setter
     def up(self, value: str):
         """Set up value."""
-        check_param("up", value, str)
-        if value in {"x", "y", "z", "-x", "-y", "-z"}:
-            self._up = value
-        else:
-            raise ValueError(
-                'up must be either "x", "y", "z", "-x", "-y", or "-z"}'
-            )
+        check_param(
+            "up", value, str, expected_values=["x", "y", "z", "-x", "-y", "-z"]
+        )
+        self._up = value
 
         if not self._being_constructed:
             if self._up[-1] == self._anterior[-1]:
                 # up and anterior cannot be the same axis.
-                if value[-1] != "x":
-                    self._anterior = "x"
-                else:
-                    self._anterior = "y"
-
-            self._orient_contents()
+                self._anterior = "x" if value[-1] != "x" else "y"
+            self._process_contents()
             self._refresh()
 
     @property
@@ -719,23 +707,19 @@ class Player:
     @anterior.setter
     def anterior(self, value: str):
         """Set anterior value."""
-        check_param("anterior", value, str)
-        if value in {"x", "y", "z", "-x", "-y", "-z"}:
-            self._anterior = value
-        else:
-            raise ValueError(
-                'anterior must be either "x", "y", "z", "-x", "-y", or "-z"}'
-            )
+        check_param(
+            "anterior",
+            value,
+            str,
+            expected_values=["x", "y", "z", "-x", "-y", "-z"],
+        )
+        self._anterior = value
 
         if not self._being_constructed:
             if self._anterior[-1] == self._up[-1]:
                 # up and anterior cannot be the same axis.
-                if value[-1] != "y":
-                    self._up = "y"
-                else:
-                    self._up = "z"
-
-            self._orient_contents()
+                self._up = "y" if value[-1] != "y" else "z"
+            self._process_contents()
             self._refresh()
 
     @property
@@ -804,7 +788,7 @@ class Player:
         self._target = np.array(value)[0:3]
 
         if not self._being_constructed:
-            self._orient_contents()
+            self._process_contents()
             self._fast_refresh()
 
     @property
@@ -1129,12 +1113,12 @@ class Player:
 
         self._extend_vectors()
         self._extend_interconnections()
-        self._orient_contents()
+        self._process_contents()
         self._refresh()
 
     def get_interconnections(self) -> dict[str, dict[str, Any]]:
         """Get interconnections value."""
-        # Change tuples for lists, as it was in the original spec
+        # Change tuples for lists as in the original spec
         output = deepcopy(self._interconnections)
         for group in output:
             for i_link, link in enumerate(output[group]["Links"]):
@@ -1143,27 +1127,37 @@ class Player:
 
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
         """Set interconnections value."""
+        value = deepcopy(value)
         check_param("value", value, dict, key_type=str, contents_type=dict)
 
-        # Split every chain in several tuples of two points. This facilitates
-        # eliminating duplicates or removing only parts of a link chain.
-        self._interconnections = {}
         for group in value:
-            # Don't create the group if it doesn't have links
-            if len(value[group]["Links"]) == 0:
-                continue
+            check_param(f"value['{group}']", value[group], dict, key_type=str)
 
-            if group not in self._interconnections:
-                self._interconnections[group] = {"Links": []}
+            # Check color
+            if "Color" in value[group]:
+                value[group]["Color"] = _parse_color(value[group]["Color"])
+            else:
+                value[group]["Color"] = self._default_interconnection_color
 
-            self._interconnections[group]["Color"] = value[group]["Color"]
-            # TODO! Raise error if malformed.
-            for link_line in value[group]["Links"]:
-                for i in range(len(link_line) - 1):
-                    new_link = tuple(sorted([link_line[i], link_line[i + 1]]))
-                    if new_link not in self._interconnections[group]["Links"]:
-                        self._interconnections[group]["Links"].append(new_link)
+            new_links = []
+            if "Links" in value[group]:
+                check_param(
+                    f"value['{group}']['Links']", value[group]["Links"], list
+                )
+                for i_link, link in enumerate(value[group]["Links"]):
+                    check_param(
+                        f"value['{group}']['Links'][{i_link}]",
+                        link,
+                        list,
+                        contents_type=str,
+                    )
+                    for i in range(len(link) - 1):
+                        new_link = tuple(sorted([link[i], link[i + 1]]))
+                        if new_link not in new_links:
+                            new_links.append(new_link)
+            value[group]["Links"] = new_links if len(new_links) > 0 else [()]
 
+        self._interconnections = value
         self._extend_interconnections()
         self._refresh()
 
@@ -1177,7 +1171,12 @@ class Player:
         # Converts everything to the correct form
         self._vectors = {}
         for key in value:
+            check_param(f"value['{key}']", value[key], dict, key_type=str)
+
             if "Origin" in value[key]:
+                check_param(
+                    f"value['{key}']['Origin']", value[key]["Origin"], str
+                )
                 self._vectors[key] = {"Origin": value[key]["Origin"]}
             else:
                 raise ValueError(f"No origin set for vector {key}.")
@@ -1186,13 +1185,15 @@ class Player:
             else:
                 self._vectors[key]["Color"] = self._default_vector_color
             if "Scale" in value[key]:
+                check_param(
+                    f"value['{key}']['Scale']", value[key]["Scale"], float
+                )
                 self._vectors[key]["Scale"] = value[key]["Scale"]
             else:
                 self._vectors[key]["Scale"] = 1.0
 
         self._extend_vectors()
-        self._extend_interconnections()
-        self._orient_contents()
+        self._process_contents()
         self._refresh()
 
     def _extend_interconnections(self) -> None:
@@ -1321,9 +1322,7 @@ class Player:
         elif self.up == "-z":
             up = [[0, 0, -1, 0]]
         else:
-            raise ValueError(
-                "up must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
-            )
+            raise_ktk_error(ValueError("Bad value for up parameter."))
 
         if self.anterior == "x":
             anterior = [[1, 0, 0, 0]]
@@ -1338,18 +1337,16 @@ class Player:
         elif self.anterior == "-z":
             anterior = [[0, 0, -1, 0]]
         else:
-            raise ValueError(
-                "anterior must be in {'x', 'y', 'z', '-x', '-y', '-z'}."
-            )
+            raise_ktk_error(ValueError("Bad value for anterior parameter."))
 
         inverse_transform = geometry.create_frames(
             origin=[[0, 0, 0, 1]], x=anterior, xy=up
         )
         return geometry.inv(inverse_transform)
 
-    def _orient_contents(self) -> None:
+    def _process_contents(self) -> None:
         """
-        Update, self._oriented_points, _oriented_frames and _oriented_target.
+        Update, self._processed_points, _processed_frames and _oriented_target.
 
         Rotate everything according to the up input, so that the end result
         is y up:
@@ -1360,12 +1357,12 @@ class Player:
           /
         z/
 
-        Also adds vectors and the global origin to _oriented_frames.
+        Also adds vectors and the global origin to _processed_frames.
         Does not refresh.
 
         """
-        self._oriented_points = self._contents.copy(copy_data=False)
-        self._oriented_frames = self._contents.copy(copy_data=False)
+        self._processed_points = self._contents.copy(copy_data=False)
+        self._processed_frames = self._contents.copy(copy_data=False)
 
         contents = self._contents.copy()
         # Add the global reference frame
@@ -1378,42 +1375,40 @@ class Player:
 
         rotation = self._general_rotation()
 
-        # Orient points and frames
+        # Orient points, vectors and frames
         for key in contents.data:
-            if contents.data[key].shape[1:] == (4,):
-                # This is a point or a vector
-                if np.allclose(
-                    contents.data[key][~np.isnan(contents.data[key][:, 3]), 3],
-                    1.0,
-                ):
-                    # This is a point
-                    self._oriented_points.data[key] = (
-                        geometry.get_global_coordinates(
-                            contents.data[key], rotation
-                        )
-                    )
-                else:
-                    # This is a vector
-                    if key in self._extended_vectors:
-                        self._oriented_points.data[key] = (
-                            geometry.get_global_coordinates(
-                                self._extended_vectors[key]["Scale"]
-                                * contents.data[key]
-                                + contents.data[
-                                    self._extended_vectors[key]["Origin"]
-                                ],
-                                rotation,
-                            )
-                        )
 
-            elif contents.data[key].shape[1:] == (4, 4):
-                # This is a frame
-                self._oriented_frames.data[key] = (
+            if geometry.is_frame_series(contents.data[key]):
+                # Simply rotate it and add it to processed frames
+                self._processed_frames.data[key] = (
                     geometry.get_global_coordinates(
                         contents.data[key], rotation
                     )
                 )
 
+            elif geometry.is_point_series(contents.data[key]):
+                # Simply rotate it and add it to processed points
+                self._processed_points.data[key] = (
+                    geometry.get_global_coordinates(
+                        contents.data[key], rotation
+                    )
+                )
+
+            elif (
+                geometry.is_vector_series(contents.data[key])
+                and key in self._extended_vectors
+            ):
+                # This is a vector. We must scale it and add it to an origin.
+                self._processed_points.data[key] = (
+                    geometry.get_global_coordinates(
+                        self._extended_vectors[key]["Scale"]
+                        * contents.data[key]
+                        + contents.data[self._extended_vectors[key]["Origin"]],
+                        rotation,
+                    )
+                )
+
+        # Orient target
         oriented_target = geometry.get_global_coordinates(
             np.array(
                 [[self._target[0], self._target[1], self._target[2], 1.0]]
@@ -1427,12 +1422,23 @@ class Player:
         )
 
     # %% Projection and update
+    def _recenter(self) -> None:
+        """Recenter the current view on the last selected point (tracking)."""
+        try:
+            new_target = self._processed_points.data[
+                self._last_selected_point
+            ][self.current_index]
+        except (KeyError, IndexError):
+            new_target = np.array([np.nan, np.nan, np.nan, np.nan])
+
+        if not np.isnan(np.sum(new_target)):
+            self.target = new_target
 
     def _project_to_camera(self, points_3d: np.ndarray) -> np.ndarray:
         """
         Get a 3d --> 2d projection of a list of points.
 
-        The method uses the class's camera variables to project a list of
+        The method uses the Player's camera properties to project a list of
         3d points onto a 2d canvas.
 
         Parameters
@@ -1592,7 +1598,7 @@ class Player:
 
     def _update_points_interconnections_vectors(self) -> None:
         # Get a Nx4 matrices of every point at the current index
-        points = self._oriented_points
+        points = self._processed_points
         if points is None:
             return
         else:
@@ -1688,7 +1694,7 @@ class Player:
 
         # Get three (3N)x4 matrices (for x, y and z lines) for the rigid bodies
         # at the current index
-        frames = self._oriented_frames
+        frames = self._processed_frames
         n_frames = len(frames.data)
         framex_data = np.empty([n_frames * 3, 4])
         framey_data = np.empty([n_frames * 3, 4])
@@ -1911,10 +1917,10 @@ class Player:
         initial_zoom = deepcopy(self.zoom)
         initial_target = deepcopy(self.target)
 
-        n_points = len(self._oriented_points.data)
+        n_points = len(self._processed_points.data)
         points = np.empty((n_points, 4))
-        for i_point, point in enumerate(self._oriented_points.data):
-            points[i_point] = self._oriented_points.data[point][
+        for i_point, point in enumerate(self._processed_points.data):
+            points[i_point] = self._processed_points.data[point][
                 self.current_index
             ]
 
@@ -1940,7 +1946,7 @@ class Player:
 
         # Set the new target
         self._target = np.array(target)
-        self._orient_contents()
+        self._process_contents()
 
         # Try to find a camera pan/zoom so that the view is similar
         res = optim.minimize(error_function, np.hstack((self.pan, self.zoom)))
@@ -1985,7 +1991,7 @@ class Player:
         """Implement callback for point selection."""
         if event.mouseevent.button == 1:
             index = event.ind
-            selected_point = list(self._oriented_points.data.keys())[index[0]]
+            selected_point = list(self._processed_points.data.keys())[index[0]]
             self.title_text = selected_point
 
             # Mark selected
@@ -2193,157 +2199,157 @@ class Player:
         self._running = False
         self._mpl_objects["Anim"].event_source.stop()
 
-    def connect(
-        self,
-        points: list[str],
-        *,
-        color: str | tuple[float, float, float] | None = None,
-        group: str | None = None,
-    ) -> None:
-        """
-        Connect two ore more points with a line.
+    # def connect(
+    #     self,
+    #     points: list[str],
+    #     *,
+    #     color: str | tuple[float, float, float] | None = None,
+    #     group: str | None = None,
+    # ) -> None:
+    #     """
+    #     Connect two ore more points with a line.
 
-        This is a shortcut function to easily add interconnections between
-        points, instead of accessing the whole interconnections dictionary
-        via get_interconnections and set_interconnections.
+    #     This is a shortcut function to easily add interconnections between
+    #     points, instead of accessing the whole interconnections dictionary
+    #     via get_interconnections and set_interconnections.
 
-        Parameters
-        ----------
-        points
-            A list of point names to connect. For example::
+    #     Parameters
+    #     ----------
+    #     points
+    #         A list of point names to connect. For example::
 
-                ["Point1", "Point2", "Point3"]
+    #             ["Point1", "Point2", "Point3"]
 
-            creates a line from Point1 to Point2, and another line from Point2
-            to Point3. To close the loop, we would use::
+    #         creates a line from Point1 to Point2, and another line from Point2
+    #         to Point3. To close the loop, we would use::
 
-                ["Point1", "Point2", "Point3", "Point1"]
+    #             ["Point1", "Point2", "Point3", "Point1"]
 
-        color
-            Optional. Can be a character as defined by Matplotlib, or a tuple
-            (RGB) where each RGB color is between 0.0 and 1.0.
+    #     color
+    #         Optional. Can be a character as defined by Matplotlib, or a tuple
+    #         (RGB) where each RGB color is between 0.0 and 1.0.
 
-        group
-            Optional. Used to group interconnections, such as "ArmR",
-            "Pelvis", "ForcePlateforms", etc. All interconnections in a group
-            share a same color.
+    #     group
+    #         Optional. Used to group interconnections, such as "ArmR",
+    #         "Pelvis", "ForcePlateforms", etc. All interconnections in a group
+    #         share a same color.
 
-        Returns
-        -------
-        None
-        
-        See Also
-        --------
-        ktk.Player.disconnect
+    #     Returns
+    #     -------
+    #     None
 
-        """
-        check_param("points", points, list, contents_type=str)
-        if group is not None:
-            check_param("group", group, str)
-        if color is not None:
-            color = _parse_color(color)
+    #     See Also
+    #     --------
+    #     ktk.Player.disconnect
 
-        # Start by unlinking these links since we will create them again
-        self.disconnect(points)
+    #     """
+    #     check_param("points", points, list, contents_type=str)
+    #     if group is not None:
+    #         check_param("group", group, str)
+    #     if color is not None:
+    #         color = _parse_color(color)
 
-        interconnections = self.get_interconnections()
+    #     # Start by unlinking these links since we will create them again
+    #     self.disconnect(points)
 
-        # Determine the final color for this group
-        if color is None:
-            try:
-                color = interconnections[group]["Color"]  # type: ignore
-            except KeyError:  # Either group or "Color" doesn't exist
-                color = self._default_interconnection_color
+    #     interconnections = self.get_interconnections()
 
-        # Determine final group name
-        if group is None:
-            group = _parse_group_name(color)  # type: ignore
+    #     # Determine the final color for this group
+    #     if color is None:
+    #         try:
+    #             color = interconnections[group]["Color"]  # type: ignore
+    #         except KeyError:  # Either group or "Color" doesn't exist
+    #             color = self._default_interconnection_color
 
-        # Add these links to the group
-        try:
-            interconnections[group]["Links"].append(points)
-        except KeyError:
-            interconnections[group] = {"Links": [points]}
+    #     # Determine final group name
+    #     if group is None:
+    #         group = _parse_group_name(color)  # type: ignore
 
-        # Apply color
-        interconnections[group]["Color"] = color
+    #     # Add these links to the group
+    #     try:
+    #         interconnections[group]["Links"].append(points)
+    #     except KeyError:
+    #         interconnections[group] = {"Links": [points]}
 
-        self.set_interconnections(interconnections)
+    #     # Apply color
+    #     interconnections[group]["Color"] = color
 
-    def disconnect(
-        self, points: list[str] | None = None, *, group: str | None = None
-    ) -> None:
-        """
-        Disconnect two or more points.
+    #     self.set_interconnections(interconnections)
 
-        This is a shortcut function to easily remove interconnections between
-        points, instead of accessing the whole interconnections dictionary
-        via get_interconnections and set_interconnections.
+    # def disconnect(
+    #     self, points: list[str] | None = None, *, group: str | None = None
+    # ) -> None:
+    #     """
+    #     Disconnect two or more points.
 
-        Parameters
-        ----------
-        points
-            Optional. A list of point names to disconnect. For example::
+    #     This is a shortcut function to easily remove interconnections between
+    #     points, instead of accessing the whole interconnections dictionary
+    #     via get_interconnections and set_interconnections.
 
-                ["Point1", "Point2", "Point3"]
+    #     Parameters
+    #     ----------
+    #     points
+    #         Optional. A list of point names to disconnect. For example::
 
-            removes the line between Point1 and Point2, and the line between
-            Point2 and Point3.
+    #             ["Point1", "Point2", "Point3"]
 
-        group
-            Optional. Removes every interconnection in this group.
+    #         removes the line between Point1 and Point2, and the line between
+    #         Point2 and Point3.
 
-        If neither points or group is provided, every connection is removed.
-        If both points and group are provided, links are only removed if they
-        belong to this group.
+    #     group
+    #         Optional. Removes every interconnection in this group.
 
-        Returns
-        -------
-        None.
-        
-        See Also
-        --------
-        ktk.Player.connect
+    #     If neither points or group is provided, every connection is removed.
+    #     If both points and group are provided, links are only removed if they
+    #     belong to this group.
 
-        """
-        if group is not None:
-            check_param("group", group, str)
-        if points is not None:
-            check_param("points", points, list, contents_type=str)
+    #     Returns
+    #     -------
+    #     None.
 
-        # We don't use get_interconnections to keep the tuples
-        interconnections = deepcopy(self._interconnections)
+    #     See Also
+    #     --------
+    #     ktk.Player.connect
 
-        if points is None:
-            if group is None:  # Nothing provided
-                # Remove everything
-                interconnections = {}
-            else:  # Only group provided
-                # Remove the whole group
-                try:
-                    interconnections.pop(group)
-                except KeyError:
-                    pass
-        else:
-            if group is None:  # Only links provided
-                # Remove links in all group
-                the_groups = list(interconnections.keys())
-            else:  # Both links and group provided
-                the_groups = [group]
+    #     """
+    #     if group is not None:
+    #         check_param("group", group, str)
+    #     if points is not None:
+    #         check_param("points", points, list, contents_type=str)
 
-            # Remove the links from each group
-            for i in range(len(points) - 1):
-                link = tuple(sorted([points[i], points[i + 1]]))
-                # Remove this link from the groups
-                for one_group in the_groups:
-                    try:
-                        interconnections[one_group]["Links"].remove(link)
-                    except ValueError:  # Link not in group
-                        pass
-                    except KeyError:  # Group not in interconnections
-                        pass
+    #     # We don't use get_interconnections to keep the tuples
+    #     interconnections = deepcopy(self._interconnections)
 
-        self.set_interconnections(interconnections)
+    #     if points is None:
+    #         if group is None:  # Nothing provided
+    #             # Remove everything
+    #             interconnections = {}
+    #         else:  # Only group provided
+    #             # Remove the whole group
+    #             try:
+    #                 interconnections.pop(group)
+    #             except KeyError:
+    #                 pass
+    #     else:
+    #         if group is None:  # Only links provided
+    #             # Remove links in all group
+    #             the_groups = list(interconnections.keys())
+    #         else:  # Both links and group provided
+    #             the_groups = [group]
+
+    #         # Remove the links from each group
+    #         for i in range(len(points) - 1):
+    #             link = tuple(sorted([points[i], points[i + 1]]))
+    #             # Remove this link from the groups
+    #             for one_group in the_groups:
+    #                 try:
+    #                     interconnections[one_group]["Links"].remove(link)
+    #                 except ValueError:  # Link not in group
+    #                     pass
+    #                 except KeyError:  # Group not in interconnections
+    #                     pass
+
+    #     self.set_interconnections(interconnections)
 
     def set_view(self, plane: str) -> None:
         """

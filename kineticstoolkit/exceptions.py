@@ -35,6 +35,31 @@ class TimeSeriesMergeConflictError(Exception):
     """Both TimeSeries have a same data key."""
 
 
+def raise_ktk_error(e) -> None:
+    """Re-raise an exception with a user message on how to report this bug."""
+    print(
+        "==================================================================\n"
+        "                     KINETICS TOOLKIT ERROR                       \n"
+        "==================================================================\n"
+        "An error has been encountered. This is most probably due to a bug \n"
+        "in Kinetics Toolkit. We all despise bugs, and it would be very    \n"
+        "nice if you could help by reporting this bug. To do so, please go \n"
+        "to https://github.com/kineticstoolkit/kineticstoolkit/issues,     \n"
+        "select 'New Issue' and fill the required information.             \n"
+        "                                                                  \n"
+        "Please include the whole error message, starting at line          \n"
+        "Traceback (most recent call last):                                \n"
+        "down to the end in the Traceback section of the bug report.       \n"
+        "                                                                  \n"
+        "Sorry that you encountered this problem and thank you for helping \n"
+        "us fixing it.                                                     \n"
+        "==================================================================\n"
+        "                PLEASE READ ERROR MESSAGE ABOVE                   \n"
+        "==================================================================\n"
+    )
+    raise (e)
+
+
 if __name__ == "__main__":  # pragma: no cover
     import doctest
 
