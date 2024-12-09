@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 FÃ©lix ChÃ©nier
+# Copyright 2020-2024 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@
 Tests for ktk.Player
 """
 
-__author__ = "FÃ©lix ChÃ©nier"
-__copyright__ = "Copyright (C) 2020-2024 FÃ©lix ChÃ©nier"
+__author__ = "Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 

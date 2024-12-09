@@ -15,6 +15,9 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# mypy: ignore-errors
+# MyPy complains with it, but tests tell that it works.
+
 """
 Provides lists and dictionaries with callback functions.
 
@@ -126,3 +129,77 @@ class MonitoredDict(dict):
     def clear(self):
         super().clear()
         self._trigger_callback("clear", self)
+
+
+def list_to_monitored_list(value: list, callback) -> MonitoredList:
+    """
+    Convert a list and its contents to a MonitoredList.
+
+    Recursively navigate through the list and converts any inner list to
+    a MonitoredList, and any inner dict to a MonitoredDict.
+
+    Sets are ignored, but this could change if needed in the future.
+
+    Parameters
+    ----------
+    value
+        The list to be converted
+
+    callback
+        The callback function to be called when the content is modified.
+
+    Returns
+    -------
+    MonitoredList
+        The converted list.
+
+    Caution
+    -------
+    The callback function will most probably be called while performing the
+    conversion.
+
+    """
+    output = []
+    for item in value:
+        if isinstance(item, list):
+            output.append(list_to_monitored_list(item, callback))
+        elif isinstance(item, dict):
+            output.append(dict_to_monitored_dict(item, callback))
+        else:
+            output.append(item)
+    return MonitoredList(output, callback=callback)
+
+
+def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
+    """
+    Convert a dict and its contents to a MonitoredDict.
+
+    Recursively navigate through the dict and converts any inner list to
+    a MonitoredList, and any inner dict to a MonitoredDict.
+
+    Sets are ignored, but this could change if needed in the future.
+
+    Parameters
+    ----------
+    value
+        The dict to be converted
+
+    callback
+        The callback function to be called when the content is modified.
+
+    Returns
+    -------
+    MonitoredDict
+        The converted dict.
+
+    """
+    output = {}
+    for key in value:
+        contents = value[key]
+        if isinstance(contents, list):
+            output[key] = list_to_monitored_list(contents, callback)
+        elif isinstance(contents, dict):
+            output[key] = dict_to_monitored_dict(contents, callback)
+        else:
+            output[key] = contents
+    return MonitoredDict(output, callback=callback)

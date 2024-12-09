@@ -32,7 +32,7 @@ from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit._repr import _format_dict_entries
-from kineticstoolkit.classes import MonitoredList, MonitoredDict
+from kineticstoolkit.classes import dict_to_monitored_dict
 from kineticstoolkit.exceptions import (
     TimeSeriesMergeConflictError,
     raise_ktk_error,
@@ -350,7 +350,6 @@ class Player:
     _interconnections: dict[str, dict[str, Any]]
     # Wildcard-extended interconnections, and with all fields including Color:
     _processed_interconnections: dict[str, dict[str, Any]]
-    _interconnections_callback_enabled: bool
     _vectors: dict[str, dict[str, Any]]
     _extended_vectors: dict[str, dict[str, Any]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
@@ -510,7 +509,6 @@ class Player:
 
         self._interconnections = interconnections  # Just to put stuff for now
         self._processed_interconnections = interconnections  # idem
-        self._interconnections_callback_enabled = False
         self._vectors = vectors  # idem
         self._extended_vectors = vectors  # idem
         self._selected_points = []
@@ -1170,54 +1168,8 @@ class Player:
         the MonitoredList and MonitoredDict callbacks. They are not used in
         this function.
         """
-        if self._interconnections_callback_enabled:
-            self._process_interconnections()
-            self._refresh()
-
-    def _monitor_interconnections(self) -> None:
-        """
-        Convert _interconnections to MonitoredDict and MonitoredList.
-
-        Cast to monitored dicts and lists so that we will call
-        _process_interconnections on each modification
-
-        """
-
-        def list_to_monitored_list(value: list, callback) -> MonitoredList:
-            output = MonitoredList(callback=callback)
-            for item in value:
-                if isinstance(item, list):
-                    output.append(list_to_monitored_list(item, callback))
-                elif isinstance(item, dict):
-                    output.append(dict_to_monitored_dict(item, callback))
-                else:
-                    output.append(item)
-            return output
-
-        def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
-            output = MonitoredDict(callback=callback)
-            for key in value:
-                if isinstance(value[key], list):
-                    output[key] = list_to_monitored_list(value[key], callback)
-                elif isinstance(value[key], dict):
-                    output[key] = dict_to_monitored_dict(value[key], callback)
-                else:
-                    output[key] = value[key]
-            return output
-
-        # Disable callbacks while we build the monitored structure
-        self._interconnections_callback_enabled = False
-        # Everything in a try so that callbacks can be re-enabled at the end
-        # with a finally. Any exception will be re-raised anyway.
-        try:
-            self._interconnections = dict_to_monitored_dict(
-                self._interconnections, self._interconnections_callback
-            )
-        except Exception as e:
-            raise e
-        finally:
-            # Re-enable callbacks
-            self._interconnections_callback_enabled = True
+        self._process_interconnections()
+        self._refresh()
 
     def _parse_interconnection_group(
         self, group: dict[str, Any]
@@ -1262,7 +1214,9 @@ class Player:
 
         """
         # Convert _interconnections to monitored dicts and lists
-        self._monitor_interconnections()
+        self._interconnections = dict_to_monitored_dict(
+            self._interconnections, callback=self._interconnections_callback
+        )
 
         # Parse _interconnections to a full-defined temporary value
         parsed_interconnections = dict()
