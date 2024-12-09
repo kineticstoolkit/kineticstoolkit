@@ -1009,7 +1009,16 @@ class Player:
 
     def __dir__(self):
         """Return directory."""
-        return ["play", "pause", "set_view", "close", "to_image", "to_video"]
+        return [
+            "play",
+            "pause",
+            "set_view",
+            "close",
+            "to_image",
+            "to_video",
+            "get_contents",
+            "set_contents",
+        ]
 
     def __str__(self) -> str:
         """Print a textual description of the Player properties."""
@@ -1111,14 +1120,12 @@ class Player:
         self._refresh()
 
     def get_interconnections(self) -> dict[str, dict[str, Any]]:
-        """Get interconnections value."""
+        """Get interconnections value (deprecated)."""
         return self._interconnections
 
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
-        """Set interconnections value."""
-        # TODO! Check structure - and eventually convert to an observable dict
-        self._interconnections = value
-        self._process_interconnections()
+        """Set interconnections value (deprecated)."""
+        self.interconnections = value
 
     def get_vectors(self) -> dict[str, dict[str, Any]]:
         """Get vectors value."""
@@ -1168,65 +1175,80 @@ class Player:
             self._refresh()
 
     def _monitor_interconnections(self) -> None:
-        """Convert _interconnections to MonitoredDict and MonitoredList."""
-        # Typecheck, cast to monitored dicts and lists so that we will call
-        # _process_interconnections on each modification
+        """
+        Convert _interconnections to MonitoredDict and MonitoredList.
+
+        Cast to monitored dicts and lists so that we will call
+        _process_interconnections on each modification
+
+        """
+
+        def list_to_monitored_list(value: list, callback) -> MonitoredList:
+            output = MonitoredList(callback=callback)
+            for item in value:
+                if isinstance(item, list):
+                    output.append(list_to_monitored_list(item, callback))
+                elif isinstance(item, dict):
+                    output.append(dict_to_monitored_dict(item, callback))
+                else:
+                    output.append(item)
+            return output
+
+        def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
+            output = MonitoredDict(callback=callback)
+            for key in value:
+                if isinstance(value[key], list):
+                    output[key] = list_to_monitored_list(value[key], callback)
+                elif isinstance(value[key], dict):
+                    output[key] = dict_to_monitored_dict(value[key], callback)
+                else:
+                    output[key] = value[key]
+            return output
 
         # Disable callbacks while we build the monitored structure
         self._interconnections_callback_enabled = False
-
-        source = self._interconnections
-        dest = MonitoredDict(callback=self._interconnections_callback)
-
-        for group in source:
-            check_param(
-                f"interconnections['{group}']",
-                source[group],
-                dict,
-                key_type=str,
+        # Everything in a try so that callbacks can be re-enabled at the end
+        # with a finally. Any exception will be re-raised anyway.
+        try:
+            self._interconnections = dict_to_monitored_dict(
+                self._interconnections, self._interconnections_callback
             )
-            dest[group] = MonitoredDict(
-                callback=self._interconnections_callback
+        except Exception as e:
+            raise e
+        finally:
+            # Re-enable callbacks
+            self._interconnections_callback_enabled = True
+
+    def _parse_interconnection_group(
+        self, group: dict[str, Any]
+    ) -> dict[str, Any]:
+        """Return a well-formatted group or raise a ValueError."""
+        output = dict()  # type: dict[str, Any]
+
+        # Add links
+        try:
+            output["Links"] = []
+            links = group["Links"]
+            for link in links:
+                dest_link = []
+                for point in link:
+                    if not isinstance(point, str):
+                        raise TypeError("Should be a string.")
+                    dest_link.append(point)
+                output["Links"].append(dest_link)
+        except (TypeError, KeyError, ValueError):
+            raise ValueError(
+                f"Impossible to parse interconnection group {group}."
             )
 
-            # Color
-            if "Color" in source[group]:
-                # Check if color parses (but save the original if it parses)
-                _parse_color(source[group]["Color"])
-                dest[group]["Color"] = source[group]["Color"]
+        # Add parsed color, create it if not existant
+        try:
+            color = group["Color"]
+        except KeyError:
+            color = self._default_interconnection_color
+        output["Color"] = _parse_color(color)
 
-            # Links
-            if "Links" in source[group]:
-
-                check_param(
-                    f"interconnections['{group}']['Links']",
-                    source[group]["Links"],
-                    list,
-                    contents_type=list,
-                )
-
-                dest[group]["Links"] = MonitoredList(
-                    callback=self._interconnections_callback
-                )
-                for i_chain, chain in enumerate(source[group]["Links"]):
-
-                    check_param(
-                        f"interconnections['{group}']['Links'][{i_chain}]",
-                        chain,
-                        list,
-                        contents_type=str,
-                    )
-
-                    dest[group]["Links"].append(
-                        MonitoredList(
-                            chain, callback=self._interconnections_callback
-                        )
-                    )
-
-        self._interconnections = dest
-
-        # Re-enable callbacks
-        self._interconnections_callback_enabled = True
+        return output
 
     def _process_interconnections(self) -> None:
         """
@@ -1234,23 +1256,37 @@ class Player:
 
         Update _processed_interconnections. Does not refresh.
 
+        We don't throw errors if interconnections is malformed, simply
+        because maybe it is being built. We try our best to parse what is
+        there.
+
         """
+        # Convert _interconnections to monitored dicts and lists
         self._monitor_interconnections()
+
+        # Parse _interconnections to a full-defined temporary value
+        parsed_interconnections = dict()
+        for group in self._interconnections:
+            try:
+                parsed_interconnections[group] = (
+                    self._parse_interconnection_group(
+                        self._interconnections[group]
+                    )
+                )
+            except ValueError:
+                pass  # Simply don't include this group as it's not valid.
 
         # Make a set of all patterns matched by the * in interconnection
         # point names.
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
         keys = list(self._contents.data.keys())
-        for body_name in self._interconnections:
-            try:
-                links = self._interconnections[body_name]["Links"]
-            except KeyError:
-                links = [[]]
 
+        for group in parsed_interconnections:
+            links = parsed_interconnections[group]["Links"]
             for i_link, link in enumerate(links):
                 for i_point, point in enumerate(link):
                     if point.startswith("*") and point.endswith("*"):
-                        raise ValueError(
+                        warnings.warn(
                             f"Point {point} found in interconnections. "
                             "Only one wildcard can be used, either as a "
                             "prefix or as a suffix."
@@ -1271,29 +1307,24 @@ class Player:
         # _interconnections
         self._processed_interconnections = dict()
         for pattern in patterns:
-            for body_name in self._interconnections:
-                body_key = f"{pattern}{body_name}"
-                self._processed_interconnections[body_key] = dict()
+            for group in parsed_interconnections:
+                extended_group_key = f"{pattern}{group}"
+                self._processed_interconnections[extended_group_key] = dict()
 
-                # Add parsed color, create it if not existant
-                try:
-                    color = self._interconnections[body_name]["Color"]
-                except KeyError:
-                    color = self._default_interconnection_color
-                self._processed_interconnections[body_key]["Color"] = (
-                    _parse_color(color)
-                )
+                self._processed_interconnections[extended_group_key][
+                    "Color"
+                ] = parsed_interconnections[group]["Color"]
 
                 # Add every link of this segment
-                self._processed_interconnections[body_key]["Links"] = []
-                try:
-                    links = self._interconnections[body_name]["Links"]
-                except KeyError:
-                    links = [[]]
+                self._processed_interconnections[extended_group_key][
+                    "Links"
+                ] = []
+
+                links = parsed_interconnections[group]["Links"]
                 for i_link, link in enumerate(links):
-                    self._processed_interconnections[body_key]["Links"].append(
-                        [s.replace("*", pattern) for s in link]
-                    )
+                    self._processed_interconnections[extended_group_key][
+                        "Links"
+                    ].append([s.replace("*", pattern) for s in link])
 
     def _extend_vectors(self) -> None:
         """Update self._extended_vectors. Does not refresh."""

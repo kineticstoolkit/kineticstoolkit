@@ -90,6 +90,7 @@ def test_instanciate():
         up="z",
     )
     plt.pause(0.2)
+    pl.close()
 
 
 def test_issue137():
@@ -328,6 +329,47 @@ def test_scripting():
         raise AssertionError(
             "The _processed_interconnections is not as expected."
         )
+
+    # %% Modify interconnections
+
+    # Should not crash, it's simply an empty interconnection being built
+    p.interconnections["Test"] = {}
+    assert p.interconnections["Test"] == {}
+
+    # Add links
+    p.interconnections["Test"]["Links"] = [["Viktor:T10", "Viktor:LASI"]]
+    assert p.interconnections["Test"] == {
+        "Links": [["Viktor:T10", "Viktor:LASI"]]
+    }
+
+    # Add a color as character, and check that it's not reformatted externally
+    # to a tuple, only internally.
+    p.interconnections["Test"]["Color"] = "r"
+    assert p.interconnections["Test"] == {
+        "Color": "r",
+        "Links": [["Viktor:T10", "Viktor:LASI"]],
+    }
+
+    # Remove the links, see if it still works without crashing
+    p.interconnections["Test"].pop("Links")
+    assert p.interconnections["Test"] == {"Color": "r"}
+
+    # Put back this link for the rest of this section
+    p.interconnections["Test"]["Links"] = [["Viktor:T10", "Viktor:LASI"]]
+
+    # Ensure that at least I have to provide a dict.
+    try:
+        p.interconnections = "r"
+        raise AssertionError("This should not pass.")
+    except TypeError:
+        pass
+
+    p.interconnections["Test"]["Links"][0] = [1, 2, 3]
+    p.interconnections["Test"]["Links"][0] = "r"
+    p.interconnections["Test"]["Links"] = "r"
+
+    # Remove this link for the rest
+    p.interconnections.pop("Test")
 
     # %% Front view
     p.azimuth = 0.0
