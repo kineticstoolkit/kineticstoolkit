@@ -32,6 +32,7 @@ from kineticstoolkit.timeseries import TimeSeries
 from kineticstoolkit.tools import check_interactive_backend
 import kineticstoolkit.geometry as geometry
 from kineticstoolkit._repr import _format_dict_entries
+from kineticstoolkit.classes import MonitoredList, MonitoredDict
 from kineticstoolkit.exceptions import (
     TimeSeriesMergeConflictError,
     raise_ktk_error,
@@ -347,7 +348,9 @@ class Player:
     _processed_frames: TimeSeries
     _oriented_target: tuple[float, float, float]
     _interconnections: dict[str, dict[str, Any]]
-    _extended_interconnections: dict[str, dict[str, Any]]
+    # Wildcard-extended interconnections, and with all fields including Color:
+    _processed_interconnections: dict[str, dict[str, Any]]
+    _interconnections_callback_enabled: bool
     _vectors: dict[str, dict[str, Any]]
     _extended_vectors: dict[str, dict[str, Any]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
@@ -506,7 +509,8 @@ class Player:
         self._oriented_target = (0.0, 0.0, 0.0)
 
         self._interconnections = interconnections  # Just to put stuff for now
-        self._extended_interconnections = interconnections  # idem
+        self._processed_interconnections = interconnections  # idem
+        self._interconnections_callback_enabled = False
         self._vectors = vectors  # idem
         self._extended_vectors = vectors  # idem
         self._selected_points = []
@@ -603,27 +607,17 @@ class Player:
 
     @property
     def interconnections(self):
-        """Use get_interconnections or set_interconnections instead."""
-        # Internally, interconnections is in the same form as the documented
-        # interconnections property, except for these changes:
-        # - Multi-link chains are converted to series of one link between two
-        #   points.
-        # - These links between two points are expressed as a tuple instead
-        #   of a list, with the points being ordered alphabetically. This is
-        #   to have only one hashable constant to express a link. They are
-        #   converted back to lists on get_interonnections.
-        raise AttributeError(
-            "Please use Player.get_interconnections() and "
-            "Player.set_interconnections() to read and write interconnections."
-        )
+        """Read/write interconnections."""
+        return self._interconnections
 
     @interconnections.setter
     def interconnections(self, value):
-        """Use get_interconnections or set_interconnections instead."""
-        raise AttributeError(
-            "Please use Player.get_interconnections() and "
-            "Player.set_interconnections() to read and write interconnections."
-        )
+        """Set interconnections value."""
+        check_param("interconnections", value, dict, key_type=str)
+        # Other checks during processing
+        self._interconnections = value
+        # Cast to MonitoredDict and MonitoredList in _process_interconnections
+        self._process_interconnections()
 
     @property
     def vectors(self):
@@ -1112,54 +1106,19 @@ class Player:
             self._contents = TimeSeries(time=[0])
 
         self._extend_vectors()
-        self._extend_interconnections()
+        self._process_interconnections()
         self._process_contents()
         self._refresh()
 
     def get_interconnections(self) -> dict[str, dict[str, Any]]:
         """Get interconnections value."""
-        # Change tuples for lists as in the original spec
-        output = deepcopy(self._interconnections)
-        for group in output:
-            for i_link, link in enumerate(output[group]["Links"]):
-                output[group]["Links"][i_link] = list(link)
-        return output
+        return self._interconnections
 
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
         """Set interconnections value."""
-        value = deepcopy(value)
-        check_param("value", value, dict, key_type=str, contents_type=dict)
-
-        for group in value:
-            check_param(f"value['{group}']", value[group], dict, key_type=str)
-
-            # Check color
-            if "Color" in value[group]:
-                value[group]["Color"] = _parse_color(value[group]["Color"])
-            else:
-                value[group]["Color"] = self._default_interconnection_color
-
-            new_links = []
-            if "Links" in value[group]:
-                check_param(
-                    f"value['{group}']['Links']", value[group]["Links"], list
-                )
-                for i_link, link in enumerate(value[group]["Links"]):
-                    check_param(
-                        f"value['{group}']['Links'][{i_link}]",
-                        link,
-                        list,
-                        contents_type=str,
-                    )
-                    for i in range(len(link) - 1):
-                        new_link = tuple(sorted([link[i], link[i + 1]]))
-                        if new_link not in new_links:
-                            new_links.append(new_link)
-            value[group]["Links"] = new_links if len(new_links) > 0 else [()]
-
+        # TODO! Check structure - and eventually convert to an observable dict
         self._interconnections = value
-        self._extend_interconnections()
-        self._refresh()
+        self._process_interconnections()
 
     def get_vectors(self) -> dict[str, dict[str, Any]]:
         """Get vectors value."""
@@ -1196,16 +1155,99 @@ class Player:
         self._process_contents()
         self._refresh()
 
-    def _extend_interconnections(self) -> None:
-        """Update self._extended_interconnections. Does not refresh."""
+    def _interconnections_callback(self, *args, **kwargs) -> None:
+        """
+        Process interconnection modification and refresh.
+
+        Parameters *args and **kwargs are only there to catch values sent by
+        the MonitoredList and MonitoredDict callbacks. They are not used in
+        this function.
+        """
+        if self._interconnections_callback_enabled:
+            self._process_interconnections()
+            self._refresh()
+
+    def _monitor_interconnections(self) -> None:
+        """Convert _interconnections to MonitoredDict and MonitoredList."""
+        # Typecheck, cast to monitored dicts and lists so that we will call
+        # _process_interconnections on each modification
+
+        # Disable callbacks while we build the monitored structure
+        self._interconnections_callback_enabled = False
+
+        source = self._interconnections
+        dest = MonitoredDict(callback=self._interconnections_callback)
+
+        for group in source:
+            check_param(
+                f"interconnections['{group}']",
+                source[group],
+                dict,
+                key_type=str,
+            )
+            dest[group] = MonitoredDict(
+                callback=self._interconnections_callback
+            )
+
+            # Color
+            if "Color" in source[group]:
+                # Check if color parses (but save the original if it parses)
+                _parse_color(source[group]["Color"])
+                dest[group]["Color"] = source[group]["Color"]
+
+            # Links
+            if "Links" in source[group]:
+
+                check_param(
+                    f"interconnections['{group}']['Links']",
+                    source[group]["Links"],
+                    list,
+                    contents_type=list,
+                )
+
+                dest[group]["Links"] = MonitoredList(
+                    callback=self._interconnections_callback
+                )
+                for i_chain, chain in enumerate(source[group]["Links"]):
+
+                    check_param(
+                        f"interconnections['{group}']['Links'][{i_chain}]",
+                        chain,
+                        list,
+                        contents_type=str,
+                    )
+
+                    dest[group]["Links"].append(
+                        MonitoredList(
+                            chain, callback=self._interconnections_callback
+                        )
+                    )
+
+        self._interconnections = dest
+
+        # Re-enable callbacks
+        self._interconnections_callback_enabled = True
+
+    def _process_interconnections(self) -> None:
+        """
+        Process interconnections after setting or modifying it.
+
+        Update _processed_interconnections. Does not refresh.
+
+        """
+        self._monitor_interconnections()
+
         # Make a set of all patterns matched by the * in interconnection
         # point names.
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
         keys = list(self._contents.data.keys())
         for body_name in self._interconnections:
-            for i_link, link in enumerate(
-                self._interconnections[body_name]["Links"]
-            ):
+            try:
+                links = self._interconnections[body_name]["Links"]
+            except KeyError:
+                links = [[]]
+
+            for i_link, link in enumerate(links):
                 for i_point, point in enumerate(link):
                     if point.startswith("*") and point.endswith("*"):
                         raise ValueError(
@@ -1223,28 +1265,34 @@ class Player:
                         for key in keys:
                             if key.startswith(point[:-1]):
                                 patterns.add(key[(len(point) - 1) :])
+
         # Extend every * to every pattern
-        self._extended_interconnections = dict()
+        # Also parse color or add default color if not present in
+        # _interconnections
+        self._processed_interconnections = dict()
         for pattern in patterns:
             for body_name in self._interconnections:
                 body_key = f"{pattern}{body_name}"
-                self._extended_interconnections[body_key] = dict()
-                self._extended_interconnections[body_key]["Color"] = (
-                    self._interconnections[body_name]["Color"]
+                self._processed_interconnections[body_key] = dict()
+
+                # Add parsed color, create it if not existant
+                try:
+                    color = self._interconnections[body_name]["Color"]
+                except KeyError:
+                    color = self._default_interconnection_color
+                self._processed_interconnections[body_key]["Color"] = (
+                    _parse_color(color)
                 )
 
-                # Go through every link of this segment
-                self._extended_interconnections[body_key]["Links"] = []
-                for i_link, link in enumerate(
-                    self._interconnections[body_name]["Links"]
-                ):
-                    self._extended_interconnections[body_key]["Links"].append(
-                        [
-                            s.replace("*", pattern)
-                            for s in self._interconnections[body_name][
-                                "Links"
-                            ][i_link]
-                        ]
+                # Add every link of this segment
+                self._processed_interconnections[body_key]["Links"] = []
+                try:
+                    links = self._interconnections[body_name]["Links"]
+                except KeyError:
+                    links = [[]]
+                for i_link, link in enumerate(links):
+                    self._processed_interconnections[body_key]["Links"].append(
+                        [s.replace("*", pattern) for s in link]
                     )
 
     def _extend_vectors(self) -> None:
@@ -1655,9 +1703,9 @@ class Player:
             )
 
         # Draw the interconnections
-        for interconnection in self._extended_interconnections:
+        for interconnection in self._processed_interconnections:
             coordinates = []
-            links = self._extended_interconnections[interconnection]["Links"]
+            links = self._processed_interconnections[interconnection]["Links"]
 
             for link in links:
                 for point in link:
@@ -1834,14 +1882,14 @@ class Player:
 
         # Create the interconnection plots
         self._mpl_objects["InterconnectionPlots"] = dict()
-        for interconnection in self._extended_interconnections:
+        for interconnection in self._processed_interconnections:
             self._mpl_objects["InterconnectionPlots"][
                 interconnection
             ] = self._mpl_objects["Axes"].plot(
                 np.nan,
                 np.nan,
                 "-",
-                c=self._extended_interconnections[interconnection]["Color"],
+                c=self._processed_interconnections[interconnection]["Color"],
                 linewidth=self._interconnection_width,
             )[
                 0
@@ -2198,158 +2246,6 @@ class Player:
         """Pause the animation."""
         self._running = False
         self._mpl_objects["Anim"].event_source.stop()
-
-    # def connect(
-    #     self,
-    #     points: list[str],
-    #     *,
-    #     color: str | tuple[float, float, float] | None = None,
-    #     group: str | None = None,
-    # ) -> None:
-    #     """
-    #     Connect two ore more points with a line.
-
-    #     This is a shortcut function to easily add interconnections between
-    #     points, instead of accessing the whole interconnections dictionary
-    #     via get_interconnections and set_interconnections.
-
-    #     Parameters
-    #     ----------
-    #     points
-    #         A list of point names to connect. For example::
-
-    #             ["Point1", "Point2", "Point3"]
-
-    #         creates a line from Point1 to Point2, and another line from Point2
-    #         to Point3. To close the loop, we would use::
-
-    #             ["Point1", "Point2", "Point3", "Point1"]
-
-    #     color
-    #         Optional. Can be a character as defined by Matplotlib, or a tuple
-    #         (RGB) where each RGB color is between 0.0 and 1.0.
-
-    #     group
-    #         Optional. Used to group interconnections, such as "ArmR",
-    #         "Pelvis", "ForcePlateforms", etc. All interconnections in a group
-    #         share a same color.
-
-    #     Returns
-    #     -------
-    #     None
-
-    #     See Also
-    #     --------
-    #     ktk.Player.disconnect
-
-    #     """
-    #     check_param("points", points, list, contents_type=str)
-    #     if group is not None:
-    #         check_param("group", group, str)
-    #     if color is not None:
-    #         color = _parse_color(color)
-
-    #     # Start by unlinking these links since we will create them again
-    #     self.disconnect(points)
-
-    #     interconnections = self.get_interconnections()
-
-    #     # Determine the final color for this group
-    #     if color is None:
-    #         try:
-    #             color = interconnections[group]["Color"]  # type: ignore
-    #         except KeyError:  # Either group or "Color" doesn't exist
-    #             color = self._default_interconnection_color
-
-    #     # Determine final group name
-    #     if group is None:
-    #         group = _parse_group_name(color)  # type: ignore
-
-    #     # Add these links to the group
-    #     try:
-    #         interconnections[group]["Links"].append(points)
-    #     except KeyError:
-    #         interconnections[group] = {"Links": [points]}
-
-    #     # Apply color
-    #     interconnections[group]["Color"] = color
-
-    #     self.set_interconnections(interconnections)
-
-    # def disconnect(
-    #     self, points: list[str] | None = None, *, group: str | None = None
-    # ) -> None:
-    #     """
-    #     Disconnect two or more points.
-
-    #     This is a shortcut function to easily remove interconnections between
-    #     points, instead of accessing the whole interconnections dictionary
-    #     via get_interconnections and set_interconnections.
-
-    #     Parameters
-    #     ----------
-    #     points
-    #         Optional. A list of point names to disconnect. For example::
-
-    #             ["Point1", "Point2", "Point3"]
-
-    #         removes the line between Point1 and Point2, and the line between
-    #         Point2 and Point3.
-
-    #     group
-    #         Optional. Removes every interconnection in this group.
-
-    #     If neither points or group is provided, every connection is removed.
-    #     If both points and group are provided, links are only removed if they
-    #     belong to this group.
-
-    #     Returns
-    #     -------
-    #     None.
-
-    #     See Also
-    #     --------
-    #     ktk.Player.connect
-
-    #     """
-    #     if group is not None:
-    #         check_param("group", group, str)
-    #     if points is not None:
-    #         check_param("points", points, list, contents_type=str)
-
-    #     # We don't use get_interconnections to keep the tuples
-    #     interconnections = deepcopy(self._interconnections)
-
-    #     if points is None:
-    #         if group is None:  # Nothing provided
-    #             # Remove everything
-    #             interconnections = {}
-    #         else:  # Only group provided
-    #             # Remove the whole group
-    #             try:
-    #                 interconnections.pop(group)
-    #             except KeyError:
-    #                 pass
-    #     else:
-    #         if group is None:  # Only links provided
-    #             # Remove links in all group
-    #             the_groups = list(interconnections.keys())
-    #         else:  # Both links and group provided
-    #             the_groups = [group]
-
-    #         # Remove the links from each group
-    #         for i in range(len(points) - 1):
-    #             link = tuple(sorted([points[i], points[i + 1]]))
-    #             # Remove this link from the groups
-    #             for one_group in the_groups:
-    #                 try:
-    #                     interconnections[one_group]["Links"].remove(link)
-    #                 except ValueError:  # Link not in group
-    #                     pass
-    #                 except KeyError:  # Group not in interconnections
-    #                     pass
-
-    #     self.set_interconnections(interconnections)
 
     def set_view(self, plane: str) -> None:
         """
