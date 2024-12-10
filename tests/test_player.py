@@ -440,8 +440,6 @@ def test_scripting():
     # %% Close
     p.close()
 
-    # %%
-
 
 def test_set_current_time():
     """Test that setting the current time on construction works."""
@@ -691,6 +689,28 @@ def test_interconnection_wildcards_as_suffix():
             "The _processed_interconnections dictionary is not as expected."
         )
     p.close()
+
+
+def test_vectors():
+    """Test vector management."""
+    c3d = ktk.read_c3d(
+        ktk.doc.download("c3d_test_suite/ezc3d/Qualisys.c3d"),
+        convert_point_unit=True,
+    )
+    p = ktk.Player(c3d["ForcePlatforms"], up="z")
+    # This should work as is
+    # Change vector color
+    p.vectors["*Force"]["Color"] = "r"
+    assert p.vectors == {
+        "*Force": {"Origin": "*COP", "Scale": 0.001, "Color": "r"}
+    }
+    # Use default color
+    p.vectors["*Force"].pop("Color")
+    assert p.vectors == {"*Force": {"Origin": "*COP", "Scale": 0.001}}
+    # Use malformed color (shouldn't crash)
+    p.vectors["*Force"]["Color"] = "malformed"
+    # Remove color again so that the vector reappears
+    p.vectors["*Force"].pop("Color")
 
 
 def test_old_parameter_names():

@@ -122,11 +122,6 @@ def _parse_color(
     return value
 
 
-def _parse_group_name(color: tuple[float, float, float]) -> str:
-    """Create an interconnection group name based on a color."""
-    return f"Color({color[0]:1.3f},{color[1]:1.3f},{color[2]:1.3f})"
-
-
 class Player:
     """
     A class that allows visualizing points and frames in 3D.
@@ -351,7 +346,7 @@ class Player:
     # Wildcard-extended interconnections, and with all fields including Color:
     _processed_interconnections: dict[str, dict[str, Any]]
     _vectors: dict[str, dict[str, Any]]
-    _extended_vectors: dict[str, dict[str, Any]]
+    _processed_vectors: dict[str, dict[str, Any]]
     _colors: set[tuple[float, float, float]]  # A list of all point colors
     _selected_points: list[str]  # List of point names
     _last_selected_point: str
@@ -510,7 +505,7 @@ class Player:
         self._interconnections = interconnections  # Just to put stuff for now
         self._processed_interconnections = interconnections  # idem
         self._vectors = vectors  # idem
-        self._extended_vectors = vectors  # idem
+        self._processed_vectors = vectors  # idem
         self._selected_points = []
         self._last_selected_point = ""
 
@@ -578,8 +573,8 @@ class Player:
         self._being_constructed = False
 
         self.set_contents(merged_ts)
-        self.set_vectors(vectors)
-        self.set_interconnections(interconnections)
+        self.vectors = vectors
+        self.interconnections = interconnections
         self.grid_origin = grid_origin  # Refresh grid
 
         # Now that everything is loaded, we can set the current time if
@@ -616,22 +611,25 @@ class Player:
         self._interconnections = value
         # Cast to MonitoredDict and MonitoredList in _process_interconnections
         self._process_interconnections()
+        if not self._being_constructed:
+            self._refresh()
 
     @property
     def vectors(self):
-        """Use get_vectors or set_vectors instead."""
-        raise AttributeError(
-            "Please use Player.get_vectors() and "
-            "Player.set_vectors() to read and write vectors."
-        )
+        """Read/write vectors."""
+        return self._vectors
 
     @vectors.setter
     def vectors(self, value):
-        """Use get_vectors or set_vectors instead."""
-        raise AttributeError(
-            "Please use Player.get_vectors() and "
-            "Player.set_vectors() to read and write vectors."
-        )
+        """Set vectors value."""
+        check_param("vectors", value, dict, key_type=str)
+        # Other checks during processing
+        self._vectors = value
+        # Cast to MonitoredDict and MonitoredList in _process_vectors
+        self._process_vectors()
+        self._process_contents()
+        if not self._being_constructed:
+            self._refresh()
 
     @property
     def current_index(self) -> int:
@@ -1112,53 +1110,12 @@ class Player:
         else:
             self._contents = TimeSeries(time=[0])
 
-        self._extend_vectors()
+        self._process_vectors()
         self._process_interconnections()
         self._process_contents()
         self._refresh()
 
-    def get_interconnections(self) -> dict[str, dict[str, Any]]:
-        """Get interconnections value (deprecated)."""
-        return self._interconnections
-
-    def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
-        """Set interconnections value (deprecated)."""
-        self.interconnections = value
-
-    def get_vectors(self) -> dict[str, dict[str, Any]]:
-        """Get vectors value."""
-        return self._vectors
-
-    def set_vectors(self, value: dict[str, dict[str, Any]]) -> None:
-        """Set vectors value."""
-        check_param("value", value, dict, key_type=str, contents_type=dict)
-        # Converts everything to the correct form
-        self._vectors = {}
-        for key in value:
-            check_param(f"value['{key}']", value[key], dict, key_type=str)
-
-            if "Origin" in value[key]:
-                check_param(
-                    f"value['{key}']['Origin']", value[key]["Origin"], str
-                )
-                self._vectors[key] = {"Origin": value[key]["Origin"]}
-            else:
-                raise ValueError(f"No origin set for vector {key}.")
-            if "Color" in value[key]:
-                self._vectors[key]["Color"] = _parse_color(value[key]["Color"])
-            else:
-                self._vectors[key]["Color"] = self._default_vector_color
-            if "Scale" in value[key]:
-                check_param(
-                    f"value['{key}']['Scale']", value[key]["Scale"], float
-                )
-                self._vectors[key]["Scale"] = value[key]["Scale"]
-            else:
-                self._vectors[key]["Scale"] = 1.0
-
-        self._extend_vectors()
-        self._process_contents()
-        self._refresh()
+    # %% Interconnection management
 
     def _interconnections_callback(self, *args, **kwargs) -> None:
         """
@@ -1245,6 +1202,7 @@ class Player:
                             "Only one wildcard can be used, either as a "
                             "prefix or as a suffix."
                         )
+                        continue
                     elif point.startswith("*"):
                         for key in keys:
                             if key.endswith(point[1:]):
@@ -1280,37 +1238,105 @@ class Player:
                         "Links"
                     ].append([s.replace("*", pattern) for s in link])
 
-    def _extend_vectors(self) -> None:
-        """Update self._extended_vectors. Does not refresh."""
+    # %% Vector management
+
+    def _vectors_callback(self, *args, **kwargs) -> None:
+        """
+        Process vector modification and refresh.
+
+        Parameters *args and **kwargs are only there to catch values sent by
+        the MonitoredList and MonitoredDict callbacks. They are not used in
+        this function.
+        """
+        self._process_vectors()
+        self._process_contents()  # Because points are dependents of vectors
+        self._refresh()
+
+    def _parse_vector(self, value: dict[str, Any]) -> dict[str, Any]:
+        """Return a well-formatted vector dict or raise a ValueError."""
+        output = {}
+        # Add origin
+        try:
+            origin = value["Origin"]
+            check_param("value['Origin']", origin, str)
+            output["Origin"] = origin
+        except KeyError:
+            raise ValueError("No origin")
+
+        # Add parsed color, create it if not existant
+        try:
+            color = value["Color"]
+        except KeyError:
+            color = self._default_vector_color
+        output["Color"] = _parse_color(color)
+
+        # Add scale, create it of not existant
+        try:
+            scale = float(value["Scale"])
+        except (KeyError, TypeError, ValueError):
+            scale = 1.0
+        output["Scale"] = scale
+
+        return output
+
+    def _process_vectors(self) -> None:
+        """
+        Process vectors after setting or modifying it.
+
+        Update _processed_vectors. Does not refresh.
+
+        We don't throw errors if vectors is malformed, simply
+        because maybe it is being built. We try our best to parse what is
+        there.
+
+        """
+        # Convert _vectors to monitored dicts and lists
+        self._vectors = dict_to_monitored_dict(
+            self._vectors, callback=self._vectors_callback
+        )
+
+        # Parse _vectors to a full-defined temporary value
+        parsed_vectors = dict()
+        for vector in self._vectors:
+            try:
+                parsed_vectors[vector] = self._parse_vector(
+                    self._vectors[vector]
+                )
+            except ValueError:
+                pass  # Simply don't include this vector as it's not valid.
+
         # Make a set of all patterns matched by the * in vectors
         patterns = {"__NO_WILD_CARD_DEFAULT_PATTERN__"}
         keys = list(self._contents.data.keys())
-        for vector in self._vectors:
-            point = self._vectors[vector]["Origin"]
+        for vector in parsed_vectors:
+            point = parsed_vectors[vector]["Origin"]
             if "*" not in vector and "*" not in point:
                 continue
             if vector.startswith("*") and vector.endswith("*"):
-                raise ValueError(
+                warnings.warn(
                     f"Vector {vector} found in vectors. "
                     "Only one wildcard can be used, either as a "
                     "prefix or as a suffix."
                 )
+                continue
             if point.startswith("*") and point.endswith("*"):
-                raise ValueError(
+                warnings.warn(
                     f"Point {point} found in vectors. "
                     "Only one wildcard can be used, either as a "
                     "prefix or as a suffix."
                 )
+                continue
             if (
                 (vector.startswith("*") and not point.startswith("*"))
                 or (not vector.startswith("*") and point.startswith("*"))
                 or (vector.endswith("*") and not point.endswith("*"))
                 or (not vector.endswith("*") and point.endswith("*"))
             ):
-                raise ValueError(
+                warnings.warn(
                     f"Vector {vector} and Point {point} must have matching "
                     "wildcards."
                 )
+                continue
             # Here, everything is correct. We have either starting or ending
             # wildcards in both points and vectors.
             if point.startswith("*"):
@@ -1323,21 +1349,23 @@ class Player:
                         patterns.add(key[(len(point) - 1) :])
 
         # Extend every * to every pattern
-        self._extended_vectors = dict()
+        self._processed_vectors = dict()
         for pattern in patterns:
-            for vector in self._vectors:
-                point = self._vectors[vector]["Origin"]
+            for vector in parsed_vectors:
+                point = parsed_vectors[vector]["Origin"]
                 new_vector = vector.replace("*", pattern)
                 new_point = point.replace("*", pattern)
                 if (
                     new_vector in self._contents.data
                     and new_point in self._contents.data
                 ):
-                    self._extended_vectors[new_vector] = {
+                    self._processed_vectors[new_vector] = {
                         "Origin": new_point,
-                        "Scale": self._vectors[vector]["Scale"],
-                        "Color": self._vectors[vector]["Color"],
+                        "Scale": parsed_vectors[vector]["Scale"],
+                        "Color": parsed_vectors[vector]["Color"],
                     }
+
+    # %% Contents management
 
     def _general_rotation(self) -> np.ndarray:
         """Return a 1x4x4 rotation matrix from up and anterior attributes."""
@@ -1429,14 +1457,16 @@ class Player:
 
             elif (
                 geometry.is_vector_series(contents.data[key])
-                and key in self._extended_vectors
+                and key in self._processed_vectors
             ):
                 # This is a vector. We must scale it and add it to an origin.
                 self._processed_points.data[key] = (
                     geometry.get_global_coordinates(
-                        self._extended_vectors[key]["Scale"]
+                        self._processed_vectors[key]["Scale"]
                         * contents.data[key]
-                        + contents.data[self._extended_vectors[key]["Origin"]],
+                        + contents.data[
+                            self._processed_vectors[key]["Origin"]
+                        ],
                         rotation,
                     )
                 )
@@ -1709,11 +1739,11 @@ class Player:
             ].set_data(np_coordinates[:, 0], np_coordinates[:, 1])
 
         # Draw the vectors
-        for vector in self._extended_vectors:
+        for vector in self._processed_vectors:
             np_coordinates = np.ones((2, 4))
             np_coordinates[0] = points.data[vector][self.current_index]
             np_coordinates[1] = points.data[
-                self._extended_vectors[vector]["Origin"]
+                self._processed_vectors[vector]["Origin"]
             ][self.current_index]
             np_coordinates = self._project_to_camera(np_coordinates)
 
@@ -1882,14 +1912,14 @@ class Player:
 
         # Create the vector plots
         self._mpl_objects["VectorPlots"] = dict()
-        for vector in self._extended_vectors:
+        for vector in self._processed_vectors:
             self._mpl_objects["VectorPlots"][vector] = self._mpl_objects[
                 "Axes"
             ].plot(
                 np.nan,
                 np.nan,
                 "-",
-                c=self._extended_vectors[vector]["Color"],
+                c=self._processed_vectors[vector]["Color"],
                 linewidth=self._vector_width,
             )[
                 0
@@ -2423,3 +2453,13 @@ class Player:
 
         self.title_text = ""
         self.current_index = 0
+
+    # %% To deprecate
+
+    def get_interconnections(self) -> dict[str, dict[str, Any]]:
+        """Get interconnections value (deprecated)."""
+        return self._interconnections
+
+    def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
+        """Set interconnections value (deprecated)."""
+        self.interconnections = value
