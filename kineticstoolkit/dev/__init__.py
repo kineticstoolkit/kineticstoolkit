@@ -33,6 +33,9 @@ __license__ = "Apache 2.0"
 
 import kineticstoolkit.config
 
+# Module(s) in development
+import kineticstoolkit.dev.kinetics as kinetics
+
 import os
 import subprocess
 import shutil
