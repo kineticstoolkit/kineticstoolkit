@@ -632,6 +632,22 @@ def test_add_data():
     except ValueError:
         pass
 
+    # Size matching
+    # With an empty TimeSeries
+    ts = ktk.TimeSeries()
+    ts.add_data("data", [1], in_place=True)
+    assert ts.data["data"] == np.array([1])
+
+    # With a TimeSeries with time
+    ts = ktk.TimeSeries(time=np.arange(10))
+    ts.add_data("data", [1], in_place=True)
+    assert np.all(ts.data["data"] == [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
+    # With a TimeSeries with data
+    ts = ktk.TimeSeries(data={"data1": np.arange(10)})
+    ts.add_data("data2", [1], in_place=True)
+    assert np.all(ts.data["data2"] == [1, 1, 1, 1, 1, 1, 1, 1, 1, 1])
+
 
 def test_rename_remove_data():
     ts = ktk.TimeSeries(time=np.arange(10))

@@ -1164,14 +1164,28 @@ class TimeSeries:
         """
         Add new data to the TimeSeries.
 
-        Conceptually, these two lines are equivalent::
+        Although we can directly assign values to the `data` property::
 
             timeseries.data["name"] = value
-            timeseries = timeseries.add_data(name, value)
 
-        However, using add_data performs additional checks to ensure that no
-        existing data is overwritten, and that time is matching for all data.
-        See Raises section for more information on these checks.
+        this method provides an alternative way to add data to the TimeSeries::
+
+            timeseries = timeseries.add_data(name, value, ...)
+
+        with the following advantages:
+
+        **Overwrite prevention**: Setting the overwrite argument determines
+        explicitly if you want existing data with the same name to be
+        overwritten or not.
+
+        **Size check**: Additional data is compared to the contents of the
+        TimeSeries to ensure that it has the correct dimensions. See Raises
+        section for more information.
+
+        **Size matching**: Constant "series" such as [3.0], which is a
+        one-sample series of 3.0, are automatically expanded to match the size
+        of the TimeSeries. For example, if the TimeSeries has 4 samples, then
+        the input data is expanded to [3.0, 3.0, 3.0, 3.0].
 
         Parameters
         ----------
@@ -1207,8 +1221,8 @@ class TimeSeries:
         ktk.TimeSeries.rename_data
         ktk.TimeSeries.remove_data
 
-        Example
-        -------
+        Examples
+        --------
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_data("data1", [1.0, 2.0, 3.0])
         >>> ts = ts.add_data("data2", [4.0, 5.0, 6.0])
@@ -1216,6 +1230,17 @@ class TimeSeries:
         TimeSeries with attributes:
                  time: array([], dtype=float64)
                  data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
+            time_info: {'Unit': 's'}
+            data_info: {}
+               events: []
+
+        # Size matching example
+        >>> ts = ktk.TimeSeries(time = [0.0, 0.1, 0.2, 0.3])
+        >>> ts = ts.add_data("data1", [9.9])
+        >>> ts
+        TimeSeries with attributes:
+                 time: array([0. , 0.1, 0.2, 0.3])
+                 data: {'data1': array([9.9, 9.9, 9.9, 9.9])}
             time_info: {'Unit': 's'}
             data_info: {}
                events: []
@@ -1228,6 +1253,18 @@ class TimeSeries:
 
         # Cast data
         data_to_add = np.array(data_value)  # Will be set at the very end
+
+        # Check the size of the TimeSeries
+        if ts.time.shape[0] != 0:
+            n_samples = ts.time.shape[0]
+        elif len(ts.data) > 0:
+            n_samples = ts.data[list(ts.data.keys())[0]].shape[0]
+        else:
+            n_samples = 0
+
+        # Expand the input to n_sample if it's a constant series
+        if data_to_add.shape[0] == 1 and n_samples > 0:
+            data_to_add = np.repeat(data_to_add, n_samples, axis=0)
 
         # Check that the data fits with the TimeSeries' time (if it exists)
         if ts.time.shape[0] != 0:
@@ -2915,7 +2952,7 @@ class TimeSeries:
         inclusive
             Optional. Either a bool or a tuple of two bools. Used to
             specify which times are returned:
-                
+
             - False or (False, False) (default): event1.time < time < event2.time
             - True or (True, True): event1.time <= time <= event2.time
             - (True, False): event1.time <= time < event2.time
