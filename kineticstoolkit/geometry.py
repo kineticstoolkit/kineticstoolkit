@@ -41,21 +41,25 @@ import kineticstoolkit as ktk  # For doctests
 def __dir__():
     return [
         "matmul",
-        "create_transforms",
         "get_angles",
-        "create_frames",
         "get_local_coordinates",
         "get_global_coordinates",
         "isnan",
         "is_frame_series",
         "is_point_series",
         "is_vector_series",
+        "to_frame_series",
+        "to_point_series",
+        "to_vector_series",
         "register_points",
         "rotate",
         "translate",
         "scale",
         "mirror",
     ]
+
+
+# %% Matrix multiplication and inverse
 
 
 def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
@@ -167,151 +171,7 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
     return out
 
 
-def create_transforms(
-    seq: str | None = None,
-    angles: ArrayLike | None = None,
-    translations: ArrayLike | None = None,
-    scales: ArrayLike | None = None,
-    *,
-    degrees=False,
-) -> np.ndarray:
-    """
-    Create series of transforms based on angles, translations and scales.
-
-    Create an Nx4x4 series of homogeneous transform matrices based on series of
-    angles, translations and scales.
-
-    Parameters
-    ----------
-    seq
-        Optional. Specifies sequence of axes for rotations. Up to 3 characters
-        belonging to the set {"X", "Y", "Z"} for intrinsic rotations (moving
-        axes), or {"x", "y", "z"} for extrinsic rotations (fixed axes).
-        Extrinsic and intrinsic rotations cannot be mixed in one function call.
-        Required if angles is specified.
-
-    angles
-        Optional array_like of shape (N,) or (N, [1 or 2 or 3]). Angles are
-        specified in radians (if degrees is False) or degrees (if degrees is
-        True).
-
-        For a single-character `seq`, `angles` can be:
-
-        - array_like with shape (N,), where each `angle[i]` corresponds to a
-          single rotation;
-        - array_like with shape (N, 1), where each `angle[i, 0]` corresponds
-          to a single rotation.
-
-        For 2- and 3-character `seq`, `angles` is an array_like with shape
-        (N, W) where each `angle[i, :]` corresponds to a sequence of Euler
-        angles and W is the length of `seq`.
-
-    translations
-        Optional array_like of shape (N, 3) or (N, 4). This corresponds
-        to the translation part of the generated series of homogeneous
-        transforms.
-
-    scales
-        Optional array_like of shape (N, ) that corresponds to the scale to
-        apply uniformly on the three axes. By default, no scale is included.
-
-    degrees
-        If True, then the given angles are in degrees. Default is False.
-
-    Returns
-    -------
-    np.ndarray
-        An Nx4x4 series of homogeneous transforms.
-
-    See Also
-    --------
-    ktk.geometry.create_frames, ktk.geometry.rotate, ktk.geometry.translate,
-    ktk.geometry.scale
-
-    Examples
-    --------
-    Create a series of two homogeneous transforms that rotates 0, then 90
-    degrees around x:
-
-        >>> import kineticstoolkit.lab as ktk
-        >>> ktk.geometry.create_transforms(seq="x", angles=[0, 90], degrees=True)
-        array([[[ 1.,  0.,  0.,  0.],
-                [ 0.,  1.,  0.,  0.],
-                [ 0.,  0.,  1.,  0.],
-                [ 0.,  0.,  0.,  1.]],
-        <BLANKLINE>
-               [[ 1.,  0.,  0.,  0.],
-                [ 0.,  0., -1.,  0.],
-                [ 0.,  1.,  0.,  0.],
-                [ 0.,  0.,  0.,  1.]]])
-
-    Create an homogeneous transform that converts millimeters to meters
-
-        >>> import kineticstoolkit.lab as ktk
-        >>> ktk.geometry.create_transforms(scales=[0.001])
-        array([[[0.001, 0.   , 0.   , 0.   ],
-                [0.   , 0.001, 0.   , 0.   ],
-                [0.   , 0.   , 0.001, 0.   ],
-                [0.   , 0.   , 0.   , 1.   ]]])
-
-    """
-    check_param("seq", seq, (str, None))
-    check_param("degrees", degrees, bool)
-
-    # Condition translations
-    if translations is None:
-        translations_array = np.zeros((1, 3))
-    else:
-        translations_array = np.array(translations)
-
-    # Condition angles
-    if angles is None:
-        angles_array = np.array([0])
-        seq = "x"
-    else:
-        angles_array = np.array(angles)
-
-    # Condition scales
-    if scales is None:
-        scales_array = np.array([1])
-    else:
-        scales_array = np.array(scales)
-
-    # Convert scales to a series of scaling matrices
-    temp = np.zeros((scales_array.shape[0], 4, 4))
-    temp[:, 0, 0] = scales_array
-    temp[:, 1, 1] = scales_array
-    temp[:, 2, 2] = scales_array
-    temp[:, 3, 3] = 1.0
-    scales_array = temp
-
-    # Match sizes
-    translations_array, angles_array = _match_size(
-        translations_array, angles_array
-    )
-    translations_array, scales_array = _match_size(
-        translations_array, scales_array
-    )
-    translations_array, angles_array = _match_size(
-        translations_array, angles_array
-    )
-    n_samples = angles_array.shape[0]
-
-    # Create the rotation matrix
-    rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
-    R = rotation.as_matrix()
-    if len(R.shape) == 2:  # Single rotation: add the Time dimension.
-        R = R[np.newaxis, ...]
-
-    # Construct the final series of transforms (without scaling)
-    T = np.empty((n_samples, 4, 4))
-    T[:, 0:3, 0:3] = R
-    T[:, 0:3, 3] = translations_array
-    T[:, 3, 0:3] = 0
-    T[:, 3, 3] = 1
-
-    # Return the scaling + transform
-    return T @ scales_array
+# %% Rotate, translate, scale, mirror
 
 
 def rotate(
@@ -510,6 +370,9 @@ def mirror(coordinates, /, axis: str = "z"):
     return retval
 
 
+# %% Data extraction
+
+
 def get_angles(
     T: ArrayLike, seq: str, degrees: bool = False, flip: bool = False
 ) -> np.ndarray:
@@ -597,106 +460,6 @@ def get_angles(
             angles[:, 2] = np.mod(angles[:, 2], 2 * offset) - offset
 
     return angles
-
-
-def create_frames(
-    origin: ArrayLike,
-    x: ArrayLike | None = None,
-    y: ArrayLike | None = None,
-    z: ArrayLike | None = None,
-    xy: ArrayLike | None = None,
-    xz: ArrayLike | None = None,
-    yz: ArrayLike | None = None,
-) -> np.ndarray:
-    """
-    Create an Nx4x4 series of frames based on series of points and vectors.
-
-    Parameters
-    ----------
-    origin
-        A series of N points (Nx4) that corresponds to the origin of the
-        series of frames to be created.
-
-    x, y, z
-        Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
-        are aligned toward the {x|y|z} series of frames to be created.
-
-    xy, xz
-        Only if `x` is specified. A series of N vectors (Nx4) in the {xy|xz}
-        plane of the series of frames to be created. As a rule of thumb, use
-        a series of N vectors that correspond roughly to the {z|-y} axis.
-
-    xy, yz
-        Only if `y` is specified. A series of N vectors (Nx4) in the {xy|yz}
-        plane of the series of frames to be created. As a rule of thumb, use
-        a series of N vectors that correspond roughly to the {z|x} axis.
-
-    xz, yz
-        Only if `z` is specified. A series of N vectors (Nx4) in the {xz|yz}
-        plane of the series of frames to be created. As a rule of thumb, use
-        a series of N vectors that correspond roughly to the {-y|x} axis.
-
-    Returns
-    -------
-    np.ndarray
-        Series of frames (Nx4x4).
-
-    See Also
-    --------
-    ktk.geometry.create_transforms
-
-    """
-
-    def normalize(v):
-        """Normalize series of vectors."""
-        norm = np.linalg.norm(v, axis=1)
-        return v / norm[..., np.newaxis]
-
-    def cross(v1, v2):
-        """Cross on series of vectors of length 4."""
-        c = v1.copy()
-        c[:, 0:3] = np.cross(v1[:, 0:3], v2[:, 0:3])
-        return c
-
-    origin = np.array(origin)
-
-    if x is not None:
-        v_x = normalize(np.array(x))
-        if xy is not None:
-            v_z = normalize(cross(v_x, np.array(xy)))
-            v_y = cross(v_z, v_x)
-        elif xz is not None:
-            v_y = -normalize(cross(v_x, np.array(xz)))
-            v_z = cross(v_x, v_y)
-        else:
-            raise ValueError("Either xy or xz must be set.")
-
-    elif y is not None:
-        v_y = normalize(np.array(y))
-        if yz is not None:
-            v_x = normalize(cross(v_y, np.array(yz)))
-            v_z = cross(v_x, v_y)
-        elif xy is not None:
-            v_z = -normalize(cross(v_y, np.array(xy)))
-            v_x = cross(v_y, v_z)
-        else:
-            raise ValueError("Either xy or yz must be set.")
-
-    elif z is not None:
-        v_z = normalize(np.array(z))
-        if xz is not None:
-            v_y = normalize(cross(v_z, np.array(xz)))
-            v_x = cross(v_y, v_z)
-        elif yz is not None:
-            v_x = -normalize(cross(v_z, np.array(yz)))
-            v_y = cross(v_z, v_x)
-        else:
-            raise ValueError("Either yz or xz must be set.")
-
-    else:
-        raise ValueError("Either x, y or z must be set.")
-
-    return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
 def get_local_coordinates(
@@ -801,6 +564,9 @@ def get_global_coordinates(
         reference_frames_array, local_coordinates_array
     )
     return global_coordinates
+
+
+# %% "is" functions
 
 
 def isnan(array: ArrayLike, /) -> np.ndarray:
@@ -928,6 +694,56 @@ def is_vector_series(array: ArrayLike) -> bool:
 
 
 # %% to_frame_series
+
+# -------------
+# From matrices
+# -------------
+
+
+def _matrices_to_frame_series(matrices: ArrayLike) -> np.ndarray:
+    """Implement matrix form of _to_frame_series (rotational part)."""
+    if is_frame_series(matrices):
+        # Nothing to do
+        return np.array(matrices)
+    else:
+        matrices_array = np.array(matrices)
+        output = np.zeros((matrices_array.shape[0], 4, 4))
+        output[:, 0:3, 0:3] = matrices_array[:, 0:3, 0:3]
+        output[:, 3, 3] = 1
+
+        if not np.all(isnan(output)) and not is_frame_series(output):
+            raise ValueError(
+                "The provided matrices are not a series of rotation matrices "
+                "or homogeneous transforms."
+            )
+        return output
+
+
+def _angles_to_frame_series(
+    *,
+    angles: ArrayLike,
+    seq: str | None = None,
+    degrees: bool = False,
+    origin: ArrayLike | None = None,
+    length: int | None = None,
+) -> np.ndarray:
+    """Implement angles form of to_frame_series (rotational part)."""
+    # Condition angles
+    angles_array = np.array(angles)
+    n_samples = angles_array.shape[0]
+
+    # Create the rotation matrix
+    rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
+    R = rotation.as_matrix()
+    if len(R.shape) == 2:  # Single rotation: add the Time dimension.
+        R = R[np.newaxis, ...]
+
+    # Construct and return the output
+    output = np.zeros((n_samples, 4, 4))
+    output[:, 0:3, 0:3] = R
+    return output
+
+
 @overload
 def to_frame_series(
     matrices: ArrayLike,
@@ -937,40 +753,8 @@ def to_frame_series(
 ) -> np.ndarray: ...
 
 
-def _matrices_to_frame_series(
-    matrices: ArrayLike,
-    *,
-    origin: ArrayLike | None = None,
-    length: int | None = None,
-) -> np.ndarray:
-    if is_frame_series(matrices) and (
-        length is None or matrices.shape[0] == length
-    ):
-        # Nothing to do
-        return matrices
-
-    if origin is not None:
-        origin = to_point_series(origin, length=length)
-    else:
-        origin = to_point_series([[0.0, 0.0, 0.0, 1.0]], length=length)
-
-    matrices_array = np.array(matrices)
-    output = np.zeros(matrices_array.shape[0], 4, 4)
-    output[:, 0:3, 0:3] = matrices_array[:, 0:3, 0:3]
-    output[:, :, 3] = origin
-
-    if not np.all(isnan(output)) and not is_frame_series(output):
-        raise ValueError(
-            "The provided matrices are not a series of rotation matrices "
-            "or homogeneous transforms."
-        )
-
-    return output
-
-
 @overload
 def to_frame_series(
-    matrices: None,
     *,
     angles: ArrayLike,
     seq: str | None = None,
@@ -982,7 +766,6 @@ def to_frame_series(
 
 @overload
 def to_frame_series(
-    matrices: None,
     *,
     x: ArrayLike | None = None,
     y: ArrayLike | None = None,
@@ -1013,6 +796,8 @@ def to_frame_series(
     """
     Construct an Nx4x4 frame series from multiple input forms.
 
+    **Matrix input**
+
     If the input is a series of 3x3 rotation matrixes or 4x4 homogeneous
     matrices, use this form::
 
@@ -1022,6 +807,8 @@ def to_frame_series(
             origin: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
+
+    **Angle input**
 
     If the input is a series of Euler/cardan angles, use this form::
 
@@ -1033,6 +820,8 @@ def to_frame_series(
             origin: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
+
+    **Vector input (cross-product)**
 
     To create frames based on the cross product of different vectors, use this
     form, where exactly one of {x, y, z} and exactly one of {xy, xz, yz} must
@@ -1051,8 +840,8 @@ def to_frame_series(
             ) -> np.ndarray
 
 
-    Parameters (from Nx3x3 or Nx4x4 matrix series)
-    ----------------------------------------------
+    Parameters (matrix input)
+    -------------------------
     matrices
         Nx3x3 series or rotations or Nx4x4 series of homogeneous transforms.
 
@@ -1063,13 +852,13 @@ def to_frame_series(
         inputs.
 
     length
-        Optional. The number of samples in the resulting point series. If there is only
-        one sample in the original array, this one sample will be duplicated
-        to match length. Otherwise, an error is raised if the input
+        Optional. The number of samples in the resulting point series. If there
+        is only one sample in the original array, this one sample will be
+        duplicated to match length. Otherwise, an error is raised if the input
         array does not match length.
 
-    Parameters (from Euler/cardan angle series)
-    -------------------------------------------
+    Parameters (angle input)
+    ------------------------
     angles
         Series of angles, either of shape (N,) or (N, 1) for rotations around
         only one axis, or (N, 2) or (N, 3) for rotations around consecutive
@@ -1091,13 +880,13 @@ def to_frame_series(
         of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]].
 
     length
-        Optional. The number of samples in the resulting point series. If there is only
-        one sample in the original array, this one sample will be duplicated
-        to match length. Otherwise, an error is raised if the input
+        Optional. The number of samples in the resulting point series. If there
+        is only one sample in the original array, this one sample will be
+        duplicated to match length. Otherwise, an error is raised if the input
         array does not match length.
 
-    Parameters (from the cross product of vector series)
-    ----------------------------------------------------
+    Parameters (vector input)
+    -------------------------
     x, y, z
         Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
         are aligned toward the {x|y|z} axis of the frames to be created.
@@ -1122,13 +911,100 @@ def to_frame_series(
         of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]].
 
     length
-        Optional. The number of samples in the resulting point series. If there is only
-        one sample in the original array, this one sample will be duplicated
-        to match length. Otherwise, an error is raised if the input
+        Optional. The number of samples in the resulting point series. If there
+        is only one sample in the original array, this one sample will be
+        duplicated to match length. Otherwise, an error is raised if the input
         array does not match length.
 
+    Returns
+    -------
+    np.ndarray
+        An Nx4x4 series of frames.
+
+    Examples
+    --------
+    **Matrix input**
+
+    Convert a 2x3x3 rotation matrix series and a 1x4 position series to
+    an 2x4x4 homogeneous transform series:
+
+    >>> rotation = [[[ 1.,  0.,  0.],
+    ...              [ 0.,  1.,  0.],
+    ...              [ 0.,  0.,  1.]],
+    ...             [[ 1.,  0.,  0.],
+    ...              [ 0.,  0., -1.],
+    ...              [ 0.,  1.,  0.]]]
+    >>> origin = [[0.5, 0.6, 0.7]]
+    >>> ktk.geometry.to_frame_series(rotation, origin=origin)
+    array([[[ 1. ,  0. ,  0. ,  0.5],
+            [ 0. ,  1. ,  0. ,  0.6],
+            [ 0. ,  0. ,  1. ,  0.7],
+            [ 0. ,  0. ,  0. ,  1. ]],
+    <BLANKLINE>
+           [[ 1. ,  0. ,  0. ,  0.5],
+            [ 0. ,  0. , -1. ,  0.6],
+            [ 0. ,  1. ,  0. ,  0.7],
+            [ 0. ,  0. ,  0. ,  1. ]]])
+
+    **Angle input**
+
+    Create a series of two homogeneous transforms that rotates 0, then 90
+    degrees around x:
+
+    >>> ktk.geometry.to_frame_series(angles=[0, 90], seq="x", degrees=True)
+    array([[[ 1.,  0.,  0.,  0.],
+            [ 0.,  1.,  0.,  0.],
+            [ 0.,  0.,  1.,  0.],
+            [ 0.,  0.,  0.,  1.]],
+    <BLANKLINE>
+           [[ 1.,  0.,  0.,  0.],
+            [ 0.,  0., -1.,  0.],
+            [ 0.,  1.,  0.,  0.],
+            [ 0.,  0.,  0.,  1.]]])
+
     """
-    return _matrices_to_frame_series(matrices, origin=origin, length=length)
+    # Check params
+    if seq is not None:
+        check_param("seq", seq, str)
+    if degrees is not None:
+        check_param("degrees", degrees, bool)
+    if length is not None:
+        check_param("length", length, int)
+
+    # Form the rotational part using the correct implementation
+    if matrices is not None:
+        output = _matrices_to_frame_series(matrices)
+    elif angles is not None:
+        output = _angles_to_frame_series(
+            angles=angles, seq=seq, degrees=degrees
+        )
+
+    # Match length and add origin
+    if length is not None:
+        if output.shape[0] == 1:
+            output = np.repeat(output, length, axis=0)
+        elif output.shape[0] != length:
+            raise ValueError(
+                f"The provided input must have a length of 1 or {length}"
+                f"but it has a length of {output.shape[0]}."
+            )
+
+    if origin is not None:
+        try:
+            origin = to_point_series(origin, length=length)
+        except ValueError as e:
+            raise ValueError(f"Parameter origin is invalid: {e}")
+    else:
+        try:
+            origin = to_point_series([[0.0, 0.0, 0.0, 1.0]], length=length)
+        except ValueError as e:
+            raise ValueError(f"Parameter origin is invalid: {e}")
+
+    output[:, :, 3] = origin
+    return output
+
+
+# %% to_point_series, to_vector_series
 
 
 def _to_point_vector_series(
@@ -1137,14 +1013,14 @@ def _to_point_vector_series(
     """Implement of to_point_series and to_vector_series."""
     np_array = np.array(array)
     if len(np_array.shape) != 2 or np_array.shape[1] != 3:
-        raise ValueError("The input array must be of shape Nx3 or Nx4.")
+        raise ValueError("Array must be of shape Nx3 or Nx4.")
     if (
         length is not None
         and np_array.shape[0] != 1
         and np_array.shape[0] != length
     ):
         raise ValueError(
-            f"The input array must have {length} samples, however it has "
+            f"Array must have {length} samples, however it has "
             f"{np_array.shape[0]} samples."
         )
 
@@ -1199,10 +1075,11 @@ def to_point_series(
     array([[1., 2., 3., 1.]])
 
     """
+    array = np.array(array)
     if is_point_series(array) and (length is None or array.shape[0] == length):
         # Nothing to do, maybe just ensure that we return an array because
         # is_point_series accept any ArrayLike.
-        return np.array(array)
+        return array
 
     # Here we must have Nx3
     return _to_point_vector_series(array, 1.0)
@@ -1244,15 +1121,80 @@ def to_vector_series(
     array([[1., 2., 3., 0.]])
 
     """
+    array = np.array(array)
     if is_vector_series(array) and (
         length is None or array.shape[0] == length
     ):
         # Nothing to do, maybe just ensure that we return an array because
         # is_point_series accept any ArrayLike.
-        return np.array(array)
+        return array
 
     # Here we must have Nx3
     return _to_point_vector_series(array, 0.0, length=length)
+
+
+# %% Point registration
+def register_points(
+    global_points: ArrayLike, local_points: ArrayLike
+) -> np.ndarray:
+    """
+    Find the homogeneous transforms between two series of point clouds.
+
+    Parameters
+    ----------
+    global_points
+        Destination points as an Nx4xM series of N sets of M points.
+    local_points
+        Local points as an array of shape Nx4xM series of N sets of M points.
+        global_points and local_points must have the same shape.
+
+    Returns
+    -------
+    np.ndarray
+        Array of shape Nx4x4, expressing a series of 4x4 homogeneous
+        transforms.
+
+    """
+    global_points = np.array(global_points)
+    local_points = np.array(local_points)
+
+    n_samples = global_points.shape[0]
+
+    # Prealloc the transformation matrix
+    T = np.zeros((n_samples, 4, 4))
+    T[:, 3, 3] = np.ones(n_samples)
+
+    for i_sample in range(n_samples):
+        # Identify which global points are visible
+        sample_global_points = global_points[i_sample]
+        sample_global_points_missing = np.isnan(
+            np.sum(sample_global_points, axis=0)
+        )
+
+        # Identify which local points are visible
+        sample_local_points = local_points[i_sample]
+        sample_local_points_missing = np.isnan(
+            np.sum(sample_local_points, axis=0)
+        )
+
+        sample_points_missing = np.logical_or(
+            sample_global_points_missing, sample_local_points_missing
+        )
+
+        # If at least 3 common points are visible between local and global
+        # points, then we can regress the transformation.
+        if sum(~sample_points_missing) >= 3:
+            T[i_sample] = icp.best_fit_transform(
+                sample_local_points[0:3, ~sample_points_missing].T,
+                sample_global_points[0:3, ~sample_points_missing].T,
+            )[0]
+        else:
+            T[i_sample] = np.nan
+
+    return T
+
+
+# %% Private functions
 
 
 def _match_size(
@@ -1324,68 +1266,257 @@ def _check_no_skewed_rotation(series: np.ndarray, param_name) -> None:
             )
 
 
-def register_points(
-    global_points: ArrayLike, local_points: ArrayLike
+# %% To deprecate in version 1.0
+
+
+def create_transforms(
+    seq: str | None = None,
+    angles: ArrayLike | None = None,
+    translations: ArrayLike | None = None,
+    scales: ArrayLike | None = None,
+    *,
+    degrees=False,
 ) -> np.ndarray:
     """
-    Find the homogeneous transforms between two series of point clouds.
+    Create series of transforms based on angles, translations and scales.
+
+    Create an Nx4x4 series of homogeneous transform matrices based on series of
+    angles, translations and scales.
 
     Parameters
     ----------
-    global_points
-        Destination points as an Nx4xM series of N sets of M points.
-    local_points
-        Local points as an array of shape Nx4xM series of N sets of M points.
-        global_points and local_points must have the same shape.
+    seq
+        Optional. Specifies sequence of axes for rotations. Up to 3 characters
+        belonging to the set {"X", "Y", "Z"} for intrinsic rotations (moving
+        axes), or {"x", "y", "z"} for extrinsic rotations (fixed axes).
+        Extrinsic and intrinsic rotations cannot be mixed in one function call.
+        Required if angles is specified.
+
+    angles
+        Optional array_like of shape (N,) or (N, [1 or 2 or 3]). Angles are
+        specified in radians (if degrees is False) or degrees (if degrees is
+        True).
+
+        For a single-character `seq`, `angles` can be:
+
+        - array_like with shape (N,), where each `angle[i]` corresponds to a
+          single rotation;
+        - array_like with shape (N, 1), where each `angle[i, 0]` corresponds
+          to a single rotation.
+
+        For 2- and 3-character `seq`, `angles` is an array_like with shape
+        (N, W) where each `angle[i, :]` corresponds to a sequence of Euler
+        angles and W is the length of `seq`.
+
+    translations
+        Optional array_like of shape (N, 3) or (N, 4). This corresponds
+        to the translation part of the generated series of homogeneous
+        transforms.
+
+    scales
+        Optional array_like of shape (N, ) that corresponds to the scale to
+        apply uniformly on the three axes. By default, no scale is included.
+
+    degrees
+        If True, then the given angles are in degrees. Default is False.
 
     Returns
     -------
     np.ndarray
-        Array of shape Nx4x4, expressing a series of 4x4 homogeneous
-        transforms.
+        An Nx4x4 series of homogeneous transforms.
+
+    See Also
+    --------
+    ktk.geometry.create_frames, ktk.geometry.rotate, ktk.geometry.translate,
+    ktk.geometry.scale
+
+    Examples
+    --------
+    Create a series of two homogeneous transforms that rotates 0, then 90
+    degrees around x:
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> ktk.geometry.create_transforms(seq="x", angles=[0, 90], degrees=True)
+        array([[[ 1.,  0.,  0.,  0.],
+                [ 0.,  1.,  0.,  0.],
+                [ 0.,  0.,  1.,  0.],
+                [ 0.,  0.,  0.,  1.]],
+        <BLANKLINE>
+               [[ 1.,  0.,  0.,  0.],
+                [ 0.,  0., -1.,  0.],
+                [ 0.,  1.,  0.,  0.],
+                [ 0.,  0.,  0.,  1.]]])
+
+    Create an homogeneous transform that converts millimeters to meters
+
+        >>> import kineticstoolkit.lab as ktk
+        >>> ktk.geometry.create_transforms(scales=[0.001])
+        array([[[0.001, 0.   , 0.   , 0.   ],
+                [0.   , 0.001, 0.   , 0.   ],
+                [0.   , 0.   , 0.001, 0.   ],
+                [0.   , 0.   , 0.   , 1.   ]]])
 
     """
-    global_points = np.array(global_points)
-    local_points = np.array(local_points)
+    check_param("seq", seq, (str, None))
+    check_param("degrees", degrees, bool)
 
-    n_samples = global_points.shape[0]
+    # Condition translations
+    if translations is None:
+        translations_array = np.zeros((1, 3))
+    else:
+        translations_array = np.array(translations)
 
-    # Prealloc the transformation matrix
-    T = np.zeros((n_samples, 4, 4))
-    T[:, 3, 3] = np.ones(n_samples)
+    # Condition angles
+    if angles is None:
+        angles_array = np.array([0])
+        seq = "x"
+    else:
+        angles_array = np.array(angles)
 
-    for i_sample in range(n_samples):
-        # Identify which global points are visible
-        sample_global_points = global_points[i_sample]
-        sample_global_points_missing = np.isnan(
-            np.sum(sample_global_points, axis=0)
-        )
+    # Condition scales
+    if scales is None:
+        scales_array = np.array([1])
+    else:
+        scales_array = np.array(scales)
 
-        # Identify which local points are visible
-        sample_local_points = local_points[i_sample]
-        sample_local_points_missing = np.isnan(
-            np.sum(sample_local_points, axis=0)
-        )
+    # Convert scales to a series of scaling matrices
+    temp = np.zeros((scales_array.shape[0], 4, 4))
+    temp[:, 0, 0] = scales_array
+    temp[:, 1, 1] = scales_array
+    temp[:, 2, 2] = scales_array
+    temp[:, 3, 3] = 1.0
+    scales_array = temp
 
-        sample_points_missing = np.logical_or(
-            sample_global_points_missing, sample_local_points_missing
-        )
+    # Match sizes
+    translations_array, angles_array = _match_size(
+        translations_array, angles_array
+    )
+    translations_array, scales_array = _match_size(
+        translations_array, scales_array
+    )
+    translations_array, angles_array = _match_size(
+        translations_array, angles_array
+    )
+    n_samples = angles_array.shape[0]
 
-        # If at least 3 common points are visible between local and global
-        # points, then we can regress the transformation.
-        if sum(~sample_points_missing) >= 3:
-            T[i_sample] = icp.best_fit_transform(
-                sample_local_points[0:3, ~sample_points_missing].T,
-                sample_global_points[0:3, ~sample_points_missing].T,
-            )[0]
+    # Create the rotation matrix
+    rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
+    R = rotation.as_matrix()
+    if len(R.shape) == 2:  # Single rotation: add the Time dimension.
+        R = R[np.newaxis, ...]
+
+    # Construct the final series of transforms (without scaling)
+    T = np.empty((n_samples, 4, 4))
+    T[:, 0:3, 0:3] = R
+    T[:, 0:3, 3] = translations_array
+    T[:, 3, 0:3] = 0
+    T[:, 3, 3] = 1
+
+    # Return the scaling + transform
+    return T @ scales_array
+
+
+def create_frames(
+    origin: ArrayLike,
+    x: ArrayLike | None = None,
+    y: ArrayLike | None = None,
+    z: ArrayLike | None = None,
+    xy: ArrayLike | None = None,
+    xz: ArrayLike | None = None,
+    yz: ArrayLike | None = None,
+) -> np.ndarray:
+    """
+    Create an Nx4x4 series of frames based on series of points and vectors.
+
+    Parameters
+    ----------
+    origin
+        A series of N points (Nx4) that corresponds to the origin of the
+        series of frames to be created.
+
+    x, y, z
+        Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
+        are aligned toward the {x|y|z} series of frames to be created.
+
+    xy, xz
+        Only if `x` is specified. A series of N vectors (Nx4) in the {xy|xz}
+        plane of the series of frames to be created. As a rule of thumb, use
+        a series of N vectors that correspond roughly to the {z|-y} axis.
+
+    xy, yz
+        Only if `y` is specified. A series of N vectors (Nx4) in the {xy|yz}
+        plane of the series of frames to be created. As a rule of thumb, use
+        a series of N vectors that correspond roughly to the {z|x} axis.
+
+    xz, yz
+        Only if `z` is specified. A series of N vectors (Nx4) in the {xz|yz}
+        plane of the series of frames to be created. As a rule of thumb, use
+        a series of N vectors that correspond roughly to the {-y|x} axis.
+
+    Returns
+    -------
+    np.ndarray
+        Series of frames (Nx4x4).
+
+    See Also
+    --------
+    ktk.geometry.create_transforms
+
+    """
+
+    def normalize(v):
+        """Normalize series of vectors."""
+        norm = np.linalg.norm(v, axis=1)
+        return v / norm[..., np.newaxis]
+
+    def cross(v1, v2):
+        """Cross on series of vectors of length 4."""
+        c = v1.copy()
+        c[:, 0:3] = np.cross(v1[:, 0:3], v2[:, 0:3])
+        return c
+
+    origin = np.array(origin)
+
+    if x is not None:
+        v_x = normalize(np.array(x))
+        if xy is not None:
+            v_z = normalize(cross(v_x, np.array(xy)))
+            v_y = cross(v_z, v_x)
+        elif xz is not None:
+            v_y = -normalize(cross(v_x, np.array(xz)))
+            v_z = cross(v_x, v_y)
         else:
-            T[i_sample] = np.nan
+            raise ValueError("Either xy or xz must be set.")
 
-    return T
+    elif y is not None:
+        v_y = normalize(np.array(y))
+        if yz is not None:
+            v_x = normalize(cross(v_y, np.array(yz)))
+            v_z = cross(v_x, v_y)
+        elif xy is not None:
+            v_z = -normalize(cross(v_y, np.array(xy)))
+            v_x = cross(v_y, v_z)
+        else:
+            raise ValueError("Either xy or yz must be set.")
+
+    elif z is not None:
+        v_z = normalize(np.array(z))
+        if xz is not None:
+            v_y = normalize(cross(v_z, np.array(xz)))
+            v_x = cross(v_y, v_z)
+        elif yz is not None:
+            v_x = -normalize(cross(v_z, np.array(yz)))
+            v_y = cross(v_z, v_x)
+        else:
+            raise ValueError("Either yz or xz must be set.")
+
+    else:
+        raise ValueError("Either x, y or z must be set.")
+
+    return np.stack((v_x, v_y, v_z, origin), axis=2)
 
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
-    import kineticstoolkit.lab as ktk
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
