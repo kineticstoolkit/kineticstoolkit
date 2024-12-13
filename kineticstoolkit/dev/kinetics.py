@@ -28,3 +28,63 @@ __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2024-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
+
+
+import numpy as np
+from kineticstoolkit.typing_ import check_param, ArrayLike
+import kineticstoolkit.geometry as geometry
+
+
+def create_forceplatform_frames(
+    ar_corner: ArrayLike,
+    pr_corner: ArrayLike,
+    pl_corner: ArrayLike,
+    al_corner: ArrayLike,
+    offset: ArrayLike,
+) -> np.ndarray:
+    """
+    Set the frames (rotations, positions) of a force platform.
+
+    Creates a series of frames (Nx4x4) that defines the orientation and
+    position of a force platform in space. The frames are defined in
+    platform coordinates, with x anterior, y right and z down.
+
+    Parameters
+    ----------
+    ar_corner
+        Coordinates of the anterior-right corner as an Nx4 array. Use double-
+        brackets for constants: [[x, y, z, 1.0]]
+    pr_corner
+        Coordinates of the posterior-right corner as an Nx4 array. Use double-
+        brackets for constants: [[x, y, z, 1.0]]
+    pl_corner
+        Coordinates of the posterior-left corner as an Nx4 array. Use double-
+        brackets for constants: [[x, y, z, 1.0]]
+    al_corner
+        Coordinates of the anterior-left corner as an Nx4 array. Use double-
+        brackets for constants: [[x, y, z, 1.0]]
+    offset
+        Position of the sensor relative to the centre of the platform surface,
+        in platform coordinates. Normally, this is [[0.0, 0.0, z, 1.0]] with z
+        being positive since the sensor is normally below (+z) the surface of
+        the force plate.
+
+    """
+    ar_corner = geometry.to_point_series(ar_corner)
+    n_samples = ar_corner.shape[0]
+    pr_corner = geometry.to_point_series(pr_corner, length=n_samples)
+    pl_corner = geometry.to_point_series(pl_corner, length=n_samples)
+    al_corner = geometry.to_point_series(al_corner, length=n_samples)
+    offset = geometry.to_point_series(offset, length=n_samples)
+
+    # Temporary origin at center of corners
+    lcs = geometry.create_frames(
+        origin=0.25 * (ar_corner + pr_corner + pl_corner + al_corner),
+        x=0.5 * (ar_corner + al_corner) - 0.5 * (pr_corner + pl_corner),
+        xy=0.5 * (ar_corner + pr_corner) - 0.5 * (pl_corner + al_corner),
+    )
+
+    # Set real origin
+    lcs[:, 0:4, 3] = geometry.get_global_coordinates(offset, lcs)
+
+    return lcs

@@ -33,6 +33,7 @@ import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
 from kineticstoolkit.typing_ import ArrayLike, check_param
+from typing import overload
 
 
 def __dir__():
@@ -838,6 +839,8 @@ def is_frame_series(array: ArrayLike, /) -> bool:
     value = np.array(array)
 
     # Check the dimension
+    if len(value.shape) != 3:
+        return False
     if value.shape[1:] != (4, 4):
         return False
 
@@ -864,6 +867,8 @@ def _is_point_vector_series(array: ArrayLike, last_element: float) -> bool:
     value = np.array(array)
 
     # Check the dimension
+    if len(value.shape) != 2:
+        return False
     if value.shape[1:] != (4,):
         return False
 
@@ -879,7 +884,7 @@ def _is_point_vector_series(array: ArrayLike, last_element: float) -> bool:
     return True
 
 
-def is_point_series(array: np.ndarray) -> bool:
+def is_point_series(array: ArrayLike) -> bool:
     """
     Check that the input is a point series.
 
@@ -898,7 +903,7 @@ def is_point_series(array: np.ndarray) -> bool:
     return _is_point_vector_series(array, 1.0)
 
 
-def is_vector_series(array: np.ndarray) -> bool:
+def is_vector_series(array: ArrayLike) -> bool:
     """
     Check that the input is a vector series.
 
@@ -915,6 +920,329 @@ def is_vector_series(array: np.ndarray) -> bool:
 
     """
     return _is_point_vector_series(array, 0.0)
+
+
+# %% to_frame_series
+@overload
+def to_frame_series(
+    matrices: ArrayLike,
+    *,
+    origin: ArrayLike | None = None,
+    length: int | None = None,
+) -> np.ndarray: ...
+
+
+def _matrices_to_frame_series(
+    matrices: ArrayLike,
+    *,
+    origin: ArrayLike | None = None,
+    length: int | None = None,
+) -> np.ndarray:
+    if is_frame_series(matrices) and (
+        length is None or matrices.shape[0] == length
+    ):
+        # Nothing to do
+        return matrices
+
+    if origin is not None:
+        origin = to_point_series(origin, length=length)
+    else:
+        origin = to_point_series([[0.0, 0.0, 0.0, 1.0]], length=length)
+
+    matrices_array = np.array(matrices)
+    output = np.zeros(matrices_array.shape[0], 4, 4)
+    output[:, 0:3, 0:3] = matrices_array[:, 0:3, 0:3]
+    output[:, :, 3] = origin
+
+    if not np.all(isnan(output)) and not is_frame_series(output):
+        raise ValueError(
+            "The provided matrices are not a series of rotation matrices "
+            "or homogeneous transforms."
+        )
+
+    return output
+
+
+@overload
+def to_frame_series(
+    matrices: None,
+    *,
+    angles: ArrayLike,
+    seq: str | None = None,
+    degrees: bool = False,
+    origin: ArrayLike | None = None,
+    length: int | None = None,
+) -> np.ndarray: ...
+
+
+@overload
+def to_frame_series(
+    matrices: None,
+    *,
+    x: ArrayLike | None = None,
+    y: ArrayLike | None = None,
+    z: ArrayLike | None = None,
+    xy: ArrayLike | None = None,
+    xz: ArrayLike | None = None,
+    yz: ArrayLike | None = None,
+    origin: ArrayLike | None = None,
+    length: int | None = None,
+) -> np.ndarray: ...
+
+
+def to_frame_series(
+    matrices: ArrayLike | None = None,
+    *,
+    angles: ArrayLike | None = None,
+    seq: str | None = None,
+    degrees: bool = False,
+    x: ArrayLike | None = None,
+    y: ArrayLike | None = None,
+    z: ArrayLike | None = None,
+    xy: ArrayLike | None = None,
+    xz: ArrayLike | None = None,
+    yz: ArrayLike | None = None,
+    origin: ArrayLike | None = None,
+    length: int | None = None,
+) -> np.ndarray:
+    """Construct an Nx4x4 frame series from multiple input forms.
+
+    If the input is a series of 3x3 rotation matrixes or 4x4 homogeneous
+    matrices, use this form::
+
+        ktk.geometry.to_frame_series(
+            matrices: ArrayLike,
+            *,
+            origin: ArrayLike | None = None,
+            length: int | None = None,
+            ) -> np.ndarray
+
+    If the input is a series of Euler/cardan angles, use this form::
+
+        ktk.geometry.to_frame_series(
+            *,
+            angles: ArrayLike,
+            seq: str,
+            degrees: bool = False,
+            origin: ArrayLike | None = None,
+            length: int | None = None,
+            ) -> np.ndarray
+
+    To create frames based on the cross product of different vectors, use this
+    form, where exactly one of {x, y, z} and exactly one of {xy, xz, yz} must
+    be defined::
+
+        ktk.geometry.to_frame_series(
+            *,
+            x: ArrayLike | None = None,
+            y: ArrayLike | None = None,
+            z: ArrayLike | None = None,
+            xy: ArrayLike | None = None,
+            xz: ArrayLike | None = None,
+            yz: ArrayLike | None = None,
+            origin: ArrayLike | None = None,
+            length: int | None = None,
+            ) -> np.ndarray
+
+
+    Parameters (from Nx3x3 or Nx4x4 matrix series)
+    ----------------------------------------------
+    matrices
+        Nx3x3 series or rotations or Nx4x4 series of homogeneous transforms.
+
+    origin
+        Optional. An Nx4 point series that defines the origin (fourth column)
+        of the frame. Default value is None, which means that the origin is
+        [[0.0, 0.0, 0.0, 1.0]] for Nx3x3 inputs, and unchanged for Nx4x4
+        inputs.
+
+    length
+        Optional. The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    Parameters (from Euler/cardan angle series)
+    -------------------------------------------
+    angles
+        Series of angles, either of shape (N,) or (N, 1) for rotations around
+        only one axis, or (N, 2) or (N, 3) for rotations around consecutive
+        axes.
+
+    seq
+        Specifies the sequence of axes for successive rotations. Up to 3
+        characters belonging to {"X", "Y", "Z"} for intrinsic rotations
+        (moving axes), or {"x", "y", "z"} for extrinsic rotations (fixed
+        axes). Extrinsic and intrinsic rotations cannot be mixed in one
+        function call.
+
+    degrees
+        Optional. If True, then the given angles are in degrees, otherwise
+        they are in radians. Default is False (radians).
+
+    origin
+        Optional. An Nx4 point series that defines the origin (fourth column)
+        of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]].
+
+    length
+        Optional. The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    Parameters (from the cross product of vector series)
+    ----------------------------------------------------
+    x, y, z
+        Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
+        are aligned toward the {x|y|z} axis of the frames to be created.
+
+    xy
+        Only if `x` or `y` is specified. A series of N vectors (Nx4) in the xy
+        plane, to create `z` using a cross product. Choose vectors that point
+        roughly in the +z direction.
+
+    xz
+        Only if `x` or `z` is specified. A series of N vectors (Nx4) in the xz
+        plane, to create `y` using a cross product. Choose vectors that point
+        roughly in the +y direction.
+
+    yz
+        Only if `y` or `z` is specified. A series of N vectors (Nx4) in the yz
+        plane, to create `x` using a cross product. Choose vectors that point
+        roughly in the +x direction.
+
+    origin
+        Optional. An Nx4 point series that defines the origin (fourth column)
+        of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]].
+
+    length
+        Optional. The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    """
+    return _matrices_to_frame_series(matrices, origin=origin, length=length)
+
+
+def _to_point_vector_series(
+    array: ArrayLike, last_element: float, length: int | None = None
+):
+    """Implement of to_point_series and to_vector_series."""
+    np_array = np.array(array)
+    if len(np_array.shape) != 2 or np_array.shape[1] != 3:
+        raise ValueError("The input array must be of shape Nx3 or Nx4.")
+    if (
+        length is not None
+        and np_array.shape[0] != 1
+        and np_array.shape[0] != length
+    ):
+        raise ValueError(
+            f"The input array must have {length} samples, however it has "
+            f"{np_array.shape[0]} samples."
+        )
+
+    # Do the conversion
+    output = (
+        np.ones((np_array.shape[0], 4))
+        if last_element == 1.0
+        else np.zeros((np_array.shape[0], 4))
+    )
+    output[:, 0:3] = np_array
+
+    # Repeat to the requested number of samples if applicable
+    if output.shape[0] == 1 and length is not None:
+        output = np.repeat(output, length, axis=0)
+
+    return output
+
+
+def to_point_series(array: ArrayLike, *, length: int | None = None) -> np.ndarray:
+    """
+    Convert an input array to an Nx4 point series.
+
+    Parameters
+    ----------
+    array
+        Nx3 or Nx4 array.
+
+    length
+        The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    Returns
+    -------
+    array
+        An Nx4 array with every sample being [x, y, z, 1.0].
+
+    Raises
+    ------
+    ValueError
+        If the input array has an incorrect dimension.
+
+    Examples
+    --------
+    >>> ktk.geometry.to_point_series([[1.0, 2.0, 3.0]])
+    array([[1., 2., 3., 1.]])
+
+    >>> ktk.geometry.to_point_series([[1.0, 2.0, 3.0, 1.0]])
+    array([[1., 2., 3., 1.]])
+
+    """
+    if is_point_series(array) and (length is None or array.shape[0] == length):
+        # Nothing to do, maybe just ensure that we return an array because
+        # is_point_series accept any ArrayLike.
+        return np.array(array)
+
+    # Here we must have Nx3
+    return _to_point_vector_series(array, 1.0)
+
+
+def to_vector_series(array: ArrayLike, *, length: int | None = None) -> np.ndarray:
+    """
+    Convert an input array to an Nx4 vector series.
+
+    Parameters
+    ----------
+    array
+        Nx3 or Nx4 array.
+
+    length
+        The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    Returns
+    -------
+    array
+        An Nx4 array with every sample being [x, y, z, 0.0].
+
+    Raises
+    ------
+    ValueError
+        If the input array has an incorrect dimension.
+
+    Examples
+    --------
+    >>> ktk.geometry.to_vector_series([[1.0, 2.0, 3.0]])
+    array([[1., 2., 3., 0.]])
+
+    >>> ktk.geometry.to_vector_series([[1.0, 2.0, 3.0, 0.0]])
+    array([[1., 2., 3., 0.]])
+
+    """
+    if is_vector_series(array) and (
+        length is None or array.shape[0] == length
+    ):
+        # Nothing to do, maybe just ensure that we return an array because
+        # is_point_series accept any ArrayLike.
+        return np.array(array)
+
+    # Here we must have Nx3
+    return _to_point_vector_series(array, 0.0, length=length)
 
 
 def _match_size(
@@ -1048,5 +1376,6 @@ def register_points(
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+    import kineticstoolkit.lab as ktk
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

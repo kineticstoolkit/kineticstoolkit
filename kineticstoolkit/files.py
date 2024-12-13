@@ -29,6 +29,7 @@ __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
 import kineticstoolkit.geometry as geometry
+import kineticstoolkit.dev.kinetics as kinetics
 import kineticstoolkit.config
 from kineticstoolkit.typing_ import check_param
 
@@ -805,48 +806,16 @@ def read_c3d(
                 )
 
             # Add origin and the whole local coordinate system
-
-            # Temporary origin at center of corners
-            lcs = geometry.create_frames(
-                origin=0.25
-                * (
-                    platforms.data[f"FP{i_platform}_Corner1"]
-                    + platforms.data[f"FP{i_platform}_Corner2"]
-                    + platforms.data[f"FP{i_platform}_Corner3"]
-                    + platforms.data[f"FP{i_platform}_Corner4"]
-                ),
-                x=0.5
-                * (
-                    platforms.data[f"FP{i_platform}_Corner1"]
-                    + platforms.data[f"FP{i_platform}_Corner4"]
-                )
-                - 0.5
-                * (
-                    platforms.data[f"FP{i_platform}_Corner2"]
-                    + platforms.data[f"FP{i_platform}_Corner3"]
-                ),
-                xy=0.5
-                * (
-                    platforms.data[f"FP{i_platform}_Corner1"]
-                    + platforms.data[f"FP{i_platform}_Corner2"]
-                )
-                - 0.5
-                * (
-                    platforms.data[f"FP{i_platform}_Corner3"]
-                    + platforms.data[f"FP{i_platform}_Corner4"]
-                ),
+            lcs = kinetics.create_forceplatform_frames(
+                platforms.data[f"FP{i_platform}_Corner1"],
+                platforms.data[f"FP{i_platform}_Corner2"],
+                platforms.data[f"FP{i_platform}_Corner3"],
+                platforms.data[f"FP{i_platform}_Corner4"],
+                [-forceplate_position_factor
+                * reader["data"]["platform"][i_platform]["origin"]],
             )
 
-            # Compute real origin
-            local_origin = np.array([[0.0, 0.0, 0.0, 1.0]])
-            local_origin[0, 0:3] = (
-                -forceplate_position_factor
-                * reader["data"]["platform"][i_platform]["origin"]
-            )
-            lcs[:, 0:4, 3] = geometry.get_global_coordinates(local_origin, lcs)
-
-            key = f"FP{i_platform}_LCS"
-            platforms.data[key] = lcs
+            platforms.data[f"FP{i_platform}_LCS"] = lcs
 
             # Add force
             force_unit = reader["data"]["platform"][i_platform]["unit_force"]
