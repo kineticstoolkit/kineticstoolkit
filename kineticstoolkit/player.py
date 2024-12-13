@@ -14,12 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provides the Player class to visualize points and frames in 3d.
 
-The Player class is accessible directly from the toplevel Kinetics Toolkit
-namespace (i.e., ktk.Player).
+The Player class is accessible directly from the toplevel Kinetics
+Toolkit namespace (i.e., ktk.Player).
+
 """
 
 __author__ = "Félix Chénier"
@@ -1121,9 +1121,10 @@ class Player:
         """
         Process interconnection modification and refresh.
 
-        Parameters *args and **kwargs are only there to catch values sent by
-        the MonitoredList and MonitoredDict callbacks. They are not used in
-        this function.
+        Parameters *args and **kwargs are only there to catch values
+        sent by the MonitoredList and MonitoredDict callbacks. They are
+        not used in this function.
+
         """
         self._process_interconnections()
         self._refresh()
@@ -1166,8 +1167,8 @@ class Player:
         Update _processed_interconnections. Does not refresh.
 
         We don't throw errors if interconnections is malformed, simply
-        because maybe it is being built. We try our best to parse what is
-        there.
+        because maybe it is being built. We try our best to parse what
+        is there.
 
         """
         # Convert _interconnections to monitored dicts and lists
@@ -1244,9 +1245,10 @@ class Player:
         """
         Process vector modification and refresh.
 
-        Parameters *args and **kwargs are only there to catch values sent by
-        the MonitoredList and MonitoredDict callbacks. They are not used in
-        this function.
+        Parameters *args and **kwargs are only there to catch values
+        sent by the MonitoredList and MonitoredDict callbacks. They are
+        not used in this function.
+
         """
         self._process_vectors()
         self._process_contents()  # Because points are dependents of vectors
@@ -1285,9 +1287,8 @@ class Player:
 
         Update _processed_vectors. Does not refresh.
 
-        We don't throw errors if vectors is malformed, simply
-        because maybe it is being built. We try our best to parse what is
-        there.
+        We don't throw errors if vectors is malformed, simply because
+        maybe it is being built. We try our best to parse what is there.
 
         """
         # Convert _vectors to monitored dicts and lists

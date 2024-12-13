@@ -14,10 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Tests for ktk.Player
-"""
+"""Tests for ktk.Player."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -94,9 +91,7 @@ def test_instanciate():
 
 
 def test_issue137():
-    """
-    Player should not fail if some TimeSeries are not Nx4 or Nx4x4
-    """
+    """Player should not fail if some TimeSeries are not Nx4 or Nx4x4."""
     if not init():
         return
 

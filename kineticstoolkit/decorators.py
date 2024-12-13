@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide the deprecated decorator for Kinetics Toolkit's functions.
 
@@ -57,8 +56,8 @@ def deprecated(since: str, until: str, details: str):
     """
     Decorate deprecated Kinetics Toolkit's functions.
 
-    Generates a FutureWarning and adds a warning section to its docstring.
-    These functions are included in API documentation.
+    Generates a FutureWarning and adds a warning section to its
+    docstring. These functions are included in API documentation.
 
     """
 

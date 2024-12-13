@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Provide miscelleanous helper functions."""
 
 __author__ = "Félix Chénier"
@@ -35,9 +34,10 @@ def check_interactive_backend() -> None:
     """
     Warns if Matplotlib is not using an interactive backend.
 
-    To disable these warnings, for instance if we are generating documentation
-    and we need the Player to show a figure, set
+    To disable these warnings, for instance if we are generating
+    documentation and we need the Player to show a figure, set
     ktk.config.interactive_backend_warning to False
+
     """
     if kineticstoolkit.config.interactive_backend_warning is False:
         return

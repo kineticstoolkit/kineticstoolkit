@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide simple GUI functions.
 
@@ -22,6 +21,7 @@ Warning
 -------
 This module is private and should be considered only as helper functions
 for Kinetics Toolkit's own use.
+
 """
 
 __author__ = "Félix Chénier"
@@ -44,6 +44,7 @@ def message(message: str = "", **kwargs) -> None:
     ----------
     message
         The message to show. Use '' to close every message window.
+
     """
     check_param("message", message, str)
     li.message(
@@ -77,6 +78,7 @@ def button_dialog(
         The button number (0 = First button, 1 = Second button, etc.) If the
         user closes the window instead of clicking a button, a value of -1 is
         returned.
+
     """
     check_param("message", message, str)
     check_param("choices", choices, list, contents_type=str)
@@ -199,6 +201,7 @@ def get_filename(initial_folder: str = ".") -> str:
     str
         The full path of the selected file. An empty string is returned if the
         user cancelled.
+
     """
     check_param("initial_folder", initial_folder, str)
     return li.get_filename(

@@ -14,13 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide experimental functions to manage kinetic data.
 
 This module provides experimental functions for a future
-kineticstoolkit.kinetics module, which will facilitate the configuration of
-force platforms and the computation of the centre of pressure.
+kineticstoolkit.kinetics module, which will facilitate the configuration
+of force platforms and the computation of the centre of pressure.
 
 """
 

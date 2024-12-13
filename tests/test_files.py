@@ -18,7 +18,6 @@ __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
-
 """Unit tests for load and save functions."""
 
 
@@ -361,6 +360,7 @@ def test_read_write_c3d():
 
     Tests twice, once using the original c3d, then saving a new c3d and
     opening again.
+
     """
     markers = ktk.read_c3d(ktk.doc.download("kinematics_racing_static.c3d"))[
         "Points"
@@ -467,7 +467,9 @@ def test_write_c3d_testsuite8():
     Run the c3d.org test suite 8 and check if every file is equivalent even
     after a round-test (read-write-read).
 
-    For now, tests with analogs are commented until the next release of ezc3d
+    For now, tests with analogs are commented until the next release of
+    ezc3d
+
     """
     test = []
     for key in [
@@ -498,13 +500,14 @@ def test_write_c3d_testsuite8():
 
 def test_write_c3d_weirdc3d():
     """
-    Test that writing data from a weirdly formatted c3d works. This file
-    has weird characters.
+    Test that writing data from a weirdly formatted c3d works. This file has
+    weird characters.
 
     ezc3d has to be patched for this test to pass.
     https://github.com/pyomeca/ezc3d/issues/264
 
     For now, tests with analogs are commented until the next release of ezc3d
+
     """
     filename = ktk.doc.download("walk.c3d")
     c3d = ktk.read_c3d(filename, convert_point_unit=True)

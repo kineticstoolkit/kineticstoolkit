@@ -14,12 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide functions to load and save data.
 
-The classes defined in this module are accessible directly from the toplevel
-Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
+The classes defined in this module are accessible directly from the
+toplevel Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
+
 """
 
 __author__ = "Félix Chénier"
@@ -811,8 +811,10 @@ def read_c3d(
                 platforms.data[f"FP{i_platform}_Corner2"],
                 platforms.data[f"FP{i_platform}_Corner3"],
                 platforms.data[f"FP{i_platform}_Corner4"],
-                [-forceplate_position_factor
-                * reader["data"]["platform"][i_platform]["origin"]],
+                [
+                    -forceplate_position_factor
+                    * reader["data"]["platform"][i_platform]["origin"]
+                ],
             )
 
             platforms.data[f"FP{i_platform}_LCS"] = lcs

@@ -14,10 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Provide standard filters for TimeSeries.
-"""
+"""Provide standard filters for TimeSeries."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -57,10 +54,8 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
 
 
 def _validate_input(ts):
-    """
-    Check that time is not null, that sample rate is constant, and that
-    time unit is s.
-    """
+    """Check that time is not null, that sample rate is constant, and that time
+    unit is s."""
     if ts.time.shape[0] == 0:
         raise ValueError("There is no data to filter.")
     if np.isnan(ts.get_sample_rate()):

@@ -19,10 +19,7 @@ __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
-
-"""
-Unit tests for the cycles module.
-"""
+"""Unit tests for the cycles module."""
 import kineticstoolkit as ktk
 import numpy as np
 import warnings

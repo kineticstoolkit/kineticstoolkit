@@ -14,8 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+"""
+Provide functions related to exceptions.
 
-"""Provide functions related to exceptions. For internal use only."""
+For internal use only.
+
+"""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022-2024 Félix Chénier"

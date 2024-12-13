@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide fonctions related to development, tests and release of Kinetics
 Toolkit.
@@ -81,6 +80,19 @@ def run_style_formatter() -> None:  # pragma: no cover
         ["black", kineticstoolkit.config.root_folder],
         env=kineticstoolkit.config.env,
     )
+    print("Running docformatter...")
+    subprocess.call(
+        [
+            "docformatter",
+            "--style=numpy",
+            "--in-place",
+            "--recursive",
+            "--pre-summary-newline",
+            "--blank",
+            kineticstoolkit.config.root_folder,
+        ],
+        env=kineticstoolkit.config.env,
+    )
 
 
 def run_static_type_checker() -> None:  # pragma: no cover
@@ -137,7 +149,12 @@ def compile_for_pypi() -> None:  # pragma: no cover
 
 
 def upload_to_pypi() -> None:  # pragma: no cover
-    """Upload to PyPi. Only works on macOS for now."""
+    """
+    Upload to PyPi.
+
+    Only works on macOS for now.
+
+    """
     root_folder = kineticstoolkit.config.root_folder
     subprocess.call(
         [

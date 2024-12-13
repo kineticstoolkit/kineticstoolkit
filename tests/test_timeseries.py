@@ -19,10 +19,7 @@ __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
-
-"""
-These are the unit tests for the TimeSeries class.
-"""
+"""These are the unit tests for the TimeSeries class."""
 import kineticstoolkit as ktk
 import numpy as np
 import matplotlib.pyplot as plt

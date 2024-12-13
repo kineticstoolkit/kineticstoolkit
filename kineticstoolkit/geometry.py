@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide 3d geometry and linear algebra functions related to biomechanics.
 
@@ -22,6 +21,7 @@ Note
 ----
 As a convention, the first dimension of every array is always N and corresponds
 to time.
+
 """
 
 __author__ = "Félix Chénier"
@@ -34,6 +34,8 @@ import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
 from kineticstoolkit.typing_ import ArrayLike, check_param
 from typing import overload
+
+import kineticstoolkit as ktk  # For doctests
 
 
 def __dir__():
@@ -409,6 +411,7 @@ def translate(coordinates, /, translations):
                [3., 1., 0., 1.],
                [4., 1., 0., 1.],
                [5., 1., 0., 1.]])
+
     """
     return matmul(create_transforms(translations=translations), coordinates)
 
@@ -447,6 +450,7 @@ def scale(coordinates, /, scales):
                [2., 0., 0., 1.],
                [3., 0., 0., 1.],
                [4., 0., 0., 1.]])
+
     """
     return matmul(create_transforms(scales=scales), coordinates)
 
@@ -489,6 +493,7 @@ def mirror(coordinates, /, axis: str = "z"):
 
         >>> ktk.geometry.mirror(p, "z")
         array([[ 1., 2., -3., 1.]])
+
     """
     check_param("axis", axis, str)
 
@@ -1005,7 +1010,8 @@ def to_frame_series(
     origin: ArrayLike | None = None,
     length: int | None = None,
 ) -> np.ndarray:
-    """Construct an Nx4x4 frame series from multiple input forms.
+    """
+    Construct an Nx4x4 frame series from multiple input forms.
 
     If the input is a series of 3x3 rotation matrixes or 4x4 homogeneous
     matrices, use this form::
@@ -1157,7 +1163,9 @@ def _to_point_vector_series(
     return output
 
 
-def to_point_series(array: ArrayLike, *, length: int | None = None) -> np.ndarray:
+def to_point_series(
+    array: ArrayLike, *, length: int | None = None
+) -> np.ndarray:
     """
     Convert an input array to an Nx4 point series.
 
@@ -1200,7 +1208,9 @@ def to_point_series(array: ArrayLike, *, length: int | None = None) -> np.ndarra
     return _to_point_vector_series(array, 1.0)
 
 
-def to_vector_series(array: ArrayLike, *, length: int | None = None) -> np.ndarray:
+def to_vector_series(
+    array: ArrayLike, *, length: int | None = None
+) -> np.ndarray:
     """
     Convert an input array to an Nx4 vector series.
 

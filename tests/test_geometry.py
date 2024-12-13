@@ -14,7 +14,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """Unit tests for Kinetics Toolkit's geometry module."""
 
 __author__ = "Félix Chénier"
@@ -179,8 +178,10 @@ def test_create_transforms():
 def test_rotate_translate_scale():
     """
     Test rotate, translate and scale.
-    The real test is in create_transforms, these tests are only to be sure
-    that these shortcut functions still work.
+
+    The real test is in create_transforms, these tests are only to be
+    sure that these shortcut functions still work.
+
     """
     angles = np.array([[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]])
     assert np.allclose(
@@ -238,10 +239,7 @@ def test_mirror():
 
 
 def test_create_frames_get_local_global_coordinates():
-    """
-    Test create_frames, get_local_coordinates and
-    get_global_coordinates.
-    """
+    """Test create_frames, get_local_coordinates and get_global_coordinates."""
     global_marker1 = np.array([[0.0, 0.0, 0.0, 1]])
     global_marker2 = np.array([[1.0, 0.0, 0.0, 1]])
     global_marker3 = np.array([[0.0, 1.0, 0.0, 1]])
@@ -299,7 +297,7 @@ def test_create_frames_get_local_global_coordinates():
 
 
 def test_get_local_global_broadcast():
-    """Test fix for issue #136"""
+    """Test fix for issue #136."""
     global_marker1 = np.array([[0.0, 0.0, 0.0, 1]])
     global_marker2 = np.array([[1.0, 0.0, 0.0, 1]])
     global_marker3 = np.array([[0.0, 1.0, 0.0, 1]])

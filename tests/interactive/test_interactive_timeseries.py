@@ -14,10 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Interactive tests for TimeSeries.
-"""
+"""Interactive tests for TimeSeries."""
 
 import kineticstoolkit.lab as ktk
 import numpy as np

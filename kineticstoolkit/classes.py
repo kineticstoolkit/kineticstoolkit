@@ -17,13 +17,12 @@
 
 # mypy: ignore-errors
 # MyPy complains with it, but tests tell that it works.
-
 """
 Provides lists and dictionaries with callback functions.
 
-Provides the MonitoredList and MonitoredDict classes, that derive from list and
-dict respectively, and that provide callback functions for appending,
-extending, removing items, etc.
+Provides the MonitoredList and MonitoredDict classes, that derive from
+list and dict respectively, and that provide callback functions for
+appending, extending, removing items, etc.
 
 """
 

@@ -14,10 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
-"""
-Provide extension support for Kinetics Toolkit.
-"""
+"""Provide extension support for Kinetics Toolkit."""
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"

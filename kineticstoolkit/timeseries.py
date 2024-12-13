@@ -14,12 +14,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-
 """
 Provide the TimeSeries and TimeSeriesEvent classes.
 
-The classes defined in this module are accessible directly from the toplevel
-Kinetics Toolkit's namespace (i.e. ktk.TimeSeries, ktk.TimeSeriesEvent)
+The classes defined in this module are accessible directly from the
+toplevel Kinetics Toolkit's namespace (i.e. ktk.TimeSeries,
+ktk.TimeSeriesEvent)
 
 """
 from __future__ import annotations  # For forward refs to self
@@ -2523,6 +2523,7 @@ class TimeSeries:
 
         >>> ts.get_ts_between_indexes(2, 5, inclusive=[True, False]).time
         array([0.2, 0.3, 0.4])
+
         """
         check_param("index1", index1, int)
         check_param("index2", index2, int)
@@ -2749,6 +2750,7 @@ class TimeSeries:
 
         >>> ts.get_ts_between_times(0.2, 0.5, inclusive=[True, False]).time
         array([0.2, 0.3, 0.4])
+
         """
         check_param("time1", time1, float)
         check_param("teim2", time2, float)
@@ -4291,6 +4293,7 @@ class TimeSeries:
         corresponds to a column of the DataFrame, and each element is a copy
         of the inner data_info dictionary for this data. For instance,
         an element of the list could be: {"Unit": "N"}.
+
         """
         # Init
         df_out = pd.DataFrame()
@@ -4723,7 +4726,8 @@ class TimeSeries:
         self, *, unique: bool = False, in_place: bool = False
     ) -> TimeSeries:
         """
-        Deprecated. Sorts the TimeSeries' events from the earliest to the latest.
+        Deprecated. Sorts the TimeSeries' events from the earliest to the
+        latest.
 
         Parameters
         ----------
