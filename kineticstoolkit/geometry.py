@@ -693,7 +693,7 @@ def is_vector_series(array: ArrayLike) -> bool:
     return _is_point_vector_series(array, 0.0)
 
 
-# %% to_frame_series
+# %% create_frame_series
 
 # -------------
 # From matrices
@@ -741,44 +741,79 @@ def _angles_to_frame_series(
     # Construct and return the output
     output = np.zeros((n_samples, 4, 4))
     output[:, 0:3, 0:3] = R
+    output[:, 3, 3] = 1.0
     return output
 
 
-@overload
-def to_frame_series(
-    matrices: ArrayLike,
-    *,
-    origin: ArrayLike | None = None,
-    length: int | None = None,
-) -> np.ndarray: ...
-
-
-@overload
-def to_frame_series(
-    *,
-    angles: ArrayLike,
-    seq: str | None = None,
-    degrees: bool = False,
-    origin: ArrayLike | None = None,
-    length: int | None = None,
-) -> np.ndarray: ...
-
-
-@overload
-def to_frame_series(
-    *,
+def _vectors_to_frame_series(
     x: ArrayLike | None = None,
     y: ArrayLike | None = None,
     z: ArrayLike | None = None,
     xy: ArrayLike | None = None,
     xz: ArrayLike | None = None,
     yz: ArrayLike | None = None,
-    origin: ArrayLike | None = None,
-    length: int | None = None,
-) -> np.ndarray: ...
+):
+    """Create a frame series from cross products, with a zero origin."""
+
+    def normalize(v):
+        """Normalize series of vectors."""
+        norm = np.linalg.norm(v, axis=1)
+        return v / norm[..., np.newaxis]
+
+    def cross(v1, v2):
+        """Cross on series of vectors."""
+        c = v1.copy()
+        c[:, 0:3] = np.cross(v1[:, 0:3], v2[:, 0:3])
+        return c
+
+    if x is not None:
+        v_x = normalize(np.array(x))
+        if xy is not None:
+            v_z = normalize(cross(v_x, np.array(xy)))
+            v_y = cross(v_z, v_x)
+        elif xz is not None:
+            v_y = -normalize(cross(v_x, np.array(xz)))
+            v_z = cross(v_x, v_y)
+        else:
+            raise ValueError("Either xy or xz must be set.")
+
+    elif y is not None:
+        v_y = normalize(np.array(y))
+        if yz is not None:
+            v_x = normalize(cross(v_y, np.array(yz)))
+            v_z = cross(v_x, v_y)
+        elif xy is not None:
+            v_z = -normalize(cross(v_y, np.array(xy)))
+            v_x = cross(v_y, v_z)
+        else:
+            raise ValueError("Either xy or yz must be set.")
+
+    elif z is not None:
+        v_z = normalize(np.array(z))
+        if xz is not None:
+            v_y = normalize(cross(v_z, np.array(xz)))
+            v_x = cross(v_y, v_z)
+        elif yz is not None:
+            v_x = -normalize(cross(v_z, np.array(yz)))
+            v_y = cross(v_z, v_x)
+        else:
+            raise ValueError("Either yz or xz must be set.")
+
+    else:
+        raise ValueError("Either x, y or z must be set.")
+
+    return np.stack(
+        (
+            v_x,
+            v_y,
+            v_z,
+            create_point_series([[0.0, 0.0, 0.0]], length=v_x.shape[0]),
+        ),
+        axis=2,
+    )
 
 
-def to_frame_series(
+def create_frame_series(
     matrices: ArrayLike | None = None,
     *,
     angles: ArrayLike | None = None,
@@ -796,9 +831,9 @@ def to_frame_series(
     """
     Construct an Nx4x4 frame series from multiple input forms.
 
-    **Matrix input**
+    **Matrix input form**
 
-    If the input is a series of 3x3 rotation matrixes or 4x4 homogeneous
+    If the input is a series of 3x3 rotation matrices or 4x4 homogeneous
     matrices, use this form::
 
         ktk.geometry.to_frame_series(
@@ -808,7 +843,7 @@ def to_frame_series(
             length: int | None = None,
             ) -> np.ndarray
 
-    **Angle input**
+    **Angle input form**
 
     If the input is a series of Euler/cardan angles, use this form::
 
@@ -821,7 +856,7 @@ def to_frame_series(
             length: int | None = None,
             ) -> np.ndarray
 
-    **Vector input (cross-product)**
+    **Vector input form (using cross-product)**
 
     To create frames based on the cross product of different vectors, use this
     form, where exactly one of {x, y, z} and exactly one of {xy, xz, yz} must
@@ -839,32 +874,25 @@ def to_frame_series(
             length: int | None = None,
             ) -> np.ndarray
 
+    With this input form, x, y or z sets the first axis. Then, xy, xz or yz
+    forms a plane with the first vector; the second axis is the cross product
+    of both vectors (perpendicular to this plane). Finally, the third axis is
+    the cross product of the two first axes.
 
-    Parameters (matrix input)
-    -------------------------
+    Parameters
+    ----------
     matrices
+        Used in the matrix input form.
         Nx3x3 series or rotations or Nx4x4 series of homogeneous transforms.
 
-    origin
-        Optional. An Nx4 point series that defines the origin (fourth column)
-        of the frame. Default value is None, which means that the origin is
-        [[0.0, 0.0, 0.0, 1.0]] for Nx3x3 inputs, and unchanged for Nx4x4
-        inputs.
-
-    length
-        Optional. The number of samples in the resulting point series. If there
-        is only one sample in the original array, this one sample will be
-        duplicated to match length. Otherwise, an error is raised if the input
-        array does not match length.
-
-    Parameters (angle input)
-    ------------------------
     angles
+        Used in the angles input form.
         Series of angles, either of shape (N,) or (N, 1) for rotations around
         only one axis, or (N, 2) or (N, 3) for rotations around consecutive
         axes.
 
     seq
+        Used in the angles input form.
         Specifies the sequence of axes for successive rotations. Up to 3
         characters belonging to {"X", "Y", "Z"} for intrinsic rotations
         (moving axes), or {"x", "y", "z"} for extrinsic rotations (fixed
@@ -872,43 +900,38 @@ def to_frame_series(
         function call.
 
     degrees
+        Used in the angles input form.
         Optional. If True, then the given angles are in degrees, otherwise
         they are in radians. Default is False (radians).
 
-    origin
-        Optional. An Nx4 point series that defines the origin (fourth column)
-        of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]].
-
-    length
-        Optional. The number of samples in the resulting point series. If there
-        is only one sample in the original array, this one sample will be
-        duplicated to match length. Otherwise, an error is raised if the input
-        array does not match length.
-
-    Parameters (vector input)
-    -------------------------
     x, y, z
+        Used in the vector input form.
         Define either `x`, `y` or `z`. A series of N vectors (Nx4) that
-        are aligned toward the {x|y|z} axis of the frames to be created.
+        define the {x|y|z} axis of the frames to be created.
 
     xy
+        Used in the vector input form.
         Only if `x` or `y` is specified. A series of N vectors (Nx4) in the xy
-        plane, to create `z` using a cross product. Choose vectors that point
-        roughly in the +z direction.
+        plane, to create `z` using (x cross xy) or (xy cross y). Choose vectors
+        that point roughly in the +x or +y direction.
 
     xz
+        Used in the vector input form.
         Only if `x` or `z` is specified. A series of N vectors (Nx4) in the xz
-        plane, to create `y` using a cross product. Choose vectors that point
-        roughly in the +y direction.
+        plane, to create `y` using (xz cross x) or (z cross xz). Choose vectors
+        that point roughly in the +x or +z direction.
 
     yz
+        Used in the vector input form.
         Only if `y` or `z` is specified. A series of N vectors (Nx4) in the yz
-        plane, to create `x` using a cross product. Choose vectors that point
-        roughly in the +x direction.
+        plane, to create `x` using (y cross yz) or (yz cross z). Choose vectors
+        that point roughly in the +y or +z direction.
 
     origin
         Optional. An Nx4 point series that defines the origin (fourth column)
-        of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]].
+        of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]]. If the input
+        is an Nx4x4 frame series and therefore already has an origin, then the
+        existing origin is kept unless `origin` is specified.
 
     length
         Optional. The number of samples in the resulting point series. If there
@@ -935,7 +958,7 @@ def to_frame_series(
     ...              [ 0.,  0., -1.],
     ...              [ 0.,  1.,  0.]]]
     >>> origin = [[0.5, 0.6, 0.7]]
-    >>> ktk.geometry.to_frame_series(rotation, origin=origin)
+    >>> ktk.geometry.create_frame_series(rotation, origin=origin)
     array([[[ 1. ,  0. ,  0. ,  0.5],
             [ 0. ,  1. ,  0. ,  0.6],
             [ 0. ,  0. ,  1. ,  0.7],
@@ -951,7 +974,7 @@ def to_frame_series(
     Create a series of two homogeneous transforms that rotates 0, then 90
     degrees around x:
 
-    >>> ktk.geometry.to_frame_series(angles=[0, 90], seq="x", degrees=True)
+    >>> ktk.geometry.create_frame_series(angles=[0, 90], seq="x", degrees=True)
     array([[[ 1.,  0.,  0.,  0.],
             [ 0.,  1.,  0.,  0.],
             [ 0.,  0.,  1.,  0.],
@@ -978,6 +1001,10 @@ def to_frame_series(
         output = _angles_to_frame_series(
             angles=angles, seq=seq, degrees=degrees
         )
+    elif x is not None or y is not None or z is not None:
+        output = _vectors_to_frame_series(x=x, y=y, z=z, xy=xy, xz=xz, yz=yz)
+    else:
+        raise ValueError("Insufficient parameters.")
 
     # Match length and add origin
     if length is not None:
@@ -989,14 +1016,20 @@ def to_frame_series(
                 f"but it has a length of {output.shape[0]}."
             )
 
+    # Add origin if needed
+    if matrices is not None and is_frame_series(matrices) and origin is None:
+        # This was already a frame series and we don't want to set the origin.
+        return output
+
+    # In any other case, set the origin.
     if origin is not None:
         try:
-            origin = to_point_series(origin, length=length)
+            origin = create_point_series(origin, length=length)
         except ValueError as e:
             raise ValueError(f"Parameter origin is invalid: {e}")
     else:
         try:
-            origin = to_point_series([[0.0, 0.0, 0.0, 1.0]], length=length)
+            origin = create_point_series([[0.0, 0.0, 0.0, 1.0]], length=length)
         except ValueError as e:
             raise ValueError(f"Parameter origin is invalid: {e}")
 
@@ -1004,10 +1037,10 @@ def to_frame_series(
     return output
 
 
-# %% to_point_series, to_vector_series
+# %% create_point_series, create_vector_series
 
 
-def _to_point_vector_series(
+def _create_point_vector_series(
     array: ArrayLike, last_element: float, length: int | None = None
 ):
     """Implement of to_point_series and to_vector_series."""
@@ -1039,7 +1072,7 @@ def _to_point_vector_series(
     return output
 
 
-def to_point_series(
+def create_point_series(
     array: ArrayLike, *, length: int | None = None
 ) -> np.ndarray:
     """
@@ -1068,10 +1101,10 @@ def to_point_series(
 
     Examples
     --------
-    >>> ktk.geometry.to_point_series([[1.0, 2.0, 3.0]])
+    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0]])
     array([[1., 2., 3., 1.]])
 
-    >>> ktk.geometry.to_point_series([[1.0, 2.0, 3.0, 1.0]])
+    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0]])
     array([[1., 2., 3., 1.]])
 
     """
@@ -1082,10 +1115,12 @@ def to_point_series(
         return array
 
     # Here we must have Nx3
-    return _to_point_vector_series(array, 1.0)
+    return _create_point_vector_series(
+        array[:, :3], last_element=1.0, length=length
+    )
 
 
-def to_vector_series(
+def create_vector_series(
     array: ArrayLike, *, length: int | None = None
 ) -> np.ndarray:
     """
@@ -1114,10 +1149,10 @@ def to_vector_series(
 
     Examples
     --------
-    >>> ktk.geometry.to_vector_series([[1.0, 2.0, 3.0]])
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0]])
     array([[1., 2., 3., 0.]])
 
-    >>> ktk.geometry.to_vector_series([[1.0, 2.0, 3.0, 0.0]])
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 0.0]])
     array([[1., 2., 3., 0.]])
 
     """
@@ -1130,7 +1165,9 @@ def to_vector_series(
         return array
 
     # Here we must have Nx3
-    return _to_point_vector_series(array, 0.0, length=length)
+    return _create_point_vector_series(
+        array[:, :3], last_element=0.0, length=length
+    )
 
 
 # %% Point registration

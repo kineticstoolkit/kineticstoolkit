@@ -69,15 +69,15 @@ def create_forceplatform_frames(
         the force plate.
 
     """
-    ar_corner = geometry.to_point_series(ar_corner)
+    ar_corner = geometry.create_point_series(ar_corner)
     n_samples = ar_corner.shape[0]
-    pr_corner = geometry.to_point_series(pr_corner, length=n_samples)
-    pl_corner = geometry.to_point_series(pl_corner, length=n_samples)
-    al_corner = geometry.to_point_series(al_corner, length=n_samples)
-    offset = geometry.to_point_series(offset, length=n_samples)
+    pr_corner = geometry.create_point_series(pr_corner, length=n_samples)
+    pl_corner = geometry.create_point_series(pl_corner, length=n_samples)
+    al_corner = geometry.create_point_series(al_corner, length=n_samples)
+    offset = geometry.create_point_series(offset, length=n_samples)
 
     # Temporary origin at center of corners
-    lcs = geometry.create_frames(
+    lcs = geometry.create_frame_series(
         origin=0.25 * (ar_corner + pr_corner + pl_corner + al_corner),
         x=0.5 * (ar_corner + al_corner) - 0.5 * (pr_corner + pl_corner),
         xy=0.5 * (ar_corner + pr_corner) - 0.5 * (pl_corner + al_corner),
