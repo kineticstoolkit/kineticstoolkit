@@ -33,29 +33,28 @@ import numpy as np
 import scipy.spatial.transform as transform
 import kineticstoolkit.external.icp as icp
 from kineticstoolkit.typing_ import ArrayLike, check_param
-from typing import overload
 
 import kineticstoolkit as ktk  # For doctests
 
 
 def __dir__():
     return [
-        "matmul",
-        "get_angles",
-        "get_local_coordinates",
-        "get_global_coordinates",
-        "isnan",
-        "is_transform_series",
-        "is_point_series",
-        "is_vector_series",
         "create_transform_series",
         "create_point_series",
         "create_vector_series",
-        "register_points",
+        "is_transform_series",
+        "is_point_series",
+        "is_vector_series",
+        "matmul",
         "rotate",
         "translate",
         "scale",
         "mirror",
+        "get_local_coordinates",
+        "get_global_coordinates",
+        "get_angles",
+        "register_points",
+        "isnan",
     ]
 
 
@@ -377,7 +376,7 @@ def get_angles(
     T: ArrayLike, seq: str, degrees: bool = False, flip: bool = False
 ) -> np.ndarray:
     """
-    Extract Euler angles from a series of homogeneous matrices.
+    Extract Euler angles from a transform series.
 
     In case of gimbal lock, a warning is raised, and the third angle is set to
     zero. Note however that the returned angles still represent the correct
@@ -386,7 +385,7 @@ def get_angles(
     Parameters
     ----------
     T
-        An Nx4x4 series of transformation matrices.
+        An Nx4x4 transform series.
 
     seq
         3 characters belonging to the set {"X", "Y", "Z"} for intrinsic
@@ -479,8 +478,7 @@ def get_local_coordinates(
         - A series of N 4x4 transformation matrices : Nx4x4
 
     reference_frames
-        A series of N reference frames (Nx4x4) to express the global
-        coordinates in.
+        An Nx4x4 transform series that represents the local coordinate system.
 
     Returns
     -------
@@ -536,8 +534,7 @@ def get_global_coordinates(
         - A series of N 4x4 transformation matrices : Nx4x4
 
     reference_frames
-        A series of N reference frames (Nx4x4) the local coordinates are
-        expressed in.
+        An Nx4x4 transform series that represents the local coordinate system.
 
     Returns
     -------
@@ -593,7 +590,7 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
 
 def is_transform_series(array: ArrayLike, /) -> bool:
     """
-    Check that the input is a frame series.
+    Check that the input is an Nx4x4 series of homogeneous transforms.
 
     Parameters
     ----------
@@ -603,8 +600,8 @@ def is_transform_series(array: ArrayLike, /) -> bool:
     Returns
     -------
     bool
-        True if every sample (other than NaNs) of the input array is a frame
-        (a 4x4 homogeneous matrix).
+        True if every sample (other than NaNs) of the input array is a
+        4x4 homogeneous transform.
 
     """
     value = np.array(array)
@@ -624,7 +621,7 @@ def is_transform_series(array: ArrayLike, /) -> bool:
     if not np.allclose(value[index, 3], [0.0, 0.0, 0.0, 1.0]):
         return False
 
-    # Check that the derminant is 1 for every sample
+    # Check that the rotation is not skewed
     try:
         _check_no_skewed_rotation(value, "value")
     except ValueError:
@@ -657,7 +654,7 @@ def _is_point_vector_series(array: ArrayLike, last_element: float) -> bool:
 
 def is_point_series(array: ArrayLike) -> bool:
     """
-    Check that the input is a point series.
+    Check that the input is an Nx4 point series ([[x, y, z, 1.0], ...]).
 
     Parameters
     ----------
@@ -676,7 +673,7 @@ def is_point_series(array: ArrayLike) -> bool:
 
 def is_vector_series(array: ArrayLike) -> bool:
     """
-    Check that the input is a vector series.
+    Check that the input is an Nx4 vector series ([[x, y, z, 0.0], ...]).
 
     Parameters
     ----------
@@ -691,6 +688,159 @@ def is_vector_series(array: ArrayLike) -> bool:
 
     """
     return _is_point_vector_series(array, 0.0)
+
+
+# %% create_point_series, create_vector_series
+
+
+def _create_point_vector_series(
+    array: ArrayLike, last_element: float, length: int | None = None
+):
+    """Implement of to_point_series and to_vector_series."""
+    np_array = np.array(array)
+    if len(np_array.shape) != 2 or np_array.shape[1] not in (2, 3, 4):
+        raise ValueError("Array must be of shape Nx2, Nx3 or Nx4.")
+    if (
+        length is not None
+        and np_array.shape[0] != 1
+        and np_array.shape[0] != length
+    ):
+        raise ValueError(
+            f"Array must have {length} samples, however it has "
+            f"{np_array.shape[0]} samples."
+        )
+
+    # Do the conversion
+    output = (
+        np.ones((np_array.shape[0], 4))
+        if last_element == 1.0
+        else np.zeros((np_array.shape[0], 4))
+    )
+    if np_array.shape[1] == 2:
+        output[:, 0:2] = np_array
+        output[:, 2] = 0.0
+    else:
+        output[:, 0:3] = np_array
+
+    # Repeat to the requested number of samples if applicable
+    if output.shape[0] == 1 and length is not None:
+        output = np.repeat(output, length, axis=0)
+
+    return output
+
+
+def create_point_series(
+    array: ArrayLike, *, length: int | None = None
+) -> np.ndarray:
+    """
+    Convert an input array to an Nx4 point series ([[x, y, z, 1.0], ...]).
+
+    Parameters
+    ----------
+    array
+        Nx2, Nx3 or Nx4 array where N corresponds to time, and the second
+        dimension corresponds to x, y and optionally z.
+
+    length
+        The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    Returns
+    -------
+    array
+        An Nx4 array with every sample being [x, y, z, 1.0]. For Nx2 inputs,
+        z is set to 0.
+
+    Raises
+    ------
+    ValueError
+        If the input array has an incorrect dimension.
+
+    Examples
+    --------
+    # A series of one sample with x=1, y=2
+    >>> ktk.geometry.create_point_series([[1.0, 2.0]])
+    array([[1., 2., 0., 1.]])
+
+    # A series of one sample with x=1, y=2, z=3
+    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0]])
+    array([[1., 2., 3., 1.]])
+
+    # A series of one sample with x=1, y=2, z=3
+    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0]])
+    array([[1., 2., 3., 1.]])
+
+    """
+    array = np.array(array)
+    if is_point_series(array) and (length is None or array.shape[0] == length):
+        # Nothing to do, maybe just ensure that we return an array because
+        # is_point_series accept any ArrayLike.
+        return array
+
+    # Here we must have Nx3
+    return _create_point_vector_series(
+        array[:, :3], last_element=1.0, length=length
+    )
+
+
+def create_vector_series(
+    array: ArrayLike, *, length: int | None = None
+) -> np.ndarray:
+    """
+    Convert an input array to an Nx4 vector series ([[x, y, z, .0], ...]).
+
+    Parameters
+    ----------
+    array
+        Nx2, Nx3 or Nx4 array where N corresponds to time, and the second
+        dimension corresponds to x, y and optionally z.
+
+    length
+        The number of samples in the resulting point series. If there is only
+        one sample in the original array, this one sample will be duplicated
+        to match length. Otherwise, an error is raised if the input
+        array does not match length.
+
+    Returns
+    -------
+    array
+        An Nx4 array with every sample being [x, y, z, 0.0]. For Nx2 inputs,
+        z is set to 0.
+
+    Raises
+    ------
+    ValueError
+        If the input array has an incorrect dimension.
+
+    Examples
+    --------
+    # A series of one sample with x=1, y=2
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0]])
+    array([[1., 2., 0., 0.]])
+
+    # A series of one sample with x=1, y=2, z=3
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0]])
+    array([[1., 2., 3., 0.]])
+
+    # A series of one sample with x=1, y=2, z=3
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 0.0]])
+    array([[1., 2., 3., 0.]])
+
+    """
+    array = np.array(array)
+    if is_vector_series(array) and (
+        length is None or array.shape[0] == length
+    ):
+        # Nothing to do, maybe just ensure that we return an array because
+        # is_point_series accept any ArrayLike.
+        return array
+
+    # Here we must have Nx3
+    return _create_point_vector_series(
+        array[:, :3], last_element=0.0, length=length
+    )
 
 
 # %% create_transform_series
@@ -829,12 +979,12 @@ def create_transform_series(
     length: int | None = None,
 ) -> np.ndarray:
     """
-    Construct an Nx4x4 frame series from multiple input forms.
+    Construct an Nx4x4 transform series from multiple input forms.
 
     **Matrix input form**
 
     If the input is a series of 3x3 rotation matrices or 4x4 homogeneous
-    matrices, use this form::
+    transforms, use this form::
 
         ktk.geometry.to_frame_series(
             matrices: ArrayLike,
@@ -942,7 +1092,7 @@ def create_transform_series(
     Returns
     -------
     np.ndarray
-        An Nx4x4 series of frames.
+        An Nx4x4 transform series.
 
     Examples
     --------
@@ -1039,139 +1189,6 @@ def create_transform_series(
 
     output[:, :, 3] = origin
     return output
-
-
-# %% create_point_series, create_vector_series
-
-
-def _create_point_vector_series(
-    array: ArrayLike, last_element: float, length: int | None = None
-):
-    """Implement of to_point_series and to_vector_series."""
-    np_array = np.array(array)
-    if len(np_array.shape) != 2 or np_array.shape[1] != 3:
-        raise ValueError("Array must be of shape Nx3 or Nx4.")
-    if (
-        length is not None
-        and np_array.shape[0] != 1
-        and np_array.shape[0] != length
-    ):
-        raise ValueError(
-            f"Array must have {length} samples, however it has "
-            f"{np_array.shape[0]} samples."
-        )
-
-    # Do the conversion
-    output = (
-        np.ones((np_array.shape[0], 4))
-        if last_element == 1.0
-        else np.zeros((np_array.shape[0], 4))
-    )
-    output[:, 0:3] = np_array
-
-    # Repeat to the requested number of samples if applicable
-    if output.shape[0] == 1 and length is not None:
-        output = np.repeat(output, length, axis=0)
-
-    return output
-
-
-def create_point_series(
-    array: ArrayLike, *, length: int | None = None
-) -> np.ndarray:
-    """
-    Convert an input array to an Nx4 point series.
-
-    Parameters
-    ----------
-    array
-        Nx3 or Nx4 array.
-
-    length
-        The number of samples in the resulting point series. If there is only
-        one sample in the original array, this one sample will be duplicated
-        to match length. Otherwise, an error is raised if the input
-        array does not match length.
-
-    Returns
-    -------
-    array
-        An Nx4 array with every sample being [x, y, z, 1.0].
-
-    Raises
-    ------
-    ValueError
-        If the input array has an incorrect dimension.
-
-    Examples
-    --------
-    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0]])
-    array([[1., 2., 3., 1.]])
-
-    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0]])
-    array([[1., 2., 3., 1.]])
-
-    """
-    array = np.array(array)
-    if is_point_series(array) and (length is None or array.shape[0] == length):
-        # Nothing to do, maybe just ensure that we return an array because
-        # is_point_series accept any ArrayLike.
-        return array
-
-    # Here we must have Nx3
-    return _create_point_vector_series(
-        array[:, :3], last_element=1.0, length=length
-    )
-
-
-def create_vector_series(
-    array: ArrayLike, *, length: int | None = None
-) -> np.ndarray:
-    """
-    Convert an input array to an Nx4 vector series.
-
-    Parameters
-    ----------
-    array
-        Nx3 or Nx4 array.
-
-    length
-        The number of samples in the resulting point series. If there is only
-        one sample in the original array, this one sample will be duplicated
-        to match length. Otherwise, an error is raised if the input
-        array does not match length.
-
-    Returns
-    -------
-    array
-        An Nx4 array with every sample being [x, y, z, 0.0].
-
-    Raises
-    ------
-    ValueError
-        If the input array has an incorrect dimension.
-
-    Examples
-    --------
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0]])
-    array([[1., 2., 3., 0.]])
-
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 0.0]])
-    array([[1., 2., 3., 0.]])
-
-    """
-    array = np.array(array)
-    if is_vector_series(array) and (
-        length is None or array.shape[0] == length
-    ):
-        # Nothing to do, maybe just ensure that we return an array because
-        # is_point_series accept any ArrayLike.
-        return array
-
-    # Here we must have Nx3
-    return _create_point_vector_series(
-        array[:, :3], last_element=0.0, length=length
-    )
 
 
 # %% Point registration
