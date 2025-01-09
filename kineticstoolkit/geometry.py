@@ -45,12 +45,12 @@ def __dir__():
         "get_local_coordinates",
         "get_global_coordinates",
         "isnan",
-        "is_frame_series",
+        "is_transform_series",
         "is_point_series",
         "is_vector_series",
-        "to_frame_series",
-        "to_point_series",
-        "to_vector_series",
+        "create_transform_series",
+        "create_point_series",
+        "create_vector_series",
         "register_points",
         "rotate",
         "translate",
@@ -591,7 +591,7 @@ def isnan(array: ArrayLike, /) -> np.ndarray:
     return temp
 
 
-def is_frame_series(array: ArrayLike, /) -> bool:
+def is_transform_series(array: ArrayLike, /) -> bool:
     """
     Check that the input is a frame series.
 
@@ -693,7 +693,7 @@ def is_vector_series(array: ArrayLike) -> bool:
     return _is_point_vector_series(array, 0.0)
 
 
-# %% create_frame_series
+# %% create_transform_series
 
 # -------------
 # From matrices
@@ -702,7 +702,7 @@ def is_vector_series(array: ArrayLike) -> bool:
 
 def _matrices_to_frame_series(matrices: ArrayLike) -> np.ndarray:
     """Implement matrix form of _to_frame_series (rotational part)."""
-    if is_frame_series(matrices):
+    if is_transform_series(matrices):
         # Nothing to do
         return np.array(matrices)
     else:
@@ -711,7 +711,7 @@ def _matrices_to_frame_series(matrices: ArrayLike) -> np.ndarray:
         output[:, 0:3, 0:3] = matrices_array[:, 0:3, 0:3]
         output[:, 3, 3] = 1
 
-        if not np.all(isnan(output)) and not is_frame_series(output):
+        if not np.all(isnan(output)) and not is_transform_series(output):
             raise ValueError(
                 "The provided matrices are not a series of rotation matrices "
                 "or homogeneous transforms."
@@ -813,7 +813,7 @@ def _vectors_to_frame_series(
     )
 
 
-def create_frame_series(
+def create_transform_series(
     matrices: ArrayLike | None = None,
     *,
     angles: ArrayLike | None = None,
@@ -958,7 +958,7 @@ def create_frame_series(
     ...              [ 0.,  0., -1.],
     ...              [ 0.,  1.,  0.]]]
     >>> origin = [[0.5, 0.6, 0.7]]
-    >>> ktk.geometry.create_frame_series(rotation, origin=origin)
+    >>> ktk.geometry.create_transform_series(rotation, origin=origin)
     array([[[ 1. ,  0. ,  0. ,  0.5],
             [ 0. ,  1. ,  0. ,  0.6],
             [ 0. ,  0. ,  1. ,  0.7],
@@ -974,7 +974,7 @@ def create_frame_series(
     Create a series of two homogeneous transforms that rotates 0, then 90
     degrees around x:
 
-    >>> ktk.geometry.create_frame_series(angles=[0, 90], seq="x", degrees=True)
+    >>> ktk.geometry.create_transform_series(angles=[0, 90], seq="x", degrees=True)
     array([[[ 1.,  0.,  0.,  0.],
             [ 0.,  1.,  0.,  0.],
             [ 0.,  0.,  1.,  0.],
@@ -1017,7 +1017,11 @@ def create_frame_series(
             )
 
     # Add origin if needed
-    if matrices is not None and is_frame_series(matrices) and origin is None:
+    if (
+        matrices is not None
+        and is_transform_series(matrices)
+        and origin is None
+    ):
         # This was already a frame series and we don't want to set the origin.
         return output
 

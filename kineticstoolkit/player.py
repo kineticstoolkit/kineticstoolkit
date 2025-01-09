@@ -1440,7 +1440,7 @@ class Player:
         # Orient points, vectors and frames
         for key in contents.data:
 
-            if geometry.is_frame_series(contents.data[key]):
+            if geometry.is_transform_series(contents.data[key]):
                 # Simply rotate it and add it to processed frames
                 self._processed_frames.data[key] = (
                     geometry.get_global_coordinates(
