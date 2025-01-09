@@ -697,7 +697,7 @@ def _create_point_vector_series(
     array: ArrayLike, last_element: float, length: int | None = None
 ):
     """Implement of to_point_series and to_vector_series."""
-    np_array = np.array(array)
+    np_array = np.array(array, dtype=float)
     if len(np_array.shape) != 2 or np_array.shape[1] not in (2, 3, 4):
         raise ValueError("Array must be of shape Nx2, Nx3 or Nx4.")
     if (
@@ -975,7 +975,7 @@ def create_transform_series(
     xy: ArrayLike | None = None,
     xz: ArrayLike | None = None,
     yz: ArrayLike | None = None,
-    origin: ArrayLike | None = None,
+    position: ArrayLike | None = None,
     length: int | None = None,
 ) -> np.ndarray:
     """
@@ -986,10 +986,10 @@ def create_transform_series(
     If the input is a series of 3x3 rotation matrices or 4x4 homogeneous
     transforms, use this form::
 
-        ktk.geometry.to_frame_series(
+        ktk.geometry.to_transform_series(
             matrices: ArrayLike,
             *,
-            origin: ArrayLike | None = None,
+            position: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
 
@@ -997,22 +997,22 @@ def create_transform_series(
 
     If the input is a series of Euler/cardan angles, use this form::
 
-        ktk.geometry.to_frame_series(
+        ktk.geometry.to_transform_series(
             *,
             angles: ArrayLike,
             seq: str,
             degrees: bool = False,
-            origin: ArrayLike | None = None,
+            position: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
 
     **Vector input form (using cross-product)**
 
-    To create frames based on the cross product of different vectors, use this
-    form, where exactly one of {x, y, z} and exactly one of {xy, xz, yz} must
-    be defined::
+    To create transform series that represent a local coordinate system based
+    on the cross product of different vectors, use this form, where one of
+    {x, y, z} and one of {xy, xz, yz} must be defined::
 
-        ktk.geometry.to_frame_series(
+        ktk.geometry.to_transform_series(
             *,
             x: ArrayLike | None = None,
             y: ArrayLike | None = None,
@@ -1020,14 +1020,14 @@ def create_transform_series(
             xy: ArrayLike | None = None,
             xz: ArrayLike | None = None,
             yz: ArrayLike | None = None,
-            origin: ArrayLike | None = None,
+            position: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
 
-    With this input form, x, y or z sets the first axis. Then, xy, xz or yz
-    forms a plane with the first vector; the second axis is the cross product
-    of both vectors (perpendicular to this plane). Finally, the third axis is
-    the cross product of the two first axes.
+    With this input form, x, y or z sets the first axis of the local coordinate
+    system. Then, xy, xz or yz forms a plane with the first vector; the second
+    axis is the cross product of both vectors (perpendicular to this plane).
+    Finally, the third axis is the cross product of the two first axes.
 
     Parameters
     ----------
@@ -1077,14 +1077,15 @@ def create_transform_series(
         plane, to create `x` using (y cross yz) or (yz cross z). Choose vectors
         that point roughly in the +y or +z direction.
 
-    origin
-        Optional. An Nx4 point series that defines the origin (fourth column)
-        of the frame. Default value is [[0.0, 0.0, 0.0, 1.0]]. If the input
-        is an Nx4x4 frame series and therefore already has an origin, then the
-        existing origin is kept unless `origin` is specified.
+    position
+        Optional. An Nx2, Nx3 or Nx4 point series that defines the position
+        component (fourth column) of the transforms. Default value is
+        [[0.0, 0.0, 0.0, 1.0]]. If the input is an Nx4x4 frame series and
+        therefore already has a position, then the existing position is kept
+        unless `position` is specified.
 
     length
-        Optional. The number of samples in the resulting point series. If there
+        Optional. The number of samples in the resulting series. If there
         is only one sample in the original array, this one sample will be
         duplicated to match length. Otherwise, an error is raised if the input
         array does not match length.
@@ -1107,8 +1108,8 @@ def create_transform_series(
     ...             [[ 1.,  0.,  0.],
     ...              [ 0.,  0., -1.],
     ...              [ 0.,  1.,  0.]]]
-    >>> origin = [[0.5, 0.6, 0.7]]
-    >>> ktk.geometry.create_transform_series(rotation, origin=origin)
+    >>> position = [[0.5, 0.6, 0.7]]
+    >>> ktk.geometry.create_transform_series(rotation, position=position)
     array([[[ 1. ,  0. ,  0. ,  0.5],
             [ 0. ,  1. ,  0. ,  0.6],
             [ 0. ,  0. ,  1. ,  0.7],
@@ -1170,24 +1171,26 @@ def create_transform_series(
     if (
         matrices is not None
         and is_transform_series(matrices)
-        and origin is None
+        and position is None
     ):
         # This was already a frame series and we don't want to set the origin.
         return output
 
     # In any other case, set the origin.
-    if origin is not None:
+    if position is not None:
         try:
-            origin = create_point_series(origin, length=length)
+            position = create_point_series(position, length=length)
         except ValueError as e:
-            raise ValueError(f"Parameter origin is invalid: {e}")
+            raise ValueError(f"Parameter position is invalid: {e}")
     else:
         try:
-            origin = create_point_series([[0.0, 0.0, 0.0, 1.0]], length=length)
+            position = create_point_series(
+                [[0.0, 0.0, 0.0, 1.0]], length=length
+            )
         except ValueError as e:
-            raise ValueError(f"Parameter origin is invalid: {e}")
+            raise ValueError(f"Parameter position is invalid: {e}")
 
-    output[:, :, 3] = origin
+    output[:, :, 3] = position
     return output
 
 
