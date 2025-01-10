@@ -132,7 +132,7 @@ def test_create_transform_series_with_angle_inputs():
     # Series of 100 rotation matrices around the z axis, from 0 to
     # 360 degrees, with a series of translations of 2 to the right.
     T = ktk.geometry.create_transform_series(
-        seq="z", angles=np.linspace(0, 2 * np.pi, 100), position=[[2, 0, 0]]
+        seq="z", angles=np.linspace(0, 2 * np.pi, 100), positions=[[2, 0, 0]]
     )
     assert np.allclose(
         T[0],
@@ -149,10 +149,10 @@ def test_create_transform_series_with_vector_input():
     # matrix.
     x = np.array([[1.0, 0.0, 0.0, 0.0]])
     xy = np.array([[0.0, 1.0, 0.0, 0.0]])
-    position = np.array([[23.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[23.0, 0.0, 0.0, 1.0]])
     length = 2
     result = ktk.geometry.create_transform_series(
-        x=x, xy=xy, position=position, length=length
+        x=x, xy=xy, positions=positions, length=length
     )
 
     expected_result = np.array(
@@ -174,10 +174,10 @@ def test_create_transform_series_with_vector_input():
 
     x = np.array([[1.0, 0.0, 0.0, 0.0]])
     xy = np.array([[0.0, 2.0, 0.0, 0.0]])
-    position = np.array([[0.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[0.0, 0.0, 0.0, 1.0]])
     length = 1
     result = ktk.geometry.create_transform_series(
-        x=x, xy=xy, position=position, length=length
+        x=x, xy=xy, positions=positions, length=length
     )
 
     expected_result = np.array(
@@ -195,50 +195,50 @@ def test_create_transform_series_with_vector_input():
 
     x = np.array([[1.0, 0.0, 0.0, 0.0]])
     xz = np.array([[0.0, 0.0, 3.0, 0.0]])
-    position = np.array([[0.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[0.0, 0.0, 0.0, 1.0]])
     length = 1
     result = ktk.geometry.create_transform_series(
-        x=x, xz=xz, position=position, length=length
+        x=x, xz=xz, positions=positions, length=length
     )
 
     assert np.allclose(result, expected_result)
 
     y = np.array([[0.0, 1.0, 0.0, 0.0]])
     yz = np.array([[0.0, 0.0, 4.0, 0.0]])
-    position = np.array([[0.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[0.0, 0.0, 0.0, 1.0]])
     length = 1
     result = ktk.geometry.create_transform_series(
-        y=y, yz=yz, position=position, length=length
+        y=y, yz=yz, positions=positions, length=length
     )
 
     assert np.allclose(result, expected_result)
 
     y = np.array([[0.0, 1.0, 0.0, 0.0]])
     xy = np.array([[5.0, 0.0, 0.0, 0.0]])
-    position = np.array([[0.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[0.0, 0.0, 0.0, 1.0]])
     length = 1
     result = ktk.geometry.create_transform_series(
-        y=y, xy=xy, position=position, length=length
+        y=y, xy=xy, positions=positions, length=length
     )
 
     assert np.allclose(result, expected_result)
 
     z = np.array([[0.0, 0.0, 1.0, 0.0]])
     xz = np.array([[6.0, 0.0, 0.0, 0.0]])
-    position = np.array([[0.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[0.0, 0.0, 0.0, 1.0]])
     length = 1
     result = ktk.geometry.create_transform_series(
-        z=z, xz=xz, position=position, length=length
+        z=z, xz=xz, positions=positions, length=length
     )
 
     assert np.allclose(result, expected_result)
 
     z = np.array([[0.0, 0.0, 1.0, 0.0]])
     yz = np.array([[0.0, 7.0, 0.0, 0.0]])
-    position = np.array([[0.0, 0.0, 0.0, 1.0]])
+    positions = np.array([[0.0, 0.0, 0.0, 1.0]])
     length = 1
     result = ktk.geometry.create_transform_series(
-        z=z, yz=yz, position=position, length=length
+        z=z, yz=yz, positions=positions, length=length
     )
 
     assert np.allclose(result, expected_result)
@@ -247,19 +247,19 @@ def test_create_transform_series_with_vector_input():
 
     # Rotate 90 degrees around x
     test = ktk.geometry.create_transform_series(
-        position=[[0, 0, 0, 1]], z=[[0, -2, 0, 0]], yz=[[0, 2, 2, 0]]
+        positions=[[0, 0, 0, 1]], z=[[0, -2, 0, 0]], yz=[[0, 2, 2, 0]]
     )
     assert np.allclose(test, ktk.geometry.create_transforms("x", [np.pi / 2]))
 
     # Rotate 90 degrees around y
     test = ktk.geometry.create_transform_series(
-        position=[[0, 0, 0, 1]], x=[[0, 0, -2, 0]], xy=[[0, 2, -2, 0]]
+        positions=[[0, 0, 0, 1]], x=[[0, 0, -2, 0]], xy=[[0, 2, -2, 0]]
     )
     assert np.allclose(test, ktk.geometry.create_transforms("y", [np.pi / 2]))
 
     # Rotate 90 degrees around z
     test = ktk.geometry.create_transform_series(
-        position=[[0, 0, 0, 1]], x=[[0, 2, 0, 0]], xy=[[-2, 2, 0, 0]]
+        positions=[[0, 0, 0, 1]], x=[[0, 2, 0, 0]], xy=[[-2, 2, 0, 0]]
     )
     assert np.allclose(test, ktk.geometry.create_transforms("z", [np.pi / 2]))
 

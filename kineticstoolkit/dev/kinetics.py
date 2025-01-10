@@ -78,7 +78,7 @@ def create_forceplatform_frames(
 
     # Temporary origin at center of corners
     lcs = geometry.create_transform_series(
-        position=0.25 * (ar_corner + pr_corner + pl_corner + al_corner),
+        positions=0.25 * (ar_corner + pr_corner + pl_corner + al_corner),
         x=0.5 * (ar_corner + al_corner) - 0.5 * (pr_corner + pl_corner),
         xy=0.5 * (ar_corner + pr_corner) - 0.5 * (pl_corner + al_corner),
     )

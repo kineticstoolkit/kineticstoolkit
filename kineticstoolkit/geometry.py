@@ -975,7 +975,7 @@ def create_transform_series(
     xy: ArrayLike | None = None,
     xz: ArrayLike | None = None,
     yz: ArrayLike | None = None,
-    position: ArrayLike | None = None,
+    positions: ArrayLike | None = None,
     length: int | None = None,
 ) -> np.ndarray:
     """
@@ -989,7 +989,7 @@ def create_transform_series(
         ktk.geometry.to_transform_series(
             matrices: ArrayLike,
             *,
-            position: ArrayLike | None = None,
+            positions: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
 
@@ -1002,7 +1002,7 @@ def create_transform_series(
             angles: ArrayLike,
             seq: str,
             degrees: bool = False,
-            position: ArrayLike | None = None,
+            positions: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
 
@@ -1020,7 +1020,7 @@ def create_transform_series(
             xy: ArrayLike | None = None,
             xz: ArrayLike | None = None,
             yz: ArrayLike | None = None,
-            position: ArrayLike | None = None,
+            positions: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
 
@@ -1077,12 +1077,12 @@ def create_transform_series(
         plane, to create `x` using (y cross yz) or (yz cross z). Choose vectors
         that point roughly in the +y or +z direction.
 
-    position
+    positions
         Optional. An Nx2, Nx3 or Nx4 point series that defines the position
         component (fourth column) of the transforms. Default value is
         [[0.0, 0.0, 0.0, 1.0]]. If the input is an Nx4x4 frame series and
-        therefore already has a position, then the existing position is kept
-        unless `position` is specified.
+        therefore already has positions, then the existing positions are kept
+        unless `positions` is specified.
 
     length
         Optional. The number of samples in the resulting series. If there
@@ -1102,14 +1102,14 @@ def create_transform_series(
     Convert a 2x3x3 rotation matrix series and a 1x4 position series to
     an 2x4x4 homogeneous transform series:
 
-    >>> rotation = [[[ 1.,  0.,  0.],
+    >>> rotations = [[[ 1.,  0.,  0.],
     ...              [ 0.,  1.,  0.],
     ...              [ 0.,  0.,  1.]],
     ...             [[ 1.,  0.,  0.],
     ...              [ 0.,  0., -1.],
     ...              [ 0.,  1.,  0.]]]
-    >>> position = [[0.5, 0.6, 0.7]]
-    >>> ktk.geometry.create_transform_series(rotation, position=position)
+    >>> positions = [[0.5, 0.6, 0.7]]
+    >>> ktk.geometry.create_transform_series(rotations, positions=positions)
     array([[[ 1. ,  0. ,  0. ,  0.5],
             [ 0. ,  1. ,  0. ,  0.6],
             [ 0. ,  0. ,  1. ,  0.7],
@@ -1171,26 +1171,26 @@ def create_transform_series(
     if (
         matrices is not None
         and is_transform_series(matrices)
-        and position is None
+        and positions is None
     ):
         # This was already a frame series and we don't want to set the origin.
         return output
 
     # In any other case, set the origin.
-    if position is not None:
+    if positions is not None:
         try:
-            position = create_point_series(position, length=length)
+            positions = create_point_series(positions, length=length)
         except ValueError as e:
-            raise ValueError(f"Parameter position is invalid: {e}")
+            raise ValueError(f"Parameter positions is invalid: {e}")
     else:
         try:
-            position = create_point_series(
+            positions = create_point_series(
                 [[0.0, 0.0, 0.0, 1.0]], length=length
             )
         except ValueError as e:
-            raise ValueError(f"Parameter position is invalid: {e}")
+            raise ValueError(f"Parameter positions is invalid: {e}")
 
-    output[:, :, 3] = position
+    output[:, :, 3] = positions
     return output
 
 
