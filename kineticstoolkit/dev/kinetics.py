@@ -87,3 +87,50 @@ def create_forceplatform_frames(
     lcs[:, 0:4, 3] = geometry.get_global_coordinates(offset, lcs)
 
     return lcs
+
+
+def calculate_cop(
+    forces: ArrayLike, moments: ArrayLike, z: float, force_treshold: float = 10
+) -> np.ndarray:
+    """
+    Calculate center of pressure on a force plate.
+
+    This calculation is based on the assumption that Mx and My are both zero
+    and that z is the vertical axis.
+
+    Parameters
+    ----------
+    forces
+        Nx4 array of forces [[Fx, Fy, Fz, 0.0], ...] expressed in local
+        force platform coordinates.
+    moments
+        Nx4 array of moments [[Mx, My, Mz, 0.0], ...] expressed in local
+        force platform coordinates.
+    z
+        Vertical distance between the top of the platform and the sensor.
+        Positive if the sensor is below the top of the platform (most cases).
+
+    Returns
+    -------
+    np.ndarray
+        Nx4 array of center of pressure [[x, y, z, 1.0], ...]
+
+    """
+    check_param("z", z, float)
+    forces = np.array(forces)
+    moments = np.array(moments)
+
+    non_nan = np.abs(forces[:, 2]) >= force_treshold
+
+    cop = np.zeros(forces.shape)
+    cop[:, :] = np.nan
+    cop[non_nan, 0] = (forces[non_nan, 0] * z - moments[non_nan, 1]) / forces[
+        non_nan, 2
+    ]
+    cop[non_nan, 1] = (moments[non_nan, 0] + forces[non_nan, 1] * z) / forces[
+        non_nan, 2
+    ]
+    cop[non_nan, 2] = -z
+    cop[:, 3] = 1.0
+
+    return cop

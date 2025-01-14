@@ -1223,8 +1223,8 @@ def create_transform_series(
     # Check params
     if seq is not None:
         check_param("seq", seq, str)
-    if degrees is not None:
-        check_param("degrees", degrees, bool)
+    check_param("degrees", degrees, bool)
+    check_param("scalar_first", scalar_first, bool)
     if length is not None:
         check_param("length", length, int)
 
