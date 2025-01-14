@@ -461,6 +461,43 @@ def get_angles(
     return angles
 
 
+def get_quaternions(
+    T: ArrayLike, canonical: bool = False, scalar_first: bool = False
+) -> np.ndarray:
+    """
+    Extract quaternions from a transform series.
+
+    Parameters
+    ----------
+    T
+        An Nx4x4 transform series.
+
+    canonical
+        Whether to map the redundant double cover of rotation space to a
+        unique "canonical" single cover. If True, then the quaternion is
+        chosen from {q, -q} such that the w term is positive. If the w term is
+        0, then the quaternion is chosen such that the first nonzero term of
+        the x, y, and z terms is positive. Default is False.
+
+    scalar_first
+        Optional. If True, the quaternion order is (w, x, y, z). If False,
+        the quaternion order is (x, y, z, w). Default is False.
+
+    Returns
+    -------
+    np.ndarray
+        An Nx4 series of quaternions.
+
+    """
+    T = np.array(T)
+    check_param("scalar_first", scalar_first, bool)
+
+    _check_no_skewed_rotation(T, "T")
+
+    R = transform.Rotation.from_matrix(T[:, 0:3, 0:3])
+    return R.as_quat(canonical=canonical, scalar_first=scalar_first)
+
+
 def get_local_coordinates(
     global_coordinates: ArrayLike, reference_frames: ArrayLike
 ) -> np.ndarray:
@@ -874,8 +911,6 @@ def _angles_to_frame_series(
     angles: ArrayLike,
     seq: str | None = None,
     degrees: bool = False,
-    origin: ArrayLike | None = None,
-    length: int | None = None,
 ) -> np.ndarray:
     """Implement angles form of to_frame_series (rotational part)."""
     # Condition angles
@@ -884,6 +919,31 @@ def _angles_to_frame_series(
 
     # Create the rotation matrix
     rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
+    R = rotation.as_matrix()
+    if len(R.shape) == 2:  # Single rotation: add the Time dimension.
+        R = R[np.newaxis, ...]
+
+    # Construct and return the output
+    output = np.zeros((n_samples, 4, 4))
+    output[:, 0:3, 0:3] = R
+    output[:, 3, 3] = 1.0
+    return output
+
+
+def _quaternions_to_frame_series(
+    *,
+    quaternions: ArrayLike,
+    scalar_first: bool = False,
+) -> np.ndarray:
+    """Implement angles form of to_frame_series (rotational part)."""
+    # Condition angles
+    quaternions_array = np.array(quaternions)
+    n_samples = quaternions_array.shape[0]
+
+    # Create the rotation matrix
+    rotation = transform.Rotation.from_quat(
+        quaternions_array, scalar_first=scalar_first
+    )
     R = rotation.as_matrix()
     if len(R.shape) == 2:  # Single rotation: add the Time dimension.
         R = R[np.newaxis, ...]
@@ -969,6 +1029,8 @@ def create_transform_series(
     angles: ArrayLike | None = None,
     seq: str | None = None,
     degrees: bool = False,
+    quaternions: ArrayLike | None = None,
+    scalar_first: bool = False,
     x: ArrayLike | None = None,
     y: ArrayLike | None = None,
     z: ArrayLike | None = None,
@@ -1002,6 +1064,18 @@ def create_transform_series(
             angles: ArrayLike,
             seq: str,
             degrees: bool = False,
+            positions: ArrayLike | None = None,
+            length: int | None = None,
+            ) -> np.ndarray
+
+    **Quaternion input form**
+
+    If the input is a series of quaternions, use this form::
+
+        ktk.geometry.to_transform_series(
+            *,
+            quaternions: ArrayLike,
+            scalar_first: bool = False,
             positions: ArrayLike | None = None,
             length: int | None = None,
             ) -> np.ndarray
@@ -1053,6 +1127,14 @@ def create_transform_series(
         Used in the angles input form.
         Optional. If True, then the given angles are in degrees, otherwise
         they are in radians. Default is False (radians).
+
+    quaternions
+        Used in the quaternions input form. Nx4 series of quaternions.
+
+    scalar_first
+        Used in the quaternions input form.
+        Optional. If True, the quaternion order is (w, x, y, z). If False,
+        the quaternion order is (x, y, z, w). Default is False.
 
     x, y, z
         Used in the vector input form.
@@ -1151,6 +1233,10 @@ def create_transform_series(
     elif angles is not None:
         output = _angles_to_frame_series(
             angles=angles, seq=seq, degrees=degrees
+        )
+    elif quaternions is not None:
+        output = _quaternions_to_frame_series(
+            quaternions=quaternions, scalar_first=scalar_first
         )
     elif x is not None or y is not None or z is not None:
         output = _vectors_to_frame_series(x=x, y=y, z=z, xy=xy, xz=xz, yz=yz)
