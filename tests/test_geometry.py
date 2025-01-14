@@ -530,6 +530,31 @@ def test_get_angles():
     assert np.allclose(angles, test_angles)
 
 
+def test_get_quaternions():
+    """Test get_quaternions and construction of transforms based on quats."""
+    # Build a transform series with different angles and positions
+    np.random.seed(0)
+    angles = np.zeros((10, 3))
+    angles[:, 0] = (np.random.rand(10) * 2 - 1) * 180
+    angles[:, 1] = (np.random.rand(10) - 1) * 90
+    angles[:, 2] = (np.random.rand(10) * 2 - 1) * 180
+    positions = np.zeros((10, 3))
+    positions[:, 0] = np.random.rand(10)
+    positions[:, 1] = np.random.rand(10)
+    positions[:, 2] = np.random.rand(10)
+    T = ktk.geometry.create_transform_series(
+        angles=angles, seq="xyz", positions=positions
+    )
+
+    # Extract quaternions and build a new transform series based on these quats
+    quaternions = ktk.geometry.get_quaternions(T)
+    T2 = ktk.geometry.create_transform_series(
+        quaternions=quaternions, positions=positions
+    )
+
+    assert np.allclose(T, T2)
+
+
 def test_create_transforms_tobedeprecated():
     """Test create_transforms."""
     # Identity matrix

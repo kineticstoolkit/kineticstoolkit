@@ -53,6 +53,7 @@ def __dir__():
         "get_local_coordinates",
         "get_global_coordinates",
         "get_angles",
+        "get_quaternions",
         "register_points",
         "isnan",
     ]
