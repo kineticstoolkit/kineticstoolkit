@@ -330,9 +330,9 @@ def test_read_c3d_force_platforms():
     assert np.allclose(
         contents["ForcePlatforms"].data["FP0_LCS"][0],
         [
-            [-0.00282923, -0.99998666, -0.00432103, 0.30408358],
-            [0.00162063, 0.00431645, -0.99998937, -0.0219326],
-            [0.99999468, -0.0028362, 0.0016084, 0.25834527],
+            [-0.00282923, -0.99998666, -0.00432103, 0.3041808],
+            [0.00162063, 0.00431645, -0.99998937, 0.00056716],
+            [0.99999468, -0.0028362, 0.0016084, 0.25830909],
             [0.0, 0.0, 0.0, 1.0],
         ],
     )
@@ -341,7 +341,9 @@ def test_read_c3d_force_platforms():
         [0.26887549, 41.77700117, 1.17952925, 0.0],
     )
     assert np.allclose(
-        np.nanmean(contents["ForcePlatforms"].data["FP0_Moment"], axis=0),
+        np.nanmean(
+            contents["ForcePlatforms"].data["FP0_MomentAtCenter"], axis=0
+        ),
         [-5.22727694, 0.24464729, -3.25622748, 0.0],
     )
     assert np.allclose(

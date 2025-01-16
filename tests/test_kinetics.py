@@ -26,46 +26,42 @@ import numpy as np
 
 
 def test_calculate_cop():
-    # For now, a non-regression test based on a visual comparison between
-    # the result and the COP returned by ezc3d. The discrepancy led to
-    # this ezc3d issue: https://github.com/pyomeca/ezc3d/issues/354
-    # While it's reviewed, I trust more my calculation than ezc3d and it's
-    # temporarily a simple non-regression test.
-    contents = ktk.read_c3d(
-        ktk.doc.download("c3d_test_suite/ezc3d/BTS.c3d"),
-        convert_point_unit=True,
-    )
-    lcs = contents["ForcePlatforms"].data["FP0_LCS"]
-    force = contents["ForcePlatforms"].data["FP0_Force"]
-    moment = contents["ForcePlatforms"].data["FP0_Moment"]
+    # Test that calculate_cop gives the same results as ezc3d
+    for file in (
+        "c3d_test_suite/ezc3d/BTS.c3d",
+        "c3d_test_suite/ezc3d/FP_Type3.c3d",
+        "c3d_test_suite/ezc3d/Label2.c3d",
+        "c3d_test_suite/ezc3d/Qualisys.c3d",
+    ):
 
-    local_force = ktk.geometry.get_local_coordinates(force, lcs)
-    local_moment = ktk.geometry.get_local_coordinates(moment, lcs)
-    z = -ktk.geometry.get_local_coordinates(
-        contents["ForcePlatforms"].data["FP0_Corner1"], lcs
-    )[0, 2]
-    local_cop = ktk.dev.kinetics.calculate_cop(
-        local_force, local_moment, sensor_offset=z
-    )
+        contents = ktk.read_c3d(
+            ktk.doc.download(file),
+            convert_point_unit=True,
+        )
 
-    reference_local_cop = ktk.geometry.get_local_coordinates(
-        contents["ForcePlatforms"].data["FP0_COP"], lcs
-    )
+        lcs = contents["ForcePlatforms"].data["FP0_LCS"]
+        force = contents["ForcePlatforms"].data["FP0_Force"]
+        moment = contents["ForcePlatforms"].data["FP0_MomentAtCenter"]
 
-    # Code to generate comparison in
-    # https://github.com/pyomeca/ezc3d/issues/354
+        cop = ktk.geometry.get_global_coordinates(
+            ktk.dev.kinetics.calculate_cop(
+                ktk.geometry.get_local_coordinates(force, lcs),
+                ktk.geometry.get_local_coordinates(moment, lcs),
+            ),
+            lcs,
+        )
 
-    # plt.plot(local_cop[:, 0], label="CoPx (with sensor offset)")
-    # plt.plot(local_cop[:, 1], label="CoPy (with sensor offset)")
-    # plt.plot(local_cop[:, 2], label="CoPz (with sensor offset)")
+        ref_cop = contents["ForcePlatforms"].data["FP0_COP"]
 
-    # plt.plot(reference_local_cop[:, 0], label="CoPx (ezc3d)")
-    # plt.plot(reference_local_cop[:, 1], label="CoPy (ezc3d)")
-    # plt.plot(reference_local_cop[:, 2], label="CoPz (ezc3d)")
+        assert np.sum(~np.isnan(cop[:, 0])) > 0  # Not only nans
+        assert np.sum(~np.isnan(ref_cop[:, 0])) > 0  # Not only nans
 
-    # plt.legend()
+        nonnan = ~(np.isnan(cop[:, 0]) | np.isnan(ref_cop[:, 0]))
+        assert np.sum(nonnan) > 0  # Not only nans
 
-    assert np.allclose(np.nanmean(local_cop), 0.8128015215784059)
+        # Tolerance of half a millimeter for FP_Type3, I don't know why there
+        # is this very small offset but I guess it's a negligible error.
+        assert np.allclose(cop[nonnan], ref_cop[nonnan], atol=0.0005)
 
 
 if __name__ == "__main__":

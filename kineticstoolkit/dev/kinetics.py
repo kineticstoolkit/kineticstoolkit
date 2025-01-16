@@ -34,19 +34,24 @@ from kineticstoolkit.typing_ import check_param, ArrayLike
 import kineticstoolkit.geometry as geometry
 
 
-def create_forceplatform_frames(
+def create_forceplatform_lcs(
     ar_corner: ArrayLike,
     pr_corner: ArrayLike,
     pl_corner: ArrayLike,
     al_corner: ArrayLike,
-    offset: ArrayLike,
 ) -> np.ndarray:
     """
-    Set the frames (rotations, positions) of a force platform.
+    Create a local coordinate system for a force platform.
 
-    Creates a series of frames (Nx4x4) that defines the orientation and
-    position of a force platform in space. The frames are defined in
-    platform coordinates, with x anterior, y right and z down.
+    Creates a series of transforms (Nx4x4) that define the orientation and
+    position of a force platform in space, based on the position of the
+    corners, following:
+
+        - origin at the geometrical centre of the platform, at ground level,
+          and not the force sensor's origin.
+        - x pointing anteriorly.
+        - y pointing right.
+        - z pointing down.
 
     Parameters
     ----------
@@ -62,11 +67,6 @@ def create_forceplatform_frames(
     al_corner
         Coordinates of the anterior-left corner as an Nx4 array. Use double-
         brackets for constants: [[x, y, z, 1.0]]
-    offset
-        Position of the sensor relative to the centre of the platform surface,
-        in platform coordinates. Normally, this is [[0.0, 0.0, z, 1.0]] with z
-        being positive since the sensor is normally below (+z) the surface of
-        the force plate.
 
     """
     ar_corner = geometry.create_point_series(ar_corner)
@@ -74,49 +74,44 @@ def create_forceplatform_frames(
     pr_corner = geometry.create_point_series(pr_corner, length=n_samples)
     pl_corner = geometry.create_point_series(pl_corner, length=n_samples)
     al_corner = geometry.create_point_series(al_corner, length=n_samples)
-    offset = geometry.create_point_series(offset, length=n_samples)
 
-    # Temporary origin at center of corners
     lcs = geometry.create_transform_series(
         positions=0.25 * (ar_corner + pr_corner + pl_corner + al_corner),
         x=0.5 * (ar_corner + al_corner) - 0.5 * (pr_corner + pl_corner),
         xy=0.5 * (ar_corner + pr_corner) - 0.5 * (pl_corner + al_corner),
     )
 
-    # Set real position
-    lcs[:, 0:4, 3] = geometry.get_global_coordinates(offset, lcs)
-
     return lcs
 
 
 def calculate_cop(
-    force: ArrayLike,
-    moment: ArrayLike,
-    sensor_offset: float,
+    local_force: ArrayLike,
+    local_moment: ArrayLike,
     force_threshold: float = 10,
 ) -> np.ndarray:
     """
     Calculate centre of pressure on a force plate in local coordinates.
 
-    .. image:: ../../images/kinetics.calculate_cop.copx.png
+    This calculation is based on the assumption that Mx and My are always zero
+    in gait. All coordinates are expressed in local force platform coordinates,
+    which are:
 
-    This calculation is based on the assumption that Mx and My are both zero
-    and that z is the vertical axis.
+        - origin at the geometrical centre of the platform, at ground level,
+          and not the force sensor's origin.
+        - x and y pointing horizontally.
+        - z pointing down.
 
     Parameters
     ----------
-    force
+    local_force
         Nx4 force series [[Fx, Fy, Fz, 0.0], ...] expressed in local force
         platform coordinates.
-    moments
+    local_moments
         Nx4 moment series [[Mx, My, Mz, 0.0], ...] expressed in local force
         platform coordinates.
-    sensor_offset
-        Vertical distance between the top of the platform and the sensor.
-        Positive if the sensor is below the top of the platform (most cases).
     force_threshold
         Minimal vertical force required to calculate the CoP. NaNs are
-        returned for any vertical force under this value.
+        returned for any vertical force under this value. Default is 5.
 
     Returns
     -------
@@ -124,21 +119,17 @@ def calculate_cop(
         Nx4 array of centre of pressure [[x, y, z, 1.0], ...]
 
     """
-    check_param("sensor_offset", sensor_offset, float)
-    force = np.array(force)
-    moment = np.array(moment)
+    local_force = np.array(local_force)
+    local_moment = np.array(local_moment)
+    check_param("force_threshold", force_threshold, float)
 
-    non_nan = np.abs(force[:, 2]) >= force_threshold
+    non_nan = np.abs(local_force[:, 2]) >= force_threshold
 
-    cop = np.zeros(force.shape)
+    cop = np.zeros(local_force.shape)
     cop[:, :] = np.nan
-    cop[non_nan, 0] = (
-        -moment[non_nan, 1] - force[non_nan, 0] * sensor_offset
-    ) / force[non_nan, 2]
-    cop[non_nan, 1] = (
-        moment[non_nan, 0] + force[non_nan, 1] * sensor_offset
-    ) / force[non_nan, 2]
-    cop[non_nan, 2] = -sensor_offset
+    cop[non_nan, 0] = (-local_moment[non_nan, 1]) / local_force[non_nan, 2]
+    cop[non_nan, 1] = (local_moment[non_nan, 0]) / local_force[non_nan, 2]
+    cop[non_nan, 2] = 0
     cop[:, 3] = 1.0
 
     return cop
