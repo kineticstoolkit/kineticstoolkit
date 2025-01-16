@@ -36,21 +36,36 @@ def test_calculate_cop():
         convert_point_unit=True,
     )
     lcs = contents["ForcePlatforms"].data["FP0_LCS"]
-    forces = contents["ForcePlatforms"].data["FP0_Force"]
-    moments = contents["ForcePlatforms"].data["FP0_Moment"]
+    force = contents["ForcePlatforms"].data["FP0_Force"]
+    moment = contents["ForcePlatforms"].data["FP0_Moment"]
 
-    local_forces = ktk.geometry.get_local_coordinates(forces, lcs)
-    local_moments = ktk.geometry.get_local_coordinates(moments, lcs)
+    local_force = ktk.geometry.get_local_coordinates(force, lcs)
+    local_moment = ktk.geometry.get_local_coordinates(moment, lcs)
     z = -ktk.geometry.get_local_coordinates(
         contents["ForcePlatforms"].data["FP0_Corner1"], lcs
     )[0, 2]
-    local_cop = ktk.dev.kinetics.calculate_cop(local_forces, local_moments, z)
+    local_cop = ktk.dev.kinetics.calculate_cop(
+        local_force, local_moment, sensor_offset=z
+    )
 
     reference_local_cop = ktk.geometry.get_local_coordinates(
         contents["ForcePlatforms"].data["FP0_COP"], lcs
     )
 
-    assert np.allclose(np.nanmean(local_cop), 0.8127298238012851)
+    # Code to generate comparison in
+    # https://github.com/pyomeca/ezc3d/issues/354
+
+    # plt.plot(local_cop[:, 0], label="CoPx (with sensor offset)")
+    # plt.plot(local_cop[:, 1], label="CoPy (with sensor offset)")
+    # plt.plot(local_cop[:, 2], label="CoPz (with sensor offset)")
+
+    # plt.plot(reference_local_cop[:, 0], label="CoPx (ezc3d)")
+    # plt.plot(reference_local_cop[:, 1], label="CoPy (ezc3d)")
+    # plt.plot(reference_local_cop[:, 2], label="CoPz (ezc3d)")
+
+    # plt.legend()
+
+    assert np.allclose(np.nanmean(local_cop), 0.8128015215784059)
 
 
 if __name__ == "__main__":

@@ -90,47 +90,55 @@ def create_forceplatform_frames(
 
 
 def calculate_cop(
-    forces: ArrayLike, moments: ArrayLike, z: float, force_treshold: float = 10
+    force: ArrayLike,
+    moment: ArrayLike,
+    sensor_offset: float,
+    force_threshold: float = 10,
 ) -> np.ndarray:
     """
-    Calculate center of pressure on a force plate.
+    Calculate centre of pressure on a force plate in local coordinates.
+
+    .. image:: ../../images/kinetics.calculate_cop.copx.png
 
     This calculation is based on the assumption that Mx and My are both zero
     and that z is the vertical axis.
 
     Parameters
     ----------
-    forces
-        Nx4 array of forces [[Fx, Fy, Fz, 0.0], ...] expressed in local
-        force platform coordinates.
+    force
+        Nx4 force series [[Fx, Fy, Fz, 0.0], ...] expressed in local force
+        platform coordinates.
     moments
-        Nx4 array of moments [[Mx, My, Mz, 0.0], ...] expressed in local
-        force platform coordinates.
-    z
+        Nx4 moment series [[Mx, My, Mz, 0.0], ...] expressed in local force
+        platform coordinates.
+    sensor_offset
         Vertical distance between the top of the platform and the sensor.
         Positive if the sensor is below the top of the platform (most cases).
+    force_threshold
+        Minimal vertical force required to calculate the CoP. NaNs are
+        returned for any vertical force under this value.
 
     Returns
     -------
     np.ndarray
-        Nx4 array of center of pressure [[x, y, z, 1.0], ...]
+        Nx4 array of centre of pressure [[x, y, z, 1.0], ...]
 
     """
-    check_param("z", z, float)
-    forces = np.array(forces)
-    moments = np.array(moments)
+    check_param("sensor_offset", sensor_offset, float)
+    force = np.array(force)
+    moment = np.array(moment)
 
-    non_nan = np.abs(forces[:, 2]) >= force_treshold
+    non_nan = np.abs(force[:, 2]) >= force_threshold
 
-    cop = np.zeros(forces.shape)
+    cop = np.zeros(force.shape)
     cop[:, :] = np.nan
-    cop[non_nan, 0] = (forces[non_nan, 0] * z - moments[non_nan, 1]) / forces[
-        non_nan, 2
-    ]
-    cop[non_nan, 1] = (moments[non_nan, 0] + forces[non_nan, 1] * z) / forces[
-        non_nan, 2
-    ]
-    cop[non_nan, 2] = -z
+    cop[non_nan, 0] = (
+        -moment[non_nan, 1] - force[non_nan, 0] * sensor_offset
+    ) / force[non_nan, 2]
+    cop[non_nan, 1] = (
+        moment[non_nan, 0] + force[non_nan, 1] * sensor_offset
+    ) / force[non_nan, 2]
+    cop[non_nan, 2] = -sensor_offset
     cop[:, 3] = 1.0
 
     return cop

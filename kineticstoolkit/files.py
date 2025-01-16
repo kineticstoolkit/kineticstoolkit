@@ -318,32 +318,33 @@ def read_c3d(
     as a TimeSeries containing the following keys where FPi means Force
     Platform i, i being the index of the platform (e.g., FP0, FP1, etc.):
 
-        - FPi_Force: Ground reaction force in global coordinates, as an Nx4
-          series (Fx, Fy, Fz, 0.0).
-        - FPi_Moment: Ground reaction moment in global coordinates, expressed
-          at the origin of the force platform, as an Nx4 series
-          (Mx, My, Mz, 0.0).
-        - FPi_MomentAtCOP: Ground reaction moment in global coordinates,
-          expressed at the center of pressure, as an Nx4 series
-          (Mx, My, Mz, 0.0).
-        - FPi_COP: Centre of pressure in global coordinates.
+        - FPi_Force: Ground reaction force components in global coordinates,
+          as an Nx4 vector series [[Fx, Fy, Fz, 0.0], ...].
+        - FPi_Moment: Ground reaction moment components in global
+          coordinates, expressed at the origin of the force platform, as an
+          Nx4 vector series [[Mx, My, Mz, 0.0], ...].
+        - FPi_MomentAtCOP: Ground reaction moment components in global
+          coordinates, expressed at the center of pressure, as an Nx4
+          vector series.
+        - FPi_COP: Centre of pressure in global coordinates as n Nx4 point
+          series.
         - FPi_LCS: Local coordinate system of the force platform, expressed in
-          global coordinates as an Nx4x4 series. The orientation is calculated
-          using the force platform corners, and the origin is located at the
-          manufacturer's specified origin (generally a few millimeters below
-          the platform).
+          global coordinates as an Nx4x4 transform series. The orientation is
+          calculated using the force platform corners, and the origin is
+          located at the manufacturer's specified origin (generally a few
+          millimeters below the platform).
         - FPi_Corner1: Coordinates of the first corner (+x, +y) in global
-          coordinates, as an Nx4 series (x, y, z, 1.0).
+          coordinates, as an Nx4 point series.
         - FPi_Corner2: Coordinates of the second corner (-x, +y) in global
-          coordinates, as an Nx4 series (x, y, z, 1.0).
+          coordinates, as an Nx4 point series.
         - FPi_Corner3: Coordinates of the third corner (-x, -y) in global
-          coordinates, as an Nx4 series (x, y, z, 1.0).
+          coordinates, as an Nx4 point series.
         - FPi_Corner4: Coordinates of the fourth corner (+x, -y) in global
-          coordinates, as an Nx4 series (x, y, z, 1.0).
+          coordinates, as an Nx4 point series.
 
-    If available, homogeneous transforms are returned in `output["Rotations"]`
-    as a TimeSeries, where each transform series is expressed as an Nx4x4
-    series.
+    If available, rigid body orientations are returned in `output["Rotations"]`
+    as a TimeSeries, where each body orientation is expressed as an Nx4x4
+    transforms series.
 
     Some software stores calculated values such as angles, forces, moments,
     powers, etc. into the C3D file. Storing these data is software-specific
@@ -366,8 +367,8 @@ def read_c3d(
     convert_point_unit
         Optional. True to convert the point units to meters, if they are
         expressed in other units such as mm in the C3D file. False to keep
-        points as is. When unset, if points are stored in a unit other than
-        meters, then a warning is issued. See caution note below.
+        points as is. When unset, a warning is issued if points are stored in
+        a different unit than meters. See caution note below.
 
     convert_forceplate_moment_unit
         Optional. True to convert forceplate moment unit to Nm. Default is
@@ -819,7 +820,7 @@ def read_c3d(
 
             platforms.data[f"FP{i_platform}_LCS"] = lcs
 
-            # Add force
+            # Add forces
             force_unit = reader["data"]["platform"][i_platform]["unit_force"]
             if force_unit != "N":
                 warnings.warn(
@@ -833,7 +834,7 @@ def read_c3d(
             ]["force"].T
             platforms.add_data_info(key, "Unit", force_unit, in_place=True)
 
-            # Add moment around origin
+            # Add moments around origin
             key = f"FP{i_platform}_Moment"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = (
@@ -844,7 +845,7 @@ def read_c3d(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
-            # Add moment at COP
+            # Add moments at COP
             key = f"FP{i_platform}_MomentAtCOP"
             platforms.data[key] = np.zeros((len(platforms.time), 4))
             platforms.data[key][:, 0:3] = (
