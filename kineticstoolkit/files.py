@@ -820,7 +820,7 @@ def read_c3d(
 
             platforms.data[f"FP{i_platform}_LCS"] = lcs
 
-            # Add forces
+            # Add ground reaction force
             force_unit = reader["data"]["platform"][i_platform]["unit_force"]
             if force_unit != "N":
                 warnings.warn(
@@ -828,45 +828,59 @@ def read_c3d(
                 )
 
             key = f"FP{i_platform}_Force"
-            platforms.data[key] = np.zeros((len(platforms.time), 4))
-            platforms.data[key][:, 0:3] = reader["data"]["platform"][
-                i_platform
-            ]["force"].T
+            force = np.zeros((len(platforms.time), 4))
+            force[:, 0:3] = reader["data"]["platform"][i_platform]["force"].T
+            platforms.data[key] = force
             platforms.add_data_info(key, "Unit", force_unit, in_place=True)
 
-            # Add moments around origin
+            # Add moment around origin
             key = f"FP{i_platform}_Moment"
-            platforms.data[key] = np.zeros((len(platforms.time), 4))
-            platforms.data[key][:, 0:3] = (
+            moment = np.zeros((len(platforms.time), 4))
+            moment[:, 0:3] = (
                 moment_factor
                 * reader["data"]["platform"][i_platform]["moment"].T
             )
-            platforms.add_data_info(
-                key, "Unit", forceplate_moment_unit, in_place=True
-            )
-
-            # Add moments at COP
-            key = f"FP{i_platform}_MomentAtCOP"
-            platforms.data[key] = np.zeros((len(platforms.time), 4))
-            platforms.data[key][:, 0:3] = (
-                moment_factor * reader["data"]["platform"][i_platform]["Tz"].T
-            )
+            platforms.data[key] = moment
             platforms.add_data_info(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
             # Add COP
             key = f"FP{i_platform}_COP"
-            platforms.data[key] = np.ones((len(platforms.time), 4))
-            platforms.data[key][:, 0:3] = (
-                forceplate_position_factor
-                * reader["data"]["platform"][i_platform][
-                    "center_of_pressure"
-                ].T
+
+            local_force = geometry.get_local_coordinates(force, lcs)
+            local_moment = geometry.get_local_coordinates(moment, lcs)
+            sensor_offset = -geometry.get_local_coordinates(
+                platforms.data[f"FP{i_platform}_Corner1"], lcs
+            )[0, 2]
+            local_cop = kinetics.calculate_cop(
+                local_force, local_moment, sensor_offset=sensor_offset
             )
+            platforms.data[key] = geometry.get_global_coordinates(
+                local_cop, lcs
+            )
+
+            # # Directly from ezc3d
+            # platforms.data[key] = np.ones((len(platforms.time), 4))
+            # platforms.data[key][:, 0:3] = (
+            #     forceplate_position_factor
+            #     * reader["data"]["platform"][i_platform][
+            #         "center_of_pressure"
+            #     ].T
+            # )
             platforms.add_data_info(
                 key, "Unit", forceplate_position_unit, in_place=True
             )
+
+            # # Add moments at COP
+            # key = f"FP{i_platform}_MomentAtCOP"
+            # platforms.data[key] = np.zeros((len(platforms.time), 4))
+            # platforms.data[key][:, 0:3] = (
+            #     moment_factor * reader["data"]["platform"][i_platform]["Tz"].T
+            # )
+            # platforms.add_data_info(
+            #     key, "Unit", forceplate_moment_unit, in_place=True
+            # )
 
         # Add events
         platforms.events = events.copy()

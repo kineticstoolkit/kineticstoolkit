@@ -345,10 +345,6 @@ def test_read_c3d_force_platforms():
         [-5.22727694, 0.24464729, -3.25622748, 0.0],
     )
     assert np.allclose(
-        np.nanmean(contents["ForcePlatforms"].data["FP0_MomentAtCOP"], axis=0),
-        [0.0071863, 1.66308334, -0.00267493, 0.0],
-    )
-    assert np.allclose(
         np.nanmean(contents["ForcePlatforms"].data["FP0_COP"], axis=0),
         [0.23364972, 0.00107284, 0.38322433, 1.0],
     )
