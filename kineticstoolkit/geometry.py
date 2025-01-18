@@ -735,33 +735,34 @@ def _create_point_vector_series(
     array: ArrayLike, last_element: float, length: int | None = None
 ):
     """Implement of to_point_series and to_vector_series."""
-    np_array = np.array(array, dtype=float)
-    if len(np_array.shape) != 2 or np_array.shape[1] not in (2, 3, 4):
-        raise ValueError("Array must be of shape Nx2, Nx3 or Nx4.")
-    if (
-        length is not None
-        and np_array.shape[0] != 1
-        and np_array.shape[0] != length
-    ):
+    array = np.array(array, dtype=float)
+
+    if len(array.shape) == 0:
         raise ValueError(
-            f"Array must have {length} samples, however it has "
-            f"{np_array.shape[0]} samples."
+            f"The input must be an array, however a value of {array} was "
+            "provided."
+        )
+    elif len(array.shape) > 2:
+        raise ValueError(
+            "The shape of the input must have a maximum of two dimensions, "
+            f"however it has {len(array.shape)} dimensions."
         )
 
-    # Do the conversion
-    output = (
-        np.ones((np_array.shape[0], 4))
-        if last_element == 1.0
-        else np.zeros((np_array.shape[0], 4))
-    )
-    if np_array.shape[1] == 2:
-        output[:, 0:2] = np_array
-        output[:, 2] = 0.0
+    # Init output
+    n_samples = array.shape[0]
+    output = np.zeros((n_samples, 4))
+    if last_element == 1.0:
+        output[:, 3] = 1
+
+    # Fill output
+    if len(array.shape) == 1:  # (N,)
+        output[:, 0] = array
     else:
-        output[:, 0:3] = np_array
+        for i in range(min(3, array.shape[1])):
+            output[:, i] = array[:, i]
 
     # Repeat to the requested number of samples if applicable
-    if output.shape[0] == 1 and length is not None:
+    if n_samples == 1 and length is not None:
         output = np.repeat(output, length, axis=0)
 
     return output
@@ -776,8 +777,10 @@ def create_point_series(
     Parameters
     ----------
     array
-        Nx2, Nx3 or Nx4 array where N corresponds to time, and the second
-        dimension corresponds to x, y and optionally z.
+        Array of one of these shapes where N corresponds to time:
+        - (N,), (N, 1): forms a point series on the x axis, with y=0 and z=0.
+        - (N, 2): forms a point series on the x, y axes, with z=0.
+        - (N, 3), (N, 4): forms a point series on the x, y, z axes.
 
     length
         The number of samples in the resulting point series. If there is only
@@ -818,9 +821,7 @@ def create_point_series(
         return array
 
     # Here we must have Nx3
-    return _create_point_vector_series(
-        array[:, :3], last_element=1.0, length=length
-    )
+    return _create_point_vector_series(array, last_element=1.0, length=length)
 
 
 def create_vector_series(
@@ -832,8 +833,10 @@ def create_vector_series(
     Parameters
     ----------
     array
-        Nx2, Nx3 or Nx4 array where N corresponds to time, and the second
-        dimension corresponds to x, y and optionally z.
+        Array of one of these shapes where N corresponds to time:
+        - (N,), (N, 1): forms a vector series on the x axis, with y=0 and z=0.
+        - (N, 2): forms a vector series on the x, y axes, with z=0.
+        - (N, 3), (N, 4): forms a vector series on the x, y, z axes.
 
     length
         The number of samples in the resulting point series. If there is only
@@ -876,9 +879,7 @@ def create_vector_series(
         return array
 
     # Here we must have Nx3
-    return _create_point_vector_series(
-        array[:, :3], last_element=0.0, length=length
-    )
+    return _create_point_vector_series(array, last_element=0.0, length=length)
 
 
 # %% create_transform_series

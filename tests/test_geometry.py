@@ -64,6 +64,14 @@ def test_matmul():
 def test_create_point_series():
     """Test create_point_series."""
     assert np.allclose(
+        ktk.geometry.create_point_series([0, 3, 6]),
+        [[0, 0, 0, 1], [3, 0, 0, 1], [6, 0, 0, 1]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_point_series([[0], [3], [6]]),
+        [[0, 0, 0, 1], [3, 0, 0, 1], [6, 0, 0, 1]],
+    )
+    assert np.allclose(
         ktk.geometry.create_point_series([[0, 1], [3, 4], [6, 7]]),
         [[0, 1, 0, 1], [3, 4, 0, 1], [6, 7, 0, 1]],
     )
@@ -87,6 +95,14 @@ def test_create_point_series():
 
 def test_create_vector_series():
     """Test create_vector_series."""
+    assert np.allclose(
+        ktk.geometry.create_vector_series([0, 3, 6]),
+        [[0, 0, 0, 0], [3, 0, 0, 0], [6, 0, 0, 0]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_vector_series([[0], [3], [6]]),
+        [[0, 0, 0, 0], [3, 0, 0, 0], [6, 0, 0, 0]],
+    )
     assert np.allclose(
         ktk.geometry.create_vector_series([[0, 1], [3, 4], [6, 7]]),
         [[0, 1, 0, 0], [3, 4, 0, 0], [6, 7, 0, 0]],
