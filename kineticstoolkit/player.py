@@ -1742,7 +1742,14 @@ class Player:
         # Draw the vectors
         for vector in self._processed_vectors:
             np_coordinates = np.ones((2, 4))
-            np_coordinates[0] = points.data[vector][self.current_index]
+
+            try:
+                np_coordinates[0] = points.data[vector][self.current_index]
+            except KeyError:
+                # Most probably the vector was not a vector series and has not
+                # been added to `points` timeseries.
+                np_coordinates[0] = [np.nan, np.nan, np.nan, np.nan]
+
             origin = self._processed_vectors[vector]["Origin"]
             try:
                 np_coordinates[1] = points.data[origin][self.current_index]
