@@ -329,10 +329,8 @@ def read_c3d(
         - FPi_COP: Centre of pressure in global coordinates as n Nx4 point
           series.
         - FPi_LCS: Local coordinate system of the force platform, expressed in
-          global coordinates as an Nx4x4 transform series. The orientation is
-          calculated using the force platform corners, and the origin is
-          located at the manufacturer's specified origin (generally a few
-          millimeters below the platform).
+          global coordinates as an Nx4x4 transform series. The origin is at
+          the middle point of the four corners, with z pointing down.
         - FPi_Corner1: Coordinates of the first corner (+x, +y) in global
           coordinates, as an Nx4 point series.
         - FPi_Corner2: Coordinates of the second corner (-x, +y) in global
