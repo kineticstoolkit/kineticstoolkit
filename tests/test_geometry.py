@@ -91,6 +91,22 @@ def test_create_point_series():
         ),
         [[0, 1, 2, 1], [3, 4, 5, 1], [6, 7, 8, 1]],
     )
+    assert np.allclose(
+        ktk.geometry.create_point_series(x=[1, 2, 3]),
+        [[1, 0, 0, 1], [2, 0, 0, 1], [3, 0, 0, 1]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_point_series(y=[1, 2, 3]),
+        [[0, 1, 0, 1], [0, 2, 0, 1], [0, 3, 0, 1]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_point_series(z=[1, 2, 3]),
+        [[0, 0, 1, 1], [0, 0, 2, 1], [0, 0, 3, 1]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_point_series(x=[1, 2, 3], z=[4, 5, 6]),
+        [[1, 0, 4, 1], [2, 0, 5, 1], [3, 0, 6, 1]],
+    )
 
 
 def test_create_vector_series():
@@ -122,6 +138,22 @@ def test_create_vector_series():
             [[0, 1, 2, 0], [3, 4, 5, 0], [6, 7, 8, 0]]
         ),
         [[0, 1, 2, 0], [3, 4, 5, 0], [6, 7, 8, 0]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_vector_series(x=[1, 2, 3]),
+        [[1, 0, 0, 0], [2, 0, 0, 0], [3, 0, 0, 0]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_vector_series(y=[1, 2, 3]),
+        [[0, 1, 0, 0], [0, 2, 0, 0], [0, 3, 0, 0]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_vector_series(z=[1, 2, 3]),
+        [[0, 0, 1, 0], [0, 0, 2, 0], [0, 0, 3, 0]],
+    )
+    assert np.allclose(
+        ktk.geometry.create_vector_series(x=[1, 2, 3], z=[4, 5, 6]),
+        [[1, 0, 4, 0], [2, 0, 5, 0], [3, 0, 6, 0]],
     )
 
 

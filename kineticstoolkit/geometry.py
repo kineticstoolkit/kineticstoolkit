@@ -731,9 +731,9 @@ def is_vector_series(array: ArrayLike) -> bool:
 # %% create_point_series, create_vector_series
 
 
-def _create_point_vector_series(
+def _single_input_to_point_vector_series(
     array: ArrayLike, last_element: float, length: int | None = None
-):
+) -> np.ndarray:
     """Implement of to_point_series and to_vector_series."""
     array = np.array(array, dtype=float)
 
@@ -768,20 +768,119 @@ def _create_point_vector_series(
     return output
 
 
+def _multiple_inputs_to_point_vector_series(
+    x: ArrayLike | None,
+    y: ArrayLike | None,
+    z: ArrayLike | None,
+    last_element: float,
+    length: int | None = None,
+) -> np.ndarray:
+
+    # Multiple array form
+    if length is not None:
+        temp = np.zeros((length, 4))
+    else:
+        temp = np.zeros((1, 4))
+
+    if x is not None:
+        x = np.array(x)
+        if len(x.shape) > 1:
+            raise ValueError("x should have only one dimension.")
+        try:
+            x, temp = _match_size(x, temp)
+        except ValueError:
+            raise ValueError("x has an incorrect length.")
+        else:
+            temp[:, 0] = x
+
+    if y is not None:
+        y = np.array(y)
+        if len(y.shape) > 1:
+            raise ValueError("y should have only one dimension.")
+        try:
+            y, temp = _match_size(y, temp)
+        except ValueError:
+            raise ValueError("y has an incorrect length.")
+        else:
+            temp[:, 1] = y
+
+    if z is not None:
+        z = np.array(z)
+        if len(z.shape) > 1:
+            raise ValueError("z should have only one dimension.")
+        try:
+            z, temp = _match_size(z, temp)
+        except ValueError:
+            raise ValueError("z has an incorrect length.")
+        else:
+            temp[:, 2] = z
+
+    if last_element == 1:
+        temp[:, 3] = 1.0
+    else:
+        temp[:, 3] = 0.0
+
+    return temp
+
+
 def create_point_series(
-    array: ArrayLike, *, length: int | None = None
+    array: ArrayLike | None = None,
+    *,
+    x: ArrayLike | None = None,
+    y: ArrayLike | None = None,
+    z: ArrayLike | None = None,
+    length: int | None = None,
 ) -> np.ndarray:
     """
-    Convert an input array to an Nx4 point series ([[x, y, z, 1.0], ...]).
+    Create an Nx4 point series ([[x, y, z, 1.0], ...]).
+
+    **Single array**
+
+    To create a point series based on a single array, use this form::
+
+        create_point_series(
+            array: ArrayLike | None = None,
+            *,
+            length: int | None = None,
+        ) -> np.ndarray:
+
+    **Multiple arrays**
+
+    To create a point series based on multiple arrays (e.g., x, y, z), use
+    this form::
+
+        create_point_series(
+            *,
+            x: ArrayLike | None = None,
+            y: ArrayLike | None = None,
+            z: ArrayLike | None = None,
+            length: int | None = None,
+        ) -> np.ndarray:
 
     Parameters
     ----------
     array
+        Used in single array input form.
         Array of one of these shapes where N corresponds to time:
         - (N,), (N, 1): forms a point series on the x axis, with y=0 and z=0.
         - (N, 2): forms a point series on the x, y axes, with z=0.
         - (N, 3), (N, 4): forms a point series on the x, y, z axes.
 
+    x
+        Used in multiple arrays input form.
+        Optional. Array of shape (N,) that contains the x values. If not
+        provided, x values are filled with zero.
+
+    y
+        Used in multiple arrays input form.
+        Optional. Array of shape (N,) that contains the y values. If not
+        provided, y values are filled with zero.
+
+    z
+        Used in multiple arrays input form.
+        Optional. Array of shape (N,) that contains the z values. If not
+        provided, z values are filled with zero.
+
     length
         The number of samples in the resulting point series. If there is only
         one sample in the original array, this one sample will be duplicated
@@ -791,55 +890,120 @@ def create_point_series(
     Returns
     -------
     array
-        An Nx4 array with every sample being [x, y, z, 1.0]. For Nx2 inputs,
-        z is set to 0.
+        An Nx4 array with every sample being [x, y, z, 1.0].
 
     Raises
     ------
     ValueError
-        If the input array has an incorrect dimension.
+        If the inputs have incorrect dimensions.
 
     Examples
     --------
-    # A series of one sample with x=1, y=2
-    >>> ktk.geometry.create_point_series([[1.0, 2.0]])
-    array([[1., 2., 0., 1.]])
+    # Single input form:
 
-    # A series of one sample with x=1, y=2, z=3
-    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0]])
-    array([[1., 2., 3., 1.]])
+    # A series of 2 samples with x, y defined
+    >>> ktk.geometry.create_point_series([[1.0, 2.0], [4.0, 5.0]])
+    array([[1., 2., 0., 1.],
+           [4., 5., 0., 1.]])
 
-    # A series of one sample with x=1, y=2, z=3
-    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0]])
-    array([[1., 2., 3., 1.]])
+    # A series of 2 samples with x, y, z defined
+    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+    array([[1., 2., 3., 1.],
+           [4., 5., 6., 1.]])
+
+    # Samething
+    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
+    array([[1., 2., 3., 1.],
+           [4., 5., 6., 1.]])
+
+    # Multiple inputs form:
+
+    # A series of 2 samples with x, z defined
+    >>> ktk.geometry.create_point_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
+    array([[1., 0., 4., 1.],
+           [2., 0., 5., 1.],
+           [3., 0., 6., 1.]])
 
     """
-    array = np.array(array)
-    if is_point_series(array) and (length is None or array.shape[0] == length):
-        # Nothing to do, maybe just ensure that we return an array because
-        # is_point_series accept any ArrayLike.
-        return array
+    if array is not None:
+        # Single array form
+        array = np.array(array)
+        if is_point_series(array) and (
+            length is None or array.shape[0] == length
+        ):
+            # Nothing to do
+            return array
+        else:
+            return _single_input_to_point_vector_series(
+                array, last_element=1.0, length=length
+            )
 
-    # Here we must have Nx3
-    return _create_point_vector_series(array, last_element=1.0, length=length)
+    else:
+        return _multiple_inputs_to_point_vector_series(
+            x=x, y=y, z=z, last_element=1.0, length=length
+        )
 
 
 def create_vector_series(
-    array: ArrayLike, *, length: int | None = None
+    array: ArrayLike | None = None,
+    *,
+    x: ArrayLike | None = None,
+    y: ArrayLike | None = None,
+    z: ArrayLike | None = None,
+    length: int | None = None,
 ) -> np.ndarray:
     """
-    Convert an input array to an Nx4 vector series ([[x, y, z, .0], ...]).
+    Create an Nx4 vector series ([[x, y, z, 0.0], ...]).
+
+    **Single array**
+
+    To create a vector series based on a single array, use this form::
+
+        create_vector_series(
+            array: ArrayLike | None = None,
+            *,
+            length: int | None = None,
+        ) -> np.ndarray:
+
+    **Multiple arrays**
+
+    To create a vector series based on multiple arrays (e.g., x, y, z), use
+    this form::
+
+        create_vector_series(
+            *,
+            x: ArrayLike | None = None,
+            y: ArrayLike | None = None,
+            z: ArrayLike | None = None,
+            length: int | None = None,
+        ) -> np.ndarray:
 
     Parameters
     ----------
     array
+        Used in single array input form.
         Array of one of these shapes where N corresponds to time:
         - (N,), (N, 1): forms a vector series on the x axis, with y=0 and z=0.
         - (N, 2): forms a vector series on the x, y axes, with z=0.
         - (N, 3), (N, 4): forms a vector series on the x, y, z axes.
 
+    x
+        Used in multiple arrays input form.
+        Optional. Array of shape (N,) that contains the x values. If not
+        provided, x values are filled with zero.
+
+    y
+        Used in multiple arrays input form.
+        Optional. Array of shape (N,) that contains the y values. If not
+        provided, y values are filled with zero.
+
+    z
+        Used in multiple arrays input form.
+        Optional. Array of shape (N,) that contains the z values. If not
+        provided, z values are filled with zero.
+
     length
-        The number of samples in the resulting point series. If there is only
+        The number of samples in the resulting vector series. If there is only
         one sample in the original array, this one sample will be duplicated
         to match length. Otherwise, an error is raised if the input
         array does not match length.
@@ -847,39 +1011,58 @@ def create_vector_series(
     Returns
     -------
     array
-        An Nx4 array with every sample being [x, y, z, 0.0]. For Nx2 inputs,
-        z is set to 0.
+        An Nx4 array with every sample being [x, y, z, 0.0].
 
     Raises
     ------
     ValueError
-        If the input array has an incorrect dimension.
+        If the inputs have incorrect dimensions.
 
     Examples
     --------
-    # A series of one sample with x=1, y=2
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0]])
-    array([[1., 2., 0., 0.]])
+    # Single input form:
 
-    # A series of one sample with x=1, y=2, z=3
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0]])
-    array([[1., 2., 3., 0.]])
+    # A series of 2 samples with x, y defined
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0], [4.0, 5.0]])
+    array([[1., 2., 0., 0.],
+           [4., 5., 0., 0.]])
 
-    # A series of one sample with x=1, y=2, z=3
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 0.0]])
-    array([[1., 2., 3., 0.]])
+    # A series of 2 samples with x, y, z defined
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+    array([[1., 2., 3., 0.],
+           [4., 5., 6., 0.]])
+
+    # Samething
+    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
+    array([[1., 2., 3., 0.],
+           [4., 5., 6., 0.]])
+
+    # Multiple inputs form:
+
+    # A series of 2 samples with x, z defined
+    >>> ktk.geometry.create_vector_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
+    array([[1., 0., 4., 0.],
+           [2., 0., 5., 0.],
+           [3., 0., 6., 0.]])
 
     """
-    array = np.array(array)
-    if is_vector_series(array) and (
-        length is None or array.shape[0] == length
-    ):
-        # Nothing to do, maybe just ensure that we return an array because
-        # is_point_series accept any ArrayLike.
-        return array
+    if array is not None:
+        # Single array form
+        array = np.array(array)
+        if is_vector_series(array) and (
+            length is None or array.shape[0] == length
+        ):
+            # Nothing to do
+            return array
+        else:
+            return _single_input_to_point_vector_series(
+                array, last_element=0.0, length=length
+            )
 
-    # Here we must have Nx3
-    return _create_point_vector_series(array, last_element=0.0, length=length)
+    else:
+        return _multiple_inputs_to_point_vector_series(
+            x=x, y=y, z=z, last_element=0.0, length=length
+        )
 
 
 # %% create_transform_series
@@ -1043,7 +1226,7 @@ def create_transform_series(
     length: int | None = None,
 ) -> np.ndarray:
     """
-    Construct an Nx4x4 transform series from multiple input forms.
+    Create an Nx4x4 transform series from multiple input forms.
 
     **Matrix input form**
 
