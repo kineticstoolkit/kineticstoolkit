@@ -28,7 +28,8 @@ setuptools.setup(
         "Tracker": "https://github.com/felixchenier/kineticstoolkit/issues",
     },
     install_requires=[
-        "pandas",
+        "ezc3d",  # To open and write c3d files
+	"pandas",
         "pyqt5",  # For Player and interactive functions
         "scipy",
         "matplotlib",
