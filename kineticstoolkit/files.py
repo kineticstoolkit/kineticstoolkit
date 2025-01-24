@@ -28,7 +28,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 from kineticstoolkit.timeseries import TimeSeries
-import kineticstoolkit.geometry as geometry
 import kineticstoolkit.dev.kinetics as kinetics
 import kineticstoolkit.config
 from kineticstoolkit.typing_ import check_param

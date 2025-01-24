@@ -1615,6 +1615,11 @@ def create_transforms(
     Create an Nx4x4 series of homogeneous transform matrices based on series of
     angles, translations and scales.
 
+    Warning
+    -------
+    This function will be deprecated in Version 1.0. It is recommended to use
+    create_transform_series instead.
+
     Parameters
     ----------
     seq
@@ -1759,6 +1764,11 @@ def create_frames(
 ) -> np.ndarray:
     """
     Create an Nx4x4 series of frames based on series of points and vectors.
+
+    Warning
+    -------
+    This function will be deprecated in Version 1.0. It is recommended to use
+    create_transform_series instead.
 
     Parameters
     ----------
