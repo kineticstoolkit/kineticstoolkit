@@ -863,9 +863,9 @@ def create_point_series(
     array
         Used in single array input form.
         Array of one of these shapes where N corresponds to time:
-            - (N,), (N, 1): forms a point series on the x axis, with y=0 and z=0.
-            - (N, 2): forms a point series on the x, y axes, with z=0.
-            - (N, 3), (N, 4): forms a point series on the x, y, z axes.
+        (N,), (N, 1): forms a point series on the x axis, with y=0 and z=0.
+        (N, 2): forms a point series on the x, y axes, with z=0.
+        (N, 3), (N, 4): forms a point series on the x, y, z axes.
 
     x
         Used in multiple arrays input form.
@@ -984,9 +984,9 @@ def create_vector_series(
     array
         Used in single array input form.
         Array of one of these shapes where N corresponds to time:
-            - (N,), (N, 1): forms a vector series on the x axis, with y=0 and z=0.
-            - (N, 2): forms a vector series on the x, y axes, with z=0.
-            - (N, 3), (N, 4): forms a vector series on the x, y, z axes.
+        (N,), (N, 1): forms a vector series on the x axis, with y=0 and z=0.
+        (N, 2): forms a vector series on the x, y axes, with z=0.
+        (N, 3), (N, 4): forms a vector series on the x, y, z axes.
 
     x
         Used in multiple arrays input form.

@@ -1210,11 +1210,11 @@ class TimeSeries:
         ------
         ValueError
             In any of these conditions:
-            1. If data with this key already exists and overwrite is False.
-            2. If the size of the data (first dimension) does not match the size
-               of existing data or the existing time.
-            3. If data is a pandas DataFrame and its index does not match the
-               existing time.
+            If data with this key already exists and overwrite is False.
+            If the size of the data (first dimension) does not match the size
+            of existing data or the existing time.
+            If data is a pandas DataFrame and its index does not match the
+            existing time.
 
         See Also
         --------
@@ -3441,11 +3441,10 @@ class TimeSeries:
             Optional. Select what the warning level when a key from the source
             TimeSeries already exists in the destination TimeSeries. May take
             the following values:
-                - "mute": No warning;
-                - "warning": Warns that duplicate keys were found and how the
-                  conflict has been resolved following the `overwrite``
-                  parameter.
-                - "error": Raises a TimeSeriesMergeConflictError.
+            "mute": No warning;
+            "warning": Warns that duplicate keys were found and how the
+            conflict has been resolved following the `overwrite` parameter.
+            "error": Raises a TimeSeriesMergeConflictError.
             Default is "warning".
         in_place
             Optional. True to modify and return the original TimeSeries. False
