@@ -18,7 +18,7 @@
 Provide the TimeSeries and TimeSeriesEvent classes.
 
 The classes defined in this module are accessible directly from the
-toplevel Kinetics Toolkit's namespace (i.e. ktk.TimeSeries,
+top-level Kinetics Toolkit's namespace (i.e. ktk.TimeSeries,
 ktk.TimeSeriesEvent)
 
 """
@@ -123,7 +123,7 @@ class TimeSeriesDataDict(dict):
 @dataclass
 class TimeSeriesEvent:
     """
-    Define an event in a timeseries.
+    Define an event in a TimeSeries.
 
     This class is rarely used by itself, it is easier to use `TimeSeries`'
     methods to manage events.
@@ -220,7 +220,7 @@ class TimeSeries:
         Contains metadata relative to time. The default is {"Unit": "s"}
 
     data_info : dict[str, dict[str, Any]]
-        Contains facultative metadata relative to data. For example, the
+        Contains optional metadata relative to data. For example, the
         data_info attribute could indicate the unit of data["Forces"]::
 
             data["Forces"] = {"Unit": "N"}
@@ -229,7 +229,7 @@ class TimeSeries:
         `ktk.TimeSeries.add_data_info` and `ktk.TimeSeries.remove_data_info`.
 
     events : list[TimeSeriesEvent]
-        list of events.
+        List of events.
 
     Examples
     --------
@@ -387,7 +387,7 @@ class TimeSeries:
         data_info: {}
            events: []
 
-    See Also: TimeSerise.from_array
+    See Also: TimeSeries.from_array
 
     """
 
@@ -485,7 +485,7 @@ class TimeSeries:
 
     @property
     def events(self):
-        """Data Property."""
+        """Events Property."""
         return self._events
 
     @events.setter
@@ -578,7 +578,7 @@ class TimeSeries:
 
     def __eq__(self, ts):
         """
-        Compare two timeseries for equality.
+        Compare two TimeSeries for equality.
 
         Returns
         -------
@@ -607,7 +607,7 @@ class TimeSeries:
             The TimeSeries to compare to.
         equal
             Optional. True to test for complete equality, False to compare
-            withint a given tolerance.
+            within a given tolerance.
         atol
             Optional. Absolute tolerance if using equal=False.
         rtol
@@ -702,13 +702,13 @@ class TimeSeries:
         test overhead), the check functions are run in case of error only,
         to help the users in fixing their code.
 
-        *except _check_increasing_time, which is run in proprocessing and not
+        *except _check_increasing_time, which is run in preprocessing and not
         only in failures.
 
         Raises
         ------
         AttributeError
-            If the TimeSeries' miss some attributes.
+            If the TimeSeries are missing some attributes.
 
         TypeError
             If the TimeSeries' attributes are of wrong type.
@@ -874,7 +874,7 @@ class TimeSeries:
         Raises
         ------
         ValueError
-            If the TimeSeries time is empty
+            If the TimeSeries' time is empty
 
         """
         if self.time.shape[0] == 0:
@@ -927,7 +927,7 @@ class TimeSeries:
         Raises
         ------
         ValueError:
-            If the TimeSeries as no time
+            If the TimeSeries has no time.
 
         """
         if len(self.data) == 0:
@@ -975,7 +975,7 @@ class TimeSeries:
             Optional. True to copy time_info to the new TimeSeries,
             False to keep the time_info attribute empty. Default is True.
         copy_data_info
-            Optional. True to copy data_into to the new TimeSeries,
+            Optional. True to copy data_info to the new TimeSeries,
             False to keep the data_info attribute empty. Default is True.
         copy_events
             Optional. True to copy events to the new TimeSeries,
@@ -1166,11 +1166,11 @@ class TimeSeries:
 
         Although we can directly assign values to the `data` property::
 
-            timeseries.data["name"] = value
+            ts.data["name"] = value
 
         this method provides an alternative way to add data to the TimeSeries::
 
-            timeseries = timeseries.add_data(name, value, ...)
+            ts = ts.add_data(name, value, ...)
 
         with the following advantages:
 
@@ -1774,7 +1774,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> # Instanciate a timeseries with some events
+        >>> # Instanciate a TimeSeries with some events
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_event(5.5, "event1")
         >>> ts = ts.add_event(10.8, "event2")
@@ -1838,7 +1838,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> # Instanciate a timeseries with some events
+        >>> # Instanciate a TimeSeries with some events
         >>> ts = ktk.TimeSeries()
         >>> ts = ts.add_event(5.5, "event1")
         >>> ts = ts.add_event(10.8, "event2")
@@ -3281,7 +3281,7 @@ class TimeSeries:
                 continue
 
             # Express nans as a range of times to
-            # remove from the final, interpolated timeseries
+            # remove from the final, interpolated TimeSeries
             nan_indexes = np.argwhere(~index)
 
             # initialize with times outside of the original time range
@@ -3339,7 +3339,7 @@ class TimeSeries:
         Parameters
         ----------
         data_keys
-            The data keys to extract from the timeseries.
+            The data keys to extract from the TimeSeries.
 
         Returns
         -------

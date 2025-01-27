@@ -14,7 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provide configuration values for Kinetics Toolkit's inner working."""
+"""Provide configuration values for Kinetics Toolkit's internal workings."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -76,7 +76,7 @@ except Exception:
     warnings.warn("Could not set temporary folder.")
     temp_folder = "."
 
-# Environment, including python path. If PYTHONPATH is defined in Spyder and
+# Environment, including Python path. If PYTHONPATH is defined in Spyder and
 # Spyder is opened as a standalone app, define PYTHONPATH as SPY_PYTHONPATH.
 env = os.environ.copy()
 if "SPY_PYTHONPATH" in env and "PYTHONPATH" not in env:

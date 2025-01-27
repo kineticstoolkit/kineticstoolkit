@@ -15,19 +15,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-kineticstoolkit._repr.py
-------------------------
-
 Format the console output of dictionaries and classes with attributes.
 
-This module formats the console output of dict in ipython, so that instead
+This module formats the console output of dicts in IPython, so that instead
 of just using repr(), it displays a nicer list of keys with abbreviated
 values if required, so that there is a maximum of one key per line. This is
-very useful for nested dicts, since their repr() representation is recursive
-and becomes unmanagable when the dict becomes larger.
+very useful for nested dicts, as their repr() representation is recursive
+and becomes unmanageable when the dict becomes larger.
 
 It also provides helper functions to nicely format the repr() of data classes.
-
 """
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -46,7 +42,7 @@ def _format_dict_entries(
     Format a dict nicely on screen.
 
     This function makes every element of a dict appear on a separate line,
-    with each keys right aligned:
+    with each key right-aligned:
         {
            'key1': value1
            'key2': value2
@@ -71,7 +67,6 @@ def _format_dict_entries(
     Returns
     -------
     A string that should be shown by the __repr__ method.
-
     """
     max_width = 79  # How many characters should we print
     out = ""
@@ -127,13 +122,13 @@ def _format_class_attributes(obj, overrides, hide_private=False) -> str:
     """
     Format a class that has attributes nicely on screen.
 
-    This class lists every attribute of a class on a separate line, using the
+    This function lists every attribute of a class on a separate line, using the
     _format_dict_entries function:
 
         ClassName with attributes:
-           'attribute1' : value1
-           'attribute2' : value2
-        'longattribute' : value3
+           'attribute1': value1
+           'attribute2': value2
+        'longattribute': value3
 
     Parameters
     ----------
@@ -147,7 +142,6 @@ def _format_class_attributes(obj, overrides, hide_private=False) -> str:
     Returns
     -------
     A string that should be shown by the __repr__ method.
-
     """
     # Return the type of class (header)
     class_name = type(obj).__name__
@@ -164,7 +158,7 @@ def _format_class_attributes(obj, overrides, hide_private=False) -> str:
 
 
 def _ktk_format_dict(value, p, cycle):
-    """Format a dict nicely on screen in ipython."""
+    """Format a dict nicely on screen in IPython."""
     try:
         get_ipython()
 

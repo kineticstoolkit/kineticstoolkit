@@ -54,7 +54,7 @@ def _inject_in_docstring(docstring, text) -> str:
 
 def deprecated(since: str, until: str, details: str):
     """
-    Decorate deprecated Kinetics Toolkit's functions.
+    Decorate deprecated Kinetics Toolkit functions.
 
     Generates a FutureWarning and adds a warning section to its
     docstring. These functions are included in API documentation.

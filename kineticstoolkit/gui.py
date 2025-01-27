@@ -70,12 +70,12 @@ def button_dialog(
     message
         Message that is presented to the user.
     choices
-        list of button text.
+        List of button text.
 
     Returns
     -------
     int
-        The button number (0 = First button, 1 = Second button, etc.) If the
+        The button number (0 = First button, 1 = Second button, etc.). If the
         user closes the window instead of clicking a button, a value of -1 is
         returned.
 
@@ -106,7 +106,7 @@ def set_color_order(setting: str | list[Any]) -> None:
             - 'default': Default v2.0 matplotlib colors.
             - 'classic': Default classic Matlab colors (bgrcmyk).
             - 'xyz': Same as classic but begins with rgb instead of bgr to
-               be consistent with most 3d visualization softwares.
+               be consistent with most 3D visualization software.
 
         - If a list, it can be either a list of chars from [bgrcmyk], a list of
           hexadecimal color values, or any list supported by matplotlib's

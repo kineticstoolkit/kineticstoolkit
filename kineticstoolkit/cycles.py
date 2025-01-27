@@ -263,9 +263,9 @@ def time_normalize(
     ts
         The TimeSeries to analyze.
     event_name1
-        The event name that correspond to the begin of a cycle.
+        The event name that corresponds to the beginning of a cycle.
     event_name2
-        The event name that correspond to the end of a cycle.
+        The event name that corresponds to the end of a cycle.
     n_points
         Optional. The number of points of the output TimeSeries.
     span
@@ -279,8 +279,8 @@ def time_normalize(
 
     Warning
     -------
-    The span argument is experimental and has been introduced in version 0.4.
-    **The following behaviour may change in the future**. Don't rely on it in
+    The span argument is experimental and was introduced in version 0.4.
+    **The following behavior may change in the future**. Don't rely on it in
     long-term scripts for now. You can use it to define which normalized
     points to include in the output TimeSeries. For example, to normalize in
     percents and to include only data from 10 to 90% of each cycle, assign
@@ -454,12 +454,12 @@ def time_normalize(
 
 def stack(ts: TimeSeries, *, n_points: int = 100) -> dict[str, np.ndarray]:
     """
-    Stack time-normalized TimeSeries' data into a dict of arrays.
+    Stack time-normalized TimeSeries data into a dict of arrays.
 
-    This methods returns the data of a time-normalized TimeSeries as a dict
-    where each key corresponds to a TimeSeries' data key, and contains a numpy
+    This method returns the data of a time-normalized TimeSeries as a dict
+    where each key corresponds to a TimeSeries data key, and contains a numpy
     array where the first dimension is the cycle, the second dimension is the
-    percentage of cycle, and the other dimensions are the data itself.
+    percentage of the cycle, and the other dimensions are the data itself.
 
     Parameters
     ----------
@@ -500,14 +500,14 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     """
     Unstack time-normalized data from a dict of arrays to a TimeSeries.
 
-    This methods creates a time-normalized TimeSeries by putting each cycle
+    This method creates a time-normalized TimeSeries by putting each cycle
     from the provided data dictionary end to end.
 
     Parameters
     ----------
     data
         A dict where each key contains a numpy array where the first dimension
-        is the cycle, the second dimension is the percentage of cycle, and
+        is the cycle, the second dimension is the percentage of the cycle, and
         the other dimensions are the data itself.
 
     Returns
@@ -602,16 +602,16 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
 
 def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     """
-    Get the indexes of the most repeatable cycles in array.
+    Get the indexes of the most repeatable cycles in an array.
 
     This function returns an ordered list of the most repeatable to the least
     repeatable cycles.
 
-    It works by recursively discarding the cycle than maximizes the
+    It works by recursively discarding the cycle that maximizes the
     root-mean-square error between the cycle and the average of every
     remaining cycle, until there are only two cycles remaining. The function
     returns a list that is the reverse order of cycle removal: first the two
-    last cycles, then the last-removed cycle, and so on. If two cycles are as
+    last cycles, then the last-removed cycle, and so on. If two cycles are
     equivalently repeatable, they are returned in order of appearance.
 
     Cycles that include at least one NaN are excluded.
@@ -625,7 +625,7 @@ def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     Returns
     -------
     list[int]
-        list of indexes corresponding to the cycles in most to least
+        List of indexes corresponding to the cycles in most to least
         repeatable order.
 
     Example

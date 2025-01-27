@@ -46,19 +46,19 @@ def create_cluster(
     Parameters
     ----------
     markers
-        Markers trajectories during a static acquisition.
+        Marker trajectories during a static acquisition.
     names
         The markers that define the cluster.
 
     Returns
     -------
     dict
-        dictionary where each entry represents the local position of a marker
+        Dictionary where each entry represents the local position of a marker
         in an arbitrary coordinate system.
 
     Note
     -----
-    0.10.0: Parameters `marker_names` was changed to `names`
+    0.10.0: Parameter `marker_names` was changed to `names`
 
     See Also
     --------
@@ -145,7 +145,7 @@ def extend_cluster(
 
     if np.all(geometry.isnan(local_coordinates)):
         warnings.warn(
-            f"The point {name} was invisible during the whole TimeSeries."
+            f"The point {name} was invisible during the entire TimeSeries."
         )
     else:
         cluster[name] = np.nanmean(local_coordinates, axis=0)[np.newaxis]
@@ -275,15 +275,15 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
     Parameters
     ----------
     markers
-        Markers trajectories.
+        Marker trajectories.
 
     filename
-        Name of the trc file to create.
+        Name of the TRC file to create.
 
     Warning
     -------
     This function may eventually move either to the base namespace like
-    write_c3d_file, or to an opensim extension that is currently being
+    write_c3d_file, or to an OpenSim extension that is currently being
     developed.
 
     """

@@ -20,10 +20,9 @@
 """
 Provides lists and dictionaries with callback functions.
 
-Provides the MonitoredList and MonitoredDict classes, that derive from
-list and dict respectively, and that provide callback functions for
+Provides the MonitoredList and MonitoredDict classes, which derive from
+list and dict respectively, and provide callback functions for
 appending, extending, removing items, etc.
-
 """
 
 __author__ = "Félix Chénier"
@@ -134,7 +133,7 @@ def list_to_monitored_list(value: list, callback) -> MonitoredList:
     """
     Convert a list and its contents to a MonitoredList.
 
-    Recursively navigate through the list and converts any inner list to
+    Recursively navigates through the list and converts any inner list to
     a MonitoredList, and any inner dict to a MonitoredDict.
 
     Sets are ignored, but this could change if needed in the future.
@@ -154,9 +153,8 @@ def list_to_monitored_list(value: list, callback) -> MonitoredList:
 
     Caution
     -------
-    The callback function will most probably be called while performing the
+    The callback function will most likely be called while performing the
     conversion.
-
     """
     output = []
     for item in value:
@@ -173,7 +171,7 @@ def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
     """
     Convert a dict and its contents to a MonitoredDict.
 
-    Recursively navigate through the dict and converts any inner list to
+    Recursively navigates through the dict and converts any inner list to
     a MonitoredList, and any inner dict to a MonitoredDict.
 
     Sets are ignored, but this could change if needed in the future.
@@ -190,7 +188,6 @@ def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
     -------
     MonitoredDict
         The converted dict.
-
     """
     output = {}
     for key in value:

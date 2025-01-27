@@ -35,8 +35,8 @@ def download(filename: str, **kwargs) -> str:
     """
     Download example data and return its local file name.
 
-    This function download example data from github. These data are the same
-    that are used to generate the documentation website:
+    This function downloads example data from GitHub. These data are the same
+    as those used to generate the documentation website:
 
     https://kineticstoolkit.uqam.ca
 

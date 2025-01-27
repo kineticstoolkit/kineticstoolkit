@@ -22,7 +22,6 @@ To get started, please consult Kinetics Toolkit's
 [website](https://kineticstoolkit.uqam.ca)
 
 >>> import kineticstoolkit as ktk
-
 """
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -72,7 +71,7 @@ def __dir__():
     ]
 
 
-# Check if a serious warning has been issued on this version.
+# Check if a serious warning has been issued for this version.
 try:
     from requests_cache import CachedSession  # noqa
     from datetime import timedelta  # noqa

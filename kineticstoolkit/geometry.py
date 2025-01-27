@@ -15,7 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Provide 3d geometry and linear algebra functions related to biomechanics.
+Provide 3D geometry and linear algebra functions related to biomechanics.
 
 Note
 ----
@@ -183,7 +183,7 @@ def rotate(
     Parameters
     ----------
     coordinates
-        Array_like of shape (N, ...): the coordinates to rotate.
+        ArrayLike of shape (N, ...): the coordinates to rotate.
 
     seq
         Specifies sequence of axes for rotations. Up to 3 characters
@@ -192,18 +192,18 @@ def rotate(
         Extrinsic and intrinsic rotations cannot be mixed in one function call.
 
     angles
-        Array_like of shape (N,) or (N, [1 or 2 or 3]). Angles are
+        ArrayLike of shape (N,) or (N, [1 or 2 or 3]). Angles are
         specified in radians (if degrees is False) or degrees (if degrees is
         True).
 
         For a single-character `seq`, `angles` can be:
 
-        - array_like with shape (N,), where each `angle[i]` corresponds to a
+        - ArrayLike with shape (N,), where each `angle[i]` corresponds to a
           single rotation;
-        - array_like with shape (N, 1), where each `angle[i, 0]` corresponds
+        - ArrayLike with shape (N, 1), where each `angle[i, 0]` corresponds
           to a single rotation.
 
-        For 2- and 3-character `seq`, `angles` is an array_like with shape
+        For 2- and 3-character `seq`, `angles` is an ArrayLike with shape
         (N, W) where each `angle[i, :]` corresponds to a sequence of Euler
         angles and W is the length of `seq`.
 
@@ -213,7 +213,7 @@ def rotate(
     Returns
     -------
     np.ndarray
-        Array_like of shape (N, ...): the rotated coordinates.
+        ArrayLike of shape (N, ...): the rotated coordinates.
 
     See Also
     --------
@@ -244,16 +244,16 @@ def translate(coordinates, /, translations):
     Parameters
     ----------
     coordinates
-        Array_like of shape (N, ...): the coordinates to translate.
+        ArrayLike of shape (N, ...): the coordinates to translate.
 
     translations
-        Array_like of shape (N, 3) or (N, 4): the translation on each axe
+        ArrayLike of shape (N, 3) or (N, 4): the translation on each axis
         (x, y, z).
 
     Returns
     -------
     np.ndarray
-        Array_like of shape (N, ...): the translated coordinates.
+        ArrayLike of shape (N, ...): the translated coordinates.
 
     See Also
     --------
@@ -283,16 +283,16 @@ def scale(coordinates, /, scales):
     Parameters
     ----------
     coordinates
-        Array_like of shape (N, ...): the coordinates to scale.
+        ArrayLike of shape (N, ...): the coordinates to scale.
 
     scales
-        Array_like of shape (N, ) that corresponds to the scale to apply
+        ArrayLike of shape (N, ) that corresponds to the scale to apply
         uniformly on the three axes.
 
     Returns
     -------
     np.ndarray
-        Array_like of shape (N, ...): the scaled coordinates.
+        ArrayLike of shape (N, ...): the scaled coordinates.
 
     See Also
     --------
@@ -322,7 +322,7 @@ def mirror(coordinates, /, axis: str = "z"):
     Parameters
     ----------
     coordinates
-        Array_like of shape (N, ...): the coordinates to mirror.
+        ArrayLike of shape (N, ...): the coordinates to mirror.
 
     axis
         Can be either "x", "y" or "z". The axis to mirror through. The default
@@ -331,7 +331,7 @@ def mirror(coordinates, /, axis: str = "z"):
     Returns
     -------
     np.ndarray
-        Array_like of shape (N, ...): the mirrored coordinates.
+        ArrayLike of shape (N, ...): the mirrored coordinates.
 
     See Also
     --------
@@ -389,7 +389,8 @@ def get_angles(
         An Nx4x4 transform series.
 
     seq
-        3 characters belonging to the set {"X", "Y", "Z"} for intrinsic
+        Specifies the sequence of axes for successive rotations. Up to 3
+        characters belonging to the set {"X", "Y", "Z"} for intrinsic
         rotations (moving axes), or {"x", "y", "z"} for extrinsic rotations
         (fixed axes). Adjacent axes cannot be the same. Extrinsic and
         intrinsic rotations cannot be mixed in one function call.
@@ -410,7 +411,7 @@ def get_angles(
 
     Notes
     -----
-    The range of the returned angles is dependant on the `flip` parameter. If
+    The range of the returned angles is dependent on the `flip` parameter. If
     `flip` is False:
 
     - First angle belongs to [-180, 180] degrees (both inclusive)
@@ -521,7 +522,7 @@ def get_local_coordinates(
     Returns
     -------
     np.ndarray
-        Series of local coordinates in the same shape than
+        Series of local coordinates in the same shape as
         `global_coordinates`.
 
     See Also
@@ -577,7 +578,7 @@ def get_global_coordinates(
     Returns
     -------
     np.ndarray
-        Series of global coordinates in the same shape than
+        Series of global coordinates in the same shape as
         `local_coordinates`.
 
     See Also
@@ -1375,7 +1376,6 @@ def create_transform_series(
     ...             [[ 1.,  0.,  0.],
     ...              [ 0.,  0., -1.],
     ...              [ 0.,  1.,  0.]]]
-    >>> positions = [[0.5, 0.6, 0.7]]
     >>> ktk.geometry.create_transform_series(rotations, positions=positions)
     array([[[ 1. ,  0. ,  0. ,  0.5],
             [ 0. ,  1. ,  0. ,  0.6],
@@ -1630,28 +1630,28 @@ def create_transforms(
         Required if angles is specified.
 
     angles
-        Optional array_like of shape (N,) or (N, [1 or 2 or 3]). Angles are
+        Optional ArrayLike of shape (N,) or (N, [1 or 2 or 3]). Angles are
         specified in radians (if degrees is False) or degrees (if degrees is
         True).
 
         For a single-character `seq`, `angles` can be:
 
-        - array_like with shape (N,), where each `angle[i]` corresponds to a
+        - ArrayLike with shape (N,), where each `angle[i]` corresponds to a
           single rotation;
-        - array_like with shape (N, 1), where each `angle[i, 0]` corresponds
+        - ArrayLike with shape (N, 1), where each `angle[i, 0]` corresponds
           to a single rotation.
 
-        For 2- and 3-character `seq`, `angles` is an array_like with shape
+        For 2- and 3-character `seq`, `angles` is an ArrayLike with shape
         (N, W) where each `angle[i, :]` corresponds to a sequence of Euler
         angles and W is the length of `seq`.
 
     translations
-        Optional array_like of shape (N, 3) or (N, 4). This corresponds
+        Optional ArrayLike of shape (N, 3) or (N, 4). This corresponds
         to the translation part of the generated series of homogeneous
         transforms.
 
     scales
-        Optional array_like of shape (N, ) that corresponds to the scale to
+        Optional ArrayLike of shape (N, ) that corresponds to the scale to
         apply uniformly on the three axes. By default, no scale is included.
 
     degrees

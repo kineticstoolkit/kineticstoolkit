@@ -144,7 +144,7 @@ class Player:
 
     interconnections
         Optional. Each key corresponds to a group of interconnections, which
-        is a dict with the following keys:
+        is a dictionary with the following keys:
 
         - "Links": list of connections where each string is a point
           name. For example, to create a link that connects Point1 to Point2,
@@ -165,7 +165,7 @@ class Player:
 
           Point names can include wildcards (*) either as a prefix or as a
           suffix. This is useful to apply a single set of interconnections to
-          multiple bodies. For instance, if the Player's contents includes
+          multiple bodies. For instance, if the Player's contents include
           these points: [Body1_HipR, Body1_HipL, Body1_L5S1, Body2_HipR,
           Body2_HipL, Body2_L5S1], we could link L5S1 and both hips at once
           using::
@@ -194,8 +194,8 @@ class Player:
             }
 
     vectors
-        Optional. A dict where each key is the name of a vector and each value
-        contain its origin, scale and color. For example::
+        Optional. A dictionary where each key is the name of a vector and each value
+        contains its origin, scale, and color. For example::
 
             vectors = {
                 "WristForce": {
@@ -212,7 +212,7 @@ class Player:
 
         will draw lines for the forces WristForce and ElbowForce, with their
         origin being at WristCenter and ElbowCenter, and with a scale of 0.001
-        meter per newton. Force and point names can include wildcards (*)
+        metre per newton. Force and point names can include wildcards (*)
         either as a prefix or as a suffix. For instance, to draw forces
         recorded by multiple force plates, we could use::
 
@@ -246,7 +246,7 @@ class Player:
         {"x", "y", "z", "-x", "-y", "-z"}. Default is "x".
 
     zoom
-        Optional. Camera zoom multipler.
+        Optional. Camera zoom multiplier.
 
     azimuth
         Optional. Camera azimuth in radians. If `anterior` is set, then an
@@ -266,7 +266,7 @@ class Player:
         Optional. Camera translation (panning). Default is (0.0, 0.0).
 
     target
-        Optional. Camera target in meters. Default is (0.0, 0.0, 0.0).
+        Optional. Camera target in metres. Default is (0.0, 0.0, 0.0).
 
     track
         Optional. False to keep the camera static, True to follow the last
@@ -300,17 +300,17 @@ class Player:
         width. Default is 2.0.
 
     frame_size
-        Optional. Length of the frame axes in meters. Default is 0.1.
+        Optional. Length of the frame axes in metres. Default is 0.1.
 
     frame_width
         Optional. Width of the frame axes as defined by Matplotlib line width.
         Default is 3.0.
 
     grid_size
-        Optional. Length of one side of the grid in meters. Default is 10.0.
+        Optional. Length of one side of the grid in metres. Default is 10.0.
 
     grid_subdivision_size
-        Optional. Length of one subdivision of the grid in meters. Default is
+        Optional. Length of one subdivision of the grid in metres. Default is
         1.0.
 
     grid_width
@@ -318,7 +318,7 @@ class Player:
         Default is 1.0.
 
     grid_origin
-        Optional. Origin of the grid in meters. Default is (0.0, 0.0, 0.0).
+        Optional. Origin of the grid in metres. Default is (0.0, 0.0, 0.0).
 
     grid_color
         Optional. Color of the grid. Can be a character or tuple (RGB) where
@@ -1151,7 +1151,7 @@ class Player:
                 f"Impossible to parse interconnection group {group}."
             )
 
-        # Add parsed color, create it if not existant
+        # Add parsed color, create it if not existent
         try:
             color = group["Color"]
         except KeyError:
@@ -1162,12 +1162,12 @@ class Player:
 
     def _process_interconnections(self) -> None:
         """
-        Process interconnections after setting or modifying it.
+        Process interconnections after setting or modifying them.
 
         Update _processed_interconnections. Does not refresh.
 
-        We don't throw errors if interconnections is malformed, simply
-        because maybe it is being built. We try our best to parse what
+        We don't throw errors if interconnections are malformed, simply
+        because maybe they are being built. We try our best to parse what
         is there.
 
         """
@@ -1265,7 +1265,7 @@ class Player:
         except KeyError:
             raise ValueError("No origin")
 
-        # Add parsed color, create it if not existant
+        # Add parsed color, create it if not existent
         try:
             color = value["Color"]
         except KeyError:
@@ -1283,12 +1283,12 @@ class Player:
 
     def _process_vectors(self) -> None:
         """
-        Process vectors after setting or modifying it.
+        Process vectors after setting or modifying them.
 
         Update _processed_vectors. Does not refresh.
 
-        We don't throw errors if vectors is malformed, simply because
-        maybe it is being built. We try our best to parse what is there.
+        We don't throw errors if vectors are malformed, simply because
+        maybe they are being built. We try our best to parse what is there.
 
         """
         # Convert _vectors to monitored dicts and lists
@@ -1408,7 +1408,7 @@ class Player:
 
     def _process_contents(self) -> None:
         """
-        Update, self._processed_points, _processed_frames and _oriented_target.
+        Update self._processed_points, _processed_frames, and _oriented_target.
 
         Rotate everything according to the up input, so that the end result
         is y up:

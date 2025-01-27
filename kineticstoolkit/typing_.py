@@ -14,7 +14,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Typing module to typecheck everything in realtime."""
+"""Typing module to typecheck everything in real-time."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
@@ -54,7 +54,7 @@ def check_param(
     shape: tuple | None = None,
 ):
     """
-    Check that a given parameter has the expected type and optional specs.
+    Check that a given parameter has the expected type and optional specifications.
 
     Parameters
     ----------
@@ -65,37 +65,32 @@ def check_param(
     expected_type
         Expected type of the parameter.
     expected_values
-        Optional. Check that value is one of these possible values.
+        Optional. Check that the value is one of these possible values.
     contents_type
         Optional. For a tuple or list, ensures that every element is of the
         given type. For a dictionary, ensures that every value is of the
-        current type. Does not recurse into nested variables.
+        given type. Does not recurse into nested variables.
     key_type
-        Optional. Check that every key of a dict is of a given type. Does not
+        Optional. Check that every key of a dictionary is of a given type. Does not
         recurse into nested variables.
     length
         Optional. Check that a tuple or list has a fixed length.
     ndims
         Optional. Check that an array has a given number of dimensions.
-    array_shape
+    shape
         Optional. Check that an array has a given shape. Use -1 for
         dimensions that do not matter. For instance, to check if an array
-        as a shape of Nx4x4, we would use `array_shape = (-1, 4, 4)`.
-    dict_value_type
-        Optional. Check that every value of a dict is of a given type. Does not
-        recurse into nested variables.
+        has a shape of Nx4x4, we would use `shape = (-1, 4, 4)`.
 
     Returns
     -------
     Any
-        The value
-
+        The value.
 
     Raises
     ------
     TypeError
         If the value or its contents is of the wrong type.
-
     ValueError
         If the value does not meet the given criteria.
 

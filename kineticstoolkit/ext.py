@@ -30,8 +30,8 @@ def _import_extensions() -> list[str]:
     """
     Import all installed kineticstoolkit extensions.
 
-    Any module that begins by ``kineticstoolkit_`` and that is on PYTHONPATH
-    will be imported in the ``kineticstoolkit.ext`` namespace.
+    Any module that begins with ``kineticstoolkit_`` and is on PYTHONPATH
+    will be imported into the ``kineticstoolkit.ext`` namespace.
 
     Parameters
     ----------
@@ -43,8 +43,8 @@ def _import_extensions() -> list[str]:
 
     Warning
     -------
-    This function, which has been introduced in 0.8, is still experimental and
-    may change signature or behaviour in the future.
+    This function, introduced in version 0.8, is still experimental and
+    may change its signature or behavior in the future.
 
     Notes
     -----
@@ -58,8 +58,8 @@ def _import_extensions() -> list[str]:
 
        import kineticstoolkit_EXTENSION_NAME
 
-    If your extension doesn't import, you need to edit your PYTHONPATH or to
-    check that the extension is correctly installed.
+    If your extension doesn't import, you need to edit your PYTHONPATH or check
+    that the extension is correctly installed.
 
     """
     for finder, name, ispkg in pkgutil.iter_modules():
@@ -70,7 +70,7 @@ def _import_extensions() -> list[str]:
                 imported_extensions.add(short_name)
             except Exception:
                 warnings.warn(
-                    f"There have been an error importing the {name} "
+                    f"There has been an error importing the {name} "
                     f"extension. Please try to import {name} manually to get "
                     f"more insights on the cause of the error."
                 )
