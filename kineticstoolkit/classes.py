@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,10 +23,11 @@ Provides lists and dictionaries with callback functions.
 Provides the MonitoredList and MonitoredDict classes, which derive from
 list and dict respectively, and provide callback functions for
 appending, extending, removing items, etc.
+
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -155,6 +156,7 @@ def list_to_monitored_list(value: list, callback) -> MonitoredList:
     -------
     The callback function will most likely be called while performing the
     conversion.
+
     """
     output = []
     for item in value:
@@ -188,6 +190,7 @@ def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
     -------
     MonitoredDict
         The converted dict.
+
     """
     output = {}
     for key in value:

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -14,10 +14,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provide miscelleanous helper functions."""
+"""Provide miscellaneous helper functions."""
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -32,11 +32,11 @@ from kineticstoolkit.typing_ import check_param
 
 def check_interactive_backend() -> None:
     """
-    Warns if Matplotlib is not using an interactive backend.
+    Warn if Matplotlib is not using an interactive backend.
 
     To disable these warnings, for instance if we are generating
     documentation and we need the Player to show a figure, set
-    ktk.config.interactive_backend_warning to False
+    ktk.config.interactive_backend_warning to False.
 
     """
     if kineticstoolkit.config.interactive_backend_warning is False:
@@ -74,17 +74,17 @@ def change_defaults(
     """
     Enable Kinetics Toolkit's lab goodies.
 
-    This function does not affect Kinetics Toolkit's inner working. It exists
+    This function does not affect Kinetics Toolkit's inner workings. It exists
     mostly for cosmetic reasons, so that working with ktk in an IPython console
-    (e.g., Spyder, Jupyter) is more enjoyable. It changes IPython, Matplotlib
+    (e.g., Spyder, Jupyter) is more enjoyable. It changes IPython, Matplotlib,
     and numpy's defaults for the current session only. The usual way to call
     it is right after importing Kinetics Toolkit.
 
     Parameters
     ----------
     change_ipython_dict_repr
-        Optional. True to summarize defaults dict printouts in IPython. When
-        False, dict printouts look like::
+        Optional. True to summarize default dictionary printouts in IPython. When
+        False, dictionary printouts look like::
 
             {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
                              17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
@@ -92,7 +92,7 @@ def change_defaults(
                              169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
                               676, 729, 784, 841])}
 
-        When True, dict printouts look like::
+        When True, dictionary printouts look like::
 
             {
                 'data1': <array of shape (30,)>
@@ -101,18 +101,18 @@ def change_defaults(
 
     change_matplotlib_defaults
         Optional. True to change default figure size, autolayout, dpi, line
-        width and color order in Matplotlib. The dpi and figure size are
-        optimized for interactive work in default matplotlib figures.
-        Additionally, the default color order is changed to (rgbcmyko).
-        The first colors, (rgb) are consistent with the colours assigned to
-        x, y and z in most 3D visualization softwares.
+        width, and colour order in Matplotlib. The dpi and figure size are
+        optimized for interactive work in default Matplotlib figures.
+        Additionally, the default colour order is changed to (rgbcmyko).
+        The first colours, (rgb), are consistent with the colours assigned to
+        x, y, and z in most 3D visualization software.
 
     change_numpy_print_options
         Optional. True to change default print options in numpy to use fixed
         point notation in printouts.
 
     change_warnings_format
-        Optional. True to change warnings module's default to a more extended
+        Optional. True to change the warnings module's default to a more extended
         format with file and line number.
 
     Returns

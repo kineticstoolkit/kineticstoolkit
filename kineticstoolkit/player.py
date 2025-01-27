@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ Toolkit namespace (i.e., ktk.Player).
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -1167,8 +1167,8 @@ class Player:
         Update _processed_interconnections. Does not refresh.
 
         We don't throw errors if interconnections are malformed, simply
-        because maybe they are being built. We try our best to parse what
-        is there.
+        because maybe they are being built. We try our best to parse
+        what is there.
 
         """
         # Convert _interconnections to monitored dicts and lists
@@ -1288,7 +1288,8 @@ class Player:
         Update _processed_vectors. Does not refresh.
 
         We don't throw errors if vectors are malformed, simply because
-        maybe they are being built. We try our best to parse what is there.
+        maybe they are being built. We try our best to parse what is
+        there.
 
         """
         # Convert _vectors to monitored dicts and lists

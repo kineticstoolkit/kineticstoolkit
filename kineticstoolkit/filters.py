@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,7 +17,7 @@
 """Provide standard filters for TimeSeries."""
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 

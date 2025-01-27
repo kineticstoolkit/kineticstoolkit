@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ to time.
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -1370,6 +1370,7 @@ def create_transform_series(
     Convert a 2x3x3 rotation matrix series and a 1x4 position series to
     an 2x4x4 homogeneous transform series:
 
+    >>> positions = [[0.5, 0.6, 0.7]]
     >>> rotations = [[[ 1.,  0.,  0.],
     ...              [ 0.,  1.,  0.],
     ...              [ 0.,  0.,  1.]],

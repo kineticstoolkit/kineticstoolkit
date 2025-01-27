@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 """
 Provide the TimeSeries and TimeSeriesEvent classes.
 
-The classes defined in this module are accessible directly from the
-top-level Kinetics Toolkit's namespace (i.e. ktk.TimeSeries,
+The classes defined in this module are accessible directly from the top-
+level Kinetics Toolkit's namespace (i.e. ktk.TimeSeries,
 ktk.TimeSeriesEvent)
 
 """
@@ -26,7 +26,7 @@ from __future__ import annotations  # For forward refs to self
 
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 

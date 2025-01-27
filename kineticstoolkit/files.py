@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -23,7 +23,7 @@ toplevel Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -402,7 +402,7 @@ def read_c3d(
     Warning
     -------
     This function, which has been introduced in version 0.9, is still
-    experimental and its behaviour or API may change slightly in the future.
+    experimental and its behavior or API may change slightly in the future.
 
     See Also
     --------

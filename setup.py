@@ -29,7 +29,7 @@ setuptools.setup(
     },
     install_requires=[
         "ezc3d",  # To open and write c3d files
-	"pandas",
+        "pandas",
         "pyqt5",  # For Player and interactive functions
         "scipy",
         "matplotlib",

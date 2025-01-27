@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -17,16 +17,19 @@
 """
 Format the console output of dictionaries and classes with attributes.
 
-This module formats the console output of dicts in IPython, so that instead
-of just using repr(), it displays a nicer list of keys with abbreviated
-values if required, so that there is a maximum of one key per line. This is
-very useful for nested dicts, as their repr() representation is recursive
-and becomes unmanageable when the dict becomes larger.
+This module formats the console output of dicts in IPython, so that
+instead of just using repr(), it displays a nicer list of keys with
+abbreviated values if required, so that there is a maximum of one key
+per line. This is very useful for nested dicts, as their repr()
+representation is recursive and becomes unmanageable when the dict
+becomes larger.
 
-It also provides helper functions to nicely format the repr() of data classes.
+It also provides helper functions to nicely format the repr() of data
+classes.
+
 """
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -67,6 +70,7 @@ def _format_dict_entries(
     Returns
     -------
     A string that should be shown by the __repr__ method.
+
     """
     max_width = 79  # How many characters should we print
     out = ""
@@ -142,6 +146,7 @@ def _format_class_attributes(obj, overrides, hide_private=False) -> str:
     Returns
     -------
     A string that should be shown by the __repr__ method.
+
     """
     # Return the type of class (header)
     class_name = type(obj).__name__
