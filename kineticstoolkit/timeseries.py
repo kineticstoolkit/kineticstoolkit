@@ -4314,21 +4314,21 @@ class TimeSeries:
                 df_data = pd.DataFrame(reshaped_data)
 
                 # Get the column names index from the shape of the original data
-                # The strategy here is to build matrices of indices, that have
+                # The strategy here is to build matrices of indexes, that have
                 # the same shape as the original data, then reshape these matrices
                 # the same way we reshaped the original data. Then we know where
-                # the original indices are in the new reshaped data.
-                original_indices = np.indices(original_data_shape[1:])
-                reshaped_indices = np.reshape(
-                    original_indices, (-1, reshaped_data_shape[1])
+                # the original indexes are in the new reshaped data.
+                original_indexes = np.indices(original_data_shape[1:])
+                reshaped_indexes = np.reshape(
+                    original_indexes, (-1, reshaped_data_shape[1])
                 )
 
                 # Hint for my future self:
-                # For a one-dimension series, reshaped_indices will be:
+                # For a one-dimension series, reshaped_indexes will be:
                 # [[0]].
-                # For a two-dimension series, reshaped_indices will be:
+                # For a two-dimension series, reshaped_indexes will be:
                 # [[0 1 2 ...]].
-                # For a three-dimension series, reshaped_indices will be:
+                # For a three-dimension series, reshaped_indexes will be:
                 # [[0 0 0 ... 1 1 1 ... 2 2 2 ...]
                 #   0 1 2 ... 0 1 2 ... 0 1 2 ...]]
                 # and so on.
@@ -4337,18 +4337,18 @@ class TimeSeries:
                 column_names = []
                 for i_column in range(0, len(df_data.columns)):
                     this_column_name = the_key
-                    n_indices = np.shape(reshaped_indices)[0]
-                    if n_indices > 0:
+                    n_indexes = np.shape(reshaped_indexes)[0]
+                    if n_indexes > 0:
                         # This data is expressed in more than one dimension.
                         # We must add brackets to the column names to specify
-                        # the indices.
+                        # the indexes.
                         this_column_name += "["
 
-                        for i_indice in range(0, n_indices):
+                        for i_indice in range(0, n_indexes):
                             this_column_name += str(
-                                reshaped_indices[i_indice, i_column]
+                                reshaped_indexes[i_indice, i_column]
                             )
-                            if i_indice == n_indices - 1:
+                            if i_indice == n_indexes - 1:
                                 this_column_name += "]"
                             else:
                                 this_column_name += ","
@@ -4441,7 +4441,7 @@ class TimeSeries:
         """
         Create a new TimeSeries from a Pandas Dataframe.
 
-        Data in column which names end with bracketed indices such as
+        Data in column which names end with bracketed indexes such as
         [0], [1], [0,0], [0,1], etc. are converted to multidimensional
         arrays. For example, if a DataFrame has these column names::
 

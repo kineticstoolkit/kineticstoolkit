@@ -900,30 +900,30 @@ def create_point_series(
 
     Examples
     --------
-    # Single input form:
+    Single input form::
 
-    # A series of 2 samples with x, y defined
-    >>> ktk.geometry.create_point_series([[1.0, 2.0], [4.0, 5.0]])
-    array([[1., 2., 0., 1.],
-           [4., 5., 0., 1.]])
+        # A series of 2 samples with x, y defined
+        >>> ktk.geometry.create_point_series([[1.0, 2.0], [4.0, 5.0]])
+        array([[1., 2., 0., 1.],
+               [4., 5., 0., 1.]])
 
-    # A series of 2 samples with x, y, z defined
-    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-    array([[1., 2., 3., 1.],
-           [4., 5., 6., 1.]])
+        # A series of 2 samples with x, y, z defined
+        >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        array([[1., 2., 3., 1.],
+               [4., 5., 6., 1.]])
 
-    # Samething
-    >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
-    array([[1., 2., 3., 1.],
-           [4., 5., 6., 1.]])
+        # Samething
+        >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
+        array([[1., 2., 3., 1.],
+               [4., 5., 6., 1.]])
 
-    # Multiple inputs form:
+    Multiple inputs form::
 
-    # A series of 2 samples with x, z defined
-    >>> ktk.geometry.create_point_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
-    array([[1., 0., 4., 1.],
-           [2., 0., 5., 1.],
-           [3., 0., 6., 1.]])
+        # A series of 2 samples with x, z defined
+        >>> ktk.geometry.create_point_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
+        array([[1., 0., 4., 1.],
+               [2., 0., 5., 1.],
+               [3., 0., 6., 1.]])
 
     """
     if array is not None:
@@ -1021,30 +1021,30 @@ def create_vector_series(
 
     Examples
     --------
-    # Single input form:
+    Single input form::
 
-    # A series of 2 samples with x, y defined
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0], [4.0, 5.0]])
-    array([[1., 2., 0., 0.],
-           [4., 5., 0., 0.]])
+        # A series of 2 samples with x, y defined
+        >>> ktk.geometry.create_vector_series([[1.0, 2.0], [4.0, 5.0]])
+        array([[1., 2., 0., 0.],
+               [4., 5., 0., 0.]])
 
-    # A series of 2 samples with x, y, z defined
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
-    array([[1., 2., 3., 0.],
-           [4., 5., 6., 0.]])
+        # A series of 2 samples with x, y, z defined
+        >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        array([[1., 2., 3., 0.],
+               [4., 5., 6., 0.]])
 
-    # Samething
-    >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
-    array([[1., 2., 3., 0.],
-           [4., 5., 6., 0.]])
+        # Samething
+        >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
+        array([[1., 2., 3., 0.],
+               [4., 5., 6., 0.]])
 
-    # Multiple inputs form:
+    Multiple inputs form::
 
-    # A series of 2 samples with x, z defined
-    >>> ktk.geometry.create_vector_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
-    array([[1., 0., 4., 0.],
-           [2., 0., 5., 0.],
-           [3., 0., 6., 0.]])
+        # A series of 2 samples with x, z defined
+        >>> ktk.geometry.create_vector_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
+        array([[1., 0., 4., 0.],
+               [2., 0., 5., 0.],
+               [3., 0., 6., 0.]])
 
     """
     if array is not None:
