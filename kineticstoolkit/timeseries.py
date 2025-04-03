@@ -4162,7 +4162,7 @@ class TimeSeries:
         check_param("legend", legend, bool)
         self._check_well_shaped()
 
-        # Private argument _raise_on_no_data: Raise an EmptyTimeSeriesError
+        # Private argument _raise_on_no_data: Raise an EmptyDataSeriesError
         # instead of warning when no data is available to plot.
         if "_raise_on_no_data" in kwargs:
             raise_on_no_data = kwargs.pop("_raise_on_no_data")
@@ -4175,15 +4175,9 @@ class TimeSeries:
         else:
             ts = self.get_subset(data_keys)
 
-        try:
+        if raise_on_no_data:
             self._check_not_empty_time()
             self._check_not_empty_data()
-        except ValueError as e:
-            if raise_on_no_data:
-                raise e
-            else:
-                warnings.warn("No data available to plot.")
-            return
 
         df = ts.to_dataframe()
         labels = df.columns.to_list()
@@ -4270,7 +4264,7 @@ class TimeSeries:
                         fontsize="small",
                     )
 
-        if legend:
+        if legend and len(ts.data) > 0:
             if len(labels) < 20:
                 legend_location = "best"
             else:
