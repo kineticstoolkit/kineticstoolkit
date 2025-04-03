@@ -34,6 +34,7 @@ import kineticstoolkit.config
 
 # Module(s) in development
 import kineticstoolkit.dev.kinetics as kinetics
+import kineticstoolkit.dev.video as video
 
 import os
 import subprocess
