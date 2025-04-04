@@ -46,7 +46,16 @@ from kineticstoolkit import TimeSeries
 import time
 
 
-def read_video(filename: str, downsize: int = 1) -> TimeSeries:
+WINDOW_PLACEMENT = {"top": 50, "right": 0}
+
+
+def read_video(
+    filename: str,
+    width: int | None = None,
+    height: int | None = None,
+    downsample: int = 1,
+    max_memory: int = 1000,
+) -> TimeSeries:
     """
     Read a video file as a TimeSeries.
 
@@ -59,11 +68,19 @@ def read_video(filename: str, downsize: int = 1) -> TimeSeries:
     ----------
     filename
         The name of the video file
-    downsize
-        Used to scale down the video, to save memory and get a faster frame-
-        per-second rate during playback. Default is 1 (no scaling). Use 2
-        to drop every other pixel in both x and y direction, thus reducing size
-        by 4; use 3 to reduce size by 9, etc.
+    width
+        Optional. Scale down the video to a given width in pixels.
+        Aspect ratio is maintained unless both width and height are set.
+    height
+        Optional. Scale down the video to a given height in pixels.
+        Aspect ratio is maintained unless both width and height are set.
+    downsample
+        Optional. Downsample the video by a given integer. For instance, a
+        240 FPS video with a downsample parameter of 2 will results in a
+        120 FPS TimeSeries. Default is 1.
+    max_memory
+        Prevent the output TimeSeries from exceeding a maximal RAM size, in
+        Mb. Default is 1000.
 
     Returns
     -------
@@ -77,28 +94,93 @@ def read_video(filename: str, downsize: int = 1) -> TimeSeries:
     video_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
     video_fps = int(video.get(cv2.CAP_PROP_FPS))
 
+    new_video_length = video_length // downsample
+    new_video_fps = video_fps // downsample
+
+    if (width is not None) and (height is None) and (width < video_width):
+        new_video_width = int(width)
+        new_video_height = int(video_height * (width / video_width))
+    elif (width is None) and (height is not None) and (height < video_height):
+        new_video_height = int(height)
+        new_video_width = int(video_width * (height / video_height))
+    elif (
+        (width is not None)
+        and (height is not None)
+        and ((height < video_height) | (width < video_width))
+    ):
+        new_video_height = int(height)
+        new_video_width = int(width)
+    else:
+        new_video_width = int(video_width)
+        new_video_height = int(video_height)
+
+    estimated_memory_size = int(
+        new_video_length * new_video_width * new_video_height * 3 / 1e6
+    )
+    if estimated_memory_size > max_memory:
+        raise ValueError(
+            "The resulting TimeSeries' RAM usage would be about "
+            f"{estimated_memory_size} Mb, which exceed "
+            f"the maximal RAM usage of {max_memory} Mb "
+            "defined by the max_memory parameter. You can either increase "
+            "this value or reduce the memory required by the video by "
+            "resizing or downsampling it using the according "
+            "read_video function parameters."
+        )
+
     frames = np.empty(
-        (
-            video_length,
-            int(video_height / downsize),
-            int(video_width / downsize),
-            3,
-        ),
+        (new_video_length, new_video_height, new_video_width, 3),
         dtype=np.uint8,
     )
 
     for i in tqdm(range(video_length)):
         read, frame = video.read()
+
         if not read:
             break
-        frames[i, :, :] = frame[::downsize, ::downsize, -1::-1]
+
+        if i % downsample != 0:
+            continue
+
+        if new_video_width != video_width:
+            frame = cv2.resize(
+                frame,
+                (new_video_width, new_video_height),
+                interpolation=cv2.INTER_LINEAR,
+            )
+        frames[i // downsample] = frame[:, :, -1::-1]  # BGR to RGB
 
     return TimeSeries(
-        time=np.arange(video_length) / video_fps, data={"Video": frames}
+        time=np.arange(new_video_length) / new_video_fps,
+        data={"Video": frames},
     )
 
 
-# %%
+def ui_edit_events(ts: TimeSeries, in_place: bool = False) -> TimeSeries:
+    """
+    Use an interactive interface to edit time and events in a Video TimeSeries.
+
+    Parameters
+    ----------
+    ts
+        TimeSeries, with at least one data key named "Video".
+    in_place
+        Optional. True to modify the original TimeSeries, False to return a
+        copy.
+
+    Returns
+    -------
+    TimeSeries
+        The TimeSeries with the modified time and events.
+
+    """
+    if not in_place:
+        ts = ts.copy()
+
+    video = Video(ts)
+    while video._closed is False:
+        plt.pause(0.1)
+    return ts
 
 
 class Video:
@@ -113,10 +195,19 @@ class Video:
     def __init__(self, video_ts: TimeSeries):
         # Extract information from the video
         data_key = "Video"
+
+        self._closed = False
+
         self._video_ts = video_ts
         self._video_length = video_ts.data[data_key].shape[0]
         self._video_height = video_ts.data[data_key].shape[1]
         self._video_width = video_ts.data[data_key].shape[2]
+
+        # Ensure we work with bytes, in case someone did operations on it and
+        # now we have floats.
+        self._video_ts.data[data_key] = np.clip(
+            self._video_ts.data[data_key], 0, 255
+        ).astype(np.uint8)
 
         # Remove default keymaps for left and right
         if "left" in plt.rcParams["keymap.back"]:
@@ -126,7 +217,7 @@ class Video:
 
         # Create the figure
         self._figure, axes = plt.subplots(
-            3, 1, gridspec_kw={"height_ratios": [5, 0.5, 1]}
+            4, 1, gridspec_kw={"height_ratios": [10, 0.25, 1, 0.5]}
         )
 
         # Remove all the second subplot, it's only a white space
@@ -134,9 +225,22 @@ class Video:
         axes[1].set_xticks([])
         axes[1].set_yticks([])
 
+        # Remove all the last subplot, it's only for the text
+        axes[3].set_frame_on(False)
+        axes[3].set_xticks([])
+        axes[3].set_yticks([])
+        axes[3].text(
+            0,
+            0,
+            "(←/→/Scroll) Navigate          "
+            "(Shift←/Shift→) Navigate to event          "
+            "(a/x) Add/Remove event          "
+            "(z) Zero time          "
+            "(q) Quit",
+        )
+
         # Create the video part
         self._axes = axes[0]
-        self._axes_event_bar = axes[2]
         self._axes.set_xticks([])
         self._axes.set_yticks([])
         self._axes_image = self._axes.imshow(
@@ -144,7 +248,9 @@ class Video:
         )
 
         # Create the data part
-        data_ts = TimeSeries(time=video_ts.time)
+        self._axes_event_bar = axes[2]
+
+        data_ts = TimeSeries(time=video_ts.time, events=video_ts.events)
 
         self._data_ts = data_ts
 
@@ -167,9 +273,15 @@ class Video:
         # self._figure.canvas.mpl_connect("key_release_event", self._on_release)
         self._figure.canvas.mpl_connect("scroll_event", self._on_scroll)
         self._figure.canvas.mpl_connect("pick_event", self._on_pick)
+        self._figure.canvas.mpl_connect("close_event", self._on_close)
+        self._figure.canvas.mpl_connect("resize_event", self._on_resize)
 
         # Public properties
         self.current_index = 0
+
+        # Last things
+        self._refresh()
+        self._figure.tight_layout()
 
     # Properties
     @property
@@ -195,17 +307,27 @@ class Video:
         self.current_index = index
 
     def _on_key(self, event):
-        if event.key == "left":
-            self.current_index -= 1
-
-        elif event.key == "shift+left":
-            self.current_time -= 1
-
-        elif event.key == "right":
+        if event.key == "right":
             self.current_index += 1
 
+        elif event.key == "left":
+            self.current_index -= 1
+
         elif event.key == "shift+right":
-            self.current_time += 1
+            for i, one_event in enumerate(self._video_ts.events):
+                if one_event.time > self.current_time:
+                    self.current_time = one_event.time
+                    break
+            self._create_refresh_event_bar()
+            self._refresh()
+
+        elif event.key == "shift+left":
+            for i, one_event in enumerate(self._video_ts.events[-1::-1]):
+                if one_event.time < self.current_time:
+                    self.current_time = one_event.time
+                    break
+            self._create_refresh_event_bar()
+            self._refresh()
 
         elif event.key == " ":
             if self._running:
@@ -216,8 +338,29 @@ class Video:
                 self._running = True
                 self._anim.event_source.start()
 
-        elif event.key == "e":
-            self._data_ts.add_event(self.current_time, "event", in_place=True)
+        elif event.key == "a":
+            self._data_ts.add_event(
+                self.current_time, "event", in_place=True, unique=True
+            )
+            self._video_ts.add_event(
+                self.current_time, "event", in_place=True, unique=True
+            )
+            self._create_refresh_event_bar()
+            self._refresh()
+
+        elif event.key == "x":
+            for i, one_event in enumerate(self._video_ts.events):
+                if np.isclose(one_event.time, self.current_time):
+                    self._data_ts.events.pop(i)
+                    self._video_ts.events.pop(i)
+                    break
+            self._create_refresh_event_bar()
+            self._refresh()
+
+        elif event.key == "z":
+            shift = -self.current_time
+            self._data_ts.shift(shift, in_place=True)
+            self._video_ts.shift(shift, in_place=True)
             self._create_refresh_event_bar()
             self._refresh()
 
@@ -285,3 +428,9 @@ class Video:
         plt.box(False)
 
         self._axes_index_cursor = plt.plot(0, 0, "dr")[0]
+
+    def _on_close(self, event):
+        self._closed = True
+
+    def _on_resize(self, event):
+        self._figure.tight_layout()
