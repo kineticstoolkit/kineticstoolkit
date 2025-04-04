@@ -151,7 +151,7 @@ class Video:
         self._create_refresh_event_bar()
 
         # Create a state like in the Player
-        self._state = {}
+        self._state = {"SystemTimeOnLastUpdate": time.time()}
         self._running = False
 
         # Create the anim timer
