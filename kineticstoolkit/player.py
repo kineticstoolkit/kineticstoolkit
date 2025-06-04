@@ -93,7 +93,7 @@ HELP_TEXT = """
 
 
 def _parse_color(
-    value: str | tuple[float, float, float]
+    value: str | tuple[float, float, float],
 ) -> tuple[float, float, float]:
     """Convert a color specification into a tuple[float, float, float]."""
     if isinstance(value, str):

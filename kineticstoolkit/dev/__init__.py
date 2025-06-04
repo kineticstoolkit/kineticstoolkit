@@ -34,6 +34,7 @@ import kineticstoolkit.config
 
 # Module(s) in development
 import kineticstoolkit.dev.kinetics as kinetics
+
 try:
     import kineticstoolkit.dev.video as video
 except ModuleNotFoundError:  # opencv is not a requirement yet.
