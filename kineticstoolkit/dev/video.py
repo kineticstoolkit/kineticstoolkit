@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2025 Félix Chénier
+# Copyright 2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,7 @@ Installing OpenCV
 """
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
+__copyright__ = "Copyright (C) 2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
@@ -41,7 +41,7 @@ import numpy as np
 import cv2
 from tqdm import tqdm
 import matplotlib.pyplot as plt
-from matplotlib import animation
+from matplotlib import animation, widgets
 from kineticstoolkit import TimeSeries
 import time
 
@@ -185,103 +185,121 @@ def ui_edit_events(ts: TimeSeries, in_place: bool = False) -> TimeSeries:
 
 class Video:
     """
-    WIP - Launch an interactive video player.
+    Launch an interactive video player to edit events (Work in progress).
 
-    For now, the TimeSeries must contain only one video labelled with the
-    "Video" data key.
+    Attributes
+    ----------
+    ts_video : TimeSeries
+        The TimeSeries that contains the video, normally obtained using
+        the read_video() function.
+
+    ts_data : TimeSeries
+        Optional. TimeSeries.
+
+    time : np.ndarray
+        Time attribute as 1-dimension np.array.
+
+    data : dict[str, np.ndarray]
+        Contains the data, where each element contains a np.array
+        which first dimension corresponds to time.
+
+    time_info : dict[str, Any]
+        Contains metadata relative to time. The default is {"Unit": "s"}
+
+    data_info : dict[str, dict[str, Any]]
+        Contains optional metadata relative to data. For example, the
+        data_info attribute could indicate the unit of data["Forces"]::
+
+            data["Forces"] = {"Unit": "N"}
+
+        To facilitate the management of data_info, please use
+        `ktk.TimeSeries.add_data_info` and `ktk.TimeSeries.remove_data_info`.
+
+    events : list[TimeSeriesEvent]
+        List of events.
+
+    Examples
+    --------
+    A TimeSeries can be constructed from another TimeSeries, a Pandas DataFrame
+    or any array with at least one dimension.
+
+    1. Creating an empty TimeSeries
+
+
+
+    See Also
+    --------
+    ktk.dev.video.read_video
 
     """
 
-    def __init__(self, video_ts: TimeSeries):
-        # Extract information from the video
-        data_key = "Video"
+    def __init__(
+        self,
+        ts_video: TimeSeries,
+        ts_data: TimeSeries,
+        *,
+        video_key: str = "Video",
+        data_keys: str | list[str] = [],
+        event_source: str = "merge",
+    ):
 
         self._closed = False
 
-        self._video_ts = video_ts
-        self._video_length = video_ts.data[data_key].shape[0]
-        self._video_height = video_ts.data[data_key].shape[1]
-        self._video_width = video_ts.data[data_key].shape[2]
+        self._video_key = video_key
+        self._data_keys = data_keys
+
+        # Create the Video TimeSeries
+        self._ts_video = ts_video
+
+        # Create the Data TimeSeries
+        if ts_data is None:
+            self._ts_data = TimeSeries(
+                time=ts_video.time, events=ts_video.events
+            )
+        else:
+            self._ts_data = ts_data
+
+        # Select which events to keep or merge
+        if event_source == "merge":
+            for event in ts_video.events:
+                ts_data.add_event(
+                    event.time, event.name, unique=True, in_place=True
+                )
+            for event in ts_data.events:
+                ts_video.add_event(
+                    event.time, event.name, unique=True, in_place=True
+                )
+        elif event_source == "data":
+            ts_video.events = []
+            for event in ts_data.events:
+                ts_video.add_event(event.time, event.name, in_place=True)
+        elif event_source == "video":
+            ts_data.events = []
+            for event in ts_video.events:
+                ts_data.add_event(event.time, event.name, in_place=True)
+        else:
+            raise ValueError(
+                "event_source must be 'merge', 'data' or 'video'."
+            )
+
+        # Extract information from the video
+        self._video_length = ts_video.data[video_key].shape[0]
+        self._video_height = ts_video.data[video_key].shape[1]
+        self._video_width = ts_video.data[video_key].shape[2]
 
         # Ensure we work with bytes, in case someone did operations on it and
         # now we have floats.
-        self._video_ts.data[data_key] = np.clip(
-            self._video_ts.data[data_key], 0, 255
+        self._ts_video.data[video_key] = np.clip(
+            self._ts_video.data[video_key], 0, 255
         ).astype(np.uint8)
 
-        # Remove default keymaps for left and right
-        if "left" in plt.rcParams["keymap.back"]:
-            plt.rcParams["keymap.back"].remove("left")
-        if "right" in plt.rcParams["keymap.forward"]:
-            plt.rcParams["keymap.forward"].remove("right")
-
-        # Create the figure
-        self._figure, axes = plt.subplots(
-            4, 1, gridspec_kw={"height_ratios": [10, 0.25, 1, 0.5]}
-        )
-
-        # Remove all the second subplot, it's only a white space
-        axes[1].set_frame_on(False)
-        axes[1].set_xticks([])
-        axes[1].set_yticks([])
-
-        # Remove all the last subplot, it's only for the text
-        axes[3].set_frame_on(False)
-        axes[3].set_xticks([])
-        axes[3].set_yticks([])
-        axes[3].text(
-            0,
-            0,
-            "(←/→/Scroll) Navigate          "
-            "(Shift←/Shift→) Navigate to event          "
-            "(a/x) Add/Remove event          "
-            "(z) Zero time          "
-            "(q) Quit",
-        )
-
-        # Create the video part
-        self._axes = axes[0]
-        self._axes.set_xticks([])
-        self._axes.set_yticks([])
-        self._axes_image = self._axes.imshow(
-            video_ts.data[data_key][0], interpolation="none", resample=False
-        )
-
-        # Create the data part
-        self._axes_event_bar = axes[2]
-
-        data_ts = TimeSeries(time=video_ts.time, events=video_ts.events)
-
-        self._data_ts = data_ts
-
-        self._create_refresh_event_bar()
-
-        # Create a state like in the Player
-        self._state = {"SystemTimeOnLastUpdate": time.time()}
-        self._running = False
-
-        # Create the anim timer
-        self._anim = animation.FuncAnimation(
-            self._figure,
-            self._on_timer,  # type: ignore
-            interval=33,
-            cache_frame_data=False,
-        )  # 30 ips
-
-        # Connect callbacks to the figure
-        self._figure.canvas.mpl_connect("key_press_event", self._on_key)
-        # self._figure.canvas.mpl_connect("key_release_event", self._on_release)
-        self._figure.canvas.mpl_connect("scroll_event", self._on_scroll)
-        self._figure.canvas.mpl_connect("pick_event", self._on_pick)
-        self._figure.canvas.mpl_connect("close_event", self._on_close)
-        self._figure.canvas.mpl_connect("resize_event", self._on_resize)
+        self._create_gui()
 
         # Public properties
         self.current_index = 0
 
         # Last things
         self._refresh()
-        self._figure.tight_layout()
 
     # Properties
     @property
@@ -298,36 +316,231 @@ class Video:
     @property
     def current_time(self) -> float:
         """Read/write current_time."""
-        return self._video_ts.time[self._current_index]
+        return self._ts_video.time[self._current_index]
 
     @current_time.setter
     def current_time(self, value: float):
         """Set current_time value."""
-        index = int(np.argmin(np.abs(self._video_ts.time - value)))
+        index = int(np.argmin(np.abs(self._ts_video.time - value)))
         self.current_index = index
+
+    def _create_gui(self):
+        """Create all the GUI elements."""
+        # Remove default keymaps for left and right
+        if "left" in plt.rcParams["keymap.back"]:
+            plt.rcParams["keymap.back"].remove("left")
+        if "right" in plt.rcParams["keymap.forward"]:
+            plt.rcParams["keymap.forward"].remove("right")
+
+        # Create the figure
+        # fmt: off
+        self._figure, self._axes = plt.subplot_mosaic(
+            [
+                ["LblNextIndex",  "LblNextIndex", "Video",    "LblEvent",     "LblEvent"],
+                ["LblNextIndex",  "LblNextIndex", "Video",    "LblEvent",     "LblEvent"],
+                ["BtnPrevIndex",  "BtnNextIndex", "Video",    "TxtEventName", "TxtEventName"],
+                ["LblNextEvent",  "LblNextEvent", "Video",    "BtnAddEvent",  "BtnRemoveEvent"],
+                ["LblNextEvent",  "LblNextEvent", "Video",    "RSpace1",      "RSpace1"],
+                ["BtnPrevEvent",  "BtnNextEvent", "Video",    "RSpace1",      "RSpace1"],
+                ["LSpace",        "LSpace",       "Video",    "LblZero",      "LblZero"],
+                ["LSpace",        "LSpace",       "Video",    "LblZero",      "LblZero"],
+                ["LSpace",        "LSpace",       "Video",    "BtnZeroVideo", "BtnZeroVideo"],
+                ["LSpace",        "LSpace",       "Video",    "BtnZeroData",  "BtnZeroData"],
+                ["BtnPlay",       "BtnPlay",      "Video",    "RSpace2",      "RSpace2"],
+                ["Space1",        "Space1",       "Space1",   "Space1",       "Space1"],
+                ["Data",          "Data",         "Data",     "Data",         "Data"],
+            ],
+            width_ratios=[1, 1, 20, 1, 1],
+            height_ratios=[1,1, 1, 1,1, 1, 1, 1, 1, 1, 1, 1.5, 6],
+        )
+        # fmt: on
+
+        # Remove frames and ticks for all for now
+        for key in self._axes:
+            self._axes[key].set_frame_on(False)
+            self._axes[key].set_xticks([])
+            self._axes[key].set_yticks([])
+
+        # Create the video part
+        self._axes["Video"].set_frame_on(True)
+        self._axes_image = self._axes["Video"].imshow(
+            self._ts_video.data[self._video_key][0],
+            interpolation="none",
+            resample=False,
+        )
+
+        # Create the data part
+        self._axes_data = self._axes["Data"]
+        self._create_refresh_data()
+
+        # Create a state like in the Player
+        self._state = {"SystemTimeOnLastUpdate": time.time()}
+        self._running = False
+
+        # Create the anim timer
+        self._anim = animation.FuncAnimation(
+            self._figure,
+            self._on_timer,  # type: ignore
+            interval=33,
+            cache_frame_data=False,
+        )  # 30 ips
+
+        # Create the GUI elements
+
+        self._axes["LblNextIndex"].text(
+            0.5,
+            0,
+            "Next Index\n(←/→/Scroll)",
+            horizontalalignment="center",
+            verticalalignment="bottom",
+        )
+        self._axes["BtnPrevIndex"].set_frame_on(True)
+        self._btn_prev_index = widgets.Button(self._axes["BtnPrevIndex"], "◀︎")
+        self._btn_prev_index.on_clicked(self._on_previous_index)
+        self._axes["BtnNextIndex"].set_frame_on(True)
+        self._btn_next_index = widgets.Button(self._axes["BtnNextIndex"], "▶︎")
+        self._btn_next_index.on_clicked(self._on_next_index)
+
+        self._axes["LblNextEvent"].text(
+            0.5,
+            0,
+            "Next Event\n(Shift + ←/→)",
+            horizontalalignment="center",
+            verticalalignment="bottom",
+        )
+        self._axes["BtnPrevEvent"].set_frame_on(True)
+        self._btn_prev_event = widgets.Button(self._axes["BtnPrevEvent"], "◀︎◀︎")
+        self._btn_prev_event.on_clicked(self._on_previous_event)
+        self._axes["BtnNextEvent"].set_frame_on(True)
+        self._btn_next_event = widgets.Button(self._axes["BtnNextEvent"], "▶︎▶︎")
+        self._btn_next_event.on_clicked(self._on_next_event)
+
+        self._axes["LblZero"].text(
+            0.5,
+            0,
+            "Sync (zero)",
+            horizontalalignment="center",
+            verticalalignment="bottom",
+        )
+        self._axes["BtnZeroVideo"].set_frame_on(True)
+        self._btn_zero_video = widgets.Button(
+            self._axes["BtnZeroVideo"], "Video (z)"
+        )
+        self._btn_zero_video.on_clicked(self._on_zero_video)
+        self._axes["BtnZeroData"].set_frame_on(True)
+        self._btn_zero_data = widgets.Button(
+            self._axes["BtnZeroData"], "Data (Shift + z)"
+        )
+        self._btn_zero_data.on_clicked(self._on_zero_data)
+
+        self._axes["LblEvent"].text(
+            0.5,
+            0,
+            "Add/Remove",
+            horizontalalignment="center",
+            verticalalignment="bottom",
+        )
+        self._axes["TxtEventName"].set_frame_on(True)
+        self._txt_event_name = widgets.TextBox(
+            self._axes["TxtEventName"], label="", initial="event", color="w"
+        )
+        self._axes["BtnAddEvent"].set_frame_on(True)
+        self._btn_add_event = widgets.Button(self._axes["BtnAddEvent"], "+")
+        self._btn_add_event.on_clicked(self._on_add_event)
+        self._axes["BtnRemoveEvent"].set_frame_on(True)
+        self._btn_remove_event = widgets.Button(
+            self._axes["BtnRemoveEvent"], "−"
+        )
+        self._btn_remove_event.on_clicked(self._on_remove_event)
+
+        # Connect callbacks to the figure
+        self._figure.canvas.mpl_connect("key_press_event", self._on_key)
+        # self._figure.canvas.mpl_connect("key_release_event", self._on_release)
+        self._figure.canvas.mpl_connect("scroll_event", self._on_scroll)
+        self._figure.canvas.mpl_connect("pick_event", self._on_pick)
+        self._figure.canvas.mpl_connect("close_event", self._on_close)
+
+        # Give a decent size to the figure
+        self._figure.set_size_inches(15, 8)
+
+    # %% Callbacks
+
+    def _on_next_index(self, event):
+        self.current_index += 1
+
+    def _on_previous_index(self, event):
+        self.current_index -= 1
+
+    def _on_next_event(self, event):
+        for i, one_event in enumerate(self._ts_video.events):
+            if one_event.time > self.current_time:
+                self.current_time = one_event.time
+                break
+        self._create_refresh_data()
+        self._refresh()
+
+    def _on_previous_event(self, event):
+        for i, one_event in enumerate(self._ts_video.events[-1::-1]):
+            if one_event.time < self.current_time:
+                self.current_time = one_event.time
+                break
+        self._create_refresh_data()
+        self._refresh()
+
+    def _on_zero_video(self, event):
+        shift = -self.current_time
+        self._ts_video.shift(shift, in_place=True)
+        self._create_refresh_data()
+        self.current_time = 0
+        self._refresh()
+
+    def _on_zero_data(self, event):
+        shift = -self.current_time
+        self._ts_data.shift(shift, in_place=True)
+        self._create_refresh_data()
+        self.current_time = 0
+        self._refresh()
+
+    def _on_add_event(self, event):
+        self._ts_data.add_event(
+            self.current_time,
+            self._txt_event_name.text,
+            in_place=True,
+            unique=True,
+        )
+        self._ts_video.add_event(
+            self.current_time,
+            self._txt_event_name.text,
+            in_place=True,
+            unique=True,
+        )
+        self._create_refresh_data()
+        self._refresh()
+
+    def _on_remove_event(self, event):
+        for i, one_event in enumerate(self._ts_video.events):
+            if (
+                np.isclose(one_event.time, self.current_time)
+                and one_event.name == self._txt_event_name.text
+            ):
+                self._ts_data.events.pop(i)
+                self._ts_video.events.pop(i)
+                break
+        self._create_refresh_data()
+        self._refresh()
 
     def _on_key(self, event):
         if event.key == "right":
-            self.current_index += 1
+            self._on_next_index(event)
 
         elif event.key == "left":
-            self.current_index -= 1
+            self._on_previous_index(event)
 
         elif event.key == "shift+right":
-            for i, one_event in enumerate(self._video_ts.events):
-                if one_event.time > self.current_time:
-                    self.current_time = one_event.time
-                    break
-            self._create_refresh_event_bar()
-            self._refresh()
+            self._on_next_event(event)
 
         elif event.key == "shift+left":
-            for i, one_event in enumerate(self._video_ts.events[-1::-1]):
-                if one_event.time < self.current_time:
-                    self.current_time = one_event.time
-                    break
-            self._create_refresh_event_bar()
-            self._refresh()
+            self._on_previous_event(event)
 
         elif event.key == " ":
             if self._running:
@@ -338,31 +551,17 @@ class Video:
                 self._running = True
                 self._anim.event_source.start()
 
-        elif event.key == "a":
-            self._data_ts.add_event(
-                self.current_time, "event", in_place=True, unique=True
-            )
-            self._video_ts.add_event(
-                self.current_time, "event", in_place=True, unique=True
-            )
-            self._create_refresh_event_bar()
-            self._refresh()
+        elif event.key == "+":
+            self._on_add_event(event)
 
-        elif event.key == "x":
-            for i, one_event in enumerate(self._video_ts.events):
-                if np.isclose(one_event.time, self.current_time):
-                    self._data_ts.events.pop(i)
-                    self._video_ts.events.pop(i)
-                    break
-            self._create_refresh_event_bar()
-            self._refresh()
+        elif event.key == "-":
+            self._on_remove_event(event)
 
         elif event.key == "z":
-            shift = -self.current_time
-            self._data_ts.shift(shift, in_place=True)
-            self._video_ts.shift(shift, in_place=True)
-            self._create_refresh_event_bar()
-            self._refresh()
+            self._on_zero_video(event)
+
+        elif event.key == "shift+z":
+            self._on_zero_data(event)
 
     def _on_pick(self, event):
         if event.mouseevent.button == 1:
@@ -401,36 +600,78 @@ class Video:
 
     def _refresh(self):
         self._axes_image.set_data(
-            self._video_ts.data["Video"][self._current_index]
+            self._ts_video.data["Video"][self._current_index]
         )
-        self._axes.set_title(
-            f"{self._current_index} ({self.current_time:.2f} s.)"
-        )
-        self._axes_index_cursor.set_data(
-            [self._video_ts.time[self._current_index]], [0]
-        )
-        self._figure.canvas.draw()
+        #        self._axes.set_title(
+        #            f"{self._current_index} ({self.current_time:.2f} s.)"
+        #        )
 
-    def _create_refresh_event_bar(self):
-        plt.sca(self._axes_event_bar)
+        # Update line
+        cursor_data = self._axes_index_line.get_data()
+        self._axes_index_line.set_data(
+            [
+                self._ts_video.time[self._current_index],
+                self._ts_video.time[self._current_index],
+            ],
+            [cursor_data[1][0], cursor_data[1][1]],
+        )
+
+        # Update cursor
+        cursor_data = self._axes_index_cursor.get_data()
+        self._axes_index_cursor.set_data(
+            [
+                self._ts_video.time[self._current_index],
+            ],
+            [cursor_data[1][0]],
+        )
+
+        self._figure.canvas.draw_idle()
+
+    def _create_refresh_data(self):
+        plt.sca(self._axes_data)
         plt.cla()
-        self._data_ts.plot()
-        plt.axis([self._video_ts.time[0], self._video_ts.time[-1], -0.1, 1])
+
+        # Plot data
+        self._ts_data.plot(self._data_keys, legend=False)
+        plt.xlabel("")
+        plt.ylabel("")
+
+        # Plot red line
+        current_axes = plt.axis()
+        self._axes_index_line = plt.plot(
+            [0, 0], [current_axes[2], current_axes[3]], "r"
+        )[0]
+
+        # Plot clickable timeline
         plt.plot(
-            self._video_ts.time,
-            0 * self._video_ts.time,
+            self._ts_video.time,
+            (0 * self._ts_video.time)
+            + current_axes[2]
+            - 0.1 * (current_axes[3] - current_axes[2]),
             ".",
             color=(0.8, 0.8, 0.8),
             picker=True,
             pickradius=2,
         )
-        self._axes_event_bar.set_yticks([])
-        plt.box(False)
 
-        self._axes_index_cursor = plt.plot(0, 0, "dr")[0]
+        # Plot red cursor
+        self._axes_index_cursor = plt.plot(
+            [0],
+            [
+                current_axes[2] - 0.1 * (current_axes[3] - current_axes[2]),
+            ],
+            "dr",
+            markersize=8,
+        )[0]
+
+        plt.axis(
+            [
+                min(self._ts_video.time[0], self._ts_data.time[0]),
+                max(self._ts_video.time[-1], self._ts_data.time[-1]),
+                current_axes[2] - 0.15 * (current_axes[3] - current_axes[2]),
+                current_axes[3],
+            ]
+        )
 
     def _on_close(self, event):
         self._closed = True
-
-    def _on_resize(self, event):
-        self._figure.tight_layout()
