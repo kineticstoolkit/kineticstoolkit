@@ -43,6 +43,7 @@ from tqdm import tqdm
 import matplotlib.pyplot as plt
 from matplotlib import animation, widgets
 from kineticstoolkit import TimeSeries
+from kineticstoolkit.exceptions import warn_once
 import time
 
 
@@ -58,6 +59,10 @@ def read_video(
 ) -> TimeSeries:
     """
     Read a video file as a TimeSeries.
+
+    Warning
+    -------
+    This feature is experimental and will probably change in the future.
 
     Reads a video file using opencv, and returns a TimeSeries with one data
     key ("Video") that contains the video as an NxHxWx3 array where N is the
@@ -87,6 +92,10 @@ def read_video(
     TimeSeries
 
     """
+    warn_once(
+        "Function read_video is experimental and will probably change in the "
+        "future."
+    )
     video = cv2.VideoCapture(filename)
 
     video_length = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
@@ -156,80 +165,101 @@ def read_video(
     )
 
 
-def ui_edit_events(ts: TimeSeries, in_place: bool = False) -> TimeSeries:
+def ui_edit_events(
+    ts_video: TimeSeries,
+    ts_data: TimeSeries,
+    video_key: str = "Video",
+    data_keys: str | list[str] = [],
+    event_source: str = "merge",
+    in_place: bool = False,
+) -> TimeSeries:
     """
     Use an interactive interface to edit time and events in a Video TimeSeries.
 
+    Warning
+    -------
+    This feature is experimental and will probably change in the future.
+
     Parameters
     ----------
-    ts
-        TimeSeries, with at least one data key named "Video".
+    ts_video
+        The TimeSeries that contains the video, normally obtained using
+        the read_video() function.
+    ts_data
+        Optional. TimeSeries.
+    video_key
+        Optional. The data key in ts_video that contains the video. Default is
+        "Video".
+    data_keys
+        Optional. The data key(s) in ts_video to plot. Default is [], which
+        means that every data of the TimeSeries is plotted.
+    event_source
+        Optional. Defines which TimeSeries to read the event from. Can be::
+            - "merge" (default): The editor includes the events from both
+              video_ts and data_ts
+            - "video": The editor includes only the events from video_ts
+            - "data_ts": The editor includes only the events from data_ts
     in_place
         Optional. True to modify the original TimeSeries, False to return a
         copy.
 
     Returns
     -------
-    TimeSeries
-        The TimeSeries with the modified time and events.
+    list[TimeSeries]
+        The list [video_ts, data_ts] which are now synchronized and which
+        share the events.
 
     """
-    if not in_place:
-        ts = ts.copy()
+    warn_once(
+        "Function ui_edit_events is experimental and will probably change in "
+        "the future."
+    )
 
-    video = Video(ts)
+    if not in_place:
+        ts_video = ts_video.copy()
+        ts_data = ts_data.copy()
+
+    video = Video(
+        ts_video=ts_video,
+        ts_data=ts_data,
+        video_key=video_key,
+        data_keys=data_keys,
+        event_source=event_source
+    )
+
     while video._closed is False:
         plt.pause(0.1)
-    return ts
+
+    return [ts_video, ts_data]
 
 
 class Video:
     """
     Launch an interactive video player to edit events (Work in progress).
 
+    Warning
+    -------
+    This feature is experimental and will probably change in the future.
+
     Attributes
     ----------
     ts_video : TimeSeries
         The TimeSeries that contains the video, normally obtained using
         the read_video() function.
-
     ts_data : TimeSeries
         Optional. TimeSeries.
-
-    time : np.ndarray
-        Time attribute as 1-dimension np.array.
-
-    data : dict[str, np.ndarray]
-        Contains the data, where each element contains a np.array
-        which first dimension corresponds to time.
-
-    time_info : dict[str, Any]
-        Contains metadata relative to time. The default is {"Unit": "s"}
-
-    data_info : dict[str, dict[str, Any]]
-        Contains optional metadata relative to data. For example, the
-        data_info attribute could indicate the unit of data["Forces"]::
-
-            data["Forces"] = {"Unit": "N"}
-
-        To facilitate the management of data_info, please use
-        `ktk.TimeSeries.add_data_info` and `ktk.TimeSeries.remove_data_info`.
-
-    events : list[TimeSeriesEvent]
-        List of events.
-
-    Examples
-    --------
-    A TimeSeries can be constructed from another TimeSeries, a Pandas DataFrame
-    or any array with at least one dimension.
-
-    1. Creating an empty TimeSeries
-
-
-
-    See Also
-    --------
-    ktk.dev.video.read_video
+    video_key : str
+        Optional. The data key in ts_video that contains the video. Default is
+        "Video".
+    data_keys : str | list[str]
+        Optional. The data key(s) in ts_video to plot. Default is [], which
+        means that every data of the TimeSeries is plotted.
+    event_source: str
+        Optional. Defines which TimeSeries to read the event from. Can be::
+            - "merge" (default): The editor includes the events from both
+              video_ts and data_ts
+            - "video": The editor includes only the events from video_ts
+            - "data_ts": The editor includes only the events from data_ts
 
     """
 
@@ -560,7 +590,7 @@ class Video:
         elif event.key == "z":
             self._on_zero_video(event)
 
-        elif event.key == "shift+z":
+        elif event.key == "Z":
             self._on_zero_data(event)
 
     def _on_pick(self, event):
