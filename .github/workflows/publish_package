@@ -1,4 +1,4 @@
-name: Publish Package
+name: publish_package
 
 on:
   release:
