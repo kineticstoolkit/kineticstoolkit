@@ -66,12 +66,10 @@ def raise_ktk_error(e) -> None:
 
 
 # Create a set to keep track of issued warnings
-issued_warnings = set()  # type: tuple[str, Exception]
+issued_warnings = set()  # type: set[tuple[str, Exception]]
 
 
-def warn_once(
-    message: str, category: Exception = UserWarning, stacklevel: int = 1
-) -> None:
+def warn_once(message: str, category=UserWarning, stacklevel: int = 1) -> None:
     """Raise a warning only once."""
     if (message, category) not in issued_warnings:
         warnings.warn(message, category, stacklevel=stacklevel + 1)

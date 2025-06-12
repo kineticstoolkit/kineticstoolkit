@@ -172,7 +172,7 @@ def ui_edit_events(
     data_keys: str | list[str] = [],
     event_source: str = "merge",
     in_place: bool = False,
-) -> TimeSeries:
+) -> list[TimeSeries]:
     """
     Use an interactive interface to edit time and events in a Video TimeSeries.
 
@@ -224,7 +224,7 @@ def ui_edit_events(
         ts_data=ts_data,
         video_key=video_key,
         data_keys=data_keys,
-        event_source=event_source
+        event_source=event_source,
     )
 
     while video._closed is False:
@@ -266,7 +266,7 @@ class Video:
     def __init__(
         self,
         ts_video: TimeSeries,
-        ts_data: TimeSeries,
+        ts_data: TimeSeries | None,
         *,
         video_key: str = "Video",
         data_keys: str | list[str] = [],
@@ -291,31 +291,31 @@ class Video:
 
         # Select which events to keep or merge
         if event_source == "merge":
-            for event in ts_video.events:
-                ts_data.add_event(
+            for event in self._ts_video.events:
+                self._ts_data.add_event(
                     event.time, event.name, unique=True, in_place=True
                 )
-            for event in ts_data.events:
-                ts_video.add_event(
+            for event in self._ts_data.events:
+                self._ts_video.add_event(
                     event.time, event.name, unique=True, in_place=True
                 )
         elif event_source == "data":
-            ts_video.events = []
-            for event in ts_data.events:
-                ts_video.add_event(event.time, event.name, in_place=True)
+            self._ts_video.events = []
+            for event in self._ts_data.events:
+                self._ts_video.add_event(event.time, event.name, in_place=True)
         elif event_source == "video":
-            ts_data.events = []
-            for event in ts_video.events:
-                ts_data.add_event(event.time, event.name, in_place=True)
+            self._ts_data.events = []
+            for event in self._ts_video.events:
+                self._ts_data.add_event(event.time, event.name, in_place=True)
         else:
             raise ValueError(
                 "event_source must be 'merge', 'data' or 'video'."
             )
 
         # Extract information from the video
-        self._video_length = ts_video.data[video_key].shape[0]
-        self._video_height = ts_video.data[video_key].shape[1]
-        self._video_width = ts_video.data[video_key].shape[2]
+        self._video_length = self._ts_video.data[video_key].shape[0]
+        self._video_height = self._ts_video.data[video_key].shape[1]
+        self._video_width = self._ts_video.data[video_key].shape[2]
 
         # Ensure we work with bytes, in case someone did operations on it and
         # now we have floats.
