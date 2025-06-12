@@ -1,0 +1,41 @@
+name: Publish Package
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Install Miniconda
+        run: |
+          wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+          bash miniconda.sh -b -p $HOME/miniconda
+          echo "$HOME/miniconda/bin" >> $GITHUB_PATH
+          conda init bash
+          source $HOME/miniconda/etc/profile.d/conda.sh
+
+      - name: Set up Python
+        run: |
+          conda create -n myenv python=3.11 -y
+          conda activate myenv
+          conda install --yes pip setuptools wheel twine
+
+      - name: Build and publish to PyPI
+        env:
+          TWINE_USERNAME: __token__
+          TWINE_PASSWORD: ${{ secrets.PYPI_TOKEN }}
+        run: |
+          python setup.py sdist bdist_wheel
+          twine upload dist/*
+
+      - name: Build and publish to conda-forge
+        run: |
+          conda config --set anaconda_upload yes
+          conda build . --output-folder conda-bld
+          anaconda upload conda-bld/* --user conda-forge
