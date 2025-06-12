@@ -1153,6 +1153,14 @@ def _vectors_to_frame_series(
 
     def normalize(v):
         """Normalize series of vectors."""
+        if not is_vector_series(v):
+            if is_point_series(v):
+                v[:, 3] = 0.0  # Convert to a vector series
+            else:
+                raise ValueError(
+                    "At least one of the provided vectors series is not a "
+                    "vector series."
+                )
         norm = np.linalg.norm(v, axis=1)
         return v / norm[..., np.newaxis]
 

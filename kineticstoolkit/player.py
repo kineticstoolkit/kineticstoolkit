@@ -93,7 +93,7 @@ HELP_TEXT = """
 
 
 def _parse_color(
-    value: str | tuple[float, float, float]
+    value: str | tuple[float, float, float],
 ) -> tuple[float, float, float]:
     """Convert a color specification into a tuple[float, float, float]."""
     if isinstance(value, str):
@@ -1490,14 +1490,23 @@ class Player:
     def _recenter(self) -> None:
         """Recenter the current view on the last selected point (tracking)."""
         try:
-            new_target = self._processed_points.data[
+            new_target = self._contents.data[self._last_selected_point][
+                self.current_index
+            ]
+            new_oriented_target = self._processed_points.data[
                 self._last_selected_point
             ][self.current_index]
         except (KeyError, IndexError):
             new_target = np.array([np.nan, np.nan, np.nan, np.nan])
 
         if not np.isnan(np.sum(new_target)):
-            self.target = new_target
+            self._target = new_target
+            self._oriented_target = (
+                new_oriented_target[0],
+                new_oriented_target[1],
+                new_oriented_target[2],
+            )
+            self._fast_refresh()
 
     def _project_to_camera(self, points_3d: np.ndarray) -> np.ndarray:
         """

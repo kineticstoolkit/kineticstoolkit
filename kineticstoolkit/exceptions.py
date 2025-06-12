@@ -20,6 +20,7 @@ Provide functions related to exceptions.
 For internal use only.
 
 """
+import warnings
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022-2025 Félix Chénier"
@@ -47,8 +48,8 @@ def raise_ktk_error(e) -> None:
         "==================================================================\n"
         "An error has been encountered. This is most probably due to a bug \n"
         "in Kinetics Toolkit. We all despise bugs, and it would be very    \n"
-        "nice if you could help by reporting this bug. To do so, please go \n"
-        "to https://github.com/kineticstoolkit/kineticstoolkit/issues,     \n"
+        "nice if you could help us by reporting this bug. To do so, please \n"
+        "go to https://github.com/kineticstoolkit/kineticstoolkit/issues,  \n"
         "select 'New Issue' and fill in the required information.          \n"
         "                                                                  \n"
         "Please include the whole error message, starting at the line      \n"
@@ -62,6 +63,17 @@ def raise_ktk_error(e) -> None:
         "==================================================================\n"
     )
     raise (e)
+
+
+# Create a set to keep track of issued warnings
+issued_warnings = set()  # type: set[tuple[str, Exception]]
+
+
+def warn_once(message: str, category=UserWarning, stacklevel: int = 1) -> None:
+    """Raise a warning only once."""
+    if (message, category) not in issued_warnings:
+        warnings.warn(message, category, stacklevel=stacklevel + 1)
+        issued_warnings.add((message, category))
 
 
 if __name__ == "__main__":  # pragma: no cover
