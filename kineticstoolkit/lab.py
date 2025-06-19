@@ -39,4 +39,3 @@ from kineticstoolkit import __dir__
 import warnings
 
 change_defaults()
-import_extensions()

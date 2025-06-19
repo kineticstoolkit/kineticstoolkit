@@ -51,7 +51,7 @@ def run_unit_tests() -> None:  # pragma: no cover
     """Run all unit tests."""
     # Run pytest in another process to ensure that the workspace is and stays
     # clean, and all Matplotlib windows are closed correctly after the tests.
-    print("Running unit tests...")
+    print("Running kineticstoolkit unit tests...")
 
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder + "/tests")
@@ -73,6 +73,29 @@ def run_unit_tests() -> None:  # pragma: no cover
     webbrowser.open_new_tab(
         "file://"
         + kineticstoolkit.config.root_folder
+        + "/tests/htmlcov/index.html"
+    )
+    os.chdir(cwd)
+
+    print("Running kineticstoolkit_extensions unit tests...")
+
+    cwd = os.getcwd()
+    os.chdir(kineticstoolkit.ext.root_folder + "/tests")
+    subprocess.call(
+        [
+            "coverage",
+            "run",
+            "--source",
+            "../kineticstoolkit_extensions",
+            "-m",
+            "pytest",
+        ],
+        env=kineticstoolkit.config.env,
+    )
+    subprocess.call(["coverage", "html"], env=kineticstoolkit.config.env)
+    webbrowser.open_new_tab(
+        "file://"
+        + kineticstoolkit.ext.root_folder
         + "/tests/htmlcov/index.html"
     )
     os.chdir(cwd)

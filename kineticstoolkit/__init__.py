@@ -37,7 +37,6 @@ from kineticstoolkit.player import Player as Player  # noqa
 from kineticstoolkit.tools import change_defaults  # noqa
 from kineticstoolkit.files import load, save, read_c3d, write_c3d  # noqa
 from kineticstoolkit import _repr  # noqa
-from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
 
 # Import modules
 from kineticstoolkit import filters  # noqa
@@ -47,8 +46,24 @@ from kineticstoolkit import doc  # noqa
 from kineticstoolkit import gui  # noqa
 from kineticstoolkit import geometry  # noqa
 from kineticstoolkit import dev  # noqa
-from kineticstoolkit import ext  # noqa
 from kineticstoolkit import config  # noqa
+
+# Import extensions
+try:
+    import kineticstoolkit_extensions as ext
+except ModuleNotFoundError:
+    pass
+except Exception as e:
+    raise RuntimeError(
+        "The following error has been raised when trying to import the "
+        "package `kineticstoolkit_extensions`. Please ensure that both "
+        "`kineticstoolkit` and `kineticstoolkit_extensions` are up to date. "
+        "If this error persists, please uninstall "
+        "`kineticstoolkit_extensions` and report this issue on the issue "
+        "tracker at "
+        "https://github.com/kineticstoolkit/kineticstoolkit/issues \n\n"
+        f"{e}"
+    )
 
 
 def __dir__():

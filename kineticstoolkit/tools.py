@@ -26,7 +26,6 @@ import warnings
 import kineticstoolkit.config
 import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
-import kineticstoolkit.ext
 from kineticstoolkit.typing_ import check_param
 
 
