@@ -20,7 +20,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12"]
+        python-version: ["3.10", "3.11", "3.12", "3.13"]
         os: [ubuntu-latest, windows-latest, macos-latest]
         
     steps:
@@ -33,19 +33,40 @@ jobs:
       run: |
         conda install -c conda-forge python=${{ matrix.python-version }} mamba pytest -y
         mamba install -c conda-forge kineticstoolkit --only-deps -y
-    - name: Test with pytest and crash on warnings (macos)
+    - name: Test with pytest and crash on warnings (macos, without extensions)
       if: matrix.os == 'macos-latest'
       run: |
         export PYTHONPATH=":kineticstoolkit"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
         pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
-    - name: Test with pytest and crash on warnings (linux)
+    - name: Test with pytest and crash on warnings (linux, without extensions)
       if: matrix.os == 'ubuntu-latest'
       run: |
         export PYTHONPATH=":kineticstoolkit"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
         pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
-    - name: Test with pytest and crash on warnings (windows)
+    - name: Test with pytest and crash on warnings (windows, without extensions)
+      if: matrix.os == 'windows-latest'
+      run: |
+        export PYTHONPATH=";kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Install extensions (using pip for now because it's faster to update than conda)
+      run: |
+        pip install kineticstoolkit_extensions
+    - name: Test with pytest and crash on warnings (macos, with extensions)
+      if: matrix.os == 'macos-latest'
+      run: |
+        export PYTHONPATH=":kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Test with pytest and crash on warnings (linux, with extensions)
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        export PYTHONPATH=":kineticstoolkit"
+        echo "Running tests with PYTHONPATH=$PYTHONPATH"
+        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+    - name: Test with pytest and crash on warnings (windows, with extensions)
       if: matrix.os == 'windows-latest'
       run: |
         export PYTHONPATH=";kineticstoolkit"
