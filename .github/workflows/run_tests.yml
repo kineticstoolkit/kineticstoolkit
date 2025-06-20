@@ -57,18 +57,18 @@ jobs:
     - name: Test extensions with pytest and crash on warnings (macOS)
       if: matrix.os == 'macos-latest'
       run: |
-        export PYTHONPATH=":kineticstoolkit:kineticstoolkit_extensions/kineticstoolkit_extensions"
+        export PYTHONPATH=":kineticstoolkit:kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
         pytest kineticstoolkit_extensions/tests -W error::RuntimeWarning
     - name: Test extensions with pytest and crash on warnings (linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        export PYTHONPATH=":kineticstoolkit:kineticstoolkit_extensions/kineticstoolkit_extensions"
+        export PYTHONPATH=":kineticstoolkit:kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
         pytest kineticstoolkit_extensions/tests -W error::RuntimeWarning
     - name: Test extensions with pytest and crash on warnings (windows)
       if: matrix.os == 'windows-latest'
       run: |
-        export PYTHONPATH=";kineticstoolkit;kineticstoolkit_extensions\kineticstoolkit_extensions"
+        export PYTHONPATH=";kineticstoolkit;kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
         pytest kineticstoolkit_extensions\tests -W error::RuntimeWarning
