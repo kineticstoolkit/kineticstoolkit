@@ -19,7 +19,7 @@ jobs:
 
       - name: Update VERSION file
         run: |
-          echo "${GITHUB_REF#refs/tags/}" > kineticstooltkit/VERSION
+          echo "${GITHUB_REF#refs/tags/}" > kineticstoolkit/VERSION
           
       - name: Install dependencies
         run: |
