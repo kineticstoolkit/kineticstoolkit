@@ -44,6 +44,7 @@ import matplotlib.pyplot as plt
 from matplotlib import animation, widgets
 from kineticstoolkit import TimeSeries
 from kineticstoolkit.exceptions import warn_once
+from kineticstoolkit.typing_ import check_param
 import time
 
 
@@ -52,6 +53,7 @@ WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
 def read_video(
     filename: str,
+    original_fps: float | None = None,
     width: int | None = None,
     height: int | None = None,
     downsample: int = 1,
@@ -73,6 +75,10 @@ def read_video(
     ----------
     filename
         The name of the video file
+    original_fps
+        Optional. Specifies the sampling rate of the video, in frames per
+        second. Useful in cases where a video reports the wrong sampling rate,
+        particularly in slow motion videos.
     width
         Optional. Scale down the video to a given width in pixels.
         Aspect ratio is maintained unless both width and height are set.
@@ -96,15 +102,29 @@ def read_video(
         "Function read_video is experimental and will probably change in the "
         "future."
     )
+
+    # Type check
+    check_param("filename", filename, str)
+    if original_fps is not None:
+        check_param("original_fps", original_fps, float)
+    check_param("width", width, int)
+    check_param("height", height, int)
+    check_param("downsample", downsample, int)
+    check_param("max_memory", max_memory, int)
+
     video = cv2.VideoCapture(filename)
 
     video_length = int(video.get(cv2.CAP_PROP_FRAME_COUNT))
     video_width = int(video.get(cv2.CAP_PROP_FRAME_WIDTH))
     video_height = int(video.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    video_fps = int(video.get(cv2.CAP_PROP_FPS))
+
+    if original_fps is None:
+        video_fps = video.get(cv2.CAP_PROP_FPS)
+    else:
+        video_fps = original_fps
 
     new_video_length = video_length // downsample
-    new_video_fps = video_fps // downsample
+    new_video_fps = video_fps / downsample
 
     if (width is not None) and (height is None) and (width < video_width):
         new_video_width = int(width)
