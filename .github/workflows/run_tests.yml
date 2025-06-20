@@ -53,7 +53,7 @@ jobs:
         pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
     - name: Install extensions (using pip for now because it's faster to update than conda)
       run: |
-        pip install kineticstoolkit_extensions
+        pip install --no-deps kineticstoolkit_extensions
     - name: Test with pytest and crash on warnings (macos, with extensions)
       if: matrix.os == 'macos-latest'
       run: |
