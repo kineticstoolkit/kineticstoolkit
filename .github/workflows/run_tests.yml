@@ -51,24 +51,24 @@ jobs:
         export PYTHONPATH=";kineticstoolkit"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
         pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
-    - name: Install extensions (using pip for now because it's faster to update than conda)
+    - name: Install extensions (using git so that we have all required files for the unit tests)
       run: |
-        pip install --no-deps kineticstoolkit_extensions
-    - name: Test with pytest and crash on warnings (macos, with extensions)
+        git clone https://github.com/kineticstoolkit/kineticstoolkit_extensions.git
+    - name: Test extensions with pytest and crash on warnings (macOS)
       if: matrix.os == 'macos-latest'
       run: |
-        export PYTHONPATH=":kineticstoolkit"
+        export PYTHONPATH=":kineticstoolkit:kineticstoolkit_extensions/kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
-        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
-    - name: Test with pytest and crash on warnings (linux, with extensions)
+        pytest kineticstoolkit_extensions/tests -W error::RuntimeWarning
+    - name: Test extensions with pytest and crash on warnings (linux)
       if: matrix.os == 'ubuntu-latest'
       run: |
-        export PYTHONPATH=":kineticstoolkit"
+        export PYTHONPATH=":kineticstoolkit:kineticstoolkit_extensions/kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
-        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
-    - name: Test with pytest and crash on warnings (windows, with extensions)
+        pytest kineticstoolkit_extensions/tests -W error::RuntimeWarning
+    - name: Test extensions with pytest and crash on warnings (windows)
       if: matrix.os == 'windows-latest'
       run: |
-        export PYTHONPATH=";kineticstoolkit"
+        export PYTHONPATH=";kineticstoolkit;kineticstoolkit_extensions\kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
-        pytest tests --ignore='tests/interactive' -W error::RuntimeWarning
+        pytest kineticstoolkit_extensions\tests -W error::RuntimeWarning
