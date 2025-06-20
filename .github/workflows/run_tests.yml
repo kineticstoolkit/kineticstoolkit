@@ -71,4 +71,4 @@ jobs:
       run: |
         export PYTHONPATH=";kineticstoolkit;kineticstoolkit_extensions"
         echo "Running tests with PYTHONPATH=$PYTHONPATH"
-        pytest kineticstoolkit_extensions\tests -W error::RuntimeWarning
+        pytest kineticstoolkit_extensions\\tests -W error::RuntimeWarning
