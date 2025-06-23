@@ -35,10 +35,6 @@ import kineticstoolkit.config
 # Module(s) in development
 import kineticstoolkit.dev.kinetics as kinetics
 
-try:
-    import kineticstoolkit.dev.video as video
-except ModuleNotFoundError:  # opencv is not a requirement yet.
-    pass
 
 import os
 import subprocess
@@ -77,10 +73,15 @@ def run_unit_tests() -> None:  # pragma: no cover
     )
     os.chdir(cwd)
 
+
+def run_extensions_tests() -> None:  # pragma: no cover
+    """Run all extension' unit tests."""
     print("Running kineticstoolkit_extensions unit tests...")
 
+    from kineticstoolkit_extensions import root_folder  # noqa
+
     cwd = os.getcwd()
-    os.chdir(kineticstoolkit.ext.root_folder + "/tests")
+    os.chdir(root_folder)
     subprocess.call(
         [
             "coverage",
@@ -93,11 +94,7 @@ def run_unit_tests() -> None:  # pragma: no cover
         env=kineticstoolkit.config.env,
     )
     subprocess.call(["coverage", "html"], env=kineticstoolkit.config.env)
-    webbrowser.open_new_tab(
-        "file://"
-        + kineticstoolkit.ext.root_folder
-        + "/tests/htmlcov/index.html"
-    )
+    webbrowser.open_new_tab("file://" + root_folder + "/htmlcov/index.html")
     os.chdir(cwd)
 
 
@@ -161,43 +158,10 @@ def run_doc_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
-def compile_for_pypi() -> None:  # pragma: no cover
-    """Compile for PyPi."""
-    shutil.rmtree(
-        kineticstoolkit.config.root_folder + "/dist", ignore_errors=True
-    )
-    shutil.rmtree(
-        kineticstoolkit.config.root_folder + "/build", ignore_errors=True
-    )
-    os.chdir(kineticstoolkit.config.root_folder)
-    subprocess.call(
-        ["python", "setup.py", "sdist", "bdist_wheel"],
-        env=kineticstoolkit.config.env,
-    )
-
-
-def upload_to_pypi() -> None:  # pragma: no cover
-    """
-    Upload to PyPi.
-
-    Only works on macOS for now.
-
-    """
-    root_folder = kineticstoolkit.config.root_folder
-    subprocess.call(
-        [
-            "osascript",
-            "-e",
-            'tell application "Terminal" to do script '
-            f'"conda activate mosa; cd {root_folder}; twine upload dist/*"',
-        ],
-        env=kineticstoolkit.config.env,
-    )
-
-
 def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     run_style_formatter()
     run_doc_tests()
     run_static_type_checker()
     run_unit_tests()
+    run_extensions_tests()

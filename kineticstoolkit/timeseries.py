@@ -1078,7 +1078,7 @@ class TimeSeries:
             if overwrite is False:
                 warnings.warn(
                     f"A data info with same data_key ({data_key}) and "
-                    f"info_key ({info_key}) already exists in ths TimeSeries. "
+                    f"info_key ({info_key}) already exists in the TimeSeries. "
                     "Please use overwrite=True to suppress this warning. "
                     "This warning will become an error in Kinetics Toolkit "
                     "1.0."
