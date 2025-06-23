@@ -380,6 +380,9 @@ def test_check_not_empty_data():
 
 def test_from_to_dataframe():
     # from_dataframe
+    # Use the old form (without column) and the new form (with column)
+
+    # old form
     df = pd.DataFrame(
         columns=[
             "Data0",
@@ -398,6 +401,25 @@ def test_from_to_dataframe():
     assert np.allclose(ts.data["Data0"], [0, 1])
     assert np.allclose(ts.data["Data1"], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
 
+    # new form (June 2025)
+    df = pd.DataFrame(
+        columns=[
+            "Data0",
+            "Data1[:,0,0]",
+            "Data1[:,0,1]",
+            "Data1[:,1,0]",
+            "Data1[:,1,1]",
+        ]
+    )
+    df["Data0"] = np.arange(2)
+    df["Data1[:,0,0]"] = np.arange(2) + 1
+    df["Data1[:,0,1]"] = np.arange(2) + 2
+    df["Data1[:,1,0]"] = np.arange(2) + 3
+    df["Data1[:,1,1]"] = np.arange(2) + 4
+    ts = ktk.TimeSeries.from_dataframe(df)
+    assert np.allclose(ts.data["Data0"], [0, 1])
+    assert np.allclose(ts.data["Data1"], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
+
     # to_dataframe
     df2 = ts.to_dataframe()
     assert np.all(df2 == df)
@@ -406,17 +428,17 @@ def test_from_to_dataframe():
     df = pd.DataFrame(
         columns=[
             "Data0",
-            "Data1[0,0]",
-            "Data1[0,1]",
-            "Data1[1,0]",
-            "Data1[1,1]",
+            "Data1[:,0,0]",
+            "Data1[:,0,1]",
+            "Data1[:,1,0]",
+            "Data1[:,1,1]",
         ]
     )
     df["Data0"] = np.array([])
-    df["Data1[0,0]"] = np.array([])
-    df["Data1[0,1]"] = np.array([])
-    df["Data1[1,0]"] = np.array([])
-    df["Data1[1,1]"] = np.array([])
+    df["Data1[:,0,0]"] = np.array([])
+    df["Data1[:,0,1]"] = np.array([])
+    df["Data1[:,1,0]"] = np.array([])
+    df["Data1[:,1,1]"] = np.array([])
 
     ts = ktk.TimeSeries.from_dataframe(df)
     assert ts.data["Data0"].shape == (0,)

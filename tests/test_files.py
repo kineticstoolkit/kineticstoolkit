@@ -553,13 +553,13 @@ def test_write_c3d_analogs():
     assert np.allclose(points.data["point2"], data["Points"].data["point2"])
     assert np.allclose(analogs.data["emg1"], data["Analogs"].data["emg1"])
     assert np.allclose(
-        analogs.data["forces"][:, 0], data["Analogs"].data["forces[0]"]
+        analogs.data["forces"][:, 0], data["Analogs"].data["forces[:,0]"]
     )
     assert np.allclose(
-        analogs.data["forces"][:, 1], data["Analogs"].data["forces[1]"]
+        analogs.data["forces"][:, 1], data["Analogs"].data["forces[:,1]"]
     )
     assert np.allclose(
-        analogs.data["forces"][:, 2], data["Analogs"].data["forces[2]"]
+        analogs.data["forces"][:, 2], data["Analogs"].data["forces[:,2]"]
     )
     os.remove("test.c3d")
 

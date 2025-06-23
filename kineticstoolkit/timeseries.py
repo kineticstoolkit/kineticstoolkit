@@ -4336,7 +4336,7 @@ class TimeSeries:
                         # This data is expressed in more than one dimension.
                         # We must add brackets to the column names to specify
                         # the indexes.
-                        this_column_name += "["
+                        this_column_name += "[:,"
 
                         for i_indice in range(0, n_indexes):
                             this_column_name += str(
@@ -4413,11 +4413,11 @@ class TimeSeries:
                [0., 2., 3.]])
 
         >>> ts.to_dataframe()
-              test[0]  test[1]  test[2]
-         0.0      0.0      2.0      3.0
-         0.1      0.0      2.0      3.0
-         0.2      0.0      2.0      3.0
-         0.3      0.0      2.0      3.0
+              test[:,0]  test[:,1]  test[:,2]
+         0.0        0.0        2.0        3.0
+         0.1        0.0        2.0        3.0
+         0.2        0.0        2.0        3.0
+         0.3        0.0        2.0        3.0
 
         """
         self._check_well_shaped()
@@ -4513,14 +4513,14 @@ class TimeSeries:
 
         >>> df = pd.DataFrame()
         >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-        >>> df["rot[0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["rot[0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["rot[1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["rot[1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["trans[0]"] = [0., 0.1, 0.2, 0.3, 0.4]
-        >>> df["trans[1]"] = [5., 6., 7., 8., 9.]
+        >>> df["R[:,0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["R[:,0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["R[:,1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["R[:,1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
+        >>> df["t[:,0]"] = [0., 0.1, 0.2, 0.3, 0.4]
+        >>> df["t[:,1]"] = [5., 6., 7., 8., 9.]
         >>> df
-             rot[0,0]  rot[0,1]  rot[1,0]  rot[1,1]  trans[0]  trans[1]
+             R[:,0,0]  R[:,0,1]  R[:,1,0]  R[:,1,1]       t[:,0]    t[:,1]
         0.0  1.000000 -0.000000  0.000000  1.000000       0.0       5.0
         0.1  0.995004 -0.099833  0.099833  0.995004       0.1       6.0
         0.2  0.980067 -0.198669  0.198669  0.980067       0.2       7.0
@@ -4531,7 +4531,7 @@ class TimeSeries:
 
         >>> ts = ktk.TimeSeries(df)
         >>> ts.data
-        {'rot': array([[[ 1.        , -0.        ],
+        {'R': array([[[ 1.        , -0.        ],
                 [ 0.        ,  1.        ]],
         <BLANKLINE>
                [[ 0.99500417, -0.09983342],
@@ -4544,7 +4544,7 @@ class TimeSeries:
                 [ 0.29552021,  0.95533649]],
         <BLANKLINE>
                [[ 0.92106099, -0.38941834],
-                [ 0.38941834,  0.92106099]]]), 'trans': array([[0. , 5. ],
+                [ 0.38941834,  0.92106099]]]), 't': array([[0. , 5. ],
                [0.1, 6. ],
                [0.2, 7. ],
                [0.3, 8. ],
@@ -4565,18 +4565,23 @@ class TimeSeries:
             events=events,
         )
 
-        # Remove spaces in indexes between brackets
+        # Protect the original dataframe
+        dataframe = dataframe.copy()
+
+        # Remove spaces and ":," in indexes between brackets
         columns = dataframe.columns
         new_columns = []
         for i_column, column in enumerate(columns):
             splitted = column.split("[")
             if len(splitted) > 1:  # There are brackets
                 new_columns.append(
-                    splitted[0] + "[" + splitted[1].replace(" ", "")
+                    splitted[0]
+                    + "["
+                    + splitted[1].replace(" ", "").replace(":,", "")
                 )
             else:
                 new_columns.append(column)
-        dataframe.columns = columns
+        dataframe.columns = new_columns
 
         # Search for the column names and their dimensions
         # At the end, we end with something like:
