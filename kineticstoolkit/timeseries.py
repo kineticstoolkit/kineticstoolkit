@@ -3701,6 +3701,8 @@ class TimeSeries:
         self,
         name: str | list[str] = [],
         data_keys: str | list[str] = [],
+        legend: bool = True,
+        max_lines: int = 40,
     ) -> TimeSeries:  # pragma: no cover
         """
         Edit events interactively.
@@ -3714,6 +3716,12 @@ class TimeSeries:
         data_keys
             Optional. A signal name of list of signal name to be plotted,
             similar to the data_keys argument of ktk.TimeSeries.plot.
+        legend
+            Optional. True to plot a legend, False otherwise. Default is True.
+        max_lines
+            Optional. The maximal number of lines to plot. Default is 40. A
+            warning is issued if plotting all the data would require more
+            lines.
 
         Returns
         -------
@@ -3756,6 +3764,8 @@ class TimeSeries:
                 raise TypeError(
                     "data_keys must be a string or a list of strings."
                 )
+        check_param("legend", legend, bool)
+        check_param("max_lines", max_lines, int)
         self._check_well_shaped()
         self._check_not_empty_time()
         self._check_not_empty_data()
@@ -3790,7 +3800,12 @@ class TimeSeries:
             event_names = deepcopy(name)
 
         fig = plt.figure()
-        ts.plot(data_keys, _raise_on_no_data=True)
+        ts.plot(
+            data_keys,
+            _raise_on_no_data=True,
+            legend=legend,
+            max_lines=max_lines,
+        )
 
         while True:
             # Populate the choices to the user
@@ -3909,7 +3924,12 @@ class TimeSeries:
             ts.remove_duplicate_events(in_place=True)
             axes = plt.axis()
             plt.cla()
-            ts.plot(data_keys, _raise_on_no_data=True)
+            ts.plot(
+                data_keys,
+                legend=legend,
+                max_lines=max_lines,
+                _raise_on_no_data=True,
+            )
             plt.axis(axes)
 
     def ui_sync(
@@ -3917,6 +3937,8 @@ class TimeSeries:
         data_keys: str | list[str] = [],
         ts2: TimeSeries | None = None,
         data_keys2: str | list[str] = [],
+        legend: bool = True,
+        max_lines: int = 40,
     ) -> TimeSeries:  # pragma: no cover
         """
         Synchronize one or two TimeSeries by shifting their time.
@@ -3937,6 +3959,12 @@ class TimeSeries:
         data_keys2
             Optional. The data keys from the second TimeSeries to plot. If
             empty, all data is plotted.
+        legend
+            Optional. True to plot a legend, False otherwise. Default is True.
+        max_lines
+            Optional. The maximal number of lines to plot. Default is 40.
+            A warning is issued if plotting all the data would require more
+            lines.
 
         Returns
         -------
@@ -3977,6 +4005,8 @@ class TimeSeries:
                 raise TypeError(
                     "data_keys2 must be a string or a list of strings."
                 )
+        check_param("legend", legend, bool)
+        check_param("max_lines", max_lines, int)
 
         self._check_well_shaped()
         self._check_not_empty_time()
@@ -3993,7 +4023,7 @@ class TimeSeries:
 
         if ts2 is None:
             # Synchronize ts1 only
-            ts1.plot(data_keys)
+            ts1.plot(data_keys, legend=legend, max_lines=max_lines)
             choice = kineticstoolkit.gui.button_dialog(
                 "Please zoom on the time zero and press Next.",
                 ["Cancel", "Next"],
@@ -4022,14 +4052,14 @@ class TimeSeries:
 
                 plt.sca(axes[0])
                 axes[0].cla()
-                ts1.plot(data_keys)
+                ts1.plot(data_keys, legend=legend, max_lines=max_lines)
                 plt.title("First TimeSeries (ts1)")
                 plt.grid(True)
                 plt.tight_layout()
 
                 plt.sca(axes[1])
                 axes[1].cla()
-                ts2.plot(data_keys2)
+                ts2.plot(data_keys2, legend=legend, max_lines=max_lines)
                 plt.title("Second TimeSeries (ts2)")
                 plt.grid(True)
                 plt.tight_layout()
@@ -4112,6 +4142,7 @@ class TimeSeries:
         *args,
         event_names: bool = True,
         legend: bool = True,
+        max_lines: int = 40,
         **kwargs,
     ) -> None:
         """
@@ -4124,7 +4155,11 @@ class TimeSeries:
         event_names
             Optional. True to plot the event names on top of the event lines.
         legend
-            Optional. True to plot a legend, False otherwise.
+            Optional. True to plot a legend, False otherwise. Default is True.
+        max_lines
+            Optional. The maximal number of lines to plot. Default is 40. A
+            warning is issued if plotting all the data would require more
+            lines.
 
         Note
         ----
@@ -4160,6 +4195,7 @@ class TimeSeries:
                 )
         check_param("event_names", event_names, bool)
         check_param("legend", legend, bool)
+        check_param("max_lines", max_lines, int)
         self._check_well_shaped()
 
         # Private argument _raise_on_no_data: Raise an EmptyDataSeriesError
@@ -4192,6 +4228,12 @@ class TimeSeries:
 
         # Plot the curves
         for i_label, label in enumerate(labels):
+            if i_label >= max_lines:
+                warnings.warn(
+                    f"Only {max_lines} of {len(labels)} lines have been "
+                    "plotted. Increase max_lines to plot more lines."
+                )
+                break
             axes.plot(
                 df.index.to_numpy(),
                 df[label].to_numpy(),
