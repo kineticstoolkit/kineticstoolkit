@@ -145,16 +145,52 @@ class TimeSeriesInfoDict(dict):
     def __setitem__(self, key, value):
         """Check the structure and assign."""
         check_param("key", key, str)
-        if key == "Time":
-            check_param("value", value, dict, key_type=str)
-        elif key == "Data":
-            check_param("value", value, dict, key_type=str)
-            for data_key in value:
-                check_param(
-                    f"value[{data_key}]", value[data_key], dict, key_type=str
-                )
 
-        super(TimeSeriesInfoDict, self).__setitem__(key, value.copy())
+        if key == "Time":
+            # Time must contain a dict[str, Any]
+            to_set = TimeSeriesStringDict(value)
+        elif key == "Data":
+            # Data must contain a dict[str, dict[str, Any]]
+            check_param("value", value, dict, key_type=str)
+            to_set = TimeSeriesDataInfoDict(value)
+        else:
+            to_set = value
+
+        super(TimeSeriesInfoDict, self).__setitem__(key, to_set)
+
+
+class TimeSeriesDataInfoDict(dict):
+    """DataInfo dictionary that ensures it is well formatted."""
+
+    def __init__(self, source: dict = {}):
+        """Initialize the class instance using a source dictionary."""
+        # Must be a dict[str, dict[str, Any]]
+        check_param("source", source, dict, key_type=str)
+        for data_key in source:
+            self[data_key] = source[data_key]
+
+    def __setitem__(self, data_key, value):
+        """Check the structure and assign."""
+        check_param("data_key", data_key, str)
+        to_set = TimeSeriesStringDict(value)
+
+        super(TimeSeriesDataInfoDict, self).__setitem__(data_key, to_set)
+
+
+class TimeSeriesStringDict(dict):
+    """Dictionary that ensures it only has string keys."""
+
+    def __init__(self, source: dict = {}):
+        """Initialize the class instance using a source dictionary."""
+        check_param("source", source, dict, key_type=str)
+        for key in source:
+            self[key] = source[key]
+
+    def __setitem__(self, key, value):
+        """Ensure the kay is a string."""
+        check_param("key", key, str)
+
+        super(TimeSeriesStringDict, self).__setitem__(key, value)
 
 
 @dataclass
@@ -537,20 +573,20 @@ class TimeSeries:
     @property
     def time_info(self):
         """Pre-0.17 time-info property."""
-        return self._info["Time"]
+        return self.info["Time"]
 
     @time_info.setter
     def time_info(self, value):
-        self._info["Time"] = value
+        self.info["Time"] = value
 
     @property
     def data_info(self):
         """Pre-0.17 data-info property."""
-        return self._info["Data"]
+        return self.info["Data"]
 
     @data_info.setter
     def data_info(self, value):
-        self._info["Data"] = value
+        self.info["Data"] = value
 
     # %% Dunders
 
@@ -4795,11 +4831,7 @@ class TimeSeries:
         check_param("data_key", data_key, str)
 
         time = np.array(time)
-        ts = TimeSeries(
-            data={data_key: array},
-            events=events,
-            info=info
-        )
+        ts = TimeSeries(data={data_key: array}, events=events, info=info)
 
         if time.shape[0] == 0:
             ts.time = np.arange(ts.data[data_key].shape[0]) * 1.0  # floats

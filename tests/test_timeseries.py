@@ -281,9 +281,8 @@ def test_check_well_typed():
     ts.add_data_info("test2", "Unit", "N", in_place=True)
     ts._check_well_typed()
 
-    ts.data_info["test2"] = "string"  # Should fail
     try:
-        ts._check_well_typed()
+        ts.data_info["test2"] = "string"  # Should fail
         raise Exception("This should fail.")
     except TypeError:
         pass
@@ -297,7 +296,6 @@ def test_check_well_typed():
     ts.data_info = {}
     try:
         ts.time_info = "string"  # Should fail
-        ts._check_well_typed()
         raise Exception("This should fail.")
     except TypeError:
         pass
