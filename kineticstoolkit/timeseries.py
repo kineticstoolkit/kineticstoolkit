@@ -120,6 +120,43 @@ class TimeSeriesDataDict(dict):
         super(TimeSeriesDataDict, self).__setitem__(key, to_set)
 
 
+class TimeSeriesInfoDict(dict):
+    """Info dictionary that ensures it is well formatted."""
+
+    def __init__(self, source: dict = {}):
+        """Initialize the class instance using a source dictionary."""
+        check_param("source", source, dict, key_type=str)
+        if "Time" not in source:
+            raise ValueError(
+                "The info attribute of a TimeSeries must have a 'Time' "
+                "dictionary."
+            )
+        if "Data" not in source:
+            raise ValueError(
+                "The info attribute of a TimeSeries must have a 'Data' "
+                "dictionary."
+            )
+        check_param("source['Time']", source["Time"], dict, key_type=str)
+        check_param("source['Data']", source["Data"], dict, key_type=str)
+
+        for key in source:
+            self[key] = source[key]
+
+    def __setitem__(self, key, value):
+        """Check the structure and assign."""
+        check_param("key", key, str)
+        if key == "Time":
+            check_param("value", value, dict, key_type=str)
+        elif key == "Data":
+            check_param("value", value, dict, key_type=str)
+            for data_key in value:
+                check_param(
+                    f"value[{data_key}]", value[data_key], dict, key_type=str
+                )
+
+        super(TimeSeriesInfoDict, self).__setitem__(key, value.copy())
+
+
 @dataclass
 class TimeSeriesEvent:
     """
@@ -216,20 +253,11 @@ class TimeSeries:
         Contains the data, where each element contains a np.array
         which first dimension corresponds to time.
 
-    time_info : dict[str, Any]
-        Contains metadata relative to time. The default is {"Unit": "s"}
-
-    data_info : dict[str, dict[str, Any]]
-        Contains optional metadata relative to data. For example, the
-        data_info attribute could indicate the unit of data["Forces"]::
-
-            data["Forces"] = {"Unit": "N"}
-
-        To facilitate the management of data_info, please use
-        `ktk.TimeSeries.add_data_info` and `ktk.TimeSeries.remove_data_info`.
-
     events : list[TimeSeriesEvent]
         List of events.
+
+    info : dict[str, Any]
+        Contains metadata such as units or other information.
 
     Examples
     --------
@@ -240,21 +268,19 @@ class TimeSeries:
 
     >>> ktk.TimeSeries()
     TimeSeries with attributes:
-             time: array([], dtype=float64)
-             data: {}
-        time_info: {'Unit': 's'}
-        data_info: {}
-           events: []
+          time: array([], dtype=float64)
+          data: {}
+        events: []
+          info: {'Time': {'Unit': 's'}, 'Data': {}}
 
     2. Creating a TimeSeries and setting time and data:
 
     >>> ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
     TimeSeries with attributes:
-             time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-             data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
-        time_info: {'Unit': 's'}
-        data_info: {}
-           events: []
+          time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+          data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+        events: []
+          info: {'Time': {'Unit': 's'}, 'Data': {}}
 
     3. Creating a TimeSeries as a copy of another TimeSeries:
 
@@ -262,11 +288,10 @@ class TimeSeries:
     >>> ts2 = ktk.TimeSeries(ts1)
     >>> ts2
     TimeSeries with attributes:
-             time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-             data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
-        time_info: {'Unit': 's'}
-        data_info: {}
-           events: []
+          time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+          data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+        events: []
+          info: {'Time': {'Unit': 's'}, 'Data': {}}
 
     See Also: TimeSeries.copy
 
@@ -288,11 +313,10 @@ class TimeSeries:
     >>> ts = ktk.TimeSeries(df)
     >>> ts
     TimeSeries with attributes:
-             time: array([0. , 0.1, 0.2, 0.3, 0.4])
-             data: <dict with 3 entries>
-        time_info: {'Unit': 's'}
-        data_info: {}
-           events: []
+          time: array([0. , 0.1, 0.2, 0.3, 0.4])
+          data: <dict with 3 entries>
+        events: []
+          info: {'Time': {'Unit': 's'}, 'Data': {}}
 
     >>> ts.data
     {'x': array([0., 1., 2., 3., 4.]), 'y': array([5., 6., 7., 8., 9.]), 'z': array([0., 0., 0., 0., 0.])}
@@ -304,16 +328,16 @@ class TimeSeries:
 
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-    >>> df["point[0]"] = [0., 1., 2., 3., 4.]
-    >>> df["point[1]"] = [5., 6., 7., 8., 9.]
-    >>> df["point[2]"] = [0., 0., 0., 0., 0.]
+    >>> df["point[:,0]"] = [0., 1., 2., 3., 4.]
+    >>> df["point[:,1]"] = [5., 6., 7., 8., 9.]
+    >>> df["point[:,2]"] = [0., 0., 0., 0., 0.]
     >>> df
-         point[0]  point[1]  point[2]
-    0.0       0.0       5.0       0.0
-    0.1       1.0       6.0       0.0
-    0.2       2.0       7.0       0.0
-    0.3       3.0       8.0       0.0
-    0.4       4.0       9.0       0.0
+         point[:,0]  point[:,1]  point[:,2]
+    0.0         0.0         5.0         0.0
+    0.1         1.0         6.0         0.0
+    0.2         2.0         7.0         0.0
+    0.3         3.0         8.0         0.0
+    0.4         4.0         9.0         0.0
 
     >>> ts = ktk.TimeSeries(df)
     >>> ts.data
@@ -330,14 +354,14 @@ class TimeSeries:
 
     >>> df = pd.DataFrame()
     >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-    >>> df["rot[0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["rot[0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["rot[1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["rot[1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["trans[0]"] = [0., 0.1, 0.2, 0.3, 0.4]
-    >>> df["trans[1]"] = [5., 6., 7., 8., 9.]
+    >>> df["R[:,0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
+    >>> df["R[:,0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
+    >>> df["R[:,1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
+    >>> df["R[:,1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
+    >>> df["t[:,0]"] = [0., 0.1, 0.2, 0.3, 0.4]
+    >>> df["t[:,1]"] = [5., 6., 7., 8., 9.]
     >>> df
-         rot[0,0]  rot[0,1]  rot[1,0]  rot[1,1]  trans[0]  trans[1]
+         R[:,0,0]  R[:,0,1]  R[:,1,0]  R[:,1,1]    t[:,0]    t[:,1]
     0.0  1.000000 -0.000000  0.000000  1.000000       0.0       5.0
     0.1  0.995004 -0.099833  0.099833  0.995004       0.1       6.0
     0.2  0.980067 -0.198669  0.198669  0.980067       0.2       7.0
@@ -346,7 +370,7 @@ class TimeSeries:
 
     >>> ts = ktk.TimeSeries(df)
     >>> ts.data
-    {'rot': array([[[ 1.        , -0.        ],
+    {'R': array([[[ 1.        , -0.        ],
             [ 0.        ,  1.        ]],
     <BLANKLINE>
            [[ 0.99500417, -0.09983342],
@@ -359,7 +383,7 @@ class TimeSeries:
             [ 0.29552021,  0.95533649]],
     <BLANKLINE>
            [[ 0.92106099, -0.38941834],
-            [ 0.38941834,  0.92106099]]]), 'trans': array([[0. , 5. ],
+            [ 0.38941834,  0.92106099]]]), 't': array([[0. , 5. ],
            [0.1, 6. ],
            [0.2, 7. ],
            [0.3, 8. ],
@@ -373,19 +397,17 @@ class TimeSeries:
 
     >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
     TimeSeries with attributes:
-             time: array([0., 1., 2., 3., 4.])
-             data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
-        time_info: {'Unit': 's'}
-        data_info: {}
-           events: []
+          time: array([0., 1., 2., 3., 4.])
+          data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+        events: []
+          info: {'Time': {'Unit': 's'}, 'Data': {}}
 
     >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5])
     TimeSeries with attributes:
-             time: array([0.1, 0.2, 0.3, 0.4, 0.5])
-             data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
-        time_info: {'Unit': 's'}
-        data_info: {}
-           events: []
+          time: array([0.1, 0.2, 0.3, 0.4, 0.5])
+          data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+        events: []
+          info: {'Time': {'Unit': 's'}, 'Data': {}}
 
     See Also: TimeSeries.from_array
 
@@ -398,27 +420,31 @@ class TimeSeries:
         src: None | TimeSeries | pd.DataFrame | ArrayLike = None,
         *,
         time: ArrayLike = [],
-        time_info: dict[str, Any] = {"Unit": "s"},
         data: dict[str, ArrayLike] = {},
-        data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
+        info: dict[str, Any] = {"Time": {"Unit": "s"}, "Data": {}},
+        **kwargs,
     ):
+        # Pre-0.17: time_info and data_info attributes
+        if "time_info" in kwargs:
+            info["Time"] = kwargs["time_info"].copy()
+        if "data_info" in kwargs:
+            info["Data"] = kwargs["data_info"].copy()
+
         # Default constructor
         if src is None:
             self.time = time
             self.data = data
-            self.time_info = time_info.copy()
-            self.data_info = data_info.copy()
             self.events = events.copy()
+            self.info = info.copy()
             return
 
         # Else, construct based on a source:
         def _assign_self(src):
             self.time = src.time
             self.data = src.data
-            self.time_info = src.time_info.copy()
-            self.data_info = src.data_info.copy()
             self.events = src.events.copy()
+            self.info = src.info.copy()
 
         # If src is compatible with a TimeSeries, then assign it.
         try:
@@ -432,9 +458,8 @@ class TimeSeries:
             _assign_self(
                 TimeSeries.from_dataframe(
                     src,
-                    time_info=time_info,
-                    data_info=data_info,
                     events=events,
+                    info=info,
                 )
             )
             return
@@ -444,9 +469,8 @@ class TimeSeries:
             TimeSeries.from_array(
                 np.array(src),
                 time=time,
-                time_info=time_info,
-                data_info=data_info,
                 events=events,
+                info=info,
             )
         )
 
@@ -495,6 +519,38 @@ class TimeSeries:
     @events.deleter
     def events(self):
         raise AttributeError("events property cannot be deleted.")
+
+    @property
+    def info(self):
+        """Info Property."""
+        return self._info
+
+    @info.setter
+    def info(self, value):
+        self._info = TimeSeriesInfoDict(value)
+
+    @info.deleter
+    def info(self):
+        raise AttributeError("info property cannot be deleted.")
+
+    # pre-0.17 compatibility
+    @property
+    def time_info(self):
+        """Pre-0.17 time-info property."""
+        return self._info["Time"]
+
+    @time_info.setter
+    def time_info(self, value):
+        self._info["Time"] = value
+
+    @property
+    def data_info(self):
+        """Pre-0.17 data-info property."""
+        return self._info["Data"]
+
+    @data_info.setter
+    def data_info(self, value):
+        self._info["Data"] = value
 
     # %% Dunders
 
@@ -569,7 +625,12 @@ class TimeSeries:
         """
         return kineticstoolkit._repr._format_class_attributes(
             self,
-            overrides={"_time": "time", "_data": "data", "_events": "events"},
+            overrides={
+                "_time": "time",
+                "_data": "data",
+                "_events": "events",
+                "_info": "info",
+            },
         )
 
     def __repr__(self):
@@ -1228,22 +1289,20 @@ class TimeSeries:
         >>> ts = ts.add_data("data2", [4.0, 5.0, 6.0])
         >>> ts
         TimeSeries with attributes:
-                 time: array([], dtype=float64)
-                 data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
-            time_info: {'Unit': 's'}
-            data_info: {}
-               events: []
+              time: array([], dtype=float64)
+              data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Data': {}}
 
         # Size matching example
         >>> ts = ktk.TimeSeries(time = [0.0, 0.1, 0.2, 0.3])
         >>> ts = ts.add_data("data1", [9.9])
         >>> ts
         TimeSeries with attributes:
-                 time: array([0. , 0.1, 0.2, 0.3])
-                 data: {'data1': array([9.9, 9.9, 9.9, 9.9])}
-            time_info: {'Unit': 's'}
-            data_info: {}
-               events: []
+              time: array([0. , 0.1, 0.2, 0.3])
+              data: {'data1': array([9.9, 9.9, 9.9, 9.9])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Data': {}}
 
         """
         check_param("data_key", data_key, str)
@@ -4473,6 +4532,8 @@ class TimeSeries:
         time_info: dict[str, Any] = {"Unit": "s"},
         data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
+        info: dict[str, Any] = {"Time": {"Unit": "s"}, "Data": {}},
+        **kwargs,
     ) -> TimeSeries:
         """
         Create a new TimeSeries from a Pandas Dataframe.
@@ -4491,12 +4552,10 @@ class TimeSeries:
         dataframe
             A Pandas DataFrame where the index corresponds to time, and
             where each column corresponds to a data key.
-        time_info
-            Optional. Will be copied to the TimeSeries' time_info attribute.
-        data_info
-            Optional. Will be copied to the TimeSeries' data_info attribute.
         events
             Optional. Will be copied to the TimeSeries' events attribute.
+        info
+            Optional. Will be copied to the TimeSeries' info attribute.
 
         Returns
         -------
@@ -4593,18 +4652,18 @@ class TimeSeries:
                [0.4, 9. ]])}
 
         """
+        # Pre-0.17: time_info and data_info attributes
+        if "time_info" in kwargs:
+            info["Time"] = kwargs["time_info"].copy()
+        if "data_info" in kwargs:
+            info["Data"] = kwargs["data_info"].copy()
+
         check_param("dataframe", dataframe, pd.DataFrame)
-        check_param("time_info", time_info, dict, key_type=str)
-        check_param(
-            "data_info", data_info, dict, key_type=str, contents_type=dict
-        )
-        check_param("events", events, list)
 
         ts = TimeSeries(
             time=dataframe.index.to_numpy(),
-            time_info=time_info,
-            data_info=data_info,
             events=events,
+            info=info,
         )
 
         # Protect the original dataframe
@@ -4671,9 +4730,9 @@ class TimeSeries:
         *,
         data_key: str = "data",
         time: ArrayLike = [],
-        time_info: dict[str, Any] = {"Unit": "s"},
-        data_info: dict[str, dict[str, Any]] = {},
         events: list[TimeSeriesEvent] = [],
+        info: dict[str, Any] = {"Time": {"Unit": "s"}, "Data": {}},
+        **kwargs,
     ) -> TimeSeries:
         """
         Create a new TimeSeries from an array.
@@ -4690,12 +4749,10 @@ class TimeSeries:
             length must match the first dimension of the data array. If None
             (default), a matching time attribute of with a period of one second
             is created.
-        time_info
-            Optional. Will be copied to the TimeSeries' time_info attribute.
-        data_info
-            Optional. Will be copied to the TimeSeries' data_info attribute.
         events
             Optional. Will be copied to the TimeSeries' events attribute.
+        info
+            Optional. Will be copied to the TimeSeries' info attribute.
 
         Returns
         -------
@@ -4714,36 +4771,34 @@ class TimeSeries:
 
         >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5])
         TimeSeries with attributes:
-                 time: array([0., 1., 2., 3., 4.])
-                 data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
-            time_info: {'Unit': 's'}
-            data_info: {}
-               events: []
+              time: array([0., 1., 2., 3., 4.])
+              data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Data': {}}
 
         **Specifiying time**
 
         >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5])
         TimeSeries with attributes:
-                 time: array([0.1, 0.2, 0.3, 0.4, 0.5])
-                 data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
-            time_info: {'Unit': 's'}
-            data_info: {}
-               events: []
+              time: array([0.1, 0.2, 0.3, 0.4, 0.5])
+              data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Data': {}}
 
         """
+        # Pre-0.17: time_info and data_info attributes
+        if "time_info" in kwargs:
+            info["Time"] = kwargs["time_info"].copy()
+        if "data_info" in kwargs:
+            info["Data"] = kwargs["data_info"].copy()
+
         check_param("data_key", data_key, str)
-        check_param("time_info", time_info, dict, key_type=str)
-        check_param(
-            "data_info", data_info, dict, key_type=str, contents_type=dict
-        )
-        check_param("events", events, list)
 
         time = np.array(time)
         ts = TimeSeries(
             data={data_key: array},
-            time_info=time_info,
-            data_info=data_info,
             events=events,
+            info=info
         )
 
         if time.shape[0] == 0:
@@ -4753,7 +4808,7 @@ class TimeSeries:
 
         return ts
 
-    # %% Deprecrated methods
+    # %% Deprecated methods
     @deprecated(
         since="0.15",
         until="2027",

@@ -288,16 +288,15 @@ def test_check_well_typed():
     except TypeError:
         pass
 
-    ts.data_info = "string"  # Should fail
     try:
-        ts._check_well_typed()
+        ts.data_info = "string"  # Should fail
         raise Exception("This should fail.")
     except TypeError:
         pass
 
     ts.data_info = {}
-    ts.time_info = "string"  # Should fail
     try:
+        ts.time_info = "string"  # Should fail
         ts._check_well_typed()
         raise Exception("This should fail.")
     except TypeError:
