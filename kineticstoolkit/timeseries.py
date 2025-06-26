@@ -1005,11 +1005,11 @@ class TimeSeries:
 
         with the following advantages:
 
-        - **Overwrite prevention**: Setting the overwrite argument determines
+        **Overwrite prevention**: Setting the overwrite argument determines
         explicitly if you want existing info with the same name to be
         overwritten or not.
 
-        - **Parent creation**: The function creates the required hierarchy of
+        **Parent creation**: The function creates the required hierarchy of
         nested dictionaries.
 
         Parameters
@@ -1263,15 +1263,15 @@ class TimeSeries:
 
         with the following advantages:
 
-        - **Overwrite prevention**: Setting the overwrite argument determines
+        **Overwrite prevention**: Setting the overwrite argument determines
         explicitly if you want existing data with the same name to be
         overwritten or not.
 
-        - **Size check**: Additional data is compared to the contents of the
+        **Size check**: Additional data is compared to the contents of the
         TimeSeries to ensure that it has the correct dimensions. See Raises
         section for more information.
 
-        - **Size matching**: Constant "series" such as [3.0], which is a
+        **Size matching**: Constant "series" such as [3.0], which is a
         one-sample series of 3.0, are automatically expanded to match the size
         of the TimeSeries. For example, if the TimeSeries has 4 samples, then
         the input data is expanded to [3.0, 3.0, 3.0, 3.0].
@@ -1298,11 +1298,10 @@ class TimeSeries:
         Raises
         ------
         ValueError
-            In any of these conditions:
-            If data with this key already exists and overwrite is False.
-            If the size of the data (first dimension) does not match the size
-            of existing data or the existing time.
-            If data is a pandas DataFrame and its index does not match the
+            If data with this key already exists and overwrite is False,
+            if the size of the data (first dimension) does not match the size
+            of existing data or the existing time, or
+            if data is a pandas DataFrame and its index does not match the
             existing time.
 
         See Also
