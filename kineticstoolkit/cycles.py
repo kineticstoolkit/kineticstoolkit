@@ -322,9 +322,11 @@ def time_normalize(
     dest_ts = ts.copy()
     dest_ts.events = []
     if n_points == 100:
-        dest_ts.time_info["Unit"] = "%"
+        dest_ts.add_info("Time", "Unit", "%", overwrite=True, in_place=True)
     else:
-        dest_ts.time_info["Unit"] = f"1/{n_points}"
+        dest_ts.add_info(
+            "Time", "Unit", f"1/{n_points}", overwrite=True, in_place=True
+        )
 
     dest_data = {}  # type: dict[str, list[np.ndarray]]
     dest_data_shape = {}  # type: dict[str, tuple[int, ...]]
@@ -529,7 +531,12 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
         n_points = current_shape[1]
         ts.data[key] = current_data.reshape([n_cycles * n_points], order="C")
     ts.time = np.arange(n_cycles * n_points)
-    ts.time_info["Unit"] = ""
+    if n_points == 100:
+        ts.add_info("Time", "Unit", "%", overwrite=True, in_place=True)
+    else:
+        ts.add_info(
+            "Time", "Unit", f"1/{n_points}", overwrite=True, in_place=True
+        )
     return ts
 
 

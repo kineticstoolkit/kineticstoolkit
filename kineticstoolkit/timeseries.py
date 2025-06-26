@@ -917,15 +917,12 @@ class TimeSeries:
         copy_data
             Optional. True to copy data to the new TimeSeries,
             False to keep the data attribute empty. Default is True.
-        copy_time_info
-            Optional. True to copy time_info to the new TimeSeries,
-            False to keep the time_info attribute empty. Default is True.
-        copy_data_info
-            Optional. True to copy data_info to the new TimeSeries,
-            False to keep the data_info attribute empty. Default is True.
         copy_events
             Optional. True to copy events to the new TimeSeries,
             False to keep the events attribute empty. Default is True.
+        copy_info
+            Optional. True to copy info to the new TimeSeries,
+            False to keep the info attribute empty. Default is True.
 
         Returns
         -------
@@ -934,15 +931,15 @@ class TimeSeries:
 
         """
         # Pre-0.17 compatibility
-        if ("copy_time_info" in kwargs or "copy_data_info" in kwargs):
-            if ("copy_time_info" in kwargs):
+        if "copy_time_info" in kwargs or "copy_data_info" in kwargs:
+            if "copy_time_info" in kwargs:
                 copy_time_info = kwargs["copy_time_info"]
             else:
-                copy_time_info = True # Original default value
-            if ("copy_data_info" in kwargs):
+                copy_time_info = True  # Original default value
+            if "copy_data_info" in kwargs:
                 copy_data_info = kwargs["copy_data_info"]
             else:
-                copy_data_info = True # Original default value
+                copy_data_info = True  # Original default value
 
         if (
             "copy_time_info" in kwargs and kwargs["copy_time_info"] is False
@@ -974,7 +971,7 @@ class TimeSeries:
                 ts.info = deepcopy(self.info)
 
             # Pre-0.17 compatibility
-            if ("copy_time_info" in kwargs or "copy_data_info" in kwargs):
+            if "copy_time_info" in kwargs or "copy_data_info" in kwargs:
                 if copy_time_info:
                     ts.time_info = deepcopy(self.time_info)
                 if copy_data_info:
@@ -2159,7 +2156,7 @@ class TimeSeries:
         def _raise():
             raise TimeSeriesRangeError(
                 f"There is no data before the requested time of {time} "
-                f"{self.time_info['Unit']}."
+                f"{self._get_time_unit()}."
             )
 
         self._check_increasing_time()
@@ -2229,7 +2226,7 @@ class TimeSeries:
         def _raise():
             raise TimeSeriesRangeError(
                 f"There is no data before the requested time of {time} "
-                f"{self.time_info['Unit']}."
+                f"{self._get_time_unit()}."
             )
 
         self._check_increasing_time()
@@ -2934,7 +2931,7 @@ class TimeSeries:
             raise TimeSeriesRangeError(
                 f"There is no data before the occurrence {occurrence} of "
                 f"event '{name}', which happens at {time} "
-                f"{self.time_info['Unit']}."
+                f"{self._get_time_unit()}."
             )
         else:
             return retval
@@ -3010,7 +3007,7 @@ class TimeSeries:
             raise TimeSeriesRangeError(
                 f"There is no data after the occurrence {occurrence} of "
                 f"event '{name}', which happens at {time} "
-                f"{self.time_info['Unit']}."
+                f"{self._get_time_unit()}."
             )
         else:
             return retval
@@ -3104,10 +3101,10 @@ class TimeSeries:
         if time2 < time1:
             raise ValueError(
                 f"The end event (occurrence {occurrence2} of "
-                f"'{name2}') happens at {time2} {self.time_info['Unit']}, "
+                f"'{name2}') happens at {time2} {self._get_time_unit()}, "
                 f"which is before the begin event (occurrence {occurrence1} "
                 f"of '{name1}') that happens at {time1} "
-                f"{self.time_info['Unit']}."
+                f"{self._get_time_unit()}."
             )
 
         index1 = self.get_index_after_event(
@@ -4932,6 +4929,11 @@ class TimeSeries:
         """
         Add metadata to TimeSeries' data.
 
+        Warning
+        -------
+        This function will be deprecated when Kinetics Toolkit will reach version 1.0.
+        Please use add_info instead.
+
         Parameters
         ----------
         data_key
@@ -4978,6 +4980,11 @@ class TimeSeries:
     ) -> TimeSeries:
         """
         Remove metadata from a TimeSeries' data.
+
+        Warning
+        -------
+        This function will be deprecated when Kinetics Toolkit will reach version 1.0.
+        Please use add_info instead.
 
         Parameters
         ----------
