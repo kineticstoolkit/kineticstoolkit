@@ -539,16 +539,19 @@ class TimeSeries:
 
     @time_info.setter
     def time_info(self, value):
+        check_param("time_info", value, dict, key_type=str)
         self.info["Time"] = value
 
     @property
     def data_info(self):
         """Pre-0.17 data-info property."""
-        return self.info
+        return {key: self.info[key] for key in self.info if key != "Time"}
 
     @data_info.setter
     def data_info(self, value):
+        check_param("value", value, dict, key_type=str)
         for key in value:
+            check_param(f"data_info[{key}]", value, dict, key_type=str)
             self.info[key] = value[key]
 
     # %% Dunders
@@ -933,10 +936,11 @@ class TimeSeries:
         # Pre-0.17 compatibility
         if (
             "copy_time_info" in kwargs and kwargs["copy_time_info"] is False
-        ) and (
+        ) or (
             "copy_data_info" in kwargs and kwargs["copy_data_info"] is False
         ):
             copy_info = False
+
         check_param("copy_time", copy_time, bool)
         check_param("copy_data", copy_data, bool)
         check_param("copy_events", copy_events, bool)
@@ -958,6 +962,13 @@ class TimeSeries:
                 ts.events = deepcopy(self.events)
             if copy_info:
                 ts.info = deepcopy(self.info)
+
+            # Pre-0.17 compatibility
+            if "copy_time_info" in kwargs and kwargs["copy_time_info"] is True:
+                ts.time_info = deepcopy(self.time_info)
+            if "copy_data_info" in kwargs and kwargs["copy_data_info"] is True:
+                ts.data_info = deepcopy(self.data_info)
+
             return ts
 
     # %% Info management
@@ -966,6 +977,7 @@ class TimeSeries:
         outer_key: str,
         inner_key: str,
         value: Any,
+        *,
         overwrite: bool = False,
         in_place: bool = False,
     ) -> TimeSeries:
@@ -993,11 +1005,11 @@ class TimeSeries:
         ----------
         outer_key
             The key for the first level of nested dictionaries of ts.info.
-            For information that is specific to a data series, this is
-            generally the same as the data key (e.g., "Forces").
+            This is the generally what the information refers to (e.g.,
+            "Time", or the related data key such as "Forces".
         inner_key
             The key for the second level of nested dictionaries of ts.info.
-            This is normally the nature of the information (e.g., "Unit").
+            This is generally the nature of the information (e.g., "Unit").
         value
             The information.
         overwrite
@@ -1007,6 +1019,32 @@ class TimeSeries:
             Optional. True to modify and return the original TimeSeries. False
             to return a modified copy of the TimeSeries while leaving the
             original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the added info.
+
+        Raises
+        ------
+        ValueError
+            If an info with these keys already exists and overwrite is False.
+
+        See Also
+        --------
+        ktk.TimeSeries.rename_info
+        ktk.TimeSeries.remove_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_info("Forces", "Unit", "N")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Forces': {'Unit': 'N'}}
 
         """
         check_param("outer_key", outer_key, str)
@@ -1027,6 +1065,172 @@ class TimeSeries:
 
         ts.info[outer_key][inner_key] = value
 
+        return ts
+
+    def rename_info(
+        self,
+        outer_key: str,
+        inner_key: str,
+        new_outer_key: str,
+        new_inner_key: str,
+        *,
+        in_place: bool = False,
+    ) -> TimeSeries:
+        """
+        Rename info keys.
+
+        Parameters
+        ----------
+        outer_key
+            The key for the first level of nested dictionaries of ts.info.
+            This is the generally what the information refers to (e.g.,
+            "Time", or the related data key such as "Forces".
+        inner_key
+            The key for the second level of nested dictionaries of ts.info.
+            This is generally the nature of the information (e.g., "Unit").
+        new_outer_key
+            The new key for the first level of nested dictionaries of ts.info.
+        new_inner_key
+            The new key for the second level of nested dictionaries of ts.info.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the renamed info keys.
+
+        Raises
+        ------
+        KeyError
+            If there is no in ts.info[outer_key][inner_key].
+
+        See Also
+        --------
+        ktk.TimeSeries.add_info
+        ktk.TimeSeries.remove_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_info("Forces", "Unit", "N")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Forces': {'Unit': 'N'}}
+
+        >>> ts = ts.rename_info("Forces", "Unit", "Power", "ForceUnit")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Power': {'ForceUnit': 'N'}}
+
+        """
+        check_param("outer_key", outer_key, str)
+        check_param("inner_key", inner_key, str)
+        check_param("new_outer_key", outer_key, str)
+        check_param("new_inner_key", inner_key, str)
+        check_param("in_place", in_place, bool)
+        ts = self if in_place else self.copy()
+
+        if outer_key not in ts.info:
+            raise KeyError(f"Attribute info['{outer_key}'] does not exist.")
+        if inner_key not in ts.info[outer_key]:
+            raise KeyError(
+                f"Attribute info['{outer_key}']['{inner_key}'] does not exist."
+            )
+
+        # Get the value
+        value = ts.info[outer_key][inner_key]
+
+        # Add the value with its new name
+        ts.add_info(new_outer_key, new_inner_key, value, in_place=True)
+
+        # Remove the old value
+        ts.remove_info(outer_key, inner_key, in_place=True)
+
+        return ts
+
+    def remove_info(
+        self,
+        outer_key: str,
+        inner_key: str,
+        *,
+        in_place: bool = False,
+    ) -> TimeSeries:
+        """
+        Remove info from a TimeSeries.
+
+        Parameters
+        ----------
+        outer_key
+            The key for the first level of nested dictionaries of ts.info.
+            This is the generally what the information refers to (e.g.,
+            "Time", or the related data key such as "Forces".
+        inner_key
+            The key for the second level of nested dictionaries of ts.info.
+            This is generally the nature of the information (e.g., "Unit").
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the removed info.
+
+        Raises
+        ------
+        KeyError
+            If there is no in ts.info[outer_key][inner_key].
+
+        See Also
+        --------
+        ktk.TimeSeries.add_info
+        ktk.TimeSeries.rename_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_info("Forces", "Unit", "N")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Forces': {'Unit': 'N'}}
+
+        >>> ts = ts.remove_info("Forces", "Unit")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}}
+
+        """
+        check_param("outer_key", outer_key, str)
+        check_param("inner_key", inner_key, str)
+        check_param("in_place", in_place, bool)
+        ts = self if in_place else self.copy()
+
+        if outer_key not in ts.info:
+            raise KeyError(f"Attribute info['{outer_key}'] does not exist.")
+        if inner_key not in ts.info[outer_key]:
+            raise KeyError(
+                f"Attribute info['{outer_key}']['{inner_key}'] does not exist."
+            )
+
+        ts.info[outer_key].pop(inner_key)
+        if len(ts.info[outer_key]) == 0:
+            ts.info.pop(outer_key)
         return ts
 
     # %% Data management
@@ -4389,7 +4593,7 @@ class TimeSeries:
         /,
         *,
         events: list[TimeSeriesEvent] = [],
-        info: dict[str, Any] = {"Time": {"Unit": "s"}, "Data": {}},
+        info: dict[str, Any] = {"Time": {"Unit": "s"}},
         **kwargs,
     ) -> TimeSeries:
         """
@@ -4509,12 +4713,6 @@ class TimeSeries:
                [0.4, 9. ]])}
 
         """
-        # Pre-0.17: time_info and data_info attributes
-        if "time_info" in kwargs:
-            info["Time"] = kwargs["time_info"].copy()
-        if "data_info" in kwargs:
-            info["Data"] = kwargs["data_info"].copy()
-
         check_param("dataframe", dataframe, pd.DataFrame)
 
         ts = TimeSeries(
@@ -4522,6 +4720,12 @@ class TimeSeries:
             events=events,
             info=info,
         )
+
+        # Pre-0.17: time_info and data_info attributes
+        if "time_info" in kwargs:
+            ts.time_info = kwargs["time_info"].copy()
+        if "data_info" in kwargs:
+            ts.data_info = kwargs["data_info"].copy()
 
         # Protect the original dataframe
         dataframe = dataframe.copy()
@@ -4588,7 +4792,7 @@ class TimeSeries:
         data_key: str = "data",
         time: ArrayLike = [],
         events: list[TimeSeriesEvent] = [],
-        info: dict[str, Any] = {"Time": {"Unit": "s"}, "Data": {}},
+        info: dict[str, Any] = {"Time": {"Unit": "s"}},
         **kwargs,
     ) -> TimeSeries:
         """
@@ -4643,16 +4847,16 @@ class TimeSeries:
               info: {'Time': {'Unit': 's'}}
 
         """
-        # Pre-0.17: time_info and data_info attributes
-        if "time_info" in kwargs:
-            info["Time"] = kwargs["time_info"].copy()
-        if "data_info" in kwargs:
-            info["Data"] = kwargs["data_info"].copy()
-
         check_param("data_key", data_key, str)
 
         time = np.array(time)
         ts = TimeSeries(data={data_key: array}, events=events, info=info)
+
+        # Pre-0.17: time_info and data_info attributes
+        if "time_info" in kwargs:
+            ts.time_info = kwargs["time_info"].copy()
+        if "data_info" in kwargs:
+            ts.data_info = kwargs["data_info"].copy()
 
         if time.shape[0] == 0:
             ts.time = np.arange(ts.data[data_key].shape[0]) * 1.0  # floats
@@ -4744,27 +4948,18 @@ class TimeSeries:
         check_param("in_place", in_place, bool)
         self._check_valid_time()
 
-        ts = self if in_place else self.copy()
-
         try:
-            self.data_info[data_key][info_key]
-            # It worked, therefore this data already exists.
-            if overwrite is False:
-                warnings.warn(
-                    f"A data info with same data_key ({data_key}) and "
-                    f"info_key ({info_key}) already exists in the TimeSeries. "
-                    "Please use overwrite=True to suppress this warning. "
-                    "This warning will become an error in Kinetics Toolkit "
-                    "1.0."
-                )
-        except KeyError:
-            pass  # This data does not exist yet.
-
-        try:
-            ts.data_info[data_key][info_key] = value
-        except KeyError:
-            ts.data_info[data_key] = {info_key: value}
-        return ts
+            ts = self.add_info(
+                data_key,
+                info_key,
+                value,
+                overwrite=overwrite,
+                in_place=in_place,
+            )
+            return ts
+        except ValueError as e:
+            warnings.warn(str(e))
+            return self if in_place is True else self.copy()
 
     def remove_data_info(
         self, data_key: str, info_key: str, *, in_place: bool = False
@@ -4800,14 +4995,8 @@ class TimeSeries:
         self._check_valid_time()
 
         ts = self if in_place else self.copy()
-        try:
-            data_info = ts.data_info[data_key]
-            try:
-                data_info.pop(info_key)
-            except KeyError:
-                self._raise_info_inner_key_error(data_key, info_key)
-        except KeyError:
-            self._raise_info_outer_key_error(data_key)
+
+        ts = ts.remove_info(data_key, info_key, in_place=in_place)
         return ts
 
 
