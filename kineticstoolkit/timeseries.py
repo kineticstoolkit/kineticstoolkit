@@ -1684,7 +1684,7 @@ class TimeSeries:
         Parameters
         ----------
         time
-            The time of the event, in the same unit as `time_info["Unit"]`.
+            The time of the event, in the same unit as `info["Time"]["Unit"]`.
         name
             Optional. The name of the event. Default is "event".
         in_place
@@ -3121,6 +3121,12 @@ class TimeSeries:
 
     # %% Time management
 
+    def _get_time_unit(self) -> str:
+        try:
+            return self.info["Time"]["Unit"]
+        except KeyError:
+            return "no unit"
+
     def shift(self, time: float, *, in_place: bool = False) -> TimeSeries:
         """
         Shift time and events.time.
@@ -4373,7 +4379,7 @@ class TimeSeries:
             )
 
         # Add labels
-        plt.xlabel("Time (" + ts.time_info["Unit"] + ")")
+        plt.xlabel("Time (" + ts._get_time_unit() + ")")
 
         # Make unique list of units
         unit_set = set()
