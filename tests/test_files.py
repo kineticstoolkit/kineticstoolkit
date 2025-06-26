@@ -28,6 +28,21 @@ import os
 import warnings
 
 
+def test_load_pre017():
+    """Test that loading pre-0.17 ktk.zip files still work."""
+    # Because time_info and data_info has been converted to info in 0.17.
+    # Loading a TimeSeries from a JSON file that includes time_info and
+    # data_info should still work.
+    ts = ktk.load(ktk.doc.download("wheelchair_kinetics_pre017.zip"))
+    assert ts.info == {
+        "Time": {"Unit": "s"},
+        "Channels": {"Unit": "raw"},
+        "Forces": {"Unit": "N"},
+        "Moments": {"Unit": "Nm"},
+        "Angle": {"Unit": "rad"},
+    }
+
+
 def test_save_load():
     """Test the save and load functions."""
     # Create a test variable with all possible supported combinations

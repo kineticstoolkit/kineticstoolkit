@@ -108,8 +108,7 @@ def save(filename: str, variable: Any) -> None:
                 out = {}
                 out["class__"] = "ktk.TimeSeries"
                 out["time"] = obj.time.tolist()
-                out["time_info"] = obj.time_info
-                out["data_info"] = obj.data_info
+                out["info"] = obj.info
                 out["data"] = {}
                 for key in obj.data:
                     out["data"][key] = obj.data[key].tolist()
@@ -200,8 +199,16 @@ def _load_object_hook(obj):
         elif to_class == "ktk.TimeSeries":
             out = TimeSeries()
             out.time = np.array(obj["time"])
-            out.time_info = obj["time_info"]
-            out.data_info = obj["data_info"]
+
+            # Post-0.17
+            if "info" in obj:
+                out.info = obj["info"]
+            # Pre-0.17
+            if "time_info" in obj:
+                out.time_info = obj["time_info"]
+            if "data_info" in obj:
+                out.data_info = obj["data_info"]
+
             for key in obj["data"]:
                 out.data[key] = np.array(obj["data"][key])
             for event in obj["events"]:
@@ -598,7 +605,7 @@ def read_c3d(
                 [point_factor, point_factor, point_factor, 1]
                 * reader["data"]["points"][:, i_label, :].T
             )
-            points.add_data_info(key, "Unit", point_unit, in_place=True)
+            points.add_info(key, "Unit", point_unit, in_place=True)
 
         if n_points > 0:
             points.time = (
@@ -668,7 +675,7 @@ def read_c3d(
 
             analogs.data[key] = reader["data"]["analogs"][0, i_label].T
             if units[i_label] != "":
-                analogs.add_data_info(
+                analogs.add_info(
                     key,
                     "Unit",
                     units[i_label].encode("utf-8", "ignore").decode("utf-8"),
@@ -799,7 +806,7 @@ def read_c3d(
                         0:3, i_corner
                     ]
                 )
-                platforms.add_data_info(
+                platforms.add_info(
                     key, "Unit", forceplate_position_unit, in_place=True
                 )
 
@@ -824,7 +831,7 @@ def read_c3d(
             force = np.zeros((len(platforms.time), 4))
             force[:, 0:3] = reader["data"]["platform"][i_platform]["force"].T
             platforms.data[key] = force
-            platforms.add_data_info(key, "Unit", force_unit, in_place=True)
+            platforms.add_info(key, "Unit", force_unit, in_place=True)
 
             # Add moment around origin
             key = f"FP{i_platform}_MomentAtCenter"
@@ -834,7 +841,7 @@ def read_c3d(
                 * reader["data"]["platform"][i_platform]["moment"].T
             )
             platforms.data[key] = moment
-            platforms.add_data_info(
+            platforms.add_info(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
@@ -857,7 +864,7 @@ def read_c3d(
                     "center_of_pressure"
                 ].T
             )
-            platforms.add_data_info(
+            platforms.add_info(
                 key, "Unit", forceplate_position_unit, in_place=True
             )
 
@@ -867,7 +874,7 @@ def read_c3d(
             platforms.data[key][:, 0:3] = (
                 moment_factor * reader["data"]["platform"][i_platform]["Tz"].T
             )
-            platforms.add_data_info(
+            platforms.add_info(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
@@ -978,9 +985,9 @@ def write_c3d(
         # are based on point rate.
         points = TimeSeries()
         if rotations is not None:
-            points = rotations.copy(copy_data=False, copy_data_info=False)
+            points = rotations.copy(copy_data=False, copy_info=False)
         elif analogs is not None:
-            points = analogs.copy(copy_data=False, copy_data_info=False)
+            points = analogs.copy(copy_data=False, copy_info=False)
         else:
             raise ValueError(
                 "At least one of points, analogs, or rotations must be "
@@ -1006,13 +1013,13 @@ def write_c3d(
             raise ValueError(f"Point {key} is not a series of [x, y, z, 1.0]")
 
         # Check that units are all the same (or None)
-        if key not in points.data_info:
+        if key not in points.info:
             continue
 
-        if "Unit" not in points.data_info[key]:
+        if "Unit" not in points.info[key]:
             continue
 
-        this_unit = points.data_info[key]["Unit"]
+        this_unit = points.info[key]["Unit"]
 
         if this_unit is None:
             continue
@@ -1072,16 +1079,16 @@ def write_c3d(
         # Since analogs are unidimensional, we will use the DataFrame exporter
         # to get one column per analog value. This way, forces would become
         # forces[0], forces[1], forces[2] and forces[3].
-        df_analogs, analogs_data_info = analogs._to_dataframe_and_info()
+        df_analogs, analogs_info = analogs._to_dataframe_and_info()
 
         c3d.add_parameter("ANALOG", "LABELS", list(df_analogs.columns))
         c3d.add_parameter("ANALOG", "RATE", [analog_rate])
         c3d.add_parameter(
             "ANALOG",
             "UNITS",
-            [_["Unit"] if "Unit" in _ else "" for _ in analogs_data_info],
+            [_["Unit"] if "Unit" in _ else "" for _ in analogs_info],
         )
-        c3d.add_parameter("ANALOG", "USED", [len(analogs_data_info)])
+        c3d.add_parameter("ANALOG", "USED", [len(analogs_info)])
         c3d["header"]["analogs"]["first_frame"] = round(
             analogs.time[0] * analog_rate
         )

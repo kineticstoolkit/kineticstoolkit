@@ -934,6 +934,16 @@ class TimeSeries:
 
         """
         # Pre-0.17 compatibility
+        if ("copy_time_info" in kwargs or "copy_data_info" in kwargs):
+            if ("copy_time_info" in kwargs):
+                copy_time_info = kwargs["copy_time_info"]
+            else:
+                copy_time_info = True # Original default value
+            if ("copy_data_info" in kwargs):
+                copy_data_info = kwargs["copy_data_info"]
+            else:
+                copy_data_info = True # Original default value
+
         if (
             "copy_time_info" in kwargs and kwargs["copy_time_info"] is False
         ) or (
@@ -964,10 +974,11 @@ class TimeSeries:
                 ts.info = deepcopy(self.info)
 
             # Pre-0.17 compatibility
-            if "copy_time_info" in kwargs and kwargs["copy_time_info"] is True:
-                ts.time_info = deepcopy(self.time_info)
-            if "copy_data_info" in kwargs and kwargs["copy_data_info"] is True:
-                ts.data_info = deepcopy(self.data_info)
+            if ("copy_time_info" in kwargs or "copy_data_info" in kwargs):
+                if copy_time_info:
+                    ts.time_info = deepcopy(self.time_info)
+                if copy_data_info:
+                    ts.data_info = deepcopy(self.data_info)
 
             return ts
 
@@ -1140,11 +1151,9 @@ class TimeSeries:
         ts = self if in_place else self.copy()
 
         if outer_key not in ts.info:
-            raise KeyError(f"Attribute info['{outer_key}'] does not exist.")
+            self._raise_info_outer_key_error(outer_key)
         if inner_key not in ts.info[outer_key]:
-            raise KeyError(
-                f"Attribute info['{outer_key}']['{inner_key}'] does not exist."
-            )
+            self._raise_info_inner_key_error(outer_key, inner_key)
 
         # Get the value
         value = ts.info[outer_key][inner_key]
@@ -1222,11 +1231,9 @@ class TimeSeries:
         ts = self if in_place else self.copy()
 
         if outer_key not in ts.info:
-            raise KeyError(f"Attribute info['{outer_key}'] does not exist.")
+            self._raise_info_outer_key_error(outer_key)
         if inner_key not in ts.info[outer_key]:
-            raise KeyError(
-                f"Attribute info['{outer_key}']['{inner_key}'] does not exist."
-            )
+            self._raise_info_inner_key_error(outer_key, inner_key)
 
         ts.info[outer_key].pop(inner_key)
         if len(ts.info[outer_key]) == 0:

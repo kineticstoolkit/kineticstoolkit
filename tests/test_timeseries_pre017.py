@@ -22,10 +22,11 @@ __license__ = "Apache 2.0"
 """
 Pre-0.17 TimeSeries unit tests for backward-compatibility.
 
-This tests that everything playing with data_info and time_info still works
-the same in 0.17+ as it did before all info was merged.
+This tests that everything playing with data_info and time_info still
+works the same in 0.17+ as it did before all info was merged.
 
-This test file will be deleted two years after Kinetics Toolkit 1.0 is out.
+This test file will be deleted two years after Kinetics Toolkit 1.0 is
+out.
 
 """
 import kineticstoolkit as ktk
@@ -207,6 +208,16 @@ def test_copy():
     assert ts2.events[1].time == 10.2
     assert ts2.events[2].time == 100
 
+    # A deep copy with only time_info
+    ts2 = ts1.copy(copy_time=False, copy_data=False, copy_data_info=False)
+    assert ts2.time_info["Unit"] == "s"
+
+    # A deep copy with only data_info
+    ts2 = ts1.copy(copy_time=False, copy_data=False, copy_time_info=False)
+    assert ts2.data_info["signal1"]["Unit"] == "Unit1"
+    assert ts2.data_info["signal2"]["Unit"] == "Unit2"
+    assert ts2.data_info["signal3"]["Unit"] == "Unit3"
+
 
 def test_time_property():
     # Set time on constructor
@@ -264,6 +275,14 @@ def test_data_property():
         pass
 
 
+def test_time_info_data_info_constructor():
+    ts = ktk.TimeSeries(
+        time_info={"Unit": "h"}, data_info={"Data": {"Unit": "km"}}
+    )
+    assert ts.time_info == {"Unit": "h"}
+    assert ts.data_info == {"Data": {"Unit": "km"}}
+
+
 # %% From array, from and to dataframe
 
 
@@ -286,9 +305,13 @@ def test_from_to_dataframe():
     df["Data1[0,1]"] = np.arange(2) + 2
     df["Data1[1,0]"] = np.arange(2) + 3
     df["Data1[1,1]"] = np.arange(2) + 4
-    ts = ktk.TimeSeries.from_dataframe(df)
+    ts = ktk.TimeSeries.from_dataframe(
+        df, time_info={"Unit": "h"}, data_info={"Data0": {"Unit": "N"}}
+    )
     assert np.allclose(ts.data["Data0"], [0, 1])
     assert np.allclose(ts.data["Data1"], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
+    assert ts.time_info == {"Unit": "h"}
+    assert ts.data_info == {"Data0": {"Unit": "N"}}
 
     # new form (June 2025)
     df = pd.DataFrame(
@@ -586,7 +609,7 @@ def test_rename_remove_data():
     # Those fail should not have modified the TimeSeries
     assert np.allclose(ts.data["Power"], np.arange(10))
     assert len(ts.data) == 1
-    assert len(ts.data_info) == 1
+    # assert len(ts.data_info) == 1  # Breaking change in 0.17
 
     # Remove data
     ts = ts.remove_data("Power")

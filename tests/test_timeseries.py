@@ -561,7 +561,7 @@ def test_constructor_variants():
 # %% Metadata
 
 
-def test_add_remove_info():
+def test_add_rename_remove_info():
     ts = ktk.TimeSeries()
     ts = ts.add_info("Force", "Unit", "N")
     ts.add_info("Force", "Other", "hello", in_place=True)
@@ -570,34 +570,76 @@ def test_add_remove_info():
     assert ts.info["Force"]["Unit"] == "N"
     assert ts.info["Force"]["Other"] == "hello"
 
+    # Add info with same name
+    # without overwrite
     try:
         ts.add_info("Force", "Other", 111, in_place=True)
         raise Exception("This should not pass")
     except ValueError:
         pass
-
+    # with overwrite
     ts.add_info("Force", "Other", 111, in_place=True, overwrite=True)
-
     assert ts.info["Force"]["Other"] == 111
 
-    warnings.warn("TODO Continue Unit Tests Here.")
-    # # Test removing non-existing data_info (should not work)
-    # try:
-    #     ts = ts.remove_data_info("Nonexisting", "Other")
-    #     raise Exception("This should fail.")
-    # except KeyError:
-    #     pass
+    # Rename existing info
+    ts.rename_info("Force", "Other", "Power", "Unit", in_place=True)
+    assert ts.info["Power"]["Unit"] == 111
+    assert "Other" not in ts.info["Force"]
 
-    # # Test removing existing data_info
-    # ts.remove_data_info("Force", "Other", in_place=True)
-    # assert ts.data_info["Force"]["Unit"] == "N"
-    # assert len(ts.data_info["Force"]) == 1
+    # Rename non-existing info
+    try:
+        ts.rename_info("ASDBKJ", "NF:", "SDANLN", "FN:L")
+        raise Exception("This should not pass")
+    except KeyError:
+        pass
+    try:
+        ts.rename_info("Force", "NF:", "Force", "FN:L")
+        raise Exception("This should not pass")
+    except KeyError:
+        pass
+
+    # Remove existing info
+    ts.remove_info("Force", "Unit", in_place=True)
+    assert "Force" not in ts.info
+
+    # Remove non-existing info
+    try:
+        ts.remove_info("Power", "SDVJDKSAKSKJA", in_place=True)
+        raise Exception("This should not pass")
+    except KeyError:
+        pass
+    try:
+        ts.remove_info("Force", "Unit", in_place=True)
+        raise Exception("This should not pass")
+    except KeyError:
+        pass
+
+
+# %% Time
+
+
+def test_shift():
+    ts = ktk.TimeSeries(time=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    ts = ts.add_event(4)
+    ts.shift(-5, in_place=True)
+    assert np.allclose(ts.time, [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4])
+    assert ts.events[0].time == -1
 
 
 # %% Data
 
 
 def test_add_data():
+    ts = ktk.TimeSeries(time=[0, 1, 2])
+
+    # Adding data that doesn't match time
+    try:
+        ts.add_data("data3", 3 * np.eye(4), in_place=True)
+        raise Exception("This should fail.")
+    except ValueError:
+        pass
+
+    # Reset
     ts = ktk.TimeSeries()
 
     # Adding data and populating a corresponding time value
@@ -788,6 +830,13 @@ def test_remove_event():
     ts.remove_event("event2", 1, in_place=True)
     assert str(ts.events) == "[TimeSeriesEvent(time=10.8, name='event2')]"
 
+    # Remove non-existing event
+    try:
+        ts = ts.remove_event("fdsabnfkjlsdbf")
+        raise Exception("This should fail.")
+    except TimeSeriesEventNotFoundError:
+        pass
+
     # Test remove bad occurrence (should fail)
     try:
         ts = ts.remove_event("event2", 10)
@@ -796,6 +845,18 @@ def test_remove_event():
         pass
 
     assert str(ts.events) == "[TimeSeriesEvent(time=10.8, name='event2')]"
+
+
+def test_trim_events():
+    ts = ktk.TimeSeries(time=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+    ts.add_event(-1, "event", in_place=True)
+    ts.add_event(0, "event", in_place=True)
+    ts.add_event(9, "event", in_place=True)
+    ts.add_event(10, "event", in_place=True)
+    ts.trim_events(in_place=True)
+    assert len(ts.events) == 2
+    assert ts.events[0].time == 0
+    assert ts.events[1].time == 9
 
 
 def test_remove_duplicate_events():
@@ -872,6 +933,11 @@ def test_get_event_indexes_count_index_time():
         pass
     try:
         ts._get_event_index("event1", 1)
+        raise Exception("This should fail.")
+    except TimeSeriesEventNotFoundError:
+        pass
+    try:
+        ts._get_event_index("event1", -1)
         raise Exception("This should fail.")
     except TimeSeriesEventNotFoundError:
         pass
@@ -1049,13 +1115,38 @@ def test_resample_using_frequency():
 
 def test_resample_with_nans():
     ts = ktk.TimeSeries(time=np.arange(10.0))
-    ts.data["data"] = ts.time**2
-    ts.data["data"][[0, 1, 5, 8, 9]] = np.nan
+
+    # data1 contains a few nans
+    ts.data["data1"] = ts.time**2
+    ts.data["data1"][[0, 1, 5, 8, 9]] = np.nan
+
+    # data2 contains only nans and thus cannot be resampled
+    ts.data["data2"] = ts.time**2
+    ts.data["data2"][:] = np.nan
+
     ts1 = ts.resample(2.0)
     assert np.allclose(
-        np.isnan(ts1.data["data"]),
+        np.isnan(ts1.data["data1"]),
         [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1],
     )
+    assert np.all(np.isnan(ts1.data["data2"]))
+
+    # But we cannot resample TO time with nans
+    try:
+        ts.resample([0, 1, 2, np.nan, 4])
+        raise Exception("This should fail")
+    except ValueError:
+        pass
+
+
+def test_resample_pchip():
+    ts = ktk.TimeSeries(time=np.arange(10.0))
+
+    # data1 contains a few nans
+    ts.data["data1"] = ts.time**2
+    ts1 = ts.resample(20, kind="pchip")
+    ts2 = ts1.resample(ts.time)
+    assert np.allclose(ts.data["data1"], ts2.data["data1"])
 
 
 def test_resample_no_extrapolation():
@@ -1268,6 +1359,19 @@ def test_get_index_after_event():
         pass
 
 
+def test_get_index_at_event():
+    ts = ktk.TimeSeries(time=np.arange(10) / 10)
+    ts.add_event(0.2, "event", in_place=True)
+    ts.add_event(0.36, "event", in_place=True)
+    assert ts.get_index_at_event("event") == 2
+    assert ts.get_index_at_event("event", occurrence=1) == 4
+    try:
+        ts.get_index_before_event("event", occurrence=2)
+        raise AssertionError("This should fail.")
+    except TimeSeriesEventNotFoundError:
+        pass
+
+
 # %% get_ts using index(es)
 def test_get_ts_before_index():
     ts = ktk.TimeSeries(time=np.arange(10) / 10)
@@ -1326,10 +1430,27 @@ def test_get_ts_between_indexes():
         ts.get_ts_between_indexes(2, 5, inclusive=[False, True]).time,
         np.array([0.3, 0.4, 0.5]),
     )
+
+    # Fails
     try:
         ts.get_ts_between_indexes(5, 2)  # Bad order
         raise AssertionError("This should fail.")
     except ValueError:
+        pass
+    try:
+        ts.get_ts_between_indexes(2, 5, inclusive=1)  # Bad type
+        raise AssertionError("This should fail.")
+    except TypeError:
+        pass
+    try:
+        ts.get_ts_between_indexes(-1, 2)  # Negative index
+        raise AssertionError("This should fail.")
+    except TimeSeriesRangeError:
+        pass
+    try:
+        ts.get_ts_between_indexes(1, 2000000)  # Index out of time
+        raise AssertionError("This should fail.")
+    except TimeSeriesRangeError:
         pass
 
 
@@ -1424,6 +1545,11 @@ def test_get_ts_between_times():
         ts.get_ts_between_times(-2, -1)
         raise Exception("This should fail.")
     except TimeSeriesRangeError:
+        pass
+    try:
+        ts.get_ts_between_indexes(2, 5, inclusive=1)  # Bad type
+        raise AssertionError("This should fail.")
+    except TypeError:
         pass
 
 
@@ -1549,6 +1675,11 @@ def test_get_ts_between_events():
         ts.get_ts_between_events("event1", "event1", 0, 1)
         raise Exception("This should fail")
     except TimeSeriesRangeError:
+        pass
+    try:
+        ts.get_ts_between_indexes(2, 5, inclusive=1)  # Bad type
+        raise AssertionError("This should fail.")
+    except TypeError:
         pass
 
 
