@@ -37,7 +37,6 @@ from kineticstoolkit.player import Player as Player  # noqa
 from kineticstoolkit.tools import change_defaults  # noqa
 from kineticstoolkit.files import load, save, read_c3d, write_c3d  # noqa
 from kineticstoolkit import _repr  # noqa
-from kineticstoolkit.ext import _import_extensions as import_extensions  # noqa
 
 # Import modules
 from kineticstoolkit import filters  # noqa
@@ -47,7 +46,6 @@ from kineticstoolkit import doc  # noqa
 from kineticstoolkit import gui  # noqa
 from kineticstoolkit import geometry  # noqa
 from kineticstoolkit import dev  # noqa
-from kineticstoolkit import ext  # noqa
 from kineticstoolkit import config  # noqa
 
 
