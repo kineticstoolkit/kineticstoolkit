@@ -603,6 +603,27 @@ def test_get_quaternions():
     assert np.allclose(T, T2)
 
 
+def test_get_distances():
+    """Test get_distances."""
+    points1 = ktk.geometry.create_point_series(
+        x=np.random.rand(10), y=np.random.rand(10), z=np.random.rand(10)
+    )
+    points2 = ktk.geometry.create_point_series(
+        x=np.random.rand(10), y=np.random.rand(10), z=np.random.rand(10)
+    )
+    assert np.allclose(
+        ktk.geometry.get_distances(points1, points2),
+        np.mean(
+            np.sqrt(
+                np.sum(
+                    (points1 - points2) ** 2,
+                    axis=1,
+                )
+            )
+        ),
+    )
+
+
 def test_create_transforms_tobedeprecated():
     """Test create_transforms."""
     # Identity matrix

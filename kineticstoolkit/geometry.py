@@ -54,6 +54,7 @@ def __dir__():
         "get_global_coordinates",
         "get_angles",
         "get_quaternions",
+        "get_distances",
         "register_points",
         "isnan",
     ]
@@ -600,6 +601,38 @@ def get_global_coordinates(
         reference_frames_array, local_coordinates_array
     )
     return global_coordinates
+
+
+def get_distances(
+    point_series1: ArrayLike, point_series2: ArrayLike, /
+) -> np.ndarray:
+    """
+    Calculate the euclidian distance between two point series.
+
+    Parameters
+    ----------
+    point_series1, point_series2
+        Series of N points, as an Nx4 array-like of the form
+        [[x, y, z, 1.0], ...]
+
+    Returns
+    -------
+    np.ndarray
+        Series of euclidian distance, as an Nx4 array of the form
+        [[x, y, z, 0.0], ...]
+
+    """
+    point_series1 = np.array(point_series1)
+    point_series2 = np.array(point_series2)
+
+    return np.mean(
+        np.sqrt(
+            np.sum(
+                (point_series1 - point_series2) ** 2,
+                axis=1,
+            )
+        )
+    )
 
 
 # %% "is" functions
