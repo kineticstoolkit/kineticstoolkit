@@ -613,12 +613,10 @@ def test_get_distances():
     )
     assert np.allclose(
         ktk.geometry.get_distances(points1, points2),
-        np.mean(
-            np.sqrt(
-                np.sum(
-                    (points1 - points2) ** 2,
-                    axis=1,
-                )
+        np.sqrt(
+            np.sum(
+                (points1 - points2) ** 2,
+                axis=1,
             )
         ),
     )

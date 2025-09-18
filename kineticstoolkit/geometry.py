@@ -625,12 +625,10 @@ def get_distances(
     point_series1 = np.array(point_series1)
     point_series2 = np.array(point_series2)
 
-    return np.mean(
-        np.sqrt(
-            np.sum(
-                (point_series1 - point_series2) ** 2,
-                axis=1,
-            )
+    return np.sqrt(
+        np.sum(
+            (point_series1 - point_series2) ** 2,
+            axis=1,
         )
     )
 
