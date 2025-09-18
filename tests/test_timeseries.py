@@ -1010,6 +1010,56 @@ def test_merge():
     except TimeSeriesMergeConflictError:
         pass
 
+    # Test with combinations of merge_info and merge_events
+    ts1 = ktk.TimeSeries(
+        time=[0, 1, 2], data={"data1": [0, 1, 2], "data2": [1, 1, 2]}
+    )
+    ts1.add_info("data1", "Unit", "N", in_place=True)
+    ts1.add_event(0, "event", in_place=True)
+
+    ts2 = ktk.TimeSeries(
+        time=[0, 1, 2], data={"data1": [0, 1, 2], "data3": [2, 1, 2]}
+    )
+    ts2.add_info("data1", "Unit", "N", in_place=True)
+    ts2.add_info("data2", "Unit", "Nm", in_place=True)
+    ts2.add_event(1, "event", in_place=True)
+
+    # Merge selected stuff to avoid conflicts
+    ts3 = ts1.merge(
+        ts2, data_keys="data3", merge_events=False, merge_info=False
+    )
+    assert np.all(ts3.time == ts1.time)
+    assert np.all(ts3.data["data1"] == [0, 1, 2])
+    assert np.all(ts3.data["data2"] == [1, 1, 2])
+    assert np.all(ts3.data["data3"] == [2, 1, 2])
+    assert ts3.count_events("event") == 1
+    assert ts3.info["data1"]["Unit"] == "N"
+    assert "data2" not in ts3.info
+
+    # Samething with event merging
+    ts3 = ts1.merge(
+        ts2, data_keys="data3", merge_events=True, merge_info=False
+    )
+    assert np.all(ts3.time == ts1.time)
+    assert np.all(ts3.data["data1"] == [0, 1, 2])
+    assert np.all(ts3.data["data2"] == [1, 1, 2])
+    assert np.all(ts3.data["data3"] == [2, 1, 2])
+    assert ts3.count_events("event") == 2
+    assert ts3.info["data1"]["Unit"] == "N"
+    assert "data2" not in ts3.info
+
+    # Samething with info merging
+    ts3 = ts1.merge(
+        ts2, data_keys="data3", merge_events=False, merge_info=True
+    )
+    assert np.all(ts3.time == ts1.time)
+    assert np.all(ts3.data["data1"] == [0, 1, 2])
+    assert np.all(ts3.data["data2"] == [1, 1, 2])
+    assert np.all(ts3.data["data3"] == [2, 1, 2])
+    assert ts3.count_events("event") == 1
+    assert ts3.info["data1"]["Unit"] == "N"
+    assert ts3.info["data2"]["Unit"] == "Nm"
+
 
 def test_merge_and_resample():
     # Begin with two timeseries with identical times
