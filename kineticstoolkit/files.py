@@ -35,6 +35,7 @@ from kineticstoolkit.typing_ import check_param
 import os
 import numpy as np
 import pandas as pd
+import ezc3d
 from typing import Any
 import warnings
 import shutil
@@ -47,6 +48,26 @@ import zipfile
 
 def __dir__():  # pragma: no cover
     return ["save", "load"]
+
+
+def _ezc3d_to_dict(c3d) -> dict[str, Any]:
+    """Create a TimeSeries info dict based on an ezc3d class."""
+    out = dict()  # type: dict[str, Any]
+
+    try:
+        for param_key in c3d["parameters"]:
+            out[param_key] = dict()
+            for prop_key in c3d["parameters"][param_key]:
+                if prop_key.startswith("_"):
+                    continue
+                out[param_key][prop_key] = c3d["parameters"][param_key][
+                    prop_key
+                ]["value"]
+
+    except KeyError:
+        pass
+
+    return out
 
 
 def save(filename: str, variable: Any) -> None:
@@ -355,6 +376,10 @@ def read_c3d(
     and is not standardized in the C3D file format (https://www.c3d.org).
     This function reads these values as points regardless of their nature.
 
+    All TimeSeries include a C3DParameters info, which is mainly the contents
+    of the PARAMETERS part of the C3D. The structure of this info is
+    dependent on the software that recorded the C3D.
+
     Parameters
     ----------
     filename
@@ -406,24 +431,15 @@ def read_c3d(
     For these special cases, we recommend to set `convert_point_unit` to
     False, and then scale the points manually.
 
-    Warning
-    -------
-    This function, which has been introduced in version 0.9, is still
-    experimental and its behavior or API may change slightly in the future.
-
     See Also
     --------
     ktk.write_c3d, ktk.geometry.scale
 
-    Notes
-    -----
-    - This function relies on `ezc3d`, which is installed by default using
-      conda, but not using pip. If you installed kineticstoolkit using pip,
-      then please install ezc3d manually: `pip install ezc3d`.
-
-    - As for any instrument, please check that your data loads correctly on
-      your first use (e.g., sampling frequency, position unit, location and
-      orientation of the force platforms, etc.).
+    Note
+    ----
+    As for any instrument, please check that your data loads correctly on
+    your first use (e.g., sampling frequency, position unit, location and
+    orientation of the force platforms, etc.).
 
     """
     check_param("filename", filename, str)
@@ -440,15 +456,6 @@ def read_c3d(
     check_param("include_event_context", include_event_context, bool)
     if not filename.endswith(".c3d"):
         raise ValueError("The file name must end with '.c3d'.")
-
-    try:
-        import ezc3d
-    except ModuleNotFoundError:
-        raise ModuleNotFoundError(
-            "The optional module ezc3d is not installed, but it is required "
-            "to use this function. Please install it using: "
-            "conda install -c conda-forge ezc3d"
-        )
 
     if "return_ezc3d" in kwargs:
         return_ezc3d = kwargs["return_ezc3d"]
@@ -476,6 +483,11 @@ def read_c3d(
 
     if return_ezc3d:
         output["C3D"] = reader
+
+    # ---------------------------------
+    # List the metadata (info)
+    info = _ezc3d_to_dict(reader)
+    info["FileName"] = filename
 
     # ---------------------------------
     # List the events
@@ -612,8 +624,10 @@ def read_c3d(
                 np.arange(points.data[key].shape[0]) / point_rate + start_time
             )
 
-        # Add events
+        # Add events and info
         points.events = events.copy()
+        for key in info:
+            points.add_info("C3DParameters", key, info[key], in_place=True)
 
         output["Points"] = points
 
@@ -687,8 +701,10 @@ def read_c3d(
                 + start_time
             )
 
-        # Add events
+        # Add events and info
         analogs.events = events.copy()
+        for key in info:
+            analogs.add_info("C3DParameters", key, info[key], in_place=True)
 
         output["Analogs"] = analogs
 
@@ -742,8 +758,12 @@ def read_c3d(
             for data in rotations.data:
                 rotations.data[data][rotations.isnan(data), :, :] = np.nan
 
-            # Add events
+            # Add events and info
             rotations.events = events.copy()
+            for key in info:
+                rotations.add_info(
+                    "C3DParameters", key, info[key], in_place=True
+                )
 
             # Add to output
             output["Rotations"] = rotations
@@ -878,8 +898,10 @@ def read_c3d(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
-        # Add events
+        # Add events and info
         platforms.events = events.copy()
+        for key in info:
+            platforms.add_info("C3DParameters", key, info[key], in_place=True)
 
         output["ForcePlatforms"] = platforms
 
