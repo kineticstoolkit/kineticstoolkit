@@ -1405,7 +1405,7 @@ class Player:
         inverse_transform = geometry.create_frames(
             origin=[[0, 0, 0, 1]], x=anterior, xy=up
         )
-        return geometry.inv(inverse_transform)
+        return geometry.invert(inverse_transform)
 
     def _process_contents(self) -> None:
         """
