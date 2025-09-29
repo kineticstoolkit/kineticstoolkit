@@ -274,7 +274,7 @@ class Player:
 
     default_point_color
         Optional. Default color for points that do not have a "Color"
-        data_info. Can be a character or tuple (RGB) where each RGB color is
+        info. Can be a character or tuple (RGB) where each RGB color is
         between 0.0 and 1.0. Default is (0.8, 0.8, 0.8).
 
     default_interconnection_color
@@ -1405,7 +1405,7 @@ class Player:
         inverse_transform = geometry.create_frames(
             origin=[[0, 0, 0, 1]], x=anterior, xy=up
         )
-        return geometry.inv(inverse_transform)
+        return geometry.invert(inverse_transform)
 
     def _process_contents(self) -> None:
         """
@@ -1691,11 +1691,8 @@ class Player:
 
         for i_point, point in enumerate(points.data):
             # Get this point's color
-            if (
-                point in points.data_info
-                and "Color" in points.data_info[point]
-            ):
-                color = _parse_color(points.data_info[point]["Color"])
+            if point in points.info and "Color" in points.info[point]:
+                color = _parse_color(points.info[point]["Color"])
             else:
                 color = self.default_point_color
 
@@ -1849,7 +1846,7 @@ class Player:
         # In contents (points and vectors)
         for key in self._contents.data:
             try:
-                color = self._contents.data_info[key]["Color"]
+                color = self._contents.info[key]["Color"]
             except KeyError:  # Default color
                 color = self._default_point_color
             self._colors.add(_parse_color(color))

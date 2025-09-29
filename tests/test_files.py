@@ -28,6 +28,21 @@ import os
 import warnings
 
 
+def test_load_pre017():
+    """Test that loading pre-0.17 ktk.zip files still work."""
+    # Because time_info and data_info has been converted to info in 0.17.
+    # Loading a TimeSeries from a JSON file that includes time_info and
+    # data_info should still work.
+    ts = ktk.load(ktk.doc.download("wheelchair_kinetics_pre017.zip"))
+    assert ts.info == {
+        "Time": {"Unit": "s"},
+        "Channels": {"Unit": "raw"},
+        "Forces": {"Unit": "N"},
+        "Moments": {"Unit": "Nm"},
+        "Angle": {"Unit": "rad"},
+    }
+
+
 def test_save_load():
     """Test the save and load functions."""
     # Create a test variable with all possible supported combinations
@@ -37,10 +52,10 @@ def test_save_load():
     ts.data["signal1"] = np.random.rand(10)
     ts.data["signal2"] = np.random.rand(10, 3)
     ts.data["signal3"] = np.random.rand(10, 3, 3)
-    ts = ts.add_data_info("signal1", "Unit", "m/s")
-    ts = ts.add_data_info("signal2", "Unit", "km/h")
-    ts = ts.add_data_info("signal3", "Unit", "N")
-    ts = ts.add_data_info("signal3", "SignalType", "force")
+    ts = ts.add_info("signal1", "Unit", "m/s")
+    ts = ts.add_info("signal2", "Unit", "km/h")
+    ts = ts.add_info("signal3", "Unit", "N")
+    ts = ts.add_info("signal3", "SignalType", "force")
     ts = ts.add_event(1.53, "TestEvent1")
     ts = ts.add_event(7.2, "TestEvent2")
     ts = ts.add_event(1, "TestEvent3")
@@ -123,8 +138,8 @@ def test_read_c3d():
     markers = c3d["Points"]
     assert "Analogs" not in c3d
 
-    assert markers.time_info["Unit"] == "s"
-    assert markers.data_info["ForearmL1"]["Unit"] == "m"
+    assert markers.info["Time"]["Unit"] == "s"
+    assert markers.info["ForearmL1"]["Unit"] == "m"
 
     ktk.write_c3d("test.c3d", markers)
     markers2 = ktk.read_c3d("test.c3d")["Points"]
@@ -152,6 +167,19 @@ def test_read_c3d():
         )
         == 14
     )
+
+    # Check that C3D parameters are still read correctly
+    assert isinstance(c3d["C3DParameters"]["POINT"]["USED"], np.ndarray)
+    assert isinstance(c3d["C3DParameters"]["POINT"]["LABELS"], list)
+    assert isinstance(c3d["C3DParameters"]["POINT"]["DESCRIPTIONS"], list)
+    assert np.isclose(c3d["C3DParameters"]["POINT"]["SCALE"][0], -0.01)
+    assert c3d["C3DParameters"]["POINT"]["UNITS"] == ["mm"]
+    assert np.isclose(c3d["C3DParameters"]["POINT"]["RATE"][0], 100.0)
+    assert c3d["C3DParameters"]["POINT"]["DATA_START"] == np.array([111])
+    assert c3d["C3DParameters"]["POINT"]["FRAMES"] == np.array([221])
+    assert c3d["C3DParameters"]["ANALOG"]["USED"] == np.array([248])
+    assert c3d["C3DParameters"]["ANALOG"]["RATE"] == np.array([2000])
+    assert c3d["C3DParameters"]["FORCE_PLATFORM"]["USED"] == np.array([4])
 
 
 def test_read_c3d_many_analogs():
@@ -364,8 +392,8 @@ def test_read_write_c3d():
         "Points"
     ]
 
-    assert markers.time_info["Unit"] == "s"
-    assert markers.data_info["ForearmL1"]["Unit"] == "m"
+    assert markers.info["Time"]["Unit"] == "s"
+    assert markers.info["ForearmL1"]["Unit"] == "m"
 
     ktk.write_c3d("test.c3d", markers)
     markers2 = ktk.read_c3d("test.c3d")["Points"]
@@ -553,13 +581,13 @@ def test_write_c3d_analogs():
     assert np.allclose(points.data["point2"], data["Points"].data["point2"])
     assert np.allclose(analogs.data["emg1"], data["Analogs"].data["emg1"])
     assert np.allclose(
-        analogs.data["forces"][:, 0], data["Analogs"].data["forces[0]"]
+        analogs.data["forces"][:, 0], data["Analogs"].data["forces[:,0]"]
     )
     assert np.allclose(
-        analogs.data["forces"][:, 1], data["Analogs"].data["forces[1]"]
+        analogs.data["forces"][:, 1], data["Analogs"].data["forces[:,1]"]
     )
     assert np.allclose(
-        analogs.data["forces"][:, 2], data["Analogs"].data["forces[2]"]
+        analogs.data["forces"][:, 2], data["Analogs"].data["forces[:,2]"]
     )
     os.remove("test.c3d")
 

@@ -35,6 +35,7 @@ from kineticstoolkit.typing_ import check_param
 import os
 import numpy as np
 import pandas as pd
+import ezc3d
 from typing import Any
 import warnings
 import shutil
@@ -47,6 +48,26 @@ import zipfile
 
 def __dir__():  # pragma: no cover
     return ["save", "load"]
+
+
+def _ezc3d_to_dict(c3d) -> dict[str, Any]:
+    """Create a TimeSeries info dict based on an ezc3d class."""
+    out = dict()  # type: dict[str, Any]
+
+    try:
+        for param_key in c3d["parameters"]:
+            out[param_key] = dict()
+            for prop_key in c3d["parameters"][param_key]:
+                if prop_key.startswith("_"):
+                    continue
+                out[param_key][prop_key] = c3d["parameters"][param_key][
+                    prop_key
+                ]["value"]
+
+    except KeyError:
+        pass
+
+    return out
 
 
 def save(filename: str, variable: Any) -> None:
@@ -108,8 +129,7 @@ def save(filename: str, variable: Any) -> None:
                 out = {}
                 out["class__"] = "ktk.TimeSeries"
                 out["time"] = obj.time.tolist()
-                out["time_info"] = obj.time_info
-                out["data_info"] = obj.data_info
+                out["info"] = obj.info
                 out["data"] = {}
                 for key in obj.data:
                     out["data"][key] = obj.data[key].tolist()
@@ -200,8 +220,16 @@ def _load_object_hook(obj):
         elif to_class == "ktk.TimeSeries":
             out = TimeSeries()
             out.time = np.array(obj["time"])
-            out.time_info = obj["time_info"]
-            out.data_info = obj["data_info"]
+
+            # Post-0.17
+            if "info" in obj:
+                out.info = obj["info"]
+            # Pre-0.17
+            if "time_info" in obj:
+                out.time_info = obj["time_info"]
+            if "data_info" in obj:
+                out.data_info = obj["data_info"]
+
             for key in obj["data"]:
                 out.data[key] = np.array(obj["data"][key])
             for event in obj["events"]:
@@ -343,6 +371,10 @@ def read_c3d(
     as a TimeSeries, where each body orientation is expressed as an Nx4x4
     transforms series.
 
+    The C3D parameters are returned in `output["C3DParameters"]`. Note that
+    this content is dependent on each recording environment and software. It
+    could also change between versions of the C3D parser (ezc3d).
+
     Some software stores calculated values such as angles, forces, moments,
     powers, etc. into the C3D file. Storing these data is software-specific
     and is not standardized in the C3D file format (https://www.c3d.org).
@@ -399,24 +431,15 @@ def read_c3d(
     For these special cases, we recommend to set `convert_point_unit` to
     False, and then scale the points manually.
 
-    Warning
-    -------
-    This function, which has been introduced in version 0.9, is still
-    experimental and its behavior or API may change slightly in the future.
-
     See Also
     --------
     ktk.write_c3d, ktk.geometry.scale
 
-    Notes
-    -----
-    - This function relies on `ezc3d`, which is installed by default using
-      conda, but not using pip. If you installed kineticstoolkit using pip,
-      then please install ezc3d manually: `pip install ezc3d`.
-
-    - As for any instrument, please check that your data loads correctly on
-      your first use (e.g., sampling frequency, position unit, location and
-      orientation of the force platforms, etc.).
+    Note
+    ----
+    As for any instrument, please check that your data loads correctly on
+    your first use (e.g., sampling frequency, position unit, location and
+    orientation of the force platforms, etc.).
 
     """
     check_param("filename", filename, str)
@@ -433,15 +456,6 @@ def read_c3d(
     check_param("include_event_context", include_event_context, bool)
     if not filename.endswith(".c3d"):
         raise ValueError("The file name must end with '.c3d'.")
-
-    try:
-        import ezc3d
-    except ModuleNotFoundError:
-        raise ModuleNotFoundError(
-            "The optional module ezc3d is not installed, but it is required "
-            "to use this function. Please install it using: "
-            "conda install -c conda-forge ezc3d"
-        )
 
     if "return_ezc3d" in kwargs:
         return_ezc3d = kwargs["return_ezc3d"]
@@ -598,7 +612,7 @@ def read_c3d(
                 [point_factor, point_factor, point_factor, 1]
                 * reader["data"]["points"][:, i_label, :].T
             )
-            points.add_data_info(key, "Unit", point_unit, in_place=True)
+            points.add_info(key, "Unit", point_unit, in_place=True)
 
         if n_points > 0:
             points.time = (
@@ -668,7 +682,7 @@ def read_c3d(
 
             analogs.data[key] = reader["data"]["analogs"][0, i_label].T
             if units[i_label] != "":
-                analogs.add_data_info(
+                analogs.add_info(
                     key,
                     "Unit",
                     units[i_label].encode("utf-8", "ignore").decode("utf-8"),
@@ -799,7 +813,7 @@ def read_c3d(
                         0:3, i_corner
                     ]
                 )
-                platforms.add_data_info(
+                platforms.add_info(
                     key, "Unit", forceplate_position_unit, in_place=True
                 )
 
@@ -824,7 +838,7 @@ def read_c3d(
             force = np.zeros((len(platforms.time), 4))
             force[:, 0:3] = reader["data"]["platform"][i_platform]["force"].T
             platforms.data[key] = force
-            platforms.add_data_info(key, "Unit", force_unit, in_place=True)
+            platforms.add_info(key, "Unit", force_unit, in_place=True)
 
             # Add moment around origin
             key = f"FP{i_platform}_MomentAtCenter"
@@ -834,7 +848,7 @@ def read_c3d(
                 * reader["data"]["platform"][i_platform]["moment"].T
             )
             platforms.data[key] = moment
-            platforms.add_data_info(
+            platforms.add_info(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
@@ -857,7 +871,7 @@ def read_c3d(
                     "center_of_pressure"
                 ].T
             )
-            platforms.add_data_info(
+            platforms.add_info(
                 key, "Unit", forceplate_position_unit, in_place=True
             )
 
@@ -867,7 +881,7 @@ def read_c3d(
             platforms.data[key][:, 0:3] = (
                 moment_factor * reader["data"]["platform"][i_platform]["Tz"].T
             )
-            platforms.add_data_info(
+            platforms.add_info(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
@@ -875,6 +889,10 @@ def read_c3d(
         platforms.events = events.copy()
 
         output["ForcePlatforms"] = platforms
+
+    # ---------------------------------
+    # List the metadata (info)
+    output["C3DParameters"] = _ezc3d_to_dict(reader)
 
     return output
 
@@ -978,9 +996,9 @@ def write_c3d(
         # are based on point rate.
         points = TimeSeries()
         if rotations is not None:
-            points = rotations.copy(copy_data=False, copy_data_info=False)
+            points = rotations.copy(copy_data=False, copy_info=False)
         elif analogs is not None:
-            points = analogs.copy(copy_data=False, copy_data_info=False)
+            points = analogs.copy(copy_data=False, copy_info=False)
         else:
             raise ValueError(
                 "At least one of points, analogs, or rotations must be "
@@ -1006,13 +1024,13 @@ def write_c3d(
             raise ValueError(f"Point {key} is not a series of [x, y, z, 1.0]")
 
         # Check that units are all the same (or None)
-        if key not in points.data_info:
+        if key not in points.info:
             continue
 
-        if "Unit" not in points.data_info[key]:
+        if "Unit" not in points.info[key]:
             continue
 
-        this_unit = points.data_info[key]["Unit"]
+        this_unit = points.info[key]["Unit"]
 
         if this_unit is None:
             continue
@@ -1072,16 +1090,16 @@ def write_c3d(
         # Since analogs are unidimensional, we will use the DataFrame exporter
         # to get one column per analog value. This way, forces would become
         # forces[0], forces[1], forces[2] and forces[3].
-        df_analogs, analogs_data_info = analogs._to_dataframe_and_info()
+        df_analogs, analogs_info = analogs._to_dataframe_and_info()
 
         c3d.add_parameter("ANALOG", "LABELS", list(df_analogs.columns))
         c3d.add_parameter("ANALOG", "RATE", [analog_rate])
         c3d.add_parameter(
             "ANALOG",
             "UNITS",
-            [_["Unit"] if "Unit" in _ else "" for _ in analogs_data_info],
+            [_["Unit"] if "Unit" in _ else "" for _ in analogs_info],
         )
-        c3d.add_parameter("ANALOG", "USED", [len(analogs_data_info)])
+        c3d.add_parameter("ANALOG", "USED", [len(analogs_info)])
         c3d["header"]["analogs"]["first_frame"] = round(
             analogs.time[0] * analog_rate
         )

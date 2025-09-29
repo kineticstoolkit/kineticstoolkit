@@ -352,7 +352,7 @@ def test_is_frame_point_vector_series():
     )
 
 
-def test_inv():
+def test_invert():
     """Test inverse matrix series."""
     # Try with simple rotations and translations
     T = ktk.geometry.create_transforms(
@@ -361,20 +361,20 @@ def test_inv():
     assert np.allclose(
         T, [[0, -1, 0, 1], [1, 0, 0, 0], [0, 0, 1, 0], [0, 0, 0, 1]]
     )
-    assert np.allclose(ktk.geometry.inv(T), np.linalg.inv(T))
+    assert np.allclose(ktk.geometry.invert(T), np.linalg.inv(T))
 
     # Series of 100 rotation matrices around the z axis, from 0 to
     # 360 degrees, with a series of translations of (2,1,3).
     T = ktk.geometry.create_transforms(
         "z", np.linspace(0, 2 * np.pi, 100), translations=[[2, 1, 3]]
     )
-    assert np.allclose(ktk.geometry.inv(ktk.geometry.inv(T)), T)
+    assert np.allclose(ktk.geometry.invert(ktk.geometry.invert(T)), T)
 
     # See if the matrix is not a rigid transform
     T[10, 0, 0] = 0.0
 
     try:
-        ktk.geometry.inv(T)
+        ktk.geometry.invert(T)
         raise ValueError("This should raise an error")
     except ValueError:
         pass
@@ -601,6 +601,25 @@ def test_get_quaternions():
     )
 
     assert np.allclose(T, T2)
+
+
+def test_get_distances():
+    """Test get_distances."""
+    points1 = ktk.geometry.create_point_series(
+        x=np.random.rand(10), y=np.random.rand(10), z=np.random.rand(10)
+    )
+    points2 = ktk.geometry.create_point_series(
+        x=np.random.rand(10), y=np.random.rand(10), z=np.random.rand(10)
+    )
+    assert np.allclose(
+        ktk.geometry.get_distances(points1, points2),
+        np.sqrt(
+            np.sum(
+                (points1 - points2) ** 2,
+                axis=1,
+            )
+        ),
+    )
 
 
 def test_create_transforms_tobedeprecated():

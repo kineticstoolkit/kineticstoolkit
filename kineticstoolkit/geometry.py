@@ -46,6 +46,7 @@ def __dir__():
         "is_point_series",
         "is_vector_series",
         "matmul",
+        "invert",
         "rotate",
         "translate",
         "scale",
@@ -54,6 +55,7 @@ def __dir__():
         "get_global_coordinates",
         "get_angles",
         "get_quaternions",
+        "get_distances",
         "register_points",
         "isnan",
     ]
@@ -122,7 +124,7 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
     return result
 
 
-def inv(matrix_series: ArrayLike, /) -> np.ndarray:
+def invert(matrix_series: ArrayLike, /) -> np.ndarray:
     """
     Calculate series of inverse transform.
 
@@ -141,14 +143,18 @@ def inv(matrix_series: ArrayLike, /) -> np.ndarray:
 
     Note
     ----
-    This function requires (and checks) that each matrix really is an
-    homogeneous transform by evaluating the determinant of its rotation
-    component. It then calculates the inverse matrix quickly using the
-    transpose of the rotation component.
+    This function requires (and checks) that the input is a transform series.
+    It then calculates the inverse matrix quickly using the transpose of the
+    rotation component.
 
     """
     matrix_series = np.array(matrix_series)
     index_is_nan = isnan(matrix_series)
+
+    if not is_transform_series(matrix_series):
+        raise ValueError(
+            "The input must be a series of homogeneous transform series."
+        )
 
     _check_no_skewed_rotation(matrix_series, "matrix_series")
 
@@ -545,7 +551,7 @@ def get_local_coordinates(
     global_coordinates_array[nan_index] = 0
 
     # Invert the reference frame to obtain the inverse transformation
-    inv_ref_T = inv(reference_frames_array)
+    inv_ref_T = invert(reference_frames_array)
 
     local_coordinates = np.zeros(global_coordinates_array.shape)  # init
     local_coordinates = matmul(inv_ref_T, global_coordinates_array)
@@ -600,6 +606,36 @@ def get_global_coordinates(
         reference_frames_array, local_coordinates_array
     )
     return global_coordinates
+
+
+def get_distances(
+    point_series1: ArrayLike, point_series2: ArrayLike, /
+) -> np.ndarray:
+    """
+    Calculate the euclidian distance between two point series.
+
+    Parameters
+    ----------
+    point_series1, point_series2
+        Series of N points, as an Nx4 array-like of the form
+        [[x, y, z, 1.0], ...]
+
+    Returns
+    -------
+    np.ndarray
+        Series of euclidian distance, as an Nx4 array of the form
+        [[x, y, z, 0.0], ...]
+
+    """
+    point_series1 = np.array(point_series1)
+    point_series2 = np.array(point_series2)
+
+    return np.sqrt(
+        np.sum(
+            (point_series1 - point_series2) ** 2,
+            axis=1,
+        )
+    )
 
 
 # %% "is" functions

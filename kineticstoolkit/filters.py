@@ -61,7 +61,7 @@ def _validate_input(ts):
     if np.isnan(ts.get_sample_rate()):
         raise ValueError("Sample rate must be constant.")
     try:
-        assert ts.time_info["Unit"] == "s"
+        assert ts.info["Time"]["Unit"] == "s"
     except KeyError:
         warnings.warn("I assume, but cannot tell if the time unit is 's'.")
     except ValueError:

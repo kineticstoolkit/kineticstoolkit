@@ -14,8 +14,8 @@ An open-source Python package to facilitate research in biomechanics.
 </div>
 
 - Website: https://kineticstoolkit.uqam.ca
-- Repository for the Python package: https://github.com/felixchenier/kineticstoolkit
-- Repository for the website: https://github.com/felixchenier/kineticstoolkit_doc
+- Package source: https://github.com/kineticstoolkit/kineticstoolkit
+- Website source: https://github.com/kineticstoolkit/kineticstoolkit_doc
 
 ![](https://kineticstoolkit.uqam.ca/doc/_images/frontpage.gif)
 

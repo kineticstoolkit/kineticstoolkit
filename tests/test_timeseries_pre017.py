@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Copyright 2020-2024 Félix Chénier
+# Copyright 2020-2025 Félix Chénier
 
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,10 +16,19 @@
 # limitations under the License.
 
 __author__ = "Félix Chénier"
-__copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
+__copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
-"""These are the unit tests for the TimeSeries class."""
+"""
+Pre-0.17 TimeSeries unit tests for backward-compatibility.
+
+This tests that everything playing with data_info and time_info still
+works the same in 0.17+ as it did before all info was merged.
+
+This test file will be deleted two years after Kinetics Toolkit 1.0 is
+out.
+
+"""
 import kineticstoolkit as ktk
 import numpy as np
 import matplotlib.pyplot as plt
@@ -133,9 +142,14 @@ def test_TimeSeries():
     ts.data["test"] = np.arange(10)  # Now the samething
     assert ts == ts2
 
-    ts2 = ts2.add_info("test", "info", "test")
+    ts2.time_info["info"] = "test"
     assert ts != ts2
-    ts = ts.add_info("test", "info", "test")
+    ts.time_info["info"] = "test"
+    assert ts == ts2
+
+    ts2 = ts2.add_data_info("test", "info", "test")
+    assert ts != ts2
+    ts = ts.add_data_info("test", "info", "test")
     assert ts == ts2
 
     ts2 = ts2.add_event(1, "one")
@@ -148,14 +162,10 @@ def test_empty_constructor():
     ts = ktk.TimeSeries()
     assert isinstance(ts.time, np.ndarray)
     assert isinstance(ts.data, dict)
-    assert isinstance(ts.info, dict)
-    assert isinstance(ts.events, list)
-    assert ts.info["Time"]["Unit"] == "s"
-
-    # Pre-0.17
-    assert ts.time_info["Unit"] == "s"
     assert isinstance(ts.time_info, dict)
     assert isinstance(ts.data_info, dict)
+    assert isinstance(ts.events, list)
+    assert ts.time_info["Unit"] == "s"
 
 
 def test_copy():
@@ -165,9 +175,9 @@ def test_copy():
     ts1.data["signal1"] = np.random.rand(100, 2)
     ts1.data["signal2"] = np.random.rand(100, 2)
     ts1.data["signal3"] = np.random.rand(100, 2)
-    ts1.add_info("signal1", "Unit", "Unit1", in_place=True)
-    ts1.add_info("signal2", "Unit", "Unit2", in_place=True)
-    ts1.add_info("signal3", "Unit", "Unit3", in_place=True)
+    ts1.add_data_info("signal1", "Unit", "Unit1", in_place=True)
+    ts1.add_data_info("signal2", "Unit", "Unit2", in_place=True)
+    ts1.add_data_info("signal3", "Unit", "Unit3", in_place=True)
     ts1.add_event(1.54, "test_event1", in_place=True)
     ts1.add_event(10.2, "test_event2", in_place=True)
     ts1.add_event(100, "test_event3", in_place=True)
@@ -180,30 +190,33 @@ def test_copy():
     ts2 = ts1.copy(copy_data=False)
     assert ts1 != ts2
     assert np.all(ts2.time == ts1.time)
-    assert "signal1" not in ts2.data
-    assert "signal2" not in ts2.data
-    assert "signal3" not in ts2.data
-    assert ts2.info["signal1"]["Unit"] == "Unit1"
-    assert ts2.info["signal2"]["Unit"] == "Unit2"
-    assert ts2.info["signal3"]["Unit"] == "Unit3"
+    assert ts2.data_info["signal1"]["Unit"] == "Unit1"
+    assert ts2.data_info["signal2"]["Unit"] == "Unit2"
+    assert ts2.data_info["signal3"]["Unit"] == "Unit3"
     assert ts2.events[0].time == 1.54
     assert ts2.events[1].time == 10.2
     assert ts2.events[2].time == 100
 
-    # A deep copy without info
-    ts2 = ts1.copy(copy_info=False)
+    # A deep copy without data_info
+    ts2 = ts1.copy(copy_data_info=False)
     assert ts1 != ts2
     assert np.all(ts2.time == ts1.time)
     assert np.all(ts2.data["signal1"] == ts1.data["signal1"])
     assert np.all(ts2.data["signal2"] == ts1.data["signal2"])
     assert np.all(ts2.data["signal3"] == ts1.data["signal3"])
-    assert "signal1" not in ts2.info
-    assert "signal2" not in ts2.info
-    assert "signal3" not in ts2.info
-    assert "Time" in ts2.info  # Time should be there by default.
     assert ts2.events[0].time == 1.54
     assert ts2.events[1].time == 10.2
     assert ts2.events[2].time == 100
+
+    # A deep copy with only time_info
+    ts2 = ts1.copy(copy_time=False, copy_data=False, copy_data_info=False)
+    assert ts2.time_info["Unit"] == "s"
+
+    # A deep copy with only data_info
+    ts2 = ts1.copy(copy_time=False, copy_data=False, copy_time_info=False)
+    assert ts2.data_info["signal1"]["Unit"] == "Unit1"
+    assert ts2.data_info["signal2"]["Unit"] == "Unit2"
+    assert ts2.data_info["signal3"]["Unit"] == "Unit3"
 
 
 def test_time_property():
@@ -262,118 +275,12 @@ def test_data_property():
         pass
 
 
-def test_check_valid_time():
-    ts = ktk.TimeSeries()
-    ts.time = [1.0, 2.0, 3.0]
-    ts.data["test1"] = np.array([1, 2, 3])
-    ts.data["test2"] = [1, 2, 3]
-
-    ts.time[1] = np.nan  # Should fail
-    try:
-        ts._check_valid_time()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-
-    ts.time = [1.0, 2.0, 2.0]  # Should fail
-    try:
-        ts._check_valid_time()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-
-
-def test_check_assignment_exceptions():
-    ts = ktk.TimeSeries()
-    ts.time = [1.0, 2.0, 3.0]
-    ts.data["test1"] = np.array([1, 2, 3])
-    ts.data["test2"] = [1, 2, 3]
-    ts.add_info("test1", "Unit", "N", in_place=True)
-    ts.add_info("test2", "Unit", "N", in_place=True)
-    ts._check_valid_time()
-
-    try:
-        ts.info["test2"] = "string"  # Should fail
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    try:
-        ts.info = "string"  # Should fail
-        raise Exception("This should fail.")
-    except TypeError:
-        pass
-
-    ts = ktk.TimeSeries()
-    ts.add_event(0, in_place=True)  # Should pass
-    ts._check_valid_time()
-
-
-def test_check_well_shaped():
-    ts = ktk.TimeSeries()  # Should pass
-    ts._check_well_shaped()
-
-    ts.time = [1.0, 2.0, 3.0]  # Should pass
-    ts._check_well_shaped()
-
-    ts.data["test1"] = np.array([1, 2, 3])
-    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
-    ts._check_well_shaped()
-
-    ts.data["test2"] = np.array([1, 2])  # Should fail
-    try:
-        ts._check_well_shaped()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-
-    ts.data["test2"] = np.array([1, 2, 3])  # Should pass
-    ts._check_well_shaped()
-
-
-def test_check_not_empty_time():
-    ts = ktk.TimeSeries()  # Should fail
-    try:
-        ts._check_not_empty_time()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-    ts.time = [1.0, 2.0, 3.0]  # Should pass
-    ts._check_not_empty_time()
-
-
-def test_check_increasing_time():
-    ts = ktk.TimeSeries(time=[0.0, 2.0, 1.0])  # Should fail
-    try:
-        ts._check_increasing_time()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-    ts.time = [1.0, 2.0, 3.0]  # Should pass
-    ts._check_increasing_time
-
-
-def test_check_constant_sample_rate():
-    ts = ktk.TimeSeries(time=[0.0, 1.0, 3.0])  # Should fail
-    try:
-        ts._check_constant_sample_rate()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-    ts.time = [1.0, 2.0, 3.0]  # Should pass
-    ts._check_constant_sample_rate()
-
-
-def test_check_not_empty_data():
-    ts = ktk.TimeSeries()
-    ts.time = [1.0, 2.0, 3.0]  # Should fail
-    try:
-        ts._check_not_empty_data()
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-    ts.data["test1"] = np.array([1.0, 2.0, 3.0])  # Should pass
-    ts._check_not_empty_data()
+def test_time_info_data_info_constructor():
+    ts = ktk.TimeSeries(
+        time_info={"Unit": "h"}, data_info={"Data": {"Unit": "km"}}
+    )
+    assert ts.time_info == {"Unit": "h"}
+    assert ts.data_info == {"Data": {"Unit": "km"}}
 
 
 # %% From array, from and to dataframe
@@ -398,11 +305,15 @@ def test_from_to_dataframe():
     df["Data1[0,1]"] = np.arange(2) + 2
     df["Data1[1,0]"] = np.arange(2) + 3
     df["Data1[1,1]"] = np.arange(2) + 4
-    ts = ktk.TimeSeries.from_dataframe(df)
+    ts = ktk.TimeSeries.from_dataframe(
+        df, time_info={"Unit": "h"}, data_info={"Data0": {"Unit": "N"}}
+    )
     assert np.allclose(ts.data["Data0"], [0, 1])
     assert np.allclose(ts.data["Data1"], [[[1, 2], [3, 4]], [[2, 3], [4, 5]]])
+    assert ts.time_info == {"Unit": "h"}
+    assert ts.data_info == {"Data0": {"Unit": "N"}}
 
-    # new form (0.17)
+    # new form (June 2025)
     df = pd.DataFrame(
         columns=[
             "Data0",
@@ -487,12 +398,14 @@ def test_from_array():
         [1, 2, 3],
         time=[5, 6, 7],
         data_key="oh",
-        info={"Time": {"Unit": "s"}, "oh": {"eh": "ah"}},
+        time_info={"oh": "ah"},
+        data_info={"oh": {"ah": "eh"}},
         events=[ktk.TimeSeriesEvent(1, "a")],
     )
     assert np.array_equal(ts.time, [5, 6, 7])
     assert np.array_equal(ts.data["oh"], [1, 2, 3])
-    assert ts.info == {"Time": {"Unit": "s"}, "oh": {"eh": "ah"}}
+    assert ts.time_info == {"oh": "ah"}
+    assert ts.data_info == {"oh": {"ah": "eh"}}
     assert ts.events == [ktk.TimeSeriesEvent(1, "a")]
 
 
@@ -561,85 +474,38 @@ def test_constructor_variants():
 # %% Metadata
 
 
-def test_add_rename_remove_info():
+def test_add_remove_data_info():
     ts = ktk.TimeSeries()
-    ts = ts.add_info("Force", "Unit", "N")
-    ts.add_info("Force", "Other", "hello", in_place=True)
+    ts = ts.add_data_info("Force", "Unit", "N")
+    ts.add_data_info("Force", "Other", "hello", in_place=True)
 
-    # Check that info was added
-    assert ts.info["Force"]["Unit"] == "N"
-    assert ts.info["Force"]["Other"] == "hello"
+    # Check that data_info was added
+    assert ts.data_info["Force"]["Unit"] == "N"
+    assert ts.data_info["Force"]["Other"] == "hello"
 
-    # Add info with same name
-    # without overwrite
+    # Check if overwrite works (change to try/except in version 1.0)
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        ts.add_data_info("Force", "Other", 111, in_place=True)
+    ts.add_data_info("Force", "Other", 111, in_place=True, overwrite=True)
+
+    # Test removing non-existing data_info (should not work)
     try:
-        ts.add_info("Force", "Other", 111, in_place=True)
-        raise Exception("This should not pass")
-    except ValueError:
-        pass
-    # with overwrite
-    ts.add_info("Force", "Other", 111, in_place=True, overwrite=True)
-    assert ts.info["Force"]["Other"] == 111
-
-    # Rename existing info
-    ts.rename_info("Force", "Other", "Power", "Unit", in_place=True)
-    assert ts.info["Power"]["Unit"] == 111
-    assert "Other" not in ts.info["Force"]
-
-    # Rename non-existing info
-    try:
-        ts.rename_info("ASDBKJ", "NF:", "SDANLN", "FN:L")
-        raise Exception("This should not pass")
-    except KeyError:
-        pass
-    try:
-        ts.rename_info("Force", "NF:", "Force", "FN:L")
-        raise Exception("This should not pass")
+        ts = ts.remove_data_info("Nonexisting", "Other")
+        raise Exception("This should fail.")
     except KeyError:
         pass
 
-    # Remove existing info
-    ts.remove_info("Force", "Unit", in_place=True)
-    assert "Force" not in ts.info
-
-    # Remove non-existing info
-    try:
-        ts.remove_info("Power", "SDVJDKSAKSKJA", in_place=True)
-        raise Exception("This should not pass")
-    except KeyError:
-        pass
-    try:
-        ts.remove_info("Force", "Unit", in_place=True)
-        raise Exception("This should not pass")
-    except KeyError:
-        pass
-
-
-# %% Time
-
-
-def test_shift():
-    ts = ktk.TimeSeries(time=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    ts = ts.add_event(4)
-    ts.shift(-5, in_place=True)
-    assert np.allclose(ts.time, [-5, -4, -3, -2, -1, 0, 1, 2, 3, 4])
-    assert ts.events[0].time == -1
+    # Test removing existing data_info
+    ts.remove_data_info("Force", "Other", in_place=True)
+    assert ts.data_info["Force"]["Unit"] == "N"
+    assert len(ts.data_info["Force"]) == 1
 
 
 # %% Data
 
 
 def test_add_data():
-    ts = ktk.TimeSeries(time=[0, 1, 2])
-
-    # Adding data that doesn't match time
-    try:
-        ts.add_data("data3", 3 * np.eye(4), in_place=True)
-        raise Exception("This should fail.")
-    except ValueError:
-        pass
-
-    # Reset
     ts = ktk.TimeSeries()
 
     # Adding data and populating a corresponding time value
@@ -720,6 +586,12 @@ def test_rename_remove_data():
     ts = ts.rename_data("Force", "Moment")
     assert np.allclose(ts.data["Moment"], np.arange(10))
 
+    # Same test but with data info
+    ts.add_data_info("Moment", "Unit", "Nm", in_place=True)
+    ts = ts.rename_data("Moment", "Power")
+    assert np.allclose(ts.data["Power"], np.arange(10))
+    # assert ts.data_info["Power"]["Unit"] == "Nm"  # Breaking change in 0.17
+
     # Rename inexistent data (should fail)
     try:
         ts = ts.rename_data("NoKey", "Anything")
@@ -735,12 +607,14 @@ def test_rename_remove_data():
         pass
 
     # Those fail should not have modified the TimeSeries
-    assert np.allclose(ts.data["Moment"], np.arange(10))
+    assert np.allclose(ts.data["Power"], np.arange(10))
     assert len(ts.data) == 1
+    # assert len(ts.data_info) == 1  # Breaking change in 0.17
 
     # Remove data
-    ts = ts.remove_data("Moment")
+    ts = ts.remove_data("Power")
     assert len(ts.data) == 0
+    # assert len(ts.data_info) == 0  # Breaking change in 0.17
 
 
 # %% Events
@@ -830,13 +704,6 @@ def test_remove_event():
     ts.remove_event("event2", 1, in_place=True)
     assert str(ts.events) == "[TimeSeriesEvent(time=10.8, name='event2')]"
 
-    # Remove non-existing event
-    try:
-        ts = ts.remove_event("fdsabnfkjlsdbf")
-        raise Exception("This should fail.")
-    except TimeSeriesEventNotFoundError:
-        pass
-
     # Test remove bad occurrence (should fail)
     try:
         ts = ts.remove_event("event2", 10)
@@ -845,18 +712,6 @@ def test_remove_event():
         pass
 
     assert str(ts.events) == "[TimeSeriesEvent(time=10.8, name='event2')]"
-
-
-def test_trim_events():
-    ts = ktk.TimeSeries(time=[0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
-    ts.add_event(-1, "event", in_place=True)
-    ts.add_event(0, "event", in_place=True)
-    ts.add_event(9, "event", in_place=True)
-    ts.add_event(10, "event", in_place=True)
-    ts.trim_events(in_place=True)
-    assert len(ts.events) == 2
-    assert ts.events[0].time == 0
-    assert ts.events[1].time == 9
 
 
 def test_remove_duplicate_events():
@@ -936,11 +791,6 @@ def test_get_event_indexes_count_index_time():
         raise Exception("This should fail.")
     except TimeSeriesEventNotFoundError:
         pass
-    try:
-        ts._get_event_index("event1", -1)
-        raise Exception("This should fail.")
-    except TimeSeriesEventNotFoundError:
-        pass
 
 
 # %% Sample rate, merge, resample
@@ -968,97 +818,34 @@ def test_get_sample_rate():
 
 def test_merge():
     # Test the different combination of overwrite and on_conflict
-    #
     ts1 = ktk.TimeSeries(
         time=[0, 1, 2], data={"data1": [0, 1, 2], "data2": [0, 1, 2]}
     )
-    ts1.add_info("data1", "Unit", "N", in_place=True)
-
     ts2 = ktk.TimeSeries(time=[0, 1, 2], data={"data1": [3, 4, 5]})
-    ts2.add_info("data1", "Unit", "Nm", in_place=True)
-    ts2.add_info("data2", "Unit", "Nm", in_place=True)
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        ts3 = ts1.merge(ts2, overwrite=False)
+        assert np.all(
+            ts1.merge(ts2, overwrite=False).data["data1"] == [0, 1, 2]
+        )
+        assert np.all(
+            ts1.merge(ts2, overwrite=True).data["data1"] == [3, 4, 5]
+        )
 
-        assert np.all(ts3.data["data1"] == [0, 1, 2])
-        assert ts3.info["data1"]["Unit"] == "N"
-        assert ts3.info["data2"]["Unit"] == "Nm"
-
-        ts3 = ts1.merge(ts2, overwrite=True)
-
-        assert np.all(ts3.data["data1"] == [3, 4, 5])
-        assert ts3.info["data1"]["Unit"] == "Nm"
-        assert ts3.info["data2"]["Unit"] == "Nm"
-
-    ts3 = ts1.merge(ts2, overwrite=False, on_conflict="mute")
-
-    assert np.all(ts3.data["data1"] == [0, 1, 2])
-    assert ts3.info["data1"]["Unit"] == "N"
-    assert ts3.info["data2"]["Unit"] == "Nm"
-
-    ts3 = ts1.merge(ts2, overwrite=True, on_conflict="mute")
-
-    assert np.all(ts3.data["data1"] == [3, 4, 5])
-    assert ts3.info["data1"]["Unit"] == "Nm"
-    assert ts3.info["data2"]["Unit"] == "Nm"
+    assert np.all(
+        ts1.merge(ts2, overwrite=False, on_conflict="mute").data["data1"]
+        == [0, 1, 2]
+    )
+    assert np.all(
+        ts1.merge(ts2, overwrite=True, on_conflict="mute").data["data1"]
+        == [3, 4, 5]
+    )
 
     try:
         assert ts1.merge(ts2, on_conflict="error")
         raise Exception("This should not happen.")
     except TimeSeriesMergeConflictError:
         pass
-
-    # Test with combinations of merge_info and merge_events
-    ts1 = ktk.TimeSeries(
-        time=[0, 1, 2], data={"data1": [0, 1, 2], "data2": [1, 1, 2]}
-    )
-    ts1.add_info("data1", "Unit", "N", in_place=True)
-    ts1.add_event(0, "event", in_place=True)
-
-    ts2 = ktk.TimeSeries(
-        time=[0, 1, 2], data={"data1": [0, 1, 2], "data3": [2, 1, 2]}
-    )
-    ts2.add_info("data1", "Unit", "N", in_place=True)
-    ts2.add_info("data2", "Unit", "Nm", in_place=True)
-    ts2.add_event(1, "event", in_place=True)
-
-    # Merge selected stuff to avoid conflicts
-    ts3 = ts1.merge(
-        ts2, data_keys="data3", merge_events=False, merge_info=False
-    )
-    assert np.all(ts3.time == ts1.time)
-    assert np.all(ts3.data["data1"] == [0, 1, 2])
-    assert np.all(ts3.data["data2"] == [1, 1, 2])
-    assert np.all(ts3.data["data3"] == [2, 1, 2])
-    assert ts3.count_events("event") == 1
-    assert ts3.info["data1"]["Unit"] == "N"
-    assert "data2" not in ts3.info
-
-    # Samething with event merging
-    ts3 = ts1.merge(
-        ts2, data_keys="data3", merge_events=True, merge_info=False
-    )
-    assert np.all(ts3.time == ts1.time)
-    assert np.all(ts3.data["data1"] == [0, 1, 2])
-    assert np.all(ts3.data["data2"] == [1, 1, 2])
-    assert np.all(ts3.data["data3"] == [2, 1, 2])
-    assert ts3.count_events("event") == 2
-    assert ts3.info["data1"]["Unit"] == "N"
-    assert "data2" not in ts3.info
-
-    # Samething with info merging
-    ts3 = ts1.merge(
-        ts2, data_keys="data3", merge_events=False, merge_info=True
-    )
-    assert np.all(ts3.time == ts1.time)
-    assert np.all(ts3.data["data1"] == [0, 1, 2])
-    assert np.all(ts3.data["data2"] == [1, 1, 2])
-    assert np.all(ts3.data["data3"] == [2, 1, 2])
-    assert ts3.count_events("event") == 1
-    assert ts3.info["data1"]["Unit"] == "N"
-    assert ts3.info["data2"]["Unit"] == "Nm"
 
 
 def test_merge_and_resample():
@@ -1068,9 +855,9 @@ def test_merge_and_resample():
     ts1.data["signal1"] = np.random.rand(100, 2)
     ts1.data["signal2"] = np.random.rand(100, 2)
     ts1.data["signal3"] = np.random.rand(100, 2)
-    ts1.add_info("signal1", "Unit", "Unit1", in_place=True)
-    ts1.add_info("signal2", "Unit", "Unit2", in_place=True)
-    ts1.add_info("signal3", "Unit", "Unit3", in_place=True)
+    ts1.add_data_info("signal1", "Unit", "Unit1", in_place=True)
+    ts1.add_data_info("signal2", "Unit", "Unit2", in_place=True)
+    ts1.add_data_info("signal3", "Unit", "Unit3", in_place=True)
     ts1.add_event(1.54, "test_event1", in_place=True)
     ts1.add_event(10.2, "test_event2", in_place=True)
     ts1.add_event(100, "test_event3", in_place=True)
@@ -1080,9 +867,9 @@ def test_merge_and_resample():
     ts2.data["signal4"] = np.random.rand(100, 2)
     ts2.data["signal5"] = np.random.rand(100, 2)
     ts2.data["signal6"] = np.random.rand(100, 2)
-    ts2.add_info("signal4", "Unit", "Unit1", in_place=True)
-    ts2.add_info("signal5", "Unit", "Unit2", in_place=True)
-    ts2.add_info("signal6", "Unit", "Unit3", in_place=True)
+    ts2.add_data_info("signal4", "Unit", "Unit1", in_place=True)
+    ts2.add_data_info("signal5", "Unit", "Unit2", in_place=True)
+    ts2.add_data_info("signal6", "Unit", "Unit3", in_place=True)
     ts2.add_event(1.54, "test_event1", in_place=True)
     ts2.add_event(10.2, "test_event2", in_place=True)
     ts2.add_event(100, "test_event4", in_place=True)  # This one is named diff.
@@ -1092,9 +879,15 @@ def test_merge_and_resample():
     assert np.all(ts1.data["signal4"] == ts2.data["signal4"])
     assert np.all(ts1.data["signal5"] == ts2.data["signal5"])
     assert np.all(ts1.data["signal6"] == ts2.data["signal6"])
-    assert np.all(ts1.info["signal4"]["Unit"] == ts2.info["signal4"]["Unit"])
-    assert np.all(ts1.info["signal5"]["Unit"] == ts2.info["signal5"]["Unit"])
-    assert np.all(ts1.info["signal6"]["Unit"] == ts2.info["signal6"]["Unit"])
+    assert np.all(
+        ts1.data_info["signal4"]["Unit"] == ts2.data_info["signal4"]["Unit"]
+    )
+    assert np.all(
+        ts1.data_info["signal5"]["Unit"] == ts2.data_info["signal5"]["Unit"]
+    )
+    assert np.all(
+        ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
+    )
 
     assert len(ts1.events) == 4
 
@@ -1105,9 +898,9 @@ def test_merge_and_resample():
     ts1.data["signal1"] = np.random.rand(100, 2)
     ts1.data["signal2"] = np.random.rand(100, 2)
     ts1.data["signal3"] = np.random.rand(100, 2)
-    ts1.add_info("signal1", "Unit", "Unit1", in_place=True)
-    ts1.add_info("signal2", "Unit", "Unit2", in_place=True)
-    ts1.add_info("signal3", "Unit", "Unit3", in_place=True)
+    ts1.add_data_info("signal1", "Unit", "Unit1", in_place=True)
+    ts1.add_data_info("signal2", "Unit", "Unit2", in_place=True)
+    ts1.add_data_info("signal3", "Unit", "Unit3", in_place=True)
     ts1.add_event(1.54, "test_event1", in_place=True)
     ts1.add_event(10.2, "test_event2", in_place=True)
     ts1.add_event(100, "test_event3", in_place=True)
@@ -1117,9 +910,9 @@ def test_merge_and_resample():
     ts2.data["signal4"] = ts2.time**2
     ts2.data["signal5"] = np.random.rand(300, 2)
     ts2.data["signal6"] = np.random.rand(300, 2)
-    ts2.add_info("signal4", "Unit", "Unit1", in_place=True)
-    ts2.add_info("signal5", "Unit", "Unit2", in_place=True)
-    ts2.add_info("signal6", "Unit", "Unit3", in_place=True)
+    ts2.add_data_info("signal4", "Unit", "Unit1", in_place=True)
+    ts2.add_data_info("signal5", "Unit", "Unit2", in_place=True)
+    ts2.add_data_info("signal6", "Unit", "Unit3", in_place=True)
     ts2.add_event(1.54, "test_event4", in_place=True)
     ts2.add_event(10.2, "test_event5", in_place=True)
     ts2.add_event(100, "test_event6", in_place=True)
@@ -1131,7 +924,7 @@ def test_merge_and_resample():
         pass
 
     # Try the same thing but with linear resampling
-    ts1 = ts1.merge(ts2, resample=True, on_conflict="mute")
+    ts1 = ts1.merge(ts2, resample=True)
 
     def _assert_almost_equal(one, two):
         assert np.max(np.abs(one - two)) < 1e-6
@@ -1139,9 +932,9 @@ def test_merge_and_resample():
     _assert_almost_equal(ts1.data["signal4"], ts2.data["signal4"][0::3])
     _assert_almost_equal(ts1.data["signal5"], ts2.data["signal5"][0::3])
     _assert_almost_equal(ts1.data["signal6"], ts2.data["signal6"][0::3])
-    assert ts1.info["signal4"]["Unit"] == ts2.info["signal4"]["Unit"]
-    assert ts1.info["signal5"]["Unit"] == ts2.info["signal5"]["Unit"]
-    assert ts1.info["signal6"]["Unit"] == ts2.info["signal6"]["Unit"]
+    assert ts1.data_info["signal4"]["Unit"] == ts2.data_info["signal4"]["Unit"]
+    assert ts1.data_info["signal5"]["Unit"] == ts2.data_info["signal5"]["Unit"]
+    assert ts1.data_info["signal6"]["Unit"] == ts2.data_info["signal6"]["Unit"]
 
 
 def test_resample_using_frequency():
@@ -1165,38 +958,13 @@ def test_resample_using_frequency():
 
 def test_resample_with_nans():
     ts = ktk.TimeSeries(time=np.arange(10.0))
-
-    # data1 contains a few nans
-    ts.data["data1"] = ts.time**2
-    ts.data["data1"][[0, 1, 5, 8, 9]] = np.nan
-
-    # data2 contains only nans and thus cannot be resampled
-    ts.data["data2"] = ts.time**2
-    ts.data["data2"][:] = np.nan
-
+    ts.data["data"] = ts.time**2
+    ts.data["data"][[0, 1, 5, 8, 9]] = np.nan
     ts1 = ts.resample(2.0)
     assert np.allclose(
-        np.isnan(ts1.data["data1"]),
+        np.isnan(ts1.data["data"]),
         [1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1],
     )
-    assert np.all(np.isnan(ts1.data["data2"]))
-
-    # But we cannot resample TO time with nans
-    try:
-        ts.resample([0, 1, 2, np.nan, 4])
-        raise Exception("This should fail")
-    except ValueError:
-        pass
-
-
-def test_resample_pchip():
-    ts = ktk.TimeSeries(time=np.arange(10.0))
-
-    # data1 contains a few nans
-    ts.data["data1"] = ts.time**2
-    ts1 = ts.resample(20, kind="pchip")
-    ts2 = ts1.resample(ts.time)
-    assert np.allclose(ts.data["data1"], ts2.data["data1"])
 
 
 def test_resample_no_extrapolation():
@@ -1409,19 +1177,6 @@ def test_get_index_after_event():
         pass
 
 
-def test_get_index_at_event():
-    ts = ktk.TimeSeries(time=np.arange(10) / 10)
-    ts.add_event(0.2, "event", in_place=True)
-    ts.add_event(0.36, "event", in_place=True)
-    assert ts.get_index_at_event("event") == 2
-    assert ts.get_index_at_event("event", occurrence=1) == 4
-    try:
-        ts.get_index_before_event("event", occurrence=2)
-        raise AssertionError("This should fail.")
-    except TimeSeriesEventNotFoundError:
-        pass
-
-
 # %% get_ts using index(es)
 def test_get_ts_before_index():
     ts = ktk.TimeSeries(time=np.arange(10) / 10)
@@ -1480,27 +1235,10 @@ def test_get_ts_between_indexes():
         ts.get_ts_between_indexes(2, 5, inclusive=[False, True]).time,
         np.array([0.3, 0.4, 0.5]),
     )
-
-    # Fails
     try:
         ts.get_ts_between_indexes(5, 2)  # Bad order
         raise AssertionError("This should fail.")
     except ValueError:
-        pass
-    try:
-        ts.get_ts_between_indexes(2, 5, inclusive=1)  # Bad type
-        raise AssertionError("This should fail.")
-    except TypeError:
-        pass
-    try:
-        ts.get_ts_between_indexes(-1, 2)  # Negative index
-        raise AssertionError("This should fail.")
-    except TimeSeriesRangeError:
-        pass
-    try:
-        ts.get_ts_between_indexes(1, 2000000)  # Index out of time
-        raise AssertionError("This should fail.")
-    except TimeSeriesRangeError:
         pass
 
 
@@ -1595,11 +1333,6 @@ def test_get_ts_between_times():
         ts.get_ts_between_times(-2, -1)
         raise Exception("This should fail.")
     except TimeSeriesRangeError:
-        pass
-    try:
-        ts.get_ts_between_indexes(2, 5, inclusive=1)  # Bad type
-        raise AssertionError("This should fail.")
-    except TypeError:
         pass
 
 
@@ -1726,11 +1459,6 @@ def test_get_ts_between_events():
         raise Exception("This should fail")
     except TimeSeriesRangeError:
         pass
-    try:
-        ts.get_ts_between_indexes(2, 5, inclusive=1)  # Bad type
-        raise AssertionError("This should fail.")
-    except TypeError:
-        pass
 
 
 # %% plot
@@ -1763,13 +1491,13 @@ def test_plot():
     plt.close(fig)
 
     # Add units
-    ts.add_info("data1", "Unit", "m", in_place=True)
+    ts.add_data_info("data1", "Unit", "m", in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)
 
     # Add another unit
-    ts.add_info("data2", "Unit", "mm", in_place=True)
+    ts.add_data_info("data2", "Unit", "mm", in_place=True)
     fig = plt.figure()
     ts.plot()
     plt.close(fig)

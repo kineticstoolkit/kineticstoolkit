@@ -199,7 +199,7 @@ def track_cluster(
     check_param("include_lcs", include_lcs, bool)
     check_param("lcs_name", lcs_name, str)
 
-    out = markers.copy(copy_data=False, copy_data_info=False)
+    out = markers.copy(copy_data=False)
     unit = _get_marker_unit(markers)
 
     # Track the cluster
@@ -210,7 +210,7 @@ def track_cluster(
             cluster[marker], frames
         )
         if unit is not None:
-            out.add_data_info(marker, "Unit", unit, in_place=True)
+            out.add_info(marker, "Unit", unit, overwrite=True, in_place=True)
 
     if include_lcs:
         out.data[lcs_name] = frames
@@ -252,7 +252,7 @@ def _get_marker_unit(markers: TimeSeries) -> None | str:
     unit = None
     for marker in markers.data:
         try:
-            this_unit = markers.data_info[marker]["Unit"]
+            this_unit = markers.info[marker]["Unit"]
         except KeyError:
             this_unit = None
 
