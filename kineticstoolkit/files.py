@@ -371,14 +371,14 @@ def read_c3d(
     as a TimeSeries, where each body orientation is expressed as an Nx4x4
     transforms series.
 
+    The C3D parameters are returned in `output["C3DParameters"]`. Note that
+    this content is dependent on each recording environment and software. It
+    could also change between versions of the C3D parser (ezc3d).
+
     Some software stores calculated values such as angles, forces, moments,
     powers, etc. into the C3D file. Storing these data is software-specific
     and is not standardized in the C3D file format (https://www.c3d.org).
     This function reads these values as points regardless of their nature.
-
-    All TimeSeries include a C3DParameters info, which is mainly the contents
-    of the PARAMETERS part of the C3D. The structure of this info is
-    dependent on the software that recorded the C3D.
 
     Parameters
     ----------
@@ -483,11 +483,6 @@ def read_c3d(
 
     if return_ezc3d:
         output["C3D"] = reader
-
-    # ---------------------------------
-    # List the metadata (info)
-    info = _ezc3d_to_dict(reader)
-    info["FileName"] = filename
 
     # ---------------------------------
     # List the events
@@ -624,10 +619,8 @@ def read_c3d(
                 np.arange(points.data[key].shape[0]) / point_rate + start_time
             )
 
-        # Add events and info
+        # Add events
         points.events = events.copy()
-        for key in info:
-            points.add_info("C3DParameters", key, info[key], in_place=True)
 
         output["Points"] = points
 
@@ -701,10 +694,8 @@ def read_c3d(
                 + start_time
             )
 
-        # Add events and info
+        # Add events
         analogs.events = events.copy()
-        for key in info:
-            analogs.add_info("C3DParameters", key, info[key], in_place=True)
 
         output["Analogs"] = analogs
 
@@ -758,12 +749,8 @@ def read_c3d(
             for data in rotations.data:
                 rotations.data[data][rotations.isnan(data), :, :] = np.nan
 
-            # Add events and info
+            # Add events
             rotations.events = events.copy()
-            for key in info:
-                rotations.add_info(
-                    "C3DParameters", key, info[key], in_place=True
-                )
 
             # Add to output
             output["Rotations"] = rotations
@@ -898,12 +885,14 @@ def read_c3d(
                 key, "Unit", forceplate_moment_unit, in_place=True
             )
 
-        # Add events and info
+        # Add events
         platforms.events = events.copy()
-        for key in info:
-            platforms.add_info("C3DParameters", key, info[key], in_place=True)
 
         output["ForcePlatforms"] = platforms
+
+    # ---------------------------------
+    # List the metadata (info)
+    output["C3DParameters"] = _ezc3d_to_dict(reader)
 
     return output
 

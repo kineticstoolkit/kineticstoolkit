@@ -168,6 +168,19 @@ def test_read_c3d():
         == 14
     )
 
+    # Check that C3D parameters are still read correctly
+    assert isinstance(c3d["C3DParameters"]["POINT"]["USED"], np.ndarray)
+    assert isinstance(c3d["C3DParameters"]["POINT"]["LABELS"], list)
+    assert isinstance(c3d["C3DParameters"]["POINT"]["DESCRIPTIONS"], list)
+    assert np.isclose(c3d["C3DParameters"]["POINT"]["SCALE"][0], -0.01)
+    assert c3d["C3DParameters"]["POINT"]["UNITS"] == ["mm"]
+    assert np.isclose(c3d["C3DParameters"]["POINT"]["RATE"][0], 100.0)
+    assert c3d["C3DParameters"]["POINT"]["DATA_START"] == np.array([111])
+    assert c3d["C3DParameters"]["POINT"]["FRAMES"] == np.array([221])
+    assert c3d["C3DParameters"]["ANALOG"]["USED"] == np.array([248])
+    assert c3d["C3DParameters"]["ANALOG"]["RATE"] == np.array([2000])
+    assert c3d["C3DParameters"]["FORCE_PLATFORM"]["USED"] == np.array([4])
+
 
 def test_read_c3d_many_analogs():
     """Test fix https://github.com/kineticstoolkit/kineticstoolkit/issues/231"""
