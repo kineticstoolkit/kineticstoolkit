@@ -758,7 +758,7 @@ def read_c3d(
     # -----------------
     # Platforms
     # -----------------
-    if reader["data"]["platform"] != []:
+    if (reader["data"]["platform"] != []) and ("Analogs" in output):
 
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
