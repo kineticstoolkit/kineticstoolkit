@@ -72,14 +72,16 @@ def _ezc3d_to_dict(c3d) -> dict[str, Any]:
 
 def save(filename: str, variable: Any) -> None:
     """
-    Save a variable to a ktk.zip file.
+    Save a variable to a file.
 
-    A ktk.zip file is a zipped folder containing two files:
+    File extension could be either:
+        - json
+        - json.zip : save as json but zips the file to save space
+        - ktk.zip : a zipped folder containing two files:
+            - metadata.json, which includes save date, user, etc.
+            - data.json, which includes the data.
 
-    - metadata.json, which includes save date, user, etc.
-    - data.json, which includes the data.
-
-    The following classes are supported:
+    The following standard classes are supported:
 
     - dict containing any supported class
     - list containing any supported class
@@ -89,15 +91,19 @@ def save(filename: str, variable: Any) -> None:
     - True
     - False
     - None
+
+    In addition to these standard classes, the following are also supported
+    and identified in the JSON file by an added "class__" key.
+
     - numpy.array
     - pandas.DataFrame (basic DataFrames, e.g., without multi-indexing.)
     - pandas.Series
-    - ktk.TimeSeries
+    - kineticstoolkit.TimeSeries
 
     Parameters
     ----------
     filename:
-        Name of the file to save to (e.g., "file.ktk.zip")
+        Name of the file to save to (e.g., "file.json")
     variable:
         The variable to save.
 
@@ -108,10 +114,11 @@ def save(filename: str, variable: Any) -> None:
     Caution
     -------
     Tuples are also supported but will be loaded back as lists, without
-    warning. Complex Pandas Series (e.g., series or different types) may not be
-    supported: only name, index and data are saved. Complex Pandas DataFrames
-    (e.g., multiindex, columns of different types) may not be supported:
-    only columns, index, and data are saved.
+    warning. This is Python's standard behaviour. Complex Pandas Series
+    (e.g., series or different types) may not be supported: only name, index
+    and data are saved. Complex Pandas DataFrames (e.g., multiindex, columns
+    of different types) may not be supported: only columns, index, and data
+    are saved.
 
     See Also
     --------
@@ -189,25 +196,45 @@ def save(filename: str, variable: Any) -> None:
         "User": getpass.getuser(),
     }
 
-    # Save
+    # Prepare temp folder if needed
     temp_folder = (
         kineticstoolkit.config.temp_folder + "/save" + str(time.time())
     )
-
     try:
         shutil.rmtree(temp_folder)
     except:
         pass
     os.mkdir(temp_folder)
 
-    with open(temp_folder + "/metadata.json", "w") as fid:
-        json.dump(metadata, fid, indent="\t")
+    # Save
+    if filename.lower().endswith(".json"):
+        with open(filename, "w") as fid:
+            json.dump(variable, fid, cls=CustomEncoder, indent=None)
 
-    with open(temp_folder + "/data.json", "w") as fid:
-        json.dump(variable, fid, cls=CustomEncoder, indent="\t")
+    elif filename.lower().endswith(".json.zip"):
+        with open(temp_folder + "/" + filename[:-4], "w") as fid:
+            json.dump(variable, fid, cls=CustomEncoder, indent=None)
+        shutil.make_archive(temp_folder, "zip", temp_folder)
+        shutil.move(temp_folder + ".zip", filename)
 
-    shutil.make_archive(temp_folder, "zip", temp_folder)
-    shutil.move(temp_folder + ".zip", filename)
+    elif filename.lower().endswith(".ktk.zip"):
+        with open(temp_folder + "/metadata.json", "w") as fid:
+            json.dump(metadata, fid, indent="\t")
+
+        with open(temp_folder + "/data.json", "w") as fid:
+            # Indent = `\t` to stay compatible with pre-0.18 version; avoid
+            # changing something just for fun. But with the added .json.zip
+            # and .json formats, it's better to just have a smaller json file
+            # and json.zip should be the same json as without a zip.
+            json.dump(variable, fid, cls=CustomEncoder, indent="\t")
+
+        shutil.make_archive(temp_folder, "zip", temp_folder)
+        shutil.move(temp_folder + ".zip", filename)
+    else:
+        raise ValueError(
+            "Filename must end with either '.json', '.json.zip' or '.ktk.zip'"
+        )
+
     shutil.rmtree(temp_folder)
 
 
@@ -267,7 +294,7 @@ def _load_object_hook(obj):
 
 def load(filename: str, *, include_metadata: bool = False) -> Any:
     """
-    Load a ktk.zip file.
+    Load a json, json.zip or ktk.zip file.
 
     Load a data file as saved using the ``ktk.save`` function.
 
@@ -281,7 +308,8 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     filename
         The path of the zip file to load.
     include_metadata
-        Optional. If True, the output is a tuple of this form:
+        Optional. If True and the file is in the `ktk.zip` format, the output
+        is a tuple of this form:
         (data, metadata).
 
     Returns
@@ -297,21 +325,38 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     check_param("filename", filename, str)
     check_param("include_metadata", include_metadata, bool)
 
-    archive = zipfile.ZipFile(filename, "r")
+    if filename.lower().endswith(".json"):
+        with open(filename, "r") as fid:
+            return json.load(fid, object_hook=_load_object_hook)
 
-    data = json.loads(
-        archive.read("data.json").decode(), object_hook=_load_object_hook
-    )
-
-    if include_metadata:
-        metadata = json.loads(
-            archive.read("metadata.json").decode(),
-            object_hook=_load_object_hook,
+    elif filename.lower().endswith(".json.zip"):
+        archive = zipfile.ZipFile(filename, "r")
+        return json.loads(
+            archive.read(filename[:-4]).decode(), object_hook=_load_object_hook
         )
-        return data, metadata
+
+    elif filename.lower().endswith(
+        ".zip"
+    ):  # We accept just .zip as a fallback
+        archive = zipfile.ZipFile(filename, "r")
+        data = json.loads(
+            archive.read("data.json").decode(), object_hook=_load_object_hook
+        )
+
+        if include_metadata:
+            metadata = json.loads(
+                archive.read("metadata.json").decode(),
+                object_hook=_load_object_hook,
+            )
+            return data, metadata
+
+        else:
+            return data
 
     else:
-        return data
+        raise ValueError(
+            "Filename must end with '.json', '.json.zip' or '.ktk.zip'"
+        )
 
 
 def read_c3d(

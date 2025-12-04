@@ -91,36 +91,39 @@ def test_save_load():
     a["TestDataFrame"] = ts.to_dataframe()
     a["TestSeries"] = a["TestDataFrame"]["signal1"]
 
-    ktk.save("test.ktk.zip", a)
-    b = ktk.load("test.ktk.zip")
+    # test all three save formats
+    for filename in ["test.json", "test.json.zip", "test.ktk.zip"]:
 
-    assert a["TestTimeSeries"] == b["TestTimeSeries"]
-    assert a["TestInt"] == b["TestInt"]
-    assert a["TestFloat"] == b["TestFloat"]
-    assert a["TestBool"] == b["TestBool"]
-    assert a["TestStr"] == b["TestStr"]
-    assert a["TestComplex"] == b["TestComplex"]
-    assert np.sum(np.abs(a["TestArray"] - b["TestArray"])) < 1e-10
-    assert a["TestList"] == b["TestList"]
-    #    assert a['TestTuple'] == b['TestTuple']
-    assert a["TestBigList"] == b["TestBigList"]
-    assert a["TestDict"] == b["TestDict"]
-    assert a["TestComplexDict"]["key1"] == b["TestComplexDict"]["key1"]
-    assert a["TestComplexDict"]["key2"] == b["TestComplexDict"]["key2"]
-    assert a["TestComplexDict"]["key3"] == b["TestComplexDict"]["key3"]
-    for i in range(10):
-        assert a["TestComplexList"][i] == b["TestComplexList"][i]
-    assert a["TestComplexList"][10] == b["TestComplexList"][10]
-    for i in range(10):
-        assert a["TestComplexTuple"][i] == b["TestComplexTuple"][i]
-    assert a["TestComplexTuple"][10] == b["TestComplexTuple"][10]
-    pd.testing.assert_frame_equal(a["TestDataFrame"], b["TestDataFrame"])
-    pd.testing.assert_series_equal(a["TestSeries"], b["TestSeries"])
+        ktk.save(filename, a)
+        b = ktk.load(filename)
 
-    c = "full_standard_test"
-    ktk.save("test.ktk.zip", c)
-    d = ktk.load("test.ktk.zip")
-    assert d == c
+        assert a["TestTimeSeries"] == b["TestTimeSeries"]
+        assert a["TestInt"] == b["TestInt"]
+        assert a["TestFloat"] == b["TestFloat"]
+        assert a["TestBool"] == b["TestBool"]
+        assert a["TestStr"] == b["TestStr"]
+        assert a["TestComplex"] == b["TestComplex"]
+        assert np.sum(np.abs(a["TestArray"] - b["TestArray"])) < 1e-10
+        assert a["TestList"] == b["TestList"]
+        #    assert a['TestTuple'] == b['TestTuple']
+        assert a["TestBigList"] == b["TestBigList"]
+        assert a["TestDict"] == b["TestDict"]
+        assert a["TestComplexDict"]["key1"] == b["TestComplexDict"]["key1"]
+        assert a["TestComplexDict"]["key2"] == b["TestComplexDict"]["key2"]
+        assert a["TestComplexDict"]["key3"] == b["TestComplexDict"]["key3"]
+        for i in range(10):
+            assert a["TestComplexList"][i] == b["TestComplexList"][i]
+        assert a["TestComplexList"][10] == b["TestComplexList"][10]
+        for i in range(10):
+            assert a["TestComplexTuple"][i] == b["TestComplexTuple"][i]
+        assert a["TestComplexTuple"][10] == b["TestComplexTuple"][10]
+        pd.testing.assert_frame_equal(a["TestDataFrame"], b["TestDataFrame"])
+        pd.testing.assert_series_equal(a["TestSeries"], b["TestSeries"])
+
+        c = "full_standard_test"
+        ktk.save(filename, c)
+        d = ktk.load(filename)
+        assert d == c
 
 
 def test_read_c3d():
