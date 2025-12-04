@@ -3524,7 +3524,7 @@ class TimeSeries:
             overwrite the already existing value, False to ignore the new value.
             Default is False.
         on_conflict
-            Optional. Select what the warning level when a data or info key
+            Optional. Select the warning level when a data or info key
             from the source TimeSeries already exists in the destination
             TimeSeries. May take the following values:
             "mute": No warning;
@@ -3615,16 +3615,23 @@ class TimeSeries:
                 )
             elif on_conflict == "warning":
                 # Conflict, and we need to warn
-                warnings.warn(
-                    f"The key '{key}' exists in both TimeSeries's data. "
-                    f"According to the overwrite={overwrite} "
-                    "parameter, its prior value has been overwritten "
-                    "by the new value. Use on_conflict='mute' to mute "
-                    "this warning."
-                )
                 if overwrite:
                     ts_out.add_data(
                         key, ts.data[key], overwrite=True, in_place=True
+                    )
+                    warnings.warn(
+                        f"The key '{key}' exists in both TimeSeries's data. "
+                        "According to the overwrite=True "
+                        "parameter, its prior value has been overwritten "
+                        "by the new value. Use on_conflict='mute' to mute "
+                        "this warning."
+                    )
+                else:
+                    warnings.warn(
+                        f"The key '{key}' exists in both TimeSeries's data. "
+                        "According to the overwrite=False "
+                        "parameter, its prior value has been preserved. "
+                        "Use on_conflict='mute' to mute this warning."
                     )
             else:
                 # Conflict, and we need to not warn.
@@ -3667,16 +3674,9 @@ class TimeSeries:
                                 f"The key '{inner_key}' exists in both "
                                 f"TimeSeries's attribute info[{outer_key}]."
                             )
+
                         elif on_conflict == "warning":
                             # Conflict, and we need to warn
-                            warnings.warn(
-                                f"The key '{inner_key}' exists in both "
-                                f"TimeSeries's attribute info[{outer_key}]. "
-                                f"According to the overwrite={overwrite} "
-                                "parameter, its prior value has been overwritten "
-                                "by the new value. Use on_conflict='mute' to mute "
-                                "this warning."
-                            )
                             if overwrite:
                                 ts_out.add_info(
                                     outer_key,
@@ -3685,6 +3685,23 @@ class TimeSeries:
                                     overwrite=True,
                                     in_place=True,
                                 )
+                                warnings.warn(
+                                    f"The key '{inner_key}' exists in both "
+                                    f"TimeSeries's attribute info[{outer_key}]. "
+                                    "According to the overwrite=True "
+                                    "parameter, its prior value has been overwritten "
+                                    "by the new value. Use on_conflict='mute' to mute "
+                                    "this warning."
+                                )
+                            else:
+                                warnings.warn(
+                                    f"The key '{inner_key}' exists in both "
+                                    f"TimeSeries's attribute info[{outer_key}]. "
+                                    "According to the overwrite=False "
+                                    "parameter, its prior value has been preserved. "
+                                    "Use on_conflict='mute' to mute this warning."
+                                )
+
                         else:
                             # Conflict, and we need to not warn.
                             if overwrite:
