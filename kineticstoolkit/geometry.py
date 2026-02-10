@@ -1278,7 +1278,7 @@ def create_transform_series(
     If the input is a series of 3x3 rotation matrices or 4x4 homogeneous
     transforms, use this form::
 
-        ktk.geometry.to_transform_series(
+        ktk.geometry.create_transform_series(
             matrices: ArrayLike,
             *,
             positions: ArrayLike | None = None,
@@ -1289,7 +1289,7 @@ def create_transform_series(
 
     If the input is a series of Euler/cardan angles, use this form::
 
-        ktk.geometry.to_transform_series(
+        ktk.geometry.create_transform_series(
             *,
             angles: ArrayLike,
             seq: str,
@@ -1302,7 +1302,7 @@ def create_transform_series(
 
     If the input is a series of quaternions, use this form::
 
-        ktk.geometry.to_transform_series(
+        ktk.geometry.create_transform_series(
             *,
             quaternions: ArrayLike,
             scalar_first: bool = False,
@@ -1316,7 +1316,7 @@ def create_transform_series(
     on the cross product of different vectors, use this form, where one of
     {x, y, z} and one of {xy, xz, yz} must be defined::
 
-        ktk.geometry.to_transform_series(
+        ktk.geometry.create_transform_series(
             *,
             x: ArrayLike | None = None,
             y: ArrayLike | None = None,
