@@ -634,29 +634,35 @@ class Player:
     @property
     def current_index(self) -> int:
         """Read/write current_index."""
-        return self._current_index
+        # self._current_time is used to store the current time in a much
+        # more granular way than current_index. It's really
+        # self._current_time that sets the current time and index, so that
+        # auto-advancing works well with the time even at very slow rates,
+        # lower than 1 sample by timer tick.
+        return int(np.argmin(np.abs(self._contents.time - self._current_time)))
 
     @current_index.setter
     def current_index(self, value: int):
         """Set current_index value."""
-        self._current_index = value % len(self._contents.time)
-
-        if not self._being_constructed:
-            if self.track:
-                self._recenter()
-            self._fast_refresh()
+        self.current_time = self._contents.time[
+            value % len(self._contents.time)
+        ]
 
     @property
     def current_time(self) -> float:
         """Read/write current_time."""
-        return self._contents.time[self._current_index]
+        return self._contents.time[self.current_index]
 
     @current_time.setter
     def current_time(self, value: float):
         """Set current_time value."""
         check_param("current_time", value, float)
-        index = int(np.argmin(np.abs(self._contents.time - value)))
-        self.current_index = index
+        self._current_time = value
+
+        if not self._being_constructed:
+            if self.track:
+                self._recenter()
+            self._fast_refresh()
 
     @property
     def playback_speed(self) -> float:
@@ -2056,16 +2062,19 @@ class Player:
             # and we will end up with still a few timer callbacks. Checking
             # self._running makes sure that we effectively stop.
             current_system_time = time.time()
-            current_index = self.current_index
-            self.current_time += self.playback_speed * (
-                time.time() - self._state["SystemTimeOnLastUpdate"]  # type: ignore
+
+            # We directly increment _current_time because this is where we
+            # store the precise location where we really are in time.
+            # self._current_time returns the time at the current index, which
+            # is the integer index nearest the current time.
+            new_time = self._current_time + self.playback_speed * (
+                current_system_time - self._state["SystemTimeOnLastUpdate"]  # type: ignore
             )
-            # Type ignored because mypy considers
-            # self._state["SystemTimeOnLastUpdate"] as an "object"
-            if current_index == self.current_index:
-                # The time wasn't enough to advance a frame. Articifically
-                # advance a frame.
-                self.current_index += 1
+            if new_time > self._contents.time[-1]:
+                new_time = self._contents.time[0]
+
+            self._current_time = new_time
+            self._fast_refresh()
             self._state["SystemTimeOnLastUpdate"] = current_system_time
         else:
             self._mpl_objects["Anim"].event_source.stop()
