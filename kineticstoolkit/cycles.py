@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Identify cycles and time-normalize data."""
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"

@@ -22,8 +22,8 @@ level Kinetics Toolkit's namespace (i.e. ktk.TimeSeries,
 ktk.TimeSeriesEvent)
 
 """
-from __future__ import annotations  # For forward refs to self
 
+from __future__ import annotations  # For forward refs to self
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
@@ -56,7 +56,6 @@ from ast import literal_eval
 from copy import deepcopy
 
 import kineticstoolkit as ktk  # For doctests
-
 
 WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
@@ -4434,7 +4433,7 @@ class TimeSeries:
             plt.plot(event_line_x, event_line_y, ":k")
 
             if event_names:
-                occurrences = {}  # type:dict[str, int]
+                occurrences = {}  # type: dict[str, int]
 
                 for event in ts.events:
                     if event.name == "_":

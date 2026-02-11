@@ -15,6 +15,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """Provide functions related to kinematics analysis."""
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
@@ -238,7 +239,7 @@ def _track_cluster_frames(
         else:
             global_points[:, :, i_marker] = np.nan
 
-    (stacked_local_points, global_points) = geometry._match_size(
+    stacked_local_points, global_points = geometry._match_size(
         stacked_local_points, global_points
     )
 

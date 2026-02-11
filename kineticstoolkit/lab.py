@@ -27,6 +27,7 @@ To get started, please consult Kinetics Toolkit's
 [website](https://felixchenier.uqam.ca/kineticstoolkit)
 
 """
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"

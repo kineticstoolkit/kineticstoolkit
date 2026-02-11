@@ -561,7 +561,7 @@ class Player:
         }
 
         # Create the figure and prepare its contents
-        (fig, axes, anim) = self._create_empty_figure()
+        fig, axes, anim = self._create_empty_figure()
         self._mpl_objects = {
             "Figure": fig,
             "Axes": axes,
@@ -1063,7 +1063,7 @@ class Player:
     def _create_empty_figure(self) -> tuple:
         """Create figure and return Figure, Axes and AnimationTimer."""
         # Create the figure and axes
-        (fig, ax) = plt.subplots(num=None, figsize=(12, 9))
+        fig, ax = plt.subplots(num=None, figsize=(12, 9))
         fig.set_facecolor("k")
 
         # Remove the toolbar

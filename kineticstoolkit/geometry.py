@@ -107,7 +107,7 @@ def matmul(op1: ArrayLike, op2: ArrayLike, /) -> np.ndarray:
         else:
             return op1 * op2  # In the case where we have a series of floats.
 
-    (op1_array, op2_array) = _match_size(op1_array, op2_array)
+    op1_array, op2_array = _match_size(op1_array, op2_array)
 
     n_samples = op1_array.shape[0]
 
@@ -541,7 +541,7 @@ def get_local_coordinates(
 
     _check_no_skewed_rotation(reference_frames_array, "reference_frames")
 
-    (global_coordinates_array, reference_frames_array) = _match_size(
+    global_coordinates_array, reference_frames_array = _match_size(
         global_coordinates_array, reference_frames_array
     )
 
@@ -597,7 +597,7 @@ def get_global_coordinates(
 
     _check_no_skewed_rotation(reference_frames_array, "reference_frames")
 
-    (local_coordinates_array, reference_frames_array) = _match_size(
+    local_coordinates_array, reference_frames_array = _match_size(
         local_coordinates_array, reference_frames_array
     )
 

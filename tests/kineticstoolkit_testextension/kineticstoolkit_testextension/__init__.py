@@ -16,7 +16,6 @@
 # limitations under the License.
 """Test extension for unit tests."""
 
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2022-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"

@@ -26,7 +26,6 @@ from kineticstoolkit import TimeSeries, TimeSeriesEvent
 import numpy as np
 import pandas as pd
 
-
 TYPES = {
     bool: True,
     int: 3,

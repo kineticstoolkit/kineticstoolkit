@@ -20,6 +20,7 @@ Provide functions related to exceptions.
 For internal use only.
 
 """
+
 import warnings
 
 __author__ = "Félix Chénier"

@@ -120,7 +120,7 @@ def savgol(
     delta = ts.time[1] - ts.time[0]
 
     for key in tsout.data.keys():
-        (subts, nan_index) = _interpolate(tsout, key)
+        subts, nan_index = _interpolate(tsout, key)
 
         if np.sum(~nan_index) < poly_order + 1:
             # We can't do anything without more points
@@ -256,7 +256,7 @@ def butter(
     sos = sgl.butter(order, fc, btype, analog=False, output="sos", fs=fs)
 
     for data in ts.data:
-        (subts, missing) = _interpolate(ts, data)
+        subts, missing = _interpolate(ts, data)
 
         # Filter
         if filtfilt is True:

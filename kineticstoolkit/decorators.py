@@ -20,6 +20,7 @@ Provide the deprecated decorator for Kinetics Toolkit's functions.
 This module is for internal use only.
 
 """
+
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
