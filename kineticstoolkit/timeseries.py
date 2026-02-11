@@ -3377,7 +3377,7 @@ class TimeSeries:
                 time_ranges_to_remove.append((ts.time[-1], np.inf))
 
             length = ts.time.shape[0]
-            for i in nan_indexes:
+            for i in nan_indexes[:, 0]:
                 if i > 0 and i < length - 1:
                     time_range = (ts.time[i - 1], ts.time[i + 1])
                 elif i == 0:
@@ -5040,6 +5040,5 @@ class TimeSeries:
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
-    import kineticstoolkit.lab as ktk
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
