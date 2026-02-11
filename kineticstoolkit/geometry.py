@@ -1138,6 +1138,10 @@ def _angles_to_frame_series(
     # Condition angles
     angles_array = np.array(angles)
     n_samples = angles_array.shape[0]
+    if len(angles_array.shape) < 2:
+        # Since SciPy 1.17, series of 1-dimension angles must follow this
+        # form: [[a], [b], [c], ...] instead of [a, b, c, ...]
+        angles_array = angles_array[:, np.newaxis]
 
     # Create the rotation matrix
     rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
@@ -1754,6 +1758,9 @@ def create_transforms(
         seq = "x"
     else:
         angles_array = np.array(angles)
+    # Since SciPy 1.17, 1d angle series must be [[a], [b], [c], ...]
+    if len(angles_array.shape) < 2:
+        angles_array = angles_array[:, np.newaxis]
 
     # Condition scales
     if scales is None:

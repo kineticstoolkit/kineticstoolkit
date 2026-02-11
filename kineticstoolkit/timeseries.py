@@ -5040,5 +5040,6 @@ class TimeSeries:
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+    import kineticstoolkit.lab as ktk
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -108,7 +108,8 @@ def change_defaults(
 
     change_numpy_print_options
         Optional. True to change default print options in numpy to use fixed
-        point notation in printouts.
+        point notation and simple scalars (3.0) instead of np.float(3.0) in
+        printouts.
 
     change_warnings_format
         Optional. True to change the warnings module's default to a more extended
@@ -157,7 +158,7 @@ def change_defaults(
         import numpy as _np
 
         # Select default mode for numpy
-        _np.set_printoptions(suppress=True)
+        _np.set_printoptions(suppress=True, legacy="1.25")
 
     if change_warnings_format:
         # Monkey-patch warning.formatwarning
