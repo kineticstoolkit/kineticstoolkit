@@ -29,7 +29,7 @@ jobs:
       - name: Install dependencies
         run: |
           export PYTHONPATH=$PYTHONPATH:.
-          pip install sphinx sphinx-book-theme myst-nb
+          pip install sphinx sphinx-book-theme myst-nb sphinx-sitemap
 
       - name: Build with Sphinx
         run: |
