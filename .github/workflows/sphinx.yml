@@ -28,12 +28,9 @@ jobs:
 
       - name: Install dependencies
         run: |
-          export PYTHONPATH=$PYTHONPATH:kineticstoolkit
-          echo =================
-          ls
-          echo =================
-          ls kineticstoolkit
-          echo =================
+          export PYTHONPATH=$PYTHONPATH:.
+          rm ktk
+          ln -s kineticstoolkit ktk
           pip install sphinx sphinx-book-theme myst-nb sphinx-sitemap sphinxext-opengraph
 
       - name: Build with Sphinx
