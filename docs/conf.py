@@ -87,7 +87,7 @@ ogp_custom_meta_tags = [
 ]
 
 # Exclude specific patterns if you still need to hide some files (like build artifacts)
-exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
+exclude_patterns = ["_templates", "_build", "Thumbs.db", ".DS_Store"]
 
 
 # -- API Type Hint Configuration -----------------------------------------------

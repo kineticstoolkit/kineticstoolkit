@@ -1314,17 +1314,17 @@ class TimeSeries:
         TimeSeries with attributes:
               time: array([], dtype=float64)
               data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
-            events: []
+              events: []
               info: {'Time': {'Unit': 's'}}
 
-        # Size matching example
+        >>> # Size matching example
         >>> ts = ktk.TimeSeries(time = [0.0, 0.1, 0.2, 0.3])
         >>> ts = ts.add_data("data1", [9.9])
         >>> ts
         TimeSeries with attributes:
               time: array([0. , 0.1, 0.2, 0.3])
               data: {'data1': array([9.9, 9.9, 9.9, 9.9])}
-            events: []
+              events: []
               info: {'Time': {'Unit': 's'}}
 
         """

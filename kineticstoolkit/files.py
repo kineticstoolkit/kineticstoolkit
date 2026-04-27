@@ -75,11 +75,11 @@ def save(filename: str, variable: Any) -> None:
     Save a variable to a file.
 
     File extension could be either:
-        - json
-        - json.zip : save as json but zips the file to save space
-        - ktk.zip : a zipped folder containing two files:
-            - metadata.json, which includes save date, user, etc.
-            - data.json, which includes the data.
+
+    - json
+    - json.zip : save as json but zips the file to save space
+    - ktk.zip : a zipped folder containing two files: metadata.json, which includes save
+      date, user, etc., and data.json, which includes the data.
 
     The following standard classes are supported:
 
@@ -92,13 +92,12 @@ def save(filename: str, variable: Any) -> None:
     - False
     - None
 
-    In addition to these standard classes, the following are also supported
-    and identified in the JSON file by an added "class__" key.
-
+    In addition to these standard classes, the following are also supported:
+    
     - numpy.array
     - pandas.DataFrame (basic DataFrames, e.g., without multi-indexing.)
     - pandas.Series
-    - kineticstoolkit.TimeSeries
+    - TimeSeries
 
     Parameters
     ----------
