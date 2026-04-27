@@ -21,7 +21,7 @@ jobs:
         shell: bash -l {0}
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+#    - uses: actions/checkout@v4
     - name: Setup conda
       uses: conda-incubator/setup-miniconda@v3
       with:
@@ -29,7 +29,8 @@ jobs:
     - name: Install dependencies
       run: |
         conda install -c conda-forge python=${{ matrix.python-version }} mamba sphinx sphinx-book-theme myst-nb sphinx-sitemap sphinxext-opengraph -y
-        mamba install -c conda-forge kineticstoolkit --only-deps -y
+        # mamba install -c conda-forge kineticstoolkit --only-deps -y
+        mamba install -c conda-forge kineticstoolkit -y
     - name: Build with Sphinx
       run: |
         rm ktk
