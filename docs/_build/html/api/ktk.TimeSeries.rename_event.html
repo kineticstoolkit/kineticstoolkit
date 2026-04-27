@@ -1,0 +1,650 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="ktk.TimeSeries.rename_event" />
+<meta property="og:type" content="image/png" />
+<meta property="og:url" content="https://kineticstoolkit.uqam.ca/doc/api/ktk.TimeSeries.rename_event.html" />
+<meta property="og:site_name" content="Kinetics Toolkit" />
+<meta property="og:image" content="https://kineticstoolkit.uqam.ca/doc/_static/logo-social.png" />
+<meta property="og:image:alt" content="Kinetics Toolkit Logo" />
+<meta property="og:image:width" content="500" />
+<meta property="og:image:height" content="264" />
+
+    <title>ktk.TimeSeries.rename_event &#8212; Kinetics Toolkit  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=cd73c18a" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/ktk.TimeSeries.rename_event';</script>
+    <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/api/ktk.TimeSeries.rename_event.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ktk.TimeSeries.rename_info" href="ktk.TimeSeries.rename_info.html" />
+    <link rel="prev" title="ktk.TimeSeries.rename_data" href="ktk.TimeSeries.rename_data.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Kinetics Toolkit  documentation - Home"/>
+    <img src="../_static/logo-dark.png" class="logo__image only-dark pst-js-only" alt="Kinetics Toolkit  documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://kineticstoolkit.uqam.ca">Main documentation website</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../classes.html">Classes</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 current active has-children"><a class="reference internal" href="ktk.TimeSeries.html">ktk.TimeSeries</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_data.html">ktk.TimeSeries.add_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_data_info.html">ktk.TimeSeries.add_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_event.html">ktk.TimeSeries.add_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_info.html">ktk.TimeSeries.add_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.copy.html">ktk.TimeSeries.copy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.count_events.html">ktk.TimeSeries.count_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.fill_missing_samples.html">ktk.TimeSeries.fill_missing_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.from_array.html">ktk.TimeSeries.from_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.from_dataframe.html">ktk.TimeSeries.from_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_after_event.html">ktk.TimeSeries.get_index_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_after_time.html">ktk.TimeSeries.get_index_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_at_event.html">ktk.TimeSeries.get_index_at_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_at_time.html">ktk.TimeSeries.get_index_at_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_before_event.html">ktk.TimeSeries.get_index_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_before_time.html">ktk.TimeSeries.get_index_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_sample_rate.html">ktk.TimeSeries.get_sample_rate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_subset.html">ktk.TimeSeries.get_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_after_event.html">ktk.TimeSeries.get_ts_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_after_index.html">ktk.TimeSeries.get_ts_after_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_after_time.html">ktk.TimeSeries.get_ts_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_before_event.html">ktk.TimeSeries.get_ts_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_before_index.html">ktk.TimeSeries.get_ts_before_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_before_time.html">ktk.TimeSeries.get_ts_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_between_events.html">ktk.TimeSeries.get_ts_between_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_between_indexes.html">ktk.TimeSeries.get_ts_between_indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_between_times.html">ktk.TimeSeries.get_ts_between_times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.isnan.html">ktk.TimeSeries.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.merge.html">ktk.TimeSeries.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.plot.html">ktk.TimeSeries.plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_data.html">ktk.TimeSeries.remove_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_data_info.html">ktk.TimeSeries.remove_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_duplicate_events.html">ktk.TimeSeries.remove_duplicate_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_event.html">ktk.TimeSeries.remove_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_info.html">ktk.TimeSeries.remove_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.rename_data.html">ktk.TimeSeries.rename_data</a></li>
+<li class="toctree-l3 current active"><a class="current reference internal" href="#">ktk.TimeSeries.rename_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.rename_info.html">ktk.TimeSeries.rename_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.resample.html">ktk.TimeSeries.resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.shift.html">ktk.TimeSeries.shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.sort_events.html">ktk.TimeSeries.sort_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.to_dataframe.html">ktk.TimeSeries.to_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.trim_events.html">ktk.TimeSeries.trim_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.ui_edit_events.html">ktk.TimeSeries.ui_edit_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.ui_sync.html">ktk.TimeSeries.ui_sync</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.TimeSeriesEvent.html">ktk.TimeSeriesEvent</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.Player.html">ktk.Player</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.close.html">ktk.Player.close</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.get_contents.html">ktk.Player.get_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.get_interconnections.html">ktk.Player.get_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.pause.html">ktk.Player.pause</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.play.html">ktk.Player.play</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.set_contents.html">ktk.Player.set_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.set_interconnections.html">ktk.Player.set_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.set_view.html">ktk.Player.set_view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.to_image.html">ktk.Player.to_image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.to_video.html">ktk.Player.to_video</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../functions.html">Functions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ktk.load.html">ktk.load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.save.html">ktk.save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.read_c3d.html">ktk.read_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.write_c3d.html">ktk.write_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.change_defaults.html">ktk.change_defaults</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.cycles.html">ktk.cycles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.detect_cycles.html">ktk.cycles.detect_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.most_repeatable_cycles.html">ktk.cycles.most_repeatable_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.stack.html">ktk.cycles.stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.time_normalize.html">ktk.cycles.time_normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.unstack.html">ktk.cycles.unstack</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.doc.html">ktk.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.doc.download.html">ktk.doc.download</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.filters.html">ktk.filters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.butter.html">ktk.filters.butter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.deriv.html">ktk.filters.deriv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.median.html">ktk.filters.median</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.savgol.html">ktk.filters.savgol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.smooth.html">ktk.filters.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.geometry.html">ktk.geometry</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.create_point_series.html">ktk.geometry.create_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.create_transform_series.html">ktk.geometry.create_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.create_vector_series.html">ktk.geometry.create_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_angles.html">ktk.geometry.get_angles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_distances.html">ktk.geometry.get_distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_global_coordinates.html">ktk.geometry.get_global_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_local_coordinates.html">ktk.geometry.get_local_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_quaternions.html">ktk.geometry.get_quaternions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.invert.html">ktk.geometry.invert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.is_point_series.html">ktk.geometry.is_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.is_transform_series.html">ktk.geometry.is_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.is_vector_series.html">ktk.geometry.is_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.isnan.html">ktk.geometry.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.matmul.html">ktk.geometry.matmul</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.mirror.html">ktk.geometry.mirror</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.register_points.html">ktk.geometry.register_points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.rotate.html">ktk.geometry.rotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.scale.html">ktk.geometry.scale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.translate.html">ktk.geometry.translate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.kinematics.html">ktk.kinematics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.kinematics.create_cluster.html">ktk.kinematics.create_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.kinematics.extend_cluster.html">ktk.kinematics.extend_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.kinematics.track_cluster.html">ktk.kinematics.track_cluster</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit/issues/new?title=Issue%20on%20page%20%2Fapi/ktk.TimeSeries.rename_event.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api/ktk.TimeSeries.rename_event.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ktk.TimeSeries.rename_event</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ktk.TimeSeries.rename_event"><code class="docutils literal notranslate"><span class="pre">TimeSeries.rename_event()</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ktk-timeseries-rename-event">
+<h1>ktk.TimeSeries.rename_event<a class="headerlink" href="#ktk-timeseries-rename-event" title="Link to this heading">#</a></h1>
+<dl class="py method">
+<dt class="sig sig-object py" id="ktk.TimeSeries.rename_event">
+<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">rename_event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">occurrence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">in_place</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kineticstoolkit/timeseries.html#TimeSeries.rename_event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ktk.TimeSeries.rename_event" title="Link to this definition">#</a></dt>
+<dd><p>Rename an event occurrence or all events of a same name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_name</strong> (<em>str</em>) – Name of the event to look for in the events list.</p></li>
+<li><p><strong>new_name</strong> (<em>str</em>) – New event name</p></li>
+<li><p><strong>occurrence</strong> (<em>int</em><em> | </em><em>None</em>) – Optional. i_th occurence of the event to look for in the events
+list, starting at 0, where the occurrences are sorted in time.
+If None (default), all occurences of this event name are renamed.</p></li>
+<li><p><strong>in_place</strong> (<em>bool</em>) – Optional. True to modify and return the original TimeSeries. False
+to return a modified copy of the TimeSeries while leaving the
+original TimeSeries intact. Default is False.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The TimeSeries with the renamed event.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="ktk.TimeSeries.html#ktk.TimeSeries" title="ktk.TimeSeries">TimeSeries</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="ktk.TimeSeries.add_event.html#ktk.TimeSeries.add_event" title="ktk.TimeSeries.add_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.TimeSeries.add_event</span></code></a>, <a class="reference internal" href="ktk.TimeSeries.remove_event.html#ktk.TimeSeries.remove_event" title="ktk.TimeSeries.remove_event"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.TimeSeries.remove_event</span></code></a>, <a class="reference internal" href="ktk.TimeSeries.trim_events.html#ktk.TimeSeries.trim_events" title="ktk.TimeSeries.trim_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.TimeSeries.trim_events</span></code></a>, <a class="reference internal" href="ktk.TimeSeries.ui_edit_events.html#ktk.TimeSeries.ui_edit_events" title="ktk.TimeSeries.ui_edit_events"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.TimeSeries.ui_edit_events</span></code></a></p>
+</div>
+<p class="rubric">Example</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">5.5</span><span class="p">,</span> <span class="s2">&quot;event1&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">10.8</span><span class="p">,</span> <span class="s2">&quot;event2&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="mf">20.3</span><span class="p">,</span> <span class="s2">&quot;event2&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
+<span class="go">[TimeSeriesEvent(time=5.5, name=&#39;event1&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=10.8, name=&#39;event2&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=20.3, name=&#39;event2&#39;)]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">rename_event</span><span class="p">(</span><span class="s2">&quot;event2&quot;</span><span class="p">,</span> <span class="s2">&quot;event3&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
+<span class="go">[TimeSeriesEvent(time=5.5, name=&#39;event1&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=10.8, name=&#39;event3&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=20.3, name=&#39;event3&#39;)]</span>
+</pre></div>
+</div>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">rename_event</span><span class="p">(</span><span class="s2">&quot;event3&quot;</span><span class="p">,</span> <span class="s2">&quot;event4&quot;</span><span class="p">,</span> <span class="n">occurrence</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">events</span>
+<span class="go">[TimeSeriesEvent(time=5.5, name=&#39;event1&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=10.8, name=&#39;event4&#39;),</span>
+<span class="go"> TimeSeriesEvent(time=20.3, name=&#39;event3&#39;)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ktk.TimeSeries.rename_data.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ktk.TimeSeries.rename_data</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ktk.TimeSeries.rename_info.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ktk.TimeSeries.rename_info</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ktk.TimeSeries.rename_event"><code class="docutils literal notranslate"><span class="pre">TimeSeries.rename_event()</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Félix Chénier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2020-2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

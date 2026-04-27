@@ -6,9 +6,6 @@ import sys
 from datetime import datetime
 from pathlib import Path
 
-with open("../kineticstoolkit/VERSION", "r") as fh:
-    release = fh.read()
-
 # -- General setup --------------------------------------------------------------
 project = "Kinetics Toolkit"
 author = "Félix Chénier"

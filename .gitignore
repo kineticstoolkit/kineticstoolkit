@@ -32,10 +32,9 @@ doc/_build/html/*.ipynb
 .coverage
 tests/htmlcov
 output.csv
-doc/_build
 workspace
 kineticstoolkit.egg-info
 .idea
 .jupyter
 docs/api
-html
+.buildinfo

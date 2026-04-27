@@ -1,0 +1,1718 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>kineticstoolkit.files &#8212; Kinetics Toolkit  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=cd73c18a" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/kineticstoolkit/files';</script>
+    <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/_modules/kineticstoolkit/files.html" />
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Kinetics Toolkit  documentation - Home"/>
+    <img src="../../_static/logo-dark.png" class="logo__image only-dark pst-js-only" alt="Kinetics Toolkit  documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://kineticstoolkit.uqam.ca">Main documentation website</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../classes.html">Classes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.TimeSeries.html">ktk.TimeSeries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_data.html">ktk.TimeSeries.add_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_data_info.html">ktk.TimeSeries.add_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_event.html">ktk.TimeSeries.add_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_info.html">ktk.TimeSeries.add_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.copy.html">ktk.TimeSeries.copy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.count_events.html">ktk.TimeSeries.count_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.fill_missing_samples.html">ktk.TimeSeries.fill_missing_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.from_array.html">ktk.TimeSeries.from_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.from_dataframe.html">ktk.TimeSeries.from_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_after_event.html">ktk.TimeSeries.get_index_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_after_time.html">ktk.TimeSeries.get_index_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_at_event.html">ktk.TimeSeries.get_index_at_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_at_time.html">ktk.TimeSeries.get_index_at_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_before_event.html">ktk.TimeSeries.get_index_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_before_time.html">ktk.TimeSeries.get_index_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_sample_rate.html">ktk.TimeSeries.get_sample_rate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_subset.html">ktk.TimeSeries.get_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_after_event.html">ktk.TimeSeries.get_ts_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_after_index.html">ktk.TimeSeries.get_ts_after_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_after_time.html">ktk.TimeSeries.get_ts_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_before_event.html">ktk.TimeSeries.get_ts_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_before_index.html">ktk.TimeSeries.get_ts_before_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_before_time.html">ktk.TimeSeries.get_ts_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_between_events.html">ktk.TimeSeries.get_ts_between_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_between_indexes.html">ktk.TimeSeries.get_ts_between_indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_between_times.html">ktk.TimeSeries.get_ts_between_times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.isnan.html">ktk.TimeSeries.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.merge.html">ktk.TimeSeries.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.plot.html">ktk.TimeSeries.plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_data.html">ktk.TimeSeries.remove_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_data_info.html">ktk.TimeSeries.remove_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_duplicate_events.html">ktk.TimeSeries.remove_duplicate_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_event.html">ktk.TimeSeries.remove_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_info.html">ktk.TimeSeries.remove_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.rename_data.html">ktk.TimeSeries.rename_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.rename_event.html">ktk.TimeSeries.rename_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.rename_info.html">ktk.TimeSeries.rename_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.resample.html">ktk.TimeSeries.resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.shift.html">ktk.TimeSeries.shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.sort_events.html">ktk.TimeSeries.sort_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.to_dataframe.html">ktk.TimeSeries.to_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.trim_events.html">ktk.TimeSeries.trim_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.ui_edit_events.html">ktk.TimeSeries.ui_edit_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.ui_sync.html">ktk.TimeSeries.ui_sync</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.TimeSeriesEvent.html">ktk.TimeSeriesEvent</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.Player.html">ktk.Player</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.close.html">ktk.Player.close</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.get_contents.html">ktk.Player.get_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.get_interconnections.html">ktk.Player.get_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.pause.html">ktk.Player.pause</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.play.html">ktk.Player.play</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.set_contents.html">ktk.Player.set_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.set_interconnections.html">ktk.Player.set_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.set_view.html">ktk.Player.set_view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.to_image.html">ktk.Player.to_image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.to_video.html">ktk.Player.to_video</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../functions.html">Functions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.load.html">ktk.load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.save.html">ktk.save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.read_c3d.html">ktk.read_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.write_c3d.html">ktk.write_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.change_defaults.html">ktk.change_defaults</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.cycles.html">ktk.cycles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.detect_cycles.html">ktk.cycles.detect_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.most_repeatable_cycles.html">ktk.cycles.most_repeatable_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.stack.html">ktk.cycles.stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.time_normalize.html">ktk.cycles.time_normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.unstack.html">ktk.cycles.unstack</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.doc.html">ktk.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.doc.download.html">ktk.doc.download</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.filters.html">ktk.filters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.butter.html">ktk.filters.butter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.deriv.html">ktk.filters.deriv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.median.html">ktk.filters.median</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.savgol.html">ktk.filters.savgol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.smooth.html">ktk.filters.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.geometry.html">ktk.geometry</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.create_point_series.html">ktk.geometry.create_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.create_transform_series.html">ktk.geometry.create_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.create_vector_series.html">ktk.geometry.create_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_angles.html">ktk.geometry.get_angles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_distances.html">ktk.geometry.get_distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_global_coordinates.html">ktk.geometry.get_global_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_local_coordinates.html">ktk.geometry.get_local_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_quaternions.html">ktk.geometry.get_quaternions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.invert.html">ktk.geometry.invert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.is_point_series.html">ktk.geometry.is_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.is_transform_series.html">ktk.geometry.is_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.is_vector_series.html">ktk.geometry.is_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.isnan.html">ktk.geometry.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.matmul.html">ktk.geometry.matmul</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.mirror.html">ktk.geometry.mirror</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.register_points.html">ktk.geometry.register_points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.rotate.html">ktk.geometry.rotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.scale.html">ktk.geometry.scale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.translate.html">ktk.geometry.translate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.kinematics.html">ktk.kinematics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.kinematics.create_cluster.html">ktk.kinematics.create_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.kinematics.extend_cluster.html">ktk.kinematics.extend_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.kinematics.track_cluster.html">ktk.kinematics.track_cluster</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit/issues/new?title=Issue%20on%20page%20%2F_modules/kineticstoolkit/files.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for kineticstoolkit.files</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright 2020-2025 Félix Chénier</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provide functions to load and save data.</span>
+
+<span class="sd">The classes defined in this module are accessible directly from the</span>
+<span class="sd">toplevel Kinetics Toolkit namespace (i.e. ktk.load, ktk.save).</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Félix Chénier&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (C) 2020-2025 Félix Chénier&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;chenier.felix@uqam.ca&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache 2.0&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.timeseries</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeries</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.dev.kinetics</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">kinetics</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_param</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ezc3d</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;save&quot;</span><span class="p">,</span> <span class="s2">&quot;load&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_ezc3d_to_dict</span><span class="p">(</span><span class="n">c3d</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a TimeSeries info dict based on an ezc3d class.&quot;&quot;&quot;</span>
+    <span class="n">out</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># type: dict[str, Any]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">param_key</span> <span class="ow">in</span> <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]:</span>
+            <span class="n">out</span><span class="p">[</span><span class="n">param_key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">prop_key</span> <span class="ow">in</span> <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="n">param_key</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">prop_key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;_&quot;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">param_key</span><span class="p">][</span><span class="n">prop_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="n">param_key</span><span class="p">][</span>
+                    <span class="n">prop_key</span>
+                <span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+    <span class="k">return</span> <span class="n">out</span>
+
+
+<div class="viewcode-block" id="save">
+<a class="viewcode-back" href="../../api/ktk.save.html#ktk.save">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">save</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">variable</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Save a variable to a file.</span>
+
+<span class="sd">    File extension could be either:</span>
+
+<span class="sd">    - json</span>
+<span class="sd">    - json.zip : save as json but zips the file to save space</span>
+<span class="sd">    - ktk.zip : a zipped folder containing two files: metadata.json, which includes save</span>
+<span class="sd">      date, user, etc., and data.json, which includes the data.</span>
+
+<span class="sd">    The following standard classes are supported:</span>
+
+<span class="sd">    - dict containing any supported class</span>
+<span class="sd">    - list containing any supported class</span>
+<span class="sd">    - str</span>
+<span class="sd">    - int</span>
+<span class="sd">    - float</span>
+<span class="sd">    - True</span>
+<span class="sd">    - False</span>
+<span class="sd">    - None</span>
+
+<span class="sd">    In addition to these standard classes, the following are also supported:</span>
+
+<span class="sd">    - numpy.array</span>
+<span class="sd">    - pandas.DataFrame (basic DataFrames, e.g., without multi-indexing.)</span>
+<span class="sd">    - pandas.Series</span>
+<span class="sd">    - TimeSeries</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename:</span>
+<span class="sd">        Name of the file to save to (e.g., &quot;file.json&quot;)</span>
+<span class="sd">    variable:</span>
+<span class="sd">        The variable to save.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    None</span>
+
+<span class="sd">    Caution</span>
+<span class="sd">    -------</span>
+<span class="sd">    Tuples are also supported but will be loaded back as lists, without</span>
+<span class="sd">    warning. This is Python&#39;s standard behaviour. Complex Pandas Series</span>
+<span class="sd">    (e.g., series or different types) may not be supported: only name, index</span>
+<span class="sd">    and data are saved. Complex Pandas DataFrames (e.g., multiindex, columns</span>
+<span class="sd">    of different types) may not be supported: only columns, index, and data</span>
+<span class="sd">    are saved.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ktk.load</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">CustomEncoder</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">JSONEncoder</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;class__&quot;</span><span class="p">:</span> <span class="s2">&quot;numpy.array&quot;</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">()}</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">):</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;class__&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ktk.TimeSeries&quot;</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">info</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+                <span class="n">out</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">obj</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+                    <span class="n">out</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">{</span>
+                            <span class="s2">&quot;time&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="p">,</span>
+                            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">event</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="p">}</span>
+                    <span class="p">)</span>
+                <span class="k">return</span> <span class="n">out</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">&quot;class__&quot;</span><span class="p">:</span> <span class="s2">&quot;pandas.Series&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">name</span><span class="p">),</span>
+                    <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                <span class="p">}</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">&quot;class__&quot;</span><span class="p">:</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;columns&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                    <span class="s2">&quot;index&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                    <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span>
+                <span class="p">}</span>
+
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="nb">complex</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">{</span>
+                    <span class="s2">&quot;class__&quot;</span><span class="p">:</span> <span class="s2">&quot;complex&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">real</span><span class="p">,</span>
+                    <span class="s2">&quot;imag&quot;</span><span class="p">:</span> <span class="n">obj</span><span class="o">.</span><span class="n">imag</span><span class="p">,</span>
+                <span class="p">}</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">default</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span>
+
+    <span class="n">now</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">is_pc</span><span class="p">:</span>
+        <span class="n">computer</span> <span class="o">=</span> <span class="s2">&quot;PC&quot;</span>
+    <span class="k">elif</span> <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">is_mac</span><span class="p">:</span>
+        <span class="n">computer</span> <span class="o">=</span> <span class="s2">&quot;Mac&quot;</span>
+    <span class="k">elif</span> <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">is_linux</span><span class="p">:</span>
+        <span class="n">computer</span> <span class="o">=</span> <span class="s2">&quot;Linux&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">computer</span> <span class="o">=</span> <span class="s2">&quot;Unknown&quot;</span>
+
+    <span class="n">metadata</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;Software&quot;</span><span class="p">:</span> <span class="s2">&quot;Kinetics Toolkit&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Version&quot;</span><span class="p">:</span> <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+        <span class="s2">&quot;Computer&quot;</span><span class="p">:</span> <span class="n">computer</span><span class="p">,</span>
+        <span class="s2">&quot;FileFormat&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span>
+        <span class="s2">&quot;SaveDate&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;SaveTime&quot;</span><span class="p">:</span> <span class="n">now</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;%H:%M:%S&quot;</span><span class="p">),</span>
+        <span class="s2">&quot;User&quot;</span><span class="p">:</span> <span class="n">getpass</span><span class="o">.</span><span class="n">getuser</span><span class="p">(),</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Prepare temp folder if needed</span>
+    <span class="n">temp_folder</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;/save&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">())</span>
+    <span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span>
+
+    <span class="c1"># Save</span>
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">CustomEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json.zip&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;/&quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">],</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">CustomEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="s2">&quot;zip&quot;</span><span class="p">,</span> <span class="n">temp_folder</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;.zip&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.ktk.zip&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;/metadata.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">metadata</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;/data.json&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="c1"># Indent = `\t` to stay compatible with pre-0.18 version; avoid</span>
+            <span class="c1"># changing something just for fun. But with the added .json.zip</span>
+            <span class="c1"># and .json formats, it&#39;s better to just have a smaller json file</span>
+            <span class="c1"># and json.zip should be the same json as without a zip.</span>
+            <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="n">CustomEncoder</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="n">shutil</span><span class="o">.</span><span class="n">make_archive</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">,</span> <span class="s2">&quot;zip&quot;</span><span class="p">,</span> <span class="n">temp_folder</span><span class="p">)</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;.zip&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Filename must end with either &#39;.json&#39;, &#39;.json.zip&#39; or &#39;.ktk.zip&#39;&quot;</span>
+        <span class="p">)</span>
+
+    <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_load_object_hook</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+    <span class="k">if</span> <span class="s2">&quot;class__&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+        <span class="n">to_class</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;class__&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">to_class</span> <span class="o">==</span> <span class="s2">&quot;numpy.array&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;value&quot;</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="n">to_class</span> <span class="o">==</span> <span class="s2">&quot;ktk.TimeSeries&quot;</span><span class="p">:</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
+            <span class="n">out</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">])</span>
+
+            <span class="c1"># Post-0.17</span>
+            <span class="k">if</span> <span class="s2">&quot;info&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">info</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span>
+            <span class="c1"># Pre-0.17</span>
+            <span class="k">if</span> <span class="s2">&quot;time_info&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">time_info</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;time_info&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;data_info&quot;</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">data_info</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;data_info&quot;</span><span class="p">]</span>
+
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">]:</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="n">key</span><span class="p">])</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;events&quot;</span><span class="p">]:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s2">&quot;time&quot;</span><span class="p">],</span> <span class="n">event</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
+            <span class="k">return</span> <span class="n">out</span>
+
+        <span class="k">elif</span> <span class="n">to_class</span> <span class="o">==</span> <span class="s2">&quot;pandas.DataFrame&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+                <span class="n">columns</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;columns&quot;</span><span class="p">],</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">to_class</span> <span class="o">==</span> <span class="s2">&quot;pandas.Series&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span>
+                <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">],</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
+                <span class="n">index</span><span class="o">=</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;index&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">to_class</span> <span class="o">==</span> <span class="s2">&quot;complex&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;imag&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;The &quot;</span><span class="si">{</span><span class="n">to_class</span><span class="si">}</span><span class="s1">&quot; class is not supported by &#39;</span>
+                <span class="s2">&quot;this version of Kinetics Toolkit. Please check &quot;</span>
+                <span class="s2">&quot;that Kinetics Toolkit is up to date.&quot;</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../../api/ktk.load.html#ktk.load">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Load a json, json.zip or ktk.zip file.</span>
+
+<span class="sd">    Load a data file as saved using the ``ktk.save`` function.</span>
+
+<span class="sd">    Usage::</span>
+
+<span class="sd">        data = ktk.load(filename)</span>
+<span class="sd">        data, metadata = ktk.load(filename, include_metadata=True)</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename</span>
+<span class="sd">        The path of the zip file to load.</span>
+<span class="sd">    include_metadata</span>
+<span class="sd">        Optional. If True and the file is in the `ktk.zip` format, the output</span>
+<span class="sd">        is a tuple of this form:</span>
+<span class="sd">        (data, metadata).</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    Any</span>
+<span class="sd">        The loaded variable.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ktk.save</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;include_metadata&quot;</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="n">_load_object_hook</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json.zip&quot;</span><span class="p">):</span>
+        <span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+            <span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">filename</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">])</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">object_hook</span><span class="o">=</span><span class="n">_load_object_hook</span>
+        <span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
+        <span class="s2">&quot;.zip&quot;</span>
+    <span class="p">):</span>  <span class="c1"># We accept just .zip as a fallback</span>
+        <span class="n">archive</span> <span class="o">=</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+            <span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;data.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span> <span class="n">object_hook</span><span class="o">=</span><span class="n">_load_object_hook</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">include_metadata</span><span class="p">:</span>
+            <span class="n">metadata</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span>
+                <span class="n">archive</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="s2">&quot;metadata.json&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(),</span>
+                <span class="n">object_hook</span><span class="o">=</span><span class="n">_load_object_hook</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="n">data</span><span class="p">,</span> <span class="n">metadata</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Filename must end with &#39;.json&#39;, &#39;.json.zip&#39; or &#39;.ktk.zip&#39;&quot;</span>
+        <span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="read_c3d">
+<a class="viewcode-back" href="../../api/ktk.read_c3d.html#ktk.read_c3d">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_c3d</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">include_event_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">convert_point_unit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">convert_forceplate_moment_unit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">convert_forceplate_position_unit</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Read point, analog and rotation data from a C3D file.</span>
+
+<span class="sd">    If available, point positions are returned in `output[&quot;Points&quot;]` as a</span>
+<span class="sd">    TimeSeries, where each point corresponds to a data key. Each point position</span>
+<span class="sd">    is expressed as an Nx4 point series::</span>
+
+<span class="sd">        [</span>
+<span class="sd">            [x0, y0, z0, 1.0],</span>
+<span class="sd">            [x1, y1, z1, 1.0],</span>
+<span class="sd">            [x2, y2, z2, 1.0],</span>
+<span class="sd">            ...,</span>
+<span class="sd">        ]</span>
+
+<span class="sd">    If available, analog data is returned in `output[&quot;Analogs&quot;]` as a</span>
+<span class="sd">    TimeSeries, where each analog signal is expressed as a unidimensional</span>
+<span class="sd">    array of length N.</span>
+
+<span class="sd">    If available, force platform data is returned in `output[&quot;ForcePlatforms&quot;]`</span>
+<span class="sd">    as a TimeSeries containing the following keys where FPi means Force</span>
+<span class="sd">    Platform i, i being the index of the platform (e.g., FP0, FP1, etc.):</span>
+
+<span class="sd">        - FPi_Force: Ground reaction force components in global coordinates,</span>
+<span class="sd">          as an Nx4 vector series [[Fx, Fy, Fz, 0.0], ...].</span>
+<span class="sd">        - FPi_Moment: Ground reaction moment components in global</span>
+<span class="sd">          coordinates, expressed at the origin of the force platform, as an</span>
+<span class="sd">          Nx4 vector series [[Mx, My, Mz, 0.0], ...].</span>
+<span class="sd">        - FPi_MomentAtCOP: Ground reaction moment components in global</span>
+<span class="sd">          coordinates, expressed at the center of pressure, as an Nx4</span>
+<span class="sd">          vector series.</span>
+<span class="sd">        - FPi_COP: Centre of pressure in global coordinates as n Nx4 point</span>
+<span class="sd">          series.</span>
+<span class="sd">        - FPi_LCS: Local coordinate system of the force platform, expressed in</span>
+<span class="sd">          global coordinates as an Nx4x4 transform series. The origin is at</span>
+<span class="sd">          the middle point of the four corners, with z pointing down.</span>
+<span class="sd">        - FPi_Corner1: Coordinates of the first corner (+x, +y) in global</span>
+<span class="sd">          coordinates, as an Nx4 point series.</span>
+<span class="sd">        - FPi_Corner2: Coordinates of the second corner (-x, +y) in global</span>
+<span class="sd">          coordinates, as an Nx4 point series.</span>
+<span class="sd">        - FPi_Corner3: Coordinates of the third corner (-x, -y) in global</span>
+<span class="sd">          coordinates, as an Nx4 point series.</span>
+<span class="sd">        - FPi_Corner4: Coordinates of the fourth corner (+x, -y) in global</span>
+<span class="sd">          coordinates, as an Nx4 point series.</span>
+
+<span class="sd">    If available, rigid body orientations are returned in `output[&quot;Rotations&quot;]`</span>
+<span class="sd">    as a TimeSeries, where each body orientation is expressed as an Nx4x4</span>
+<span class="sd">    transforms series.</span>
+
+<span class="sd">    The C3D parameters are returned in `output[&quot;C3DParameters&quot;]`. Note that</span>
+<span class="sd">    this content is dependent on each recording environment and software. It</span>
+<span class="sd">    could also change between versions of the C3D parser (ezc3d).</span>
+
+<span class="sd">    Some software stores calculated values such as angles, forces, moments,</span>
+<span class="sd">    powers, etc. into the C3D file. Storing these data is software-specific</span>
+<span class="sd">    and is not standardized in the C3D file format (https://www.c3d.org).</span>
+<span class="sd">    This function reads these values as points regardless of their nature.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename</span>
+<span class="sd">        Path of the C3D file</span>
+
+<span class="sd">    include_event_context</span>
+<span class="sd">        Optional. True to include the event context, for C3D files that use</span>
+<span class="sd">        this field. If False, the events in the output TimeSeries are named</span>
+<span class="sd">        after the events names in the C3D files, e.g.: &quot;Start&quot;, &quot;Heel Strike&quot;,</span>
+<span class="sd">        &quot;Toe Off&quot;. If True, the events in the output TimeSeries are named using</span>
+<span class="sd">        this scheme &quot;context:name&quot;, e.g.,: &quot;General:Start&quot;,</span>
+<span class="sd">        &quot;Right:Heel strike&quot;, &quot;Left:Toe Off&quot;. Default is False.</span>
+
+<span class="sd">    convert_point_unit</span>
+<span class="sd">        Optional. True to convert the point units to meters, if they are</span>
+<span class="sd">        expressed in other units such as mm in the C3D file. False to keep</span>
+<span class="sd">        points as is. When unset, a warning is issued if points are stored in</span>
+<span class="sd">        a different unit than meters. See caution note below.</span>
+
+<span class="sd">    convert_forceplate_moment_unit</span>
+<span class="sd">        Optional. True to convert forceplate moment unit to Nm. Default is</span>
+<span class="sd">        True.</span>
+
+<span class="sd">    convert_forceplate_position_unit</span>
+<span class="sd">        Optional. True to convert forceplate position units to meters. Default</span>
+<span class="sd">        is True.</span>
+
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    dict[str, ktk.TimeSeries]</span>
+<span class="sd">        A dict of TimeSeries, with keys being, if available: &quot;Points&quot;,</span>
+<span class="sd">        &quot;Analogs&quot;, &quot;ForcePlates&quot; and/or &quot;Rotations&quot;.</span>
+
+<span class="sd">    Caution</span>
+<span class="sd">    -------</span>
+<span class="sd">    If, for a given C3D file, points are expressed in another unit than meters</span>
+<span class="sd">    (e.g., mm), and that this file also contains calculated points such as</span>
+<span class="sd">    angles, powers, etc., then you need to be cautious with the</span>
+<span class="sd">    `convert_point_unit` parameter:</span>
+
+<span class="sd">    - Setting `convert_point_unit` to False reads the file as is, but you</span>
+<span class="sd">      then need to manually convert the points to meters. This can be done</span>
+<span class="sd">      easily using ktk.geometry.scale.</span>
+<span class="sd">    - Setting `convert_point_unit` to True scales all points to meters,</span>
+<span class="sd">      but also scales every calculated angle, power, etc. as they are read</span>
+<span class="sd">      as any other point.</span>
+
+<span class="sd">    For these special cases, we recommend to set `convert_point_unit` to</span>
+<span class="sd">    False, and then scale the points manually.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ktk.write_c3d, ktk.geometry.scale</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">    As for any instrument, please check that your data loads correctly on</span>
+<span class="sd">    your first use (e.g., sampling frequency, position unit, location and</span>
+<span class="sd">    orientation of the force platforms, etc.).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">convert_point_unit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;convert_point_unit&quot;</span><span class="p">,</span> <span class="n">convert_point_unit</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span>
+        <span class="s2">&quot;convert_forceplate_moment_unit&quot;</span><span class="p">,</span> <span class="n">convert_forceplate_moment_unit</span><span class="p">,</span> <span class="nb">bool</span>
+    <span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span>
+        <span class="s2">&quot;convert_forceplate_position_unit&quot;</span><span class="p">,</span>
+        <span class="n">convert_forceplate_position_unit</span><span class="p">,</span>
+        <span class="nb">bool</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;include_event_context&quot;</span><span class="p">,</span> <span class="n">include_event_context</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c3d&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The file name must end with &#39;.c3d&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;return_ezc3d&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">return_ezc3d</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;return_ezc3d&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">return_ezc3d</span> <span class="o">=</span> <span class="kc">False</span>
+
+    <span class="c1"># Create the output</span>
+    <span class="n">output</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c1"># Create the reader</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">ezc3d</span><span class="o">.</span><span class="n">c3d</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">extract_forceplat_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">OSError</span><span class="p">:</span>
+            <span class="c1"># Maybe there&#39;s an invalid character in filename.</span>
+            <span class="c1"># Try to workaround</span>
+            <span class="c1"># https://github.com/pyomeca/ezc3d/issues/252</span>
+            <span class="n">tempfile</span> <span class="o">=</span> <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">temp_folder</span> <span class="o">+</span> <span class="s2">&quot;/temp.c3d&quot;</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">tempfile</span><span class="p">)</span>
+            <span class="n">reader</span> <span class="o">=</span> <span class="n">ezc3d</span><span class="o">.</span><span class="n">c3d</span><span class="p">(</span><span class="n">tempfile</span><span class="p">,</span> <span class="n">extract_forceplat_data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tempfile</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;File </span><span class="si">{</span><span class="n">filename</span><span class="si">}</span><span class="s2"> was not found.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">return_ezc3d</span><span class="p">:</span>
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;C3D&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span>
+
+    <span class="c1"># ---------------------------------</span>
+    <span class="c1"># List the events</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">event_names</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;EVENT&quot;</span><span class="p">][</span><span class="s2">&quot;LABELS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="n">event_times</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;EVENT&quot;</span><span class="p">][</span><span class="s2">&quot;TIMES&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">event_times</span> <span class="o">=</span> <span class="n">event_times</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">+</span> <span class="n">event_times</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">event_names</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">event_times</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">event_contexts</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;EVENT&quot;</span><span class="p">][</span><span class="s2">&quot;CONTEXTS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">event_contexts</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">event_names</span><span class="p">]</span>
+    <span class="c1"># Create a list of events to copy in the output TimeSeries</span>
+    <span class="n">temp_ts</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">i_event</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">event_names</span><span class="p">)):</span>
+        <span class="n">event_time</span> <span class="o">=</span> <span class="n">event_times</span><span class="p">[</span><span class="n">i_event</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">include_event_context</span><span class="p">:</span>
+            <span class="n">event_name</span> <span class="o">=</span> <span class="n">event_contexts</span><span class="p">[</span><span class="n">i_event</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;:&quot;</span> <span class="o">+</span> <span class="n">event_names</span><span class="p">[</span><span class="n">i_event</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">event_name</span> <span class="o">=</span> <span class="n">event_names</span><span class="p">[</span><span class="n">i_event</span><span class="p">]</span>
+        <span class="n">temp_ts</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+            <span class="n">event_time</span><span class="p">,</span>
+            <span class="n">event_name</span><span class="p">,</span>
+            <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="n">events</span> <span class="o">=</span> <span class="n">temp_ts</span><span class="o">.</span><span class="n">events</span>
+
+    <span class="c1"># -----------------</span>
+    <span class="c1"># Points</span>
+    <span class="c1"># -----------------</span>
+    <span class="c1"># Get the marker label names and create a timeseries data entry for each</span>
+    <span class="c1"># Get the labels</span>
+    <span class="n">point_rate</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;POINT&quot;</span><span class="p">][</span><span class="s2">&quot;RATE&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;POINT&quot;</span><span class="p">][</span><span class="s2">&quot;USED&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">point_unit</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;POINT&quot;</span><span class="p">][</span><span class="s2">&quot;UNITS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">point_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+    <span class="n">point_start</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">][</span><span class="s2">&quot;points&quot;</span><span class="p">][</span><span class="s2">&quot;first_frame&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">point_rate</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">point_start</span> <span class="o">/</span> <span class="n">point_rate</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">n_points</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;POINT&quot;</span><span class="p">][</span><span class="s2">&quot;USED&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;POINT&quot;</span><span class="p">][</span><span class="s2">&quot;LABELS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+    <span class="c1"># Check if labels2, labels3, labels4,.... exist.</span>
+    <span class="c1"># https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm</span>
+    <span class="n">i_additional_labels</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">str_labels</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LABELS</span><span class="si">{</span><span class="n">i_additional_labels</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">additional_labels</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;POINT&quot;</span><span class="p">][</span><span class="n">str_labels</span><span class="p">][</span>
+                <span class="s2">&quot;value&quot;</span>
+            <span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">labels</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_labels</span><span class="p">)</span>
+        <span class="n">i_additional_labels</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="c1"># Solve the point unit conversion mess (issue #147)</span>
+    <span class="n">scales</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;mm&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span> <span class="s2">&quot;cm&quot;</span><span class="p">:</span> <span class="mf">0.01</span><span class="p">,</span> <span class="s2">&quot;dm&quot;</span><span class="p">:</span> <span class="mf">0.1</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">convert_point_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">point_unit</span> <span class="o">==</span> <span class="s2">&quot;m&quot;</span><span class="p">:</span>
+            <span class="n">point_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="n">point_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+        <span class="k">elif</span> <span class="n">point_unit</span> <span class="ow">in</span> <span class="n">scales</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;In the specified file, points are expressed in &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">. They have been automatically converted to meters &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;(scaled by </span><span class="si">{</span><span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span><span class="si">}</span><span class="s2">). Please note that &quot;</span>
+                <span class="s2">&quot;if this file also contains calculated values such as &quot;</span>
+                <span class="s2">&quot;angles, powers, etc., they have been also (wrongly) scaled by &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span><span class="si">}</span><span class="s2">. Consult &quot;</span>
+                <span class="s2">&quot;https://kineticstoolkit.uqam.ca/doc/api/ktk.read_c3d.html &quot;</span>
+                <span class="s2">&quot;for more information. You can mute this warning &quot;</span>
+                <span class="s2">&quot;by explicitely setting `convert_point_unit` to either True &quot;</span>
+                <span class="s2">&quot;or False.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">point_factor</span> <span class="o">=</span> <span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span>
+            <span class="n">point_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="s2">&quot;In the specified file, points are expressed in &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">`, which is not recognized by ktk.read_c3d. They &quot;</span>
+                <span class="s2">&quot;have been left as is, without attempting to convert to meters. &quot;</span>
+                <span class="s2">&quot;You can mute this warning by setting `convert_point_unit` to &quot;</span>
+                <span class="s2">&quot;False.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">point_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
+            <span class="c1"># point_unit = Do not update</span>
+
+    <span class="k">elif</span> <span class="n">convert_point_unit</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">point_factor</span> <span class="o">=</span> <span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span>
+            <span class="n">point_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;In the specified file, points are expressed in &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">`, which is not recognized by ktk.read_c3d. &quot;</span>
+                <span class="s2">&quot;Please set `convert_point_unit` to None of False.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">point_factor</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># point_unit = Do not update</span>
+
+    <span class="k">if</span> <span class="n">n_points</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># There are points</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i_label</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_points</span><span class="p">):</span>
+            <span class="c1"># Make sure it&#39;s UTF8, and strip leading and ending spaces</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">i_label</span><span class="p">]</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="c1"># Ensure key is unique, in case of multiple series labelled</span>
+            <span class="c1"># with the same name</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                <span class="n">suffix_integer</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">while</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix_integer</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="n">suffix_integer</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix_integer</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                <span class="p">[</span><span class="n">point_factor</span><span class="p">,</span> <span class="n">point_factor</span><span class="p">,</span> <span class="n">point_factor</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="o">*</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;points&quot;</span><span class="p">][:,</span> <span class="n">i_label</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">)</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span> <span class="n">point_unit</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">n_points</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">points</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">point_rate</span> <span class="o">+</span> <span class="n">start_time</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Add events</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;Points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">points</span>
+
+    <span class="c1"># -----------------</span>
+    <span class="c1"># Analogs</span>
+    <span class="c1"># -----------------</span>
+    <span class="n">labels</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">][</span><span class="s2">&quot;LABELS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+    <span class="n">analog_rate</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">][</span><span class="s2">&quot;RATE&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">n_analogs</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">][</span><span class="s2">&quot;USED&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">][</span><span class="s2">&quot;UNITS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">units</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="s2">&quot;No unit&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="c1"># No units in the file, create an empty unit for each label</span>
+        <span class="n">units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">]</span>
+
+    <span class="c1"># Check if labels2, labels3, labels4,.... exist.</span>
+    <span class="c1"># https://www.c3d.org/HTML/default.htm?turl=Documents%2Fpointlabels2.htm</span>
+    <span class="c1"># In contrast to the points case, units is an array of strings.</span>
+    <span class="n">i_additional_labels</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">str_labels</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;LABELS</span><span class="si">{</span><span class="n">i_additional_labels</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="n">str_units</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;UNITS</span><span class="si">{</span><span class="n">i_additional_labels</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">additional_labels</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">][</span><span class="n">str_labels</span><span class="p">][</span>
+                <span class="s2">&quot;value&quot;</span>
+            <span class="p">]</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">additional_units</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">][</span><span class="n">str_units</span><span class="p">][</span>
+                    <span class="s2">&quot;value&quot;</span>
+                <span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="c1"># If there are no additional units, just fill with blank spaces</span>
+                <span class="n">additional_units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">additional_labels</span><span class="p">]</span>
+
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">labels</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_labels</span><span class="p">)</span>
+        <span class="n">units</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">additional_units</span><span class="p">)</span>
+        <span class="n">i_additional_labels</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># There are analogs</span>
+        <span class="n">analogs</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i_label</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_analogs</span><span class="p">):</span>
+            <span class="c1"># Strip leading and ending spaces</span>
+            <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">i_label</span><span class="p">]</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+            <span class="c1"># Ensure key is unique, in case of multiple series labelled</span>
+            <span class="c1"># with the same name</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">analogs</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                <span class="n">suffix_integer</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="k">while</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix_integer</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">analogs</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                    <span class="n">suffix_integer</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix_integer</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">analogs</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;analogs&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="n">i_label</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="k">if</span> <span class="n">units</span><span class="p">[</span><span class="n">i_label</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">analogs</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span>
+                    <span class="n">key</span><span class="p">,</span>
+                    <span class="s2">&quot;Unit&quot;</span><span class="p">,</span>
+                    <span class="n">units</span><span class="p">[</span><span class="n">i_label</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+                    <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                <span class="p">)</span>
+        <span class="k">if</span> <span class="n">n_analogs</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">analogs</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">analogs</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">analog_rate</span>
+                <span class="o">+</span> <span class="n">start_time</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Add events</span>
+        <span class="n">analogs</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;Analogs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">analogs</span>
+
+    <span class="c1"># -----------------</span>
+    <span class="c1"># Rotations</span>
+    <span class="c1"># -----------------</span>
+    <span class="c1"># Some files do not have a ROTATION parameter, do nothing for those.</span>
+    <span class="k">if</span> <span class="s2">&quot;ROTATION&quot;</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]:</span>
+        <span class="n">rotations</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
+
+        <span class="c1"># Get the marker label names and create a timeseries data entry for each</span>
+        <span class="c1"># Get the labels</span>
+        <span class="n">rotation_rate</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">][</span><span class="s2">&quot;RATE&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">rotation_start</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">][</span><span class="s2">&quot;rotations&quot;</span><span class="p">][</span><span class="s2">&quot;first_frame&quot;</span><span class="p">]</span>
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">rotation_start</span> <span class="o">/</span> <span class="n">rotation_rate</span>
+        <span class="n">n_rotations</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">][</span><span class="s2">&quot;USED&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="n">labels</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">][</span><span class="s2">&quot;LABELS&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># There are rotations</span>
+            <span class="c1"># no additional labels and scale conversion for rotation matrices</span>
+            <span class="c1"># move to adding data to the TimeSeries</span>
+            <span class="k">for</span> <span class="n">rotation_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_rotations</span><span class="p">):</span>
+                <span class="c1"># Make sure it&#39;s UTF8, and strip leading and ending spaces</span>
+                <span class="n">label</span> <span class="o">=</span> <span class="n">labels</span><span class="p">[</span><span class="n">rotation_id</span><span class="p">]</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span> <span class="s2">&quot;ignore&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="c1"># Ensure key is unique, in case of multiple series labelled</span>
+                <span class="c1"># with the same name</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">key</span> <span class="ow">in</span> <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+                    <span class="n">suffix_integer</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="k">while</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix_integer</span><span class="si">}</span><span class="s2">&quot;</span> <span class="ow">in</span> <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                        <span class="n">suffix_integer</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">suffix_integer</span><span class="si">}</span><span class="s2">&quot;</span>
+
+                <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+                        <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;rotations&quot;</span><span class="p">][:,</span> <span class="p">:,</span> <span class="n">rotation_id</span><span class="p">,</span> <span class="p">:],</span>
+                        <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">n_rotations</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">rotations</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">/</span> <span class="n">rotation_rate</span>
+                    <span class="o">+</span> <span class="n">start_time</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Matrices with nans should be complete nans. Some c3d may contain</span>
+            <span class="c1"># nans in the data but [0, 0, 0, 1] on the 4th line.</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+                <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">][</span><span class="n">rotations</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">data</span><span class="p">),</span> <span class="p">:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+            <span class="c1"># Add events</span>
+            <span class="n">rotations</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+            <span class="c1"># Add to output</span>
+            <span class="n">output</span><span class="p">[</span><span class="s2">&quot;Rotations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotations</span>
+
+    <span class="c1"># -----------------</span>
+    <span class="c1"># Platforms</span>
+    <span class="c1"># -----------------</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[])</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;Analogs&quot;</span> <span class="ow">in</span> <span class="n">output</span><span class="p">):</span>
+
+        <span class="n">platforms</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">analogs</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+        <span class="n">n_platforms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">i_platform</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_platforms</span><span class="p">):</span>
+
+            <span class="c1"># Define unit conversion factors</span>
+            <span class="n">forceplate_position_unit</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span>
+                <span class="s2">&quot;unit_position&quot;</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">convert_forceplate_position_unit</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">forceplate_position_unit</span> <span class="o">==</span> <span class="s2">&quot;mm&quot;</span>
+            <span class="p">):</span>
+                <span class="n">forceplate_position_factor</span> <span class="o">=</span> <span class="mf">0.001</span>
+                <span class="n">forceplate_position_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+            <span class="k">elif</span> <span class="n">convert_forceplate_position_unit</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">forceplate_position_unit</span> <span class="o">==</span> <span class="s2">&quot;cm&quot;</span>
+            <span class="p">):</span>
+                <span class="n">forceplate_position_factor</span> <span class="o">=</span> <span class="mf">0.01</span>
+                <span class="n">forceplate_position_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+            <span class="k">elif</span> <span class="n">convert_forceplate_position_unit</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">forceplate_position_unit</span> <span class="o">==</span> <span class="s2">&quot;dm&quot;</span>
+            <span class="p">):</span>
+                <span class="n">forceplate_position_factor</span> <span class="o">=</span> <span class="mf">0.1</span>
+                <span class="n">forceplate_position_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">forceplate_position_factor</span> <span class="o">=</span> <span class="mi">1</span>
+
+            <span class="n">forceplate_moment_unit</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span>
+                <span class="s2">&quot;unit_moment&quot;</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="n">convert_forceplate_moment_unit</span> <span class="ow">and</span> <span class="p">(</span>
+                <span class="n">forceplate_moment_unit</span> <span class="o">==</span> <span class="s2">&quot;Nmm&quot;</span>
+            <span class="p">):</span>
+                <span class="n">moment_factor</span> <span class="o">=</span> <span class="mf">0.001</span>
+                <span class="n">forceplate_moment_unit</span> <span class="o">=</span> <span class="s2">&quot;Nm&quot;</span>
+            <span class="k">elif</span> <span class="n">forceplate_moment_unit</span> <span class="o">==</span> <span class="s2">&quot;Nm&quot;</span><span class="p">:</span>
+                <span class="n">moment_factor</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">moment_factor</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Moment unit is </span><span class="si">{</span><span class="n">forceplate_moment_unit</span><span class="si">}</span><span class="s2"> instead of Nm or Nmm.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Add corners</span>
+            <span class="k">for</span> <span class="n">i_corner</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner</span><span class="si">{</span><span class="n">i_corner</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">platforms</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">forceplate_position_factor</span>
+                    <span class="o">*</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span><span class="s2">&quot;corners&quot;</span><span class="p">][</span>
+                        <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">,</span> <span class="n">i_corner</span>
+                    <span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span>
+                    <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span> <span class="n">forceplate_position_unit</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Add origin and the whole local coordinate system</span>
+            <span class="n">lcs</span> <span class="o">=</span> <span class="n">kinetics</span><span class="o">.</span><span class="n">create_forceplatform_lcs</span><span class="p">(</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner1&quot;</span><span class="p">],</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner2&quot;</span><span class="p">],</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner3&quot;</span><span class="p">],</span>
+                <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner4&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_LCS&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lcs</span>
+
+            <span class="c1"># Add ground reaction force</span>
+            <span class="n">force_unit</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span><span class="s2">&quot;unit_force&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">force_unit</span> <span class="o">!=</span> <span class="s2">&quot;N&quot;</span><span class="p">:</span>
+                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Force unit is </span><span class="si">{</span><span class="n">force_unit</span><span class="si">}</span><span class="s2"> instead of newtons.&quot;</span>
+                <span class="p">)</span>
+
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Force&quot;</span>
+            <span class="n">force</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">platforms</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">force</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span><span class="s2">&quot;force&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">force</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span> <span class="n">force_unit</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+            <span class="c1"># Add moment around origin</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_MomentAtCenter&quot;</span>
+            <span class="n">moment</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">platforms</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">moment</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">moment_factor</span>
+                <span class="o">*</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span><span class="s2">&quot;moment&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">)</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">moment</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span>
+                <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span> <span class="n">forceplate_moment_unit</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Add COP</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_COP&quot;</span>
+
+            <span class="c1"># # Calculated by KTK</span>
+            <span class="c1"># local_force = geometry.get_local_coordinates(force, lcs)</span>
+            <span class="c1"># local_moment = geometry.get_local_coordinates(moment, lcs)</span>
+            <span class="c1"># local_cop = kinetics.calculate_cop(local_force, local_moment)</span>
+            <span class="c1"># platforms.data[key] = geometry.get_global_coordinates(</span>
+            <span class="c1">#     local_cop, lcs</span>
+            <span class="c1"># )</span>
+
+            <span class="c1"># Already calculated by ezc3d</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">platforms</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">forceplate_position_factor</span>
+                <span class="o">*</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span>
+                    <span class="s2">&quot;center_of_pressure&quot;</span>
+                <span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">)</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span>
+                <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span> <span class="n">forceplate_position_unit</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Add moments at COP</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_MomentAtCOP&quot;</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">platforms</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">moment_factor</span> <span class="o">*</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span><span class="s2">&quot;Tz&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+            <span class="p">)</span>
+            <span class="n">platforms</span><span class="o">.</span><span class="n">add_info</span><span class="p">(</span>
+                <span class="n">key</span><span class="p">,</span> <span class="s2">&quot;Unit&quot;</span><span class="p">,</span> <span class="n">forceplate_moment_unit</span><span class="p">,</span> <span class="n">in_place</span><span class="o">=</span><span class="kc">True</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Add events</span>
+        <span class="n">platforms</span><span class="o">.</span><span class="n">events</span> <span class="o">=</span> <span class="n">events</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">output</span><span class="p">[</span><span class="s2">&quot;ForcePlatforms&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">platforms</span>
+
+    <span class="c1"># ---------------------------------</span>
+    <span class="c1"># List the metadata (info)</span>
+    <span class="n">output</span><span class="p">[</span><span class="s2">&quot;C3DParameters&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_ezc3d_to_dict</span><span class="p">(</span><span class="n">reader</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">output</span></div>
+
+
+
+<div class="viewcode-block" id="write_c3d">
+<a class="viewcode-back" href="../../api/ktk.write_c3d.html#ktk.write_c3d">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_c3d</span><span class="p">(</span>
+    <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">points</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">analogs</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">rotations</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Write points, analog, and rotations data to a C3D file.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename</span>
+<span class="sd">        Path of the C3D file</span>
+
+<span class="sd">    points</span>
+<span class="sd">        Optional. Points trajectories, where data key corresponds to a point,</span>
+<span class="sd">        expressed as an Nx4 point series::</span>
+
+<span class="sd">            [</span>
+<span class="sd">                [x0, y0, z0, 1.0],</span>
+<span class="sd">                [x1, y1, z1, 1.0],</span>
+<span class="sd">                [x2, y2, z2, 1.0],</span>
+<span class="sd">                ...,</span>
+<span class="sd">            ]</span>
+
+<span class="sd">        Events from this TimeSeries are also added to the c3d.</span>
+
+<span class="sd">    analogs</span>
+<span class="sd">        Optional. Analog signals, where each data key is one series. Series</span>
+<span class="sd">        that are not unidimensional are converted to multiple unidimensional</span>
+<span class="sd">        series. For instance, if the shape of analogs.data[&quot;Forces&quot;] is</span>
+<span class="sd">        1000x3, then three unidimensional series of length 1000 are created in</span>
+<span class="sd">        the C3D: Forces[0], Forces[1] and Forces[2].</span>
+
+<span class="sd">        If both `analogs` and `points` are specified, the sample rate of</span>
+<span class="sd">        `analogs` must be an integer multiple of the `points`&#39;s sample rate.</span>
+<span class="sd">        Also, `analogs.time[0]` must be the same as `points.time[0]`.</span>
+
+<span class="sd">    rotations</span>
+<span class="sd">        Optional. Rotation matrices, where each data key corresponds to a</span>
+<span class="sd">        rotation matrix, expressed as a Nx4x4 array.</span>
+
+<span class="sd">        If both `rotations` and `points` are specified, the sample rate of</span>
+<span class="sd">        `rotations` must be an integer multiple of the `points`&#39;s sample rate.</span>
+<span class="sd">        Also, `rotations.time[0]` must be the same as `rotations.time[0]`.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ktk.read_c3d</span>
+
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">    This function relies on `ezc3d`, which is installed by default using</span>
+<span class="sd">    conda, but not using pip. Please install ezc3d before using</span>
+<span class="sd">    write_c3d. https://github.com/pyomeca/ezc3d</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    Create a simple c3d file with two markers sampled at 240 Hz and two</span>
+<span class="sd">    sinusoidal analog signals sampled at 1200 Hz, during 10 seconds::</span>
+
+<span class="sd">        import kineticstoolkit.lab as ktk</span>
+<span class="sd">        import numpy as np</span>
+
+<span class="sd">        points = ktk.TimeSeries()</span>
+<span class="sd">        points.time = np.linspace(0, 10, 10*240, endpoint=False)</span>
+<span class="sd">        points.data[&quot;Marker1&quot;] = np.ones((2400, 4))</span>
+<span class="sd">        points.data[&quot;Marker2&quot;] = np.ones((2400, 4))</span>
+
+<span class="sd">        analogs = ktk.TimeSeries()</span>
+<span class="sd">        analogs.time = np.linspace(0, 10, 10*2400, endpoint=False)</span>
+<span class="sd">        analogs.data[&quot;Signal1&quot;] = np.sin(analogs.time)</span>
+<span class="sd">        analogs.data[&quot;Signal2&quot;] = np.cos(analogs.time)</span>
+
+<span class="sd">        ktk.write_c3d(&quot;testfile.c3d&quot;, points=points, analogs=analogs)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;filename&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;points&quot;</span><span class="p">,</span> <span class="n">points</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeries</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;analogs&quot;</span><span class="p">,</span> <span class="n">analogs</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeries</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;rotations&quot;</span><span class="p">,</span> <span class="n">rotations</span><span class="p">,</span> <span class="p">(</span><span class="n">TimeSeries</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="kc">None</span><span class="p">)))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c3d&quot;</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The file name must end with &#39;.c3d&#39;.&quot;</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">ezc3d</span>
+    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
+            <span class="s2">&quot;The optional module ezc3d is not installed, but it is required &quot;</span>
+            <span class="s2">&quot;to use this function. Please install it using: &quot;</span>
+            <span class="s2">&quot;conda install -c conda-forge ezc3d&quot;</span>
+        <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># Dummy point data must be created since analogs and rotations rate ratio</span>
+        <span class="c1"># are based on point rate.</span>
+        <span class="n">points</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">rotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">rotations</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">copy_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">copy_info</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">analogs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">points</span> <span class="o">=</span> <span class="n">analogs</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">copy_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">copy_info</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;At least one of points, analogs, or rotations must be &quot;</span>
+                <span class="s2">&quot;provided. Writing empty C3D files is not supported.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="c1"># Create an empty c3d structure</span>
+    <span class="n">c3d</span> <span class="o">=</span> <span class="n">ezc3d</span><span class="o">.</span><span class="n">c3d</span><span class="p">()</span>
+
+    <span class="c1"># Add the points, but first make some checks</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">_check_constant_sample_rate</span><span class="p">()</span>
+    <span class="n">point_rate</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">get_sample_rate</span><span class="p">()</span>
+
+    <span class="n">point_unit</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+        <span class="c1"># Check that this is a series of points</span>
+        <span class="k">if</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">4</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Point </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is not a Nx4 series of points.&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">],</span> <span class="mf">1.0</span><span class="p">),</span>
+            <span class="n">where</span><span class="o">=~</span><span class="n">points</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">key</span><span class="p">),</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Point </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2"> is not a series of [x, y, z, 1.0]&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that units are all the same (or None)</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="s2">&quot;Unit&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">]:</span>
+            <span class="k">continue</span>
+
+        <span class="n">this_unit</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="n">key</span><span class="p">][</span><span class="s2">&quot;Unit&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">this_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">point_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">point_unit</span> <span class="o">=</span> <span class="n">this_unit</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">point_unit</span> <span class="o">!=</span> <span class="n">this_unit</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Found different point units in the TimeSeries: &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">this_unit</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">point_unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">point_unit</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span>  <span class="c1"># Default</span>
+
+    <span class="c1"># Now format and add the points</span>
+    <span class="n">point_list</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">point_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">time</span><span class="p">)))</span>
+
+    <span class="k">for</span> <span class="n">i_point</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+        <span class="n">point_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">point</span><span class="p">)</span>
+        <span class="n">point_data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">i_point</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">point</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">point_data</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="n">i_point</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">point</span><span class="p">][:,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">point_data</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="n">i_point</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">point</span><span class="p">][:,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">point_data</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="n">i_point</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">point</span><span class="p">][:,</span> <span class="mi">3</span><span class="p">]</span>
+
+    <span class="c1"># Fill point data</span>
+    <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">][</span><span class="s2">&quot;points&quot;</span><span class="p">][</span><span class="s2">&quot;first_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">point_rate</span><span class="p">)</span>
+    <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;POINT&quot;</span><span class="p">,</span> <span class="s2">&quot;RATE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">point_rate</span><span class="p">])</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">point_list</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;POINT&quot;</span><span class="p">,</span> <span class="s2">&quot;LABELS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">tuple</span><span class="p">(</span><span class="n">point_list</span><span class="p">)])</span>
+    <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;POINT&quot;</span><span class="p">,</span> <span class="s2">&quot;UNITS&quot;</span><span class="p">,</span> <span class="n">point_unit</span><span class="p">)</span>
+
+    <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;points&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">point_data</span>
+
+    <span class="c1"># Fill analog data</span>
+    <span class="k">if</span> <span class="n">analogs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">analogs</span><span class="o">.</span><span class="n">_check_constant_sample_rate</span><span class="p">()</span>
+        <span class="n">analog_rate</span> <span class="o">=</span> <span class="n">analogs</span><span class="o">.</span><span class="n">get_sample_rate</span><span class="p">()</span>
+
+        <span class="n">rate_ratio</span> <span class="o">=</span> <span class="n">analog_rate</span> <span class="o">/</span> <span class="n">point_rate</span>
+        <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">rate_ratio</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">rate_ratio</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The sample rate of analogs must be an integer &quot;</span>
+                <span class="s2">&quot;multiple of the points sample rate.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">analogs</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Points and analogs must share the same starting time. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;However, points.time[0] = </span><span class="si">{</span><span class="n">points</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> whereas &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;analogs.time[0] = </span><span class="si">{</span><span class="n">analogs</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Since analogs are unidimensional, we will use the DataFrame exporter</span>
+        <span class="c1"># to get one column per analog value. This way, forces would become</span>
+        <span class="c1"># forces[0], forces[1], forces[2] and forces[3].</span>
+        <span class="n">df_analogs</span><span class="p">,</span> <span class="n">analogs_info</span> <span class="o">=</span> <span class="n">analogs</span><span class="o">.</span><span class="n">_to_dataframe_and_info</span><span class="p">()</span>
+
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">,</span> <span class="s2">&quot;LABELS&quot;</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">df_analogs</span><span class="o">.</span><span class="n">columns</span><span class="p">))</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">,</span> <span class="s2">&quot;RATE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">analog_rate</span><span class="p">])</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span>
+            <span class="s2">&quot;ANALOG&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;UNITS&quot;</span><span class="p">,</span>
+            <span class="p">[</span><span class="n">_</span><span class="p">[</span><span class="s2">&quot;Unit&quot;</span><span class="p">]</span> <span class="k">if</span> <span class="s2">&quot;Unit&quot;</span> <span class="ow">in</span> <span class="n">_</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">analogs_info</span><span class="p">],</span>
+        <span class="p">)</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;ANALOG&quot;</span><span class="p">,</span> <span class="s2">&quot;USED&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">analogs_info</span><span class="p">)])</span>
+        <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">][</span><span class="s2">&quot;analogs&quot;</span><span class="p">][</span><span class="s2">&quot;first_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
+            <span class="n">analogs</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">analog_rate</span>
+        <span class="p">)</span>
+        <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;analogs&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">df_analogs</span><span class="o">.</span><span class="n">to_numpy</span><span class="p">()</span><span class="o">.</span><span class="n">T</span><span class="p">)[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">]</span>
+
+    <span class="c1"># fill rotation data</span>
+    <span class="k">if</span> <span class="n">rotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">rotations</span><span class="o">.</span><span class="n">_check_constant_sample_rate</span><span class="p">()</span>
+        <span class="n">rotation_rate</span> <span class="o">=</span> <span class="n">rotations</span><span class="o">.</span><span class="n">get_sample_rate</span><span class="p">()</span>
+
+        <span class="n">rate_ratio</span> <span class="o">=</span> <span class="n">rotation_rate</span> <span class="o">/</span> <span class="n">point_rate</span>
+        <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">rate_ratio</span><span class="p">,</span> <span class="nb">round</span><span class="p">(</span><span class="n">rate_ratio</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;The sample rate of rotations must be an integer &quot;</span>
+                <span class="s2">&quot;multiple of the points sample rate.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">if</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">points</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Points and rotations must share the same starting time. &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;However, points.time[0] = </span><span class="si">{</span><span class="n">points</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> whereas &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;rotations.time[0] = </span><span class="si">{</span><span class="n">rotations</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Final data should be a 4x4xlen(rotations.data.keys())xlen(rotations.time)</span>
+        <span class="c1"># np.ndarray</span>
+        <span class="n">c3d_rotations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
+            <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i_rot</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
+            <span class="c1"># change from shape (len(rotations.time), 4, 4) to (4, 4, len(rotations.time))</span>
+            <span class="n">c3d_rotations</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i_rot</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
+                <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">,</span> <span class="s2">&quot;LABELS&quot;</span><span class="p">,</span> <span class="p">[</span><span class="o">*</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()])</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">,</span> <span class="s2">&quot;RATE&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">rotation_rate</span><span class="p">])</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_parameter</span><span class="p">(</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">,</span> <span class="s2">&quot;USED&quot;</span><span class="p">,</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())])</span>
+        <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">][</span><span class="s2">&quot;rotations&quot;</span><span class="p">][</span><span class="s2">&quot;first_frame&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span>
+            <span class="n">rotations</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">rotation_rate</span>
+        <span class="p">)</span>
+        <span class="n">c3d</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;rotations&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">c3d_rotations</span>
+
+    <span class="c1"># Write the data</span>
+    <span class="n">c3d</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="c1"># ---------------------------------</span>
+    <span class="c1"># Add the events</span>
+    <span class="n">c3d</span> <span class="o">=</span> <span class="n">ezc3d</span><span class="o">.</span><span class="n">c3d</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
+
+    <span class="n">points</span> <span class="o">=</span> <span class="n">points</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">analogs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">analogs</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">rotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">points</span><span class="o">.</span><span class="n">events</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">events</span><span class="p">)</span>
+    <span class="n">points</span><span class="o">.</span><span class="n">remove_duplicate_events</span><span class="p">(</span><span class="n">in_place</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">points</span><span class="o">.</span><span class="n">events</span><span class="p">:</span>
+        <span class="n">c3d</span><span class="o">.</span><span class="n">add_event</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">=</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="n">time</span> <span class="o">//</span> <span class="mi">60</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">mod</span><span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="mi">60</span><span class="p">)],</span> <span class="n">label</span><span class="o">=</span><span class="n">event</span><span class="o">.</span><span class="n">name</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Write the data again</span>
+    <span class="c1"># (workaround https://github.com/pyomeca/ezc3d/issues/263)</span>
+    <span class="n">c3d</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">NORMALIZE_WHITESPACE</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Félix Chénier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2020-2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

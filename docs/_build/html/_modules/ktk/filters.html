@@ -1,0 +1,890 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ktk.filters &#8212; Kinetics Toolkit  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../../_static/custom.css?v=cd73c18a" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ktk/filters';</script>
+    <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/_modules/ktk/filters.html" />
+    <link rel="icon" href="../../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../_static/logo.png" class="logo__image only-light" alt="Kinetics Toolkit  documentation - Home"/>
+    <img src="../../_static/logo-dark.png" class="logo__image only-dark pst-js-only" alt="Kinetics Toolkit  documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://kineticstoolkit.uqam.ca">Main documentation website</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../classes.html">Classes</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.TimeSeries.html">ktk.TimeSeries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_data.html">ktk.TimeSeries.add_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_data_info.html">ktk.TimeSeries.add_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_event.html">ktk.TimeSeries.add_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.add_info.html">ktk.TimeSeries.add_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.copy.html">ktk.TimeSeries.copy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.count_events.html">ktk.TimeSeries.count_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.fill_missing_samples.html">ktk.TimeSeries.fill_missing_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.from_array.html">ktk.TimeSeries.from_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.from_dataframe.html">ktk.TimeSeries.from_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_after_event.html">ktk.TimeSeries.get_index_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_after_time.html">ktk.TimeSeries.get_index_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_at_event.html">ktk.TimeSeries.get_index_at_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_at_time.html">ktk.TimeSeries.get_index_at_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_before_event.html">ktk.TimeSeries.get_index_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_index_before_time.html">ktk.TimeSeries.get_index_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_sample_rate.html">ktk.TimeSeries.get_sample_rate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_subset.html">ktk.TimeSeries.get_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_after_event.html">ktk.TimeSeries.get_ts_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_after_index.html">ktk.TimeSeries.get_ts_after_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_after_time.html">ktk.TimeSeries.get_ts_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_before_event.html">ktk.TimeSeries.get_ts_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_before_index.html">ktk.TimeSeries.get_ts_before_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_before_time.html">ktk.TimeSeries.get_ts_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_between_events.html">ktk.TimeSeries.get_ts_between_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_between_indexes.html">ktk.TimeSeries.get_ts_between_indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.get_ts_between_times.html">ktk.TimeSeries.get_ts_between_times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.isnan.html">ktk.TimeSeries.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.merge.html">ktk.TimeSeries.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.plot.html">ktk.TimeSeries.plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_data.html">ktk.TimeSeries.remove_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_data_info.html">ktk.TimeSeries.remove_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_duplicate_events.html">ktk.TimeSeries.remove_duplicate_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_event.html">ktk.TimeSeries.remove_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.remove_info.html">ktk.TimeSeries.remove_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.rename_data.html">ktk.TimeSeries.rename_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.rename_event.html">ktk.TimeSeries.rename_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.rename_info.html">ktk.TimeSeries.rename_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.resample.html">ktk.TimeSeries.resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.shift.html">ktk.TimeSeries.shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.sort_events.html">ktk.TimeSeries.sort_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.to_dataframe.html">ktk.TimeSeries.to_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.trim_events.html">ktk.TimeSeries.trim_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.ui_edit_events.html">ktk.TimeSeries.ui_edit_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.TimeSeries.ui_sync.html">ktk.TimeSeries.ui_sync</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.TimeSeriesEvent.html">ktk.TimeSeriesEvent</a></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.Player.html">ktk.Player</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.close.html">ktk.Player.close</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.get_contents.html">ktk.Player.get_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.get_interconnections.html">ktk.Player.get_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.pause.html">ktk.Player.pause</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.play.html">ktk.Player.play</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.set_contents.html">ktk.Player.set_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.set_interconnections.html">ktk.Player.set_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.set_view.html">ktk.Player.set_view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.to_image.html">ktk.Player.to_image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.Player.to_video.html">ktk.Player.to_video</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../functions.html">Functions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.load.html">ktk.load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.save.html">ktk.save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.read_c3d.html">ktk.read_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.write_c3d.html">ktk.write_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../api/ktk.change_defaults.html">ktk.change_defaults</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../modules.html">Modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.cycles.html">ktk.cycles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.detect_cycles.html">ktk.cycles.detect_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.most_repeatable_cycles.html">ktk.cycles.most_repeatable_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.stack.html">ktk.cycles.stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.time_normalize.html">ktk.cycles.time_normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.cycles.unstack.html">ktk.cycles.unstack</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.doc.html">ktk.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.doc.download.html">ktk.doc.download</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.filters.html">ktk.filters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.butter.html">ktk.filters.butter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.deriv.html">ktk.filters.deriv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.median.html">ktk.filters.median</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.savgol.html">ktk.filters.savgol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.filters.smooth.html">ktk.filters.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.geometry.html">ktk.geometry</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.create_point_series.html">ktk.geometry.create_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.create_transform_series.html">ktk.geometry.create_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.create_vector_series.html">ktk.geometry.create_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_angles.html">ktk.geometry.get_angles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_distances.html">ktk.geometry.get_distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_global_coordinates.html">ktk.geometry.get_global_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_local_coordinates.html">ktk.geometry.get_local_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.get_quaternions.html">ktk.geometry.get_quaternions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.invert.html">ktk.geometry.invert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.is_point_series.html">ktk.geometry.is_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.is_transform_series.html">ktk.geometry.is_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.is_vector_series.html">ktk.geometry.is_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.isnan.html">ktk.geometry.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.matmul.html">ktk.geometry.matmul</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.mirror.html">ktk.geometry.mirror</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.register_points.html">ktk.geometry.register_points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.rotate.html">ktk.geometry.rotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.scale.html">ktk.geometry.scale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.geometry.translate.html">ktk.geometry.translate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="../../api/ktk.kinematics.html">ktk.kinematics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.kinematics.create_cluster.html">ktk.kinematics.create_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.kinematics.extend_cluster.html">ktk.kinematics.extend_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../../api/ktk.kinematics.track_cluster.html">ktk.kinematics.track_cluster</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit/issues/new?title=Issue%20on%20page%20%2F_modules/ktk/filters.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <h1>Source code for ktk.filters</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="c1"># -*- coding: utf-8 -*-</span>
+<span class="c1">#</span>
+<span class="c1"># Copyright 2020-2025 Félix Chénier</span>
+
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+<span class="sd">&quot;&quot;&quot;Provide standard filters for TimeSeries.&quot;&quot;&quot;</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Félix Chénier&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright (C) 2020-2025 Félix Chénier&quot;</span>
+<span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;chenier.felix@uqam.ca&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache 2.0&quot;</span>
+
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sgl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.ndimage</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ndi</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_param</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">cast</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ktk</span>  <span class="c1"># For doctests</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">[</span><span class="s2">&quot;savgol&quot;</span><span class="p">,</span> <span class="s2">&quot;smooth&quot;</span><span class="p">,</span> <span class="s2">&quot;butter&quot;</span><span class="p">,</span> <span class="s2">&quot;deriv&quot;</span><span class="p">,</span> <span class="s2">&quot;median&quot;</span><span class="p">]</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_interpolate</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">TimeSeries</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Interpolate NaNs in a given data key in a TimeSeries.&quot;&quot;&quot;</span>
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">get_subset</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+    <span class="n">nan_index</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="o">~</span><span class="n">nan_index</span><span class="p">):</span>
+        <span class="c1"># There were NaNs, issue a warning.</span>
+        <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">fill_missing_samples</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;NaNs found in the signal. They have been &quot;</span>
+            <span class="s2">&quot;interpolated before filtering, and then put &quot;</span>
+            <span class="s2">&quot;back in the filtered data.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">nan_index</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_validate_input</span><span class="p">(</span><span class="n">ts</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that time is not null, that sample rate is constant, and that time</span>
+<span class="sd">    unit is s.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;There is no data to filter.&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">get_sample_rate</span><span class="p">()):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Sample rate must be constant.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">ts</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s2">&quot;Time&quot;</span><span class="p">][</span><span class="s2">&quot;Unit&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;s&quot;</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;I assume, but cannot tell if the time unit is &#39;s&#39;.&quot;</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="s2">&quot;It seems that unit is not &#39;s&#39;.&quot;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="savgol">
+<a class="viewcode-back" href="../../api/ktk.filters.savgol.html#ktk.filters.savgol">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">savgol</span><span class="p">(</span>
+    <span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">deriv</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply a Savitzky-Golay filter on a TimeSeries.</span>
+
+<span class="sd">    Filtering occurs on the first axis (time). If the TimeSeries contains</span>
+<span class="sd">    missing samples, a warning is issued, missing samples are interpolated</span>
+<span class="sd">    using a first-order interpolation before filtering, and then replaced by</span>
+<span class="sd">    np.nan in the filtered signal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ts</span>
+<span class="sd">        Input TimeSeries</span>
+<span class="sd">    window_length</span>
+<span class="sd">        The length of the filter window. window_length must be a positive</span>
+<span class="sd">        odd integer less or equal than the length of the TimeSeries.</span>
+<span class="sd">    poly_order</span>
+<span class="sd">        The order of the polynomial used to fit the samples. polyorder must be</span>
+<span class="sd">        less than window_length.</span>
+<span class="sd">    deriv</span>
+<span class="sd">        Optional. The order of the derivative to compute. The default is 0,</span>
+<span class="sd">        which means to filter the data without differentiating.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TimeSeries</span>
+<span class="sd">        A copy of the input TimeSeries, which each data being filtered.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If sample rate is not constant, or if there is no data to</span>
+<span class="sd">        filter.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ktk.filters.smooth</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;window_length&quot;</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;poly_order&quot;</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;deriv&quot;</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">_validate_input</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+    <span class="n">tsout</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="n">delta</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">tsout</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">subts</span><span class="p">,</span> <span class="n">nan_index</span> <span class="o">=</span> <span class="n">_interpolate</span><span class="p">(</span><span class="n">tsout</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="o">~</span><span class="n">nan_index</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">poly_order</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># We can&#39;t do anything without more points</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Not enough non-missing samples to filter </span><span class="si">{</span><span class="n">key</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="n">input_signal</span> <span class="o">=</span> <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="c1"># Filter</span>
+        <span class="n">filtered_data</span> <span class="o">=</span> <span class="n">sgl</span><span class="o">.</span><span class="n">savgol_filter</span><span class="p">(</span>
+            <span class="n">input_signal</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="n">poly_order</span><span class="p">,</span> <span class="n">deriv</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="n">delta</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Put back NaNs</span>
+        <span class="n">filtered_data</span><span class="p">[</span><span class="n">nan_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Assign it to the output</span>
+        <span class="n">tsout</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">filtered_data</span>
+
+    <span class="k">return</span> <span class="n">tsout</span></div>
+
+
+
+<div class="viewcode-block" id="smooth">
+<a class="viewcode-back" href="../../api/ktk.filters.smooth.html#ktk.filters.smooth">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">smooth</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply a smoothing (moving average) filter on a TimeSeries.</span>
+
+<span class="sd">    Filtering occurs on the first axis (time). If the TimeSeries contains</span>
+<span class="sd">    missing samples, a warning is issued, missing samples are interpolated</span>
+<span class="sd">    using a first-order interpolation before filtering, and then replaced by</span>
+<span class="sd">    np.nan in the filtered signal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ts</span>
+<span class="sd">        Input TimeSeries.</span>
+<span class="sd">    window_length</span>
+<span class="sd">        The length of the filter window. window_length must be a positive</span>
+<span class="sd">        odd integer less or equal than the length of the TimeSeries.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TimeSeries</span>
+<span class="sd">        A copy of the input TimeSeries, which each data being filtered.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If sample rate is not constant, or if there is no data to</span>
+<span class="sd">        filter.</span>
+
+<span class="sd">    See Also</span>
+<span class="sd">    --------</span>
+<span class="sd">    ktk.filters.savgol</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;window_length&quot;</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">_validate_input</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+    <span class="n">tsout</span> <span class="o">=</span> <span class="n">savgol</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">window_length</span><span class="o">=</span><span class="n">window_length</span><span class="p">,</span> <span class="n">poly_order</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">tsout</span></div>
+
+
+
+<div class="viewcode-block" id="butter">
+<a class="viewcode-back" href="../../api/ktk.filters.butter.html#ktk.filters.butter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">butter</span><span class="p">(</span>
+    <span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span>
+    <span class="o">/</span><span class="p">,</span>
+    <span class="n">fc</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">order</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span>
+    <span class="n">btype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lowpass&quot;</span><span class="p">,</span>
+    <span class="n">filtfilt</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Apply a Butterworth filter to a TimeSeries.</span>
+
+<span class="sd">    Filtering occurs on the first axis (time). If the TimeSeries contains</span>
+<span class="sd">    missing samples, a warning is issued, missing samples are interpolated</span>
+<span class="sd">    using a first-order interpolation before filtering, and then replaced by</span>
+<span class="sd">    np.nan in the filtered signal.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ts</span>
+<span class="sd">        Input TimeSeries.</span>
+<span class="sd">    fc</span>
+<span class="sd">        Cut-off frequency in Hz. This is a float for single-frequency filters</span>
+<span class="sd">        (lowpass, highpass), or a tuple of two floats (e.g., (10., 13.)</span>
+<span class="sd">        for two-frequency filters (bandpass, bandstop)).</span>
+<span class="sd">    order</span>
+<span class="sd">        Optional. Order of the filter. Default is 2.</span>
+<span class="sd">    btype</span>
+<span class="sd">        Optional. Can be either &quot;lowpass&quot;, &quot;highpass&quot;, &quot;bandpass&quot; or</span>
+<span class="sd">        &quot;bandstop&quot;. Default is &quot;lowpass&quot;.</span>
+<span class="sd">    filtfilt</span>
+<span class="sd">        Optional. If True, the filter is applied two times in reverse direction</span>
+<span class="sd">        to eliminate time lag. If False, the filter is applied only in forward</span>
+<span class="sd">        direction. Default is True.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TimeSeries</span>
+<span class="sd">        A copy of the input TimeSeries, which each data being filtered.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If sample rate is not constant, or if there is no data to</span>
+<span class="sd">        filter.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;fc&quot;</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="nb">float</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">fc</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">fc</span><span class="p">)</span>
+            <span class="n">fc</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">fc</span><span class="p">))</span>
+            <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;fc&quot;</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">contents_type</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;fc must be an integer or a tuple or 2 floats.&quot;</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;order&quot;</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;btype&quot;</span><span class="p">,</span> <span class="n">btype</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;filtfilt&quot;</span><span class="p">,</span> <span class="n">filtfilt</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
+    <span class="n">_validate_input</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+    <span class="n">ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="c1"># Create the filter</span>
+    <span class="n">fs</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">isnan</span><span class="p">(</span><span class="n">fs</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The TimeSeries&#39; time vector must not contain NaNs.&quot;</span><span class="p">)</span>
+
+    <span class="n">sos</span> <span class="o">=</span> <span class="n">sgl</span><span class="o">.</span><span class="n">butter</span><span class="p">(</span><span class="n">order</span><span class="p">,</span> <span class="n">fc</span><span class="p">,</span> <span class="n">btype</span><span class="p">,</span> <span class="n">analog</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="s2">&quot;sos&quot;</span><span class="p">,</span> <span class="n">fs</span><span class="o">=</span><span class="n">fs</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+        <span class="n">subts</span><span class="p">,</span> <span class="n">missing</span> <span class="o">=</span> <span class="n">_interpolate</span><span class="p">(</span><span class="n">ts</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Filter</span>
+        <span class="k">if</span> <span class="n">filtfilt</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">]</span> <span class="o">=</span> <span class="n">sgl</span><span class="o">.</span><span class="n">sosfiltfilt</span><span class="p">(</span><span class="n">sos</span><span class="p">,</span> <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">]</span> <span class="o">=</span> <span class="n">sgl</span><span class="o">.</span><span class="n">sosfilt</span><span class="p">(</span><span class="n">sos</span><span class="p">,</span> <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="c1"># Put back nans</span>
+        <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">][</span><span class="n">missing</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+
+        <span class="c1"># Put back in main TimeSeries</span>
+        <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">]</span> <span class="o">=</span> <span class="n">subts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">ts</span></div>
+
+
+
+<div class="viewcode-block" id="deriv">
+<a class="viewcode-back" href="../../api/ktk.filters.deriv.html#ktk.filters.deriv">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">deriv</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate the nth numerical derivative.</span>
+
+<span class="sd">    Filtering occurs on the first axis (time). The sample rate must be</span>
+<span class="sd">    constant.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ts</span>
+<span class="sd">        Input timeseries</span>
+
+<span class="sd">    n</span>
+<span class="sd">        Order of the derivative.</span>
+
+<span class="sd">    Returns</span>
+<span class="sd">    -------</span>
+<span class="sd">    TimeSeries</span>
+<span class="sd">        A copy of the input TimeSeries, which each data being derived. The</span>
+<span class="sd">        length of the resulting TimeSeries is one less than `ts`.</span>
+
+<span class="sd">    Raises</span>
+<span class="sd">    ------</span>
+<span class="sd">    ValueError</span>
+<span class="sd">        If sample rate is not constant, or if there is no data to</span>
+<span class="sd">        filter.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0, 0.5, 0.1))</span>
+<span class="sd">    &gt;&gt;&gt; ts = ts.add_data(&quot;test&quot;, np.array([0.0, 0.0, 1.0, 1.0, 0.0]))</span>
+
+<span class="sd">    &gt;&gt;&gt; # Source data</span>
+<span class="sd">    &gt;&gt;&gt; ts.time</span>
+<span class="sd">    array([0. , 0.1, 0.2, 0.3, 0.4])</span>
+<span class="sd">    &gt;&gt;&gt; ts.data[&quot;test&quot;]</span>
+<span class="sd">    array([0., 0., 1., 1., 0.])</span>
+
+<span class="sd">    &gt;&gt;&gt; # First derivative</span>
+<span class="sd">    &gt;&gt;&gt; ts1 = ktk.filters.deriv(ts)</span>
+
+<span class="sd">    &gt;&gt;&gt; ts1.time</span>
+<span class="sd">    array([0.05, 0.15, 0.25, 0.35])</span>
+<span class="sd">    &gt;&gt;&gt; ts1.data[&quot;test&quot;]</span>
+<span class="sd">    array([  0.,  10.,   0., -10.])</span>
+
+<span class="sd">    &gt;&gt;&gt; # Second derivative</span>
+<span class="sd">    &gt;&gt;&gt; ts2 = ktk.filters.deriv(ts, n=2)</span>
+
+<span class="sd">    &gt;&gt;&gt; ts2.time</span>
+<span class="sd">    array([0.1, 0.2, 0.3])</span>
+<span class="sd">    &gt;&gt;&gt; ts2.data[&quot;test&quot;]</span>
+<span class="sd">    array([ 100., -100., -100.])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;n&quot;</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+    <span class="n">_validate_input</span><span class="p">(</span><span class="n">ts</span><span class="p">)</span>
+
+    <span class="n">out_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="n">out_ts</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="n">out_ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="o">+</span> <span class="n">out_ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="mi">2</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+        <span class="n">out_ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">ts</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">**</span> <span class="n">n</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_ts</span></div>
+
+
+
+<div class="viewcode-block" id="median">
+<a class="viewcode-back" href="../../api/ktk.filters.median.html#ktk.filters.median">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">median</span><span class="p">(</span><span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span> <span class="o">/</span><span class="p">,</span> <span class="n">window_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TimeSeries</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Calculate a moving median.</span>
+
+<span class="sd">    Filtering occurs on the first axis (time).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    ts</span>
+<span class="sd">        Input TimeSeries</span>
+
+<span class="sd">    window_length</span>
+<span class="sd">        Optional. Kernel size, must be odd. The default is 3.</span>
+
+<span class="sd">    Example</span>
+<span class="sd">    -------</span>
+<span class="sd">    &gt;&gt;&gt; ts = ktk.TimeSeries(time=np.arange(0, 6))</span>
+<span class="sd">    &gt;&gt;&gt; ts = ts.add_data(&quot;test&quot;, [10., 11., 11., 20., 14., 15.])</span>
+<span class="sd">    &gt;&gt;&gt; ts2 = ktk.filters.median(ts)</span>
+<span class="sd">    &gt;&gt;&gt; ts2.data[&quot;test&quot;]</span>
+<span class="sd">    array([10., 11., 11., 14., 15., 15.])</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;ts&quot;</span><span class="p">,</span> <span class="n">ts</span><span class="p">,</span> <span class="n">TimeSeries</span><span class="p">)</span>
+    <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;window_length&quot;</span><span class="p">,</span> <span class="n">window_length</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+
+    <span class="n">out_ts</span> <span class="o">=</span> <span class="n">ts</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">:</span>
+        <span class="n">window_shape</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">))]</span>
+        <span class="n">window_shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">window_length</span>
+        <span class="n">out_ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">ndi</span><span class="o">.</span><span class="n">median_filter</span><span class="p">(</span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">size</span><span class="o">=</span><span class="n">window_shape</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">out_ts</span></div>
+
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">NORMALIZE_WHITESPACE</span><span class="p">)</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Félix Chénier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2020-2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,889 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta property="og:title" content="ktk.Player" />
+<meta property="og:type" content="image/png" />
+<meta property="og:url" content="https://kineticstoolkit.uqam.ca/doc/api/ktk.Player.html" />
+<meta property="og:site_name" content="Kinetics Toolkit" />
+<meta property="og:image" content="https://kineticstoolkit.uqam.ca/doc/_static/logo-social.png" />
+<meta property="og:image:alt" content="Kinetics Toolkit Logo" />
+<meta property="og:image:width" content="500" />
+<meta property="og:image:height" content="264" />
+
+    <title>ktk.Player &#8212; Kinetics Toolkit  documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../_static/styles/theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+<link href="../_static/styles/pydata-sphinx-theme.css?digest=8878045cc6db502f8baf" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../_static/styles/sphinx-book-theme.css?v=3c74b3bc" />
+    <link rel="stylesheet" type="text/css" href="../_static/custom.css?v=cd73c18a" />
+  
+  <!-- So that users can add custom icons -->
+  <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf" />
+<link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
+
+    <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'api/ktk.Player';</script>
+    <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/api/ktk.Player.html" />
+    <link rel="icon" href="../_static/favicon.ico"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="ktk.Player.close" href="ktk.Player.close.html" />
+    <link rel="prev" title="ktk.TimeSeriesEvent" href="ktk.TimeSeriesEvent.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="" />
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../_static/logo.png" class="logo__image only-light" alt="Kinetics Toolkit  documentation - Home"/>
+    <img src="../_static/logo-dark.png" class="logo__image only-dark pst-js-only" alt="Kinetics Toolkit  documentation - Home"/>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Table of Contents</span></p>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://kineticstoolkit.uqam.ca">Main documentation website</a></li>
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../classes.html">Classes</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul class="current">
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.TimeSeries.html">ktk.TimeSeries</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_data.html">ktk.TimeSeries.add_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_data_info.html">ktk.TimeSeries.add_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_event.html">ktk.TimeSeries.add_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.add_info.html">ktk.TimeSeries.add_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.copy.html">ktk.TimeSeries.copy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.count_events.html">ktk.TimeSeries.count_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.fill_missing_samples.html">ktk.TimeSeries.fill_missing_samples</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.from_array.html">ktk.TimeSeries.from_array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.from_dataframe.html">ktk.TimeSeries.from_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_after_event.html">ktk.TimeSeries.get_index_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_after_time.html">ktk.TimeSeries.get_index_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_at_event.html">ktk.TimeSeries.get_index_at_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_at_time.html">ktk.TimeSeries.get_index_at_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_before_event.html">ktk.TimeSeries.get_index_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_index_before_time.html">ktk.TimeSeries.get_index_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_sample_rate.html">ktk.TimeSeries.get_sample_rate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_subset.html">ktk.TimeSeries.get_subset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_after_event.html">ktk.TimeSeries.get_ts_after_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_after_index.html">ktk.TimeSeries.get_ts_after_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_after_time.html">ktk.TimeSeries.get_ts_after_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_before_event.html">ktk.TimeSeries.get_ts_before_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_before_index.html">ktk.TimeSeries.get_ts_before_index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_before_time.html">ktk.TimeSeries.get_ts_before_time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_between_events.html">ktk.TimeSeries.get_ts_between_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_between_indexes.html">ktk.TimeSeries.get_ts_between_indexes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.get_ts_between_times.html">ktk.TimeSeries.get_ts_between_times</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.isnan.html">ktk.TimeSeries.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.merge.html">ktk.TimeSeries.merge</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.plot.html">ktk.TimeSeries.plot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_data.html">ktk.TimeSeries.remove_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_data_info.html">ktk.TimeSeries.remove_data_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_duplicate_events.html">ktk.TimeSeries.remove_duplicate_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_event.html">ktk.TimeSeries.remove_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.remove_info.html">ktk.TimeSeries.remove_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.rename_data.html">ktk.TimeSeries.rename_data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.rename_event.html">ktk.TimeSeries.rename_event</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.rename_info.html">ktk.TimeSeries.rename_info</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.resample.html">ktk.TimeSeries.resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.shift.html">ktk.TimeSeries.shift</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.sort_events.html">ktk.TimeSeries.sort_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.to_dataframe.html">ktk.TimeSeries.to_dataframe</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.trim_events.html">ktk.TimeSeries.trim_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.ui_edit_events.html">ktk.TimeSeries.ui_edit_events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.TimeSeries.ui_sync.html">ktk.TimeSeries.ui_sync</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.TimeSeriesEvent.html">ktk.TimeSeriesEvent</a></li>
+<li class="toctree-l2 current active has-children"><a class="current reference internal" href="#">ktk.Player</a><details open="open"><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.close.html">ktk.Player.close</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.get_contents.html">ktk.Player.get_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.get_interconnections.html">ktk.Player.get_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.pause.html">ktk.Player.pause</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.play.html">ktk.Player.play</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.set_contents.html">ktk.Player.set_contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.set_interconnections.html">ktk.Player.set_interconnections</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.set_view.html">ktk.Player.set_view</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.to_image.html">ktk.Player.to_image</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.Player.to_video.html">ktk.Player.to_video</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../functions.html">Functions</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2"><a class="reference internal" href="ktk.load.html">ktk.load</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.save.html">ktk.save</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.read_c3d.html">ktk.read_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.write_c3d.html">ktk.write_c3d</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ktk.change_defaults.html">ktk.change_defaults</a></li>
+</ul>
+</details></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../modules.html">Modules</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.cycles.html">ktk.cycles</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.detect_cycles.html">ktk.cycles.detect_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.most_repeatable_cycles.html">ktk.cycles.most_repeatable_cycles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.stack.html">ktk.cycles.stack</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.time_normalize.html">ktk.cycles.time_normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.cycles.unstack.html">ktk.cycles.unstack</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.doc.html">ktk.doc</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.doc.download.html">ktk.doc.download</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.filters.html">ktk.filters</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.butter.html">ktk.filters.butter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.deriv.html">ktk.filters.deriv</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.median.html">ktk.filters.median</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.savgol.html">ktk.filters.savgol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.filters.smooth.html">ktk.filters.smooth</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.geometry.html">ktk.geometry</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.create_point_series.html">ktk.geometry.create_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.create_transform_series.html">ktk.geometry.create_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.create_vector_series.html">ktk.geometry.create_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_angles.html">ktk.geometry.get_angles</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_distances.html">ktk.geometry.get_distances</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_global_coordinates.html">ktk.geometry.get_global_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_local_coordinates.html">ktk.geometry.get_local_coordinates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.get_quaternions.html">ktk.geometry.get_quaternions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.invert.html">ktk.geometry.invert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.is_point_series.html">ktk.geometry.is_point_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.is_transform_series.html">ktk.geometry.is_transform_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.is_vector_series.html">ktk.geometry.is_vector_series</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.isnan.html">ktk.geometry.isnan</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.matmul.html">ktk.geometry.matmul</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.mirror.html">ktk.geometry.mirror</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.register_points.html">ktk.geometry.register_points</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.rotate.html">ktk.geometry.rotate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.scale.html">ktk.geometry.scale</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.geometry.translate.html">ktk.geometry.translate</a></li>
+</ul>
+</details></li>
+<li class="toctree-l2 has-children"><a class="reference internal" href="ktk.kinematics.html">ktk.kinematics</a><details><summary><span class="toctree-toggle" role="presentation"><i class="fa-solid fa-chevron-down"></i></span></summary><ul>
+<li class="toctree-l3"><a class="reference internal" href="ktk.kinematics.create_cluster.html">ktk.kinematics.create_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.kinematics.extend_cluster.html">ktk.kinematics.extend_cluster</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ktk.kinematics.track_cluster.html">ktk.kinematics.track_cluster</a></li>
+</ul>
+</details></li>
+</ul>
+</details></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/felixchenier/kineticstoolkit/issues/new?title=Issue%20on%20page%20%2Fapi/ktk.Player.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="../_sources/api/ktk.Player.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button pst-navbar-icon"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button pst-js-only" aria-label="Color mode" data-bs-title="Color mode"  data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <i class="theme-switch fa-solid fa-sun                fa-lg" data-mode="light" title="Light"></i>
+  <i class="theme-switch fa-solid fa-moon               fa-lg" data-mode="dark"  title="Dark"></i>
+  <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"  title="System Settings"></i>
+</button>
+
+
+<button class="btn btn-sm pst-navbar-icon search-button search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+</button>
+<button class="sidebar-toggle secondary-toggle btn btn-sm pst-navbar-icon" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>ktk.Player</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ktk.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section id="ktk-player">
+<h1>ktk.Player<a class="headerlink" href="#ktk-player" title="Link to this heading">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="ktk.Player">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">ts</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interconnections</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'ForcePlatforms':</span> <span class="pre">{'Color':</span> <span class="pre">(0.5,</span> <span class="pre">0.0,</span> <span class="pre">1.0),</span> <span class="pre">'Links':</span> <span class="pre">[['*_Corner1',</span> <span class="pre">'*_Corner2'],</span> <span class="pre">['*_Corner2',</span> <span class="pre">'*_Corner3'],</span> <span class="pre">['*_Corner3',</span> <span class="pre">'*_Corner4'],</span> <span class="pre">['*_Corner1',</span> <span class="pre">'*_Corner4']]}}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vectors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'*Force':</span> <span class="pre">{'Color':</span> <span class="pre">(1.0,</span> <span class="pre">1.0,</span> <span class="pre">0.0),</span> <span class="pre">'Origin':</span> <span class="pre">'*COP',</span> <span class="pre">'Scale':</span> <span class="pre">0.001}}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">playback_speed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">up</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anterior</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'x'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zoom</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azimuth</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">elevation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">perspective</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">track</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_point_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.8,</span> <span class="pre">0.8,</span> <span class="pre">0.8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_interconnection_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.8,</span> <span class="pre">0.8,</span> <span class="pre">0.8)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default_vector_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1.0,</span> <span class="pre">1.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">point_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interconnection_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">vector_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frame_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_subdivision_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_width</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.3,</span> <span class="pre">0.3,</span> <span class="pre">0.3)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">background_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kineticstoolkit/player.html#Player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ktk.Player" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A class that allows visualizing points and frames in 3D.</p>
+<p><cite>player = ktk.Player(parameters)</cite> creates and launches an interactive
+Player instance. Once the window is open, press <cite>h</cite> to show a help
+overlay.</p>
+<p>All of the following parameters are also accessible as read/write
+properties, except the contents and the interconnections that are
+accessible using <cite>get_contents</cite>, <cite>set_contents</cite>, <cite>get_interconnections</cite>
+and <cite>set_interconnections</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*ts</strong> (<a class="reference internal" href="ktk.TimeSeries.html#ktk.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><em>TimeSeries</em></a>) – Contains the points and frames to visualize, where each data
+key is either a point position expressed as Nx4 array, or a frame
+expressed as a Nx4x4 array. Multiple TimeSeries can be provided.</p></li>
+<li><p><strong>interconnections</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – <p>Optional. Each key corresponds to a group of interconnections, which
+is a dictionary with the following keys:</p>
+<ul>
+<li><p>”Links”: list of connections where each string is a point
+name. For example, to create a link that connects Point1 to Point2,
+and another link that spans Point3, Point4 and Point5:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interconnections</span><span class="p">[</span><span class="s2">&quot;Example&quot;</span><span class="p">][</span><span class="s2">&quot;Links&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;Point1&quot;</span><span class="p">,</span> <span class="s2">&quot;Point2&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Point3&quot;</span><span class="p">,</span> <span class="s2">&quot;Point4&quot;</span><span class="p">,</span> <span class="s2">&quot;Point5&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>which internally is converted to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interconnections</span><span class="p">[</span><span class="s2">&quot;Example&quot;</span><span class="p">][</span><span class="s2">&quot;Links&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;Point1&quot;</span><span class="p">,</span> <span class="s2">&quot;Point2&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Point3&quot;</span><span class="p">,</span> <span class="s2">&quot;Point4&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;Point4&quot;</span><span class="p">,</span> <span class="s2">&quot;Point5&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p>Point names can include wildcards (*) either as a prefix or as a
+suffix. This is useful to apply a single set of interconnections to
+multiple bodies. For instance, if the Player’s contents include
+these points: [Body1_HipR, Body1_HipL, Body1_L5S1, Body2_HipR,
+Body2_HipL, Body2_L5S1], we could link L5S1 and both hips at once
+using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interconnections</span><span class="p">[</span><span class="s2">&quot;Pelvis&quot;</span><span class="p">][</span><span class="s2">&quot;Links&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;*_HipR&quot;</span><span class="p">,</span> <span class="s2">&quot;*_HipL&quot;</span><span class="p">,</span> <span class="s2">&quot;*_L5S1&quot;</span><span class="p">]</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</li>
+<li><p>”Color”: character or tuple (RGB) that represents the color of the
+link. These two examples are equivalent:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interconnections</span><span class="p">[</span><span class="s2">&quot;Pelvis&quot;</span><span class="p">][</span><span class="s2">&quot;Color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;r&#39;</span>
+<span class="n">interconnections</span><span class="p">[</span><span class="s2">&quot;Pelvis&quot;</span><span class="p">][</span><span class="s2">&quot;Color&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+</pre></div>
+</div>
+</li>
+</ul>
+<p>Its default value connects the four corners of force platforms in
+purple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">interconnections</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;ForcePlatforms&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Links&quot;</span><span class="p">:</span> <span class="p">[[</span><span class="s1">&#39;*_Corner1&#39;</span><span class="p">,</span> <span class="s1">&#39;*_Corner2&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="s1">&#39;*_Corner2&#39;</span><span class="p">,</span> <span class="s1">&#39;*_Corner3&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="s1">&#39;*_Corner3&#39;</span><span class="p">,</span> <span class="s1">&#39;*_Corner4&#39;</span><span class="p">],</span>
+                  <span class="p">[</span><span class="s1">&#39;*_Corner1&#39;</span><span class="p">,</span> <span class="s1">&#39;*_Corner4&#39;</span><span class="p">]]</span>
+        <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>vectors</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em><em>]</em>) – <p>Optional. A dictionary where each key is the name of a vector and each value
+contains its origin, scale, and color. For example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vectors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;WristForce&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Origin&quot;</span><span class="p">:</span> <span class="s2">&quot;WristCenter&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Scale&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;ElbowForce&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Origin&quot;</span><span class="p">:</span> <span class="s2">&quot;ElbowCenter&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Scale&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>will draw lines for the forces WristForce and ElbowForce, with their
+origin being at WristCenter and ElbowCenter, and with a scale of 0.001
+metre per newton. Force and point names can include wildcards (*)
+either as a prefix or as a suffix. For instance, to draw forces
+recorded by multiple force plates, we could use:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">vectors</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;*Force&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;Origin&quot;</span><span class="p">:</span> <span class="s2">&quot;*COP&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Scale&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+        <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>which would assign any point ending by “COP” to its counterpart force.
+This is the default, so that force plate data read by read_c3d_file
+are shown by default in the Player.</p>
+</p></li>
+<li><p><strong>current_index</strong> (<em>int</em>) – Optional. The current index being shown.</p></li>
+<li><p><strong>current_time</strong> (<em>float</em><em> | </em><em>None</em>) – Optional. The current time being shown.</p></li>
+<li><p><strong>playback_speed</strong> (<em>float</em>) – Optional. Speed multiplier. Set to 1.0 for normal speed, 1.5 to
+increase playback speed by 50%, etc.</p></li>
+<li><p><strong>up</strong> (<em>str</em>) – Optional. Defines the ground plane by setting which axis is up. May be
+{“x”, “y”, “z”, “-x”, “-y”, “-z”}. Default is “y”.</p></li>
+<li><p><strong>anterior</strong> (<em>str</em>) – Optional. Defines the anterior direction. May be
+{“x”, “y”, “z”, “-x”, “-y”, “-z”}. Default is “x”.</p></li>
+<li><p><strong>zoom</strong> (<em>float</em>) – Optional. Camera zoom multiplier.</p></li>
+<li><p><strong>azimuth</strong> (<em>float</em>) – Optional. Camera azimuth in radians. If <cite>anterior</cite> is set, then an
+azimuth of 0 corresponds to the right sagittal plane, pi/2 to the
+front frontal plane, -pi/2 to the back frontal plane, etc.</p></li>
+<li><p><strong>elevation</strong> (<em>float</em>) – Optional. Camera elevation in radians. Default is 0.2. If <cite>up</cite> is set,
+then a value of 0 corresponds to a purely horizontal view, pi/2 to the
+top transverse plane, -pi/2 to the bottom transverse plane, etc.</p></li>
+<li><p><strong>perspective</strong> (<em>bool</em>) – Optional. True to draw the scene using perspective, False to draw the
+scene orthogonally.</p></li>
+<li><p><strong>pan</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Camera translation (panning). Default is (0.0, 0.0).</p></li>
+<li><p><strong>target</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Camera target in metres. Default is (0.0, 0.0, 0.0).</p></li>
+<li><p><strong>track</strong> (<em>bool</em>) – Optional. False to keep the camera static, True to follow the last
+selected point when changing index. Default is False.</p></li>
+<li><p><strong>default_point_color</strong> (<em>str</em><em> | </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Default color for points that do not have a “Color”
+info. Can be a character or tuple (RGB) where each RGB color is
+between 0.0 and 1.0. Default is (0.8, 0.8, 0.8).</p></li>
+<li><p><strong>default_interconnection_color</strong> (<em>str</em><em> | </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Default color for interconnections. Can be a character or
+tuple (RGB) where each RGB color is between 0.0 and 1.0. Default is
+(0.8, 0.8, 0.8).</p></li>
+<li><p><strong>default_vector_color</strong> (<em>str</em><em> | </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Default color for vectors. Can be a character or tuple (RGB)
+where each RGB color is between 0.0 and 1.0. Default is
+(1.0, 1.0, 0.0).</p></li>
+<li><p><strong>point_size</strong> (<em>float</em>) – Optional. Point size as defined by Matplotlib marker size. Default is
+4.0.</p></li>
+<li><p><strong>interconnection_width</strong> (<em>float</em>) – Optional. Width of the interconnections as defined by Matplotlib line
+width. Default is 1.5.</p></li>
+<li><p><strong>vector_width</strong> (<em>float</em>) – Optional. Width of the vectors as defined by Matplotlib line
+width. Default is 2.0.</p></li>
+<li><p><strong>frame_size</strong> (<em>float</em>) – Optional. Length of the frame axes in metres. Default is 0.1.</p></li>
+<li><p><strong>frame_width</strong> (<em>float</em>) – Optional. Width of the frame axes as defined by Matplotlib line width.
+Default is 3.0.</p></li>
+<li><p><strong>grid_size</strong> (<em>float</em>) – Optional. Length of one side of the grid in metres. Default is 10.0.</p></li>
+<li><p><strong>grid_subdivision_size</strong> (<em>float</em>) – Optional. Length of one subdivision of the grid in metres. Default is
+1.0.</p></li>
+<li><p><strong>grid_width</strong> (<em>float</em>) – Optional. Width of the grid lines as defined by Matplotlib line width.
+Default is 1.0.</p></li>
+<li><p><strong>grid_origin</strong> (<em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Origin of the grid in metres. Default is (0.0, 0.0, 0.0).</p></li>
+<li><p><strong>grid_color</strong> (<em>str</em><em> | </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Color of the grid. Can be a character or tuple (RGB) where
+each RGB color is between 0.0 and 1.0. Default is (0.3, 0.3, 0.3).</p></li>
+<li><p><strong>background_color</strong> (<em>str</em><em> | </em><em>tuple</em><em>[</em><em>float</em><em>, </em><em>float</em><em>, </em><em>float</em><em>]</em>) – Optional. Background color. Can be a character or tuple (RGB) where
+each RGB color is between 0.0 and 1.0. Default is (0.0, 0.0, 0.0).</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Matplotlib must be in interactive mode.</p>
+</div>
+<p class="rubric">Methods</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="ktk.Player.close.html#ktk.Player.close" title="ktk.Player.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a></p></td>
+<td><p>Close the Player and its associated window.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ktk.Player.get_contents.html#ktk.Player.get_contents" title="ktk.Player.get_contents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_contents</span></code></a></p></td>
+<td><p>Get contents value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ktk.Player.get_interconnections.html#ktk.Player.get_interconnections" title="ktk.Player.get_interconnections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_interconnections</span></code></a></p></td>
+<td><p>Get interconnections value (deprecated).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ktk.Player.pause.html#ktk.Player.pause" title="ktk.Player.pause"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pause</span></code></a></p></td>
+<td><p>Pause the animation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ktk.Player.play.html#ktk.Player.play" title="ktk.Player.play"><code class="xref py py-obj docutils literal notranslate"><span class="pre">play</span></code></a></p></td>
+<td><p>Start the animation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ktk.Player.set_contents.html#ktk.Player.set_contents" title="ktk.Player.set_contents"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_contents</span></code></a></p></td>
+<td><p>Set contents value.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ktk.Player.set_interconnections.html#ktk.Player.set_interconnections" title="ktk.Player.set_interconnections"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_interconnections</span></code></a></p></td>
+<td><p>Set interconnections value (deprecated).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ktk.Player.set_view.html#ktk.Player.set_view" title="ktk.Player.set_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_view</span></code></a></p></td>
+<td><p>Set the current view to an orthogonal view in a given plane.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="ktk.Player.to_image.html#ktk.Player.to_image" title="ktk.Player.to_image"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_image</span></code></a></p></td>
+<td><p>Save the current view to an image file.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="ktk.Player.to_video.html#ktk.Player.to_video" title="ktk.Player.to_video"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to_video</span></code></a></p></td>
+<td><p>Save the current view to an MP4 video file.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="rubric">Attributes</p>
+<div class="pst-scrollable-table-container"><table class="autosummary longtable table">
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">anterior</span></code></p></td>
+<td><p>Read/write anterior.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">azimuth</span></code></p></td>
+<td><p>Read/write azimuth.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">background_color</span></code></p></td>
+<td><p>Read/write background_color.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">contents</span></code></p></td>
+<td><p>Use get_contents or set_contents instead.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_index</span></code></p></td>
+<td><p>Read/write current_index.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">current_time</span></code></p></td>
+<td><p>Read/write current_time.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_interconnection_color</span></code></p></td>
+<td><p>Read/write default_interconnection_color.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_point_color</span></code></p></td>
+<td><p>Read/write default_point_color.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">default_vector_color</span></code></p></td>
+<td><p>Read/write default_vector_color.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">elevation</span></code></p></td>
+<td><p>Read/write elevation.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_size</span></code></p></td>
+<td><p>Read/write frame_size.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">frame_width</span></code></p></td>
+<td><p>Read/write frame_width.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_color</span></code></p></td>
+<td><p>Read/write grid_color.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_origin</span></code></p></td>
+<td><p>Read/write grid_origin.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_size</span></code></p></td>
+<td><p>Read/write grid_size.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_subdivision_size</span></code></p></td>
+<td><p>Read/write grid_subdivision_size.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">grid_width</span></code></p></td>
+<td><p>Read/write grid_width.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">interconnection_width</span></code></p></td>
+<td><p>Read/write interconnection_width.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">interconnections</span></code></p></td>
+<td><p>Read/write interconnections.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">pan</span></code></p></td>
+<td><p>Read/write pan as (x, y).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">perspective</span></code></p></td>
+<td><p>Read/write perspective.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">playback_speed</span></code></p></td>
+<td><p>Read/write playback_speed.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">point_size</span></code></p></td>
+<td><p>Read/write point_size.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">target</span></code></p></td>
+<td><p>Read/write target as (x, y, z).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">title_text</span></code></p></td>
+<td><p>Read/write the text info on top of the figure.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">track</span></code></p></td>
+<td><p>Read/write track.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">up</span></code></p></td>
+<td><p>Read/write up.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">vector_width</span></code></p></td>
+<td><p>Read/write vector_width.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">vectors</span></code></p></td>
+<td><p>Read/write vectors.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">zoom</span></code></p></td>
+<td><p>Read/write zoom.</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</dd></dl>
+
+</section>
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="ktk.TimeSeriesEvent.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">ktk.TimeSeriesEvent</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="ktk.Player.close.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">ktk.Player.close</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item"><div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ktk.Player"><code class="docutils literal notranslate"><span class="pre">Player</span></code></a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Félix Chénier
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2020-2026.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../_static/scripts/bootstrap.js?digest=8878045cc6db502f8baf"></script>
+<script defer src="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

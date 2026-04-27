@@ -93,7 +93,7 @@ def save(filename: str, variable: Any) -> None:
     - None
 
     In addition to these standard classes, the following are also supported:
-    
+
     - numpy.array
     - pandas.DataFrame (basic DataFrames, e.g., without multi-indexing.)
     - pandas.Series
