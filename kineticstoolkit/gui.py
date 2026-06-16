@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -29,11 +28,13 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import kineticstoolkit.config as config
-from kineticstoolkit.typing_ import check_param
+from typing import Any
+
 import limitedinteraction as li
 import matplotlib as mpl
-from typing import Any
+
+from kineticstoolkit import config
+from kineticstoolkit.typing_ import check_param
 
 
 def message(message: str = "", **kwargs) -> None:

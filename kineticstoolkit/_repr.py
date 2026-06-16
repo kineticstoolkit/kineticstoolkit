@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -35,8 +34,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import numpy as np
 from typing import Any
+
+import numpy as np
 
 
 def _format_dict_entries(
@@ -98,15 +98,14 @@ def _format_dict_entries(
         # Print the value
         if widest + len(repr(value)) <= max_width:
             value_label = repr(value)
+        elif isinstance(value, dict):
+            value_label = "<dict with " + str(len(value)) + " entries>"
+        elif isinstance(value, list):
+            value_label = "<list of " + str(len(value)) + " items>"
+        elif isinstance(value, np.ndarray):
+            value_label = "<array of shape " + str(np.shape(value)) + ">"
         else:
-            if isinstance(value, dict):
-                value_label = "<dict with " + str(len(value)) + " entries>"
-            elif isinstance(value, list):
-                value_label = "<list of " + str(len(value)) + " items>"
-            elif isinstance(value, np.ndarray):
-                value_label = "<array of shape " + str(np.shape(value)) + ">"
-            else:
-                value_label = repr(value)
+            value_label = repr(value)
 
         # Remove line breaks and multiple-spaces
         value_label = " ".join(value_label.split())

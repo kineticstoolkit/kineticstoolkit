@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
 """Configuration file for Kinetics Toolkit API."""
 
-import os
-import sys
 from datetime import datetime
-from pathlib import Path
 
 # -- General setup --------------------------------------------------------------
 project = "Kinetics Toolkit"

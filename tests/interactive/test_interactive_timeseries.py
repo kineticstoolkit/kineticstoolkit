@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2024 Félix Chénier
 
@@ -16,9 +15,10 @@
 # limitations under the License.
 """Interactive tests for TimeSeries."""
 
-import kineticstoolkit.lab as ktk
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+
+import kineticstoolkit.lab as ktk
 
 
 def test_uisync():

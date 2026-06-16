@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -23,8 +22,8 @@ __license__ = "Apache 2.0"
 
 
 import os
-import warnings
 import platform
+import warnings
 
 
 def __dir__() -> list[str]:
@@ -48,7 +47,7 @@ root_folder = os.path.dirname(os.path.dirname(__file__))
 home_folder = os.path.expanduser("~")
 
 # Kinetics Toolkit version.
-with open(root_folder + "/kineticstoolkit/VERSION", "r") as fid:
+with open(root_folder + "/kineticstoolkit/VERSION") as fid:
     version = fid.read()
 
 # Operating system

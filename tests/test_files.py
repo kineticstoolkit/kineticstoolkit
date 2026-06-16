@@ -21,11 +21,13 @@ __license__ = "Apache 2.0"
 """Unit tests for load and save functions."""
 
 
-import kineticstoolkit as ktk
-import numpy as np
-import pandas as pd
 import os
 import warnings
+
+import numpy as np
+import pandas as pd
+
+import kineticstoolkit as ktk
 
 
 def test_load_pre017():

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -27,23 +26,24 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit.timeseries import TimeSeries
-import kineticstoolkit.dev.kinetics as kinetics
-import kineticstoolkit.config
-from kineticstoolkit.typing_ import check_param
-
+import getpass
+import json
 import os
+import shutil
+import time
+import warnings
+import zipfile
+from datetime import datetime
+from typing import Any
+
+import ezc3d
 import numpy as np
 import pandas as pd
-import ezc3d
-from typing import Any
-import warnings
-import shutil
-import json
-from datetime import datetime
-import time
-import getpass
-import zipfile
+
+import kineticstoolkit.config
+from kineticstoolkit.dev import kinetics
+from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():  # pragma: no cover
@@ -325,7 +325,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     check_param("include_metadata", include_metadata, bool)
 
     if filename.lower().endswith(".json"):
-        with open(filename, "r") as fid:
+        with open(filename) as fid:
             return json.load(fid, object_hook=_load_object_hook)
 
     elif filename.lower().endswith(".json.zip"):

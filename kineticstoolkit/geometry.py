@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -30,11 +29,10 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 import numpy as np
-import scipy.spatial.transform as transform
-import kineticstoolkit.external.icp as icp
-from kineticstoolkit.typing_ import ArrayLike, check_param
+from scipy.spatial import transform
 
-import kineticstoolkit as ktk  # For doctests
+from kineticstoolkit.external import icp
+from kineticstoolkit.typing_ import ArrayLike, check_param
 
 
 def __dir__():

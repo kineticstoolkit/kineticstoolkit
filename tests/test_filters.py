@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2024 Félix Chénier
 
@@ -22,9 +21,11 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit as ktk
-import numpy as np
 import warnings
+
+import numpy as np
+
+import kineticstoolkit as ktk
 
 
 def test_savgol():

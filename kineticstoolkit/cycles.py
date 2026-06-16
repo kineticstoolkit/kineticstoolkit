@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -22,11 +21,13 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import numpy as np
 from typing import cast
-from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
-from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
+
+import numpy as np
 from tqdm import tqdm
+
+from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
+from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.typing_ import ArrayLike, check_param
 
 

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -33,10 +32,9 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
+
 from kineticstoolkit import *
 
 # Import also some hidden functions
-from kineticstoolkit import __dir__
-import warnings
 
 change_defaults()

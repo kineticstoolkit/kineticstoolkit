@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -31,31 +30,30 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit._repr
-from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.exceptions import (
-    TimeSeriesRangeError,
-    TimeSeriesEventNotFoundError,
-    TimeSeriesMergeConflictError,
-)
-from kineticstoolkit.tools import check_interactive_backend
-
-import matplotlib as mpl
-import matplotlib.pyplot as plt
-import numpy as np
-import scipy as sp
-import pandas as pd
-import limitedinteraction as li
-from dataclasses import dataclass
-from kineticstoolkit.typing_ import ArrayLike, check_param
-from typing import Any, cast
-from numbers import Real
-
 import warnings
 from ast import literal_eval
 from copy import deepcopy
+from dataclasses import dataclass
+from numbers import Real
+from typing import Any, cast
+
+import limitedinteraction as li
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import scipy as sp
 
 import kineticstoolkit as ktk  # For doctests
+import kineticstoolkit._repr
+from kineticstoolkit.decorators import deprecated
+from kineticstoolkit.exceptions import (
+    TimeSeriesEventNotFoundError,
+    TimeSeriesMergeConflictError,
+    TimeSeriesRangeError,
+)
+from kineticstoolkit.tools import check_interactive_backend
+from kineticstoolkit.typing_ import ArrayLike, check_param
 
 WINDOW_PLACEMENT = {"top": 50, "right": 0}
 
@@ -80,13 +78,13 @@ class TimeSeriesEventList(list):
                 "TimeSeriesEvent, because it does not have `time` and `name` "
                 "attributes."
             )
-        super(TimeSeriesEventList, self).__setitem__(index, event)
+        super().__setitem__(index, event)
         # Sort the events
         self.sort()
 
     def append(self, value):
         """Ensure the appended value is a TimeSeriesEvent."""
-        super(TimeSeriesEventList, self).append(None)
+        super().append(None)
         self[-1] = value  # Calls __setitem__ which does the check
 
     def extend(self, values):
@@ -116,7 +114,7 @@ class TimeSeriesDataDict(dict):
                 f"{value} was provided."
             )
 
-        super(TimeSeriesDataDict, self).__setitem__(key, to_set)
+        super().__setitem__(key, to_set)
 
 
 class TimeSeriesInfoDict(dict):
@@ -134,7 +132,7 @@ class TimeSeriesInfoDict(dict):
         check_param("key", key, str)
         to_set = TimeSeriesStringDict(value)
 
-        super(TimeSeriesInfoDict, self).__setitem__(key, to_set)
+        super().__setitem__(key, to_set)
 
 
 class TimeSeriesStringDict(dict):
@@ -150,7 +148,7 @@ class TimeSeriesStringDict(dict):
         """Ensure the kay is a string."""
         check_param("key", key, str)
 
-        super(TimeSeriesStringDict, self).__setitem__(key, value)
+        super().__setitem__(key, value)
 
 
 @dataclass
@@ -3638,12 +3636,11 @@ class TimeSeries:
                         "parameter, its prior value has been preserved. "
                         "Use on_conflict='mute' to mute this warning."
                     )
-            else:
-                # Conflict, and we need to not warn.
-                if overwrite:
-                    ts_out.add_data(
-                        key, ts.data[key], overwrite=True, in_place=True
-                    )
+            # Conflict, and we need to not warn.
+            elif overwrite:
+                ts_out.add_data(
+                    key, ts.data[key], overwrite=True, in_place=True
+                )
 
         # Merge info
         if merge_info:
@@ -3657,66 +3654,64 @@ class TimeSeries:
                             ts.info[outer_key][inner_key],
                             in_place=True,
                         )
-                    else:
-                        if inner_key not in ts_out.info[outer_key]:
-                            # No conflict
+                    elif inner_key not in ts_out.info[outer_key]:
+                        # No conflict
+                        ts_out.add_info(
+                            outer_key,
+                            inner_key,
+                            ts.info[outer_key][inner_key],
+                            in_place=True,
+                        )
+                    elif (
+                        ts_out.info[outer_key][inner_key]
+                        == ts.info[outer_key][inner_key]
+                    ):
+                        # Duplicate data, but it's the same, so there's no
+                        # conflict and thus nothing to do.
+                        pass
+                    elif on_conflict == "error":
+                        # Conflict, and we need to raise
+                        raise TimeSeriesMergeConflictError(
+                            f"The key '{inner_key}' exists in both "
+                            f"TimeSeries's attribute info[{outer_key}]."
+                        )
+
+                    elif on_conflict == "warning":
+                        # Conflict, and we need to warn
+                        if overwrite:
                             ts_out.add_info(
                                 outer_key,
                                 inner_key,
                                 ts.info[outer_key][inner_key],
+                                overwrite=True,
                                 in_place=True,
                             )
-                        elif (
-                            ts_out.info[outer_key][inner_key]
-                            == ts.info[outer_key][inner_key]
-                        ):
-                            # Duplicate data, but it's the same, so there's no
-                            # conflict and thus nothing to do.
-                            pass
-                        elif on_conflict == "error":
-                            # Conflict, and we need to raise
-                            raise TimeSeriesMergeConflictError(
+                            warnings.warn(
                                 f"The key '{inner_key}' exists in both "
-                                f"TimeSeries's attribute info[{outer_key}]."
+                                f"TimeSeries's attribute info[{outer_key}]. "
+                                "According to the overwrite=True "
+                                "parameter, its prior value has been overwritten "
+                                "by the new value. Use on_conflict='mute' to mute "
+                                "this warning."
+                            )
+                        else:
+                            warnings.warn(
+                                f"The key '{inner_key}' exists in both "
+                                f"TimeSeries's attribute info[{outer_key}]. "
+                                "According to the overwrite=False "
+                                "parameter, its prior value has been preserved. "
+                                "Use on_conflict='mute' to mute this warning."
                             )
 
-                        elif on_conflict == "warning":
-                            # Conflict, and we need to warn
-                            if overwrite:
-                                ts_out.add_info(
-                                    outer_key,
-                                    inner_key,
-                                    ts.info[outer_key][inner_key],
-                                    overwrite=True,
-                                    in_place=True,
-                                )
-                                warnings.warn(
-                                    f"The key '{inner_key}' exists in both "
-                                    f"TimeSeries's attribute info[{outer_key}]. "
-                                    "According to the overwrite=True "
-                                    "parameter, its prior value has been overwritten "
-                                    "by the new value. Use on_conflict='mute' to mute "
-                                    "this warning."
-                                )
-                            else:
-                                warnings.warn(
-                                    f"The key '{inner_key}' exists in both "
-                                    f"TimeSeries's attribute info[{outer_key}]. "
-                                    "According to the overwrite=False "
-                                    "parameter, its prior value has been preserved. "
-                                    "Use on_conflict='mute' to mute this warning."
-                                )
-
-                        else:
-                            # Conflict, and we need to not warn.
-                            if overwrite:
-                                ts_out.add_info(
-                                    outer_key,
-                                    inner_key,
-                                    ts.info[outer_key][inner_key],
-                                    overwrite=True,
-                                    in_place=True,
-                                )
+                    # Conflict, and we need to not warn.
+                    elif overwrite:
+                        ts_out.add_info(
+                            outer_key,
+                            inner_key,
+                            ts.info[outer_key][inner_key],
+                            overwrite=True,
+                            in_place=True,
+                        )
 
         # Merge events
         if merge_events:

@@ -40,8 +40,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/kineticstoolkit/tools';</script>
     <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/_modules/kineticstoolkit/tools.html" />
@@ -419,7 +419,6 @@
                   
   <h1>Source code for kineticstoolkit.tools</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright 2020-2025 Félix Chénier</span>
 
@@ -441,11 +440,13 @@
 <span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;chenier.felix@uqam.ca&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache 2.0&quot;</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+
 <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.config</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit._repr</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_repr</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.gui</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="kn">import</span> <span class="n">_repr</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_param</span>
 
 
@@ -504,16 +505,8 @@
 <span class="sd">    Parameters</span>
 <span class="sd">    ----------</span>
 <span class="sd">    change_ipython_dict_repr</span>
-<span class="sd">        Optional. True to summarize default dictionary printouts in IPython. When</span>
-<span class="sd">        False, dictionary printouts look like::</span>
-
-<span class="sd">            {&#39;data1&#39;: array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,</span>
-<span class="sd">                             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),</span>
-<span class="sd">             &#39;data2&#39;: array([  0,   1,   4,   9,  16,  25,  36,  49,  64,  81, 100, 121, 144,</span>
-<span class="sd">                             169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,</span>
-<span class="sd">                              676, 729, 784, 841])}</span>
-
-<span class="sd">        When True, dictionary printouts look like::</span>
+<span class="sd">        Optional. True to summarize default dictionary printouts in IPython, so</span>
+<span class="sd">        that dictionary printouts look like::</span>
 
 <span class="sd">            {</span>
 <span class="sd">                &#39;data1&#39;: &lt;array of shape (30,)&gt;</span>

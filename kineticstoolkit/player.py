@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -28,29 +27,30 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-from kineticstoolkit.timeseries import TimeSeries
-from kineticstoolkit.tools import check_interactive_backend
-import kineticstoolkit.geometry as geometry
+import time
+import warnings
+from copy import deepcopy
+from typing import Any
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# To fit the new viewpoint on selecting a new point
+import scipy.optimize as optim
+from matplotlib import animation
+from numpy import cos, sin
+from tqdm import tqdm
+
+from kineticstoolkit import geometry
 from kineticstoolkit._repr import _format_dict_entries
 from kineticstoolkit.classes import dict_to_monitored_dict
 from kineticstoolkit.exceptions import (
     TimeSeriesMergeConflictError,
     raise_ktk_error,
 )
-
-from tqdm import tqdm
-import matplotlib.pyplot as plt
-from matplotlib import animation
-import numpy as np
-from numpy import sin, cos
-import time
-from copy import deepcopy
-from typing import Any
+from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.tools import check_interactive_backend
 from kineticstoolkit.typing_ import check_param
-import warnings
-
-# To fit the new viewpoint on selecting a new point
-import scipy.optimize as optim
 
 REPR_HTML_MAX_DURATION = 10  # Max duration for _repr_html
 PALETTE = {

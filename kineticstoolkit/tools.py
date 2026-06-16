@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -21,11 +20,13 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import matplotlib as mpl
 import warnings
+
+import matplotlib as mpl
+
 import kineticstoolkit.config
-import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
+from kineticstoolkit import _repr
 from kineticstoolkit.typing_ import check_param
 
 

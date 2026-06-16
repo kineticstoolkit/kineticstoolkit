@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -21,8 +20,9 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from numbers import Integral, Real, Complex
-from typing import NewType, TYPE_CHECKING
+from numbers import Complex, Integral, Real
+from typing import TYPE_CHECKING, NewType
+
 from numpy.typing import ArrayLike as npt_ArrayLike
 
 # Define custom types so that sphinx and mypy and the users are all happy

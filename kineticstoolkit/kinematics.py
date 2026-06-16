@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -22,12 +21,12 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit.geometry as geometry
-from kineticstoolkit import TimeSeries
-from kineticstoolkit.typing_ import check_param
+import warnings
 
 import numpy as np
-import warnings
+
+from kineticstoolkit import TimeSeries, geometry
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():
@@ -260,12 +259,11 @@ def _get_marker_unit(markers: TimeSeries) -> None | str:
         if this_unit is not None:
             if unit is None:
                 unit = this_unit
-            else:
-                if unit != this_unit:
-                    raise ValueError(
-                        "All markers must have the same unit. However, this "
-                        f"TimeSeries has both {unit} and {this_unit}."
-                    )
+            elif unit != this_unit:
+                raise ValueError(
+                    "All markers must have the same unit. However, this "
+                    f"TimeSeries has both {unit} and {this_unit}."
+                )
     return unit
 
 
@@ -329,8 +327,8 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
             fid.write(f"{i_frame + 1}\t{{:.3f}}".format(markers.time[i_frame]))
             for key in markers.data:
                 fid.write(
-                    "\t{:.5f}".format(markers.data[key][i_frame, 0])
-                    + "\t{:.5f}".format(markers.data[key][i_frame, 1])
-                    + "\t{:.5f}".format(markers.data[key][i_frame, 2])
+                    f"\t{markers.data[key][i_frame, 0]:.5f}"
+                    + f"\t{markers.data[key][i_frame, 1]:.5f}"
+                    + f"\t{markers.data[key][i_frame, 2]:.5f}"
                 )
             fid.write("\n")

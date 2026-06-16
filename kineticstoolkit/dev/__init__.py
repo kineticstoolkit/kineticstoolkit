@@ -170,6 +170,7 @@ def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     run_style_formatter()
     run_doc_tests()
+    run_linter()
     run_static_type_checker()
     run_unit_tests()
     run_extensions_tests()

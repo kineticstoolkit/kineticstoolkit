@@ -49,8 +49,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/ktk.TimeSeries.get_sample_rate';</script>
     <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/api/ktk.TimeSeries.get_sample_rate.html" />
@@ -513,7 +513,9 @@ particular use cases.</p>
 <p><a class="reference internal" href="ktk.TimeSeries.resample.html#ktk.TimeSeries.resample" title="ktk.TimeSeries.resample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ktk.TimeSeries.resample</span></code></a></p>
 </div>
 <p class="rubric">Example</p>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mi">10</span><span class="p">)</span>  <span class="c1"># 100 samples at 10 Hz</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span> <span class="o">=</span> <span class="n">ktk</span><span class="o">.</span><span class="n">TimeSeries</span><span class="p">(</span>
+<span class="gp">... </span>    <span class="n">time</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span> <span class="o">/</span> <span class="mi">10</span>
+<span class="gp">... </span><span class="p">)</span>  <span class="c1"># 100 samples at 10 Hz</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">get_sample_rate</span><span class="p">()</span>
 <span class="go">10.0</span>
 </pre></div>

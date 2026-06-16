@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2024-2025 Félix Chénier
 
@@ -30,8 +29,9 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-from kineticstoolkit.typing_ import check_param, ArrayLike
-import kineticstoolkit.geometry as geometry
+
+from kineticstoolkit import geometry
+from kineticstoolkit.typing_ import ArrayLike, check_param
 
 
 def create_forceplatform_lcs(

@@ -40,8 +40,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/kineticstoolkit/files';</script>
     <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/_modules/kineticstoolkit/files.html" />
@@ -419,7 +419,6 @@
                   
   <h1>Source code for kineticstoolkit.files</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright 2020-2025 Félix Chénier</span>
 
@@ -447,23 +446,24 @@
 <span class="n">__email__</span> <span class="o">=</span> <span class="s2">&quot;chenier.felix@uqam.ca&quot;</span>
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache 2.0&quot;</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.timeseries</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeries</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.dev.kinetics</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">kinetics</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.config</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_param</span>
-
+<span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">ezc3d</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">ezc3d</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">shutil</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">getpass</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">zipfile</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.dev</span><span class="w"> </span><span class="kn">import</span> <span class="n">kinetics</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.timeseries</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimeSeries</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">check_param</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">():</span>  <span class="c1"># pragma: no cover</span>
@@ -750,7 +750,7 @@
     <span class="n">check_param</span><span class="p">(</span><span class="s2">&quot;include_metadata&quot;</span><span class="p">,</span> <span class="n">include_metadata</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json&quot;</span><span class="p">):</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="k">as</span> <span class="n">fid</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">json</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">object_hook</span><span class="o">=</span><span class="n">_load_object_hook</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">filename</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.json.zip&quot;</span><span class="p">):</span>
@@ -1231,12 +1231,10 @@
     <span class="c1"># Platforms</span>
     <span class="c1"># -----------------</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="p">[])</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;Analogs&quot;</span> <span class="ow">in</span> <span class="n">output</span><span class="p">):</span>
-
         <span class="n">platforms</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">analogs</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
 
         <span class="n">n_platforms</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">])</span>
         <span class="k">for</span> <span class="n">i_platform</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_platforms</span><span class="p">):</span>
-
             <span class="c1"># Define unit conversion factors</span>
             <span class="n">forceplate_position_unit</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;data&quot;</span><span class="p">][</span><span class="s2">&quot;platform&quot;</span><span class="p">][</span><span class="n">i_platform</span><span class="p">][</span>
                 <span class="s2">&quot;unit_position&quot;</span>
@@ -1277,7 +1275,7 @@
 
             <span class="c1"># Add corners</span>
             <span class="k">for</span> <span class="n">i_corner</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
-                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner</span><span class="si">{</span><span class="n">i_corner</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="n">key</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;FP</span><span class="si">{</span><span class="n">i_platform</span><span class="si">}</span><span class="s2">_Corner</span><span class="si">{</span><span class="n">i_corner</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">&quot;</span>
                 <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">platforms</span><span class="o">.</span><span class="n">time</span><span class="p">),</span> <span class="mi">4</span><span class="p">))</span>
                 <span class="n">platforms</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">][:,</span> <span class="mi">0</span><span class="p">:</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="n">forceplate_position_factor</span>
@@ -1437,12 +1435,12 @@
 <span class="sd">        import numpy as np</span>
 
 <span class="sd">        points = ktk.TimeSeries()</span>
-<span class="sd">        points.time = np.linspace(0, 10, 10*240, endpoint=False)</span>
+<span class="sd">        points.time = np.linspace(0, 10, 10 * 240, endpoint=False)</span>
 <span class="sd">        points.data[&quot;Marker1&quot;] = np.ones((2400, 4))</span>
 <span class="sd">        points.data[&quot;Marker2&quot;] = np.ones((2400, 4))</span>
 
 <span class="sd">        analogs = ktk.TimeSeries()</span>
-<span class="sd">        analogs.time = np.linspace(0, 10, 10*2400, endpoint=False)</span>
+<span class="sd">        analogs.time = np.linspace(0, 10, 10 * 2400, endpoint=False)</span>
 <span class="sd">        analogs.data[&quot;Signal1&quot;] = np.sin(analogs.time)</span>
 <span class="sd">        analogs.data[&quot;Signal2&quot;] = np.cos(analogs.time)</span>
 

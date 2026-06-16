@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -22,15 +21,15 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import numpy as np
-import scipy.signal as sgl
-import scipy.ndimage as ndi
 import warnings
-from kineticstoolkit import TimeSeries
-from kineticstoolkit.typing_ import check_param
 from typing import cast
 
-import kineticstoolkit as ktk  # For doctests
+import numpy as np
+import scipy.ndimage as ndi
+import scipy.signal as sgl
+
+from kineticstoolkit import TimeSeries
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():
@@ -55,7 +54,8 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
 
 def _validate_input(ts):
     """Check that time is not null, that sample rate is constant, and that time
-    unit is s."""
+    unit is s.
+    """
     if ts.time.shape[0] == 0:
         raise ValueError("There is no data to filter.")
     if np.isnan(ts.get_sample_rate()):

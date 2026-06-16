@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2024 Félix Chénier
 
@@ -22,8 +21,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit as ktk
 import numpy as np
+
+import kineticstoolkit as ktk
 
 
 def test_matmul():
@@ -191,7 +191,6 @@ def test_create_transform_series_with_angle_inputs():
 
 def test_create_transform_series_with_vector_input():
     """Test create_transform_series with vector input."""
-
     # First test with a length of 2 and a non-zero position. The next will be
     # with a length of 1 and a zero position, and will generate the identity
     # matrix.

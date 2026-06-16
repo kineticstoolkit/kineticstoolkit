@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2024 Félix Chénier
 
@@ -20,15 +19,17 @@ __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 """These are the unit tests for the TimeSeries class."""
-import kineticstoolkit as ktk
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 import warnings
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+import kineticstoolkit as ktk
 from kineticstoolkit.exceptions import (
-    TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
     TimeSeriesMergeConflictError,
+    TimeSeriesRangeError,
 )
 
 # %% TimeSeriesEvent
@@ -36,7 +37,6 @@ from kineticstoolkit.exceptions import (
 
 def test_TimeSeriesEvent():
     """Test TimeSeriesEvent."""
-
     # Test basic getters and setters
     event = ktk.TimeSeriesEvent()
     event.time = 1
@@ -70,7 +70,7 @@ def test_TimeSeriesEvent():
     assert the_dict["Name"] == "event_name"
 
     # Test append with a compatible class
-    class O(object):
+    class O:
         pass
 
     o = O()

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2022-2025 Félix Chénier
 
@@ -22,9 +21,10 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit.config as config
-from kineticstoolkit.typing_ import check_param
 import os
+
+from kineticstoolkit import config
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():
