@@ -271,7 +271,7 @@ class TimeSeries:
 
     2. Creating a TimeSeries and setting time and data:
 
-    >>> ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
+    >>> ktk.TimeSeries(time=np.arange(0, 10), data={"test": np.arange(0, 10)})
     TimeSeries with attributes:
           time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
           data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
@@ -280,7 +280,9 @@ class TimeSeries:
 
     3. Creating a TimeSeries as a copy of another TimeSeries:
 
-    >>> ts1 = ktk.TimeSeries(time=np.arange(0, 10), data={"test":np.arange(0, 10)})
+    >>> ts1 = ktk.TimeSeries(
+    ...     time=np.arange(0, 10), data={"test": np.arange(0, 10)}
+    ... )
     >>> ts2 = ktk.TimeSeries(ts1)
     >>> ts2
     TimeSeries with attributes:
@@ -294,10 +296,10 @@ class TimeSeries:
     4. Creating a TimeSeries from a Pandas DataFrame:
 
     >>> df = pd.DataFrame()
-    >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-    >>> df["x"] = [0., 1., 2., 3., 4.]
-    >>> df["y"] = [5., 6., 7., 8., 9.]
-    >>> df["z"] = [0., 0., 0., 0., 0.]
+    >>> df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    >>> df["x"] = [0.0, 1.0, 2.0, 3.0, 4.0]
+    >>> df["y"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    >>> df["z"] = [0.0, 0.0, 0.0, 0.0, 0.0]
     >>> df
            x    y    z
     0.0  0.0  5.0  0.0
@@ -323,10 +325,10 @@ class TimeSeries:
     brackets in column names):
 
     >>> df = pd.DataFrame()
-    >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-    >>> df["point[:,0]"] = [0., 1., 2., 3., 4.]
-    >>> df["point[:,1]"] = [5., 6., 7., 8., 9.]
-    >>> df["point[:,2]"] = [0., 0., 0., 0., 0.]
+    >>> df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    >>> df["point[:,0]"] = [0.0, 1.0, 2.0, 3.0, 4.0]
+    >>> df["point[:,1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
+    >>> df["point[:,2]"] = [0.0, 0.0, 0.0, 0.0, 0.0]
     >>> df
          point[:,0]  point[:,1]  point[:,2]
     0.0         0.0         5.0         0.0
@@ -349,13 +351,13 @@ class TimeSeries:
     DataFrame (using brackets and commas in column names):
 
     >>> df = pd.DataFrame()
-    >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-    >>> df["R[:,0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["R[:,0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["R[:,1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["R[:,1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-    >>> df["t[:,0]"] = [0., 0.1, 0.2, 0.3, 0.4]
-    >>> df["t[:,1]"] = [5., 6., 7., 8., 9.]
+    >>> df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+    >>> df["R[:,0,0]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+    >>> df["R[:,0,1]"] = -np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+    >>> df["R[:,1,0]"] = np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+    >>> df["R[:,1,1]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+    >>> df["t[:,0]"] = [0.0, 0.1, 0.2, 0.3, 0.4]
+    >>> df["t[:,1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
     >>> df
          R[:,0,0]  R[:,0,1]  R[:,1,0]  R[:,1,1]    t[:,0]    t[:,1]
     0.0  1.000000 -0.000000  0.000000  1.000000       0.0       5.0
@@ -398,7 +400,9 @@ class TimeSeries:
         events: []
           info: {'Time': {'Unit': 's'}}
 
-    >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5])
+    >>> ktk.TimeSeries(
+    ...     [0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5]
+    ... )
     TimeSeries with attributes:
           time: array([0.1, 0.2, 0.3, 0.4, 0.5])
           data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}
@@ -1318,7 +1322,7 @@ class TimeSeries:
               info: {'Time': {'Unit': 's'}}
 
         >>> # Size matching example
-        >>> ts = ktk.TimeSeries(time = [0.0, 0.1, 0.2, 0.3])
+        >>> ts = ktk.TimeSeries(time=[0.0, 0.1, 0.2, 0.3])
         >>> ts = ts.add_data("data1", [9.9])
         >>> ts
         TimeSeries with attributes:
@@ -1430,7 +1434,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time = np.arange(10))
+        >>> ts = ktk.TimeSeries(time=np.arange(10))
         >>> ts = ts.add_data("test", np.arange(10))
         >>> ts = ts.add_info("test", "Unit", "m")
 
@@ -1627,7 +1631,7 @@ class TimeSeries:
 
         # Three occurrences of event1
         >>> ts = ts.add_event(0.0, "event1")
-        >>> ts = ts.add_event(1E-12, "event1")
+        >>> ts = ts.add_event(1e-12, "event1")
         >>> ts = ts.add_event(0.0, "event1")
 
         # One occurrence of event2, but also at 0.0 second
@@ -1956,7 +1960,7 @@ class TimeSeries:
         Three occurrences of event1:
 
         >>> ts = ts.add_event(0.0, "event1")
-        >>> ts = ts.add_event(1E-12, "event1")
+        >>> ts = ts.add_event(1e-12, "event1")
         >>> ts = ts.add_event(0.0, "event1")
 
         One occurrence of event2, but also at 0.0 second:
@@ -2017,7 +2021,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time = np.arange(10))
+        >>> ts = ktk.TimeSeries(time=np.arange(10))
         >>> ts.time
         array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
 
@@ -2266,7 +2270,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts = ts.add_event(0.2, "event")
         >>> ts = ts.add_event(0.36, "event")
         >>> ts.time
@@ -2325,7 +2329,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts = ts.add_event(0.2, "event")
         >>> ts = ts.add_event(0.36, "event")
         >>> ts.time
@@ -2395,7 +2399,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts = ts.add_event(0.2, "event")
         >>> ts = ts.add_event(0.36, "event")
         >>> ts.time
@@ -2461,7 +2465,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -2518,7 +2522,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -2590,7 +2594,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -2685,7 +2689,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -2746,7 +2750,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -2817,7 +2821,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
 
@@ -2894,7 +2898,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts = ts.add_event(0.2, "event")
         >>> ts = ts.add_event(0.35, "event")
         >>> ts.time
@@ -2970,7 +2974,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts = ts.add_event(0.2, "event")
         >>> ts = ts.add_event(0.35, "event")
         >>> ts.time
@@ -3146,7 +3150,7 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
         >>> ts = ts.add_event(0.35, "start")
         >>> ts.time
         array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
@@ -3197,7 +3201,9 @@ class TimeSeries:
 
         Example
         -------
-        >>> ts = ktk.TimeSeries(time=np.arange(100)/10)  # 100 samples at 10 Hz
+        >>> ts = ktk.TimeSeries(
+        ...     time=np.arange(100) / 10
+        ... )  # 100 samples at 10 Hz
         >>> ts.get_sample_rate()
         10.0
 
@@ -3271,8 +3277,8 @@ class TimeSeries:
 
         Examples
         --------
-        >>> ts = ktk.TimeSeries(time=np.arange(10.))
-        >>> ts = ts.add_data("data", ts.time ** 2)
+        >>> ts = ktk.TimeSeries(time=np.arange(10.0))
+        >>> ts = ts.add_data("data", ts.time**2)
         >>> ts.time
         array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
         >>> ts.data["data"]
@@ -3442,7 +3448,7 @@ class TimeSeries:
 
         Example
         -------
-            >>> ts = ktk.TimeSeries(time = np.arange(10))
+            >>> ts = ktk.TimeSeries(time=np.arange(10))
             >>> ts = ts.add_data("signal1", ts.time)
             >>> ts = ts.add_data("signal2", ts.time**2)
             >>> ts = ts.add_data("signal3", ts.time**3)
@@ -3985,8 +3991,7 @@ class TimeSeries:
 
             # Show the button dialog
             choice = kineticstoolkit.gui.button_dialog(
-                "Move and zoom on the figure,\n"
-                "then select an option below.",
+                "Move and zoom on the figure,\nthen select an option below.",
                 choices,
                 **WINDOW_PLACEMENT,
             )
@@ -4661,7 +4666,7 @@ class TimeSeries:
         Create a DataFrame with two series of 3 samples:
 
         >>> import pandas as pd
-        >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
+        >>> df = pd.DataFrame([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
         >>> df.columns = ["test1", "test2"]
         >>> df
            test1  test2
@@ -4679,7 +4684,7 @@ class TimeSeries:
 
         Create a DataFrame with one series of 3 samples of dimension 2:
 
-        >>> df = pd.DataFrame([[1., 2.], [3., 4.], [5., 6.]])
+        >>> df = pd.DataFrame([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
         >>> df.columns = ["test[0]", "test[1]"]
         >>> df
            test[0]  test[1]
@@ -4699,13 +4704,13 @@ class TimeSeries:
         and one series of 5 samples of dimension 2 (trans):
 
         >>> df = pd.DataFrame()
-        >>> df.index = [0., 0.1, 0.2, 0.3, 0.4]  # Time in seconds
-        >>> df["R[:,0,0]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["R[:,0,1]"] = -np.sin([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["R[:,1,0]"] = np.sin([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["R[:,1,1]"] = np.cos([0., 0.1, 0.2, 0.3, 0.4])
-        >>> df["t[:,0]"] = [0., 0.1, 0.2, 0.3, 0.4]
-        >>> df["t[:,1]"] = [5., 6., 7., 8., 9.]
+        >>> df.index = [0.0, 0.1, 0.2, 0.3, 0.4]  # Time in seconds
+        >>> df["R[:,0,0]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+        >>> df["R[:,0,1]"] = -np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+        >>> df["R[:,1,0]"] = np.sin([0.0, 0.1, 0.2, 0.3, 0.4])
+        >>> df["R[:,1,1]"] = np.cos([0.0, 0.1, 0.2, 0.3, 0.4])
+        >>> df["t[:,0]"] = [0.0, 0.1, 0.2, 0.3, 0.4]
+        >>> df["t[:,1]"] = [5.0, 6.0, 7.0, 8.0, 9.0]
         >>> df
              R[:,0,0]  R[:,0,1]  R[:,1,0]  R[:,1,1]       t[:,0]    t[:,1]
         0.0  1.000000 -0.000000  0.000000  1.000000       0.0       5.0
@@ -4864,7 +4869,9 @@ class TimeSeries:
 
         **Specifiying time**
 
-        >>> ktk.TimeSeries([0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5])
+        >>> ktk.TimeSeries(
+        ...     [0.1, 0.2, 0.3, 0.4, 0.5], time=[0.1, 0.2, 0.3, 0.4, 0.5]
+        ... )
         TimeSeries with attributes:
               time: array([0.1, 0.2, 0.3, 0.4, 0.5])
               data: {'data': array([0.1, 0.2, 0.3, 0.4, 0.5])}

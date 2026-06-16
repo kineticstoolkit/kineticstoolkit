@@ -93,7 +93,6 @@ def test_save_load():
 
     # test all three save formats
     for filename in ["test.json", "test.json.zip", "test.ktk.zip"]:
-
         ktk.save(filename, a)
         b = ktk.load(filename)
 

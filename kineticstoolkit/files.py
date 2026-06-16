@@ -803,12 +803,10 @@ def read_c3d(
     # Platforms
     # -----------------
     if (reader["data"]["platform"] != []) and ("Analogs" in output):
-
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
         n_platforms = len(reader["data"]["platform"])
         for i_platform in range(n_platforms):
-
             # Define unit conversion factors
             forceplate_position_unit = reader["data"]["platform"][i_platform][
                 "unit_position"
@@ -849,7 +847,7 @@ def read_c3d(
 
             # Add corners
             for i_corner in range(4):
-                key = f"FP{i_platform}_Corner{i_corner+1}"
+                key = f"FP{i_platform}_Corner{i_corner + 1}"
                 platforms.data[key] = np.ones((len(platforms.time), 4))
                 platforms.data[key][:, 0:3] = (
                     forceplate_position_factor
@@ -1006,12 +1004,12 @@ def write_c3d(
         import numpy as np
 
         points = ktk.TimeSeries()
-        points.time = np.linspace(0, 10, 10*240, endpoint=False)
+        points.time = np.linspace(0, 10, 10 * 240, endpoint=False)
         points.data["Marker1"] = np.ones((2400, 4))
         points.data["Marker2"] = np.ones((2400, 4))
 
         analogs = ktk.TimeSeries()
-        analogs.time = np.linspace(0, 10, 10*2400, endpoint=False)
+        analogs.time = np.linspace(0, 10, 10 * 2400, endpoint=False)
         analogs.data["Signal1"] = np.sin(analogs.time)
         analogs.data["Signal2"] = np.cos(analogs.time)
 

@@ -362,7 +362,7 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 6))
-    >>> ts = ts.add_data("test", [10., 11., 11., 20., 14., 15.])
+    >>> ts = ts.add_data("test", [10.0, 11.0, 11.0, 20.0, 14.0, 15.0])
     >>> ts2 = ktk.filters.median(ts)
     >>> ts2.data["test"]
     array([10., 11., 11., 14., 15., 15.])

@@ -321,12 +321,12 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
         # Write coordinate names
         fid.write("\t")
         for i, key in enumerate(markers.data):
-            fid.write(f"\tX{i+1}\tY{i+1}\tZ{i+1}")
+            fid.write(f"\tX{i + 1}\tY{i + 1}\tZ{i + 1}")
         fid.write("\n\n")
 
         # Write trajectories
         for i_frame in range(n_frames):
-            fid.write(f"{i_frame+1}\t" "{:.3f}".format(markers.time[i_frame]))
+            fid.write(f"{i_frame + 1}\t{{:.3f}}".format(markers.time[i_frame]))
             for key in markers.data:
                 fid.write(
                     "\t{:.5f}".format(markers.data[key][i_frame, 0])

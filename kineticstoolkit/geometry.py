@@ -231,7 +231,9 @@ def rotate(
     around y, for theta in [0, 10, 20, 30, 40]:
 
         >>> import kineticstoolkit.lab as ktk
-        >>> angles = np.array([[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]])
+        >>> angles = np.array(
+        ...     [[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]]
+        ... )
         >>> ktk.geometry.rotate([[1, 0, 0, 1]], "zx", angles, degrees=True)
         array([[1.        , 0.        , 0.        , 1.        ],
                [0.98480775, 0.1227878 , 0.1227878 , 1.        ],
@@ -270,7 +272,9 @@ def translate(coordinates, /, translations):
     Translate the point (1, 0, 0) by (x, 1, 0), for x in [0, 1, 2, 3, 4]:
 
         >>> import kineticstoolkit.lab as ktk
-        >>> t = np.array([[0, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [4, 1, 0]])
+        >>> t = np.array(
+        ...     [[0, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [4, 1, 0]]
+        ... )
         >>> ktk.geometry.translate([[1, 0, 0, 1]], t)
         array([[1., 1., 0., 1.],
                [2., 1., 0., 1.],
@@ -1419,12 +1423,10 @@ def create_transform_series(
     an 2x4x4 homogeneous transform series:
 
     >>> positions = [[0.5, 0.6, 0.7]]
-    >>> rotations = [[[ 1.,  0.,  0.],
-    ...              [ 0.,  1.,  0.],
-    ...              [ 0.,  0.,  1.]],
-    ...             [[ 1.,  0.,  0.],
-    ...              [ 0.,  0., -1.],
-    ...              [ 0.,  1.,  0.]]]
+    >>> rotations = [
+    ...     [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
+    ...     [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]],
+    ... ]
     >>> ktk.geometry.create_transform_series(rotations, positions=positions)
     array([[[ 1. ,  0. ,  0. ,  0.5],
             [ 0. ,  1. ,  0. ,  0.6],
@@ -1441,7 +1443,9 @@ def create_transform_series(
     Create a series of two homogeneous transforms that rotates 0, then 90
     degrees around x:
 
-    >>> ktk.geometry.create_transform_series(angles=[0, 90], seq="x", degrees=True)
+    >>> ktk.geometry.create_transform_series(
+    ...     angles=[0, 90], seq="x", degrees=True
+    ... )
     array([[[ 1.,  0.,  0.,  0.],
             [ 0.,  1.,  0.,  0.],
             [ 0.,  0.,  1.,  0.],
@@ -1722,7 +1726,9 @@ def create_transforms(
     degrees around x:
 
         >>> import kineticstoolkit.lab as ktk
-        >>> ktk.geometry.create_transforms(seq="x", angles=[0, 90], degrees=True)
+        >>> ktk.geometry.create_transforms(
+        ...     seq="x", angles=[0, 90], degrees=True
+        ... )
         array([[[ 1.,  0.,  0.,  0.],
                 [ 0.,  1.,  0.,  0.],
                 [ 0.,  0.,  1.,  0.],

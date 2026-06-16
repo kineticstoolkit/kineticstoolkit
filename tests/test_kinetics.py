@@ -33,7 +33,6 @@ def test_calculate_cop():
         "c3d_test_suite/ezc3d/Label2.c3d",
         "c3d_test_suite/ezc3d/Qualisys.c3d",
     ):
-
         contents = ktk.read_c3d(
             ktk.doc.download(file),
             convert_point_unit=True,

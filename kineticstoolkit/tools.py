@@ -82,16 +82,8 @@ def change_defaults(
     Parameters
     ----------
     change_ipython_dict_repr
-        Optional. True to summarize default dictionary printouts in IPython. When
-        False, dictionary printouts look like::
-
-            {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
-                             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
-             'data2': array([  0,   1,   4,   9,  16,  25,  36,  49,  64,  81, 100, 121, 144,
-                             169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
-                              676, 729, 784, 841])}
-
-        When True, dictionary printouts look like::
+        Optional. True to summarize default dictionary printouts in IPython, so
+        that dictionary printouts look like::
 
             {
                 'data1': <array of shape (30,)>

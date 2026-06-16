@@ -152,7 +152,7 @@ class Player:
 
               interconnections["Example"]["Links"] = [
                   ["Point1", "Point2"],
-                  ["Point3", "Point4", "Point5"]
+                  ["Point3", "Point4", "Point5"],
               ]
 
           which internally is converted to::
@@ -160,7 +160,7 @@ class Player:
               interconnections["Example"]["Links"] = [
                   ["Point1", "Point2"],
                   ["Point3", "Point4"],
-                  ["Point4", "Point5"]
+                  ["Point4", "Point5"],
               ]
 
           Point names can include wildcards (*) either as a prefix or as a
@@ -177,7 +177,7 @@ class Player:
         - "Color": character or tuple (RGB) that represents the color of the
           link. These two examples are equivalent::
 
-              interconnections["Pelvis"]["Color"] = 'r'
+              interconnections["Pelvis"]["Color"] = "r"
               interconnections["Pelvis"]["Color"] = (1.0, 0.0, 0.0)
 
         Its default value connects the four corners of force platforms in
@@ -201,12 +201,12 @@ class Player:
                 "WristForce": {
                     "Origin": "WristCenter",
                     "Scale": 0.001,
-                    "Color": (1.0, 1.0, 0.0)
+                    "Color": (1.0, 1.0, 0.0),
                 },
                 "ElbowForce": {
                     "Origin": "ElbowCenter",
                     "Scale": 0.001,
-                    "Color": (1.0, 1.0, 0.0)
+                    "Color": (1.0, 1.0, 0.0),
                 },
             }
 
@@ -220,7 +220,7 @@ class Player:
                 "*Force": {
                     "Origin": "*COP",
                     "Scale": 0.001,
-                    "Color": (1.0, 1.0, 0.0)
+                    "Color": (1.0, 1.0, 0.0),
                 }
             }
 
@@ -1446,7 +1446,6 @@ class Player:
 
         # Orient points, vectors and frames
         for key in contents.data:
-
             if geometry.is_transform_series(contents.data[key]):
                 # Simply rotate it and add it to processed frames
                 self._processed_frames.data[key] = (
@@ -1924,17 +1923,17 @@ class Player:
         # Create the interconnection plots
         self._mpl_objects["InterconnectionPlots"] = dict()
         for interconnection in self._processed_interconnections:
-            self._mpl_objects["InterconnectionPlots"][
-                interconnection
-            ] = self._mpl_objects["Axes"].plot(
-                np.nan,
-                np.nan,
-                "-",
-                c=self._processed_interconnections[interconnection]["Color"],
-                linewidth=self._interconnection_width,
-            )[
-                0
-            ]
+            self._mpl_objects["InterconnectionPlots"][interconnection] = (
+                self._mpl_objects["Axes"].plot(
+                    np.nan,
+                    np.nan,
+                    "-",
+                    c=self._processed_interconnections[interconnection][
+                        "Color"
+                    ],
+                    linewidth=self._interconnection_width,
+                )[0]
+            )
 
         # Create the vector plots
         self._mpl_objects["VectorPlots"] = dict()
@@ -1947,9 +1946,7 @@ class Player:
                 "-",
                 c=self._processed_vectors[vector]["Color"],
                 linewidth=self._vector_width,
-            )[
-                0
-            ]
+            )[0]
 
         # ----------------------
         # Create the point plots
@@ -1960,19 +1957,17 @@ class Player:
         self._mpl_objects["PointPlots"] = dict()
         for color in self._colors:
             # Unselected points
-            self._mpl_objects["PointPlots"][
-                (color, False)
-            ] = self._mpl_objects["Axes"].plot(
-                np.nan,
-                np.nan,
-                ".",
-                c=color,
-                markersize=self._point_size,
-                pickradius=1.1 * self._point_size,
-                picker=True,
-            )[
-                0
-            ]
+            self._mpl_objects["PointPlots"][(color, False)] = (
+                self._mpl_objects["Axes"].plot(
+                    np.nan,
+                    np.nan,
+                    ".",
+                    c=color,
+                    markersize=self._point_size,
+                    pickradius=1.1 * self._point_size,
+                    picker=True,
+                )[0]
+            )
 
             # Selected points
             self._mpl_objects["PointPlots"][(color, True)] = self._mpl_objects[
@@ -1983,9 +1978,7 @@ class Player:
                 ".",
                 c=color,
                 markersize=3 * self._point_size,
-            )[
-                0
-            ]
+            )[0]
 
         # Add the title
         title_obj = plt.title("", fontfamily="monospace")
