@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -30,17 +29,16 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+import doctest
+import os
+import shutil
+import subprocess
+import webbrowser
+
 import kineticstoolkit.config
 
 # Module(s) in development
-import kineticstoolkit.dev.kinetics as kinetics
-
-
-import os
-import subprocess
-import shutil
-import webbrowser
-import doctest
+from kineticstoolkit.dev import kinetics
 
 
 def run_unit_tests() -> None:  # pragma: no cover
@@ -99,23 +97,9 @@ def run_extensions_tests() -> None:  # pragma: no cover
 
 
 def run_style_formatter() -> None:  # pragma: no cover
-    """Run style formatter (black)."""
-    print("Running black...")
+    """Run style formatter (ruff)."""
     subprocess.call(
-        ["black", kineticstoolkit.config.root_folder],
-        env=kineticstoolkit.config.env,
-    )
-    print("Running docformatter...")
-    subprocess.call(
-        [
-            "docformatter",
-            "--style=numpy",
-            "--in-place",
-            "--recursive",
-            "--pre-summary-newline",
-            "--blank",
-            kineticstoolkit.config.root_folder,
-        ],
+        ["ruff", "format", kineticstoolkit.config.root_folder],
         env=kineticstoolkit.config.env,
     )
 
@@ -138,6 +122,14 @@ def run_static_type_checker() -> None:  # pragma: no cover
         env=kineticstoolkit.config.env,
     )
     os.chdir(cwd)
+
+
+def run_linter() -> None:  # pragma: no cover
+    """Run linter (ruff)."""
+    subprocess.call(
+        ["ruff", "check", "--fix", kineticstoolkit.config.root_folder],
+        env=kineticstoolkit.config.env,
+    )
 
 
 def run_doc_tests() -> None:  # pragma: no cover
