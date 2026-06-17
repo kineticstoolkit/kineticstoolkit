@@ -181,3 +181,4 @@ def run_tests() -> None:  # pragma: no cover
     run_unit_tests()
     run_extensions_tests()
     run_sphinx()
+    print("TEST TIMESERIES.UISYNC WITH TWO TIMESERIES.")

@@ -79,8 +79,10 @@ def get_subset(self, data_keys: str | list[str]) -> "TimeSeries":
     except TypeError:
         try:
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError:
-            raise TypeError("data_keys must be a string or a list of strings.")
+        except TypeError as e:
+            raise TypeError(
+                "data_keys must be a string or a list of strings."
+            ) from e
     self._check_well_shaped()
 
     if isinstance(data_keys, str):
@@ -93,19 +95,161 @@ def get_subset(self, data_keys: str | list[str]) -> "TimeSeries":
     for key in data_keys:
         try:
             ts.data[key] = self.data[key].copy()
-        except KeyError:
+        except KeyError as e:
             raise KeyError(
                 f"The key '{key}' could not be found among the "
                 f"{len(self.data)} data entries of the TimeSeries"
-            )
+            ) from e
 
     return ts
+
+
+def _merge_resample_if_needed(
+    ts_in: "TimeSeries", ts_out: "TimeSeries", resample: bool
+) -> None:
+    """Resample ts_in if needed."""
+    if (ts_out.time.shape == ts_in.time.shape) and np.all(
+        ts_out.time == ts_in.time
+    ):
+        must_resample = False
+    else:
+        must_resample = True
+
+    if must_resample is True and resample is False:
+        raise ValueError(
+            "Time attributes do not match, resampling is required."
+        )
+
+    if must_resample is True:
+        ts_in.resample(ts_out.time, in_place=True)
+
+
+def _merge_data(
+    ts_in: "TimeSeries",
+    ts_out: "TimeSeries",
+    data_keys: list[str],
+    on_conflict: str,
+    overwrite: bool,
+) -> None:
+    """Merge data from ts_in into ts_out."""
+    for key in data_keys:
+        if key not in ts_out.data:
+            # No conflict
+            ts_out.add_data(key, ts_in.data[key], in_place=True)
+        elif on_conflict == "error":
+            # Conflict, and we need to raise
+            raise TimeSeriesMergeConflictError(
+                f"The key '{key}' exists in both TimeSeries's data. "
+            )
+        elif on_conflict == "warning":
+            # Conflict, and we need to warn
+            if overwrite:
+                ts_out.add_data(
+                    key, ts_in.data[key], overwrite=True, in_place=True
+                )
+                warnings.warn(
+                    f"The key '{key}' exists in both TimeSeries's data. "
+                    "According to the overwrite=True "
+                    "parameter, its prior value has been overwritten "
+                    "by the new value. Use on_conflict='mute' to mute "
+                    "this warning."
+                )
+            else:
+                warnings.warn(
+                    f"The key '{key}' exists in both TimeSeries's data. "
+                    "According to the overwrite=False "
+                    "parameter, its prior value has been preserved. "
+                    "Use on_conflict='mute' to mute this warning."
+                )
+        # Conflict, and we need to not warn.
+        elif overwrite:
+            ts_out.add_data(
+                key, ts_in.data[key], overwrite=True, in_place=True
+            )
+
+
+def _merge_info(
+    ts_in: "TimeSeries",
+    ts_out: "TimeSeries",
+    data_keys: list[str],
+    on_conflict: str,
+    overwrite: bool,
+):
+    """Merge info from ts_in into ts_out."""
+    for outer_key in ts_in.info:
+        for inner_key in ts_in.info[outer_key]:
+            if outer_key not in ts_out.info:
+                # No conflict
+                ts_out.add_info(
+                    outer_key,
+                    inner_key,
+                    ts_in.info[outer_key][inner_key],
+                    in_place=True,
+                )
+            elif inner_key not in ts_out.info[outer_key]:
+                # No conflict
+                ts_out.add_info(
+                    outer_key,
+                    inner_key,
+                    ts_in.info[outer_key][inner_key],
+                    in_place=True,
+                )
+            elif (
+                ts_out.info[outer_key][inner_key]
+                == ts_in.info[outer_key][inner_key]
+            ):
+                # Duplicate data, but it's the same, so there's no
+                # conflict and thus nothing to do.
+                pass
+            elif on_conflict == "error":
+                # Conflict, and we need to raise
+                raise TimeSeriesMergeConflictError(
+                    f"The key '{inner_key}' exists in both "
+                    f"TimeSeries's attribute info[{outer_key}]."
+                )
+
+            elif on_conflict == "warning":
+                # Conflict, and we need to warn
+                if overwrite:
+                    ts_out.add_info(
+                        outer_key,
+                        inner_key,
+                        ts_in.info[outer_key][inner_key],
+                        overwrite=True,
+                        in_place=True,
+                    )
+                    warnings.warn(
+                        f"The key '{inner_key}' exists in both "
+                        f"TimeSeries's attribute info[{outer_key}]. "
+                        "According to the overwrite=True "
+                        "parameter, its prior value has been overwritten "
+                        "by the new value. Use on_conflict='mute' to mute "
+                        "this warning."
+                    )
+                else:
+                    warnings.warn(
+                        f"The key '{inner_key}' exists in both "
+                        f"TimeSeries's attribute info[{outer_key}]. "
+                        "According to the overwrite=False "
+                        "parameter, its prior value has been preserved. "
+                        "Use on_conflict='mute' to mute this warning."
+                    )
+
+            # Conflict, and we need to not warn.
+            elif overwrite:
+                ts_out.add_info(
+                    outer_key,
+                    inner_key,
+                    ts_in.info[outer_key][inner_key],
+                    overwrite=True,
+                    in_place=True,
+                )
 
 
 def merge(
     self,
     ts: "TimeSeries",
-    data_keys: str | list[str] = [],
+    data_keys: str | list[str] | None = None,
     *,
     resample: bool = False,
     merge_events: bool = True,
@@ -171,14 +315,18 @@ def merge(
     ktk.TimeSeries.resample
 
     """
+    if data_keys is None:
+        data_keys = []
     try:
         check_param("data_keys", data_keys, str)
     except TypeError:
         try:
             data_keys = list(data_keys)
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError:
-            raise TypeError("data_keys must be a string or a list of strings.")
+        except TypeError as e:
+            raise TypeError(
+                "data_keys must be a string or a list of strings."
+            ) from e
     check_param("resample", resample, bool)
     check_param("overwrite", overwrite, bool)
     check_param("on_conflict", on_conflict, str)
@@ -199,127 +347,18 @@ def merge(
     elif isinstance(data_keys, str):
         data_keys = [data_keys]
 
-    # Check if resampling is needed
     if len(ts_out.time) == 0:
         ts_out.time = deepcopy(ts.time)
 
-    if (ts_out.time.shape == ts.time.shape) and np.all(ts_out.time == ts.time):
-        must_resample = False
-    else:
-        must_resample = True
-
-    if must_resample is True and resample is False:
-        raise ValueError(
-            "Time attributes do not match, resampling is required."
-        )
-
-    if must_resample is True:
-        ts.resample(ts_out.time, in_place=True)
+    # Check if resampling is needed
+    _merge_resample_if_needed(ts, ts_out, resample)
 
     # Merge data
-    for key in data_keys:
-        if key not in ts_out.data:
-            # No conflict
-            ts_out.add_data(key, ts.data[key], in_place=True)
-        elif on_conflict == "error":
-            # Conflict, and we need to raise
-            raise TimeSeriesMergeConflictError(
-                f"The key '{key}' exists in both TimeSeries's data. "
-            )
-        elif on_conflict == "warning":
-            # Conflict, and we need to warn
-            if overwrite:
-                ts_out.add_data(
-                    key, ts.data[key], overwrite=True, in_place=True
-                )
-                warnings.warn(
-                    f"The key '{key}' exists in both TimeSeries's data. "
-                    "According to the overwrite=True "
-                    "parameter, its prior value has been overwritten "
-                    "by the new value. Use on_conflict='mute' to mute "
-                    "this warning."
-                )
-            else:
-                warnings.warn(
-                    f"The key '{key}' exists in both TimeSeries's data. "
-                    "According to the overwrite=False "
-                    "parameter, its prior value has been preserved. "
-                    "Use on_conflict='mute' to mute this warning."
-                )
-        # Conflict, and we need to not warn.
-        elif overwrite:
-            ts_out.add_data(key, ts.data[key], overwrite=True, in_place=True)
+    _merge_data(ts, ts_out, data_keys, on_conflict, overwrite)
 
     # Merge info
     if merge_info:
-        for outer_key in ts.info:
-            for inner_key in ts.info[outer_key]:
-                if outer_key not in ts_out.info:
-                    # No conflict
-                    ts_out.add_info(
-                        outer_key,
-                        inner_key,
-                        ts.info[outer_key][inner_key],
-                        in_place=True,
-                    )
-                elif inner_key not in ts_out.info[outer_key]:
-                    # No conflict
-                    ts_out.add_info(
-                        outer_key,
-                        inner_key,
-                        ts.info[outer_key][inner_key],
-                        in_place=True,
-                    )
-                elif (
-                    ts_out.info[outer_key][inner_key]
-                    == ts.info[outer_key][inner_key]
-                ):
-                    # Duplicate data, but it's the same, so there's no
-                    # conflict and thus nothing to do.
-                    pass
-                elif on_conflict == "error":
-                    # Conflict, and we need to raise
-                    raise TimeSeriesMergeConflictError(
-                        f"The key '{inner_key}' exists in both "
-                        f"TimeSeries's attribute info[{outer_key}]."
-                    )
-
-                elif on_conflict == "warning":
-                    # Conflict, and we need to warn
-                    if overwrite:
-                        ts_out.add_info(
-                            outer_key,
-                            inner_key,
-                            ts.info[outer_key][inner_key],
-                            overwrite=True,
-                            in_place=True,
-                        )
-                        warnings.warn(
-                            f"The key '{inner_key}' exists in both "
-                            f"TimeSeries's attribute info[{outer_key}]. "
-                            "According to the overwrite=True "
-                            "parameter, its prior value has been overwritten "
-                            "by the new value. Use on_conflict='mute' to mute "
-                            "this warning."
-                        )
-                    else:
-                        warnings.warn(
-                            f"The key '{inner_key}' exists in both "
-                            f"TimeSeries's attribute info[{outer_key}]. "
-                            "According to the overwrite=False "
-                            "parameter, its prior value has been preserved. "
-                            "Use on_conflict='mute' to mute this warning."
-                        )
-
-                # Conflict, and we need to not warn.
-                elif overwrite:
-                    ts_out.add_info(
-                        outer_key,
-                        inner_key,
-                        ts.info[outer_key][inner_key],
-                        overwrite=True,
-                        in_place=True,
-                    )
+        _merge_info(ts, ts_out, data_keys, on_conflict, overwrite)
 
     # Merge events
     if merge_events:

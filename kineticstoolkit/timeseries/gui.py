@@ -39,6 +39,7 @@ if TYPE_CHECKING:
 
 
 WINDOW_PLACEMENT = {"top": 50, "right": 0}
+MAX_CURVES_TO_TRY_BEST_LEGEND_PLACEMENT = 20
 
 
 def ui_edit_events(
@@ -265,11 +266,152 @@ def ui_edit_events(
         plt.axis(axes)
 
 
+def _ui_sync_one_timeseries(
+    ts: "TimeSeries",
+    data_keys: str | list[str],
+    legend: bool,
+    max_lines: int,
+    fig: mpl.figure.Figure,
+) -> "TimeSeries":
+    """Provide GUI for syncing only one TimeSeries."""
+    ts.plot(data_keys, legend=legend, max_lines=max_lines)
+    choice = button_dialog(
+        "Please zoom on the time zero and press Next.",
+        ["Cancel", "Next"],
+        **WINDOW_PLACEMENT,
+    )
+    if choice != 1:
+        plt.close(fig)
+        return ts
+
+    message("Click on the sync event.", **WINDOW_PLACEMENT)
+    click = plt.ginput(1)
+    message("")
+    plt.close(fig)
+    return ts.shift(-click[0][0])
+
+
+def _ui_sync_plot_two_timeseries(
+    ts1: "TimeSeries",
+    data_keys: str | list[str],
+    ts2: "TimeSeries",
+    data_keys2: str | list[str],
+    legend: bool,
+    max_lines: int,
+    axes: list[Any],
+    fig: mpl.figure.Figure,
+) -> None:
+    """Plot the two TimeSeries to be synced."""
+    if len(axes) == 0:
+        axes.append(fig.add_subplot(2, 1, 1))
+        axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
+
+    plt.sca(axes[0])
+    axes[0].cla()
+    ts1.plot(data_keys, legend=legend, max_lines=max_lines)
+    plt.title("First TimeSeries (ts1)")
+    plt.grid(True)
+    plt.tight_layout()
+
+    plt.sca(axes[1])
+    axes[1].cla()
+    ts2.plot(data_keys2, legend=legend, max_lines=max_lines)
+    plt.title("Second TimeSeries (ts2)")
+    plt.grid(True)
+    plt.tight_layout()
+
+
+def _ui_sync_two_timeseries(
+    ts1: "TimeSeries",
+    data_keys: str | list[str],
+    ts2: "TimeSeries",
+    data_keys2: str | list[str],
+    legend: bool,
+    max_lines: int,
+    fig: mpl.figure.Figure,
+) -> tuple["TimeSeries", "TimeSeries"]:
+    """Provide GUI for syncing two TimeSeries."""
+    finished = False
+    # list of axes:
+    axes: list[Any] = []
+
+    while finished is False:
+        _ui_sync_plot_two_timeseries(
+            ts1, data_keys, ts2, data_keys2, legend, max_lines, axes, fig
+        )
+
+        choices = [
+            "Zero ts1 only, using ts1",
+            "Zero ts2 only, using ts2",
+            "Zero both TimeSeries, using ts1",
+            "Zero both TimeSeries, using ts2",
+            "Sync both TimeSeries on a common event",
+            "Finished",
+        ]
+
+        choice = button_dialog(
+            "Please select an option.",
+            choices=choices,
+            **WINDOW_PLACEMENT,
+        )
+
+        if choice == choices.index("Zero ts1 only, using ts1"):
+            message("Click on the time zero in ts1.", **WINDOW_PLACEMENT)
+            click_1 = plt.ginput(1)
+            message("")
+
+            ts1 = ts1.shift(-click_1[0][0])
+
+        elif choice == choices.index("Zero ts2 only, using ts2"):
+            message("Click on the time zero in ts2.", **WINDOW_PLACEMENT)
+            click_1 = plt.ginput(1)
+            message("")
+
+            ts2 = ts2.shift(-click_1[0][0])
+
+        elif choice == choices.index("Zero both TimeSeries, using ts1"):
+            message("Click on the time zero in ts1.", **WINDOW_PLACEMENT)
+            click_1 = plt.ginput(1)
+            message("")
+
+            ts1 = ts1.shift(-click_1[0][0])
+            ts2 = ts2.shift(-click_1[0][0])
+
+        elif choice == choices.index("Zero both TimeSeries, using ts2"):
+            message("Click on the time zero in ts2.", **WINDOW_PLACEMENT)
+            click_2 = plt.ginput(1)
+            message("")
+
+            ts1 = ts1.shift(-click_2[0][0])
+            ts2 = ts2.shift(-click_2[0][0])
+
+        elif choice == choices.index("Sync both TimeSeries on a common event"):
+            message("Click on the sync event in ts1.", **WINDOW_PLACEMENT)
+            click_1 = plt.ginput(1)
+            message(
+                "Now click on the same event in ts2.",
+                **WINDOW_PLACEMENT,
+            )
+            click_2 = plt.ginput(1)
+            message("")
+
+            ts1 = ts1.shift(-click_1[0][0])
+            ts2 = ts2.shift(-click_2[0][0])
+
+        elif (
+            choice == choices.index("Finished") or choice < -1
+        ):  # OK or closed figure, quit.
+            plt.close(fig)
+            finished = True
+
+    return (ts1, ts2)
+
+
 def ui_sync(
     self,
-    data_keys: str | list[str] = [],
+    data_keys: str | list[str] | None = None,
     ts2: "TimeSeries | None" = None,
-    data_keys2: str | list[str] = [],
+    data_keys2: str | list[str] | None = None,
     legend: bool = True,
     max_lines: int = 40,
 ) -> "TimeSeries":  # pragma: no cover
@@ -320,22 +462,29 @@ def ui_sync(
     """
     check_interactive_backend()
 
+    if data_keys is None:
+        data_keys = []
+    if data_keys2 is None:
+        data_keys2 = []
+
     try:
         check_param("data_keys", data_keys, str)
     except TypeError:
         try:
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError:
-            raise TypeError("data_keys must be a string or a list of strings.")
+        except TypeError as e:
+            raise TypeError(
+                "data_keys must be a string or a list of strings."
+            ) from e
     try:
         check_param("data_keys2", data_keys2, str)
     except TypeError:
         try:
             check_param("data_keys2", data_keys2, list, contents_type=str)
-        except TypeError:
+        except TypeError as e:
             raise TypeError(
                 "data_keys2 must be a string or a list of strings."
-            )
+            ) from e
     check_param("legend", legend, bool)
     check_param("max_lines", max_lines, int)
 
@@ -354,185 +503,24 @@ def ui_sync(
 
     if ts2 is None:
         # Synchronize ts1 only
-        ts1.plot(data_keys, legend=legend, max_lines=max_lines)
-        choice = button_dialog(
-            "Please zoom on the time zero and press Next.",
-            ["Cancel", "Next"],
-            **WINDOW_PLACEMENT,
-        )
-        if choice != 1:
-            plt.close(fig)
-            return ts1
-
-        message("Click on the sync event.", **WINDOW_PLACEMENT)
-        click = plt.ginput(1)
-        message("")
-        plt.close(fig)
-        ts1 = ts1.shift(-click[0][0])
+        ts1 = _ui_sync_one_timeseries(ts1, data_keys, legend, max_lines, fig)
 
     else:  # Sync two TimeSeries together
-        finished = False
-        # list of axes:
-        axes: list[Any] = []
-        while finished is False:
-            if len(axes) == 0:
-                axes.append(fig.add_subplot(2, 1, 1))
-                axes.append(fig.add_subplot(2, 1, 2, sharex=axes[0]))
-
-            plt.sca(axes[0])
-            axes[0].cla()
-            ts1.plot(data_keys, legend=legend, max_lines=max_lines)
-            plt.title("First TimeSeries (ts1)")
-            plt.grid(True)
-            plt.tight_layout()
-
-            plt.sca(axes[1])
-            axes[1].cla()
-            ts2.plot(data_keys2, legend=legend, max_lines=max_lines)
-            plt.title("Second TimeSeries (ts2)")
-            plt.grid(True)
-            plt.tight_layout()
-
-            choice = button_dialog(
-                "Please select an option.",
-                choices=[
-                    "Zero ts1 only, using ts1",
-                    "Zero ts2 only, using ts2",
-                    "Zero both TimeSeries, using ts1",
-                    "Zero both TimeSeries, using ts2",
-                    "Sync both TimeSeries on a common event",
-                    "Finished",
-                ],
-                **WINDOW_PLACEMENT,
-            )
-
-            if choice == 0:  # Zero ts1 only
-                message("Click on the time zero in ts1.", **WINDOW_PLACEMENT)
-                click_1 = plt.ginput(1)
-                message("")
-
-                ts1 = ts1.shift(-click_1[0][0])
-
-            elif choice == 1:  # Zero ts2 only
-                message("Click on the time zero in ts2.", **WINDOW_PLACEMENT)
-                click_1 = plt.ginput(1)
-                message("")
-
-                ts2 = ts2.shift(-click_1[0][0])
-
-            elif choice == 2:  # Zero ts1 and ts2 using ts1
-                message("Click on the time zero in ts1.", **WINDOW_PLACEMENT)
-                click_1 = plt.ginput(1)
-                message("")
-
-                ts1 = ts1.shift(-click_1[0][0])
-                ts2 = ts2.shift(-click_1[0][0])
-
-            elif choice == 3:  # Zero ts1 and ts2 using ts2
-                message("Click on the time zero in ts2.", **WINDOW_PLACEMENT)
-                click_2 = plt.ginput(1)
-                message("")
-
-                ts1 = ts1.shift(-click_2[0][0])
-                ts2 = ts2.shift(-click_2[0][0])
-
-            elif choice == 4:  # Sync on a common event
-                message("Click on the sync event in ts1.", **WINDOW_PLACEMENT)
-                click_1 = plt.ginput(1)
-                message(
-                    "Now click on the same event in ts2.",
-                    **WINDOW_PLACEMENT,
-                )
-                click_2 = plt.ginput(1)
-                message("")
-
-                ts1 = ts1.shift(-click_1[0][0])
-                ts2 = ts2.shift(-click_2[0][0])
-
-            elif choice == 5 or choice < -1:  # OK or closed figure, quit.
-                plt.close(fig)
-                finished = True
+        ts1, new_ts2 = _ui_sync_two_timeseries(
+            ts1, data_keys, ts2, data_keys2, legend, max_lines, fig
+        )
+        ts2.time = new_ts2.time
+        ts2.data = new_ts2.data
+        ts2.info = new_ts2.info
+        ts2.events = new_ts2.events
 
     return ts1
 
 
-def plot(
-    self,
-    data_keys: str | list[str] = [],
-    *args,
-    event_names: bool = True,
-    legend: bool = True,
-    max_lines: int = 40,
-    **kwargs,
-) -> None:
-    """
-    Plot the TimeSeries in the current matplotlib figure.
-
-    Parameters
-    ----------
-    data_keys
-        The data keys to plot. If left empty, all data is plotted.
-    event_names
-        Optional. True to plot the event names on top of the event lines.
-    legend
-        Optional. True to plot a legend, False otherwise. Default is True.
-    max_lines
-        Optional. The maximal number of lines to plot. Default is 40. A
-        warning is issued if plotting all the data would require more
-        lines.
-
-    Note
-    ----
-    Additional positional and keyboard arguments are passed to
-    matplotlib's ``pyplot.plot`` function::
-
-        ts.plot(["Forces"], "--")
-
-    plots the forces using a dashed line style.
-
-    Example
-    -------
-    For a TimeSeries ``ts`` with data keys being "Forces", "Moments" and
-    "Angle"::
-
-        ts.plot()
-
-    plots all data (Forces, Moments and Angle), whereas::
-
-        ts.plot(["Forces", "Moments"])
-
-    plots only the forces and moments, without plotting the angle.
-
-    """
-    try:
-        check_param("data_keys", data_keys, str)
-    except TypeError:
-        try:
-            check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError:
-            raise TypeError("data_keys must be a string or a list of strings.")
-    check_param("event_names", event_names, bool)
-    check_param("legend", legend, bool)
-    check_param("max_lines", max_lines, int)
-    self._check_well_shaped()
-
-    # Private argument _raise_on_no_data: Raise an EmptyDataSeriesError
-    # instead of warning when no data is available to plot.
-    if "_raise_on_no_data" in kwargs:
-        raise_on_no_data = kwargs.pop("_raise_on_no_data")
-    else:
-        raise_on_no_data = False
-
-    if data_keys is None or len(data_keys) == 0:
-        # Plot all
-        ts = self.copy()
-    else:
-        ts = self.get_subset(data_keys)
-
-    if raise_on_no_data:
-        self._check_not_empty_time()
-        self._check_not_empty_data()
-
+def _plot_curves(
+    ts: "TimeSeries", max_lines: int, args, kwargs
+) -> mpl.axes._axes.Axes:
+    """Plot the curves of the input TimeSeries on the given axes."""
     df = ts.to_dataframe()
     labels = df.columns.to_list()
 
@@ -544,7 +532,6 @@ def plot(
         * plt.rcParams["axes.prop_cycle"]
     )
 
-    # Plot the curves
     for i_label, label in enumerate(labels):
         if i_label >= max_lines:
             warnings.warn(
@@ -559,11 +546,11 @@ def plot(
             label=label,
             **kwargs,
         )
+    return axes
 
-    # Add labels
-    plt.xlabel("Time (" + ts._get_time_unit() + ")")
 
-    # Make unique list of units
+def _plot_units(ts: "TimeSeries") -> None:
+    """Plot the units of the input TimeSeries on the current figure."""
     unit_set = set()
     for outer in ts.info:
         for inner in ts.info[outer]:
@@ -578,7 +565,9 @@ def plot(
 
     plt.ylabel(unit_str)
 
-    # Plot the events
+
+def _plot_events(ts: "TimeSeries", event_names: bool) -> None:
+    """Plot the events of the input TimeSeries on the current figure."""
     n_events = len(ts.events)
     event_times = []
     for event in ts.events:
@@ -624,12 +613,106 @@ def plot(
                     fontsize="small",
                 )
 
+
+def plot(
+    self,
+    data_keys: str | list[str] | None = None,
+    *args,
+    event_names: bool = True,
+    legend: bool = True,
+    max_lines: int = 40,
+    **kwargs,
+) -> None:
+    """
+    Plot the TimeSeries in the current matplotlib figure.
+
+    Parameters
+    ----------
+    data_keys
+        The data keys to plot. If left empty, all data is plotted.
+    event_names
+        Optional. True to plot the event names on top of the event lines.
+    legend
+        Optional. True to plot a legend, False otherwise. Default is True.
+    max_lines
+        Optional. The maximal number of lines to plot. Default is 40. A
+        warning is issued if plotting all the data would require more
+        lines.
+
+    Note
+    ----
+    Additional positional and keyboard arguments are passed to
+    matplotlib's ``pyplot.plot`` function::
+
+        ts.plot(["Forces"], "--")
+
+    plots the forces using a dashed line style.
+
+    Example
+    -------
+    For a TimeSeries ``ts`` with data keys being "Forces", "Moments" and
+    "Angle"::
+
+        ts.plot()
+
+    plots all data (Forces, Moments and Angle), whereas::
+
+        ts.plot(["Forces", "Moments"])
+
+    plots only the forces and moments, without plotting the angle.
+
+    """
+    if data_keys is None:
+        data_keys = []
+    try:
+        check_param("data_keys", data_keys, str)
+    except TypeError:
+        try:
+            check_param("data_keys", data_keys, list, contents_type=str)
+        except TypeError as e:
+            raise TypeError(
+                "data_keys must be a string or a list of strings."
+            ) from e
+    check_param("event_names", event_names, bool)
+    check_param("legend", legend, bool)
+    check_param("max_lines", max_lines, int)
+    self._check_well_shaped()
+
+    # Private argument _raise_on_no_data: Raise an EmptyDataSeriesError
+    # instead of warning when no data is available to plot.
+    if "_raise_on_no_data" in kwargs:
+        raise_on_no_data = kwargs.pop("_raise_on_no_data")
+    else:
+        raise_on_no_data = False
+
+    if len(data_keys) == 0:
+        # Plot all
+        ts = self.copy()
+    else:
+        ts = self.get_subset(data_keys)
+
+    if raise_on_no_data:
+        self._check_not_empty_time()
+        self._check_not_empty_data()
+
+    # Plot the curves
+    axes = _plot_curves(ts, max_lines, args, kwargs)
+
+    # Add labels
+    plt.xlabel("Time (" + ts._get_time_unit() + ")")
+
+    # Make unique list of units
+    _plot_units(ts)
+
+    # Plot the events
+    _plot_events(ts, event_names)
+
     if legend and len(ts.data) > 0:
-        if len(labels) < 20:
+        if len(ts.data) < MAX_CURVES_TO_TRY_BEST_LEGEND_PLACEMENT:
             legend_location = "best"
         else:
             legend_location = "upper right"
 
         axes.legend(
-            loc=legend_location, ncol=1 + int(len(labels) / 40)
-        )  # Max 40 items per line
+            loc=legend_location, ncol=1 + int(len(ts.data) / max_lines)
+        )  # Max MAX_CURVES_TO_TRY_BEST_LEGEND_PLACEMENT

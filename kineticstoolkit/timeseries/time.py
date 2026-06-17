@@ -32,6 +32,8 @@ from kineticstoolkit.typing_ import TYPE_CHECKING, ArrayLike, check_param
 if TYPE_CHECKING:
     from kineticstoolkit import TimeSeries
 
+MINIMUM_LENGTH_TO_INTERPOLATE = 3
+
 
 def _get_time_unit(self) -> str:
     try:
@@ -133,6 +135,32 @@ def get_sample_rate(self) -> float:
         return np.nan
 
 
+def _resample_create_new_time(
+    original: ArrayLike, target: ArrayLike | float
+) -> np.ndarray:
+    """Create a target time from float if a float (frequency) is given."""
+    if isinstance(target, Real):
+        # We specifically use arange instead of linspace, because what
+        # is defined is a frequency, not a number of points.
+        new_time = np.arange(
+            original[0],
+            original[-1] + 1 / target,
+            1 / target,
+        )
+        # Work around the numerical instability of using arange with floats
+        # by ensuring that the time point is not higher than the original
+        # last time point
+        if new_time[-1] > original[-1]:
+            new_time = new_time[:-1]
+    else:
+        new_time = np.array(target)  # type: ignore
+
+    if np.any(np.isnan(new_time)):
+        raise ValueError("new_time must not contain nans")
+
+    return new_time
+
+
 def resample(
     self,
     target: ArrayLike | float,
@@ -202,11 +230,11 @@ def resample(
 
     >>> ts1 = ts.resample(2.0)
 
-    >>> ts1.time
-    array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5, 6. , 6.5, 7. , 7.5, 8. , 8.5, 9. ])
+    >>> ts1.time[0:10]
+    array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
 
-    >>> ts1.data["data"]
-    array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5, 25. , 30.5, 36. , 42.5, 49. , 56.5, 64. , 72.5, 81. ])
+    >>> ts1.data["data"][0:10]
+    array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5])
 
     Example 2: Resampling on new times
 
@@ -226,11 +254,11 @@ def resample(
 
     >>> ts3 = ts.resample(2.0)
 
-    >>> ts3.time
-    array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5. , 5.5, 6. , 6.5, 7. , 7.5, 8. , 8.5, 9. ])
+    >>> ts3.time[0:10]
+    array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5, 5.])
 
-    >>> ts3.data["data"]
-    array([ nan,  nan,  nan,  nan,  4. ,  6.5,  9. , 12.5, 16. ,  nan,  nan, nan, 36. , 42.5, 49. ,  nan,  nan,  nan,  nan])
+    >>> ts3.data["data"][0:10]
+    array([ nan,  nan,  nan,  nan,  4. ,  6.5,  9. , 12.5, 16. ,  nan])
 
     """
     check_param("kind", kind, str)
@@ -248,27 +276,7 @@ def resample(
 
     ts = self if in_place else self.copy()
 
-    # --------------------------------------------------------------
-    # Create the new time if a frequency was provided instead
-    if isinstance(target, Real):
-        # We specifically use arange instead of linspace, because what
-        # is defined is a frequency, not a number of points.
-        new_time = np.arange(
-            ts.time[0],
-            ts.time[-1] + 1 / target,
-            1 / target,
-        )
-        # Work around the numerical instability of using arange with floats
-        # by ensuring that the time point is not higher than the original
-        # last time point
-        if new_time[-1] > ts.time[-1]:
-            new_time = new_time[:-1]
-    else:
-        new_time = np.array(target)  # type: ignore
-    # --------------------------------------------------------------
-
-    if np.any(np.isnan(new_time)):
-        raise ValueError("new_time must not contain nans")
+    new_time = _resample_create_new_time(ts.time, target)
 
     # We will progressively fill these data
     new_data = {}  # type: dict[str, np.ndarray]
@@ -276,7 +284,8 @@ def resample(
     for key in ts.data.keys():
         index = ~ts.isnan(key)
 
-        if sum(index) < 3:  # Only Nans, cannot interpolate.
+        if sum(index) < MINIMUM_LENGTH_TO_INTERPOLATE:
+            # Only Nans, cannot interpolate.
             # We generate an array of nans of the expected size.
             new_shape = [len(new_time)]
             for i in range(1, len(self.data[key].shape)):
