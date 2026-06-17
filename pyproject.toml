@@ -8,8 +8,8 @@ exclude = [
 ]
 
 [tool.ruff.lint]
-select = ["E", "W", "F", "I", "UP", "PL", "D", "NPY", "PD"]
-ignore = ["D203", "D212", "D105", "D107"]
+select = ["B", "E", "W", "F", "I", "UP", "PL", "D", "NPY", "PD"]
+ignore = ["D203", "D212", "D105", "D107", "PLR0913", "B028"]
 
 [tool.ruff.format]
 docstring-code-format = true

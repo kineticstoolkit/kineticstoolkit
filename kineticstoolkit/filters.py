@@ -383,4 +383,5 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 if __name__ == "__main__":
     import doctest
 
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

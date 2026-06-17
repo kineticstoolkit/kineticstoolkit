@@ -23,6 +23,7 @@ __license__ = "Apache 2.0"
 import warnings
 
 import matplotlib as mpl
+import numpy as np
 
 import kineticstoolkit.config
 import kineticstoolkit.gui
@@ -42,20 +43,22 @@ def check_interactive_backend() -> None:
     if kineticstoolkit.config.interactive_backend_warning is False:
         return
 
-    warn = lambda: warnings.warn(
-        "This function requires that Matplotlib uses an interactive "
-        "backend. Try typing `%matplotlib qt5` before running this "
-        "function."
-    )
+    def warn():
+        warnings.warn(
+            "This function requires that Matplotlib uses an interactive "
+            "backend. Try typing `%matplotlib qt5` before running this "
+            "function.",
+            stacklevel=2,
+        )
 
     try:
-        mpl.backends
+        mpl.backends  # noqa  See if it crashes
     except AttributeError:  # No backend has been initialized
         warn()
         return
 
     try:
-        mpl.backends.backend  # type: ignore
+        mpl.backends.backend  # type: ignore  # noqa  See if it crashes
     except AttributeError:  # No backend has been initialized
         warn()
         return
@@ -105,8 +108,8 @@ def change_defaults(
         printouts.
 
     change_warnings_format
-        Optional. True to change the warnings module's default to a more extended
-        format with file and line number.
+        Optional. True to change the warnings module's default to a more
+        extended format with file and line number.
 
     Returns
     -------
@@ -128,30 +131,24 @@ def change_defaults(
     if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython
         try:
-            import IPython as _IPython
+            import IPython as _IPython  # noqa
 
             _ip = _IPython.get_ipython()
             formatter = _ip.display_formatter.formatters["text/plain"]
-            formatter.for_type(
-                dict, lambda n, p, cycle: _repr._ktk_format_dict(n, p, cycle)
-            )
+            formatter.for_type(dict, _repr._ktk_format_dict)
         except Exception:
             pass
 
     if change_matplotlib_defaults:
         # Set alternative defaults to matplotlib
-        import matplotlib as _mpl
-
-        _mpl.rcParams["figure.figsize"] = [10, 5]
-        _mpl.rcParams["figure.dpi"] = 75
-        _mpl.rcParams["lines.linewidth"] = 1
+        mpl.rcParams["figure.figsize"] = [10, 5]
+        mpl.rcParams["figure.dpi"] = 75
+        mpl.rcParams["lines.linewidth"] = 1
         kineticstoolkit.gui.set_color_order("xyz")
 
     if change_numpy_print_options:
-        import numpy as _np
-
         # Select default mode for numpy
-        _np.set_printoptions(suppress=True, legacy="1.25")
+        np.set_printoptions(suppress=True, legacy="1.25")
 
     if change_warnings_format:
         # Monkey-patch warning.formatwarning

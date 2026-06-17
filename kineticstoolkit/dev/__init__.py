@@ -127,7 +127,12 @@ def run_static_type_checker() -> None:  # pragma: no cover
 def run_linter() -> None:  # pragma: no cover
     """Run linter (ruff)."""
     subprocess.call(
-        ["ruff", "check", "--fix", kineticstoolkit.config.root_folder],
+        [
+            "ruff",
+            "check",
+            "--fix",
+            kineticstoolkit.config.root_folder + "/kineticstoolkit",
+        ],
         env=kineticstoolkit.config.env,
     )
 

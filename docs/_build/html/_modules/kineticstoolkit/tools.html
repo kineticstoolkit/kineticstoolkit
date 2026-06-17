@@ -443,6 +443,7 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">mpl</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.config</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.gui</span>
@@ -462,20 +463,22 @@
     <span class="k">if</span> <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">interactive_backend_warning</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
         <span class="k">return</span>
 
-    <span class="n">warn</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-        <span class="s2">&quot;This function requires that Matplotlib uses an interactive &quot;</span>
-        <span class="s2">&quot;backend. Try typing `%matplotlib qt5` before running this &quot;</span>
-        <span class="s2">&quot;function.&quot;</span>
-    <span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">warn</span><span class="p">():</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;This function requires that Matplotlib uses an interactive &quot;</span>
+            <span class="s2">&quot;backend. Try typing `%matplotlib qt5` before running this &quot;</span>
+            <span class="s2">&quot;function.&quot;</span><span class="p">,</span>
+            <span class="n">stacklevel</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">mpl</span><span class="o">.</span><span class="n">backends</span>
+        <span class="n">mpl</span><span class="o">.</span><span class="n">backends</span>  <span class="c1"># noqa  See if it crashes</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># No backend has been initialized</span>
         <span class="n">warn</span><span class="p">()</span>
         <span class="k">return</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">mpl</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">backend</span>  <span class="c1"># type: ignore</span>
+        <span class="n">mpl</span><span class="o">.</span><span class="n">backends</span><span class="o">.</span><span class="n">backend</span>  <span class="c1"># type: ignore  # noqa  See if it crashes</span>
     <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>  <span class="c1"># No backend has been initialized</span>
         <span class="n">warn</span><span class="p">()</span>
         <span class="k">return</span>
@@ -527,8 +530,8 @@
 <span class="sd">        printouts.</span>
 
 <span class="sd">    change_warnings_format</span>
-<span class="sd">        Optional. True to change the warnings module&#39;s default to a more extended</span>
-<span class="sd">        format with file and line number.</span>
+<span class="sd">        Optional. True to change the warnings module&#39;s default to a more</span>
+<span class="sd">        extended format with file and line number.</span>
 
 <span class="sd">    Returns</span>
 <span class="sd">    -------</span>
@@ -550,30 +553,24 @@
     <span class="k">if</span> <span class="n">change_ipython_dict_repr</span><span class="p">:</span>
         <span class="c1"># Modify the repr function for dicts in IPython</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_IPython</span>
+            <span class="kn">import</span><span class="w"> </span><span class="nn">IPython</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_IPython</span>  <span class="c1"># noqa</span>
 
             <span class="n">_ip</span> <span class="o">=</span> <span class="n">_IPython</span><span class="o">.</span><span class="n">get_ipython</span><span class="p">()</span>
             <span class="n">formatter</span> <span class="o">=</span> <span class="n">_ip</span><span class="o">.</span><span class="n">display_formatter</span><span class="o">.</span><span class="n">formatters</span><span class="p">[</span><span class="s2">&quot;text/plain&quot;</span><span class="p">]</span>
-            <span class="n">formatter</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span>
-                <span class="nb">dict</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">:</span> <span class="n">_repr</span><span class="o">.</span><span class="n">_ktk_format_dict</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">cycle</span><span class="p">)</span>
-            <span class="p">)</span>
+            <span class="n">formatter</span><span class="o">.</span><span class="n">for_type</span><span class="p">(</span><span class="nb">dict</span><span class="p">,</span> <span class="n">_repr</span><span class="o">.</span><span class="n">_ktk_format_dict</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
             <span class="k">pass</span>
 
     <span class="k">if</span> <span class="n">change_matplotlib_defaults</span><span class="p">:</span>
         <span class="c1"># Set alternative defaults to matplotlib</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_mpl</span>
-
-        <span class="n">_mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
-        <span class="n">_mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.dpi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">75</span>
-        <span class="n">_mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;lines.linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.figsize&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span>
+        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;figure.dpi&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">75</span>
+        <span class="n">mpl</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s2">&quot;lines.linewidth&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="n">kineticstoolkit</span><span class="o">.</span><span class="n">gui</span><span class="o">.</span><span class="n">set_color_order</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">change_numpy_print_options</span><span class="p">:</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">_np</span>
-
         <span class="c1"># Select default mode for numpy</span>
-        <span class="n">_np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="s2">&quot;1.25&quot;</span><span class="p">)</span>
+        <span class="n">np</span><span class="o">.</span><span class="n">set_printoptions</span><span class="p">(</span><span class="n">suppress</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">legacy</span><span class="o">=</span><span class="s2">&quot;1.25&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">change_warnings_format</span><span class="p">:</span>
         <span class="c1"># Monkey-patch warning.formatwarning</span>

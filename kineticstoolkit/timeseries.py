@@ -4617,8 +4617,8 @@ class TimeSeries:
         dataframe: pd.DataFrame,
         /,
         *,
-        events: list[TimeSeriesEvent] = [],
-        info: dict[str, Any] = {"Time": {"Unit": "s"}},
+        events: list[TimeSeriesEvent] | None = None,
+        info: dict[str, Any] | None = None,
         **kwargs,
     ) -> TimeSeries:
         """
@@ -4738,6 +4738,11 @@ class TimeSeries:
                [0.4, 9. ]])}
 
         """
+        if events is None:
+            events = []
+        if info is None:
+            info = {"Time": {"Unit": "s"}}
+
         check_param("dataframe", dataframe, pd.DataFrame)
 
         ts = TimeSeries(
@@ -4758,7 +4763,7 @@ class TimeSeries:
         # Remove spaces and ":," in indexes between brackets
         columns = dataframe.columns
         new_columns = []
-        for i_column, column in enumerate(columns):
+        for _i_column, column in enumerate(columns):
             splitted = column.split("[")
             if len(splitted) > 1:  # There are brackets
                 new_columns.append(
@@ -4792,15 +4797,15 @@ class TimeSeries:
         n_samples = len(dataframe)
 
         # Assign the columns to the output
-        for key in dimensions:
-            if len(dimensions[key]) == 0:
+        for key, dimension in dimensions.items():
+            if len(dimension) == 0:
                 ts.data[key] = dataframe[key].to_numpy()
             else:
-                highest_dims = np.max(np.array(dimensions[key]), axis=0)
+                highest_dims = np.max(np.array(dimension), axis=0)
 
                 columns = [
                     key + str(dim).replace(" ", "")
-                    for dim in sorted(dimensions[key])
+                    for dim in sorted(dimension)
                 ]
                 ts.data[key] = dataframe[columns].to_numpy()
                 ts.data[key] = np.reshape(
@@ -4815,9 +4820,9 @@ class TimeSeries:
         /,
         *,
         data_key: str = "data",
-        time: ArrayLike = [],
-        events: list[TimeSeriesEvent] = [],
-        info: dict[str, Any] = {"Time": {"Unit": "s"}},
+        time: ArrayLike | None = None,
+        events: list[TimeSeriesEvent] | None = None,
+        info: dict[str, Any] | None = None,
         **kwargs,
     ) -> TimeSeries:
         """
@@ -4874,6 +4879,14 @@ class TimeSeries:
               info: {'Time': {'Unit': 's'}}
 
         """
+        # Default values
+        if time is None:
+            time = []
+        if events is None:
+            events = []
+        if info is None:
+            info = {"Time": {"Unit": "s"}}
+
         check_param("data_key", data_key, str)
 
         time = np.array(time)
@@ -4905,8 +4918,7 @@ class TimeSeries:
         self, *, unique: bool = False, in_place: bool = False
     ) -> TimeSeries:
         """
-        Deprecated. Sorts the TimeSeries' events from the earliest to the
-        latest.
+        Sort the TimeSeries' events (deprecated).
 
         Parameters
         ----------
@@ -4949,8 +4961,8 @@ class TimeSeries:
 
         Warning
         -------
-        This function will be deprecated when Kinetics Toolkit will reach version 1.0.
-        Please use add_info instead.
+        This function will be deprecated when Kinetics Toolkit will reach
+        version 1.0. Please use add_info instead.
 
         Parameters
         ----------
@@ -5001,8 +5013,8 @@ class TimeSeries:
 
         Warning
         -------
-        This function will be deprecated when Kinetics Toolkit will reach version 1.0.
-        Please use add_info instead.
+        This function will be deprecated when Kinetics Toolkit will reach
+        version 1.0. Please use add_info instead.
 
         Parameters
         ----------
