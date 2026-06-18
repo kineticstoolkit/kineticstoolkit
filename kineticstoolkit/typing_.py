@@ -211,3 +211,11 @@ def check_param(
     _check_ndims(name, value, ndims)
     _check_shape(name, value, shape)
     _check_key_type(name, value, key_type)
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

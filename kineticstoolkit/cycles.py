@@ -691,7 +691,9 @@ def most_repeatable_cycles(data: ArrayLike, /) -> list[int]:
     return out_cycles[-1::-1]
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

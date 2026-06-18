@@ -511,6 +511,10 @@
 <span class="s2">    zoom                : right-drag or wheel</span>
 <span class="s2">&quot;&quot;&quot;</span>
 
+<span class="n">MOUSE_LEFT_BUTTON</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">MOUSE_MIDDLE_BUTTON</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">MOUSE_RIGHT_BUTTON</span> <span class="o">=</span> <span class="mi">3</span>
+
 
 <span class="k">def</span><span class="w"> </span><span class="nf">_parse_color</span><span class="p">(</span>
     <span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
@@ -540,6 +544,25 @@
             <span class="s2">&quot;value must be between 0.0 and 1.0.&quot;</span>
         <span class="p">)</span>
     <span class="k">return</span> <span class="n">value</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_process_vectors_check_wildcards</span><span class="p">(</span><span class="n">spec</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">is_point</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Warn and return False if more than one wildcard was found in spec.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">spec</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">spec</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">is_point</span><span class="p">:</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Point </span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2"> found in vectors. &quot;</span>
+                <span class="s2">&quot;Only one wildcard can be used, either as a &quot;</span>
+                <span class="s2">&quot;prefix or as a suffix.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>  <span class="c1"># vector</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Vector </span><span class="si">{</span><span class="n">spec</span><span class="si">}</span><span class="s2"> found in vectors. &quot;</span>
+                <span class="s2">&quot;Only one wildcard can be used, either as a &quot;</span>
+                <span class="s2">&quot;prefix or as a suffix.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
 
 
 <div class="viewcode-block" id="Player">
@@ -616,8 +639,8 @@
 <span class="sd">            }</span>
 
 <span class="sd">    vectors</span>
-<span class="sd">        Optional. A dictionary where each key is the name of a vector and each value</span>
-<span class="sd">        contains its origin, scale, and color. For example::</span>
+<span class="sd">        Optional. A dictionary where each key is the name of a vector and each</span>
+<span class="sd">        value contains its origin, scale, and color. For example::</span>
 
 <span class="sd">            vectors = {</span>
 <span class="sd">                &quot;WristForce&quot;: {</span>
@@ -806,27 +829,11 @@
     <span class="n">_background_color</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
     <span class="n">_title_text</span><span class="p">:</span> <span class="nb">str</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>  <span class="c1"># noqa: PLR0915 too-many-statements</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="n">ts</span><span class="p">:</span> <span class="n">TimeSeries</span><span class="p">,</span>
-        <span class="n">interconnections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;ForcePlatforms&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;Links&quot;</span><span class="p">:</span> <span class="p">[</span>
-                    <span class="p">[</span><span class="s2">&quot;*_Corner1&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner2&quot;</span><span class="p">],</span>
-                    <span class="p">[</span><span class="s2">&quot;*_Corner2&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner3&quot;</span><span class="p">],</span>
-                    <span class="p">[</span><span class="s2">&quot;*_Corner3&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner4&quot;</span><span class="p">],</span>
-                    <span class="p">[</span><span class="s2">&quot;*_Corner1&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner4&quot;</span><span class="p">],</span>
-                <span class="p">],</span>
-                <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
-            <span class="p">},</span>
-        <span class="p">},</span>
-        <span class="n">vectors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="s2">&quot;*Force&quot;</span><span class="p">:</span> <span class="p">{</span>
-                <span class="s2">&quot;Origin&quot;</span><span class="p">:</span> <span class="s2">&quot;*COP&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;Scale&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
-                <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
-            <span class="p">}</span>
-        <span class="p">},</span>
+        <span class="n">interconnections</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">vectors</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">current_index</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
         <span class="n">current_time</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">playback_speed</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
@@ -875,6 +882,28 @@
         <span class="p">),</span>
         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>  <span class="c1"># Can be &quot;inline_player=True&quot;, or older parameter names</span>
     <span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">interconnections</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">interconnections</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;ForcePlatforms&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Links&quot;</span><span class="p">:</span> <span class="p">[</span>
+                        <span class="p">[</span><span class="s2">&quot;*_Corner1&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner2&quot;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s2">&quot;*_Corner2&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner3&quot;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s2">&quot;*_Corner3&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner4&quot;</span><span class="p">],</span>
+                        <span class="p">[</span><span class="s2">&quot;*_Corner1&quot;</span><span class="p">,</span> <span class="s2">&quot;*_Corner4&quot;</span><span class="p">],</span>
+                    <span class="p">],</span>
+                    <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">),</span>
+                <span class="p">},</span>
+            <span class="p">}</span>
+        <span class="k">if</span> <span class="n">vectors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vectors</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s2">&quot;*Force&quot;</span><span class="p">:</span> <span class="p">{</span>
+                    <span class="s2">&quot;Origin&quot;</span><span class="p">:</span> <span class="s2">&quot;*COP&quot;</span><span class="p">,</span>
+                    <span class="s2">&quot;Scale&quot;</span><span class="p">:</span> <span class="mf">0.001</span><span class="p">,</span>
+                    <span class="s2">&quot;Color&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
         <span class="c1"># Allow older parameter names</span>
         <span class="k">if</span> <span class="s2">&quot;segments&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="n">interconnections</span> <span class="o">==</span> <span class="p">{}:</span>
             <span class="n">interconnections</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;segments&quot;</span><span class="p">]</span>
@@ -1461,7 +1490,9 @@
                 <span class="s2">&quot;target&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">target</span><span class="p">,</span>
                 <span class="s2">&quot;track&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">track</span><span class="p">,</span>
                 <span class="s2">&quot;default_point_color&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_point_color</span><span class="p">,</span>
-                <span class="s2">&quot;default_interconnection_color&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_interconnection_color</span><span class="p">,</span>
+                <span class="s2">&quot;default_interconnection_color&quot;</span><span class="p">:</span> <span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">default_interconnection_color</span>
+                <span class="p">),</span>
                 <span class="s2">&quot;default_vector_color&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">default_vector_color</span><span class="p">,</span>
                 <span class="s2">&quot;point_size&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">point_size</span><span class="p">,</span>
                 <span class="s2">&quot;interconnection_width&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">interconnection_width</span><span class="p">,</span>
@@ -1629,8 +1660,8 @@
 
         <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">parsed_interconnections</span><span class="p">:</span>
             <span class="n">links</span> <span class="o">=</span> <span class="n">parsed_interconnections</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="s2">&quot;Links&quot;</span><span class="p">]</span>
-            <span class="k">for</span> <span class="n">i_link</span><span class="p">,</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
-                <span class="k">for</span> <span class="n">i_point</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">_i_link</span><span class="p">,</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">_i_point</span><span class="p">,</span> <span class="n">point</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">link</span><span class="p">):</span>
                     <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">point</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">):</span>
                         <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                             <span class="sa">f</span><span class="s2">&quot;Point </span><span class="si">{</span><span class="n">point</span><span class="si">}</span><span class="s2"> found in interconnections. &quot;</span>
@@ -1668,7 +1699,7 @@
                 <span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
 
                 <span class="n">links</span> <span class="o">=</span> <span class="n">parsed_interconnections</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="s2">&quot;Links&quot;</span><span class="p">]</span>
-                <span class="k">for</span> <span class="n">i_link</span><span class="p">,</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">_i_link</span><span class="p">,</span> <span class="n">link</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">links</span><span class="p">):</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">_processed_interconnections</span><span class="p">[</span><span class="n">extended_group_key</span><span class="p">][</span>
                         <span class="s2">&quot;Links&quot;</span>
                     <span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="n">pattern</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">link</span><span class="p">])</span>
@@ -1748,19 +1779,9 @@
             <span class="n">point</span> <span class="o">=</span> <span class="n">parsed_vectors</span><span class="p">[</span><span class="n">vector</span><span class="p">][</span><span class="s2">&quot;Origin&quot;</span><span class="p">]</span>
             <span class="k">if</span> <span class="s2">&quot;*&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">vector</span> <span class="ow">and</span> <span class="s2">&quot;*&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">point</span><span class="p">:</span>
                 <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">vector</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">vector</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">):</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Vector </span><span class="si">{</span><span class="n">vector</span><span class="si">}</span><span class="s2"> found in vectors. &quot;</span>
-                    <span class="s2">&quot;Only one wildcard can be used, either as a &quot;</span>
-                    <span class="s2">&quot;prefix or as a suffix.&quot;</span>
-                <span class="p">)</span>
-                <span class="k">continue</span>
-            <span class="k">if</span> <span class="n">point</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">point</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">):</span>
-                <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Point </span><span class="si">{</span><span class="n">point</span><span class="si">}</span><span class="s2"> found in vectors. &quot;</span>
-                    <span class="s2">&quot;Only one wildcard can be used, either as a &quot;</span>
-                    <span class="s2">&quot;prefix or as a suffix.&quot;</span>
-                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">_process_vectors_check_wildcards</span><span class="p">(</span>
+                <span class="n">vector</span><span class="p">,</span> <span class="kc">False</span>
+            <span class="p">)</span> <span class="ow">or</span> <span class="n">_process_vectors_check_wildcards</span><span class="p">(</span><span class="n">point</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
                 <span class="k">continue</span>
             <span class="k">if</span> <span class="p">(</span>
                 <span class="p">(</span><span class="n">vector</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">point</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;*&quot;</span><span class="p">))</span>
@@ -2018,11 +2039,17 @@
         <span class="c1"># Apply perspective.</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">perspective</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
             <span class="c1"># This uses an ugly magical constant but it works fine for now.</span>
-            <span class="n">denom</span> <span class="o">=</span> <span class="n">rotated_points_3d</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="mi">10</span> <span class="o">+</span> <span class="mi">5</span>
+            <span class="n">PERSPECTIVE_SCALE</span> <span class="o">=</span> <span class="mf">10.0</span>
+            <span class="n">PERSPECTIVE_OFFSET</span> <span class="o">=</span> <span class="mf">5.0</span>
+            <span class="n">VERY_SMALL</span> <span class="o">=</span> <span class="mf">1e-12</span>
+            <span class="n">denom</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">rotated_points_3d</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">/</span> <span class="n">PERSPECTIVE_SCALE</span>
+                <span class="o">+</span> <span class="n">PERSPECTIVE_OFFSET</span>
+            <span class="p">)</span>
             <span class="n">rotated_points_3d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotated_points_3d</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">/</span> <span class="n">denom</span>
             <span class="n">rotated_points_3d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">rotated_points_3d</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">/</span> <span class="n">denom</span>
             <span class="k">with</span> <span class="n">np</span><span class="o">.</span><span class="n">errstate</span><span class="p">(</span><span class="n">invalid</span><span class="o">=</span><span class="s2">&quot;ignore&quot;</span><span class="p">):</span>
-                <span class="n">to_remove</span> <span class="o">=</span> <span class="n">denom</span> <span class="o">&lt;</span> <span class="mf">1e-12</span>
+                <span class="n">to_remove</span> <span class="o">=</span> <span class="n">denom</span> <span class="o">&lt;</span> <span class="n">VERY_SMALL</span>
             <span class="n">rotated_points_3d</span><span class="p">[</span><span class="n">to_remove</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
             <span class="n">rotated_points_3d</span><span class="p">[</span><span class="n">to_remove</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
         <span class="k">else</span><span class="p">:</span>
@@ -2108,8 +2135,8 @@
         <span class="n">points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_processed_points</span>
         <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="n">n_points</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
 
         <span class="n">points_data</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Used to draw the points with different colors</span>
         <span class="n">interconnection_points</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>  <span class="c1"># Used to draw the interconnections</span>
@@ -2265,7 +2292,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_mpl_objects</span><span class="p">[</span><span class="s2">&quot;Figure&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">set_window_title</span><span class="p">(</span>
                 <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">current_index</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_contents</span><span class="o">.</span><span class="n">time</span><span class="p">)</span><span class="si">}</span><span class="s2">: &quot;</span>
-                <span class="o">+</span> <span class="s2">&quot;</span><span class="si">%2.2f</span><span class="s2"> s.&quot;</span> <span class="o">%</span> <span class="bp">self</span><span class="o">.</span><span class="n">_contents</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_index</span><span class="p">]</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_contents</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">current_index</span><span class="p">]</span><span class="si">:</span><span class="s2">2.2f</span><span class="si">}</span><span class="s2"> s.&quot;</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
             <span class="k">pass</span>
@@ -2436,14 +2463,20 @@
 
         <span class="n">initial_projected_points</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_project_to_camera</span><span class="p">(</span><span class="n">points</span><span class="p">)</span>
         <span class="c1"># Do not consider points that are not in the screen</span>
-        <span class="n">initial_projected_points</span><span class="p">[</span><span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1.5</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="p">)</span>
-        <span class="n">initial_projected_points</span><span class="p">[</span><span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.5</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="n">initial_projected_points</span><span class="p">[</span><span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1.0</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
-        <span class="p">)</span>
-        <span class="n">initial_projected_points</span><span class="p">[</span><span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">1.0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">X_SCREEN_LIMIT</span> <span class="o">=</span> <span class="mf">1.5</span>
+        <span class="n">Y_SCREEN_LIMIT</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">initial_projected_points</span><span class="p">[</span>
+            <span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">X_SCREEN_LIMIT</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">initial_projected_points</span><span class="p">[</span>
+            <span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">X_SCREEN_LIMIT</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">initial_projected_points</span><span class="p">[</span>
+            <span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="o">-</span><span class="n">Y_SCREEN_LIMIT</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+        <span class="n">initial_projected_points</span><span class="p">[</span>
+            <span class="n">initial_projected_points</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">Y_SCREEN_LIMIT</span>
+        <span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">error_function</span><span class="p">(</span><span class="nb">input</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_pan</span> <span class="o">=</span> <span class="nb">input</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="mi">2</span><span class="p">]</span>
@@ -2518,7 +2551,7 @@
 
             <span class="bp">self</span><span class="o">.</span><span class="n">_fast_refresh</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>  <span class="c1"># pragma: no cover  # noqa: PLR0912, PLR0915</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Implement callback for keyboard key pressed.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">key</span> <span class="o">==</span> <span class="s2">&quot; &quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_running</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
@@ -2617,20 +2650,20 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;ElevationOnMousePress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elevation</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;ZoomOnMousePress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MousePositionOnPress&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">event</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">event</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="n">MOUSE_LEFT_BUTTON</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MouseLeftPressed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="n">MOUSE_MIDDLE_BUTTON</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MouseMiddlePressed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="n">MOUSE_RIGHT_BUTTON</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MouseRightPressed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_fast_refresh</span><span class="p">()</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_mouse_release</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
-        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="n">MOUSE_LEFT_BUTTON</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MouseLeftPressed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="n">MOUSE_MIDDLE_BUTTON</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MouseMiddlePressed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
-        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+        <span class="k">elif</span> <span class="n">event</span><span class="o">.</span><span class="n">button</span> <span class="o">==</span> <span class="n">MOUSE_RIGHT_BUTTON</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">[</span><span class="s2">&quot;MouseRightPressed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_on_mouse_motion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
@@ -2687,7 +2720,7 @@
 
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">Video</span>  <span class="c1"># noqa</span>
         <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
                 <span class="s2">&quot;This function must be run in an IPython session.&quot;</span>
@@ -2906,9 +2939,14 @@
 
         <span class="k">if</span> <span class="n">show_progress_bar</span><span class="p">:</span>
             <span class="n">progress_bar</span> <span class="o">=</span> <span class="n">tqdm</span><span class="p">(</span><span class="n">n_samples</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">update_progress_bar</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="n">progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">update_progress_bar</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+                <span class="n">progress_bar</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">update_progress_bar</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="kc">None</span>
+
+            <span class="k">def</span><span class="w"> </span><span class="nf">update_progress_bar</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
+                <span class="k">pass</span>
 
         <span class="n">anim</span><span class="o">.</span><span class="n">save</span><span class="p">(</span>
             <span class="n">filename</span><span class="p">,</span> <span class="n">writer</span><span class="o">=</span><span class="n">writervideo</span><span class="p">,</span> <span class="n">progress_callback</span><span class="o">=</span><span class="n">update_progress_bar</span>
@@ -2938,6 +2976,14 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">interconnections</span> <span class="o">=</span> <span class="n">value</span></div>
 </div>
 
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">doctest</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ktk</span>  <span class="c1"># noqa for doctest</span>
+
+    <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">NORMALIZE_WHITESPACE</span><span class="p">)</span>
 </pre></div>
 
                 </article>

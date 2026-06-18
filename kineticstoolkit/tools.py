@@ -156,3 +156,11 @@ def change_defaults(
             return f"{category.__name__} [{filename}:{lineno}] {message}\n"
 
         warnings.formatwarning = formatwarning
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

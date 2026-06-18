@@ -962,8 +962,8 @@ def create_point_series(
         >>> p0 = [1.0, 2.0, 3.0, 0.0]  # (x, y, z, 1.0) at time 0
         >>> p1 = [4.0, 5.0, 6.0, 0.0]  # (x, y, z, 1.0) at time 1
         >>> ktk.geometry.create_point_series([p0, p1])
-        array([[1., 2., 3., 0.],
-               [4., 5., 6., 0.]])
+        array([[1., 2., 3., 1.],
+               [4., 5., 6., 1.]])
 
     Multiple inputs form::
 
@@ -1937,5 +1937,7 @@ def create_frames(
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

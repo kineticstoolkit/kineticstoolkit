@@ -500,8 +500,8 @@
 
 <span class="sd">    - json</span>
 <span class="sd">    - json.zip : save as json but zips the file to save space</span>
-<span class="sd">    - ktk.zip : a zipped folder containing two files: metadata.json, which includes save</span>
-<span class="sd">      date, user, etc., and data.json, which includes the data.</span>
+<span class="sd">    - ktk.zip : a zipped folder containing two files: metadata.json, which</span>
+<span class="sd">      includes save date, user, etc., and data.json, which includes the data.</span>
 
 <span class="sd">    The following standard classes are supported:</span>
 
@@ -623,7 +623,7 @@
     <span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span>
-    <span class="k">except</span><span class="p">:</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">temp_folder</span><span class="p">)</span>
 
@@ -786,7 +786,7 @@
 
 <div class="viewcode-block" id="read_c3d">
 <a class="viewcode-back" href="../../api/ktk.read_c3d.html#ktk.read_c3d">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">read_c3d</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">read_c3d</span><span class="p">(</span>  <span class="c1"># noqa: PLR0915, PLR0912 too-many-statements too-many-branches</span>
     <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">include_event_context</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -1026,11 +1026,11 @@
         <span class="k">elif</span> <span class="n">point_unit</span> <span class="ow">in</span> <span class="n">scales</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;In the specified file, points are expressed in &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">. They have been automatically converted to meters &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;(scaled by </span><span class="si">{</span><span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span><span class="si">}</span><span class="s2">). Please note that &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">. They have been automatically converted to &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;meters (scaled by </span><span class="si">{</span><span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span><span class="si">}</span><span class="s2">). Please note that &quot;</span>
                 <span class="s2">&quot;if this file also contains calculated values such as &quot;</span>
-                <span class="s2">&quot;angles, powers, etc., they have been also (wrongly) scaled by &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span><span class="si">}</span><span class="s2">. Consult &quot;</span>
+                <span class="s2">&quot;angles, powers, etc., they have been also (wrongly) scaled &quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;by </span><span class="si">{</span><span class="n">scales</span><span class="p">[</span><span class="n">point_unit</span><span class="p">]</span><span class="si">}</span><span class="s2">. Consult &quot;</span>
                 <span class="s2">&quot;https://kineticstoolkit.uqam.ca/doc/api/ktk.read_c3d.html &quot;</span>
                 <span class="s2">&quot;for more information. You can mute this warning &quot;</span>
                 <span class="s2">&quot;by explicitely setting `convert_point_unit` to either True &quot;</span>
@@ -1041,10 +1041,10 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
                 <span class="s2">&quot;In the specified file, points are expressed in &quot;</span>
-                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">`, which is not recognized by ktk.read_c3d. They &quot;</span>
-                <span class="s2">&quot;have been left as is, without attempting to convert to meters. &quot;</span>
-                <span class="s2">&quot;You can mute this warning by setting `convert_point_unit` to &quot;</span>
-                <span class="s2">&quot;False.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;`</span><span class="si">{</span><span class="n">point_unit</span><span class="si">}</span><span class="s2">`, which is not recognized by ktk.read_c3d. &quot;</span>
+                <span class="s2">&quot;They have been left as is, without attempting to convert to &quot;</span>
+                <span class="s2">&quot;meters. You can mute this warning by setting &quot;</span>
+                <span class="s2">&quot;`convert_point_unit` to False.&quot;</span>
             <span class="p">)</span>
             <span class="n">point_factor</span> <span class="o">=</span> <span class="mf">1.0</span>
             <span class="c1"># point_unit = Do not update</span>
@@ -1178,7 +1178,9 @@
     <span class="k">if</span> <span class="s2">&quot;ROTATION&quot;</span> <span class="ow">in</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">]:</span>
         <span class="n">rotations</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
 
-        <span class="c1"># Get the marker label names and create a timeseries data entry for each</span>
+        <span class="c1"># Get the marker label names and create a timeseries data entry for</span>
+        <span class="c1"># each</span>
+
         <span class="c1"># Get the labels</span>
         <span class="n">rotation_rate</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;parameters&quot;</span><span class="p">][</span><span class="s2">&quot;ROTATION&quot;</span><span class="p">][</span><span class="s2">&quot;RATE&quot;</span><span class="p">][</span><span class="s2">&quot;value&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">rotation_start</span> <span class="o">=</span> <span class="n">reader</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">][</span><span class="s2">&quot;rotations&quot;</span><span class="p">][</span><span class="s2">&quot;first_frame&quot;</span><span class="p">]</span>
@@ -1270,7 +1272,8 @@
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">moment_factor</span> <span class="o">=</span> <span class="mi">1</span>
                 <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;Moment unit is </span><span class="si">{</span><span class="n">forceplate_moment_unit</span><span class="si">}</span><span class="s2"> instead of Nm or Nmm.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;Moment unit is </span><span class="si">{</span><span class="n">forceplate_moment_unit</span><span class="si">}</span><span class="s2"> instead of &quot;</span>
+                    <span class="s2">&quot;Nm or Nmm.&quot;</span>
                 <span class="p">)</span>
 
             <span class="c1"># Add corners</span>
@@ -1370,7 +1373,7 @@
 
 <div class="viewcode-block" id="write_c3d">
 <a class="viewcode-back" href="../../api/ktk.write_c3d.html#ktk.write_c3d">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">write_c3d</span><span class="p">(</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">write_c3d</span><span class="p">(</span>  <span class="c1"># noqa PLR0915, PLR0912 too-many-statements too-many-branches</span>
     <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">points</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">analogs</span><span class="p">:</span> <span class="n">TimeSeries</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -1455,18 +1458,9 @@
     <span class="k">if</span> <span class="ow">not</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.c3d&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The file name must end with &#39;.c3d&#39;.&quot;</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">ezc3d</span>
-    <span class="k">except</span> <span class="ne">ModuleNotFoundError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">ModuleNotFoundError</span><span class="p">(</span>
-            <span class="s2">&quot;The optional module ezc3d is not installed, but it is required &quot;</span>
-            <span class="s2">&quot;to use this function. Please install it using: &quot;</span>
-            <span class="s2">&quot;conda install -c conda-forge ezc3d&quot;</span>
-        <span class="p">)</span>
-
     <span class="k">if</span> <span class="n">points</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="c1"># Dummy point data must be created since analogs and rotations rate ratio</span>
-        <span class="c1"># are based on point rate.</span>
+        <span class="c1"># Dummy point data must be created since analogs and rotations rate</span>
+        <span class="c1"># ratio are based on point rate.</span>
         <span class="n">points</span> <span class="o">=</span> <span class="n">TimeSeries</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">rotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">points</span> <span class="o">=</span> <span class="n">rotations</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">copy_data</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">copy_info</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -1597,13 +1591,17 @@
                 <span class="sa">f</span><span class="s2">&quot;rotations.time[0] = </span><span class="si">{</span><span class="n">rotations</span><span class="o">.</span><span class="n">time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span>
             <span class="p">)</span>
 
-        <span class="c1"># Final data should be a 4x4xlen(rotations.data.keys())xlen(rotations.time)</span>
+        <span class="c1"># Final data should be a</span>
+        <span class="c1"># 4x4xlen(rotations.data.keys())xlen(rotations.time)</span>
         <span class="c1"># np.ndarray</span>
         <span class="n">c3d_rotations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span>
             <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span> <span class="nb">len</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">time</span><span class="p">))</span>
         <span class="p">)</span>
         <span class="k">for</span> <span class="n">i_rot</span><span class="p">,</span> <span class="n">key</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">):</span>
-            <span class="c1"># change from shape (len(rotations.time), 4, 4) to (4, 4, len(rotations.time))</span>
+            <span class="c1"># change from shape</span>
+            <span class="c1"># (len(rotations.time), 4, 4)</span>
+            <span class="c1"># to</span>
+            <span class="c1"># (4, 4, len(rotations.time))</span>
             <span class="n">c3d_rotations</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">i_rot</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span>
                 <span class="n">rotations</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
             <span class="p">)</span>
@@ -1643,6 +1641,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">doctest</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ktk</span>  <span class="c1"># noqa for doctest</span>
 
     <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">NORMALIZE_WHITESPACE</span><span class="p">)</span>
 </pre></div>

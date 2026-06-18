@@ -96,3 +96,11 @@ if "SPY_PYTHONPATH" in env and "PYTHONPATH" not in env:
 
 # Others
 interactive_backend_warning = True
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

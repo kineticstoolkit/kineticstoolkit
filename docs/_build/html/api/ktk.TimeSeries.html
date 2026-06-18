@@ -494,17 +494,17 @@
 <h1>ktk.TimeSeries<a class="headerlink" href="#ktk-timeseries" title="Link to this heading">#</a></h1>
 <dl class="py class">
 <dt class="sig sig-object py" id="ktk.TimeSeries">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'Time':</span> <span class="pre">{'Unit':</span> <span class="pre">'s'}}</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kineticstoolkit/timeseries.html#TimeSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ktk.TimeSeries" title="Link to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">TimeSeries</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">src</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">events</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">info</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kineticstoolkit/timeseries.html#TimeSeries"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ktk.TimeSeries" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>A class that holds time, data series, events and metadata.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>src</strong> (<em>None</em><em> | </em><a class="reference internal" href="#ktk.TimeSeries" title="ktk.TimeSeries"><em>TimeSeries</em></a><em> | </em><em>pd.DataFrame</em><em> | </em><em>ArrayLike</em>)</p></li>
-<li><p><strong>time</strong> (<em>ArrayLike</em>)</p></li>
-<li><p><strong>data</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>ArrayLike</em><em>]</em>)</p></li>
-<li><p><strong>events</strong> (<em>list</em><em>[</em><a class="reference internal" href="ktk.TimeSeriesEvent.html#ktk.TimeSeriesEvent" title="ktk.TimeSeriesEvent"><em>TimeSeriesEvent</em></a><em>]</em>)</p></li>
-<li><p><strong>info</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>]</em>)</p></li>
+<li><p><strong>time</strong> (<em>ArrayLike</em><em> | </em><em>None</em>)</p></li>
+<li><p><strong>data</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>ArrayLike</em><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>events</strong> (<em>list</em><em>[</em><a class="reference internal" href="ktk.TimeSeriesEvent.html#ktk.TimeSeriesEvent" title="ktk.TimeSeriesEvent"><em>TimeSeriesEvent</em></a><em>] </em><em>| </em><em>None</em>)</p></li>
+<li><p><strong>info</strong> (<em>dict</em><em>[</em><em>str</em><em>, </em><em>Any</em><em>] </em><em>| </em><em>None</em>)</p></li>
 </ul>
 </dd>
 </dl>
@@ -620,8 +620,10 @@ or any array with at least one dimension.</p>
 <span class="go">      info: {&#39;Time&#39;: {&#39;Unit&#39;: &#39;s&#39;}}</span>
 </pre></div>
 </div>
-<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span>
-<span class="go">{&#39;x&#39;: array([0., 1., 2., 3., 4.]), &#39;y&#39;: array([5., 6., 7., 8., 9.]), &#39;z&#39;: array([0., 0., 0., 0., 0.])}</span>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">]</span>
+<span class="go">array([0., 1., 2., 3., 4.])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ts</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;y&quot;</span><span class="p">]</span>
+<span class="go">array([5., 6., 7., 8., 9.])</span>
 </pre></div>
 </div>
 <p>See Also: TimeSeries.from_dataframe</p>

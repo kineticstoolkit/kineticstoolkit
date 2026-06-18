@@ -381,4 +381,6 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 if __name__ == "__main__":
     import doctest
 
+    import kineticstoolkit as ktk  # noqa for doctest
+
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

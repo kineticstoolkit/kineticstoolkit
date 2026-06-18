@@ -330,3 +330,11 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
                     + f"\t{markers.data[key][i_frame, 2]:.5f}"
                 )
             fid.write("\n")
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

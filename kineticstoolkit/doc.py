@@ -97,3 +97,11 @@ def download(filename: str, **kwargs) -> str:
         open(path, "wb").write(file.content)
 
         return path
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -89,3 +89,11 @@ def deprecated(since: str, until: str, details: str):
 
 def __dir__():
     return []
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

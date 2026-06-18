@@ -2523,3 +2523,11 @@ class Player:
     def set_interconnections(self, value: dict[str, dict[str, Any]]) -> None:
         """Set interconnections value (deprecated)."""
         self.interconnections = value
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

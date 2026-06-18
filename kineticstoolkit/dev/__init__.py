@@ -21,7 +21,6 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import doctest
 import os
 import shutil
 import subprocess
@@ -131,19 +130,32 @@ def run_linter() -> None:  # pragma: no cover
 
 def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
-    print("Running doc tests...")
+    print("Running doc tests on modules...")
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder + "/kineticstoolkit")
+    processes = []
+
     for file in os.listdir():
-        if file.endswith(".py"):
-            try:
-                module = eval("kineticstoolkit." + file.split(".py")[0])
-                doctest.testmod(
-                    module, optionflags=doctest.NORMALIZE_WHITESPACE
+        if file.endswith(".py") and "timeseries" not in file:
+            processes.append(
+                subprocess.Popen(
+                    ["python", file],
+                    stdout=subprocess.PIPE,
+                    stderr=subprocess.PIPE,
+                    text=True,
                 )
-                print(f"Doctests passed in file {file}.")
-            except Exception:
-                print(f"Could not run the doctest in file {file}.")
+            )
+
+    for p in processes:
+        out, err = p.communicate()
+        filename: str = p.args[1]  # type: ignore
+        print(
+            f"Docstrings for {filename} "
+            + ("passed" if p.returncode == 0 else "FAILED")
+        )
+
+    os.chdir("dev")
+    subprocess.call(["python", "run_timeseries_doctest.py"])
     os.chdir(cwd)
 
 
@@ -166,12 +178,9 @@ def run_sphinx() -> None:  # pragma: no cover
 def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     run_style_formatter()
-    print("REMEMBER TO RUN DOC TESTS AGAIN")
-    # run_doc_tests()
+    run_doc_tests()
     run_linter()
     run_static_type_checker()
     run_unit_tests()
     run_extensions_tests()
     run_sphinx()
-    print("TEST TIMESERIES.UI_SYNC WITH TWO TIMESERIES.")
-    print("TEST TIMESERIES.UI_EDIT_EVENTS.")
