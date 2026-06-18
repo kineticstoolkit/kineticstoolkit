@@ -49,27 +49,33 @@ class MonitoredList(list):
         return super().__str__()
 
     def append(self, item):
+        """Overload list.append."""
         super().append(item)
         self._trigger_callback("append", self, item)
 
     def extend(self, other):
+        """Overload list.extend."""
         super().extend(other)
         self._trigger_callback("extend", self, other)
 
     def insert(self, index, item):
+        """Overload list.insert."""
         super().insert(index, item)
         self._trigger_callback("insert", self, index, item)
 
     def remove(self, item):
+        """Overload list.remove."""
         super().remove(item)
         self._trigger_callback("remove", self, item)
 
     def pop(self, index=-1):
+        """Overload list.pop."""
         item = super().pop(index)
         self._trigger_callback("pop", self, index)
         return item
 
     def clear(self):
+        """Overload list.clear."""
         super().clear()
         self._trigger_callback("clear", self)
 
@@ -108,20 +114,24 @@ class MonitoredDict(dict):
         self._trigger_callback("delitem", self, key)
 
     def update(self, *args, **kwargs):
+        """Overload dict.update."""
         super().update(*args, **kwargs)
         self._trigger_callback("update", self, args, kwargs)
 
     def pop(self, key, default=None):
+        """Overload dict.pop."""
         value = super().pop(key, default)
         self._trigger_callback("pop", self, key)
         return value
 
     def popitem(self):
+        """Overload dict.popitem."""
         item = super().popitem()
         self._trigger_callback("popitem", self)
         return item
 
     def clear(self):
+        """Overload dict.clear."""
         super().clear()
         self._trigger_callback("clear", self)
 
@@ -189,8 +199,7 @@ def dict_to_monitored_dict(value: dict, callback) -> MonitoredDict:
 
     """
     output = {}
-    for key in value:
-        contents = value[key]
+    for key, contents in value.items():
         if isinstance(contents, list):
             output[key] = list_to_monitored_list(contents, callback)
         elif isinstance(contents, dict):

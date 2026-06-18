@@ -40,12 +40,176 @@ if TYPE_CHECKING:
 
 WINDOW_PLACEMENT = {"top": 50, "right": 0}
 MAX_CURVES_TO_TRY_BEST_LEGEND_PLACEMENT = 20
+MAX_EVENTS_IN_UI_EDIT_EVENTS_LIST = 5
+
+
+def _ui_edit_events_check_params(name, data_keys, legend, max_lines):
+    try:
+        check_param("name", name, str)
+    except TypeError:
+        try:
+            check_param("name", name, list, contents_type=str)
+        except TypeError:
+            raise TypeError("name must be a string or a list of strings.")
+    try:
+        check_param("data_keys", data_keys, str)
+    except TypeError:
+        try:
+            check_param("data_keys", data_keys, list, contents_type=str)
+        except TypeError:
+            raise TypeError("data_keys must be a string or a list of strings.")
+    check_param("legend", legend, bool)
+    check_param("max_lines", max_lines, int)
+
+
+def _ui_edit_events_populate_choices(
+    ts: "TimeSeries", event_names: list[str]
+) -> tuple[dict[str, int], list[str]]:
+    """Populate the list of choices in the GUI."""
+    choices = [f"Add '{s}'" for s in event_names]
+
+    choice_index = {}
+    choice_index["add"] = len(choices)
+    if len(event_names) == 0:
+        choices.append("Add event")
+    else:
+        choices.append("Add event with another name")
+
+    if len(ts.events) > 0:
+        choice_index["remove"] = len(choices)
+        choices.append("Remove event")
+
+    if len(ts.events) > 0:
+        choice_index["remove_all"] = len(choices)
+        choices.append("Remove all events")
+
+        choice_index["move"] = len(choices)
+        choices.append("Move event")
+
+    choice_index["close"] = len(choices)
+    choices.append("Save and close")
+
+    choice_index["cancel"] = len(choices)
+    choices.append("Cancel")
+
+    return choice_index, choices
+
+
+def _ui_edit_events_add_event(ts: "TimeSeries", name: str) -> "TimeSeries":
+    """Interactively click on the figure and add an event in TimeSeries."""
+    message("Place the event on the figure.", **WINDOW_PLACEMENT)
+    this_time = plt.ginput(1)[0][0]
+    ts = ts.add_event(this_time, name)
+    message("")
+    return ts
+
+
+def _ui_edit_events_append_name(name, event_names: list[str]) -> list[str]:
+    """Append name to event_names."""
+    event_names = deepcopy(event_names)
+    event_names.append(
+        li.input_dialog("Please enter the event name:", **WINDOW_PLACEMENT)
+    )
+    # Add this event name to the list of recently added events
+    if len(event_names) > MAX_EVENTS_IN_UI_EDIT_EVENTS_LIST:
+        event_names = event_names[-MAX_EVENTS_IN_UI_EDIT_EVENTS_LIST:]
+
+    return event_names
+
+
+def _ui_edit_events_get_event_index(ts: "TimeSeries") -> int:
+    message("Select an event on the figure.", **WINDOW_PLACEMENT)
+    this_time = plt.ginput(1)[0][0]
+    event_times = np.array([event.time for event in ts.events])
+    message("")
+    return int(np.argmin(np.abs(event_times - this_time)))
+
+
+def _ui_edit_events_move_event(ts: "TimeSeries") -> "TimeSeries":
+    """Interactively move an event by clicking on the figure."""
+    ts = ts.copy()
+    event_index = _ui_edit_events_get_event_index(ts)
+    event_name = ts.events[event_index].name
+    try:
+        ts.events.pop(event_index)
+        ts = _ui_edit_events_add_event(ts, event_name)
+    except IndexError:
+        li.button_dialog(
+            "Could not move this event.",
+            choices=["OK"],
+            icon="error",
+            **WINDOW_PLACEMENT,
+        )
+    return ts
+
+
+def _ui_edit_events_remove_event(
+    ts: "TimeSeries", event_index
+) -> "TimeSeries":
+    """Remove event specified by event_index from TimeSeries."""
+    ts = ts.copy()
+    try:
+        ts.events.pop(event_index)
+    except IndexError:
+        li.button_dialog(
+            "No event was removed.",
+            choices=["OK"],
+            icon="error",
+            **WINDOW_PLACEMENT,
+        )
+    return ts
+
+
+def _ui_edit_events_remove_all_events(ts: "TimeSeries") -> "TimeSeries":
+    """Remove all events from TimeSeries after asking for confirmation."""
+    if (
+        li.button_dialog(
+            "Do you really want to remove all events from this TimeSeries?",
+            ["Yes, remove all events", "No"],
+            icon="alert",
+            **WINDOW_PLACEMENT,
+        )
+        == 0
+    ):
+        ts.events = []
+    return ts
+
+
+def _ui_edit_events_plot(
+    ts: "TimeSeries", data_keys: str | list[str], legend: bool, max_lines: int
+) -> None:
+    """Plot the TimeSeries."""
+    ts.plot(
+        data_keys,
+        legend=legend,
+        max_lines=max_lines,
+        _raise_on_no_data=True,
+    )
+
+
+def _ui_edit_events_refresh_plot(
+    ts: "TimeSeries", data_keys: str | list[str], legend: bool, max_lines: int
+) -> None:
+    """Refresh the TimeSeries plot and keep the same axes (zoom)."""
+    # Refresh
+    axes = plt.axis()
+    plt.cla()
+    _ui_edit_events_plot(ts, data_keys, legend, max_lines)
+    plt.axis(axes)
+
+
+def _ui_edit_events_close_fig(fig) -> None:
+    """Close figure before exiting."""
+    plt.close(fig)
+    isinteractive = plt.isinteractive()
+    if not isinteractive:
+        plt.ioff()
 
 
 def ui_edit_events(
     self,
-    name: str | list[str] = [],
-    data_keys: str | list[str] = [],
+    name: str | list[str] | None = None,
+    data_keys: str | list[str] | None = None,
     legend: bool = True,
     max_lines: int = 40,
 ) -> "TimeSeries":  # pragma: no cover
@@ -93,42 +257,17 @@ def ui_edit_events(
     """
     check_interactive_backend()
 
-    try:
-        check_param("name", name, str)
-    except TypeError:
-        try:
-            check_param("name", name, list, contents_type=str)
-        except TypeError:
-            raise TypeError("name must be a string or a list of strings.")
-    try:
-        check_param("data_keys", data_keys, str)
-    except TypeError:
-        try:
-            check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError:
-            raise TypeError("data_keys must be a string or a list of strings.")
-    check_param("legend", legend, bool)
-    check_param("max_lines", max_lines, int)
+    if name is None:
+        name = []
+    if data_keys is None:
+        data_keys = []
+
+    _ui_edit_events_check_params(name, data_keys, legend, max_lines)
     self._check_well_shaped()
     self._check_not_empty_time()
     self._check_not_empty_data()
 
-    def add_this_event(ts: "TimeSeries", name: str) -> "TimeSeries":
-        message("Place the event on the figure.", **WINDOW_PLACEMENT)
-        this_time = plt.ginput(1)[0][0]
-        ts = ts.add_event(this_time, name)
-        message("")
-        return ts
-
-    def get_event_index(ts: "TimeSeries") -> int:
-        message("Select an event on the figure.", **WINDOW_PLACEMENT)
-        this_time = plt.ginput(1)[0][0]
-        event_times = np.array([event.time for event in ts.events])
-        message("")
-        return int(np.argmin(np.abs(event_times - this_time)))
-
     # Set Matplotlib interactive mode
-    isinteractive = plt.isinteractive()
     plt.ion()
 
     ts = self.copy()
@@ -139,40 +278,12 @@ def ui_edit_events(
         event_names = deepcopy(name)
 
     fig = plt.figure()
-    ts.plot(
-        data_keys,
-        _raise_on_no_data=True,
-        legend=legend,
-        max_lines=max_lines,
-    )
+    _ui_edit_events_plot(ts, data_keys, legend, max_lines)
 
     while True:
-        # Populate the choices to the user
-        choices = [f"Add '{s}'" for s in event_names]
-
-        choice_index = {}
-        choice_index["add"] = len(choices)
-        if len(event_names) == 0:
-            choices.append("Add event")
-        else:
-            choices.append("Add event with another name")
-
-        if len(ts.events) > 0:
-            choice_index["remove"] = len(choices)
-            choices.append("Remove event")
-
-        if len(ts.events) > 0:
-            choice_index["remove_all"] = len(choices)
-            choices.append("Remove all events")
-
-            choice_index["move"] = len(choices)
-            choices.append("Move event")
-
-        choice_index["close"] = len(choices)
-        choices.append("Save and close")
-
-        choice_index["cancel"] = len(choices)
-        choices.append("Cancel")
+        choice_index, choices = _ui_edit_events_populate_choices(
+            ts, event_names
+        )
 
         # Show the button dialog
         choice = button_dialog(
@@ -183,87 +294,36 @@ def ui_edit_events(
 
         # Execute
         if choice < choice_index["add"]:
-            ts = add_this_event(ts, event_names[choice])
+            ts = _ui_edit_events_add_event(ts, event_names[choice])
 
         elif choice == choice_index["add"]:
-            event_names.append(
-                li.input_dialog(
-                    "Please enter the event name:", **WINDOW_PLACEMENT
-                )
-            )
-            # Add this event name to the list of recently added events
-            if len(event_names) > 5:
-                event_names = event_names[-5:]
-
-            # Add the event
-            ts = add_this_event(ts, event_names[-1])
+            event_names = _ui_edit_events_append_name(name, event_names)
+            ts = _ui_edit_events_add_event(ts, event_names[-1])
 
         elif ("remove" in choice_index) and (choice == choice_index["remove"]):
-            event_index = get_event_index(ts)
-            try:
-                ts.events.pop(event_index)
-            except IndexError:
-                li.button_dialog(
-                    "No event was removed.",
-                    choices=["OK"],
-                    icon="error",
-                    **WINDOW_PLACEMENT,
-                )
+            event_index = _ui_edit_events_get_event_index(ts)
+            ts = _ui_edit_events_remove_event(ts, event_index)
 
         elif ("remove_all" in choice_index) and (
             choice == choice_index["remove_all"]
         ):
-            if (
-                li.button_dialog(
-                    "Do you really want to remove all events from this "
-                    "TimeSeries?",
-                    ["Yes, remove all events", "No"],
-                    icon="alert",
-                    **WINDOW_PLACEMENT,
-                )
-                == 0
-            ):
-                ts.events = []
+            ts = _ui_edit_events_remove_all_events(ts)
 
         elif ("move" in choice_index) and (choice == choice_index["move"]):
-            event_index = get_event_index(ts)
-            event_name = ts.events[event_index].name
-            try:
-                ts.events.pop(event_index)
-                ts = add_this_event(ts, event_name)
-            except IndexError:
-                li.button_dialog(
-                    "Could not move this event.",
-                    choices=["OK"],
-                    icon="error",
-                    **WINDOW_PLACEMENT,
-                )
+            ts = _ui_edit_events_move_event(ts)
 
         elif ("close" in choice_index) and (choice == choice_index["close"]):
-            plt.close(fig)
-            if not isinteractive:
-                plt.ioff()
+            _ui_edit_events_close_fig(fig)
             return ts
 
         elif (choice == -1) or (
             ("cancel" in choice_index) and (choice == choice_index["cancel"])
         ):
-            plt.close(fig)
-            if not isinteractive:
-                plt.ioff()
+            _ui_edit_events_close_fig(fig)
             return self.copy()
 
-        # Refresh
         ts.remove_duplicate_events(in_place=True)
-        axes = plt.axis()
-        plt.cla()
-        ts.plot(
-            data_keys,
-            legend=legend,
-            max_lines=max_lines,
-            _raise_on_no_data=True,
-        )
-        plt.axis(axes)
+        _ui_edit_events_refresh_plot(ts, data_keys, legend, max_lines)
 
 
 def _ui_sync_one_timeseries(
@@ -472,19 +532,17 @@ def ui_sync(
     except TypeError:
         try:
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError as e:
-            raise TypeError(
-                "data_keys must be a string or a list of strings."
-            ) from e
+        except TypeError:
+            raise TypeError("data_keys must be a string or a list of strings.")
     try:
         check_param("data_keys2", data_keys2, str)
     except TypeError:
         try:
             check_param("data_keys2", data_keys2, list, contents_type=str)
-        except TypeError as e:
+        except TypeError:
             raise TypeError(
                 "data_keys2 must be a string or a list of strings."
-            ) from e
+            )
     check_param("legend", legend, bool)
     check_param("max_lines", max_lines, int)
 
@@ -669,10 +727,8 @@ def plot(
     except TypeError:
         try:
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError as e:
-            raise TypeError(
-                "data_keys must be a string or a list of strings."
-            ) from e
+        except TypeError:
+            raise TypeError("data_keys must be a string or a list of strings.")
     check_param("event_names", event_names, bool)
     check_param("legend", legend, bool)
     check_param("max_lines", max_lines, int)

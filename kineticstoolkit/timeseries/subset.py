@@ -79,10 +79,8 @@ def get_subset(self, data_keys: str | list[str]) -> "TimeSeries":
     except TypeError:
         try:
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError as e:
-            raise TypeError(
-                "data_keys must be a string or a list of strings."
-            ) from e
+        except TypeError:
+            raise TypeError("data_keys must be a string or a list of strings.")
     self._check_well_shaped()
 
     if isinstance(data_keys, str):
@@ -95,11 +93,11 @@ def get_subset(self, data_keys: str | list[str]) -> "TimeSeries":
     for key in data_keys:
         try:
             ts.data[key] = self.data[key].copy()
-        except KeyError as e:
+        except KeyError:
             raise KeyError(
                 f"The key '{key}' could not be found among the "
                 f"{len(self.data)} data entries of the TimeSeries"
-            ) from e
+            )
 
     return ts
 
@@ -323,10 +321,8 @@ def merge(
         try:
             data_keys = list(data_keys)
             check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError as e:
-            raise TypeError(
-                "data_keys must be a string or a list of strings."
-            ) from e
+        except TypeError:
+            raise TypeError("data_keys must be a string or a list of strings.")
     check_param("resample", resample, bool)
     check_param("overwrite", overwrite, bool)
     check_param("on_conflict", on_conflict, str)

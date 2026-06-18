@@ -23,6 +23,23 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+def _compare(var1, var2, atol, rtol):
+    if var1.size == 0 and var2.size == 0:
+        return np.equal(var1.shape, var2.shape)
+    elif var1.size == 0 and var2.size != 0:
+        return False
+    elif var1.size != 0 and var2.size == 0:
+        return False
+    else:
+        return np.allclose(var1, var2, atol=atol, rtol=rtol, equal_nan=True)
+
+
+def _debug_print(text: str, debug: bool):
+    """Print text if debug is True."""
+    if debug:
+        print(text)
+
+
 def _is_equivalent(
     self,
     ts,
@@ -59,61 +76,46 @@ def _is_equivalent(
         atol = 0
         rtol = 0
 
-    def compare(var1, var2, atol, rtol):
-        if var1.size == 0 and var2.size == 0:
-            return np.equal(var1.shape, var2.shape)
-        elif var1.size == 0 and var2.size != 0:
-            return False
-        elif var1.size != 0 and var2.size == 0:
-            return False
-        else:
-            return np.allclose(
-                var1, var2, atol=atol, rtol=rtol, equal_nan=True
-            )
-
     try:
         ts._check_valid_time()
     except AttributeError:
-        if debug:
-            print("The variable begin compared is not a TimeSeries.")
+        _debug_print("The variable begin compared is not a TimeSeries.", debug)
+        return False
 
-    if not compare(self.time, ts.time, atol=atol, rtol=rtol):
-        if debug:
-            print("Time is not equal")
+    if not _compare(self.time, ts.time, atol=atol, rtol=rtol):
+        _debug_print("Time is not equal", debug)
         return False
 
     for data in [self.data, ts.data]:
         for one_data in data:
             try:
-                if not compare(
+                if not _compare(
                     self.data[one_data],
                     ts.data[one_data],
                     atol=atol,
                     rtol=rtol,
                 ):
-                    if debug:
-                        print(f"{one_data} is not equal")
+                    _debug_print(f"{one_data} is not equal", debug)
                     return False
             except KeyError:
-                if debug:
-                    print(f"{one_data} is missing in one of the TimeSeries")
+                _debug_print(
+                    f"{one_data} is missing in one of the TimeSeries", debug
+                )
                 return False
             except ValueError:
-                if debug:
-                    print(
-                        f"{one_data} does not have the same size in both "
-                        "TimeSeries"
-                    )
+                _debug_print(
+                    f"{one_data} does not have the same size in both "
+                    "TimeSeries",
+                    debug,
+                )
                 return False
 
     if self.info != ts.info:
-        if debug:
-            print("info is not equal")
+        _debug_print("info is not equal", debug)
         return False
 
     if self.events != ts.events:
-        if debug:
-            print("events is not equal")
+        _debug_print("events is not equal", debug)
         return False
 
     return True

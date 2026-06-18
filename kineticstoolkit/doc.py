@@ -70,7 +70,7 @@ def download(filename: str, **kwargs) -> str:
         kwargs["force_download"] = False
 
     try:
-        import requests
+        import requests  # noqa: PLC0415 import-outside-toplevel
     except ModuleNotFoundError:
         raise ModuleNotFoundError(
             "The requests module is an optional dependency of Kinetics "

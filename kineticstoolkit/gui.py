@@ -60,7 +60,7 @@ def message(message: str = "", **kwargs) -> None:
 
 def button_dialog(
     message: str = "Please select an option.",
-    choices: list[str] = ["Cancel", "OK"],
+    choices: list[str] | None = None,
     **kwargs,
 ) -> int:
     """
@@ -71,7 +71,7 @@ def button_dialog(
     message
         Message that is presented to the user.
     choices
-        List of button text.
+        List of button text. Default is ["Cancel", "OK"].
 
     Returns
     -------
@@ -81,6 +81,8 @@ def button_dialog(
         returned.
 
     """
+    if choices is None:
+        choices = ["Cancel", "OK"]
     check_param("message", message, str)
     check_param("choices", choices, list, contents_type=str)
     return li.button_dialog(

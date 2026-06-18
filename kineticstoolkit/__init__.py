@@ -14,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Kinetics Toolkit
-================
+Kinetics Toolkit.
 
 To get started, please consult Kinetics Toolkit's
 [website](https://kineticstoolkit.uqam.ca)

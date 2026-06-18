@@ -41,7 +41,7 @@ def __dir__():
     ]
 
 
-def detect_cycles(
+def detect_cycles(  # noqa: PLR0915 too-many-statements
     ts: TimeSeries,
     data_key: str,
     *,
@@ -242,7 +242,7 @@ def detect_cycles(
     return tsout
 
 
-def time_normalize(
+def time_normalize(  # noqa: PLR0915, PLR0912 too-many-branches/statements
     ts: TimeSeries,
     event_name1: str,
     event_name2: str,
@@ -407,7 +407,7 @@ def time_normalize(
         start_end_events = []
         other_events = []
         for event in subts.events:
-            if event.name == event_name1 or event.name == event_name2:
+            if event.name in (event_name1, event_name2):
                 start_end_events.append(event)
             else:
                 other_events.append(event)
@@ -422,15 +422,11 @@ def time_normalize(
         )
 
         # Add the other events
-        def time_to_normalized_time(time):
-            """Resample the events times."""
-            return (time - extended_begin_time) / (
+        for _i_event, event in enumerate(other_events):
+            # Resample
+            new_time = (event.time - extended_begin_time) / (
                 extended_end_time - extended_begin_time
             ) * (span[1] - span[0]) + i_cycle * (span[1] - span[0])
-
-        for i_event, event in enumerate(other_events):
-            # Resample
-            new_time = time_to_normalized_time(event.time)
             dest_ts = dest_ts.add_event(new_time, event.name)
 
         # Add this cycle to dest_time and dest_data
@@ -526,8 +522,8 @@ def unstack(data: dict[str, np.ndarray], /) -> TimeSeries:
     check_param("data", data, dict, key_type=str, contents_type=np.ndarray)
 
     ts = TimeSeries()
-    for key in data.keys():
-        current_data = np.array(data[key])
+    for key, this_data in data.items():
+        current_data = np.array(this_data)
         current_shape = current_data.shape
         n_cycles = current_shape[0]
         n_points = current_shape[1]

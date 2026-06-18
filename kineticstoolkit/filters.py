@@ -53,9 +53,7 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
 
 
 def _validate_input(ts):
-    """Check that time is not null, that sample rate is constant, and that time
-    unit is s.
-    """
+    """Check that time != null, sample rate is constant, time unit is s."""
     if ts.time.shape[0] == 0:
         raise ValueError("There is no data to filter.")
     if np.isnan(ts.get_sample_rate()):
@@ -334,7 +332,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
 
     out_ts = ts.copy()
 
-    for i in range(n):
+    for _i in range(n):
         out_ts.time = (out_ts.time[1:] + out_ts.time[0:-1]) / 2
 
     for key in ts.data:

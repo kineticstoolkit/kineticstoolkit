@@ -102,13 +102,13 @@ def _get_event_index(self, name: str, occurrence: int = 0) -> int:
     # Get the event occurrence
     try:
         return self._get_event_indexes(name)[occurrence]
-    except IndexError:
+    except IndexError as e:
         raise TimeSeriesEventNotFoundError(
             f"The occurrence {occurrence} of event '{name}' could not "
             "be found in the TimeSeries. A total of "
             f"{len(self._get_event_indexes(name))} occurrence(s) of "
             "this event name were found."
-        )
+        ) from e
 
 
 def _get_duplicate_event_indexes(self) -> list[int]:
@@ -143,6 +143,7 @@ def _get_duplicate_event_indexes(self) -> list[int]:
     self._check_valid_time()
 
     # Sort all events in a dict with key being tuple(time, name)
+    # and the value being the list of indexes in which this event appears.
     sorted_events = {}  # type: dict[tuple[float, str], list[int]]
     for i_event, event in enumerate(self.events):
         tup_event = event._to_tuple()
@@ -150,9 +151,9 @@ def _get_duplicate_event_indexes(self) -> list[int]:
         # Check if this event already exist in the list.
         # If it does, add it to the list.
         found = False
-        for key in sorted_events:
+        for key, occurrence_list in sorted_events.items():
             if np.isclose(key[0], event.time) and (key[1] == event.name):
-                sorted_events[key].append(i_event)
+                occurrence_list.append(i_event)
                 found = True
                 break
         if not found:
@@ -161,9 +162,9 @@ def _get_duplicate_event_indexes(self) -> list[int]:
 
     # Convert this dict to the desired list of lists
     out = []
-    for key in sorted_events:
-        if len(sorted_events[key]) > 1:
-            out.extend(sorted_events[key][1:])
+    for _key, occurrence_list in sorted_events.items():
+        if len(occurrence_list) > 1:
+            out.extend(occurrence_list[1:])
 
     return sorted(out)
 

@@ -91,6 +91,10 @@ HELP_TEXT = """
     zoom                : right-drag or wheel
 """
 
+MOUSE_LEFT_BUTTON = 1
+MOUSE_MIDDLE_BUTTON = 2
+MOUSE_RIGHT_BUTTON = 3
+
 
 def _parse_color(
     value: str | tuple[float, float, float],
@@ -120,6 +124,25 @@ def _parse_color(
             "value must be between 0.0 and 1.0."
         )
     return value
+
+
+def _process_vectors_check_wildcards(spec: str, is_point: bool) -> bool:
+    """Warn and return False if more than one wildcard was found in spec."""
+    if spec.startswith("*") and spec.endswith("*"):
+        if is_point:
+            warnings.warn(
+                f"Point {spec} found in vectors. "
+                "Only one wildcard can be used, either as a "
+                "prefix or as a suffix."
+            )
+        else:  # vector
+            warnings.warn(
+                f"Vector {spec} found in vectors. "
+                "Only one wildcard can be used, either as a "
+                "prefix or as a suffix."
+            )
+        return False
+    return True
 
 
 class Player:
@@ -194,8 +217,8 @@ class Player:
             }
 
     vectors
-        Optional. A dictionary where each key is the name of a vector and each value
-        contains its origin, scale, and color. For example::
+        Optional. A dictionary where each key is the name of a vector and each
+        value contains its origin, scale, and color. For example::
 
             vectors = {
                 "WristForce": {
@@ -384,27 +407,11 @@ class Player:
     _background_color: tuple[float, float, float]
     _title_text: str
 
-    def __init__(
+    def __init__(  # noqa: PLR0915 too-many-statements
         self,
         *ts: TimeSeries,
-        interconnections: dict[str, dict[str, Any]] = {
-            "ForcePlatforms": {
-                "Links": [
-                    ["*_Corner1", "*_Corner2"],
-                    ["*_Corner2", "*_Corner3"],
-                    ["*_Corner3", "*_Corner4"],
-                    ["*_Corner1", "*_Corner4"],
-                ],
-                "Color": (0.5, 0.0, 1.0),
-            },
-        },
-        vectors: dict[str, dict[str, Any]] = {
-            "*Force": {
-                "Origin": "*COP",
-                "Scale": 0.001,
-                "Color": (1.0, 1.0, 0.0),
-            }
-        },
+        interconnections: dict[str, dict[str, Any]] | None = None,
+        vectors: dict[str, dict[str, Any]] | None = None,
         current_index: int = 0,
         current_time: float | None = None,
         playback_speed: float = 1.0,
@@ -453,6 +460,28 @@ class Player:
         ),
         **kwargs,  # Can be "inline_player=True", or older parameter names
     ):
+
+        if interconnections is None:
+            interconnections = {
+                "ForcePlatforms": {
+                    "Links": [
+                        ["*_Corner1", "*_Corner2"],
+                        ["*_Corner2", "*_Corner3"],
+                        ["*_Corner3", "*_Corner4"],
+                        ["*_Corner1", "*_Corner4"],
+                    ],
+                    "Color": (0.5, 0.0, 1.0),
+                },
+            }
+        if vectors is None:
+            vectors = {
+                "*Force": {
+                    "Origin": "*COP",
+                    "Scale": 0.001,
+                    "Color": (1.0, 1.0, 0.0),
+                }
+            }
+
         # Allow older parameter names
         if "segments" in kwargs and interconnections == {}:
             interconnections = kwargs["segments"]
@@ -1039,7 +1068,9 @@ class Player:
                 "target": self.target,
                 "track": self.track,
                 "default_point_color": self.default_point_color,
-                "default_interconnection_color": self.default_interconnection_color,
+                "default_interconnection_color": (
+                    self.default_interconnection_color
+                ),
                 "default_vector_color": self.default_vector_color,
                 "point_size": self.point_size,
                 "interconnection_width": self.interconnection_width,
@@ -1201,8 +1232,8 @@ class Player:
 
         for group in parsed_interconnections:
             links = parsed_interconnections[group]["Links"]
-            for i_link, link in enumerate(links):
-                for i_point, point in enumerate(link):
+            for _i_link, link in enumerate(links):
+                for _i_point, point in enumerate(link):
                     if point.startswith("*") and point.endswith("*"):
                         warnings.warn(
                             f"Point {point} found in interconnections. "
@@ -1240,7 +1271,7 @@ class Player:
                 ] = []
 
                 links = parsed_interconnections[group]["Links"]
-                for i_link, link in enumerate(links):
+                for _i_link, link in enumerate(links):
                     self._processed_interconnections[extended_group_key][
                         "Links"
                     ].append([s.replace("*", pattern) for s in link])
@@ -1320,19 +1351,9 @@ class Player:
             point = parsed_vectors[vector]["Origin"]
             if "*" not in vector and "*" not in point:
                 continue
-            if vector.startswith("*") and vector.endswith("*"):
-                warnings.warn(
-                    f"Vector {vector} found in vectors. "
-                    "Only one wildcard can be used, either as a "
-                    "prefix or as a suffix."
-                )
-                continue
-            if point.startswith("*") and point.endswith("*"):
-                warnings.warn(
-                    f"Point {point} found in vectors. "
-                    "Only one wildcard can be used, either as a "
-                    "prefix or as a suffix."
-                )
+            if _process_vectors_check_wildcards(
+                vector, False
+            ) or _process_vectors_check_wildcards(point, True):
                 continue
             if (
                 (vector.startswith("*") and not point.startswith("*"))
@@ -1590,11 +1611,17 @@ class Player:
         # Apply perspective.
         if self.perspective is True:
             # This uses an ugly magical constant but it works fine for now.
-            denom = rotated_points_3d[:, 2] / 10 + 5
+            PERSPECTIVE_SCALE = 10.0
+            PERSPECTIVE_OFFSET = 5.0
+            VERY_SMALL = 1e-12
+            denom = (
+                rotated_points_3d[:, 2] / PERSPECTIVE_SCALE
+                + PERSPECTIVE_OFFSET
+            )
             rotated_points_3d[:, 0] = rotated_points_3d[:, 0] / denom
             rotated_points_3d[:, 1] = rotated_points_3d[:, 1] / denom
             with np.errstate(invalid="ignore"):
-                to_remove = denom < 1e-12
+                to_remove = denom < VERY_SMALL
             rotated_points_3d[to_remove, 0] = np.nan
             rotated_points_3d[to_remove, 1] = np.nan
         else:
@@ -1680,8 +1707,8 @@ class Player:
         points = self._processed_points
         if points is None:
             return
-        else:
-            n_points = len(points.data)
+
+        n_points = len(points.data)
 
         points_data = dict()  # Used to draw the points with different colors
         interconnection_points = dict()  # Used to draw the interconnections
@@ -1837,7 +1864,7 @@ class Player:
         try:
             self._mpl_objects["Figure"].canvas.manager.set_window_title(
                 f"{self.current_index}/{len(self._contents.time)}: "
-                + "%2.2f s." % self._contents.time[self.current_index]
+                f"{self._contents.time[self.current_index]:2.2f} s."
             )
         except AttributeError:
             pass
@@ -2008,14 +2035,20 @@ class Player:
 
         initial_projected_points = self._project_to_camera(points)
         # Do not consider points that are not in the screen
-        initial_projected_points[initial_projected_points[:, 0] < -1.5] = (
-            np.nan
-        )
-        initial_projected_points[initial_projected_points[:, 0] > 1.5] = np.nan
-        initial_projected_points[initial_projected_points[:, 1] < -1.0] = (
-            np.nan
-        )
-        initial_projected_points[initial_projected_points[:, 1] > 1.0] = np.nan
+        X_SCREEN_LIMIT = 1.5
+        Y_SCREEN_LIMIT = 1.0
+        initial_projected_points[
+            initial_projected_points[:, 0] < -X_SCREEN_LIMIT
+        ] = np.nan
+        initial_projected_points[
+            initial_projected_points[:, 0] > X_SCREEN_LIMIT
+        ] = np.nan
+        initial_projected_points[
+            initial_projected_points[:, 1] < -Y_SCREEN_LIMIT
+        ] = np.nan
+        initial_projected_points[
+            initial_projected_points[:, 1] > Y_SCREEN_LIMIT
+        ] = np.nan
 
         def error_function(input):
             self._pan = input[0:2]
@@ -2090,7 +2123,7 @@ class Player:
 
             self._fast_refresh()
 
-    def _on_key(self, event):  # pragma: no cover
+    def _on_key(self, event):  # pragma: no cover  # noqa: PLR0912, PLR0915
         """Implement callback for keyboard key pressed."""
         if event.key == " ":
             if self._running is False:
@@ -2189,20 +2222,20 @@ class Player:
         self._state["ElevationOnMousePress"] = self.elevation
         self._state["ZoomOnMousePress"] = self.zoom
         self._state["MousePositionOnPress"] = (event.x, event.y)
-        if event.button == 1:
+        if event.button == MOUSE_LEFT_BUTTON:
             self._state["MouseLeftPressed"] = True
-        elif event.button == 2:
+        elif event.button == MOUSE_MIDDLE_BUTTON:
             self._state["MouseMiddlePressed"] = True
-        elif event.button == 3:
+        elif event.button == MOUSE_RIGHT_BUTTON:
             self._state["MouseRightPressed"] = True
         self._fast_refresh()
 
     def _on_mouse_release(self, event):  # pragma: no cover
-        if event.button == 1:
+        if event.button == MOUSE_LEFT_BUTTON:
             self._state["MouseLeftPressed"] = False
-        elif event.button == 2:
+        elif event.button == MOUSE_MIDDLE_BUTTON:
             self._state["MouseMiddlePressed"] = False
-        elif event.button == 3:
+        elif event.button == MOUSE_RIGHT_BUTTON:
             self._state["MouseRightPressed"] = False
 
     def _on_mouse_motion(self, event):  # pragma: no cover
@@ -2259,7 +2292,7 @@ class Player:
 
         """
         try:
-            from IPython.display import Video
+            from IPython.display import Video  # noqa
         except ModuleNotFoundError:
             raise RuntimeError(
                 "This function must be run in an IPython session."
@@ -2461,9 +2494,14 @@ class Player:
 
         if show_progress_bar:
             progress_bar = tqdm(n_samples - 1)
-            update_progress_bar = lambda i, n: progress_bar.update(1)
+
+            def update_progress_bar(i, n):
+                progress_bar.update(1)
+
         else:
-            update_progress_bar = lambda i, n: None
+
+            def update_progress_bar(i, n):
+                pass
 
         anim.save(
             filename, writer=writervideo, progress_callback=update_progress_bar

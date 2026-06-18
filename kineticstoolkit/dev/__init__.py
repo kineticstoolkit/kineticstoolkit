@@ -13,15 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Provide fonctions related to development, tests and release of Kinetics
-Toolkit.
-
-Note
-----
-This module is addressed to Kinetics Toolkit's developers only.
-
-"""
+"""Provide functions for Kinetics Toolkit development."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
@@ -38,7 +30,7 @@ import webbrowser
 import kineticstoolkit.config
 
 # Module(s) in development
-from kineticstoolkit.dev import kinetics
+from kineticstoolkit.dev import kinetics  # noqa: F401 unused-import
 
 
 def run_unit_tests() -> None:  # pragma: no cover
@@ -181,4 +173,5 @@ def run_tests() -> None:  # pragma: no cover
     run_unit_tests()
     run_extensions_tests()
     run_sphinx()
-    print("TEST TIMESERIES.UISYNC WITH TWO TIMESERIES.")
+    print("TEST TIMESERIES.UI_SYNC WITH TWO TIMESERIES.")
+    print("TEST TIMESERIES.UI_EDIT_EVENTS.")

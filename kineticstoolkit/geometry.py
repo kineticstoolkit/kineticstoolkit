@@ -807,6 +807,28 @@ def _single_input_to_point_vector_series(
     return output
 
 
+def _multiple_inputs_to_point_vector_series_math_dimension(
+    value: ArrayLike, name: str, output: np.ndarray
+) -> np.ndarray:
+    """Check that value has the correct size. Return matched values."""
+    value = np.array(value)
+    if len(value.shape) > 1:
+        raise ValueError(f"{name} should have only one dimension.")
+    try:
+        value, output = _match_size(value, output)
+    except ValueError:
+        raise ValueError("{name} has an incorrect length.")
+
+    if name == "x":
+        output[:, 0] = value
+    elif name == "y":
+        output[:, 1] = value
+    elif name == "z":
+        output[:, 2] = value
+
+    return output
+
+
 def _multiple_inputs_to_point_vector_series(
     x: ArrayLike | None,
     y: ArrayLike | None,
@@ -822,37 +844,19 @@ def _multiple_inputs_to_point_vector_series(
         temp = np.zeros((1, 4))
 
     if x is not None:
-        x = np.array(x)
-        if len(x.shape) > 1:
-            raise ValueError("x should have only one dimension.")
-        try:
-            x, temp = _match_size(x, temp)
-        except ValueError:
-            raise ValueError("x has an incorrect length.")
-        else:
-            temp[:, 0] = x
+        temp = _multiple_inputs_to_point_vector_series_math_dimension(
+            x, "x", temp
+        )
 
     if y is not None:
-        y = np.array(y)
-        if len(y.shape) > 1:
-            raise ValueError("y should have only one dimension.")
-        try:
-            y, temp = _match_size(y, temp)
-        except ValueError:
-            raise ValueError("y has an incorrect length.")
-        else:
-            temp[:, 1] = y
+        temp = _multiple_inputs_to_point_vector_series_math_dimension(
+            y, "y", temp
+        )
 
     if z is not None:
-        z = np.array(z)
-        if len(z.shape) > 1:
-            raise ValueError("z should have only one dimension.")
-        try:
-            z, temp = _match_size(z, temp)
-        except ValueError:
-            raise ValueError("z has an incorrect length.")
-        else:
-            temp[:, 2] = z
+        temp = _multiple_inputs_to_point_vector_series_math_dimension(
+            z, "z", temp
+        )
 
     if last_element == 1:
         temp[:, 3] = 1.0
@@ -941,24 +945,32 @@ def create_point_series(
     Single input form::
 
         # A series of 2 samples with x, y defined
-        >>> ktk.geometry.create_point_series([[1.0, 2.0], [4.0, 5.0]])
+        >>> p0 = [1.0, 2.0]  # (x, y) at time 0
+        >>> p1 = [4.0, 5.0]  # (x, y) at time 1
+        >>> ktk.geometry.create_point_series([p0, p1])
         array([[1., 2., 0., 1.],
                [4., 5., 0., 1.]])
 
         # A series of 2 samples with x, y, z defined
-        >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        >>> p0 = [1.0, 2.0, 3.0]  # (x, y, z) at time 0
+        >>> p1 = [4.0, 5.0, 6.0]  # (x, y, z) at time 1
+        >>> ktk.geometry.create_point_series([p0, p1])
         array([[1., 2., 3., 1.],
                [4., 5., 6., 1.]])
 
         # Samething
-        >>> ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
-        array([[1., 2., 3., 1.],
-               [4., 5., 6., 1.]])
+        >>> p0 = [1.0, 2.0, 3.0, 0.0]  # (x, y, z, 1.0) at time 0
+        >>> p1 = [4.0, 5.0, 6.0, 0.0]  # (x, y, z, 1.0) at time 1
+        >>> ktk.geometry.create_point_series([p0, p1])
+        array([[1., 2., 3., 0.],
+               [4., 5., 6., 0.]])
 
     Multiple inputs form::
 
-        # A series of 2 samples with x, z defined
-        >>> ktk.geometry.create_point_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
+        # A series of 3 samples with x, z defined
+        >>> x = [1.0, 2.0, 3.0]
+        >>> z = [4.0, 5.0, 6.0]
+        >>> ktk.geometry.create_point_series(x=x, z=z)
         array([[1., 0., 4., 1.],
                [2., 0., 5., 1.],
                [3., 0., 6., 1.]])
@@ -1062,24 +1074,32 @@ def create_vector_series(
     Single input form::
 
         # A series of 2 samples with x, y defined
-        >>> ktk.geometry.create_vector_series([[1.0, 2.0], [4.0, 5.0]])
+        >>> p0 = [1.0, 2.0]  # (x, y) at time 0
+        >>> p1 = [4.0, 5.0]  # (x, y) at time 1
+        >>> ktk.geometry.create_vector_series([p0, p1])
         array([[1., 2., 0., 0.],
                [4., 5., 0., 0.]])
 
         # A series of 2 samples with x, y, z defined
-        >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+        >>> p0 = [1.0, 2.0, 3.0]  # (x, y, z) at time 0
+        >>> p1 = [4.0, 5.0, 6.0]  # (x, y, z) at time 1
+        >>> ktk.geometry.create_vector_series([p0, p1])
         array([[1., 2., 3., 0.],
                [4., 5., 6., 0.]])
 
         # Samething
-        >>> ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])
+        >>> p0 = [1.0, 2.0, 3.0, 1.0]  # (x, y, z, 1.0) at time 0
+        >>> p1 = [4.0, 5.0, 6.0, 1.0]  # (x, y, z, 1.0) at time 1
+        >>> ktk.geometry.create_vector_series([p0, p1])
         array([[1., 2., 3., 0.],
                [4., 5., 6., 0.]])
 
     Multiple inputs form::
 
-        # A series of 2 samples with x, z defined
-        >>> ktk.geometry.create_vector_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])
+        # A series of 3 samples with x, z defined
+        >>> x = [1.0, 2.0, 3.0]
+        >>> z = [4.0, 5.0, 6.0]
+        >>> ktk.geometry.create_vector_series(x=x, z=z)
         array([[1., 0., 4., 0.],
                [2., 0., 5., 0.],
                [3., 0., 6., 0.]])
@@ -1795,7 +1815,8 @@ def create_transforms(
     # Create the rotation matrix
     rotation = transform.Rotation.from_euler(seq, angles_array, degrees)
     R = rotation.as_matrix()
-    if len(R.shape) == 2:  # Single rotation: add the Time dimension.
+    if len(R.shape) == 2:
+        # Single rotation: add the Time dimension.
         R = R[np.newaxis, ...]
 
     # Construct the final series of transforms (without scaling)

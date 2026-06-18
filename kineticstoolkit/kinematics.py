@@ -134,8 +134,8 @@ def extend_cluster(
     """
     check_param("markers", markers, TimeSeries)
     check_param("cluster", cluster, dict, key_type=str)
-    for key in cluster:
-        cluster[key] = np.array(cluster[key])
+    for key, points in cluster.items():
+        cluster[key] = np.array(points)
     check_param("name", name, str)
 
     frames = _track_cluster_frames(markers, cluster)
@@ -194,8 +194,8 @@ def track_cluster(
     """
     check_param("markers", markers, TimeSeries)
     check_param("cluster", cluster, dict, key_type=str)
-    for key in cluster:
-        cluster[key] = np.array(cluster[key])
+    for key, points in cluster.items():
+        cluster[key] = np.array(points)
     check_param("include_lcs", include_lcs, bool)
     check_param("lcs_name", lcs_name, str)
 
@@ -205,10 +205,8 @@ def track_cluster(
     # Track the cluster
     frames = _track_cluster_frames(markers, cluster)
 
-    for marker in cluster:
-        out.data[marker] = geometry.get_global_coordinates(
-            cluster[marker], frames
-        )
+    for marker, points in cluster.items():
+        out.data[marker] = geometry.get_global_coordinates(points, frames)
         if unit is not None:
             out.add_info(marker, "Unit", unit, overwrite=True, in_place=True)
 
@@ -318,7 +316,7 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
 
         # Write coordinate names
         fid.write("\t")
-        for i, key in enumerate(markers.data):
+        for i, _key in enumerate(markers.data):
             fid.write(f"\tX{i + 1}\tY{i + 1}\tZ{i + 1}")
         fid.write("\n\n")
 

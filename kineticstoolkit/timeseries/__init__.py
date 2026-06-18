@@ -30,26 +30,14 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import warnings
 from ast import literal_eval
 from copy import deepcopy
-from numbers import Real
-from typing import Any, cast
+from typing import Any
 
-import limitedinteraction as li
-import matplotlib as mpl
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import scipy as sp
 
 import kineticstoolkit._repr
-from kineticstoolkit.decorators import deprecated
-from kineticstoolkit.exceptions import (
-    TimeSeriesEventNotFoundError,
-    TimeSeriesMergeConflictError,
-    TimeSeriesRangeError,
-)
 from kineticstoolkit.typing_ import ArrayLike, check_param
 
 from .checks import (
@@ -189,8 +177,10 @@ class TimeSeries:
         events: []
           info: {'Time': {'Unit': 's'}}
 
-    >>> ts.data
-    {'x': array([0., 1., 2., 3., 4.]), 'y': array([5., 6., 7., 8., 9.]), 'z': array([0., 0., 0., 0., 0.])}
+    >>> ts.data["x"]
+    array([0., 1., 2., 3., 4.])
+    >>> ts.data["y"]
+    array([5., 6., 7., 8., 9.])
 
     See Also: TimeSeries.from_dataframe
 
@@ -292,12 +282,21 @@ class TimeSeries:
         self,
         src: None | TimeSeries | pd.DataFrame | ArrayLike = None,
         *,
-        time: ArrayLike = [],
-        data: dict[str, ArrayLike] = {},
-        events: list[TimeSeriesEvent] = [],
-        info: dict[str, Any] = {"Time": {"Unit": "s"}},
+        time: ArrayLike | None = None,
+        data: dict[str, ArrayLike] | None = None,
+        events: list[TimeSeriesEvent] | None = None,
+        info: dict[str, Any] | None = None,
         **kwargs,
     ):
+        if time is None:
+            time = []
+        if data is None:
+            data = {}
+        if events is None:
+            events = []
+        if info is None:
+            info = {"Time": {"Unit": "s"}}
+
         # Pre-0.17: time_info and data_info attributes
         if "time_info" in kwargs:
             info["Time"] = kwargs["time_info"].copy()
@@ -716,11 +715,12 @@ class TimeSeries:
 
                 df_data = pd.DataFrame(reshaped_data)
 
-                # Get the column names index from the shape of the original data
-                # The strategy here is to build matrices of indexes, that have
-                # the same shape as the original data, then reshape these matrices
-                # the same way we reshaped the original data. Then we know where
-                # the original indexes are in the new reshaped data.
+                # Get the column names index from the shape of the original
+                # data. The strategy here is to build matrices of indexes,
+                # that have the same shape as the original data, then reshape
+                # these matrices the same way we reshaped the original data.
+                # Then we know where the original indexes are in the new
+                # reshaped data.
                 original_indexes = np.indices(original_data_shape[1:])
                 reshaped_indexes = np.reshape(
                     original_indexes, (-1, reshaped_data_shape[1])
@@ -767,7 +767,7 @@ class TimeSeries:
             df_out = pd.concat([df_out, df_data], axis=1)
 
             # Add the info that correspond to this key
-            for i in df_data.columns:
+            for _i in df_data.columns:
                 try:
                     info = self.info[the_key]
                     info_out.append(deepcopy(info))

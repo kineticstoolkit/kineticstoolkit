@@ -25,8 +25,10 @@ from kineticstoolkit.typing_ import check_param
 class TimeSeriesEventList(list):
     """Event list that ensures every element is a TimeSeriesEvent."""
 
-    def __init__(self, source: list = []):
+    def __init__(self, source: list | None = None):
         """Initialize the class instance using a source list."""
+        if source is None:
+            source = []
         check_param("source", source, list)
         for element in source:
             self.append(element)
@@ -61,8 +63,10 @@ class TimeSeriesEventList(list):
 class TimeSeriesDataDict(dict):
     """Data dictionary that checks sizes and converts to NumPy arrays."""
 
-    def __init__(self, source: dict = {}):
+    def __init__(self, source: dict | None = None):
         """Initialize the class instance using a source dictionary."""
+        if source is None:
+            source = {}
         check_param("source", source, dict, key_type=str)
         for key in source:
             self[key] = source[key]
@@ -84,8 +88,10 @@ class TimeSeriesDataDict(dict):
 class TimeSeriesInfoDict(dict):
     """Info dictionary that ensures it is well formatted."""
 
-    def __init__(self, source: dict = {}):
+    def __init__(self, source: dict | None = None):
         """Initialize the class instance using a source dictionary."""
+        if source is None:
+            source = {}
         check_param("source", source, dict, key_type=str)
 
         for key in source:
@@ -102,11 +108,13 @@ class TimeSeriesInfoDict(dict):
 class TimeSeriesStringDict(dict):
     """Dictionary that ensures it only has string keys."""
 
-    def __init__(self, source: dict = {}):
+    def __init__(self, source: dict | None = None):
         """Initialize the class instance using a source dictionary."""
+        if source is None:
+            source = {}
         check_param("source", source, dict, key_type=str)
-        for key in source:
-            self[key] = source[key]
+        for key, value in source.items():
+            self[key] = value
 
     def __setitem__(self, key, value):
         """Ensure the kay is a string."""
