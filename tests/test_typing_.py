@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2024 Félix Chénier
 
@@ -21,10 +20,11 @@ __copyright__ = "Copyright (C) 2020-2024 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit.typing_ import check_param
-from kineticstoolkit import TimeSeries, TimeSeriesEvent
 import numpy as np
 import pandas as pd
+
+from kineticstoolkit import TimeSeries, TimeSeriesEvent
+from kineticstoolkit.typing_ import check_param
 
 TYPES = {
     bool: True,

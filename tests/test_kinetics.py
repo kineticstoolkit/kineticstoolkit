@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2025 Félix Chénier
 
@@ -21,8 +20,9 @@ __copyright__ = "Copyright (C) 2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import kineticstoolkit as ktk
 import numpy as np
+
+import kineticstoolkit as ktk
 
 
 def test_calculate_cop():
@@ -33,7 +33,6 @@ def test_calculate_cop():
         "c3d_test_suite/ezc3d/Label2.c3d",
         "c3d_test_suite/ezc3d/Qualisys.c3d",
     ):
-
         contents = ktk.read_c3d(
             ktk.doc.download(file),
             convert_point_unit=True,

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -22,12 +21,12 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import kineticstoolkit.geometry as geometry
-from kineticstoolkit import TimeSeries
-from kineticstoolkit.typing_ import check_param
+import warnings
 
 import numpy as np
-import warnings
+
+from kineticstoolkit import TimeSeries, geometry
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():
@@ -135,8 +134,8 @@ def extend_cluster(
     """
     check_param("markers", markers, TimeSeries)
     check_param("cluster", cluster, dict, key_type=str)
-    for key in cluster:
-        cluster[key] = np.array(cluster[key])
+    for key, points in cluster.items():
+        cluster[key] = np.array(points)
     check_param("name", name, str)
 
     frames = _track_cluster_frames(markers, cluster)
@@ -195,8 +194,8 @@ def track_cluster(
     """
     check_param("markers", markers, TimeSeries)
     check_param("cluster", cluster, dict, key_type=str)
-    for key in cluster:
-        cluster[key] = np.array(cluster[key])
+    for key, points in cluster.items():
+        cluster[key] = np.array(points)
     check_param("include_lcs", include_lcs, bool)
     check_param("lcs_name", lcs_name, str)
 
@@ -206,10 +205,8 @@ def track_cluster(
     # Track the cluster
     frames = _track_cluster_frames(markers, cluster)
 
-    for marker in cluster:
-        out.data[marker] = geometry.get_global_coordinates(
-            cluster[marker], frames
-        )
+    for marker, points in cluster.items():
+        out.data[marker] = geometry.get_global_coordinates(points, frames)
         if unit is not None:
             out.add_info(marker, "Unit", unit, overwrite=True, in_place=True)
 
@@ -260,12 +257,11 @@ def _get_marker_unit(markers: TimeSeries) -> None | str:
         if this_unit is not None:
             if unit is None:
                 unit = this_unit
-            else:
-                if unit != this_unit:
-                    raise ValueError(
-                        "All markers must have the same unit. However, this "
-                        f"TimeSeries has both {unit} and {this_unit}."
-                    )
+            elif unit != this_unit:
+                raise ValueError(
+                    "All markers must have the same unit. However, this "
+                    f"TimeSeries has both {unit} and {this_unit}."
+                )
     return unit
 
 
@@ -320,17 +316,25 @@ def write_trc_file(markers: TimeSeries, /, filename: str) -> None:
 
         # Write coordinate names
         fid.write("\t")
-        for i, key in enumerate(markers.data):
-            fid.write(f"\tX{i+1}\tY{i+1}\tZ{i+1}")
+        for i, _key in enumerate(markers.data):
+            fid.write(f"\tX{i + 1}\tY{i + 1}\tZ{i + 1}")
         fid.write("\n\n")
 
         # Write trajectories
         for i_frame in range(n_frames):
-            fid.write(f"{i_frame+1}\t" "{:.3f}".format(markers.time[i_frame]))
+            fid.write(f"{i_frame + 1}\t{{:.3f}}".format(markers.time[i_frame]))
             for key in markers.data:
                 fid.write(
-                    "\t{:.5f}".format(markers.data[key][i_frame, 0])
-                    + "\t{:.5f}".format(markers.data[key][i_frame, 1])
-                    + "\t{:.5f}".format(markers.data[key][i_frame, 2])
+                    f"\t{markers.data[key][i_frame, 0]:.5f}"
+                    + f"\t{markers.data[key][i_frame, 1]:.5f}"
+                    + f"\t{markers.data[key][i_frame, 2]:.5f}"
                 )
             fid.write("\n")
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

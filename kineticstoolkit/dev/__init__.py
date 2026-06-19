@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -14,15 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""
-Provide fonctions related to development, tests and release of Kinetics
-Toolkit.
-
-Note
-----
-This module is addressed to Kinetics Toolkit's developers only.
-
-"""
+"""Provide functions for Kinetics Toolkit development."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
@@ -30,17 +21,30 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+import doctest
+import os
+import pydoc
+import shutil
+import subprocess
+import webbrowser
+
 import kineticstoolkit.config
 
 # Module(s) in development
-import kineticstoolkit.dev.kinetics as kinetics
+from kineticstoolkit.dev import kinetics  # noqa: F401 unused-import
 
 
-import os
-import subprocess
-import shutil
-import webbrowser
-import doctest
+def __dir__():
+    return [
+        "run_unit_tests",
+        "run_extensions_tests",
+        "run_style_formatter",
+        "run_static_type_checker",
+        "run_linter",
+        "run_doc_tests",
+        "run_sphinx",
+        "run_tests",
+    ]
 
 
 def run_unit_tests() -> None:  # pragma: no cover
@@ -99,23 +103,9 @@ def run_extensions_tests() -> None:  # pragma: no cover
 
 
 def run_style_formatter() -> None:  # pragma: no cover
-    """Run style formatter (black)."""
-    print("Running black...")
+    """Run style formatter (ruff)."""
     subprocess.call(
-        ["black", kineticstoolkit.config.root_folder],
-        env=kineticstoolkit.config.env,
-    )
-    print("Running docformatter...")
-    subprocess.call(
-        [
-            "docformatter",
-            "--style=numpy",
-            "--in-place",
-            "--recursive",
-            "--pre-summary-newline",
-            "--blank",
-            kineticstoolkit.config.root_folder,
-        ],
+        ["ruff", "format", kineticstoolkit.config.root_folder],
         env=kineticstoolkit.config.env,
     )
 
@@ -140,21 +130,62 @@ def run_static_type_checker() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
+def run_linter() -> None:  # pragma: no cover
+    """Run linter (ruff)."""
+    subprocess.call(
+        [
+            "ruff",
+            "check",
+            "--fix",
+            kineticstoolkit.config.root_folder + "/kineticstoolkit",
+        ],
+        env=kineticstoolkit.config.env,
+    )
+
+
 def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
     print("Running doc tests...")
     cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder + "/kineticstoolkit")
-    for file in os.listdir():
-        if file.endswith(".py"):
-            try:
-                module = eval("kineticstoolkit." + file.split(".py")[0])
-                doctest.testmod(
-                    module, optionflags=doctest.NORMALIZE_WHITESPACE
-                )
-                print(f"Doctests passed in file {file}.")
-            except Exception:
-                print(f"Could not run the doctest in file {file}.")
+    os.chdir(kineticstoolkit.config.root_folder + "/kineticstoolkit/dev")
+
+    write_doc_depth = [0]
+
+    def write_doc(fid, instance_name):
+        write_doc_depth[0] += 1
+        fid.write(f"\n\n========\n{instance_name}\n========\n\n")
+
+        try:
+            ktk = __import__("kineticstoolkit")  # noqa: F841
+            instance = eval(instance_name)
+        except Exception as e:
+            print(e)
+            write_doc_depth[0] -= 1
+            return
+
+        fid.write(pydoc.getdoc(instance))
+
+        if write_doc_depth[0] < 4:
+            items = dir(instance)
+            for item_name in items:
+                if "__" not in item_name:
+                    write_doc(fid, f"{instance_name}.{item_name}")
+
+        write_doc_depth[0] -= 1
+
+    with open("alldoc.txt", "w") as fid:
+        fid.write(">>> import kineticstoolkit.lab as ktk\n")
+        fid.write(">>> import numpy as np\n")
+        fid.write(">>> import pandas as pd\n")
+        write_doc(fid, "ktk")
+
+    print(
+        doctest.testfile(
+            "alldoc.txt", optionflags=doctest.NORMALIZE_WHITESPACE, report=True
+        )
+    )
+
+    # os.remove("alldoc.txt")
     os.chdir(cwd)
 
 
@@ -178,6 +209,7 @@ def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     run_style_formatter()
     run_doc_tests()
+    run_linter()
     run_static_type_checker()
     run_unit_tests()
     run_extensions_tests()

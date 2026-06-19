@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2024-2025 Félix Chénier
 
@@ -30,8 +29,13 @@ __license__ = "Apache 2.0"
 
 
 import numpy as np
-from kineticstoolkit.typing_ import check_param, ArrayLike
-import kineticstoolkit.geometry as geometry
+
+from kineticstoolkit import geometry
+from kineticstoolkit.typing_ import ArrayLike, check_param
+
+
+def __dir__():
+    return ["create_forceplatform_lcs", "calculate_cop"]
 
 
 def create_forceplatform_lcs(
@@ -133,3 +137,11 @@ def calculate_cop(
     cop[:, 3] = 1.0
 
     return cop
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

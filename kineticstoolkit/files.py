@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -27,23 +26,24 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit.timeseries import TimeSeries
-import kineticstoolkit.dev.kinetics as kinetics
-import kineticstoolkit.config
-from kineticstoolkit.typing_ import check_param
-
+import getpass
+import json
 import os
+import shutil
+import time
+import warnings
+import zipfile
+from datetime import datetime
+from typing import Any
+
+import ezc3d
 import numpy as np
 import pandas as pd
-import ezc3d
-from typing import Any
-import warnings
-import shutil
-import json
-from datetime import datetime
-import time
-import getpass
-import zipfile
+
+import kineticstoolkit.config
+from kineticstoolkit.dev import kinetics
+from kineticstoolkit.timeseries import TimeSeries
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():  # pragma: no cover
@@ -78,8 +78,8 @@ def save(filename: str, variable: Any) -> None:
 
     - json
     - json.zip : save as json but zips the file to save space
-    - ktk.zip : a zipped folder containing two files: metadata.json, which includes save
-      date, user, etc., and data.json, which includes the data.
+    - ktk.zip : a zipped folder containing two files: metadata.json, which
+      includes save date, user, etc., and data.json, which includes the data.
 
     The following standard classes are supported:
 
@@ -201,7 +201,7 @@ def save(filename: str, variable: Any) -> None:
     )
     try:
         shutil.rmtree(temp_folder)
-    except:
+    except Exception:
         pass
     os.mkdir(temp_folder)
 
@@ -325,7 +325,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
     check_param("include_metadata", include_metadata, bool)
 
     if filename.lower().endswith(".json"):
-        with open(filename, "r") as fid:
+        with open(filename) as fid:
             return json.load(fid, object_hook=_load_object_hook)
 
     elif filename.lower().endswith(".json.zip"):
@@ -358,7 +358,7 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
         )
 
 
-def read_c3d(
+def read_c3d(  # noqa: PLR0915, PLR0912 too-many-statements too-many-branches
     filename: str,
     *,
     include_event_context: bool = False,
@@ -598,11 +598,11 @@ def read_c3d(
         elif point_unit in scales:
             warnings.warn(
                 "In the specified file, points are expressed in "
-                f"{point_unit}. They have been automatically converted to meters "
-                f"(scaled by {scales[point_unit]}). Please note that "
+                f"{point_unit}. They have been automatically converted to "
+                f"meters (scaled by {scales[point_unit]}). Please note that "
                 "if this file also contains calculated values such as "
-                "angles, powers, etc., they have been also (wrongly) scaled by "
-                f"{scales[point_unit]}. Consult "
+                "angles, powers, etc., they have been also (wrongly) scaled "
+                f"by {scales[point_unit]}. Consult "
                 "https://kineticstoolkit.uqam.ca/doc/api/ktk.read_c3d.html "
                 "for more information. You can mute this warning "
                 "by explicitely setting `convert_point_unit` to either True "
@@ -613,10 +613,10 @@ def read_c3d(
         else:
             warnings.warn(
                 "In the specified file, points are expressed in "
-                f"`{point_unit}`, which is not recognized by ktk.read_c3d. They "
-                "have been left as is, without attempting to convert to meters. "
-                "You can mute this warning by setting `convert_point_unit` to "
-                "False."
+                f"`{point_unit}`, which is not recognized by ktk.read_c3d. "
+                "They have been left as is, without attempting to convert to "
+                "meters. You can mute this warning by setting "
+                "`convert_point_unit` to False."
             )
             point_factor = 1.0
             # point_unit = Do not update
@@ -750,7 +750,9 @@ def read_c3d(
     if "ROTATION" in reader["parameters"]:
         rotations = TimeSeries()
 
-        # Get the marker label names and create a timeseries data entry for each
+        # Get the marker label names and create a timeseries data entry for
+        # each
+
         # Get the labels
         rotation_rate = reader["parameters"]["ROTATION"]["RATE"]["value"][0]
         rotation_start = reader["header"]["rotations"]["first_frame"]
@@ -803,12 +805,10 @@ def read_c3d(
     # Platforms
     # -----------------
     if (reader["data"]["platform"] != []) and ("Analogs" in output):
-
         platforms = TimeSeries(time=analogs.time)  # type: ignore
 
         n_platforms = len(reader["data"]["platform"])
         for i_platform in range(n_platforms):
-
             # Define unit conversion factors
             forceplate_position_unit = reader["data"]["platform"][i_platform][
                 "unit_position"
@@ -844,12 +844,13 @@ def read_c3d(
             else:
                 moment_factor = 1
                 warnings.warn(
-                    f"Moment unit is {forceplate_moment_unit} instead of Nm or Nmm."
+                    f"Moment unit is {forceplate_moment_unit} instead of "
+                    "Nm or Nmm."
                 )
 
             # Add corners
             for i_corner in range(4):
-                key = f"FP{i_platform}_Corner{i_corner+1}"
+                key = f"FP{i_platform}_Corner{i_corner + 1}"
                 platforms.data[key] = np.ones((len(platforms.time), 4))
                 platforms.data[key][:, 0:3] = (
                     forceplate_position_factor
@@ -941,7 +942,7 @@ def read_c3d(
     return output
 
 
-def write_c3d(
+def write_c3d(  # noqa PLR0915, PLR0912 too-many-statements too-many-branches
     filename: str,
     points: TimeSeries | None = None,
     analogs: TimeSeries | None = None,
@@ -1006,12 +1007,12 @@ def write_c3d(
         import numpy as np
 
         points = ktk.TimeSeries()
-        points.time = np.linspace(0, 10, 10*240, endpoint=False)
+        points.time = np.linspace(0, 10, 10 * 240, endpoint=False)
         points.data["Marker1"] = np.ones((2400, 4))
         points.data["Marker2"] = np.ones((2400, 4))
 
         analogs = ktk.TimeSeries()
-        analogs.time = np.linspace(0, 10, 10*2400, endpoint=False)
+        analogs.time = np.linspace(0, 10, 10 * 2400, endpoint=False)
         analogs.data["Signal1"] = np.sin(analogs.time)
         analogs.data["Signal2"] = np.cos(analogs.time)
 
@@ -1026,18 +1027,9 @@ def write_c3d(
     if not filename.endswith(".c3d"):
         raise ValueError("The file name must end with '.c3d'.")
 
-    try:
-        import ezc3d
-    except ModuleNotFoundError:
-        raise ModuleNotFoundError(
-            "The optional module ezc3d is not installed, but it is required "
-            "to use this function. Please install it using: "
-            "conda install -c conda-forge ezc3d"
-        )
-
     if points is None:
-        # Dummy point data must be created since analogs and rotations rate ratio
-        # are based on point rate.
+        # Dummy point data must be created since analogs and rotations rate
+        # ratio are based on point rate.
         points = TimeSeries()
         if rotations is not None:
             points = rotations.copy(copy_data=False, copy_info=False)
@@ -1168,13 +1160,17 @@ def write_c3d(
                 f"rotations.time[0] = {rotations.time[0]}."
             )
 
-        # Final data should be a 4x4xlen(rotations.data.keys())xlen(rotations.time)
+        # Final data should be a
+        # 4x4xlen(rotations.data.keys())xlen(rotations.time)
         # np.ndarray
         c3d_rotations = np.zeros(
             (4, 4, len(rotations.data.keys()), len(rotations.time))
         )
         for i_rot, key in enumerate(rotations.data):
-            # change from shape (len(rotations.time), 4, 4) to (4, 4, len(rotations.time))
+            # change from shape
+            # (len(rotations.time), 4, 4)
+            # to
+            # (4, 4, len(rotations.time))
             c3d_rotations[:, :, i_rot, :] = np.transpose(
                 rotations.data[key], (1, 2, 0)
             )
@@ -1213,5 +1209,7 @@ def write_c3d(
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

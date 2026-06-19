@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -27,9 +26,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-from functools import wraps
-import warnings
 import textwrap
+import warnings
+from functools import wraps
 
 
 def _inject_in_docstring(docstring, text) -> str:
@@ -90,3 +89,11 @@ def deprecated(since: str, until: str, details: str):
 
 def __dir__():
     return []
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

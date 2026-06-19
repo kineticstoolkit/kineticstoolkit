@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -21,11 +20,14 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import matplotlib as mpl
 import warnings
+
+import matplotlib as mpl
+import numpy as np
+
 import kineticstoolkit.config
-import kineticstoolkit._repr as _repr
 import kineticstoolkit.gui
+from kineticstoolkit import _repr
 from kineticstoolkit.typing_ import check_param
 
 
@@ -41,20 +43,22 @@ def check_interactive_backend() -> None:
     if kineticstoolkit.config.interactive_backend_warning is False:
         return
 
-    warn = lambda: warnings.warn(
-        "This function requires that Matplotlib uses an interactive "
-        "backend. Try typing `%matplotlib qt5` before running this "
-        "function."
-    )
+    def warn():
+        warnings.warn(
+            "This function requires that Matplotlib uses an interactive "
+            "backend. Try typing `%matplotlib qt5` before running this "
+            "function.",
+            stacklevel=2,
+        )
 
     try:
-        mpl.backends
+        mpl.backends  # noqa  See if it crashes
     except AttributeError:  # No backend has been initialized
         warn()
         return
 
     try:
-        mpl.backends.backend  # type: ignore
+        mpl.backends.backend  # type: ignore  # noqa  See if it crashes
     except AttributeError:  # No backend has been initialized
         warn()
         return
@@ -82,16 +86,8 @@ def change_defaults(
     Parameters
     ----------
     change_ipython_dict_repr
-        Optional. True to summarize default dictionary printouts in IPython. When
-        False, dictionary printouts look like::
-
-            {'data1': array([ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15, 16,
-                             17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29]),
-             'data2': array([  0,   1,   4,   9,  16,  25,  36,  49,  64,  81, 100, 121, 144,
-                             169, 196, 225, 256, 289, 324, 361, 400, 441, 484, 529, 576, 625,
-                              676, 729, 784, 841])}
-
-        When True, dictionary printouts look like::
+        Optional. True to summarize default dictionary printouts in IPython, so
+        that dictionary printouts look like::
 
             {
                 'data1': <array of shape (30,)>
@@ -112,8 +108,8 @@ def change_defaults(
         printouts.
 
     change_warnings_format
-        Optional. True to change the warnings module's default to a more extended
-        format with file and line number.
+        Optional. True to change the warnings module's default to a more
+        extended format with file and line number.
 
     Returns
     -------
@@ -135,30 +131,24 @@ def change_defaults(
     if change_ipython_dict_repr:
         # Modify the repr function for dicts in IPython
         try:
-            import IPython as _IPython
+            import IPython as _IPython  # noqa
 
             _ip = _IPython.get_ipython()
             formatter = _ip.display_formatter.formatters["text/plain"]
-            formatter.for_type(
-                dict, lambda n, p, cycle: _repr._ktk_format_dict(n, p, cycle)
-            )
+            formatter.for_type(dict, _repr._ktk_format_dict)
         except Exception:
             pass
 
     if change_matplotlib_defaults:
         # Set alternative defaults to matplotlib
-        import matplotlib as _mpl
-
-        _mpl.rcParams["figure.figsize"] = [10, 5]
-        _mpl.rcParams["figure.dpi"] = 75
-        _mpl.rcParams["lines.linewidth"] = 1
+        mpl.rcParams["figure.figsize"] = [10, 5]
+        mpl.rcParams["figure.dpi"] = 75
+        mpl.rcParams["lines.linewidth"] = 1
         kineticstoolkit.gui.set_color_order("xyz")
 
     if change_numpy_print_options:
-        import numpy as _np
-
         # Select default mode for numpy
-        _np.set_printoptions(suppress=True, legacy="1.25")
+        np.set_printoptions(suppress=True, legacy="1.25")
 
     if change_warnings_format:
         # Monkey-patch warning.formatwarning
@@ -166,3 +156,11 @@ def change_defaults(
             return f"{category.__name__} [{filename}:{lineno}] {message}\n"
 
         warnings.formatwarning = formatwarning
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -29,11 +28,13 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-import kineticstoolkit.config as config
-from kineticstoolkit.typing_ import check_param
+from typing import Any
+
 import limitedinteraction as li
 import matplotlib as mpl
-from typing import Any
+
+from kineticstoolkit import config
+from kineticstoolkit.typing_ import check_param
 
 
 def message(message: str = "", **kwargs) -> None:
@@ -59,7 +60,7 @@ def message(message: str = "", **kwargs) -> None:
 
 def button_dialog(
     message: str = "Please select an option.",
-    choices: list[str] = ["Cancel", "OK"],
+    choices: list[str] | None = None,
     **kwargs,
 ) -> int:
     """
@@ -70,7 +71,7 @@ def button_dialog(
     message
         Message that is presented to the user.
     choices
-        List of button text.
+        List of button text. Default is ["Cancel", "OK"].
 
     Returns
     -------
@@ -80,6 +81,8 @@ def button_dialog(
         returned.
 
     """
+    if choices is None:
+        choices = ["Cancel", "OK"]
     check_param("message", message, str)
     check_param("choices", choices, list, contents_type=str)
     return li.button_dialog(
@@ -211,3 +214,11 @@ def get_filename(initial_folder: str = ".") -> str:
             config.root_folder + "/kineticstoolkit/logo_hires.png",
         ],
     )
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

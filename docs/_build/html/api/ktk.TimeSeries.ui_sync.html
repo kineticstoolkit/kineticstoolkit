@@ -49,8 +49,8 @@
 <link rel="preload" as="script" href="../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/ktk.TimeSeries.ui_sync';</script>
     <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/api/ktk.TimeSeries.ui_sync.html" />
@@ -488,7 +488,7 @@
 <h1>ktk.TimeSeries.ui_sync<a class="headerlink" href="#ktk-timeseries-ui-sync" title="Link to this heading">#</a></h1>
 <dl class="py method">
 <dt class="sig sig-object py" id="ktk.TimeSeries.ui_sync">
-<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">ui_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_keys2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">[]</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/kineticstoolkit/timeseries.html#TimeSeries.ui_sync"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#ktk.TimeSeries.ui_sync" title="Link to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">TimeSeries.</span></span><span class="sig-name descname"><span class="pre">ui_sync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_keys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ts2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data_keys2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">legend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_lines</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">40</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ktk.TimeSeries.ui_sync" title="Link to this definition">#</a></dt>
 <dd><p>Synchronize one or two TimeSeries by shifting their time.</p>
 <p>If this method is called on only one TimeSeries, an interactive
 interface asks the user to click on the time to set to zero.</p>
@@ -497,10 +497,10 @@ synchronizing both TimeSeries together.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>data_keys</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>]</em>) – Optional. The data keys to plot. If empty, all data is plotted.</p></li>
-<li><p><strong>ts2</strong> (<a class="reference internal" href="ktk.TimeSeries.html#ktk.TimeSeries" title="kineticstoolkit.timeseries.TimeSeries"><em>TimeSeries</em></a><em> | </em><em>None</em>) – Optional. A second TimeSeries to be synced to the first one. This
+<li><p><strong>data_keys</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – Optional. The data keys to plot. If empty, all data is plotted.</p></li>
+<li><p><strong>ts2</strong> (<a class="reference internal" href="ktk.TimeSeries.html#ktk.TimeSeries" title="ktk.TimeSeries"><em>TimeSeries</em></a><em> | </em><em>None</em>) – Optional. A second TimeSeries to be synced to the first one. This
 TimeSeries is modified in place.</p></li>
-<li><p><strong>data_keys2</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>]</em>) – Optional. The data keys from the second TimeSeries to plot. If
+<li><p><strong>data_keys2</strong> (<em>str</em><em> | </em><em>list</em><em>[</em><em>str</em><em>] </em><em>| </em><em>None</em>) – Optional. The data keys from the second TimeSeries to plot. If
 empty, all data is plotted.</p></li>
 <li><p><strong>legend</strong> (<em>bool</em>) – Optional. True to plot a legend, False otherwise. Default is True.</p></li>
 <li><p><strong>max_lines</strong> (<em>int</em>) – Optional. The maximal number of lines to plot. Default is 40.

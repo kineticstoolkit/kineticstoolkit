@@ -1,9 +1,9 @@
 import setuptools
 
-with open("README.md", "r") as fh:
+with open("README.md") as fh:
     long_description = fh.read()
 
-with open("kineticstoolkit/VERSION", "r") as fh:
+with open("kineticstoolkit/VERSION") as fh:
     version = fh.read()
 
 

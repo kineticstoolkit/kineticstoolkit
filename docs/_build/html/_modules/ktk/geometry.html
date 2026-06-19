@@ -40,8 +40,8 @@
 <link rel="preload" as="script" href="../../_static/scripts/pydata-sphinx-theme.js?digest=8878045cc6db502f8baf" />
 
     <script src="../../_static/documentation_options.js?v=9eb32ce0"></script>
-    <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
-    <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/doctools.js?v=9a2dae69"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../../_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/ktk/geometry';</script>
     <link rel="canonical" href="https://kineticstoolkit.uqam.ca/doc/_modules/ktk/geometry.html" />
@@ -419,7 +419,6 @@
                   
   <h1>Source code for ktk.geometry</h1><div class="highlight"><pre>
 <span></span><span class="ch">#!/usr/bin/env python3</span>
-<span class="c1"># -*- coding: utf-8 -*-</span>
 <span class="c1">#</span>
 <span class="c1"># Copyright 2020-2025 Félix Chénier</span>
 
@@ -450,11 +449,10 @@
 <span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Apache 2.0&quot;</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">scipy.spatial.transform</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">transform</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit.external.icp</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">icp</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">check_param</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">scipy.spatial</span><span class="w"> </span><span class="kn">import</span> <span class="n">transform</span>
 
-<span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ktk</span>  <span class="c1"># For doctests</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.external</span><span class="w"> </span><span class="kn">import</span> <span class="n">icp</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">kineticstoolkit.typing_</span><span class="w"> </span><span class="kn">import</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">check_param</span>
 
 
 <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">():</span>
@@ -659,7 +657,9 @@
 <span class="sd">    around y, for theta in [0, 10, 20, 30, 40]:</span>
 
 <span class="sd">        &gt;&gt;&gt; import kineticstoolkit.lab as ktk</span>
-<span class="sd">        &gt;&gt;&gt; angles = np.array([[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]])</span>
+<span class="sd">        &gt;&gt;&gt; angles = np.array(</span>
+<span class="sd">        ...     [[0, 45], [10, 45], [20, 45], [30, 45], [40, 45]]</span>
+<span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; ktk.geometry.rotate([[1, 0, 0, 1]], &quot;zx&quot;, angles, degrees=True)</span>
 <span class="sd">        array([[1.        , 0.        , 0.        , 1.        ],</span>
 <span class="sd">               [0.98480775, 0.1227878 , 0.1227878 , 1.        ],</span>
@@ -701,7 +701,9 @@
 <span class="sd">    Translate the point (1, 0, 0) by (x, 1, 0), for x in [0, 1, 2, 3, 4]:</span>
 
 <span class="sd">        &gt;&gt;&gt; import kineticstoolkit.lab as ktk</span>
-<span class="sd">        &gt;&gt;&gt; t = np.array([[0, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [4, 1, 0]])</span>
+<span class="sd">        &gt;&gt;&gt; t = np.array(</span>
+<span class="sd">        ...     [[0, 1, 0], [1, 1, 0], [2, 1, 0], [3, 1, 0], [4, 1, 0]]</span>
+<span class="sd">        ... )</span>
 <span class="sd">        &gt;&gt;&gt; ktk.geometry.translate([[1, 0, 0, 1]], t)</span>
 <span class="sd">        array([[1., 1., 0., 1.],</span>
 <span class="sd">               [2., 1., 0., 1.],</span>
@@ -1270,6 +1272,28 @@
     <span class="k">return</span> <span class="n">output</span>
 
 
+<span class="k">def</span><span class="w"> </span><span class="nf">_multiple_inputs_to_point_vector_series_math_dimension</span><span class="p">(</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Check that value has the correct size. Return matched values.&quot;&quot;&quot;</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2"> should have only one dimension.&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">value</span><span class="p">,</span> <span class="n">output</span> <span class="o">=</span> <span class="n">_match_size</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">output</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{name}</span><span class="s2"> has an incorrect length.&quot;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span><span class="p">:</span>
+        <span class="n">output</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+        <span class="n">output</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+    <span class="k">elif</span> <span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span>
+        <span class="n">output</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+    <span class="k">return</span> <span class="n">output</span>
+
+
 <span class="k">def</span><span class="w"> </span><span class="nf">_multiple_inputs_to_point_vector_series</span><span class="p">(</span>
     <span class="n">x</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">y</span><span class="p">:</span> <span class="n">ArrayLike</span> <span class="o">|</span> <span class="kc">None</span><span class="p">,</span>
@@ -1285,37 +1309,19 @@
         <span class="n">temp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x should have only one dimension.&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">_match_size</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;x has an incorrect length.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">temp</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">_multiple_inputs_to_point_vector_series_math_dimension</span><span class="p">(</span>
+            <span class="n">x</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="n">temp</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">y</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y should have only one dimension.&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">y</span><span class="p">,</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">_match_size</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;y has an incorrect length.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">temp</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">y</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">_multiple_inputs_to_point_vector_series_math_dimension</span><span class="p">(</span>
+            <span class="n">y</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">temp</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">z</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">z</span><span class="p">)</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">z</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;z should have only one dimension.&quot;</span><span class="p">)</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">z</span><span class="p">,</span> <span class="n">temp</span> <span class="o">=</span> <span class="n">_match_size</span><span class="p">(</span><span class="n">z</span><span class="p">,</span> <span class="n">temp</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;z has an incorrect length.&quot;</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">temp</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">z</span>
+        <span class="n">temp</span> <span class="o">=</span> <span class="n">_multiple_inputs_to_point_vector_series_math_dimension</span><span class="p">(</span>
+            <span class="n">z</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="n">temp</span>
+        <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">last_element</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
         <span class="n">temp</span><span class="p">[:,</span> <span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
@@ -1406,24 +1412,32 @@
 <span class="sd">    Single input form::</span>
 
 <span class="sd">        # A series of 2 samples with x, y defined</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series([[1.0, 2.0], [4.0, 5.0]])</span>
+<span class="sd">        &gt;&gt;&gt; p0 = [1.0, 2.0]  # (x, y) at time 0</span>
+<span class="sd">        &gt;&gt;&gt; p1 = [4.0, 5.0]  # (x, y) at time 1</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series([p0, p1])</span>
 <span class="sd">        array([[1., 2., 0., 1.],</span>
 <span class="sd">               [4., 5., 0., 1.]])</span>
 
 <span class="sd">        # A series of 2 samples with x, y, z defined</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])</span>
+<span class="sd">        &gt;&gt;&gt; p0 = [1.0, 2.0, 3.0]  # (x, y, z) at time 0</span>
+<span class="sd">        &gt;&gt;&gt; p1 = [4.0, 5.0, 6.0]  # (x, y, z) at time 1</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series([p0, p1])</span>
 <span class="sd">        array([[1., 2., 3., 1.],</span>
 <span class="sd">               [4., 5., 6., 1.]])</span>
 
 <span class="sd">        # Samething</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])</span>
+<span class="sd">        &gt;&gt;&gt; p0 = [1.0, 2.0, 3.0, 0.0]  # (x, y, z, 1.0) at time 0</span>
+<span class="sd">        &gt;&gt;&gt; p1 = [4.0, 5.0, 6.0, 0.0]  # (x, y, z, 1.0) at time 1</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series([p0, p1])</span>
 <span class="sd">        array([[1., 2., 3., 1.],</span>
 <span class="sd">               [4., 5., 6., 1.]])</span>
 
 <span class="sd">    Multiple inputs form::</span>
 
-<span class="sd">        # A series of 2 samples with x, z defined</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])</span>
+<span class="sd">        # A series of 3 samples with x, z defined</span>
+<span class="sd">        &gt;&gt;&gt; x = [1.0, 2.0, 3.0]</span>
+<span class="sd">        &gt;&gt;&gt; z = [4.0, 5.0, 6.0]</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_point_series(x=x, z=z)</span>
 <span class="sd">        array([[1., 0., 4., 1.],</span>
 <span class="sd">               [2., 0., 5., 1.],</span>
 <span class="sd">               [3., 0., 6., 1.]])</span>
@@ -1530,24 +1544,32 @@
 <span class="sd">    Single input form::</span>
 
 <span class="sd">        # A series of 2 samples with x, y defined</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series([[1.0, 2.0], [4.0, 5.0]])</span>
+<span class="sd">        &gt;&gt;&gt; p0 = [1.0, 2.0]  # (x, y) at time 0</span>
+<span class="sd">        &gt;&gt;&gt; p1 = [4.0, 5.0]  # (x, y) at time 1</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series([p0, p1])</span>
 <span class="sd">        array([[1., 2., 0., 0.],</span>
 <span class="sd">               [4., 5., 0., 0.]])</span>
 
 <span class="sd">        # A series of 2 samples with x, y, z defined</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])</span>
+<span class="sd">        &gt;&gt;&gt; p0 = [1.0, 2.0, 3.0]  # (x, y, z) at time 0</span>
+<span class="sd">        &gt;&gt;&gt; p1 = [4.0, 5.0, 6.0]  # (x, y, z) at time 1</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series([p0, p1])</span>
 <span class="sd">        array([[1., 2., 3., 0.],</span>
 <span class="sd">               [4., 5., 6., 0.]])</span>
 
 <span class="sd">        # Samething</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series([[1.0, 2.0, 3.0, 1.0], [4.0, 5.0, 6.0, 1.0]])</span>
+<span class="sd">        &gt;&gt;&gt; p0 = [1.0, 2.0, 3.0, 1.0]  # (x, y, z, 1.0) at time 0</span>
+<span class="sd">        &gt;&gt;&gt; p1 = [4.0, 5.0, 6.0, 1.0]  # (x, y, z, 1.0) at time 1</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series([p0, p1])</span>
 <span class="sd">        array([[1., 2., 3., 0.],</span>
 <span class="sd">               [4., 5., 6., 0.]])</span>
 
 <span class="sd">    Multiple inputs form::</span>
 
-<span class="sd">        # A series of 2 samples with x, z defined</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series(x=[1.0, 2.0, 3.0], z=[4.0, 5.0, 6.0])</span>
+<span class="sd">        # A series of 3 samples with x, z defined</span>
+<span class="sd">        &gt;&gt;&gt; x = [1.0, 2.0, 3.0]</span>
+<span class="sd">        &gt;&gt;&gt; z = [4.0, 5.0, 6.0]</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_vector_series(x=x, z=z)</span>
 <span class="sd">        array([[1., 0., 4., 0.],</span>
 <span class="sd">               [2., 0., 5., 0.],</span>
 <span class="sd">               [3., 0., 6., 0.]])</span>
@@ -1892,12 +1914,10 @@
 <span class="sd">    an 2x4x4 homogeneous transform series:</span>
 
 <span class="sd">    &gt;&gt;&gt; positions = [[0.5, 0.6, 0.7]]</span>
-<span class="sd">    &gt;&gt;&gt; rotations = [[[ 1.,  0.,  0.],</span>
-<span class="sd">    ...              [ 0.,  1.,  0.],</span>
-<span class="sd">    ...              [ 0.,  0.,  1.]],</span>
-<span class="sd">    ...             [[ 1.,  0.,  0.],</span>
-<span class="sd">    ...              [ 0.,  0., -1.],</span>
-<span class="sd">    ...              [ 0.,  1.,  0.]]]</span>
+<span class="sd">    &gt;&gt;&gt; rotations = [</span>
+<span class="sd">    ...     [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],</span>
+<span class="sd">    ...     [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]],</span>
+<span class="sd">    ... ]</span>
 <span class="sd">    &gt;&gt;&gt; ktk.geometry.create_transform_series(rotations, positions=positions)</span>
 <span class="sd">    array([[[ 1. ,  0. ,  0. ,  0.5],</span>
 <span class="sd">            [ 0. ,  1. ,  0. ,  0.6],</span>
@@ -1914,7 +1934,9 @@
 <span class="sd">    Create a series of two homogeneous transforms that rotates 0, then 90</span>
 <span class="sd">    degrees around x:</span>
 
-<span class="sd">    &gt;&gt;&gt; ktk.geometry.create_transform_series(angles=[0, 90], seq=&quot;x&quot;, degrees=True)</span>
+<span class="sd">    &gt;&gt;&gt; ktk.geometry.create_transform_series(</span>
+<span class="sd">    ...     angles=[0, 90], seq=&quot;x&quot;, degrees=True</span>
+<span class="sd">    ... )</span>
 <span class="sd">    array([[[ 1.,  0.,  0.,  0.],</span>
 <span class="sd">            [ 0.,  1.,  0.,  0.],</span>
 <span class="sd">            [ 0.,  0.,  1.,  0.],</span>
@@ -2199,7 +2221,9 @@
 <span class="sd">    degrees around x:</span>
 
 <span class="sd">        &gt;&gt;&gt; import kineticstoolkit.lab as ktk</span>
-<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_transforms(seq=&quot;x&quot;, angles=[0, 90], degrees=True)</span>
+<span class="sd">        &gt;&gt;&gt; ktk.geometry.create_transforms(</span>
+<span class="sd">        ...     seq=&quot;x&quot;, angles=[0, 90], degrees=True</span>
+<span class="sd">        ... )</span>
 <span class="sd">        array([[[ 1.,  0.,  0.,  0.],</span>
 <span class="sd">                [ 0.,  1.,  0.,  0.],</span>
 <span class="sd">                [ 0.,  0.,  1.,  0.],</span>
@@ -2268,7 +2292,8 @@
     <span class="c1"># Create the rotation matrix</span>
     <span class="n">rotation</span> <span class="o">=</span> <span class="n">transform</span><span class="o">.</span><span class="n">Rotation</span><span class="o">.</span><span class="n">from_euler</span><span class="p">(</span><span class="n">seq</span><span class="p">,</span> <span class="n">angles_array</span><span class="p">,</span> <span class="n">degrees</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">rotation</span><span class="o">.</span><span class="n">as_matrix</span><span class="p">()</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># Single rotation: add the Time dimension.</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="c1"># Single rotation: add the Time dimension.</span>
         <span class="n">R</span> <span class="o">=</span> <span class="n">R</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">newaxis</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
 
     <span class="c1"># Construct the final series of transforms (without scaling)</span>
@@ -2389,6 +2414,8 @@
 
 <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">doctest</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">kineticstoolkit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ktk</span>  <span class="c1"># noqa for doctest</span>
 
     <span class="n">doctest</span><span class="o">.</span><span class="n">testmod</span><span class="p">(</span><span class="n">optionflags</span><span class="o">=</span><span class="n">doctest</span><span class="o">.</span><span class="n">NORMALIZE_WHITESPACE</span><span class="p">)</span>
 </pre></div>

@@ -21,11 +21,13 @@ __license__ = "Apache 2.0"
 """Unit tests for load and save functions."""
 
 
-import kineticstoolkit as ktk
-import numpy as np
-import pandas as pd
 import os
 import warnings
+
+import numpy as np
+import pandas as pd
+
+import kineticstoolkit as ktk
 
 
 def test_load_pre017():
@@ -93,7 +95,6 @@ def test_save_load():
 
     # test all three save formats
     for filename in ["test.json", "test.json.zip", "test.ktk.zip"]:
-
         ktk.save(filename, a)
         b = ktk.load(filename)
 

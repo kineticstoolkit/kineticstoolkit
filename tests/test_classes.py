@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2024 Félix Chénier
 
@@ -23,8 +22,6 @@ __license__ = "Apache 2.0"
 
 from kineticstoolkit.classes import (
     list_to_monitored_list,
-    MonitoredList,
-    MonitoredDict,
 )
 
 

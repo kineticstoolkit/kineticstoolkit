@@ -1,10 +1,6 @@
-# -*- coding: utf-8 -*-
 """Configuration file for Kinetics Toolkit API."""
 
-import os
-import sys
 from datetime import datetime
-from pathlib import Path
 
 # -- General setup --------------------------------------------------------------
 project = "Kinetics Toolkit"
@@ -50,6 +46,7 @@ html_baseurl = "https://kineticstoolkit.uqam.ca/doc/"
 html_favicon = "_static/favicon.ico"
 html_static_path = ["_static"]
 html_css_files = ["custom.css"]
+html_static_version = None  # To avoid putting ?v=... everywhere
 
 # Theme options for sphinx-book-theme (maps from jupyter-book config)
 html_theme_options = {

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -29,15 +28,17 @@ This test file will be deleted two years after Kinetics Toolkit 1.0 is
 out.
 
 """
-import kineticstoolkit as ktk
-import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
 import warnings
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+
+import kineticstoolkit as ktk
 from kineticstoolkit.exceptions import (
-    TimeSeriesRangeError,
     TimeSeriesEventNotFoundError,
     TimeSeriesMergeConflictError,
+    TimeSeriesRangeError,
 )
 
 # %% TimeSeriesEvent
@@ -45,7 +46,6 @@ from kineticstoolkit.exceptions import (
 
 def test_TimeSeriesEvent():
     """Test TimeSeriesEvent."""
-
     # Test basic getters and setters
     event = ktk.TimeSeriesEvent()
     event.time = 1
@@ -79,7 +79,7 @@ def test_TimeSeriesEvent():
     assert the_dict["Name"] == "event_name"
 
     # Test append with a compatible class
-    class O(object):
+    class O:
         pass
 
     o = O()

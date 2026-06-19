@@ -38,3 +38,4 @@ kineticstoolkit.egg-info
 .jupyter
 docs/api
 .buildinfo
+environment.pickle

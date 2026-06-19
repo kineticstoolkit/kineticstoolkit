@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -15,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Kinetics Toolkit - Lab mode
-===========================
+Provide lab mode for Kinetics Toolkit.
 
 This module loads Kinetics Toolkit in lab mode. The standard way to use this
 module is:
@@ -33,10 +31,9 @@ __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
-from kineticstoolkit import *
+
+from kineticstoolkit import *  # noqa F403 undefined-local-with-import-star
 
 # Import also some hidden functions
-from kineticstoolkit import __dir__
-import warnings
 
-change_defaults()
+change_defaults()  # noqa: F405 undefined-local-with-import-star-usage

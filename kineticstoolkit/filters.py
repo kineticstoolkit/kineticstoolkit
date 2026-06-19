@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -22,15 +21,15 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import numpy as np
-import scipy.signal as sgl
-import scipy.ndimage as ndi
 import warnings
-from kineticstoolkit import TimeSeries
-from kineticstoolkit.typing_ import check_param
 from typing import cast
 
-import kineticstoolkit as ktk  # For doctests
+import numpy as np
+import scipy.ndimage as ndi
+import scipy.signal as sgl
+
+from kineticstoolkit import TimeSeries
+from kineticstoolkit.typing_ import check_param
 
 
 def __dir__():
@@ -54,8 +53,7 @@ def _interpolate(ts: TimeSeries, key: str) -> tuple[TimeSeries, np.ndarray]:
 
 
 def _validate_input(ts):
-    """Check that time is not null, that sample rate is constant, and that time
-    unit is s."""
+    """Check that time != null, sample rate is constant, time unit is s."""
     if ts.time.shape[0] == 0:
         raise ValueError("There is no data to filter.")
     if np.isnan(ts.get_sample_rate()):
@@ -334,7 +332,7 @@ def deriv(ts: TimeSeries, /, n: int = 1) -> TimeSeries:
 
     out_ts = ts.copy()
 
-    for i in range(n):
+    for _i in range(n):
         out_ts.time = (out_ts.time[1:] + out_ts.time[0:-1]) / 2
 
     for key in ts.data:
@@ -362,7 +360,7 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
     Example
     -------
     >>> ts = ktk.TimeSeries(time=np.arange(0, 6))
-    >>> ts = ts.add_data("test", [10., 11., 11., 20., 14., 15.])
+    >>> ts = ts.add_data("test", [10.0, 11.0, 11.0, 20.0, 14.0, 15.0])
     >>> ts2 = ktk.filters.median(ts)
     >>> ts2.data["test"]
     array([10., 11., 11., 14., 15., 15.])
@@ -382,5 +380,7 @@ def median(ts: TimeSeries, /, window_length: int = 3) -> TimeSeries:
 
 if __name__ == "__main__":
     import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

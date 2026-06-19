@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2022-2025 Félix Chénier
 
@@ -79,5 +78,7 @@ def warn_once(message: str, category=UserWarning, stacklevel: int = 1) -> None:
 
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

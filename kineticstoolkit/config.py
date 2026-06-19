@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -23,8 +22,8 @@ __license__ = "Apache 2.0"
 
 
 import os
-import warnings
 import platform
+import warnings
 
 
 def __dir__() -> list[str]:
@@ -36,7 +35,6 @@ def __dir__() -> list[str]:
         "is_linux",
         "temp_folder",
         "version",
-        "pythonpath",
         "interactive_backend_warning",
     ]
 
@@ -48,7 +46,7 @@ root_folder = os.path.dirname(os.path.dirname(__file__))
 home_folder = os.path.expanduser("~")
 
 # Kinetics Toolkit version.
-with open(root_folder + "/kineticstoolkit/VERSION", "r") as fid:
+with open(root_folder + "/kineticstoolkit/VERSION") as fid:
     version = fid.read()
 
 # Operating system
@@ -97,3 +95,11 @@ if "SPY_PYTHONPATH" in env and "PYTHONPATH" not in env:
 
 # Others
 interactive_backend_warning = True
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -35,12 +34,16 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
-import numpy as np
 from typing import Any
+
+import numpy as np
 
 
 def _format_dict_entries(
-    the_dict: Any, quotes: bool = True, overrides={}, hide_private=False
+    the_dict: Any,
+    quotes: bool = True,
+    overrides: dict | None = None,
+    hide_private=False,
 ) -> str:
     """
     Format a dict nicely on screen.
@@ -73,6 +76,9 @@ def _format_dict_entries(
     A string that should be shown by the __repr__ method.
 
     """
+    if overrides is None:
+        overrides = {}
+
     max_width = 79  # How many characters should we print
     out = ""
 
@@ -98,15 +104,14 @@ def _format_dict_entries(
         # Print the value
         if widest + len(repr(value)) <= max_width:
             value_label = repr(value)
+        elif isinstance(value, dict):
+            value_label = "<dict with " + str(len(value)) + " entries>"
+        elif isinstance(value, list):
+            value_label = "<list of " + str(len(value)) + " items>"
+        elif isinstance(value, np.ndarray):
+            value_label = "<array of shape " + str(np.shape(value)) + ">"
         else:
-            if isinstance(value, dict):
-                value_label = "<dict with " + str(len(value)) + " entries>"
-            elif isinstance(value, list):
-                value_label = "<list of " + str(len(value)) + " items>"
-            elif isinstance(value, np.ndarray):
-                value_label = "<array of shape " + str(np.shape(value)) + ">"
-            else:
-                value_label = repr(value)
+            value_label = repr(value)
 
         # Remove line breaks and multiple-spaces
         value_label = " ".join(value_label.split())
@@ -127,8 +132,8 @@ def _format_class_attributes(obj, overrides, hide_private=False) -> str:
     """
     Format a class that has attributes nicely on screen.
 
-    This function lists every attribute of a class on a separate line, using the
-    _format_dict_entries function:
+    This function lists every attribute of a class on a separate line, using
+    the _format_dict_entries function:
 
         ClassName with attributes:
            'attribute1': value1
@@ -166,7 +171,7 @@ def _format_class_attributes(obj, overrides, hide_private=False) -> str:
 def _ktk_format_dict(value, p, cycle):
     """Format a dict nicely on screen in IPython."""
     try:
-        get_ipython()
+        get_ipython()  # noqa: F821 undefined-name
 
         if cycle:
             p.pretty("...")
@@ -175,5 +180,13 @@ def _ktk_format_dict(value, p, cycle):
             p.text(_format_dict_entries(value))
             p.text("}")
 
-    except:
+    except Exception:
         p.text(repr(value))
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
+
+    doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)

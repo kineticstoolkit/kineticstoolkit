@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 #
 # Copyright 2020-2025 Félix Chénier
 
@@ -15,8 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 """
-Kinetics Toolkit
-================
+Kinetics Toolkit.
 
 To get started, please consult Kinetics Toolkit's
 [website](https://kineticstoolkit.uqam.ca)
@@ -50,26 +48,6 @@ from kineticstoolkit import dev  # noqa
 from kineticstoolkit import config  # noqa
 
 
-def __dir__():
-    return [
-        "TimeSeries",
-        "TimeSeriesEvent",
-        "Player",
-        "load",
-        "save",
-        "read_c3d",
-        "write_c3d",
-        "import_extensions",
-        "filters",
-        "kinematics",
-        "cycles",
-        "doc",
-        "geometry",
-        "ext",
-        "change_defaults",
-    ]
-
-
 # Check if a serious warning has been issued for this version.
 try:
     from requests_cache import CachedSession  # noqa
@@ -94,7 +72,27 @@ except Exception:
     pass
 
 
+def __dir__():
+    return [
+        "TimeSeries",
+        "TimeSeriesEvent",
+        "Player",
+        "load",
+        "save",
+        "read_c3d",
+        "write_c3d",
+        "filters",
+        "kinematics",
+        "cycles",
+        "doc",
+        "geometry",
+        "change_defaults",
+    ]
+
+
 if __name__ == "__main__":  # pragma: no cover
     import doctest
+
+    import kineticstoolkit as ktk  # noqa for doctest
 
     doctest.testmod(optionflags=doctest.NORMALIZE_WHITESPACE)
