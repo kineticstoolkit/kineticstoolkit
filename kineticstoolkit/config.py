@@ -35,7 +35,6 @@ def __dir__() -> list[str]:
         "is_linux",
         "temp_folder",
         "version",
-        "pythonpath",
         "interactive_backend_warning",
     ]
 

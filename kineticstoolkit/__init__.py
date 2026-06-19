@@ -48,26 +48,6 @@ from kineticstoolkit import dev  # noqa
 from kineticstoolkit import config  # noqa
 
 
-def __dir__():
-    return [
-        "TimeSeries",
-        "TimeSeriesEvent",
-        "Player",
-        "load",
-        "save",
-        "read_c3d",
-        "write_c3d",
-        "import_extensions",
-        "filters",
-        "kinematics",
-        "cycles",
-        "doc",
-        "geometry",
-        "ext",
-        "change_defaults",
-    ]
-
-
 # Check if a serious warning has been issued for this version.
 try:
     from requests_cache import CachedSession  # noqa
@@ -90,6 +70,24 @@ try:
         warnings.warn(contents["warning"])
 except Exception:
     pass
+
+
+def __dir__():
+    return [
+        "TimeSeries",
+        "TimeSeriesEvent",
+        "Player",
+        "load",
+        "save",
+        "read_c3d",
+        "write_c3d",
+        "filters",
+        "kinematics",
+        "cycles",
+        "doc",
+        "geometry",
+        "change_defaults",
+    ]
 
 
 if __name__ == "__main__":  # pragma: no cover

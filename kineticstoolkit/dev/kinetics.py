@@ -34,6 +34,10 @@ from kineticstoolkit import geometry
 from kineticstoolkit.typing_ import ArrayLike, check_param
 
 
+def __dir__():
+    return ["create_forceplatform_lcs", "calculate_cop"]
+
+
 def create_forceplatform_lcs(
     ar_corner: ArrayLike,
     pr_corner: ArrayLike,

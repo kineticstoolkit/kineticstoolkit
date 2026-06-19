@@ -21,7 +21,9 @@ __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+import doctest
 import os
+import pydoc
 import shutil
 import subprocess
 import webbrowser
@@ -30,6 +32,19 @@ import kineticstoolkit.config
 
 # Module(s) in development
 from kineticstoolkit.dev import kinetics  # noqa: F401 unused-import
+
+
+def __dir__():
+    return [
+        "run_unit_tests",
+        "run_extensions_tests",
+        "run_style_formatter",
+        "run_static_type_checker",
+        "run_linter",
+        "run_doc_tests",
+        "run_sphinx",
+        "run_tests",
+    ]
 
 
 def run_unit_tests() -> None:  # pragma: no cover
@@ -130,32 +145,47 @@ def run_linter() -> None:  # pragma: no cover
 
 def run_doc_tests() -> None:  # pragma: no cover
     """Run all doc tests."""
-    print("Running doc tests on modules...")
+    print("Running doc tests...")
     cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder + "/kineticstoolkit")
-    processes = []
+    os.chdir(kineticstoolkit.config.root_folder + "/kineticstoolkit/dev")
 
-    for file in os.listdir():
-        if file.endswith(".py") and "timeseries" not in file:
-            processes.append(
-                subprocess.Popen(
-                    ["python", file],
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                )
-            )
+    write_doc_depth = [0]
 
-    for p in processes:
-        out, err = p.communicate()
-        filename: str = p.args[1]  # type: ignore
-        print(
-            f"Docstrings for {filename} "
-            + ("passed" if p.returncode == 0 else "FAILED")
+    def write_doc(fid, instance_name):
+        write_doc_depth[0] += 1
+        fid.write(f"\n\n========\n{instance_name}\n========\n\n")
+
+        try:
+            ktk = __import__("kineticstoolkit")  # noqa: F841
+            instance = eval(instance_name)
+        except Exception as e:
+            print(e)
+            write_doc_depth[0] -= 1
+            return
+
+        fid.write(pydoc.getdoc(instance))
+
+        if write_doc_depth[0] < 4:
+            items = dir(instance)
+            for item_name in items:
+                if "__" not in item_name:
+                    write_doc(fid, f"{instance_name}.{item_name}")
+
+        write_doc_depth[0] -= 1
+
+    with open("alldoc.txt", "w") as fid:
+        fid.write(">>> import kineticstoolkit.lab as ktk\n")
+        fid.write(">>> import numpy as np\n")
+        fid.write(">>> import pandas as pd\n")
+        write_doc(fid, "ktk")
+
+    print(
+        doctest.testfile(
+            "alldoc.txt", optionflags=doctest.NORMALIZE_WHITESPACE, report=True
         )
+    )
 
-    os.chdir("dev")
-    subprocess.call(["python", "run_timeseries_doctest.py"])
+    # os.remove("alldoc.txt")
     os.chdir(cwd)
 
 
