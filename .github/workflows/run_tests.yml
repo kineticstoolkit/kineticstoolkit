@@ -7,7 +7,7 @@ on:
   push:
     branches: [ "master" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "**" ]
   schedule:
      - cron: "15 0 1,6,11,16,21,26 * *"
   workflow_dispatch:
