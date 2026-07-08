@@ -39,3 +39,6 @@ kineticstoolkit.egg-info
 docs/api
 .buildinfo
 environment.pickle
+docs/_build/html
+alldoc.txt
+test.json.zip
