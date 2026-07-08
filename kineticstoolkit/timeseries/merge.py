@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provide subset and merging methods for TimeSeries."""
+"""Implement the TimeSeries merge method."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
@@ -31,75 +31,6 @@ from kineticstoolkit.typing_ import TYPE_CHECKING, check_param
 
 if TYPE_CHECKING:
     from kineticstoolkit import TimeSeries
-
-
-def get_subset(self, data_keys: str | list[str]) -> "TimeSeries":
-    """
-    Return a subset of the TimeSeries.
-
-    This method returns a TimeSeries that contains only selected data
-    keys. Events and info are also copied in the new TimeSeries.
-
-    Parameters
-    ----------
-    data_keys
-        The data keys to extract from the TimeSeries.
-
-    Returns
-    -------
-    TimeSeries
-        The TimeSeries, minus the unspecified data keys.
-
-    Raises
-    ------
-    KeyError
-        If one or more data keys could not be found in the TimeSeries
-        data.
-
-    See Also
-    --------
-    ktk.TimeSeries.merge
-
-    Example
-    -------
-        >>> ts = ktk.TimeSeries(time=np.arange(10))
-        >>> ts = ts.add_data("signal1", ts.time)
-        >>> ts = ts.add_data("signal2", ts.time**2)
-        >>> ts = ts.add_data("signal3", ts.time**3)
-        >>> ts.data.keys()
-        dict_keys(['signal1', 'signal2', 'signal3'])
-
-        >>> ts2 = ts.get_subset(["signal1", "signal3"])
-        >>> ts2.data.keys()
-        dict_keys(['signal1', 'signal3'])
-
-    """
-    try:
-        check_param("data_keys", data_keys, str)
-    except TypeError:
-        try:
-            check_param("data_keys", data_keys, list, contents_type=str)
-        except TypeError:
-            raise TypeError("data_keys must be a string or a list of strings.")
-    self._check_well_shaped()
-
-    if isinstance(data_keys, str):
-        data_keys = [data_keys]
-
-    ts = self.copy(
-        copy_time=True, copy_data=False, copy_info=True, copy_events=True
-    )
-
-    for key in data_keys:
-        try:
-            ts.data[key] = self.data[key].copy()
-        except KeyError:
-            raise KeyError(
-                f"The key '{key}' could not be found among the "
-                f"{len(self.data)} data entries of the TimeSeries"
-            )
-
-    return ts
 
 
 def _merge_resample_if_needed(
@@ -244,7 +175,7 @@ def _merge_info(
                 )
 
 
-def merge(
+def _merge(
     self,
     ts: "TimeSeries",
     data_keys: str | list[str] | None = None,
@@ -256,63 +187,7 @@ def merge(
     on_conflict: str = "warning",
     in_place: bool = False,
 ) -> "TimeSeries":
-    """
-    Merge the TimeSeries with another TimeSeries.
-
-    Parameters
-    ----------
-    ts
-        The TimeSeries to merge into the current TimeSeries.
-    data_keys
-        Optional. The data keys to merge from ts. If left empty, all the
-        data keys are merged.
-    resample
-        Optional. Set to True to resample the source TimeSeries to the
-        target one using a linear interpolation. If the time attributes are
-        not equivalent and resample is False, an exception is raised. To
-        resample using other methods than linear interpolation, please
-        resample the source TimeSeries manually before, using
-        TimeSeries.resample. Default is False.
-    merge_events
-        Optional. Set to True to also merge events. Default is True.
-    merge_info
-        Optional. Set to True to also merge info. Default is True.
-    overwrite
-        Optional. Select what to do if a data or info key from the source
-        TimeSeries already exists in the destination TimeSeries. True to
-        overwrite the already existing value, False to ignore the new value.
-        Default is False.
-    on_conflict
-        Optional. Select the warning level when a data or info key
-        from the source TimeSeries already exists in the destination
-        TimeSeries. May take the following values:
-        "mute": No warning;
-        "warning": Warns that duplicate keys were found and how the
-        conflict has been resolved following the `overwrite` parameter.
-        "error": Raises a TimeSeriesMergeConflictError.
-        Default is "warning".
-    in_place
-        Optional. True to modify and return the original TimeSeries. False
-        to return a modified copy of the TimeSeries while leaving the
-        original TimeSeries intact. Default is False.
-
-    Returns
-    -------
-    TimeSeries
-        The merged TimeSeries.
-
-    Raises
-    ------
-    TimeSeriesMergeConflictError
-        If a data or info key from the source TimeSeries already exists in
-        the destination TimeSeries and on_conflict is set to "error".
-
-    See Also
-    --------
-    ktk.TimeSeries.get_subset
-    ktk.TimeSeries.resample
-
-    """
+    """Implement TimeSeries.merge."""
     if data_keys is None:
         data_keys = []
     try:

@@ -1,14 +1,14 @@
 Kinetics Toolkit API
 ====================
 
-This is the API reference for the ``kineticstoolkit`` package.
+This HTML is generated during tests and is not the real share API. Please
+consult https://kineticstoolkit.uqam.ca/docs/api for the stable API.
 
-To get started, we suggest visiting the main documentation website: https://kineticstoolkit.uqam.ca
 
 .. toctree::
-   :maxdepth: 1
+   :maxdepth: 10
    :caption: Table of Contents
-   
+
    Main documentation website <https://kineticstoolkit.uqam.ca>
    classes
    functions
