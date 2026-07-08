@@ -22,22 +22,27 @@ ktk.TimeSeriesEvent)
 
 """
 
-from __future__ import annotations  # For forward refs to self
-
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
 __email__ = "chenier.felix@uqam.ca"
 __license__ = "Apache 2.0"
 
 
+import warnings
 from ast import literal_eval
 from copy import deepcopy
-from typing import Any
+from numbers import Real
+from typing import Any, cast
 
 import numpy as np
 import pandas as pd
+import scipy as sp
 
 import kineticstoolkit._repr
+from kineticstoolkit.exceptions import (
+    TimeSeriesEventNotFoundError,
+    TimeSeriesRangeError,
+)
 from kineticstoolkit.typing_ import ArrayLike, check_param
 
 from .checks import (
@@ -58,43 +63,41 @@ from .classes import (
     TimeSeriesEventList,
     TimeSeriesInfoDict,
 )
-from .data import add_data, remove_data, rename_data
 from .deprecated import add_data_info, remove_data_info, sort_events
-from .events import (
-    _get_duplicate_event_indexes,
-    _get_event_index,
-    _get_event_indexes,
-    add_event,
-    count_events,
-    remove_duplicate_events,
-    remove_event,
-    rename_event,
-    trim_events,
-)
-from .get_index import (
-    get_index_after_event,
-    get_index_after_time,
-    get_index_at_event,
-    get_index_at_time,
-    get_index_before_event,
-    get_index_before_time,
-)
-from .get_ts import (
-    get_ts_after_event,
-    get_ts_after_index,
-    get_ts_after_time,
-    get_ts_before_event,
-    get_ts_before_index,
-    get_ts_before_time,
-    get_ts_between_events,
-    get_ts_between_indexes,
-    get_ts_between_times,
-)
-from .gui import plot, ui_edit_events, ui_sync
-from .info import add_info, remove_info, rename_info
-from .missing_samples import fill_missing_samples, isnan
-from .subset import get_subset, merge
-from .time import _get_time_unit, get_sample_rate, resample, shift
+from .gui import _plot, _ui_edit_events, _ui_sync
+from .merge import _merge
+
+# %% Constants
+
+MINIMUM_LENGTH_TO_INTERPOLATE = 3
+
+# %% Helper functions
+
+
+def _resample_create_new_time(
+    original: ArrayLike, target: ArrayLike | float
+) -> np.ndarray:
+    """Create a target time from float if a float (frequency) is given."""
+    if isinstance(target, Real):
+        # We specifically use arange instead of linspace, because what
+        # is defined is a frequency, not a number of points.
+        new_time = np.arange(
+            original[0],
+            original[-1] + 1 / target,
+            1 / target,
+        )
+        # Work around the numerical instability of using arange with floats
+        # by ensuring that the time point is not higher than the original
+        # last time point
+        if new_time[-1] > original[-1]:
+            new_time = new_time[:-1]
+    else:
+        new_time = np.array(target)  # type: ignore
+
+    if np.any(np.isnan(new_time)):
+        raise ValueError("new_time must not contain nans")
+
+    return new_time
 
 
 class TimeSeries:
@@ -280,7 +283,7 @@ class TimeSeries:
 
     def __init__(
         self,
-        src: None | TimeSeries | pd.DataFrame | ArrayLike = None,
+        src: "None | TimeSeries | pd.DataFrame | ArrayLike" = None,
         *,
         time: ArrayLike | None = None,
         data: dict[str, ArrayLike] | None = None,
@@ -547,7 +550,7 @@ class TimeSeries:
         copy_events: bool = True,
         copy_info: bool = True,
         **kwargs,
-    ) -> TimeSeries:
+    ) -> "TimeSeries":
         """
         Deep copy of a TimeSeries.
 
@@ -621,66 +624,2872 @@ class TimeSeries:
 
             return ts
 
-    # %% Imported methods
+    # %% Info management
 
-    # Info management
-    add_info = add_info
-    rename_info = rename_info
-    remove_info = remove_info
+    def add_info(
+        self,
+        outer_key: str,
+        inner_key: str,
+        value: Any,
+        *,
+        overwrite: bool = False,
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Add new info the to TimeSeries.
 
-    # Time management
-    _get_time_unit = _get_time_unit
-    shift = shift
-    get_sample_rate = get_sample_rate
-    resample = resample
+        Although we can directly assign new values to the `info` property::
 
-    # Data management
-    add_data = add_data
-    rename_data = rename_data
-    remove_data = remove_data
+            ts.info["Data"]["Forces"] = {"Unit": "N"}
 
-    # Event management
-    _get_event_index = _get_event_index
-    _get_event_indexes = _get_event_indexes
-    _get_duplicate_event_indexes = _get_duplicate_event_indexes
-    add_event = add_event
-    rename_event = rename_event
-    remove_event = remove_event
-    count_events = count_events
-    remove_duplicate_events = remove_duplicate_events
-    trim_events = trim_events
+        the method provides an alternative ::
 
-    # Get index methods
-    get_index_at_time = get_index_at_time
-    get_index_before_time = get_index_before_time
-    get_index_after_time = get_index_after_time
-    get_index_at_event = get_index_at_event
-    get_index_before_event = get_index_before_event
-    get_index_after_event = get_index_after_event
+            ts = ts.add_info("Forces", "Unit", "N")
 
-    # Get ts methods
-    get_ts_before_index = get_ts_before_index
-    get_ts_after_index = get_ts_after_index
-    get_ts_between_indexes = get_ts_between_indexes
-    get_ts_before_time = get_ts_before_time
-    get_ts_after_time = get_ts_after_time
-    get_ts_between_times = get_ts_between_times
-    get_ts_before_event = get_ts_before_event
-    get_ts_after_event = get_ts_after_event
-    get_ts_between_events = get_ts_between_events
+        with the following advantages:
 
-    # Subsetting and merging
-    get_subset = get_subset
-    merge = merge
+        **Overwrite prevention**: Setting the overwrite argument determines
+        explicitly if you want existing info with the same name to be
+        overwritten or not.
 
-    # Missing sample management
-    isnan = isnan
-    fill_missing_samples = fill_missing_samples
+        **Parent creation**: The function creates the required hierarchy of
+        nested dictionaries.
 
-    # Graphical user interfaces
-    plot = plot
-    ui_sync = ui_sync
-    ui_edit_events = ui_edit_events
+        Parameters
+        ----------
+        outer_key
+            The key for the first level of nested dictionaries of ts.info.
+            This is the generally what the information refers to (e.g.,
+            "Time", or the related data key such as "Forces".
+        inner_key
+            The key for the second level of nested dictionaries of ts.info.
+            This is generally the nature of the information (e.g., "Unit").
+        value
+            The information.
+        overwrite
+            Optional. True to overwrite if there is already an info key of this
+            name. Default is False.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the added info.
+
+        Raises
+        ------
+        ValueError
+            If an info with these keys already exists and overwrite is False.
+
+        See Also
+        --------
+        ktk.TimeSeries.rename_info
+        ktk.TimeSeries.remove_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_info("Forces", "Unit", "N")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Forces': {'Unit': 'N'}}
+
+        """
+        check_param("outer_key", outer_key, str)
+        check_param("inner_key", inner_key, str)
+        check_param("overwrite", overwrite, bool)
+        check_param("in_place", in_place, bool)
+        ts = self if in_place else self.copy()
+
+        if outer_key not in ts.info:
+            ts.info[outer_key] = {}
+
+        if (overwrite is False) and (inner_key in ts.info[outer_key]):
+            raise ValueError(
+                f"An info with key '{inner_key}' already exists in this "
+                f"TimeSeries' info[{outer_key}] attribute. Either use another "
+                "key name or set overwrite to True."
+            )
+
+        ts.info[outer_key][inner_key] = value
+
+        return ts
+
+    def rename_info(
+        self,
+        outer_key: str,
+        inner_key: str,
+        new_outer_key: str,
+        new_inner_key: str,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Rename info keys.
+
+        Parameters
+        ----------
+        outer_key
+            The key for the first level of nested dictionaries of ts.info.
+            This is the generally what the information refers to (e.g.,
+            "Time", or the related data key such as "Forces".
+        inner_key
+            The key for the second level of nested dictionaries of ts.info.
+            This is generally the nature of the information (e.g., "Unit").
+        new_outer_key
+            The new key for the first level of nested dictionaries of ts.info.
+        new_inner_key
+            The new key for the second level of nested dictionaries of ts.info.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the renamed info keys.
+
+        Raises
+        ------
+        KeyError
+            If there is no in ts.info[outer_key][inner_key].
+
+        See Also
+        --------
+        ktk.TimeSeries.add_info
+        ktk.TimeSeries.remove_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_info("Forces", "Unit", "N")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Forces': {'Unit': 'N'}}
+
+        >>> ts = ts.rename_info("Forces", "Unit", "Power", "ForceUnit")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Power': {'ForceUnit': 'N'}}
+
+        """
+        check_param("outer_key", outer_key, str)
+        check_param("inner_key", inner_key, str)
+        check_param("new_outer_key", outer_key, str)
+        check_param("new_inner_key", inner_key, str)
+        check_param("in_place", in_place, bool)
+        ts = self if in_place else self.copy()
+
+        if outer_key not in ts.info:
+            self._raise_info_outer_key_error(outer_key)
+        if inner_key not in ts.info[outer_key]:
+            self._raise_info_inner_key_error(outer_key, inner_key)
+
+        # Get the value
+        value = ts.info[outer_key][inner_key]
+
+        # Add the value with its new name
+        ts.add_info(new_outer_key, new_inner_key, value, in_place=True)
+
+        # Remove the old value
+        ts.remove_info(outer_key, inner_key, in_place=True)
+
+        return ts
+
+    def remove_info(
+        self,
+        outer_key: str,
+        inner_key: str,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Remove info from a TimeSeries.
+
+        Parameters
+        ----------
+        outer_key
+            The key for the first level of nested dictionaries of ts.info.
+            This is the generally what the information refers to (e.g.,
+            "Time", or the related data key such as "Forces".
+        inner_key
+            The key for the second level of nested dictionaries of ts.info.
+            This is generally the nature of the information (e.g., "Unit").
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the removed info.
+
+        Raises
+        ------
+        KeyError
+            If there is no in ts.info[outer_key][inner_key].
+
+        See Also
+        --------
+        ktk.TimeSeries.add_info
+        ktk.TimeSeries.rename_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_info("Forces", "Unit", "N")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'Forces': {'Unit': 'N'}}
+
+        >>> ts = ts.remove_info("Forces", "Unit")
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}}
+
+        """
+        check_param("outer_key", outer_key, str)
+        check_param("inner_key", inner_key, str)
+        check_param("in_place", in_place, bool)
+        ts = self if in_place else self.copy()
+
+        if outer_key not in ts.info:
+            self._raise_info_outer_key_error(outer_key)
+        if inner_key not in ts.info[outer_key]:
+            self._raise_info_inner_key_error(outer_key, inner_key)
+
+        ts.info[outer_key].pop(inner_key)
+        if len(ts.info[outer_key]) == 0:
+            ts.info.pop(outer_key)
+        return ts
+
+    # %% Time management
+
+    def _get_time_unit(self) -> str:
+        try:
+            return self.info["Time"]["Unit"]
+        except KeyError:
+            return "no unit"
+
+    def shift(self, time: float, *, in_place: bool = False) -> "TimeSeries":
+        """
+        Shift time and events.time.
+
+        Parameters
+        ----------
+        time
+            Time to be added to time and events.time.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the time being shifted.
+
+        See Also
+        --------
+        ktk.TimeSeries.ui_sync
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts = ts.add_event(0.35, "start")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.events
+        [TimeSeriesEvent(time=0.35, name='start')]
+
+        >>> ts = ts.shift(0.2)
+        >>> ts.time
+        array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1. , 1.1])
+
+        >>> ts.events
+        [TimeSeriesEvent(time=0.55, name='start')]
+
+        """
+        check_param("time", time, float)
+        check_param("in_place", in_place, bool)
+        self._check_well_shaped()
+
+        ts = self if in_place else self.copy()
+        for event in ts.events:
+            event.time += time
+        ts.time += time
+        return ts
+
+    def get_sample_rate(self) -> float:
+        """
+        Get the sample rate in samples/s.
+
+        Returns
+        -------
+        float
+            The sample rate in samples per second. If time is empty or has only
+            one data, or if sample rate is variable, or if time is not
+            monotonously increasing, a value of np.nan is returned.
+
+        Warning
+        -------
+        This feature, which has been introduced in version 0.9, is still
+        experimental and may change in the future. In particular, the value
+        returned if the sample rate is not constant: it is np.nan in all cases
+        for now, but it could change in the future based on discussions and
+        particular use cases.
+
+        See Also
+        --------
+        ktk.TimeSeries.resample
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(
+        ...     time=np.arange(100) / 10
+        ... )  # 100 samples at 10 Hz
+        >>> ts.get_sample_rate()
+        10.0
+
+        """
+        self._check_well_shaped()
+
+        if self.time.shape[0] <= 1:
+            return np.nan
+
+        deltas = self.time[1:] - self.time[0:-1]
+        if np.allclose(deltas, [deltas[0]]):
+            return 1.0 / deltas.mean()
+        else:
+            return np.nan
+
+    def resample(
+        self,
+        target: ArrayLike | float,
+        kind: str = "linear",
+        *,
+        extrapolate: bool = False,
+        in_place: bool = False,
+        **kwargs,
+    ) -> "TimeSeries":
+        """
+        Resample the TimeSeries.
+
+        Resample every data of the TimeSeries over a new frequency or new
+        series of times, using the interpolation method provided by parameter
+        `kind`. This method does not fill missing data. Consequently, time
+        ranges with nans in the original TimeSeries will also contain nans in
+        the resampled TimeSeries.
+
+        Parameters
+        ----------
+        target
+            To resample to a target frequency, use a float that represents
+            the sample rate of the output TimeSeries, in Hz. To resample to
+            specific times, use an array of float that will become the time
+            property of the output TimeSeries.
+        kind
+            Optional. The interpolation method. This input may take any value
+            supported by scipy.interpolate.interp1d, such as "linear",
+            "nearest", "zero", "slinear", "quadratic", "cubic", "previous",
+            "next". Additionally, kind can be "pchip". Default is "linear".
+        extrapolate
+            Optional. True to extrapolate outside the original time range.
+            Default is False.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with a new sample rate.
+
+        Caution
+        -------
+        Attempting to resample a series of homogeneous matrices would likely
+        produce non-homogeneous matrices, and as a result, transforms would not
+        be rigid anymore. This function can't detect if you attempt to resample
+        series of homogeneous matrices, and therefore won't generate an
+        error or warning.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_sample_rate
+        ktk.TimeSeries.fill_missing_samples
+
+        Examples
+        --------
+        >>> ts = ktk.TimeSeries(time=np.arange(10.0))
+        >>> ts = ts.add_data("data", ts.time**2)
+        >>> ts.time
+        array([0., 1., 2., 3., 4., 5., 6., 7., 8., 9.])
+        >>> ts.data["data"]
+        array([ 0.,  1.,  4.,  9., 16., 25., 36., 49., 64., 81.])
+
+        Example 1: Resampling at 2 Hz
+
+        >>> ts1 = ts.resample(2.0)
+
+        >>> ts1.time[0:10]
+        array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
+
+        >>> ts1.data["data"][0:10]
+        array([ 0. ,  0.5,  1. ,  2.5,  4. ,  6.5,  9. , 12.5, 16. , 20.5])
+
+        Example 2: Resampling on new times
+
+        >>> ts2 = ts.resample([0.0, 0.5, 1.0, 1.5, 2.0])
+
+        >>> ts2.time
+        array([0. , 0.5, 1. , 1.5, 2. ])
+
+        >>> ts2.data["data"]
+        array([0. , 0.5, 1. , 2.5, 4. ])
+
+        Example 3: Resampling at 2 Hz with missing data in the original ts
+
+        >>> ts.data["data"][[0, 1, 5, 8, 9]] = np.nan
+        >>> ts.data["data"]
+        array([nan, nan,  4.,  9., 16., nan, 36., 49., nan, nan])
+
+        >>> ts3 = ts.resample(2.0)
+
+        >>> ts3.time[0:10]
+        array([0. , 0.5, 1. , 1.5, 2. , 2.5, 3. , 3.5, 4. , 4.5])
+
+        >>> ts3.data["data"][0:10]
+        array([ nan,  nan,  nan,  nan,  4. ,  6.5,  9. , 12.5, 16. ,  nan])
+
+        """
+        check_param("kind", kind, str)
+        check_param("in_place", in_place, bool)
+
+        if "fill_value" in kwargs:
+            warnings.warn(
+                "fill_value parameter has been removed in version 0.12 "
+                "because its behavior was unclear and it was ignored in many "
+                "situations "
+                "(https://github.com/felixchenier/kineticstoolkit/issues/174)."
+            )
+
+        self._check_well_shaped()
+
+        ts = self if in_place else self.copy()
+
+        new_time = _resample_create_new_time(ts.time, target)
+
+        # We will progressively fill these data
+        new_data = {}  # type: dict[str, np.ndarray]
+
+        for key in ts.data.keys():
+            index = ~ts.isnan(key)
+
+            if sum(index) < MINIMUM_LENGTH_TO_INTERPOLATE:
+                # Only Nans, cannot interpolate.
+                # We generate an array of nans of the expected size.
+                new_shape = [len(new_time)]
+                for i in range(1, len(self.data[key].shape)):
+                    new_shape.append(self.data[key].shape[i])
+                new_data[key] = np.empty(new_shape)
+                new_data[key][:] = np.nan
+                continue
+
+            # Express nans as a range of times to
+            # remove from the final, interpolated TimeSeries
+            nan_indexes = np.argwhere(~index)
+
+            # initialize with times outside of the original time range
+            time_ranges_to_remove: list[tuple[float, float]] = []
+            if not extrapolate:
+                time_ranges_to_remove.append((-np.inf, ts.time[0]))
+                time_ranges_to_remove.append((ts.time[-1], np.inf))
+
+            length = ts.time.shape[0]
+            for i in nan_indexes[:, 0]:
+                if i > 0 and i < length - 1:
+                    time_range = (ts.time[i - 1], ts.time[i + 1])
+                elif i == 0:
+                    time_range = (-np.inf, ts.time[i + 1])
+                else:
+                    time_range = (ts.time[i - 1], np.inf)
+                time_ranges_to_remove.append(time_range)
+
+            if kind == "pchip":
+                P = sp.interpolate.PchipInterpolator(
+                    ts.time[index],
+                    ts.data[key][index],
+                    axis=0,
+                    extrapolate=True,
+                )
+                new_data[key] = P(new_time)
+            else:
+                f = sp.interpolate.interp1d(
+                    ts.time[index],
+                    ts.data[key][index],
+                    axis=0,
+                    fill_value="extrapolate",
+                    kind=kind,
+                )
+                new_data[key] = f(new_time)
+
+            # Put back nans in the originally missing data
+            for j in time_ranges_to_remove:
+                new_data[key][(new_time > j[0]) & (new_time < j[1])] = np.nan
+
+        ts.time = new_time
+        ts.data = new_data
+        return ts
+
+    # %% Data management
+    def add_data(
+        self,
+        data_key: str,
+        data_value: ArrayLike,
+        *,
+        overwrite: bool = False,
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Add new data to the TimeSeries.
+
+        Although we can directly assign values to the `data` property::
+
+            ts.data["name"] = value
+
+        this method provides an alternative way to add data to the TimeSeries::
+
+            ts = ts.add_data(name, value, ...)
+
+        with the following advantages:
+
+        **Overwrite prevention**: Setting the overwrite argument determines
+        explicitly if you want existing data with the same name to be
+        overwritten or not.
+
+        **Size check**: Additional data is compared to the contents of the
+        TimeSeries to ensure that it has the correct dimensions. See Raises
+        section for more information.
+
+        **Size matching**: Constant "series" such as [3.0], which is a
+        one-sample series of 3.0, are automatically expanded to match the size
+        of the TimeSeries. For example, if the TimeSeries has 4 samples, then
+        the input data is expanded to [3.0, 3.0, 3.0, 3.0].
+
+        Parameters
+        ----------
+        data_key
+            Name of the data key.
+        data_value
+            Any data that can be converted to a NumPy array
+        overwrite
+            Optional. True to overwrite if there is already a data key of this
+            name in the TimeSeries. Default is False.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the added data.
+
+        Raises
+        ------
+        ValueError
+            If data with this key already exists and overwrite is False,
+            if the size of the data (first dimension) does not match the size
+            of existing data or the existing time, or
+            if data is a pandas DataFrame and its index does not match the
+            existing time.
+
+        See Also
+        --------
+        ktk.TimeSeries.rename_data
+        ktk.TimeSeries.remove_data
+
+        Examples
+        --------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_data("data1", [1.0, 2.0, 3.0])
+        >>> ts = ts.add_data("data2", [4.0, 5.0, 6.0])
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {'data1': array([1., 2., 3.]), 'data2': array([4., 5., 6.])}
+              events: []
+              info: {'Time': {'Unit': 's'}}
+
+        >>> # Size matching example
+        >>> ts = ktk.TimeSeries(time=[0.0, 0.1, 0.2, 0.3])
+        >>> ts = ts.add_data("data1", [9.9])
+        >>> ts
+        TimeSeries with attributes:
+              time: array([0. , 0.1, 0.2, 0.3])
+              data: {'data1': array([9.9, 9.9, 9.9, 9.9])}
+              events: []
+              info: {'Time': {'Unit': 's'}}
+
+        """  # noqa: E501 Line too long in docstring
+        check_param("data_key", data_key, str)
+        check_param("overwrite", overwrite, bool)
+        check_param("in_place", in_place, bool)
+        ts = self if in_place else self.copy()
+
+        # Cast data
+        data_to_add = np.array(data_value)  # Will be set at the very end
+
+        # Check the size of the TimeSeries
+        if ts.time.shape[0] != 0:
+            n_samples = ts.time.shape[0]
+        elif len(ts.data) > 0:
+            n_samples = ts.data[list(ts.data.keys())[0]].shape[0]
+        else:
+            n_samples = 0
+
+        # Expand the input to n_sample if it's a constant series
+        if data_to_add.shape[0] == 1 and n_samples > 0:
+            data_to_add = np.repeat(data_to_add, n_samples, axis=0)
+
+        # Check that the data fits with the TimeSeries' time (if it exists)
+        if ts.time.shape[0] != 0:
+            # If this is a Pandas DataFrame, check that its index is fully
+            # compatible with time
+            if isinstance(data_value, pd.DataFrame):
+                if (ts.time.shape[0] != data_to_add.shape[0]) or (
+                    not np.allclose(ts.time, np.array(data_value.index))
+                ):
+                    raise ValueError(
+                        "The index of the provided DataFrame does not match "
+                        "this TimeSeries' time attribute. This error was "
+                        "raised to prevent merging unsynchronized data. If "
+                        "you are confident that this DataFrame's data does "
+                        "match this TimeSeries, then set its index to this "
+                        "TimeSeries' time before adding it: "
+                        "the_dataframe.index = the_timeseries.time"
+                    )
+
+            # For every other type, check that the dimensions fit at least.
+            elif ts.time.shape[0] != data_to_add.shape[0]:
+                raise ValueError(
+                    f"This data has {data_to_add.shape[0]} samples while "
+                    f"this TimeSeries' time has {ts.time.shape[0]} samples."
+                )
+
+        # Check that the data fits with other data (if it exists)
+        for key in ts.data:
+            if ts.data[key].shape[0] != data_to_add.shape[0]:
+                raise ValueError(
+                    f"This data has {data_to_add.shape[0]} samples while "
+                    f"this TimeSeries' data {key} has {ts.data[key].shape[0]} "
+                    "samples."
+                )
+
+        # Check that we would not overwrite by mistake
+        if (data_key in self.data) and (overwrite is False):
+            raise ValueError(
+                f"A data with key '{data_key}' already exists in this "
+                "TimeSeries. Either use another key name or set overwrite to "
+                "True."
+            )
+
+        # Add the data
+        ts.data[data_key] = data_to_add
+        return ts
+
+    def rename_data(
+        self, old_data_key: str, new_data_key: str, *, in_place: bool = False
+    ) -> "TimeSeries":
+        """
+        Rename a key in data.
+
+        Parameters
+        ----------
+        old_data_key
+            Name of the current data key.
+        new_data_key
+            New name of the data key.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the renamed data.
+
+        Raises
+        ------
+        KeyError
+            If this data key could not be found in the TimeSeries' data
+            attribute.
+
+        See Also
+        --------
+        ktk.TimeSeries.add_data
+        ktk.TimeSeries.remove_data
+        ktk.TimeSeries.rename_info
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10))
+        >>> ts = ts.add_data("test", np.arange(10))
+        >>> ts = ts.add_info("test", "Unit", "m")
+
+        >>> ts
+        TimeSeries with attributes:
+              time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+              data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'test': {'Unit': 'm'}}
+
+        >>> ts = ts.rename_data("test", "signal")
+
+        >>> ts
+        TimeSeries with attributes:
+              time: array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+              data: {'signal': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'test': {'Unit': 'm'}}
+
+        """
+        check_param("old_data_key", old_data_key, str)
+        check_param("new_data_key", new_data_key, str)
+        check_param("in_place", in_place, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+        try:
+            ts.data[new_data_key] = ts.data.pop(old_data_key)
+        except KeyError:
+            self._raise_data_key_error(old_data_key)
+
+        return ts
+
+    def remove_data(
+        self, data_key: str, *, in_place: bool = False
+    ) -> "TimeSeries":
+        """
+        Remove a key in data.
+
+        Parameters
+        ----------
+        data_key
+            Name of the data key.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the removed data.
+
+        Raises
+        ------
+        KeyError
+            If this data key could not be found in the TimeSeries' data
+            attribute.
+
+        See Also
+        --------
+        ktk.TimeSeries.add_data
+        ktk.TimeSeries.rename_data
+        ktk.TimeSeries.remove_info
+
+        Example
+        -------
+        >>> # Prepare a test TimeSeries with data "test"
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_data("test", np.arange(10))
+        >>> ts = ts.add_info("test", "Unit", "m")
+
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {'test': array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'test': {'Unit': 'm'}}
+
+        >>> # Now remove data "test"
+        >>> ts = ts.remove_data("test")
+
+        >>> ts
+        TimeSeries with attributes:
+              time: array([], dtype=float64)
+              data: {}
+            events: []
+              info: {'Time': {'Unit': 's'}, 'test': {'Unit': 'm'}}
+
+        """
+        check_param("data_key", data_key, str)
+        check_param("in_place", in_place, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+        try:
+            ts.data.pop(data_key)
+        except KeyError:
+            self._raise_data_key_error(data_key)
+
+        return ts
+
+    # %% Event management
+    def _get_event_indexes(self, name: str) -> list[int]:
+        """
+        Get a list of index of all occurrences of an event.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+
+        Returns
+        -------
+        list[int]
+            The occurrences of this event.
+
+        """
+        self._check_valid_time()
+
+        # list all events with correct name
+        event_times = []
+        event_indexes = []
+        for i_event, event in enumerate(self.events):
+            if event.name == name:
+                event_times.append(event.time)
+                event_indexes.append(i_event)
+
+        # Sort the indexes by time
+        sorted_indexes = np.argsort(event_times)
+        event_indexes = [event_indexes[i] for i in sorted_indexes]
+        return event_indexes
+
+    def _get_event_index(self, name: str, occurrence: int = 0) -> int:
+        """
+        Get the events index of a given occurrence of an event name.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+
+        occurrence
+            Occurrence of the event
+
+        Returns
+        -------
+        int
+            The index of the event occurrence in the events list.
+
+        Raises
+        ------
+        TimeSeriesEventNotFoundError
+            If the specified occurrence could not be found.
+
+        """
+        self._check_valid_time()
+
+        occurrence = int(occurrence)
+
+        if occurrence < 0:
+            raise TimeSeriesEventNotFoundError(
+                "The parameter `occurrence` must be positive a integer. "
+                f"However, a value of {occurrence} was received."
+            )
+
+        # Get the event occurrence
+        try:
+            return self._get_event_indexes(name)[occurrence]
+        except IndexError as e:
+            raise TimeSeriesEventNotFoundError(
+                f"The occurrence {occurrence} of event '{name}' could not "
+                "be found in the TimeSeries. A total of "
+                f"{len(self._get_event_indexes(name))} occurrence(s) of "
+                "this event name were found."
+            ) from e
+
+    def _get_duplicate_event_indexes(self) -> list[int]:
+        """
+        Find events with same name and same time.
+
+        Returns
+        -------
+        list[int]
+            A list of list of event indexes. The outer list corresponds to
+            different events. The inner list corresponds to all occurences of
+            this event. The integer corresponds to the event index in the
+            TimeSeries' event list.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+
+        # Three occurrences of event1
+        >>> ts = ts.add_event(0.0, "event1")
+        >>> ts = ts.add_event(1e-12, "event1")
+        >>> ts = ts.add_event(0.0, "event1")
+
+        # One occurrence of event2, but also at 0.0 second
+        >>> ts = ts.add_event(0.0, "event2")
+
+        # Two occurrences of event3
+        >>> ts = ts.add_event(2.0, "event3")
+        >>> ts = ts.add_event(2.0, "event3")
+
+        """
+        self._check_valid_time()
+
+        # Sort all events in a dict with key being tuple(time, name)
+        # and the value being the list of indexes in which this event appears.
+        sorted_events = {}  # type: dict[tuple[float, str], list[int]]
+        for i_event, event in enumerate(self.events):
+            tup_event = event._to_tuple()
+
+            # Check if this event already exist in the list.
+            # If it does, add it to the list.
+            found = False
+            for key, occurrence_list in sorted_events.items():
+                if np.isclose(key[0], event.time) and (key[1] == event.name):
+                    occurrence_list.append(i_event)
+                    found = True
+                    break
+            if not found:
+                # Otherwise, create it in the list
+                sorted_events[tup_event] = [i_event]
+
+        # Convert this dict to the desired list of lists
+        out = []
+        for _key, occurrence_list in sorted_events.items():
+            if len(occurrence_list) > 1:
+                out.extend(occurrence_list[1:])
+
+        return sorted(out)
+
+    def add_event(
+        self,
+        time: float,
+        name: str = "event",
+        *,
+        in_place: bool = False,
+        unique: bool = False,
+    ) -> "TimeSeries":
+        """
+        Add an event to the TimeSeries.
+
+        Parameters
+        ----------
+        time
+            The time of the event, in the same unit as `info["Time"]["Unit"]`.
+        name
+            Optional. The name of the event. Default is "event".
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+        unique
+            Optional. True to prevent duplicating an already existing event. In
+            this case, if an event with the same time and name already exists,
+            no event is added. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the added event.
+
+        See Also
+        --------
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
+
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=20.3, name='event2')]
+
+        """
+        check_param("time", time, float)
+        check_param("name", name, str)
+        check_param("in_place", in_place, bool)
+        check_param("unique", unique, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+
+        if unique:
+            # Ensure that no event of that name and time already exists
+            for event in ts.events:
+                if np.isclose(time, event.time) and (name == event.name):
+                    return ts
+
+        ts.events.append(TimeSeriesEvent(time, name))
+        return ts
+
+    def rename_event(
+        self,
+        old_name: str,
+        new_name: str,
+        occurrence: int | None = None,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Rename an event occurrence or all events of a same name.
+
+        Parameters
+        ----------
+        old_name
+            Name of the event to look for in the events list.
+        new_name
+            New event name
+        occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0, where the occurrences are sorted in time.
+            If None (default), all occurences of this event name are renamed.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the renamed event.
+
+        See Also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
+
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=20.3, name='event2')]
+
+        >>> ts = ts.rename_event("event2", "event3")
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event3'),
+         TimeSeriesEvent(time=20.3, name='event3')]
+
+        >>> ts = ts.rename_event("event3", "event4", occurrence=0)
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event4'),
+         TimeSeriesEvent(time=20.3, name='event3')]
+
+        """
+        check_param("old_name", old_name, str)
+        check_param("new_name", new_name, str)
+        check_param("occurrence", occurrence, (int, None))
+        check_param("in_place", in_place, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+
+        if old_name == new_name:
+            return ts
+
+        if occurrence is None:
+            # Rename every occurrence of this event
+            for index in self._get_event_indexes(old_name):
+                ts.events[index].name = new_name
+        else:
+            index = self._get_event_index(old_name, occurrence)
+            ts.events[index].name = new_name
+        return ts
+
+    def remove_event(
+        self,
+        name: str,
+        occurrence: int | None = None,
+        *,
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Remove an event occurrence or all events of a same name.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+        occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0, where the occurrences are sorted in time.
+            If None (default), all occurences of this event name or removed.
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the removed event.
+
+        See Also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.trim_events
+        ktk.TimeSeries.ui_edit_events
+
+        Example
+        -------
+        >>> # Instanciate a TimeSeries with some events
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
+
+        >>> ts.events
+        [TimeSeriesEvent(time=5.5, name='event1'),
+         TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=20.3, name='event2')]
+
+        >>> ts = ts.remove_event("event1")
+        >>> ts.events
+        [TimeSeriesEvent(time=10.8, name='event2'),
+         TimeSeriesEvent(time=20.3, name='event2')]
+
+        >>> ts = ts.remove_event("event2", 1)
+        >>> ts.events
+        [TimeSeriesEvent(time=10.8, name='event2')]
+
+        """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, (int, None))
+        check_param("in_place", in_place, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+
+        if occurrence is None:  # Remove all occurrences
+            event_index = ts._get_event_index(name, 0)
+            try:
+                # Continually remove the first event of this name, until
+                # there are no more.
+                count = 0
+                while True:
+                    ts.remove_event(name, occurrence=0, in_place=True)
+                    count += 1
+            except TimeSeriesEventNotFoundError:
+                if count == 0:  # No event of that name was even found.
+                    raise TimeSeriesEventNotFoundError(
+                        f"No event named {name} could be found."
+                    )
+
+        else:  # Remove only the specified occurrence
+            event_index = ts._get_event_index(name, occurrence)
+            ts.events.pop(event_index)
+        return ts
+
+    def count_events(self, name: str) -> int:
+        """
+        Count the number of occurrence of a given event name.
+
+        Parameters
+        ----------
+        name
+            The name of the events to count.
+
+        Returns
+        -------
+        int
+            The number of occurrences.
+
+        Example
+        -------
+        >>> # Instanciate a TimeSeries with some events
+        >>> ts = ktk.TimeSeries()
+        >>> ts = ts.add_event(5.5, "event1")
+        >>> ts = ts.add_event(10.8, "event2")
+        >>> ts = ts.add_event(20.3, "event2")
+
+        >>> ts.count_events("event2")
+        2
+
+        """
+        check_param("name", name, str)
+        self._check_valid_time()
+
+        indexes = self._get_event_indexes(name)
+        return len(indexes)
+
+    def remove_duplicate_events(
+        self, *, in_place: bool = False
+    ) -> "TimeSeries":
+        """
+        Remove events with same name and time so that each event gets unique.
+
+        Parameters
+        ----------
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with only unique events.
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries()
+
+        Three occurrences of event1:
+
+        >>> ts = ts.add_event(0.0, "event1")
+        >>> ts = ts.add_event(1e-12, "event1")
+        >>> ts = ts.add_event(0.0, "event1")
+
+        One occurrence of event2, but also at 0.0 second:
+
+        >>> ts = ts.add_event(0.0, "event2")
+
+        Two occurrences of event3:
+
+        >>> ts = ts.add_event(2.0, "event3")
+        >>> ts = ts.add_event(2.0, "event3")
+
+        >>> ts.events
+        [TimeSeriesEvent(time=0.0, name='event1'),
+         TimeSeriesEvent(time=0.0, name='event1'),
+         TimeSeriesEvent(time=0.0, name='event2'),
+         TimeSeriesEvent(time=1e-12, name='event1'),
+         TimeSeriesEvent(time=2.0, name='event3'),
+         TimeSeriesEvent(time=2.0, name='event3')]
+
+        >>> ts2 = ts.remove_duplicate_events()
+        >>> ts2.events
+        [TimeSeriesEvent(time=0.0, name='event1'),
+         TimeSeriesEvent(time=0.0, name='event2'),
+         TimeSeriesEvent(time=2.0, name='event3')]
+
+        """
+        check_param("in_place", in_place, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+        duplicates = ts._get_duplicate_event_indexes()
+        for event_index in duplicates[-1::-1]:
+            ts.events.pop(event_index)
+        return ts
+
+    def trim_events(self, *, in_place: bool = False) -> "TimeSeries":
+        """
+        Delete the events that are outside the TimeSeries' time attribute.
+
+        Parameters
+        ----------
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries without the trimmed events.
+
+        See Also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.ui_edit_events
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10))
+        >>> ts.time
+        array([0, 1, 2, 3, 4, 5, 6, 7, 8, 9])
+
+        >>> ts = ts.add_event(-2)
+        >>> ts = ts.add_event(0)
+        >>> ts = ts.add_event(5)
+        >>> ts = ts.add_event(9)
+        >>> ts = ts.add_event(10)
+        >>> ts.events
+        [TimeSeriesEvent(time=-2, name='event'),
+         TimeSeriesEvent(time=0, name='event'),
+         TimeSeriesEvent(time=5, name='event'),
+         TimeSeriesEvent(time=9, name='event'),
+         TimeSeriesEvent(time=10, name='event')]
+
+        >>> ts = ts.trim_events()
+        >>> ts.events
+        [TimeSeriesEvent(time=0, name='event'),
+         TimeSeriesEvent(time=5, name='event'),
+         TimeSeriesEvent(time=9, name='event')]
+
+        """
+        check_param("in_place", in_place, bool)
+        self._check_valid_time()
+
+        ts = self if in_place else self.copy()
+
+        events = deepcopy(ts.events)
+        ts.events = []
+        for event in events:
+            if event.time <= np.max(ts.time) and event.time >= np.min(ts.time):
+                ts.add_event(event.time, event.name, in_place=True)
+        return ts
+
+    # %% Get index methods
+
+    def get_index_at_time(self, time: float) -> int:
+        """
+        Get the time index that is closest to the specified time.
+
+        Parameters
+        ----------
+        time
+            Time to look for in the TimeSeries' time attribute.
+
+        Returns
+        -------
+        int
+            The index in the time attribute.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
+
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
+        >>> ts.get_index_at_time(0.9)
+        2
+
+        >>> ts.get_index_at_time(1)
+        2
+
+        >>> ts.get_index_at_time(1.1)
+        2
+
+        >>> ts.get_index_at_time(2.1)
+        4
+
+        """
+        check_param("time", time, float)
+        self._check_well_shaped()
+
+        self._check_not_empty_time()
+        return int(np.argmin(np.abs(self.time - float(time))))
+
+    def get_index_before_time(
+        self, time: float, *, inclusive: bool = False
+    ) -> int:
+        """
+        Get the time index that is just before the specified time.
+
+        Parameters
+        ----------
+        time
+            Time to look for in the TimeSeries' time attribute.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        int
+            The index in the time attribute.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
+        >>> ts.get_index_before_time(0.9)
+        1
+
+        >>> ts.get_index_before_time(1)
+        1
+
+        >>> ts.get_index_before_time(1.1)
+        2
+
+        >>> ts.get_index_before_time(1.1, inclusive=True)
+        2
+
+        """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+
+        def _raise():
+            raise TimeSeriesRangeError(
+                f"There is no data before the requested time of {time} "
+                f"{self._get_time_unit()}."
+            )
+
+        self._check_increasing_time()
+
+        if inclusive:
+            mask = np.nonzero(self.time <= time)
+        else:
+            mask = np.nonzero(self.time < time)
+
+        if mask[0].shape == (0,):
+            _raise()
+
+        return int(mask[0][-1])
+
+    def get_index_after_time(
+        self, time: float, *, inclusive: bool = False
+    ) -> int:
+        """
+        Get the time index that is just after the specified time.
+
+        Parameters
+        ----------
+        time
+            Time to look for in the TimeSeries' time attribute.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        int
+            The index in the time attribute.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.array([0, 0.5, 1, 1.5, 2]))
+
+        >>> ts.get_index_after_time(0.9)
+        2
+
+        >>> ts.get_index_after_time(0.9, inclusive=True)
+        2
+
+        >>> ts.get_index_after_time(1)
+        3
+
+        >>> ts.get_index_after_time(1, inclusive=True)
+        2
+
+        """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+
+        def _raise():
+            raise TimeSeriesRangeError(
+                f"There is no data before the requested time of {time} "
+                f"{self._get_time_unit()}."
+            )
+
+        self._check_increasing_time()
+
+        if inclusive:
+            mask = np.nonzero(self.time >= time)
+        else:
+            mask = np.nonzero(self.time > time)
+
+        if mask[0].shape == (0,):
+            _raise()
+
+        return int(mask[0][0])
+
+    def get_index_at_event(self, name: str, occurrence: int = 0) -> int:
+        """
+        Get the time index that is closest to the specified event occurrence.
+
+        Parameters
+        ----------
+        name
+            Event name
+        occurrence
+            Occurrence of the event. The default is 0.
+
+        Returns
+        -------
+        int
+            The index in the time attribute.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.36, "event")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_index_at_event("event")
+        2
+
+        >>> ts.get_index_at_event("event", occurrence=1)
+        4
+
+        """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        self._check_well_shaped()
+
+        return self.get_index_at_time(
+            self.events[self._get_event_index(name, occurrence)].time
+        )
+
+    def get_index_before_event(
+        self, name: str, occurrence: int = 0, inclusive: bool = False
+    ) -> int:
+        """
+        Get the time index that is just before the specified event occurrence.
+
+        Parameters
+        ----------
+        name
+            Event name
+        occurrence
+            Occurrence of the event. The default is 0.
+        inclusive
+            True to allow including one sample after the event if needed, to
+            make sure that the event time is part of the returned TimeSeries's
+            time. False to make sure that the returned TimeSeries does not
+            include the event time. Default is False.
+
+        Returns
+        -------
+        int
+            The index in the time attribute.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_at_event
+        ktk.TimeSeries.get_index_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.36, "event")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_index_before_event("event")
+        1
+
+        >>> ts.get_index_before_event("event", occurrence=1)
+        3
+
+        >>> ts.get_index_before_event("event", occurrence=0, inclusive=True)
+        2
+
+        """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+
+        if inclusive is False:
+            return self.get_index_before_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=False,
+            )
+        else:
+            return self.get_index_after_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=True,
+            )
+
+    def get_index_after_event(
+        self, name: str, occurrence: int = 0, inclusive: bool = False
+    ) -> int:
+        """
+        Get the time index that is just after the specified event occurrence.
+
+        Parameters
+        ----------
+        name
+            Event name
+        occurrence
+            Occurrence of the event. The default is 0.
+        inclusive
+            True to allow including one sample before the event if needed, to
+            make sure that the event time is part of the output TimeSeries's
+            time. False to make sure that the returned TimeSeries does not
+            include the event time. Default is False.
+
+        Returns
+        -------
+        int
+            The index in the time attribute.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If the resulting index would be outside the TimeSeries range.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_index_before_time
+        ktk.TimeSeries.get_index_at_time
+        ktk.TimeSeries.get_index_after_time
+        ktk.TimeSeries.get_index_before_event
+        ktk.TimeSeries.get_index_at_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.36, "event")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_index_after_event("event")
+        3
+
+        >>> ts.get_index_after_event("event", occurrence=1)
+        4
+
+        >>> ts.get_index_after_event("event", inclusive=True)
+        2
+
+        """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+
+        if inclusive is False:
+            return self.get_index_after_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=False,
+            )
+        else:
+            return self.get_index_before_time(
+                self.events[self._get_event_index(name, occurrence)].time,
+                inclusive=True,
+            )
+
+    # %% Get ts methods
+
+    def get_ts_before_index(
+        self, index: int, *, inclusive: bool = False
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries before the specified time index.
+
+        Parameters
+        ----------
+        index
+            Time index
+        inclusive
+            Optional. True to include the given time index.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data before the specified index.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_index
+        ktk.TimeSeries.get_ts_between_indexes
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_before_index(2).time
+        array([0. , 0.1])
+
+        >>> ts.get_ts_before_index(2, inclusive=True).time
+        array([0. , 0.1, 0.2])
+
+        """
+        check_param("index", index, int)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+        self._check_increasing_time()
+
+        if (inclusive and (index < 0)) or (not inclusive and (index <= 0)):
+            raise TimeSeriesRangeError(
+                "Negative indexing is not supported in TimeSeries."
+            )
+
+        return self.get_ts_between_indexes(
+            0, index, inclusive=(True, inclusive)
+        )
+
+    def get_ts_after_index(
+        self, index: int, *, inclusive: bool = False
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries after the specified time index.
+
+        Parameters
+        ----------
+        index
+            Time index
+        inclusive
+            Optional. True to include the given time index.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data after the specified index.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_between_indexes
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_index(2).time
+        array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_index(2, inclusive=True).time
+        array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        """
+        check_param("index", index, int)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+        self._check_increasing_time()
+
+        if (inclusive and (index > self.time.shape[0] - 1)) or (
+            not inclusive and (index >= self.time.shape[0] - 1)
+        ):
+            raise TimeSeriesRangeError(
+                "There is no data in this TimeSeries after the specified "
+                f"index of {index} since the time of this TimeSeries has a "
+                f"shape of {self.time.shape}."
+            )
+
+        return self.get_ts_between_indexes(
+            index, self.time.shape[0] - 1, inclusive=(inclusive, True)
+        )
+
+    def get_ts_between_indexes(
+        self,
+        index1: int,
+        index2: int,
+        *,
+        inclusive: bool | tuple[bool, bool] = False,
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries between two specified time indexes.
+
+        Parameters
+        ----------
+        index1, index2
+            Time indexes
+        inclusive
+            Optional. Either a bool or a tuple of two bools. Used to
+            specify which indexes are returned:
+
+            - False or (False, False) (default): index1 < index < index2
+            - True or (True, True): index1 <= index <= index2
+            - (True, False): index1 <= index < index2
+            - (False, True): index1 < index <= index2
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data between the specified indexes.
+
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.get_ts_between_events
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_after_index
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_between_indexes(2, 5).time
+        array([0.3, 0.4])
+
+        >>> ts.get_ts_between_indexes(2, 5, inclusive=True).time
+        array([0.2, 0.3, 0.4, 0.5])
+
+        >>> ts.get_ts_between_indexes(2, 5, inclusive=[True, False]).time
+        array([0.2, 0.3, 0.4])
+
+        """
+        check_param("index1", index1, int)
+        check_param("index2", index2, int)
+        if isinstance(inclusive, bool):
+            inclusive = (inclusive, inclusive)
+        try:
+            inclusive = cast(tuple[bool, bool], tuple(inclusive))
+            check_param(
+                "inclusive",
+                inclusive,
+                tuple,
+                length=2,
+                contents_type=bool,
+            )
+        except TypeError:
+            raise TypeError(
+                "inclusive must be either a bool or a tuple of two bools."
+            )
+
+        self._check_well_shaped()
+        self._check_increasing_time()
+
+        if index2 < index1:
+            raise ValueError(
+                "The parameter index2 must be higher than index1. "
+                f"However, index2 is {index2} while index1 is {index1}."
+            )
+
+        if index1 < 0 or index1 >= len(self.time):
+            raise TimeSeriesRangeError(
+                f"The specified index1 of {index1} is out of "
+                f"range. The TimeSeries has {len(self.time)} samples."
+            )
+        index1 -= int(inclusive[0])
+
+        if index2 < 0 or index2 >= len(self.time):
+            raise TimeSeriesRangeError(
+                f"The specified index2 of {index2} is out of "
+                f"range. The TimeSeries has {len(self.time)} samples."
+            )
+        index2 += int(inclusive[1])
+
+        index_range = range(index1 + 1, index2)
+
+        out_ts = self.copy(copy_data=False, copy_time=False)
+        out_ts.time = self.time[index_range]
+        for the_data in self.data.keys():
+            out_ts.data[the_data] = self.data[the_data][index_range]
+        return out_ts
+
+    def get_ts_before_time(
+        self, time: float, *, inclusive: bool = False
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries before the specified time.
+
+        Parameters
+        ----------
+        time
+            Time to look for in the TimeSeries' time attribute.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data before the specified time.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_between_times
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_before_time(0.3).time
+        array([0. , 0.1, 0.2])
+
+        >>> ts.get_ts_before_time(0.3, inclusive=True).time
+        array([0. , 0.1, 0.2, 0.3])
+
+        """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+        self._check_increasing_time()
+
+        if (inclusive and (time < self.time[0])) or (
+            not inclusive and (time <= self.time[0])
+        ):
+            raise TimeSeriesRangeError(
+                "There is no data in this TimeSeries before the specified "
+                f"time of {time} since the begin time of this TimeSeries is "
+                "{self.time[-1]}."
+            )
+
+        return self.get_ts_between_times(
+            self.time[0], time, inclusive=(True, inclusive)
+        )
+
+    def get_ts_after_time(
+        self, time: float, *, inclusive: bool = False
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries after the specified time.
+
+        Parameters
+        ----------
+        time
+            Time to look for in the TimeSeries' time attribute.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data after the specified index.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_after_index
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_between_times
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_time(0.3).time
+        array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_time(0.3, inclusive=True).time
+        array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        """
+        check_param("time", time, float)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+        self._check_increasing_time()
+
+        if (inclusive and (time > self.time[-1])) or (
+            not inclusive and (time >= self.time[-1])
+        ):
+            raise TimeSeriesRangeError(
+                "There is no data in this TimeSeries after the specified time "
+                f"of {time} since the end time of this TimeSeries is "
+                f"{self.time[-1]}."
+            )
+
+        return self.get_ts_between_times(
+            time, self.time[-1], inclusive=(inclusive, True)
+        )
+
+    def get_ts_between_times(
+        self,
+        time1: float,
+        time2: float,
+        *,
+        inclusive: bool | tuple[bool, bool] = False,
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries between two specified times.
+
+        Parameters
+        ----------
+        time1, time2
+            Times to look for in the TimeSeries' time attribute.
+        inclusive
+            Optional. Either a bool or a tuple of two bools. Used to
+            specify which times are returned:
+
+            - False or (False, False) (default): time1 < time < time2
+            - True or (True, True): time1 <= time <= time2
+            - (True, False): time1 <= time < time2
+            - (False, True): time1 < time <= time2
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data between the specified times.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_events
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_after_time
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_between_times(0.2, 0.5).time
+        array([0.3, 0.4])
+
+        >>> ts.get_ts_between_times(0.2, 0.5, inclusive=True).time
+        array([0.2, 0.3, 0.4, 0.5])
+
+        >>> ts.get_ts_between_times(0.2, 0.5, inclusive=[True, False]).time
+        array([0.2, 0.3, 0.4])
+
+        """
+        check_param("time1", time1, float)
+        check_param("teim2", time2, float)
+        if isinstance(inclusive, bool):
+            inclusive = (inclusive, inclusive)
+        try:
+            inclusive = cast(tuple[bool, bool], tuple(inclusive))
+            check_param(
+                "inclusive",
+                inclusive,
+                tuple,
+                length=2,
+                contents_type=bool,
+            )
+        except TypeError:
+            raise TypeError(
+                "inclusive must be either a bool or a tuple of two bools."
+            )
+
+        if time2 < time1:
+            raise ValueError(
+                "The parameters time2 must be higher or equal to time1. "
+                f"However, time2 is {time2} while time1 is {time1}."
+            )
+
+        index1 = self.get_index_after_time(time1, inclusive=inclusive[0])
+        index2 = self.get_index_before_time(time2, inclusive=inclusive[1])
+        return self.get_ts_between_indexes(index1, index2, inclusive=True)
+
+    def get_ts_before_event(
+        self, name: str, occurrence: int = 0, *, inclusive: bool = False
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries before the specified event.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+        occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0.
+        inclusive
+            Optional. True to include the given time in the comparison.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data before the specified event.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_before_index
+        ktk.TimeSeries.get_ts_before_time
+        ktk.TimeSeries.get_ts_after_event
+        ktk.TimeSeries.get_ts_between_events
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.35, "event")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_before_event("event").time
+        array([0. , 0.1])
+
+        >>> ts.get_ts_before_event("event", inclusive=True).time
+        array([0. , 0.1, 0.2])
+
+        >>> ts.get_ts_before_event("event", 1).time
+        array([0. , 0.1, 0.2, 0.3])
+
+        >>> ts.get_ts_before_event("event", 1, inclusive=True).time
+        array([0. , 0.1, 0.2, 0.3, 0.4])
+
+        """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+
+        try:
+            retval = self.get_ts_before_index(
+                self.get_index_before_event(
+                    name, occurrence, inclusive=inclusive
+                ),
+                inclusive=True,
+            )
+        except TimeSeriesRangeError:
+            time = self.events[self._get_event_index(name, occurrence)].time
+            raise TimeSeriesRangeError(
+                f"There is no data before the occurrence {occurrence} of "
+                f"event '{name}', which happens at {time} "
+                f"{self._get_time_unit()}."
+            )
+        else:
+            return retval
+
+    def get_ts_after_event(
+        self, name: str, occurrence: int = 0, *, inclusive: bool = False
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries after the specified event.
+
+        Parameters
+        ----------
+        name
+            Name of the event to look for in the events list.
+        occurrence
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0.
+        inclusive
+            Optional. True to include the given event in the comparison.
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data after the specified event.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_after_index
+        ktk.TimeSeries.get_ts_after_time
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_between_events
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10) / 10)
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.35, "event")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_event("event").time
+        array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_event("event", inclusive=True).time
+        array([0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_event("event", 1).time
+        array([0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_after_event("event", 1, inclusive=True).time
+        array([0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        """
+        check_param("name", name, str)
+        check_param("occurrence", occurrence, int)
+        check_param("inclusive", inclusive, bool)
+        self._check_well_shaped()
+
+        try:
+            retval = self.get_ts_after_index(
+                self.get_index_after_event(
+                    name, occurrence, inclusive=inclusive
+                ),
+                inclusive=True,
+            )
+        except TimeSeriesRangeError:
+            time = self.events[self._get_event_index(name, occurrence)].time
+            raise TimeSeriesRangeError(
+                f"There is no data after the occurrence {occurrence} of "
+                f"event '{name}', which happens at {time} "
+                f"{self._get_time_unit()}."
+            )
+        else:
+            return retval
+
+    def get_ts_between_events(
+        self,
+        name1: str,
+        name2: str,
+        occurrence1: int = 0,
+        occurrence2: int = 0,
+        *,
+        inclusive: bool | tuple[bool, bool] = False,
+    ) -> "TimeSeries":
+        """
+        Get a TimeSeries between two specified events.
+
+        Parameters
+        ----------
+        name1, name2
+            Name of the events to look for in the events list.
+        occurrence1, occurrence2
+            Optional. i_th occurence of the event to look for in the events
+            list, starting at 0.
+        inclusive
+            Optional. Either a bool or a tuple of two bools. Used to
+            specify which times are returned:
+
+            - False or (False, False): event1.time < time < event2.time
+            - True or (True, True): event1.time <= time <= event2.time
+            - (True, False): event1.time <= time < event2.time
+            - (False, True): event1.time < time <= event2.time
+
+        Returns
+        -------
+        TimeSeries
+            A new TimeSeries that fulfils the specified conditions.
+
+        Raises
+        ------
+        TimeSeriesRangeError
+            If there is no data between the specified events.
+
+        See Also
+        --------
+        ktk.TimeSeries.get_ts_between_indexes
+        ktk.TimeSeries.get_ts_between_times
+        ktk.TimeSeries.get_ts_before_event
+        ktk.TimeSeries.get_ts_after_event
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(10)/10)
+        >>> ts = ts.add_event(0.2, "event")
+        >>> ts = ts.add_event(0.55, "event")
+        >>> ts.time
+        array([0. , 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9])
+
+        >>> ts.get_ts_between_events("event", "event", 0, 1).time
+        array([0.3, 0.4, 0.5])
+
+        >>> ts.get_ts_between_events("event", "event", 0, 1, \
+                                     inclusive=True).time
+        array([0.2, 0.3, 0.4, 0.5, 0.6])
+
+        """
+        check_param("name1", name1, str)
+        check_param("name2", name2, str)
+        check_param("occurrence1", occurrence2, int)
+        check_param("occurrence1", occurrence2, int)
+        if isinstance(inclusive, bool):
+            inclusive = (inclusive, inclusive)
+        try:
+            inclusive = cast(tuple[bool, bool], tuple(inclusive))
+            check_param(
+                "inclusive",
+                inclusive,
+                tuple,
+                length=2,
+                contents_type=bool,
+            )
+        except TypeError:
+            raise TypeError(
+                "inclusive must be either a bool or a tuple of two bools."
+            )
+
+        self._check_well_shaped()
+
+        time1 = self.events[self._get_event_index(name1, occurrence1)].time
+        time2 = self.events[self._get_event_index(name2, occurrence2)].time
+
+        if time2 < time1:
+            raise ValueError(
+                f"The end event (occurrence {occurrence2} of "
+                f"'{name2}') happens at {time2} {self._get_time_unit()}, "
+                f"which is before the begin event (occurrence {occurrence1} "
+                f"of '{name1}') that happens at {time1} "
+                f"{self._get_time_unit()}."
+            )
+
+        index1 = self.get_index_after_event(
+            name1, occurrence1, inclusive=inclusive[0]
+        )
+        index2 = self.get_index_before_event(
+            name2, occurrence2, inclusive=inclusive[1]
+        )
+        return self.get_ts_between_indexes(index1, index2, inclusive=True)
+
+    # %% Subsetting and merging
+
+    def get_subset(self, data_keys: str | list[str]) -> "TimeSeries":
+        """
+        Return a subset of the TimeSeries.
+
+        This method returns a TimeSeries that contains only selected data
+        keys. Events and info are also copied in the new TimeSeries.
+
+        Parameters
+        ----------
+        data_keys
+            The data keys to extract from the TimeSeries.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries, minus the unspecified data keys.
+
+        Raises
+        ------
+        KeyError
+            If one or more data keys could not be found in the TimeSeries
+            data.
+
+        See Also
+        --------
+        ktk.TimeSeries.merge
+
+        Example
+        -------
+            >>> ts = ktk.TimeSeries(time=np.arange(10))
+            >>> ts = ts.add_data("signal1", ts.time)
+            >>> ts = ts.add_data("signal2", ts.time**2)
+            >>> ts = ts.add_data("signal3", ts.time**3)
+            >>> ts.data.keys()
+            dict_keys(['signal1', 'signal2', 'signal3'])
+
+            >>> ts2 = ts.get_subset(["signal1", "signal3"])
+            >>> ts2.data.keys()
+            dict_keys(['signal1', 'signal3'])
+
+        """
+        try:
+            check_param("data_keys", data_keys, str)
+        except TypeError:
+            try:
+                check_param("data_keys", data_keys, list, contents_type=str)
+            except TypeError:
+                raise TypeError(
+                    "data_keys must be a string or a list of strings."
+                )
+        self._check_well_shaped()
+
+        if isinstance(data_keys, str):
+            data_keys = [data_keys]
+
+        ts = self.copy(
+            copy_time=True, copy_data=False, copy_info=True, copy_events=True
+        )
+
+        for key in data_keys:
+            try:
+                ts.data[key] = self.data[key].copy()
+            except KeyError:
+                raise KeyError(
+                    f"The key '{key}' could not be found among the "
+                    f"{len(self.data)} data entries of the TimeSeries"
+                )
+
+        return ts
+
+    def merge(
+        self,
+        ts: "TimeSeries",
+        data_keys: str | list[str] | None = None,
+        *,
+        resample: bool = False,
+        merge_events: bool = True,
+        merge_info: bool = True,
+        overwrite: bool = False,
+        on_conflict: str = "warning",
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Merge the TimeSeries with another TimeSeries.
+
+        Parameters
+        ----------
+        ts
+            The TimeSeries to merge into the current TimeSeries.
+        data_keys
+            Optional. The data keys to merge from ts. If left empty, all the
+            data keys are merged.
+        resample
+            Optional. Set to True to resample the source TimeSeries to the
+            target one using a linear interpolation. If the time attributes are
+            not equivalent and resample is False, an exception is raised. To
+            resample using other methods than linear interpolation, please
+            resample the source TimeSeries manually before, using
+            TimeSeries.resample. Default is False.
+        merge_events
+            Optional. Set to True to also merge events. Default is True.
+        merge_info
+            Optional. Set to True to also merge info. Default is True.
+        overwrite
+            Optional. Select what to do if a data or info key from the source
+            TimeSeries already exists in the destination TimeSeries. True to
+            overwrite the already existing value, False to ignore the new
+            value. Default is False.
+        on_conflict
+            Optional. Select the warning level when a data or info key
+            from the source TimeSeries already exists in the destination
+            TimeSeries. May take the following values:
+            "mute": No warning;
+            "warning": Warns that duplicate keys were found and how the
+            conflict has been resolved following the `overwrite` parameter.
+            "error": Raises a TimeSeriesMergeConflictError.
+            Default is "warning".
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The merged TimeSeries.
+
+        Raises
+        ------
+        TimeSeriesMergeConflictError
+            If a data or info key from the source TimeSeries already exists in
+            the destination TimeSeries and on_conflict is set to "error".
+
+        See Also
+        --------
+        ktk.TimeSeries.get_subset
+        ktk.TimeSeries.resample
+
+        """
+        # Call the method implementation (too large/complex to be included
+        # directly in the class definition)
+        return _merge(
+            self,
+            ts,
+            data_keys,
+            resample=resample,
+            merge_events=merge_events,
+            merge_info=merge_info,
+            overwrite=overwrite,
+            on_conflict=on_conflict,
+            in_place=in_place,
+        )
+
+    # %% Missing sample management
+
+    def isnan(self, data_key: str) -> np.ndarray:
+        """
+        Return a boolean array of missing samples.
+
+        Parameters
+        ----------
+        data_key
+            Key value of the data signal to analyze.
+
+        Returns
+        -------
+        np.ndarray
+            A boolean array of the same size as the time attribute, where True
+            values represent missing samples (samples that contain at least
+            one nan value).
+
+        See Also
+        --------
+        ktk.TimeSeries.fill_missing_samples
+
+        Example
+        -------
+        >>> ts = ktk.TimeSeries(time=np.arange(4))
+        >>> ts = ts.add_data("data", np.zeros((4, 2)))
+        >>> ts.data["data"][2, :] = np.nan
+        >>> ts.data
+        {'data': array([[ 0.,  0.], [ 0.,  0.], [nan, nan], [ 0.,  0.]])}
+
+        >>> ts.isnan("data")
+        array([False, False,  True, False])
+
+        """
+        check_param("data_key", data_key, str)
+        self._check_well_shaped()
+
+        values = self.data[data_key].copy()
+        # Reduce the dimension of values while keeping the time dimension.
+        while len(values.shape) > 1:
+            values = np.sum(values, 1)  # type: ignore
+        return np.isnan(values)
+
+    def fill_missing_samples(
+        self,
+        max_missing_samples: int,
+        *,
+        method: str = "linear",
+        in_place: bool = False,
+    ) -> "TimeSeries":
+        """
+        Fill missing samples using a given method.
+
+        Parameters
+        ----------
+        max_missing_samples
+            Maximal number of consecutive missing samples to fill. Set to
+            zero to fill all missing samples.
+        method
+            Optional. The interpolation method. This input may take any value
+            supported by scipy.interpolate.interp1d, such as "linear",
+            "nearest", "zero", "slinear", "quadratic", "cubic", "previous" or
+            "next". Default is "linear".
+        in_place
+            Optional. True to modify and return the original TimeSeries. False
+            to return a modified copy of the TimeSeries while leaving the
+            original TimeSeries intact. Default is False.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the missing samples filled.
+
+        Raises
+        ------
+        ValueError
+            If the sample rate is not constant.
+
+        See Also
+        --------
+        ktk.TimeSeries.isnan
+
+        """
+        check_param("max_missing_samples", max_missing_samples, int)
+        check_param("method", method, str)
+        check_param("in_place", in_place, bool)
+        self._check_well_shaped()
+
+        if np.isnan(self.get_sample_rate()):
+            raise ValueError("The sample rate must be constant.")
+
+        ts_out = self if in_place else self.copy()
+
+        for data in ts_out.data:
+            # Fill missing samples
+            is_visible = ~ts_out.isnan(data)
+            ts = ts_out.get_subset(data)
+            ts.data[data] = ts.data[data][is_visible]
+            ts.time = ts.time[is_visible]
+            ts = ts.resample(ts_out.time, method, extrapolate=True)
+
+            # Put back missing samples in holes longer than max_missing_samples
+            if max_missing_samples > 0:
+                still_visible_index = -1
+                to_keep = np.ones(self.time.shape)
+                for current_index in range(ts.time.shape[0]):
+                    if is_visible[current_index]:
+                        still_visible_index = current_index
+                    elif (
+                        current_index - still_visible_index
+                        > max_missing_samples
+                    ):
+                        to_keep[
+                            still_visible_index + 1 : current_index + 1
+                        ] = 0
+
+                ts.data[data][to_keep == 0] = np.nan
+
+            ts_out.data[data] = ts.data[data]
+
+        return ts_out
+
+    # %% Graphical user interfaces
+
+    def ui_edit_events(
+        self,
+        name: str | list[str] | None = None,
+        data_keys: str | list[str] | None = None,
+        legend: bool = True,
+        max_lines: int = 40,
+    ) -> "TimeSeries":  # pragma: no cover
+        """
+        Edit events interactively.
+
+        Parameters
+        ----------
+        name
+            Optional. The name of the event(s) to add. May be a string
+            or a list of strings. These events appear on their own buttons
+            "add `name`". Event names can also be defined interactively.
+        data_keys
+            Optional. A signal name of list of signal name to be plotted,
+            similar to the data_keys argument of ktk.TimeSeries.plot.
+        legend
+            Optional. True to plot a legend, False otherwise. Default is True.
+        max_lines
+            Optional. The maximal number of lines to plot. Default is 40. A
+            warning is issued if plotting all the data would require more
+            lines.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries with the modified events. If the operation was
+            cancelled by the user, this is the original TimeSeries.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.6, is still experimental
+        and may change signature or behaviour in the future.
+
+        See Also
+        --------
+        ktk.TimeSeries.add_event
+        ktk.TimeSeries.rename_event
+        ktk.TimeSeries.remove_event
+        ktk.TimeSeries.trim_events
+
+        Note
+        ----
+        Matplotlib must be in interactive mode for this function to work.
+
+        """
+        # Call the method implementation (too large/complex to be included
+        # directly in the class definition)
+        return _ui_edit_events(self, name, data_keys, legend, max_lines)
+
+    def ui_sync(
+        self,
+        data_keys: str | list[str] | None = None,
+        ts2: "TimeSeries | None" = None,
+        data_keys2: str | list[str] | None = None,
+        legend: bool = True,
+        max_lines: int = 40,
+    ) -> "TimeSeries":  # pragma: no cover
+        """
+        Synchronize one or two TimeSeries by shifting their time.
+
+        If this method is called on only one TimeSeries, an interactive
+        interface asks the user to click on the time to set to zero.
+
+        If another TimeSeries is given, an interactive interface allows
+        synchronizing both TimeSeries together.
+
+        Parameters
+        ----------
+        data_keys
+            Optional. The data keys to plot. If empty, all data is plotted.
+        ts2
+            Optional. A second TimeSeries to be synced to the first one. This
+            TimeSeries is modified in place.
+        data_keys2
+            Optional. The data keys from the second TimeSeries to plot. If
+            empty, all data is plotted.
+        legend
+            Optional. True to plot a legend, False otherwise. Default is True.
+        max_lines
+            Optional. The maximal number of lines to plot. Default is 40.
+            A warning is issued if plotting all the data would require more
+            lines.
+
+        Returns
+        -------
+        TimeSeries
+            The TimeSeries after synchronization.
+
+        Warning
+        -------
+        This function, which has been introduced in 0.1, is still experimental
+        and may change signature or behaviour in the future.
+
+        See Also
+        --------
+        ktk.TimeSeries.shift
+
+        Notes
+        -----
+        Matplotlib must be in interactive mode for this method to work.
+
+        """
+        # Call the method implementation (too large/complex to be included
+        # directly in the class definition)
+        return _ui_sync(self, data_keys, ts2, data_keys2, legend, max_lines)
+
+    def plot(
+        self,
+        data_keys: str | list[str] | None = None,
+        *args,
+        event_names: bool = True,
+        legend: bool = True,
+        max_lines: int = 40,
+        **kwargs,
+    ) -> None:
+        """
+        Plot the TimeSeries in the current matplotlib figure.
+
+        Parameters
+        ----------
+        data_keys
+            The data keys to plot. If left empty, all data is plotted.
+        event_names
+            Optional. True to plot the event names on top of the event lines.
+        legend
+            Optional. True to plot a legend, False otherwise. Default is True.
+        max_lines
+            Optional. The maximal number of lines to plot. Default is 40. A
+            warning is issued if plotting all the data would require more
+            lines.
+
+        Note
+        ----
+        Additional positional and keyboard arguments are passed to
+        matplotlib's ``pyplot.plot`` function::
+
+            ts.plot(["Forces"], "--")
+
+        plots the forces using a dashed line style.
+
+        Example
+        -------
+        For a TimeSeries ``ts`` with data keys being "Forces", "Moments" and
+        "Angle"::
+
+            ts.plot()
+
+        plots all data (Forces, Moments and Angle), whereas::
+
+            ts.plot(["Forces", "Moments"])
+
+        plots only the forces and moments, without plotting the angle.
+
+        """
+        # Call the method implementation (too large/complex to be included
+        # directly in the class definition)
+        _plot(
+            self,
+            data_keys,
+            *args,
+            event_names=event_names,
+            legend=legend,
+            max_lines=max_lines,
+            **kwargs,
+        )
 
     # %% Input/Output
 
@@ -839,7 +3648,7 @@ class TimeSeries:
         events: list[TimeSeriesEvent] | None = None,
         info: dict[str, Any] | None = None,
         **kwargs,
-    ) -> TimeSeries:
+    ) -> "TimeSeries":
         """
         Create a new TimeSeries from a Pandas Dataframe.
 
@@ -1043,7 +3852,7 @@ class TimeSeries:
         events: list[TimeSeriesEvent] | None = None,
         info: dict[str, Any] | None = None,
         **kwargs,
-    ) -> TimeSeries:
+    ) -> "TimeSeries":
         """
         Create a new TimeSeries from an array.
 

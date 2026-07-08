@@ -26,7 +26,6 @@ import os
 import pydoc
 import shutil
 import subprocess
-import webbrowser
 
 import kineticstoolkit.config
 
@@ -70,8 +69,8 @@ def run_unit_tests() -> None:  # pragma: no cover
         env=kineticstoolkit.config.env,
     )
     subprocess.call(["coverage", "html"], env=kineticstoolkit.config.env)
-    webbrowser.open_new_tab(
-        "file://"
+    print(
+        "Result in \nfile://"
         + kineticstoolkit.config.root_folder
         + "/tests/htmlcov/index.html"
     )
@@ -98,7 +97,7 @@ def run_extensions_tests() -> None:  # pragma: no cover
         env=kineticstoolkit.config.env,
     )
     subprocess.call(["coverage", "html"], env=kineticstoolkit.config.env)
-    webbrowser.open_new_tab("file://" + root_folder + "/htmlcov/index.html")
+    print("Result in \nfile://" + root_folder + "/htmlcov/index.html")
     os.chdir(cwd)
 
 
@@ -194,14 +193,26 @@ def run_sphinx() -> None:  # pragma: no cover
     print("Generating API documentation...")
     cwd = os.getcwd()
     os.chdir(kineticstoolkit.config.root_folder)
-    shutil.rmtree("docs/api")
-    shutil.rmtree("docs/_build")
+    try:
+        shutil.rmtree("docs/api")
+    except FileNotFoundError:
+        pass
+    try:
+        shutil.rmtree("docs/_build")
+    except FileNotFoundError:
+        pass
+    os.mkdir("docs/_build")
+    try:
+        os.symlink("kineticstoolkit", "ktk")
+    except FileExistsError:
+        pass
     subprocess.call(["sphinx-build", "-W", "docs", "docs/_build/html"])
-    webbrowser.open_new_tab(
-        "file://"
+    print(
+        "Result in \nfile://"
         + kineticstoolkit.config.root_folder
         + "/docs/_build/html/index.html"
     )
+    os.remove("ktk")
     os.chdir(cwd)
 
 

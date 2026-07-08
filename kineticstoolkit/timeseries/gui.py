@@ -13,7 +13,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-"""Provide graphical user interface methods for TimeSeries."""
+"""Implement TimeSeries GUI methods."""
 
 __author__ = "Félix Chénier"
 __copyright__ = "Copyright (C) 2020-2025 Félix Chénier"
@@ -206,7 +206,7 @@ def _ui_edit_events_close_fig(fig) -> None:
         plt.ioff()
 
 
-def ui_edit_events(
+def _ui_edit_events(
     self,
     name: str | list[str] | None = None,
     data_keys: str | list[str] | None = None,
@@ -467,7 +467,7 @@ def _ui_sync_two_timeseries(
     return (ts1, ts2)
 
 
-def ui_sync(
+def _ui_sync(
     self,
     data_keys: str | list[str] | None = None,
     ts2: "TimeSeries | None" = None,
@@ -475,51 +475,7 @@ def ui_sync(
     legend: bool = True,
     max_lines: int = 40,
 ) -> "TimeSeries":  # pragma: no cover
-    """
-    Synchronize one or two TimeSeries by shifting their time.
-
-    If this method is called on only one TimeSeries, an interactive
-    interface asks the user to click on the time to set to zero.
-
-    If another TimeSeries is given, an interactive interface allows
-    synchronizing both TimeSeries together.
-
-    Parameters
-    ----------
-    data_keys
-        Optional. The data keys to plot. If empty, all data is plotted.
-    ts2
-        Optional. A second TimeSeries to be synced to the first one. This
-        TimeSeries is modified in place.
-    data_keys2
-        Optional. The data keys from the second TimeSeries to plot. If
-        empty, all data is plotted.
-    legend
-        Optional. True to plot a legend, False otherwise. Default is True.
-    max_lines
-        Optional. The maximal number of lines to plot. Default is 40.
-        A warning is issued if plotting all the data would require more
-        lines.
-
-    Returns
-    -------
-    TimeSeries
-        The TimeSeries after synchronization.
-
-    Warning
-    -------
-    This function, which has been introduced in 0.1, is still experimental
-    and may change signature or behaviour in the future.
-
-    See Also
-    --------
-    ktk.TimeSeries.shift
-
-    Notes
-    -----
-    Matplotlib must be in interactive mode for this method to work.
-
-    """
+    """Implement TimeSeries.ui_sync."""
     check_interactive_backend()
 
     if data_keys is None:
@@ -672,7 +628,7 @@ def _plot_events(ts: "TimeSeries", event_names: bool) -> None:
                 )
 
 
-def plot(
+def _plot(
     self,
     data_keys: str | list[str] | None = None,
     *args,
