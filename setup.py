@@ -24,8 +24,8 @@ setuptools.setup(
     },
     project_urls={
         "Documentation": "https://kineticstoolkit.uqam.ca",
-        "Source": "https://github.com/felixchenier/kineticstoolkit/",
-        "Tracker": "https://github.com/felixchenier/kineticstoolkit/issues",
+        "Source": "https://github.com/kineticstoolkit/kineticstoolkit/",
+        "Tracker": "https://github.com/kineticstoolkit/kineticstoolkit/issues",
     },
     install_requires=[
         "ezc3d",  # To open and write c3d files
@@ -49,5 +49,5 @@ setuptools.setup(
         "Operating System :: POSIX",
         "Programming Language :: Python :: 3",
     ],
-    python_requires=">=3.10",
+    python_requires=">=3.11",
 )
