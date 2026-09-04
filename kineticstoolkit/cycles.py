@@ -26,7 +26,6 @@ from typing import cast
 import numpy as np
 from tqdm import tqdm
 
-from kineticstoolkit.exceptions import TimeSeriesEventNotFoundError
 from kineticstoolkit.timeseries import TimeSeries, TimeSeriesEvent
 from kineticstoolkit.typing_ import ArrayLike, check_param
 
@@ -308,20 +307,28 @@ def time_normalize(  # noqa: PLR0915, PLR0912 too-many-branches/statements
     if len(ts.events) < 2:
         raise ValueError("This TimeSeries does not have events.")
 
-    if ts.count_events(event_name1) == 0:
+    begin_event_indexes = ts._get_event_indexes(event_name1)
+    end_event_indexes = ts._get_event_indexes(event_name2)
+
+    if len(begin_event_indexes) == 0:
         raise ValueError(
             f"No occurrence of event `{event_name1}` was found in this "
             "TimeSeries."
         )
 
-    if ts.count_events(event_name2) == 0:
+    if len(end_event_indexes) == 0:
         raise ValueError(
             f"No occurrence of event `{event_name2}` was found in this "
             "TimeSeries."
         )
 
-    # Initialize the destination TimeSeries
+    begin_events = [ts.events[index] for index in begin_event_indexes]
+    end_events = [ts.events[index] for index in end_event_indexes]
+
+    # Copy source attributes, then clear values that will be replaced below.
     dest_ts = ts.copy()
+    dest_ts.time = np.array([])
+    dest_ts.data = {}
     dest_ts.events = []
     if n_points == 100:
         dest_ts.add_info("Time", "Unit", "%", overwrite=True, in_place=True)
@@ -334,34 +341,19 @@ def time_normalize(  # noqa: PLR0915, PLR0912 too-many-branches/statements
     dest_data_shape = {}  # type: dict[str, tuple[int, ...]]
 
     # Go through all cycles
-    i_cycle = 0
-    break_now = False
-    while True:
-        # Get the begin time for this cycle
-        try:
-            event_index = ts._get_event_index(event_name1, i_cycle)
-        except TimeSeriesEventNotFoundError:
-            break_now = True
-        else:
-            begin_time = ts.events[event_index].time
-
-        if break_now:
-            break
-
+    n_cycles = 0
+    for begin_event in begin_events:
+        begin_time = begin_event.time
         # Get the end time for this cycle
         end_cycle = 0
-        end_time = ts.events[ts._get_event_index(event_name2, end_cycle)].time
+        end_time = end_events[end_cycle].time
         while end_time <= begin_time:
             end_cycle += 1
-            try:
-                end_time = ts.events[
-                    ts._get_event_index(event_name2, end_cycle)
-                ].time
-            except TimeSeriesEventNotFoundError:
-                break_now = True
+            if end_cycle >= len(end_events):
                 break
+            end_time = end_events[end_cycle].time
 
-        if break_now:
+        if end_cycle >= len(end_events):
             break
 
         # Get the extended begin and end times considering relative_span
@@ -414,11 +406,15 @@ def time_normalize(  # noqa: PLR0915, PLR0912 too-many-branches/statements
 
         # Add event_name1 at the beginning and end (duplicates will be
         # cancelled at the end)
-        dest_ts = dest_ts.add_event(
-            float(-span[0] + i_cycle * (span[1] - span[0])), event_name1
+        dest_ts.add_event(
+            float(-span[0] + n_cycles * (span[1] - span[0])),
+            event_name1,
+            in_place=True,
         )
-        dest_ts = dest_ts.add_event(
-            float(-span[0] + n_points + i_cycle * (span[1] - span[0])), "_"
+        dest_ts.add_event(
+            float(-span[0] + n_points + n_cycles * (span[1] - span[0])),
+            "_",
+            in_place=True,
         )
 
         # Add the other events
@@ -426,8 +422,8 @@ def time_normalize(  # noqa: PLR0915, PLR0912 too-many-branches/statements
             # Resample
             new_time = (event.time - extended_begin_time) / (
                 extended_end_time - extended_begin_time
-            ) * (span[1] - span[0]) + i_cycle * (span[1] - span[0])
-            dest_ts = dest_ts.add_event(new_time, event.name)
+            ) * (span[1] - span[0]) + n_cycles * (span[1] - span[0])
+            dest_ts.add_event(new_time, event.name, in_place=True)
 
         # Add this cycle to dest_time and dest_data
         for key in subts.data:
@@ -436,9 +432,8 @@ def time_normalize(  # noqa: PLR0915, PLR0912 too-many-branches/statements
                 dest_data_shape[key] = ts.data[key].shape
             dest_data[key].append(subts.data[key])
 
-        i_cycle += 1
+        n_cycles += 1
 
-    n_cycles = i_cycle
     # Put back dest_time and dest_data in dest_ts
     dest_ts.time = 1.0 * np.arange(n_cycles * (span[1] - span[0]))
     for key in ts.data:
