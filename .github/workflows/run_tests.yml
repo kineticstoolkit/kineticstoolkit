@@ -56,6 +56,7 @@ jobs:
     - name: Install extensions (using git so that we have all required files for the unit tests)
       run: |
         git clone https://github.com/kineticstoolkit/kineticstoolkit_extensions.git
+        pip install git+https://github.com/felixchenier/NextWheel.git#subdirectory=software/python
     - name: Test extensions with pytest and crash on warnings (macOS)
       if: matrix.os == 'macos-latest'
       run: |
