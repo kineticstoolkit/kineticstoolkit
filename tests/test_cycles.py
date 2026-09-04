@@ -175,9 +175,13 @@ def test_time_normalize():
     ts = ts.add_event(8.0, "recovery")
     ts = ts.add_event(8.95, "push")
     ts = ts.add_event(10.05, "recovery")
+    ts = ts.add_info("test", "Unit", "m")
+    original_ts = ts.copy()
 
     ts1 = ktk.cycles.time_normalize(ts, "push", "recovery")
     assert len(ts1.events) == 10  # We got all events
+    assert ts1.info["Time"]["Unit"] == "%"
+    assert ts1.info["test"] == ts.info["test"]
 
     # Test that if we re-time-normalize, we obtain the same TimeSeries
     ts2 = ktk.cycles.time_normalize(ts1, "push", "_")
@@ -257,6 +261,8 @@ def test_time_normalize():
         raise ValueError("Should raise a ValueError.")
     except ValueError:
         pass
+
+    assert ts == original_ts
 
 
 # def test_normalize_extended():
