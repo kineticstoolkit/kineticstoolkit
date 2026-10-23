@@ -1202,7 +1202,8 @@ def _quaternions_to_frame_series(
     output[:, 3, 3] = 1.0
     return output
 
-def _vectors_to_frame_series( # noqa: PLR0917 Too many positional arguments
+
+def _vectors_to_frame_series(  # noqa: PLR0917 Too many positional arguments
     x: ArrayLike | None = None,
     y: ArrayLike | None = None,
     z: ArrayLike | None = None,
@@ -1829,7 +1830,7 @@ def create_transforms(
     return T @ scales_array
 
 
-def create_frames( # noqa: PLR0917 Too many positional arguments
+def create_frames(  # noqa: PLR0917 Too many positional arguments
     origin: ArrayLike,
     x: ArrayLike | None = None,
     y: ArrayLike | None = None,

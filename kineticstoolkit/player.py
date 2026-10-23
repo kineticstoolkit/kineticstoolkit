@@ -2506,7 +2506,8 @@ class Player:
         anim.save(
             filename, writer=writervideo, progress_callback=update_progress_bar
         )
-        anim.event_source.stop()
+        if anim.event_source is not None:
+            anim.event_source.stop()
 
         if show_progress_bar:
             progress_bar.close()

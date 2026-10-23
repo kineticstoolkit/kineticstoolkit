@@ -99,7 +99,9 @@ def _resample_create_new_time(
 
     return new_time
 
+
 # %% TimeSeries
+
 
 class TimeSeries:
     """
@@ -3430,7 +3432,14 @@ class TimeSeries:
         """
         # Call the method implementation (too large/complex to be included
         # directly in the class definition)
-        return _ui_sync(self, data_keys, ts2, data_keys2, legend, max_lines)
+        return _ui_sync(
+            self,
+            data_keys,
+            ts2,
+            data_keys2,
+            legend=legend,
+            max_lines=max_lines,
+        )
 
     def plot(
         self,

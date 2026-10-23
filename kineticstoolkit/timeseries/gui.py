@@ -399,7 +399,14 @@ def _ui_sync_two_timeseries(
 
     while finished is False:
         _ui_sync_plot_two_timeseries(
-            ts1, data_keys, ts2, data_keys2, legend, max_lines, axes, fig
+            ts1,
+            data_keys,
+            ts2,
+            data_keys2,
+            legend=legend,
+            max_lines=max_lines,
+            axes=axes,
+            fig=fig,
         )
 
         choices = [
@@ -524,7 +531,13 @@ def _ui_sync(
 
     else:  # Sync two TimeSeries together
         ts1, new_ts2 = _ui_sync_two_timeseries(
-            ts1, data_keys, ts2, data_keys2, legend, max_lines, fig
+            ts1,
+            data_keys,
+            ts2,
+            data_keys2,
+            legend=legend,
+            max_lines=max_lines,
+            fig=fig,
         )
         ts2.time = new_ts2.time
         ts2.data = new_ts2.data
@@ -534,9 +547,7 @@ def _ui_sync(
     return ts1
 
 
-def _plot_curves(
-    ts: "TimeSeries", max_lines: int, args, kwargs
-) -> mpl.axes._axes.Axes:
+def _plot_curves(ts: "TimeSeries", max_lines: int, args, kwargs):
     """Plot the curves of the input TimeSeries on the given axes."""
     df = ts.to_dataframe()
     labels = df.columns.to_list()
