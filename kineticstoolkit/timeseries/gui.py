@@ -356,6 +356,7 @@ def _ui_sync_plot_two_timeseries(
     data_keys: str | list[str],
     ts2: "TimeSeries",
     data_keys2: str | list[str],
+    *,
     legend: bool,
     max_lines: int,
     axes: list[Any],
@@ -386,6 +387,7 @@ def _ui_sync_two_timeseries(
     data_keys: str | list[str],
     ts2: "TimeSeries",
     data_keys2: str | list[str],
+    *,
     legend: bool,
     max_lines: int,
     fig: mpl.figure.Figure,
@@ -472,6 +474,7 @@ def _ui_sync(
     data_keys: str | list[str] | None = None,
     ts2: "TimeSeries | None" = None,
     data_keys2: str | list[str] | None = None,
+    *,
     legend: bool = True,
     max_lines: int = 40,
 ) -> "TimeSeries":  # pragma: no cover

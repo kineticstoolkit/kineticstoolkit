@@ -99,6 +99,7 @@ def _resample_create_new_time(
 
     return new_time
 
+# %% TimeSeries
 
 class TimeSeries:
     """
