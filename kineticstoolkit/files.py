@@ -330,8 +330,11 @@ def load(filename: str, *, include_metadata: bool = False) -> Any:
 
     elif filename.lower().endswith(".json.zip"):
         archive = zipfile.ZipFile(filename, "r")
+        if len(archive.namelist()) != 1:
+            raise ValueError("The zip file must contain only one file.")
         return json.loads(
-            archive.read(filename[:-4]).decode(), object_hook=_load_object_hook
+            archive.read(archive.namelist()[0]).decode(),
+            object_hook=_load_object_hook,
         )
 
     elif filename.lower().endswith(
