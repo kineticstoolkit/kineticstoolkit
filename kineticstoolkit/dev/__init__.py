@@ -24,7 +24,6 @@ __license__ = "Apache 2.0"
 import doctest
 import os
 import pydoc
-import shutil
 import subprocess
 
 import kineticstoolkit.config
@@ -41,7 +40,6 @@ def __dir__():
         "run_static_type_checker",
         "run_linter",
         "run_doc_tests",
-        "run_sphinx",
         "run_tests",
     ]
 
@@ -188,34 +186,6 @@ def run_doc_tests() -> None:  # pragma: no cover
     os.chdir(cwd)
 
 
-def run_sphinx() -> None:  # pragma: no cover
-    """Generate the API doc."""
-    print("Generating API documentation...")
-    cwd = os.getcwd()
-    os.chdir(kineticstoolkit.config.root_folder)
-    try:
-        shutil.rmtree("docs/api")
-    except FileNotFoundError:
-        pass
-    try:
-        shutil.rmtree("docs/_build")
-    except FileNotFoundError:
-        pass
-    os.mkdir("docs/_build")
-    try:
-        os.symlink("kineticstoolkit", "ktk")
-    except FileExistsError:
-        pass
-    subprocess.call(["sphinx-build", "-W", "docs", "docs/_build/html"])
-    print(
-        "Result in \nfile://"
-        + kineticstoolkit.config.root_folder
-        + "/docs/_build/html/index.html"
-    )
-    os.remove("ktk")
-    os.chdir(cwd)
-
-
 def run_tests() -> None:  # pragma: no cover
     """Run all testing and building functions."""
     run_style_formatter()
@@ -224,4 +194,3 @@ def run_tests() -> None:  # pragma: no cover
     run_static_type_checker()
     run_unit_tests()
     run_extensions_tests()
-    run_sphinx()
