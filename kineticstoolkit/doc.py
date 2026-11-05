@@ -85,7 +85,7 @@ def download(filename: str, **kwargs) -> str:
     else:
         # Otherwise download it.
         file = requests.get(
-            "https://github.com/felixchenier/kineticstoolkit/raw/master/data/"
+            "https://github.com/felixchenier/kineticstoolkit/raw/main/data/"
             + filename
         )
         if file.status_code == 404:
